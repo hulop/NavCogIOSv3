@@ -101,6 +101,10 @@
         self.devReset.hidden = !devMode || previewMode;
         self.devMarker.hidden = !devMode || previewMode;
         
+        self.devUp.hidden = !devMode || previewMode;
+        self.devDown.hidden = !devMode || previewMode;
+        self.devNote.hidden = !devMode || previewMode;
+        
         self.devAuto.selected = autoProceed;
         self.cover.hidden = devMode || !isActive;
         
@@ -185,6 +189,34 @@
     [self manualGoForward:0.5];
 }
 
+- (IBAction)floorUp:(id)sender {
+    double floor = [[[NavDataStore sharedDataStore] currentLocation] floor];
+    
+    [self manualGoFloor:floor+1];
+}
+
+- (IBAction)floorDown:(id)sender {
+    double floor = [[[NavDataStore sharedDataStore] currentLocation] floor];
+    [self manualGoFloor:floor-1];
+}
+
+- (IBAction)addNote:(id)sender {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Add Note"
+                                                                   message:@"Input note for log"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+    }];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"Cancel", @"BlindView", @"")
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                              }]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  NSLog(@"Note,%@",[[alert.textFields objectAtIndex:0]text]);
+                                              }]];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 - (IBAction)resetLocation:(id)sender {
     HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
     
@@ -245,7 +277,9 @@
         [loc updateLat:loc.lat Lng:loc.lng Accuracy:loc.accuracy Floor:floor];
         [[NavDataStore sharedDataStore] manualLocation:loc];
     } else {
-        [helper evalScript:[NSString stringWithFormat:@"$hulop.indoor.showFloor(%f);", targetFloor<0?targetFloor:targetFloor+1]];
+        int ifloor = round(floor<0?floor:floor+1);
+        [helper evalScript:[NSString stringWithFormat:@"$hulop.indoor.showFloor(%d);", ifloor]];
+        [self manualGoForward:0];
     }
 }
 

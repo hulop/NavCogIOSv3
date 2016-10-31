@@ -40,6 +40,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *devAuto;
 @property (weak, nonatomic) IBOutlet UIButton *devReset;
 @property (weak, nonatomic) IBOutlet UIButton *devMarker;
+@property (weak, nonatomic) IBOutlet UIButton *devUp;
+@property (weak, nonatomic) IBOutlet UIButton *devDown;
+@property (weak, nonatomic) IBOutlet UIButton *devNote;
 
 
 @end

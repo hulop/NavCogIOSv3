@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>FloorF</key>
+        <dict>
+            <key>NSStringLocalizedFormatKey</key>
+            <string>%.1fth floor</string>
+        </dict>
+        <key>BasementFloorF</key>
+        <dict>
+            <key>NSStringLocalizedFormatKey</key>
+            <string>%.1fth basement</string>
+        </dict>
+
+        <key>FloorD</key>
+        <dict>
+            <key>NSStringLocalizedFormatKey</key>
+            <string>%#@ordinalnumber@ floor</string>
+            <key>ordinalnumber</key>
+            <dict>
+                <key>NSStringFormatSpecTypeKey</key>
+                <string>NSStringPluralRuleType</string>
+                <key>NSStringFormatValueTypeKey</key>
+                <string>d</string>
+                <key>one</key>
+                <string>%dst</string>
+                <key>two</key>
+                <string>%dnd</string>
+                <key>few</key>
+                <string>%drd</string>
+                <key>other</key>
+                <string>%dth</string>
+            </dict>
+        </dict>
+        <key>BasementFloorD</key>
+        <dict>
+            <key>NSStringLocalizedFormatKey</key>
+            <string>%d@ordinalnumber@ basement</string>
+            <key>ordinalnumber</key>
+            <dict>
+                <key>NSStringFormatSpecTypeKey</key>
+                <string>NSStringPluralRuleType</string>
+                <key>NSStringFormatValueTypeKey</key>
+                <string>d</string>
+                <key>one</key>
+                <string>%dst</string>
+                <key>two</key>
+                <string>%dnd</string>
+                <key>few</key>
+                <string>%drd</string>
+                <key>other</key>
+                <string>%dth</string>
+            </dict>
+        </dict>
+    </dict>
+</plist>

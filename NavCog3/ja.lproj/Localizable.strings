@@ -1,0 +1,51 @@
+/* label for distance unit option */
+"Distance unit" = "距離の単位";
+
+/* Toilet for people with disability */
+"FOR_DISABLED" = "多目的";
+
+/* Toilet for female */
+"FOR_FEMALE" = "女性用";
+
+/* Toilet for male */
+"FOR_MALE" = "男性用";
+
+/* feet distance unit label */
+"Feet" = "フィート";
+
+/* No comment provided by engineer. */
+"Initial zoom level for navigation" = "ナビゲーション開始時のズーム";
+
+/* label for map */
+"Map" = "地図";
+
+/* meter distance unit label */
+"Meter" = "メートル";
+
+/* No comment provided by engineer. */
+"Preview speed" = "プレビュー速度";
+
+/* No comment provided by engineer. */
+"Preview with action" = "振ってプレビュー";
+
+/* label for tts options */
+"Speech" = "読み上げ";
+
+/* label for speech speed option */
+"Speech speed" = "読み上げ速度";
+
+/* Toilet */
+"TOILET" = "トイレ";
+
+/* No comment provided by engineer. */
+"UI_BLIND" = "視覚障害者ユーザ";
+
+/* No comment provided by engineer. */
+"UI_Mode" = "UIモード";
+
+/* No comment provided by engineer. */
+"UI_WHEELCHAIR" = "車椅子ユーザ / 晴眼者ユーザ";
+
+/* (No Commment) */
+"checkNetworkConnection" = "ネットワークの接続を確認してください";
+

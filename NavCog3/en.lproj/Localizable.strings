@@ -1,0 +1,58 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2016  IBM Corporation, Carnegie Mellon University and others
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *******************************************************************************/
+
+/* label for distance unit option */
+"Distance unit" = "Distance unit";
+
+/* meter distance unit label */
+"Meter" = "Meter";
+
+/* feet distance unit label */
+"Feet" = "Feet";
+
+/* Toilet for people with disability */
+"FOR_DISABLED" = "Multi purpose toilet";
+
+/* Toilet for female */
+"FOR_FEMALE" = "for female";
+
+/* Toilet for male */
+"FOR_MALE" = "for male";
+
+/* label for tts options */
+"Speech" = "Speech";
+
+/* label for speech speed option */
+"Speech speed" = "Speech speed";
+
+/* label for preview speed option */
+"Preview speed" = "Preview speed";
+
+/* Toilet */
+"TOILET" = "Toilet";
+
+/* Label text for network connection error */
+"checkNetworkConnection" = "Check network connection";
+
+"UI_Mode" = "UI Mode";
+"UI_WHEELCHAIR" = "Wheelchair User / Sighted User";
+"UI_BLIND" = "Blind User";

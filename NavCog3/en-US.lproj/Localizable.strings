@@ -1,0 +1,27 @@
+/* distance to a destination name */
+"%1$.0f meters to the destination" = "%1$.0f meters to the destination";
+
+/* distance to a destination name */
+"%2$.0f meters to %1$@" = "%2$.0f meters to %1$@";
+
+/* Toilet for people with disability */
+"FOR_DISABLED" = "Multi purpose toilet";
+
+/* Toilet for female */
+"FOR_FEMALE" = "for female";
+
+/* Toilet for male */
+"FOR_MALE" = "for male";
+
+/* label for tts options */
+"Speech" = "Speech";
+
+/* label for speech speed option */
+"Speech speed" = "Speech speed";
+
+/* Toilet */
+"TOILET" = "Toilet";
+
+/* Label text for network connection error */
+"checkNetworkConnection" = "Check network connection";
+

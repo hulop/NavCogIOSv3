@@ -1,0 +1,201 @@
+/* No comment provided by engineer. */
+"%@, you might be going backward." = "%@, 逆戻りしているようです";
+
+/* No comment provided by engineer. */
+"After getting off the elevator, %@" = "エレベーターを降りたら、%@";
+
+/* No comment provided by engineer. */
+"Cancel" = "キャンセル";
+
+/* No comment provided by engineer. */
+"Caution, %@" = "注意、%@";
+
+/* basement floor */
+"FloorBasementD" = "地下%@階";
+
+/* floor */
+"FloorD" = "%@階";
+
+/* floor num type */
+"FloorNumType" = "cardinal";
+
+/* No comment provided by engineer. */
+"Go to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@にいきます。現在は%3$@にいます。";
+
+/* No comment provided by engineer. */
+"Go to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ";
+
+/* No comment provided by engineer. */
+"OK" = "OK";
+
+/* No comment provided by engineer. */
+"PERIOD" = "。";
+
+/* (No Commment) */
+"Preview" = "プレビュー";
+
+/* (No Commment) */
+"Search" = "検索";
+
+/* (No Commment) */
+"Stop" = "終了";
+
+/* No comment provided by engineer. */
+"TTS_PAUSE_CHAR" = "。";
+
+/* No comment provided by engineer. */
+"There is a sign says %@" = "%@という看板があります";
+
+/* No comment provided by engineer. */
+"Watch your step, %@" = "足元注意、%@です";
+
+/* arrived message */
+"You arrived" = "目的地付近に到着しました。お疲れ様でした";
+
+/* arrived message with destination name */
+"You arrived at %1$@" = "%1$@付近に到着しました。お疲れ様でした";
+
+/* (No Commment) */
+"_nav_latlng" = "現在地";
+
+/* (No Commment) */
+"_nav_select_destination" = "目的地を選択";
+
+/* (No Commment) */
+"_nav_select_start" = "開始地点を選択";
+
+/* (No Commment) */
+"_nav_toilet_female" = "女性用トイレ";
+
+/* (No Commment) */
+"_nav_toilet_male" = "男性用トイレ";
+
+/* (No Commment) */
+"_nav_toilet_multi" = "多目的トイレ";
+
+/* (No Commment) */
+"and action" = "%1$@";
+
+/* (No Commment) */
+"and action at near object" = "%2$@の近くで%1$@";
+
+/* approaching */
+"approaching" = "そろそろです";
+
+/* approaching to do something */
+"approaching to %@" = "そろそろ%@";
+
+/* head to the diagonally forward left direction */
+"bear left" = "少し左に向く";
+
+/* head to the diagonally forward right direction */
+"bear right" = "少し右に向く";
+
+/* No comment provided by engineer. */
+"destination is %@" = "%1$@は%2$@です";
+
+/* remaining distance to the destination */
+"destination is in distance" = "%2$@先、%1$@です";
+
+/* distance to a destination name */
+"distance to %1$@" = "%2$@進んで、%1$@";
+
+/* distance to the destination */
+"distance to the destination" = "目的地まで残り%1$@";
+
+/* No comment provided by engineer. */
+"from: %@" = "%@から";
+
+/* No comment provided by engineer. */
+"go straight" = "直進する";
+
+/* something at your degree -22.5 ~ +22.5 */
+"in front of you" = "正面";
+
+/* make turn to -120 ~ -150 */
+"make a big left turn" = "大きく左に曲がる";
+
+/* make turn to +120 ~ +150 */
+"make a big right turn" = "大きく右に曲がる";
+
+/* make turn to -22.5 ~ -60 */
+"make a slight left turn" = "少し左に曲がる";
+
+/* make turn to +22.5 ~ +60 */
+"make a slight right turn" = "少し右に曲がる";
+
+/* make turn to -180 ~ -180 */
+"make a u-turn to the left" = "左に折り返す";
+
+/* make turn to +150 ~ +180 */
+"make a u-turn to the right" = "右に折り返す";
+
+/* (No Commment) */
+"on %@" = "";
+
+/* something at your degree -60 ~ -120 */
+"on your left side" = "左側";
+
+/* something at your degree -150 ~ -180 */
+"on your left side(almost back)" = "左後ろ";
+
+/* something at your degree -120 ~ -150 */
+"on your left side(back)" = "右後ろ";
+
+/* something at your degree -22.5 ~ -60 */
+"on your left side(front)" = "右斜め前";
+
+/* something at your degree +60 ~ +120 */
+"on your right side" = "右側";
+
+/* something at your degree +150 ~ +180 */
+"on your right side(almost back)" = "右後ろ";
+
+/* something at your degree +120 ~ +150 */
+"on your right side(back)" = "右斜め後ろ";
+
+/* something at your degree +22.5 ~ +60 */
+"on your right side(front)" = "右斜め前";
+
+/* No comment provided by engineer. */
+"poi are %@" = "%1$@が%2$@にあります";
+
+/* No comment provided by engineer. */
+"poi is %@" = "%1$@が%2$@にあります";
+
+/* (No Commment) */
+"proceed distance" = "%1$@進む";
+
+/* (No Commment) */
+"proceed distance ..." = "%1$@進み、";
+
+/* (No Commment) */
+"proceed distance on floor" = "%2$@を%1$@進む";
+
+/* (No Commment) */
+"proceed distance on floor ..." = "%2$@を%1$@進み、";
+
+/* No comment provided by engineer. */
+"remaining distance" = "残り%@";
+
+/* head to the back */
+"turn around" = "後ろを向く";
+
+/* make turn to -60 ~ -120 */
+"turn left" = "左に曲がる";
+
+/* make turn to +60 ~ +120 */
+"turn right" = "右に曲がる";
+
+/* head to the diagonally backward left direction */
+"turn to the backward left" = "斜め左後ろに向く";
+
+/* head to the diagonally backward right direction */
+"turn to the backward right" = "斜め右後ろに向く";
+
+/* head to the left direction */
+"turn to the left" = "左に向く";
+
+/* head to the right direction */
+"turn to the right" = "右に向く";
+

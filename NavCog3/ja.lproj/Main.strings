@@ -1,0 +1,117 @@
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "0AS-gk-VX3"; */
+"0AS-gk-VX3.normalTitle" = "ボタン";
+
+/* Class = "UILabel"; text = "To"; ObjectID = "0fd-8M-uXw"; */
+"0fd-8M-uXw.text" = "行き先";
+
+/* Class = "UIButton"; accessibilityLabel = "Switch From and To"; ObjectID = "0nG-H5-lqv"; */
+"0nG-H5-lqv.accessibilityLabel" = "現在地と行き先を入れ替え";
+
+/* Class = "UIButton"; normalTitle = "⇅"; ObjectID = "0nG-H5-lqv"; */
+"0nG-H5-lqv.normalTitle" = "⇅";
+
+/* Class = "UITableViewSection"; headerTitle = "設定"; ObjectID = "2FQ-fL-pff"; */
+"2FQ-fL-pff.headerTitle" = "設定";
+
+/* Class = "UIButton"; normalTitle = "Left"; ObjectID = "3qj-Dh-1lE"; */
+"3qj-Dh-1lE.normalTitle" = "左";
+
+/* Class = "UILabel"; text = ">"; ObjectID = "4BS-F6-arL"; */
+"4BS-F6-arL.text" = ">";
+
+/* Class = "UILabel"; text = "Recent"; ObjectID = "4Ut-P8-0gR"; */
+"4Ut-P8-0gR.text" = "履歴";
+
+/* Class = "UIButton"; normalTitle = "Route Options"; ObjectID = "4th-C5-Y98"; */
+"4th-C5-Y98.normalTitle" = "検索設定";
+
+/* Class = "UILabel"; text = "No Internet Connection"; ObjectID = "5yL-Mp-iYF"; */
+"5yL-Mp-iYF.text" = "インターネット接続がありません";
+
+/* Class = "UIButton"; normalTitle = "Right"; ObjectID = "7Cs-ZC-ieK"; */
+"7Cs-ZC-ieK.normalTitle" = "右";
+
+/* Class = "UINavigationItem"; title = "Route"; ObjectID = "37Y-U9-0xf"; */
+"37Y-U9-0xf.title" = "ルート";
+
+/* Class = "UIBarButtonItem"; title = "Setting"; ObjectID = "ATn-7d-y1j"; */
+"ATn-7d-y1j.title" = "設定";
+
+/* Class = "UILabel"; text = "ナビゲーション終了"; ObjectID = "EeT-mO-dhE"; */
+"EeT-mO-dhE.text" = "ナビゲーション終了";
+
+/* Class = "UITableViewSection"; headerTitle = "ナビゲーション"; ObjectID = "Fjv-at-SH9"; */
+"Fjv-at-SH9.headerTitle" = "ナビゲーション";
+
+/* Class = "UIButton"; normalTitle = "Start"; ObjectID = "JF6-KQ-nx5"; */
+"JF6-KQ-nx5.normalTitle" = "開始";
+
+/* (No Commment) */
+"LBt-N2-zq5.title" = "検索";
+
+/* Class = "UILabel"; text = "基本設定"; ObjectID = "QGQ-Xh-iSw"; */
+"QGQ-Xh-iSw.text" = "基本設定";
+
+/* (No Commment) */
+"QT7-QX-lRu.accessibilityLabel" = "音声認識ボタン";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "SC1-aF-UyA"; */
+"SC1-aF-UyA.normalTitle" = "ボタン";
+
+/* Class = "UIButton"; normalTitle = "clear"; ObjectID = "SYk-PE-6qn"; */
+"SYk-PE-6qn.normalTitle" = "消去";
+
+/* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "TqI-cp-f3Y"; */
+"TqI-cp-f3Y.normalTitle" = "やり直す";
+
+/* (No Commment) */
+"aNk-8a-CVK.text" = "行き先";
+
+/* Class = "UIButton"; normalTitle = "Marker"; ObjectID = "cMN-Lw-Y8t"; */
+"cMN-Lw-Y8t.normalTitle" = "マーカー";
+
+/* Class = "UILabel"; text = "ルート検索"; ObjectID = "cPv-rD-5Zy"; */
+"cPv-rD-5Zy.text" = "ルート検索";
+
+/* Class = "UIButton"; normalTitle = "Auto"; ObjectID = "ckT-Tm-n01"; */
+"ckT-Tm-n01.normalTitle" = "自動";
+
+/* (No Commment) */
+"eX6-IM-K8T.title" = "音声認識";
+
+/* (No Commment) */
+"f33-5l-IQM.normalTitle" = "案内開始";
+
+/* Class = "UILabel"; text = "詳細設定"; ObjectID = "fF4-sj-EDd"; */
+"fF4-sj-EDd.text" = "詳細設定";
+
+/* Class = "UILabel"; text = "From"; ObjectID = "g1h-0V-f7m"; */
+"g1h-0V-f7m.text" = "出発地";
+
+/* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "hf2-Dc-ViP"; */
+"hf2-Dc-ViP.title" = "NavCog";
+
+/* Class = "UIButton"; normalTitle = "Reset"; ObjectID = "t8J-sc-MUY"; */
+"t8J-sc-MUY.normalTitle" = "リセット";
+
+/* Class = "UIButton"; normalTitle = "Go"; ObjectID = "t9O-hh-LqB"; */
+"t9O-hh-LqB.normalTitle" = "進む";
+
+/* (No Commment) */
+"uf4-3V-jsg.text" = "出発地";
+
+/* Class = "UILabel"; text = ">"; ObjectID = "uml-UV-BZ8"; */
+"uml-UV-BZ8.text" = ">";
+
+/* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "xcm-nO-qOJ"; */
+"xcm-nO-qOJ.title" = "NavCog";
+
+/* Class = "UIBarButtonItem"; title = "Search"; ObjectID = "yBn-Ni-tgc"; */
+"yBn-Ni-tgc.title" = "検索";
+
+/* Class = "UILabel"; text = "ルート検索条件設定"; ObjectID = "yPF-YL-WSv"; */
+"yPF-YL-WSv.text" = "ルート検索条件設定";
+
+/* Class = "UIButton"; normalTitle = "Preview"; ObjectID = "zGZ-Nf-Jjr"; */
+"zGZ-Nf-Jjr.normalTitle" = "プレビュー";
+

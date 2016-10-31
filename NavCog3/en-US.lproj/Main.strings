@@ -1,0 +1,60 @@
+/* Class = "UITableViewSection"; headerTitle = "設定"; ObjectID = "2FQ-fL-pff"; */
+"2FQ-fL-pff.headerTitle" = "Settings";
+
+/* Class = "UIButton"; normalTitle = "Left"; ObjectID = "3qj-Dh-1lE"; */
+"3qj-Dh-1lE.normalTitle" = "Left";
+
+/* Class = "UIButton"; normalTitle = "Right"; ObjectID = "7Cs-ZC-ieK"; */
+"7Cs-ZC-ieK.normalTitle" = "Right";
+
+/* Class = "UIBarButtonItem"; title = "Setting"; ObjectID = "ATn-7d-y1j"; */
+"ATn-7d-y1j.title" = "Setting";
+
+/* Class = "UILabel"; text = "ナビゲーション終了"; ObjectID = "EeT-mO-dhE"; */
+"EeT-mO-dhE.text" = "Stop navigation";
+
+/* Class = "UITableViewSection"; headerTitle = "ナビゲーション"; ObjectID = "Fjv-at-SH9"; */
+"Fjv-at-SH9.headerTitle" = "Navigation";
+
+/* Class = "UINavigationItem"; title = "Search"; ObjectID = "LBt-N2-zq5"; */
+"LBt-N2-zq5.title" = "Search";
+
+/* Class = "UILabel"; text = "基本設定"; ObjectID = "QGQ-Xh-iSw"; */
+"QGQ-Xh-iSw.text" = "Basic settings";
+
+/* Class = "UIButton"; accessibilityLabel = "音声認識ボタン"; ObjectID = "QT7-QX-lRu"; */
+"QT7-QX-lRu.accessibilityLabel" = "Voice reco button";
+
+/* Class = "UILabel"; text = "To"; ObjectID = "aNk-8a-CVK"; */
+"aNk-8a-CVK.text" = "To";
+
+/* Class = "UILabel"; text = "ルート検索"; ObjectID = "cPv-rD-5Zy"; */
+"cPv-rD-5Zy.text" = "Search route";
+
+/* Class = "UIBarButtonItem"; title = "Voice Reco"; ObjectID = "eX6-IM-K8T"; */
+"eX6-IM-K8T.title" = "Voice Reco";
+
+/* Class = "UIButton"; normalTitle = "Start"; ObjectID = "f33-5l-IQM"; */
+"f33-5l-IQM.normalTitle" = "Start";
+
+/* Class = "UILabel"; text = "詳細設定"; ObjectID = "fF4-sj-EDd"; */
+"fF4-sj-EDd.text" = "Developer settings";
+
+/* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "hf2-Dc-ViP"; */
+"hf2-Dc-ViP.title" = "NavCog";
+
+/* Class = "UIButton"; normalTitle = "Go"; ObjectID = "t9O-hh-LqB"; */
+"t9O-hh-LqB.normalTitle" = "Go";
+
+/* Class = "UILabel"; text = "From"; ObjectID = "uf4-3V-jsg"; */
+"uf4-3V-jsg.text" = "From";
+
+/* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "xcm-nO-qOJ"; */
+"xcm-nO-qOJ.title" = "NavCog";
+
+/* Class = "UIBarButtonItem"; title = "Search"; ObjectID = "yBn-Ni-tgc"; */
+"yBn-Ni-tgc.title" = "Search";
+
+/* Class = "UILabel"; text = "ルート検索条件設定"; ObjectID = "yPF-YL-WSv"; */
+"yPF-YL-WSv.text" = "Route search setting";
+

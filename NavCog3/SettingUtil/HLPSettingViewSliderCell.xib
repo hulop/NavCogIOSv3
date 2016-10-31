@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="sliderCell" rowHeight="76" id="0oD-GL-cMJ" customClass="HLPSettingViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="76"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0oD-GL-cMJ" id="CMh-I2-yWj">
+                <frame key="frameInset" width="600" height="75"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="252" text="Veering Threthold" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="3" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O7x-ai-4Jg">
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="20" minValue="10" maxValue="30" translatesAutoresizingMaskIntoConstraints="NO" id="nw8-Sb-zS3">
+                        <constraints>
+                            <constraint firstAttribute="width" constant="150" id="zuo-2D-Unk"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="zuo-2D-Unk"/>
+                            </mask>
+                        </variation>
+                        <connections>
+                            <action selector="valueChanged:" destination="0oD-GL-cMJ" eventType="valueChanged" id="BEM-Ne-DL0"/>
+                        </connections>
+                    </slider>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="8" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qz2-VM-vcn">
+                        <constraints>
+                            <constraint firstAttribute="width" constant="50" id="XC1-5j-Mwc"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="O7x-ai-4Jg" firstAttribute="leading" secondItem="CMh-I2-yWj" secondAttribute="leadingMargin" constant="8" id="9na-5q-QB8"/>
+                    <constraint firstItem="qz2-VM-vcn" firstAttribute="leading" secondItem="CMh-I2-yWj" secondAttribute="leadingMargin" constant="8" id="F2f-ph-z6a"/>
+                    <constraint firstItem="nw8-Sb-zS3" firstAttribute="trailing" secondItem="CMh-I2-yWj" secondAttribute="trailingMargin" constant="-8" id="GLH-CG-8WI"/>
+                    <constraint firstItem="nw8-Sb-zS3" firstAttribute="leading" secondItem="qz2-VM-vcn" secondAttribute="trailing" constant="8" id="Gdc-1Q-Vki"/>
+                    <constraint firstItem="nw8-Sb-zS3" firstAttribute="centerY" secondItem="qz2-VM-vcn" secondAttribute="centerY" id="YqL-yS-Sz8"/>
+                    <constraint firstItem="nw8-Sb-zS3" firstAttribute="leading" secondItem="qz2-VM-vcn" secondAttribute="trailing" constant="8" id="Z60-Rd-I87"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="O7x-ai-4Jg" secondAttribute="trailing" constant="8" id="aQS-rg-91j"/>
+                    <constraint firstItem="O7x-ai-4Jg" firstAttribute="top" secondItem="CMh-I2-yWj" secondAttribute="topMargin" constant="8" id="etE-3y-HKf"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="nw8-Sb-zS3" secondAttribute="trailing" constant="8" id="ss5-gI-Vyr"/>
+                    <constraint firstItem="qz2-VM-vcn" firstAttribute="top" secondItem="O7x-ai-4Jg" secondAttribute="bottom" constant="8" id="xg4-O7-SMH"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="slider" destination="nw8-Sb-zS3" id="ZSn-3I-Qr6"/>
+                <outlet property="title" destination="O7x-ai-4Jg" id="cLS-73-bS3"/>
+                <outlet property="valueLabel" destination="qz2-VM-vcn" id="gqh-pP-o5A"/>
+            </connections>
+            <point key="canvasLocation" x="34" y="148"/>
+        </tableViewCell>
+    </objects>
+</document>

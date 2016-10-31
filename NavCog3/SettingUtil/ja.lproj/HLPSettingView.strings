@@ -1,0 +1,21 @@
+/* confirmation message for delete alert */
+"Are you sure to delete %@？" = "本当に%@を消しますか？";
+
+/* cancel */
+"Cancel" = "キャンセル";
+
+/* message when it cannot be deleted */
+"Could not delete" = "削除できません";
+
+/* title for delete alert */
+"Delete %@" = "%@を削除";
+
+/* prompt message for new option */
+"Input %@" = "%@を入力";
+
+/* title for new option */
+"New %@" = "新規 %@";
+
+/* ok */
+"OK" = "OK";
+

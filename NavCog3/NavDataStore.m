@@ -95,6 +95,8 @@ static NavDataStore* instance_ = nil;
     isManualLocation = NO;
     destinationRequesting = NO;
     
+    magneticOrientationAccuracy = 180;
+    
     location = [[HLPLocation alloc] init];
     [location updateOrientation:0 withAccuracy:999];
     currentLocation = [[HLPLocation alloc] init];

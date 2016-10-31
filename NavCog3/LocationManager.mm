@@ -171,7 +171,7 @@ void functionCalledToLog(void *inUserData, string text)
         [NSThread sleepForTimeInterval:1.0];
         [self start];
         
-        while(!isMapLoaded) {
+        while(!isMapLoaded && isLogReplaying) {
             [NSThread sleepForTimeInterval:0.1];
         }
 
@@ -205,6 +205,11 @@ void functionCalledToLog(void *inUserData, string text)
             
             long diffr = ([[NSDate date] timeIntervalSince1970] - start)*1000;
             long difft = timestamp - first;
+            
+            if (difft - diffr > 1000) {
+                first +=  difft - diffr - 1000;
+                difft = diffr + 1000;
+            }
             
             while (difft-diffr > 0 && bRealtime && isLogReplaying) {
                 //std::cout << difft-diffr << std::endl;

@@ -357,7 +357,11 @@ static HLPSettingHelper *logSettingHelper;
     
     [logSettingHelper addSectionTitle:@"Choose Log"];
     NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    for(NSString *log in [ConfigManager filenamesWithSuffix:@"log"]) {
+    NSArray *logs = [ConfigManager filenamesWithSuffix:@"log"];
+    logs = [logs sortedArrayUsingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
+        return [obj2 compare:obj1 options:0];
+    }];
+    for(NSString *log in logs) {
         NSString* path = [documentsPath stringByAppendingPathComponent:log];
 
         unsigned long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil] fileSize];

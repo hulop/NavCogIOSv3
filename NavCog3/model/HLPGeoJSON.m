@@ -24,7 +24,11 @@
 #import "HLPLocation.h"
 
 #define PROPKEY_NODE_ID @"ノードID"
+#define PROPKEY_NODE_FOR_ID @"対応ノードID"
 #define PROPKEY_LINK_ID @"リンクID"
+#define PROPKEY_FACILITY_ID @"施設ID"
+#define PROPKEY_FACILITY_FOR_ID @"対応施設ID"
+#define PROPKEY_ENTRANCE_ID @"出入口ID"
 #define PROPKEY_HEIGHT @"高さ"
 #define PROPKEY_CONNECTED_LINK_ID_PREFIX @"接続リンクID"
 #define PROPKEY_LINK_LENGTH @"リンク延長"
@@ -36,12 +40,22 @@
 #define PROPKEY_MALE_OR_FEMALE @"男女別"
 #define PROPKEY_MULTI_PURPOSE_TOILET @"多目的トイレ"
 
+// for extension
+#define PROPKEY_MAJOR_CATEGORY @"major_category"
+#define PROPKEY_SUB_CATEGORY @"sub_category"
+#define PROPKEY_MINOR_CATEGORY @"minor_category"
+#define PROPKEY_LONG_DESCRIPTION @"long_description"
+#define PROP_KEY_HEADING @"heading"
+#define PROP_KEY_ANGLE @"angle"
+
+
 #define CATEGORY_LINK @"リンクの情報"
 #define CATEGORY_NODE @"ノード情報"
 #define CATEGORY_PUBLIC_FACILITY @"公共施設の情報"
 #define CATEGORY_ENTRANCE @"出入口情報"
 #define CATEGORY_TOILET @"公共用トイレの情報"
 
+#define NAV_POI @"_nav_poi_"
 #define POI_CATEGORY_INFO @"_nav_info_"
 #define POI_CATEGORY_SCENE @"_nav_scene_"
 #define POI_CATEGORY_OBJECT @"_nav_object_"
@@ -151,7 +165,7 @@
     
     NSDictionary* properties = JSONDictionary[@"properties"];
     if (properties) {
-        if ([properties[@"major_category"] isEqualToString:@"_nav_poi_"]) {
+        if ([properties[PROPKEY_MAJOR_CATEGORY] isEqualToString:NAV_POI]) {
             return HLPPOI.class;
         }
         if (properties[PROPKEY_NODE_ID] != nil) {
@@ -159,6 +173,12 @@
         }        
         if (properties[PROPKEY_LINK_ID] != nil) {
             return HLPLink.class;
+        }
+        if (properties[PROPKEY_FACILITY_ID] != nil) {
+            return HLPFacility.class;
+        }
+        if (properties[PROPKEY_ENTRANCE_ID] != nil) {
+            return HLPEntrance.class;
         }
      }
     return self;
@@ -270,8 +290,10 @@
     _lat = [self.geometry.coordinates[1] doubleValue];
     _lng = [self.geometry.coordinates[0] doubleValue];
     
-    _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng];
     _height = [self.properties[PROPKEY_HEIGHT] doubleValue];
+    _height = (_height >= 1)?_height-1:_height;
+    
+    _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];    
 
     NSMutableArray* temp = [@[] mutableCopy];
     for(NSString *key in [self.properties allKeys]) {
@@ -528,9 +550,9 @@
     self = [super initWithDictionary:dictionaryValue error:error];
     if (self == nil) return nil;
 
-    NSDictionary *prop = dictionaryValue[@"properties"];
-    _majorCategory = prop[@"major_category"];
-    _subCategory = prop[@"sub_category"];
+    NSDictionary *prop = self.properties;
+    _majorCategory = prop[PROPKEY_MAJOR_CATEGORY];
+    _subCategory = prop[PROPKEY_SUB_CATEGORY];
     if ([POI_CATEGORY_INFO isEqualToString:_subCategory]) {
         _poiCategory = HLP_POI_CATEGORY_INFO;
     } else if ([POI_CATEGORY_SCENE isEqualToString:_subCategory]) {
@@ -546,25 +568,100 @@
     } else if ([POI_CATEGORY_LIVE isEqualToString:_subCategory]) {
         _poiCategory = HLP_POI_CATEGORY_LIVE;
     }
-    _minorCategory = prop[@"minor_category"];
+    _minorCategory = prop[PROPKEY_MINOR_CATEGORY];
     _flagCaution = [_minorCategory containsString:POI_FLAGS_CAUTION];
     _flagPlural = [_minorCategory containsString:POI_FLAGS_PLURAL];
 
-    if (prop[@"heading"]) {
-        _heading = [prop[@"heading"] doubleValue];
+    if (prop[PROP_KEY_HEADING]) {
+        _heading = [prop[PROP_KEY_HEADING] doubleValue];
     } else {
         _heading = 0;
     }
-    if (prop[@"angle"]) {
-        _angle = [prop[@"angle"] doubleValue];
+    if (prop[PROP_KEY_ANGLE]) {
+        _angle = [prop[PROP_KEY_ANGLE] doubleValue];
     } else {
         _angle = 180;
     }
-    _longDescription = prop[@"long_description"];
+    _longDescription = prop[PROPKEY_LONG_DESCRIPTION];
     _name = prop[PROPKEY_NAME];
     
     return self;
 }
 
+@end
+
+@implementation HLPFacility{
+    HLPLocation *_location;
+}
+
+
+- (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError *__autoreleasing *)error
+{
+    self = [super initWithDictionary:dictionaryValue error:error];
+    if (self == nil) return nil;
+    
+    _name = self.properties[PROPKEY_NAME];
+    _longDescription = self.properties[PROPKEY_LONG_DESCRIPTION];
+    
+    _lat = [self.geometry.coordinates[1] doubleValue];
+    _lng = [self.geometry.coordinates[0] doubleValue];
+    
+    _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng];
+    
+    return self;
+}
+
+- (HLPLocation *)location
+{
+    return _location;
+}
+
+@end
+
+@implementation HLPEntrance
+
+- (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError *__autoreleasing *)error
+{
+    self = [super initWithDictionary:dictionaryValue error:error];
+    if (self == nil) return nil;
+    
+    _forNodeID = self.properties[PROPKEY_NODE_FOR_ID];
+    _forFacilityID = self.properties[PROPKEY_FACILITY_FOR_ID];
+    _name = self.properties[PROPKEY_ENTRANCE_NAME];
+    return self;
+}
+
+- (void)updateNode:(HLPNode *)node andFacility:(HLPFacility *)facility
+{
+    _node = node;
+    _facility = facility;
+}
+
+- (NSString*)getName
+{
+    if (_facility) {
+        if (_name) {
+            return [_facility.name stringByAppendingString:_name];
+        } else {
+            return _facility.name;
+        }
+    } else {
+        if (_name) {
+            return _name;
+        } else {
+            return @"";
+        }
+    }
+}
+
+- (NSString*)getLongDescription
+{
+    if (_facility) {
+        if (_facility.longDescription) {
+            return _facility.longDescription;
+        }
+    }
+    return @"";
+}
 
 @end

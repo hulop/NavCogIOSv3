@@ -141,8 +141,6 @@ typedef enum: int {
 
 @end
 
-
-
 @interface HLPCombinedLink : HLPLink
 
 @property (nonatomic, readonly) NSArray* links;
@@ -172,4 +170,25 @@ typedef enum {
 @property (nonatomic, readonly) HLPPOICategory poiCategory;
 @property (nonatomic, readonly) BOOL flagCaution;
 @property (nonatomic, readonly) BOOL flagPlural;
+@end
+
+@interface HLPFacility : HLPObject
+@property (nonatomic, readonly) double lat;
+@property (nonatomic, readonly) double lng;
+@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *longDescription;
+
+- (HLPLocation*) location;
+@end
+
+@interface HLPEntrance : HLPObject
+@property (nonatomic, readonly) NSString *forNodeID;
+@property (nonatomic, readonly) NSString *forFacilityID;
+@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) HLPNode *node;
+@property (nonatomic, readonly) HLPFacility *facility;
+
+- (void) updateNode:(HLPNode*) node andFacility:(HLPFacility*) facility;
+- (NSString*) getName;
+- (NSString*) getLongDescription;
 @end

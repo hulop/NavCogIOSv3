@@ -125,7 +125,7 @@ static NavNavigatorConstants *_instance;
              @"POI_ANNOUNCE_DISTANCE": @[@(2.0), @(0), @(10), @(0.5)],
              @"POI_START_INFO_DISTANCE_THRESHOLD": @[@(3.0), @(3), @(10), @(1), FIXED],
              @"POI_END_INFO_DISTANCE_THRESHOLD": @[@(3.0), @(3), @(10), @(1), FIXED],             
-             @"POI_DISTANCE_MIN_THRESHOLD": @[@(2.0), @(2), @(50), @(5), FIXED],
+             @"POI_DISTANCE_MIN_THRESHOLD": @[@(5.0), @(2), @(50), @(5), FIXED],
              @"POI_FLOOR_DISTANCE_THRESHOLD": @[@(2.0), @(0), @(10), @(0.5), FIXED],
              @"POI_TARGET_DISTANCE_THRESHOLD": @[@(2.0), @(0), @(10), @(0.5), FIXED],
              @"POI_ANNOUNCE_MIN_INTERVAL": @[@(20), @(10), @(120), @(10), FIXED],
@@ -207,44 +207,52 @@ static NavNavigatorConstants *_instance;
     
     
     // check NavPOI
-    [_allPOIs enumerateObjectsUsingBlock:^(HLPNode *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        for(int idx = 0; idx < [links count]; idx++) {
-            HLPLink *link = links[idx];
+    [_allPOIs enumerateObjectsUsingBlock:^(HLPObject *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        //BOOL isFirstLink = (idx == 0);
 
-            //BOOL isFirstLink = (idx == 0);
-            BOOL isLastLink = (idx == [links count] - 1);
+        if ([obj isKindOfClass:HLPEntrance.class]) { // non poi information (facility and entrance)
+            HLPEntrance *ent = (HLPEntrance*)obj;
+            NavPOI *navpoi = nil;
             
-            if ([obj isKindOfClass:HLPPOI.class] == NO) {
-                if (!isLastLink) {
-                    continue;
+            if ([_nextLink.targetNodeID isEqualToString:ent.node._id]) {
+                // destination with a leaf node, make second last link as last link
+                _isNextDestination = YES;
+                navpoi = [[NavPOI alloc] initWithText:nil Location:ent.facility.location Options:
+                                  @{
+                                    @"forBeforeEnd": @(YES),
+                                    @"isDestination": @(YES),
+                                    @"angleFromLocation": @(_nextLink.lastBearingForTarget)
+                                    }];
+                
+            } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
+                // destination with non-leaf node
+                _isNextDestination = YES;
+                navpoi = [[NavPOI alloc] initWithText:obj.properties[@"long_description"]
+                                                     Location:ent.node.location
+                                                      Options: @{
+                                                                 @"forBeforeEnd": @(YES)
+                                                                 }];
+            } else {
+                // mid in route
+                HLPLocation *nearest = [_link nearestLocationTo:ent.node.location];
+                double angle = [HLPLocation normalizeDegree:[nearest bearingTo:ent.node.location] - _link.initialBearingFromSource];
+                if (45 < fabs(angle) && fabs(angle) < 135) {
+                    navpoi = [[NavPOI alloc] initWithText:[ent getName] Location:nearest Options:
+                              @{
+                                @"longDescription": [ent getLongDescription],
+                                @"angleFromLocation": @(angle)
+                                }];
                 }
-                if ([_nextLink.targetNodeID isEqualToString:obj._id]) {
-                    _isNextDestination = YES;
-                    NavPOI *navpoi = [[NavPOI alloc] initWithText:nil Location:obj.location Options:
-                                   @{
-                                     @"forBeforeEnd": @(YES),
-                                     @"isDestination": @(YES),
-                                     @"angleFromLocation": @(_nextLink.lastBearingForTarget)
-                                     }];
-                    
-                    [poisTemp addObject:navpoi];
-                } else if([_link.targetNodeID isEqualToString:obj._id]) {
-                    _isNextDestination = YES;
-                } else if(obj.category == HLP_OBJECT_CATEGORY_PUBLIC_FACILITY) {
-                    double lat = [obj.geometry.coordinates[1] doubleValue];
-                    double lng = [obj.geometry.coordinates[0] doubleValue];
-                    HLPLocation *loc = [[HLPLocation alloc] initWithLat:lat Lng:lng];
-                    NavPOI *navpoi = [[NavPOI alloc] initWithText:obj.properties[@"long_description"] Location:loc Options:
-                                      @{
-                                        @"forBeforeEnd": @(YES)
-                                        }];
-                    [poisTemp addObject:navpoi];
-                }
-                return;
             }
+            if (navpoi) {
+                [poisTemp addObject:navpoi];
+            }
+        }
+        else if ([obj isKindOfClass:HLPPOI.class]) { // poi information
             HLPPOI *poi = (HLPPOI*)obj;
             HLPLocation *loc = [poi location];
-            HLPLocation *nearest = [link nearestLocationTo:loc];
+            HLPLocation *nearest = [_link nearestLocationTo:loc];
             
             double dLocToNearest = [loc distanceTo:nearest];
             
@@ -254,16 +262,16 @@ static NavNavigatorConstants *_instance;
             
             double hLocToNearest = [loc bearingTo:nearest];
             BOOL inAngleAtNearest = fabs([HLPLocation normalizeDegree:hLocToNearest - poi.heading]) < poi.angle;
-
-            double hLocToSource = [loc bearingTo:link.sourceLocation];
-            double dLocToSource = [loc distanceTo:link.sourceLocation];
+            
+            double hLocToSource = [loc bearingTo:_link.sourceLocation];
+            double dLocToSource = [loc distanceTo:_link.sourceLocation];
             BOOL inAngleAtSource = fabs([HLPLocation normalizeDegree:hLocToSource - poi.heading]) < poi.angle;
             
-            double hLocToTarget = [loc bearingTo:link.targetLocation];
-            double dLocToTarget = [loc distanceTo:link.targetLocation];
+            double hLocToTarget = [loc bearingTo:_link.targetLocation];
+            double dLocToTarget = [loc distanceTo:_link.targetLocation];
             BOOL inAngleAtTarget = fabs([HLPLocation normalizeDegree:hLocToTarget - poi.heading]) < poi.angle;
             
-            double hInitial = [HLPLocation normalizeDegree:link.initialBearingFromSource - 180];
+            double hInitial = [HLPLocation normalizeDegree:_link.initialBearingFromSource - 180];
             BOOL inAngleInitial = fabs([HLPLocation normalizeDegree:hInitial - poi.heading]) < poi.angle;
             
             
@@ -274,12 +282,12 @@ static NavNavigatorConstants *_instance;
                     if (inAngleInitial &&
                         (dLocToSource < C.POI_START_INFO_DISTANCE_THRESHOLD || poi.flagCaution)) {
                         // add info at first link source before navigation announce
-                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:link.sourceLocation Options:
-                                       @{
-                                         @"forBeforeStart": @(YES),
-                                         @"longDescription": poi.longDescription?poi.longDescription:@"",
-                                         @"flagCaution": @(poi.flagCaution)
-                                         }];
+                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:_link.sourceLocation Options:
+                                  @{
+                                    @"forBeforeStart": @(YES),
+                                    @"longDescription": poi.longDescription?poi.longDescription:@"",
+                                    @"flagCaution": @(poi.flagCaution)
+                                    }];
                     }
                     else if (inAngleInitial &&
                              dLocToTarget < C.POI_END_INFO_DISTANCE_THRESHOLD) {
@@ -323,8 +331,7 @@ static NavNavigatorConstants *_instance;
                     }
                     break;
                 case HLP_POI_CATEGORY_SIGN:
-                    if (isLastLink &&
-                        inAngleAtSource && dLocToSource < C.POI_TARGET_DISTANCE_THRESHOLD) {
+                    if (inAngleAtSource && dLocToSource < C.POI_TARGET_DISTANCE_THRESHOLD) {
                         // add corner info
                         navpoi = [[NavPOI alloc] initWithText:poi.longDescription Location:nearest Options:
                                   @{
@@ -334,8 +341,7 @@ static NavNavigatorConstants *_instance;
                     }
                     break;
                 case HLP_POI_CATEGORY_OBJECT:
-                    if (isLastLink &&
-                        inAngleAtTarget && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
+                    if (inAngleAtTarget && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
                         // add corner info
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
@@ -349,10 +355,12 @@ static NavNavigatorConstants *_instance;
             if (navpoi != nil) {
                 [poisTemp addObject:navpoi];
             }
-            
+        }
+        else {
+            NSLog(@"unexpected poi object %@", obj);
         }
     }];
-     
+    
     
     // convert NAVCOG1/2 acc info into NavPOI
     [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -419,7 +427,7 @@ static NavNavigatorConstants *_instance;
     [string appendFormat:@"link.sourceHeight=%f\n", _link.sourceHeight];
     [string appendFormat:@"link.targetHeight=%f\n", _link.targetHeight];
     [string appendFormat:@"nextTurnAngle=%f\n", _nextTurnAngle];
-    [string appendFormat:@"number of POIs=%d¥n", [_pois count]];
+    [string appendFormat:@"number of POIs=%ld¥n", [_pois count]];
     
     return string;
 }
@@ -574,6 +582,7 @@ static NavNavigator* instance;
 - (void)routeChanged:(NSNotification*)notification
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
+    NavNavigatorConstants *C = [NavNavigatorConstants constants];
     route = nds.route;
     
     if ([route count] == 0) {
@@ -641,21 +650,12 @@ static NavNavigator* instance;
             NSLog(@"%@", obj);
         }
     }
-    for(HLPObject *obj in features) {
-        @try {
-            if (obj.category == HLP_OBJECT_CATEGORY_ENTRANCE) {
-                NSString *forNodeID = obj.properties[FOR_NODE_ID];
-                NSString *forFacilityID = obj.properties[FOR_FACILITY_ID];
-                if (forFacilityID) {
-                    entranceMapTemp[forNodeID] = poiMapTemp[forFacilityID];
-                } else {
-                    entranceMapTemp[forNodeID] = obj;
-                }
-            }
-        }
-        @catch(NSException *e) {
-            NSLog(@"%@", [e debugDescription]);
-            NSLog(@"%@", obj);
+    for(HLPEntrance *ent in features) {
+        if ([ent isKindOfClass:HLPEntrance.class]) {
+            [ent updateNode:nodesMapTemp[ent.forNodeID]
+                andFacility:poiMapTemp[ent.forFacilityID]];
+            
+            entranceMapTemp[ent.forNodeID] = ent;
         }
     }
     
@@ -696,13 +696,7 @@ static NavNavigator* instance;
     
     route = combineLinks(route);
     
-    NSMutableDictionary *linkPoiMap = [@{} mutableCopy];
-    for(int j = 0; j < [pois count]; j++) {
-        if ([pois[j] isKindOfClass:HLPPOI.class] == NO) {
-            continue;
-        }
-        HLPPOI *poi = pois[j];
-        
+    NSArray*(^nearestLinks)(HLPLocation*) = ^ NSArray* (HLPLocation *loc) {
         NSMutableArray<HLPLink*> *nearestLinks = [@[] mutableCopy];
         double minDistance = DBL_MAX;
         
@@ -712,9 +706,13 @@ static NavNavigator* instance;
             }
             HLPLink *link = (HLPLink*) route[i];
             
-            HLPLocation *nearest = [link nearestLocationTo:poi.location];
-            double distance = [poi.location distanceTo:nearest];
-
+            if (link.sourceHeight != loc.floor || link.targetHeight != loc.floor) {
+                continue;
+            }
+            
+            HLPLocation *nearest = [link nearestLocationTo:loc];
+            double distance = [loc distanceTo:nearest];
+            
             if (distance < minDistance) {
                 minDistance = distance;
                 nearestLinks = [@[link] mutableCopy];
@@ -722,7 +720,25 @@ static NavNavigator* instance;
                 [nearestLinks addObject:link];
             }
         }
-        for(HLPLink* nearestLink in nearestLinks) {
+        if (minDistance < C.POI_DISTANCE_MIN_THRESHOLD) {
+            return nearestLinks;
+        } else {
+            return @[];
+        }
+    };
+    // end optimize links for navigation
+    
+    // assign poi to nearest link
+    NSMutableDictionary *linkPoiMap = [@{} mutableCopy];
+    for(int j = 0; j < [pois count]; j++) {
+        if ([pois[j] isKindOfClass:HLPPOI.class] == NO) {
+            continue;
+        }
+        HLPPOI *poi = pois[j];
+        
+        NSArray *links = nearestLinks(poi.location);
+        
+        for(HLPLink* nearestLink in links) {
             NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
             if (!linkPois) {
                 linkPois = [@[] mutableCopy];
@@ -732,10 +748,30 @@ static NavNavigator* instance;
         }
     }
     
-    NavNavigatorConstants *C = [NavNavigatorConstants constants];
+    for(HLPEntrance *ent in features) {
+        if ([ent isKindOfClass:HLPEntrance.class]) {
+            
+            NSArray *links = nearestLinks(ent.node.location);
+            for(HLPLink* nearestLink in links) {
+                if ([nearestLink.sourceNodeID isEqualToString:ent.node._id] ||
+                    [nearestLink.targetNodeID isEqualToString:ent.node._id]) {
+                    //TODO announce about building
+                    continue;
+                }
+                NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
+                if (!linkPois) {
+                    linkPois = [@[] mutableCopy];
+                        linkPoiMap[nearestLink._id] = linkPois;
+                }
+                [linkPois addObject:ent];
+            }
+        }
+    }
+    // end assign poi to nearest link
+    
         
     HLPNode *lastNode = [route lastObject];
-    HLPNode *facility = entranceMap[lastNode._id];
+    HLPEntrance *ent = entranceMap[lastNode._id];
     
     // if the last node is a leaf, move it to second last
     if ([lastNode.connectedLinkIDs count] == 1) {
@@ -758,8 +794,7 @@ static NavNavigator* instance;
             linkPois = [@[] mutableCopy];
             linkPoiMap[linkID] = linkPois;
         }
-        [linkPois addObject:[route lastObject]];
-        [linkPois addObject:facility];
+        [linkPois addObject:ent];
     }
     
     // prepare link info
@@ -791,12 +826,11 @@ static NavNavigator* instance;
             }
             
             NSMutableArray *linkPois = [@[] mutableCopy];
+            [linkPois addObjectsFromArray:linkPoiMap[link1._id]];
             if ([link1 isKindOfClass:HLPCombinedLink.class]) {
                 for(HLPLink *link in [(HLPCombinedLink*) link1 links]) {
                     [linkPois addObjectsFromArray:linkPoiMap[link._id]];
                 }
-            } else {
-                [linkPois addObjectsFromArray:linkPoiMap[link1._id]];
             }
             
             linkInfos[i] = [[NavLinkInfo alloc] initWithLink:link1 nextLink:link2 andPOIs:linkPois];

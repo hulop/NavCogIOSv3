@@ -47,7 +47,7 @@
 "There is a sign says %@" = "%@という看板があります";
 
 /* No comment provided by engineer. */
-"Watch your step, %@" = "足元注意、%@です";
+"Watch your step, %@" = "足元注意、%@";
 
 /* arrived message */
 "You arrived" = "目的地付近に到着しました。お疲れ様でした";
@@ -170,10 +170,10 @@
 "proceed distance ..." = "%1$@進み、";
 
 /* (No Commment) */
-"proceed distance on floor" = "%2$@を%1$@進む";
+"proceed distance on floor" = "%2$@。%1$@進む";
 
 /* (No Commment) */
-"proceed distance on floor ..." = "%2$@を%1$@進み、";
+"proceed distance on floor ..." = "%2$@。%1$@進み、";
 
 /* No comment provided by engineer. */
 "remaining distance" = "残り%@";

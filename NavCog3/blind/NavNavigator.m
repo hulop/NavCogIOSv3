@@ -267,11 +267,13 @@ static NavNavigatorConstants *_instance;
             switch(poi.poiCategory) {
                 case HLP_POI_CATEGORY_INFO:
                     if (inAngleInitial &&
-                        dLocToSource < C.POI_START_INFO_DISTANCE_THRESHOLD) {
+                        (dLocToSource < C.POI_START_INFO_DISTANCE_THRESHOLD || poi.flagCaution)) {
                         // add info at first link source before navigation announce
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:link.sourceLocation Options:
                                        @{
-                                         @"forBeforeStart": @(YES)
+                                         @"forBeforeStart": @(YES),
+                                         @"longDescription": poi.longDescription?poi.longDescription:@"",
+                                         @"flagCaution": @(poi.flagCaution)
                                          }];
                     }
                     else if (inAngleInitial &&
@@ -287,27 +289,20 @@ static NavNavigatorConstants *_instance;
                         // add info at nearest location
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
-                                    @"longDescription": poi.longDescription?poi.longDescription:@""
+                                    @"forBeforeStart": @(poi.flagCaution),
+                                    @"longDescription": poi.longDescription?poi.longDescription:@"",
+                                    @"flagCaution": @(poi.flagCaution)
                                     }];
                     }
                     break;
                 case HLP_POI_CATEGORY_FLOOR:
                     if (dLocToNearest < C.POI_FLOOR_DISTANCE_THRESHOLD && inAngleInitial) {
-                        // add floor info
-                        if (poi.flagCaution) {
-                            navpoi = [[NavPOI alloc] initWithText:poi.name Location:link.sourceLocation Options:
-                                      @{
-                                        @"forBeforeStart": @(YES),
-                                        @"forFloor": @(YES),
-                                        @"flagCaution": @(YES)
-                                        }];
-                        } else {
-                            navpoi = [[NavPOI alloc] initWithText:poi.name Location:link.sourceLocation Options:
-                                      @{
-                                        @"forFloor": @(YES)
-                                        }];
-                        }
-                    }
+                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
+                                  @{
+                                    @"forBeforeStart": @(poi.flagCaution),
+                                    @"longDescription": poi.longDescription?poi.longDescription:@"",
+                                    @"flagCaution": @(poi.flagCaution)
+                                    }];                    }
                     break;
                 case HLP_POI_CATEGORY_SCENE:
                 case HLP_POI_CATEGORY_SHOP:
@@ -812,9 +807,11 @@ static NavNavigator* instance;
 
 - (void)setTimeout:(double)delay withBlock:(void(^)(NSTimer * _Nonnull timer)) block
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:delay repeats:NO block:block];
-    });
+    if (![NavDataStore sharedDataStore].previewMode) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:delay repeats:NO block:block];
+        });
+    }
 }
 
 - (void)routeCleared:(NSNotification*)notification

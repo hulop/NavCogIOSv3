@@ -205,14 +205,19 @@ static NavNavigatorConstants *_instance;
     
     NavNavigatorConstants *C = [NavNavigatorConstants constants];
     
-    [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
-        
-        BOOL isFirstLink = (idx == 0);
-        BOOL isLastLink = (idx == [links count] - 1);
-        
-        // check NavPOI
-        [_allPOIs enumerateObjectsUsingBlock:^(HLPNode *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    
+    // check NavPOI
+    [_allPOIs enumerateObjectsUsingBlock:^(HLPNode *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        for(int idx = 0; idx < [links count]; idx++) {
+            HLPLink *link = links[idx];
+
+            //BOOL isFirstLink = (idx == 0);
+            BOOL isLastLink = (idx == [links count] - 1);
+            
             if ([obj isKindOfClass:HLPPOI.class] == NO) {
+                if (!isLastLink) {
+                    continue;
+                }
                 if ([_nextLink.targetNodeID isEqualToString:obj._id]) {
                     _isNextDestination = YES;
                     NavPOI *navpoi = [[NavPOI alloc] initWithText:nil Location:obj.location Options:
@@ -345,10 +350,12 @@ static NavNavigatorConstants *_instance;
                 [poisTemp addObject:navpoi];
             }
             
-        }];
-        
-        
-        // convert NAVCOG1/2 acc info into NavPOI
+        }
+    }];
+     
+    
+    // convert NAVCOG1/2 acc info into NavPOI
+    [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *surroundInfo = link.properties[link.backward?@"_NAVCOG_infoFromNode2":@"_NAVCOG_infoFromNode1"];
         if (surroundInfo) {
             NSLog(@"surroundInfo=%@", surroundInfo);
@@ -412,6 +419,7 @@ static NavNavigatorConstants *_instance;
     [string appendFormat:@"link.sourceHeight=%f\n", _link.sourceHeight];
     [string appendFormat:@"link.targetHeight=%f\n", _link.targetHeight];
     [string appendFormat:@"nextTurnAngle=%f\n", _nextTurnAngle];
+    [string appendFormat:@"number of POIs=%d¥n", [_pois count]];
     
     return string;
 }
@@ -782,10 +790,15 @@ static NavNavigator* instance;
                 }
             }
             
-            NSArray *linkPois = linkPoiMap[link1._id];
-            if (!linkPois) {
-                linkPois = @[];
+            NSMutableArray *linkPois = [@[] mutableCopy];
+            if ([link1 isKindOfClass:HLPCombinedLink.class]) {
+                for(HLPLink *link in [(HLPCombinedLink*) link1 links]) {
+                    [linkPois addObjectsFromArray:linkPoiMap[link._id]];
+                }
+            } else {
+                [linkPois addObjectsFromArray:linkPoiMap[link1._id]];
             }
+            
             linkInfos[i] = [[NavLinkInfo alloc] initWithLink:link1 nextLink:link2 andPOIs:linkPois];
             
             NSLog(@"%@", linkInfos[i]);

@@ -41,12 +41,13 @@
 #define PROPKEY_MULTI_PURPOSE_TOILET @"多目的トイレ"
 
 // for extension
-#define PROPKEY_MAJOR_CATEGORY @"major_category"
-#define PROPKEY_SUB_CATEGORY @"sub_category"
-#define PROPKEY_MINOR_CATEGORY @"minor_category"
-#define PROPKEY_LONG_DESCRIPTION @"long_description"
-#define PROP_KEY_HEADING @"heading"
-#define PROP_KEY_ANGLE @"angle"
+#define PROPKEY_EXT_MAJOR_CATEGORY @"major_category"
+#define PROPKEY_EXT_SUB_CATEGORY @"sub_category"
+#define PROPKEY_EXT_MINOR_CATEGORY @"minor_category"
+#define PROPKEY_EXT_LONG_DESCRIPTION @"long_description"
+#define PROPKEY_EXT_HEADING @"heading"
+#define PROPKEY_EXT_ANGLE @"angle"
+#define PROPKEY_EXT_HEIGHT @"height"
 
 
 #define CATEGORY_LINK @"リンクの情報"
@@ -165,7 +166,7 @@
     
     NSDictionary* properties = JSONDictionary[@"properties"];
     if (properties) {
-        if ([properties[PROPKEY_MAJOR_CATEGORY] isEqualToString:NAV_POI]) {
+        if ([properties[PROPKEY_EXT_MAJOR_CATEGORY] isEqualToString:NAV_POI]) {
             return HLPPOI.class;
         }
         if (properties[PROPKEY_NODE_ID] != nil) {
@@ -219,6 +220,20 @@
     return temp;
 }
 
+- (void)updateWithLang:(NSString *)lang
+{
+    // need to override;
+}
+
+- (NSString*) getI18nAttribute:(NSString*)name Lang:(NSString*)lang
+{
+    NSString *key = [NSString stringWithFormat:@"%@:%@", name, lang];
+    if (self.properties[key]) {
+        return self.properties[key];
+    } else {
+        return self.properties[name];
+    }
+}
 
 @end
 
@@ -551,8 +566,8 @@
     if (self == nil) return nil;
 
     NSDictionary *prop = self.properties;
-    _majorCategory = prop[PROPKEY_MAJOR_CATEGORY];
-    _subCategory = prop[PROPKEY_SUB_CATEGORY];
+    _majorCategory = prop[PROPKEY_EXT_MAJOR_CATEGORY];
+    _subCategory = prop[PROPKEY_EXT_SUB_CATEGORY];
     if ([POI_CATEGORY_INFO isEqualToString:_subCategory]) {
         _poiCategory = HLP_POI_CATEGORY_INFO;
     } else if ([POI_CATEGORY_SCENE isEqualToString:_subCategory]) {
@@ -568,23 +583,21 @@
     } else if ([POI_CATEGORY_LIVE isEqualToString:_subCategory]) {
         _poiCategory = HLP_POI_CATEGORY_LIVE;
     }
-    _minorCategory = prop[PROPKEY_MINOR_CATEGORY];
+    _minorCategory = prop[PROPKEY_EXT_MINOR_CATEGORY];
     _flagCaution = [_minorCategory containsString:POI_FLAGS_CAUTION];
     _flagPlural = [_minorCategory containsString:POI_FLAGS_PLURAL];
 
-    if (prop[PROP_KEY_HEADING]) {
-        _heading = [prop[PROP_KEY_HEADING] doubleValue];
+    if (prop[PROPKEY_EXT_HEADING]) {
+        _heading = [prop[PROPKEY_EXT_HEADING] doubleValue];
     } else {
         _heading = 0;
     }
-    if (prop[PROP_KEY_ANGLE]) {
-        _angle = [prop[PROP_KEY_ANGLE] doubleValue];
+    if (prop[PROPKEY_EXT_ANGLE]) {
+        _angle = [prop[PROPKEY_EXT_ANGLE] doubleValue];
     } else {
         _angle = 180;
     }
-    _longDescription = prop[PROPKEY_LONG_DESCRIPTION];
-    _name = prop[PROPKEY_NAME];
-    
+
     return self;
 }
 
@@ -600,13 +613,18 @@
     self = [super initWithDictionary:dictionaryValue error:error];
     if (self == nil) return nil;
     
-    _name = self.properties[PROPKEY_NAME];
-    _longDescription = self.properties[PROPKEY_LONG_DESCRIPTION];
+    _namePron = _name = self.properties[PROPKEY_NAME];
+    _longDescriptionPron = _longDescription = self.properties[PROPKEY_EXT_LONG_DESCRIPTION];
     
     _lat = [self.geometry.coordinates[1] doubleValue];
     _lng = [self.geometry.coordinates[0] doubleValue];
+    _height = NAN;
+    if (self.properties[PROPKEY_EXT_HEIGHT]) {
+        _height = [self.properties[PROPKEY_EXT_HEIGHT] doubleValue];
+        _height = (_height >= 1)?_height-1:_height;
+    }
     
-    _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng];
+    _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];
     
     return self;
 }
@@ -614,6 +632,23 @@
 - (HLPLocation *)location
 {
     return _location;
+}
+
+
+- (void)updateWithLang:(NSString *)lang
+{
+    _lang = lang;
+    NSString *langPron = [_lang stringByAppendingString:@"-Pron"];
+    _name = [self getI18nAttribute:PROPKEY_NAME Lang:_lang];
+    _namePron = [self getI18nAttribute:PROPKEY_NAME Lang:langPron];
+    if (_namePron == nil) {
+        _namePron = _name;
+    }
+    _longDescription = [self getI18nAttribute:PROPKEY_EXT_LONG_DESCRIPTION Lang:_lang];
+    _longDescriptionPron = [self getI18nAttribute:PROPKEY_EXT_LONG_DESCRIPTION Lang:langPron];
+    if (_longDescriptionPron == nil) {
+        _longDescriptionPron = _longDescription;
+    }
 }
 
 @end
@@ -627,7 +662,7 @@
     
     _forNodeID = self.properties[PROPKEY_NODE_FOR_ID];
     _forFacilityID = self.properties[PROPKEY_FACILITY_FOR_ID];
-    _name = self.properties[PROPKEY_ENTRANCE_NAME];
+    _namePron = _name = self.properties[PROPKEY_ENTRANCE_NAME];
     return self;
 }
 
@@ -635,6 +670,17 @@
 {
     _node = node;
     _facility = facility;
+}
+
+- (void)updateWithLang:(NSString *)lang
+{
+    _lang = lang;
+    NSString *langPron = [_lang stringByAppendingString:@"-Pron"];
+    _name = [self getI18nAttribute:PROPKEY_NAME Lang:_lang];
+    _namePron = [self getI18nAttribute:PROPKEY_NAME Lang:langPron];
+    if (_namePron == nil) {
+        _namePron = _name;
+    }
 }
 
 - (NSString*)getName
@@ -654,11 +700,38 @@
     }
 }
 
+- (NSString *)getNamePron
+{
+    if (_facility) {
+        if (_name) {
+            return [_facility.namePron stringByAppendingString:_namePron];
+        } else {
+            return _facility.namePron;
+        }
+    } else {
+        if (_namePron) {
+            return _namePron;
+        } else {
+            return @"";
+        }
+    }
+}
+
 - (NSString*)getLongDescription
 {
     if (_facility) {
         if (_facility.longDescription) {
             return _facility.longDescription;
+        }
+    }
+    return @"";
+}
+
+- (NSString *)getLongDescriptionPron
+{
+    if (_facility) {
+        if (_facility.longDescriptionPron) {
+            return _facility.longDescriptionPron;
         }
     }
     return @"";

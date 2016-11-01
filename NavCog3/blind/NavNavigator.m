@@ -211,45 +211,7 @@ static NavNavigatorConstants *_instance;
         
         //BOOL isFirstLink = (idx == 0);
 
-        if ([obj isKindOfClass:HLPEntrance.class]) { // non poi information (facility and entrance)
-            HLPEntrance *ent = (HLPEntrance*)obj;
-            NavPOI *navpoi = nil;
-            
-            if ([_nextLink.targetNodeID isEqualToString:ent.node._id]) {
-                // destination with a leaf node, make second last link as last link
-                _isNextDestination = YES;
-                navpoi = [[NavPOI alloc] initWithText:nil Location:ent.facility.location Options:
-                                  @{
-                                    @"forBeforeEnd": @(YES),
-                                    @"isDestination": @(YES),
-                                    @"angleFromLocation": @(_nextLink.lastBearingForTarget)
-                                    }];
-                
-            } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
-                // destination with non-leaf node
-                _isNextDestination = YES;
-                navpoi = [[NavPOI alloc] initWithText:obj.properties[@"long_description"]
-                                                     Location:ent.node.location
-                                                      Options: @{
-                                                                 @"forBeforeEnd": @(YES)
-                                                                 }];
-            } else {
-                // mid in route
-                HLPLocation *nearest = [_link nearestLocationTo:ent.node.location];
-                double angle = [HLPLocation normalizeDegree:[nearest bearingTo:ent.node.location] - _link.initialBearingFromSource];
-                if (45 < fabs(angle) && fabs(angle) < 135) {
-                    navpoi = [[NavPOI alloc] initWithText:[ent getName] Location:nearest Options:
-                              @{
-                                @"longDescription": [ent getLongDescription],
-                                @"angleFromLocation": @(angle)
-                                }];
-                }
-            }
-            if (navpoi) {
-                [poisTemp addObject:navpoi];
-            }
-        }
-        else if ([obj isKindOfClass:HLPPOI.class]) { // poi information
+        if ([obj isKindOfClass:HLPPOI.class]) { // poi information
             HLPPOI *poi = (HLPPOI*)obj;
             HLPLocation *loc = [poi location];
             HLPLocation *nearest = [_link nearestLocationTo:loc];
@@ -313,6 +275,7 @@ static NavNavigatorConstants *_instance;
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
                                     @"forBeforeStart": @(poi.flagCaution),
+                                    @"forFloor": @(YES),
                                     @"longDescription": poi.longDescription?poi.longDescription:@"",
                                     @"flagCaution": @(poi.flagCaution)
                                     }];                    }
@@ -353,6 +316,43 @@ static NavNavigatorConstants *_instance;
             }
             
             if (navpoi != nil) {
+                [poisTemp addObject:navpoi];
+            }
+        } else if ([obj isKindOfClass:HLPEntrance.class]) { // non poi information (facility and entrance)
+            HLPEntrance *ent = (HLPEntrance*)obj;
+            NavPOI *navpoi = nil;
+            
+            if ([_nextLink.targetNodeID isEqualToString:ent.node._id]) {
+                // destination with a leaf node, make second last link as last link
+                _isNextDestination = YES;
+                navpoi = [[NavPOI alloc] initWithText:nil Location:ent.facility.location Options:
+                          @{
+                            @"forBeforeEnd": @(YES),
+                            @"isDestination": @(YES),
+                            @"angleFromLocation": @(_nextLink.lastBearingForTarget)
+                            }];
+                
+            } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
+                // destination with non-leaf node
+                _isNextDestination = YES;
+                navpoi = [[NavPOI alloc] initWithText:obj.properties[@"long_description"]
+                                             Location:ent.node.location
+                                              Options: @{
+                                                         @"forBeforeEnd": @(YES)
+                                                         }];
+            } else {
+                // mid in route
+                HLPLocation *nearest = [_link nearestLocationTo:ent.node.location];
+                double angle = [HLPLocation normalizeDegree:[nearest bearingTo:ent.node.location] - _link.initialBearingFromSource];
+                if (45 < fabs(angle) && fabs(angle) < 135) {
+                    navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
+                              @{
+                                @"longDescription": [ent getLongDescriptionPron],
+                                @"angleFromLocation": @(angle)
+                                }];
+                }
+            }
+            if (navpoi) {
                 [poisTemp addObject:navpoi];
             }
         }
@@ -706,7 +706,9 @@ static NavNavigator* instance;
             }
             HLPLink *link = (HLPLink*) route[i];
             
-            if (link.sourceHeight != loc.floor || link.targetHeight != loc.floor) {
+            
+            if (!isnan(loc.floor) &&
+                (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
                 continue;
             }
             

@@ -59,6 +59,8 @@ typedef enum {
 @property (nonatomic, readonly) NSString *_id;
 @property (nonatomic, readonly) NSString *_rev;
 @property (nonatomic, readonly) HLPObjectCategory category;
+- (void) updateWithLang:(NSString*)lang;
+
 @end
 
 @interface HLPLandmark : HLPGeoJSON
@@ -159,36 +161,42 @@ typedef enum {
     HLP_POI_CATEGORY_LIVE,
 } HLPPOICategory;
 
-@interface HLPPOI : HLPNode
+@interface HLPFacility : HLPObject
+@property (nonatomic, readonly) double lat;
+@property (nonatomic, readonly) double lng;
+@property (nonatomic, readonly) double height;
+@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *namePron;
+@property (nonatomic, readonly) NSString *longDescription;
+@property (nonatomic, readonly) NSString *longDescriptionPron;
+@property (nonatomic, readonly) NSString *lang;
+
+- (HLPLocation*) location;
+@end
+
+@interface HLPPOI : HLPFacility
 @property (nonatomic, readonly) NSString* majorCategory;
 @property (nonatomic, readonly) NSString* subCategory;
 @property (nonatomic, readonly) NSString* minorCategory;
 @property (nonatomic, readonly) double heading;
 @property (nonatomic, readonly) double angle;
-@property (nonatomic, readonly) NSString *longDescription;
-@property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly) HLPPOICategory poiCategory;
 @property (nonatomic, readonly) BOOL flagCaution;
 @property (nonatomic, readonly) BOOL flagPlural;
-@end
 
-@interface HLPFacility : HLPObject
-@property (nonatomic, readonly) double lat;
-@property (nonatomic, readonly) double lng;
-@property (nonatomic, readonly) NSString *name;
-@property (nonatomic, readonly) NSString *longDescription;
-
-- (HLPLocation*) location;
 @end
 
 @interface HLPEntrance : HLPObject
 @property (nonatomic, readonly) NSString *forNodeID;
 @property (nonatomic, readonly) NSString *forFacilityID;
 @property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *namePron;
 @property (nonatomic, readonly) HLPNode *node;
 @property (nonatomic, readonly) HLPFacility *facility;
-
+@property (nonatomic, readonly) NSString *lang;
 - (void) updateNode:(HLPNode*) node andFacility:(HLPFacility*) facility;
 - (NSString*) getName;
+- (NSString*) getNamePron;
 - (NSString*) getLongDescription;
+- (NSString*) getLongDescriptionPron;
 @end

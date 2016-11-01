@@ -389,6 +389,10 @@ static NavDataStore* instance_ = nil;
             [HLPDataUtil loadFeaturesForUser:user WithCallback:^(NSArray<HLPObject *> *result) {
                 featuresCache = [featuresCache arrayByAddingObjectsFromArray: result];
                 
+                for(HLPObject* f in featuresCache) {
+                    [f updateWithLang:lang];
+                }
+                
                 if (complete) {
                     complete();
                 }

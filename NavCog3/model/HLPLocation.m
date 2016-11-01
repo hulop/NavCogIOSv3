@@ -31,6 +31,13 @@ const double r2d = 180.0 / M_PI;
 
 @implementation HLPLocation
 
+double(^normalize)(double) = ^(double deg) {
+    double x = cos(deg/180*M_PI);
+    double y = sin(deg/180*M_PI);
+    return atan2(y,x)/M_PI*180;
+};
+
+
 - (instancetype) init
 {
     self = [super self];
@@ -42,16 +49,16 @@ const double r2d = 180.0 / M_PI;
 - (instancetype) initWithLat:(double)lat Lng:(double)lng
 {
     self = [super self];
-    _lat = lat;
-    _lng = lng;
+    _lat = normalize(lat);
+    _lng = normalize(lng);
     return self;
 }
 
 - (instancetype) initWithLat:(double)lat Lng:(double)lng Floor:(double)floor
 {
     self = [super self];
-    _lat = lat;
-    _lng = lng;
+    _lat = normalize(lat);
+    _lng = normalize(lng);
     _floor = floor;
     return self;
 }
@@ -59,8 +66,8 @@ const double r2d = 180.0 / M_PI;
 - (instancetype) initWithLat:(double)lat Lng:(double)lng Accuracy:(double)accuracy Floor:(double)floor Speed:(double)speed Orientation:(double)orientation OrientationAccuracy:(double)orientationAccuracy
 {
     self = [super self];
-    _lat = lat;
-    _lng = lng;
+    _lat = normalize(lat);
+    _lng = normalize(lng);
     _accuracy = accuracy;
     _floor = floor;
     _speed = speed;
@@ -80,8 +87,8 @@ const double r2d = 180.0 / M_PI;
         return;
     }
     @synchronized (self) {
-        _lat = loc.lat;
-        _lng = loc.lng;
+        _lat = normalize(loc.lat);
+        _lng = normalize(loc.lng);
         _accuracy = loc.accuracy;
         _floor = loc.floor;
         _speed = loc.speed;
@@ -95,16 +102,16 @@ const double r2d = 180.0 / M_PI;
 - (void) updateLat:(double)lat Lng:(double)lng
 {
     @synchronized (self) {
-        _lat = lat;
-        _lng = lng;
+        _lat = normalize(lat);
+        _lng = normalize(lng);
     }
 }
 
 - (void) updateLat:(double)lat Lng:(double)lng Accuracy:(double)accuracy Floor:(double)floor
 {
     @synchronized (self) {
-        _lat = lat;
-        _lng = lng;
+        _lat = normalize(lat);
+        _lng = normalize(lng);
         _accuracy = accuracy;
         _floor = floor;
     }

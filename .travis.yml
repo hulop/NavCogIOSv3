@@ -1,0 +1,4 @@
+language: objective-c
+xcode_workspace: NavCog3.xcworkspace
+xcode_scheme: NavCog3
+

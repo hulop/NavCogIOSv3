@@ -59,10 +59,14 @@
 
 #define NAV_POI @"_nav_poi_"
 #define POI_CATEGORY_INFO @"_nav_info_"
+#define POI_CATEGORY_CORNER @"_nav_corner_"
+#define POI_CATEGORY_FLOOR @"_nav_floor_"
+
 #define POI_CATEGORY_SCENE @"_nav_scene_"
+
 #define POI_CATEGORY_OBJECT @"_nav_object_"
 #define POI_CATEGORY_SIGN @"_nav_sign_"
-#define POI_CATEGORY_FLOOR @"_nav_floor_"
+
 #define POI_CATEGORY_SHOP @"_nav_shop_"
 #define POI_CATEGORY_LIVE @"_nav_live_"
 #define POI_FLAGS_CAUTION @"_nav_caution_"
@@ -621,6 +625,8 @@
         _poiCategory = HLP_POI_CATEGORY_SHOP;
     } else if ([POI_CATEGORY_LIVE isEqualToString:_subCategory]) {
         _poiCategory = HLP_POI_CATEGORY_LIVE;
+    } else if ([POI_CATEGORY_CORNER isEqualToString:_subCategory]) {
+        _poiCategory = HLP_POI_CATEGORY_CORNER;
     }
     _minorCategory = prop[PROPKEY_EXT_MINOR_CATEGORY];
     _flagCaution = [_minorCategory containsString:POI_FLAGS_CAUTION];

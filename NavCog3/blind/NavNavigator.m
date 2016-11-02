@@ -305,7 +305,8 @@ static NavNavigatorConstants *_instance;
                                   @{
                                     @"origin": poi,
                                     @"forBeforeStart": @(YES),
-                                    @"forSign": @(YES)
+                                    @"forSign": @(YES),
+                                    @"longDescription": poi.longDescription?poi.longDescription:@""
                                     }];
                     }
                     break;
@@ -316,7 +317,19 @@ static NavNavigatorConstants *_instance;
                                   @{
                                     @"origin": poi,
                                     @"forCorner": @(YES),
-                                    @"flagPlural": @(poi.flagPlural)
+                                    @"flagPlural": @(poi.flagPlural),
+                                    @"longDescription": poi.longDescription?poi.longDescription:@""
+                                    }];
+                    }
+                    break;
+                case HLP_POI_CATEGORY_CORNER:
+                    if (inAngleAtNearest && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
+                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
+                                  @{
+                                    @"origin": poi,
+                                    @"angleFromLocation": @([nearest bearingTo:poi.location]),
+                                    @"forBeforeEnd": @(YES),
+                                    @"longDescription": poi.longDescription?poi.longDescription:@""
                                     }];
                     }
                     break;

@@ -162,6 +162,7 @@ typedef enum {
     HLP_POI_CATEGORY_FLOOR,
     HLP_POI_CATEGORY_SHOP,
     HLP_POI_CATEGORY_LIVE,
+    HLP_POI_CATEGORY_CORNER
 } HLPPOICategory;
 
 @interface HLPFacility : HLPObject

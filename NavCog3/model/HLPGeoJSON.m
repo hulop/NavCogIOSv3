@@ -35,6 +35,7 @@
 #define PROPKEY_LINK_DIRECTION @"方向性"
 #define PROPKEY_LINK_TYPE @"経路の種類"
 #define PROPKEY_TARGET_NODE_ID @"終点ノードID"
+#define PROPKEY_SOURCE_NODE_ID @"起点ノードID"
 #define PROPKEY_NAME @"名称"
 #define PROPKEY_ENTRANCE_NAME @"出入口の名称"
 #define PROPKEY_MALE_OR_FEMALE @"男女別"
@@ -235,6 +236,20 @@
     }
 }
 
+- (NSString*) getI18nPronAttribute:(NSString*)name Lang:(NSString*)lang
+{
+    NSString *key = [NSString stringWithFormat:@"%@:%@", name, lang];
+    NSString *pronKey = [key stringByAppendingString:@"-Pron"];
+    
+    if (self.properties[pronKey]) {
+        return self.properties[pronKey];
+    } else {
+        return self.properties[key];
+    }
+}
+
+
+
 @end
 
 @implementation HLPLandmark
@@ -413,8 +428,22 @@
         }
     }
     
-    
     return self;
+}
+
+- (void)updateWithNodesMap:(NSDictionary *)nodesMap
+{
+    _sourceNodeID = self.properties[PROPKEY_SOURCE_NODE_ID];
+    HLPNode *snode = nodesMap[_sourceNodeID];
+    if (snode) {
+        _sourceHeight = snode.height;
+    }
+    
+    _targetNodeID = self.properties[PROPKEY_TARGET_NODE_ID];
+    HLPNode *tnode = nodesMap[_targetNodeID];
+    if (tnode) {
+        _targetHeight = tnode.height;
+    }
 }
 
 - (double)initialBearingFromSource
@@ -648,14 +677,13 @@
 - (void)updateWithLang:(NSString *)lang
 {
     _lang = lang;
-    NSString *langPron = [_lang stringByAppendingString:@"-Pron"];
     _name = [self getI18nAttribute:PROPKEY_NAME Lang:_lang];
-    _namePron = [self getI18nAttribute:PROPKEY_NAME Lang:langPron];
+    _namePron = [self getI18nPronAttribute:PROPKEY_NAME Lang:lang];
     if (_namePron == nil) {
         _namePron = _name;
     }
     _longDescription = [self getI18nAttribute:PROPKEY_EXT_LONG_DESCRIPTION Lang:_lang];
-    _longDescriptionPron = [self getI18nAttribute:PROPKEY_EXT_LONG_DESCRIPTION Lang:langPron];
+    _longDescriptionPron = [self getI18nPronAttribute:PROPKEY_EXT_LONG_DESCRIPTION Lang:lang];
     if (_longDescriptionPron == nil) {
         _longDescriptionPron = _longDescription;
     }

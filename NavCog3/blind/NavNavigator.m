@@ -246,6 +246,7 @@ static NavNavigatorConstants *_instance;
                         // add info at first link source before navigation announce
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:_link.sourceLocation Options:
                                   @{
+                                    @"origin": poi,
                                     @"forBeforeStart": @(YES),
                                     @"longDescription": poi.longDescription?poi.longDescription:@"",
                                     @"flagCaution": @(poi.flagCaution)
@@ -256,6 +257,7 @@ static NavNavigatorConstants *_instance;
                         // add info at nearest location
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
+                                    @"origin": poi,
                                     @"forBeforeEnd": @(YES),
                                     @"longDescription": poi.longDescription?poi.longDescription:@""
                                     }];
@@ -264,6 +266,7 @@ static NavNavigatorConstants *_instance;
                         // add info at nearest location
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
+                                    @"origin": poi,
                                     @"forBeforeStart": @(poi.flagCaution),
                                     @"longDescription": poi.longDescription?poi.longDescription:@"",
                                     @"flagCaution": @(poi.flagCaution)
@@ -274,6 +277,7 @@ static NavNavigatorConstants *_instance;
                     if (dLocToNearest < C.POI_FLOOR_DISTANCE_THRESHOLD && inAngleInitial) {
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
+                                    @"origin": poi,
                                     @"forBeforeStart": @(poi.flagCaution),
                                     @"forFloor": @(YES),
                                     @"longDescription": poi.longDescription?poi.longDescription:@"",
@@ -287,6 +291,7 @@ static NavNavigatorConstants *_instance;
                         // add poi info at location
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
+                                    @"origin": poi,
                                     @"angleFromLocation": @([nearest bearingTo:poi.location]),
                                     @"flagPlural": @(poi.flagPlural),
                                     @"longDescription": poi.longDescription?poi.longDescription:@""
@@ -298,6 +303,7 @@ static NavNavigatorConstants *_instance;
                         // add corner info
                         navpoi = [[NavPOI alloc] initWithText:poi.longDescription Location:nearest Options:
                                   @{
+                                    @"origin": poi,
                                     @"forBeforeStart": @(YES),
                                     @"forSign": @(YES)
                                     }];
@@ -308,6 +314,7 @@ static NavNavigatorConstants *_instance;
                         // add corner info
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
+                                    @"origin": poi,
                                     @"forCorner": @(YES),
                                     @"flagPlural": @(poi.flagPlural)
                                     }];
@@ -327,6 +334,7 @@ static NavNavigatorConstants *_instance;
                 _isNextDestination = YES;
                 navpoi = [[NavPOI alloc] initWithText:nil Location:ent.facility.location Options:
                           @{
+                            @"origin": ent,
                             @"forBeforeEnd": @(YES),
                             @"isDestination": @(YES),
                             @"angleFromLocation": @(_nextLink.lastBearingForTarget)
@@ -338,6 +346,7 @@ static NavNavigatorConstants *_instance;
                 navpoi = [[NavPOI alloc] initWithText:obj.properties[@"long_description"]
                                              Location:ent.node.location
                                               Options: @{
+                                                         @"origin": ent,
                                                          @"forBeforeEnd": @(YES)
                                                          }];
             } else {
@@ -347,8 +356,9 @@ static NavNavigatorConstants *_instance;
                 if (45 < fabs(angle) && fabs(angle) < 135) {
                     navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
                               @{
+                                @"origin": ent,
                                 @"longDescription": [ent getLongDescriptionPron],
-                                @"angleFromLocation": @(angle)
+                                @"angleFromLocation": @([nearest bearingTo:ent.node.location])
                                 }];
                 }
             }
@@ -370,7 +380,8 @@ static NavNavigatorConstants *_instance;
             
             HLPLocation *poiloc = link.sourceLocation;
             
-            NavPOI *poi = [[NavPOI alloc] initWithText:surroundInfo Location:poiloc Options:@{}];
+            NavPOI *poi = [[NavPOI alloc] initWithText:surroundInfo Location:poiloc Options:
+                           @{@"origin":surroundInfo}];
             
             [poisTemp addObject:poi];
         }
@@ -391,13 +402,15 @@ static NavNavigatorConstants *_instance;
                 HLPLocation *trickloc = [link locationDistanceToTarget:15];
                 
                 if (info) {
-                    NavPOI *poi = [[NavPOI alloc] initWithText:info Location:poiloc Options: @{}];
+                    NavPOI *poi = [[NavPOI alloc] initWithText:info Location:poiloc Options:
+                                   @{@"origin":info}];
                     [poisTemp addObject:poi];
                 }
                 
                 if (destInfo) {
                     NavPOI *poi = [[NavPOI alloc] initWithText:destInfo Location:poiloc Options:
                                    @{
+                                     @"origin":destInfo,
                                      @"forBeforeEnd": @(YES)
                                      }];
                     [poisTemp addObject:poi];
@@ -406,6 +419,7 @@ static NavNavigatorConstants *_instance;
                 if (trickyInfo && beTricky) {
                     NavPOI *poi = [[NavPOI alloc] initWithText:trickyInfo Location:trickloc Options:
                                    @{
+                                     @"origin":trickyInfo,
                                      @"neesToPlaySound": @(YES),
                                      @"requiresUserAction": @(YES)
                                      }];
@@ -415,7 +429,18 @@ static NavNavigatorConstants *_instance;
         }
     }];
     
-    _pois = poisTemp;
+    NSMutableArray *filtered = [@[] mutableCopy];
+    NSMutableSet *check = [[NSMutableSet alloc] init];
+    for(NavPOI *poi in poisTemp) {
+        if ([check containsObject:poi.origin]) {
+            NSLog(@"poi is filtered %@", poi.origin);
+            continue;
+        }
+        [check addObject:poi.origin];
+        [filtered addObject:poi];
+    }
+    
+    _pois = filtered;
 }
 
 - (NSString*) description
@@ -667,49 +692,30 @@ static NavNavigator* instance;
     linksMap = linksMapTemp;
     nodeLinksMap = nodeLinksMapTemp;
     
+    [linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        [obj updateWithNodesMap:nodesMap];
+    }];
+    
+    
     navIndex = 0;
     
     destinationNode = entranceMap[[[route lastObject] _id]];
     //destination = [entranceMap[[[route lastObject] _id]] getLandmarkName];
     //startPoint = [entranceMap[[[route firstObject] _id]] getLandmarkName];
     
-    // optimize links for navigation
-    NSArray*(^combineLinks)(NSArray*) = ^(NSArray *array) {
-        NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
-        for(int i = 0; i < [temp count]-1; i++) {
-            HLPObject* obj1 = temp[i];
-            HLPObject* obj2 = temp[i+1];
-            if ([obj1 isKindOfClass:HLPLink.class] && [obj2 isKindOfClass:HLPLink.class]) {
-                HLPLink* link1 = (HLPLink*) obj1;
-                HLPLink* link2 = (HLPLink*) obj2;
-                
-                if ([HLPCombinedLink link:link1 shouldBeCombinedWithLink:link2]) {
-                    HLPLink* link12 = [[HLPCombinedLink alloc] initWithLink1:link1 andLink2:link2];
-                    [temp setObject:link12 atIndexedSubscript:i];
-                    [temp removeObjectAtIndex:i+1];
-                    i--;
-                }
-            }
-        }
-        return temp;
-    };
-    
-    route = combineLinks(route);
-    
-    NSArray*(^nearestLinks)(HLPLocation*) = ^ NSArray* (HLPLocation *loc) {
-        NSMutableArray<HLPLink*> *nearestLinks = [@[] mutableCopy];
-        double minDistance = DBL_MAX;
+    NSArray*(^nearestLinks)(HLPLocation*, NSString*) = ^ NSArray* (HLPLocation *loc, NSString* nodeID) {
+        NSMutableArray<HLPLink*> __block *nearestLinks = [@[] mutableCopy];
+        double __block minDistance = DBL_MAX;
         
-        for(int i = 0; i < [route count]; i++) {
-            if ([route[i] isKindOfClass:HLPLink.class] == NO) {
-                continue;
-            }
-            HLPLink *link = (HLPLink*) route[i];
-            
-            
+        [linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
+
             if (!isnan(loc.floor) &&
                 (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
-                continue;
+                return;
+            }
+            if ([link.sourceNodeID isEqualToString:nodeID] ||
+                [link.targetNodeID isEqualToString:nodeID]) {
+                return;
             }
             
             HLPLocation *nearest = [link nearestLocationTo:loc];
@@ -721,14 +727,14 @@ static NavNavigator* instance;
             } else if (distance == minDistance) {
                 [nearestLinks addObject:link];
             }
-        }
+        }];
+
         if (minDistance < C.POI_DISTANCE_MIN_THRESHOLD) {
             return nearestLinks;
         } else {
             return @[];
         }
     };
-    // end optimize links for navigation
     
     // assign poi to nearest link
     NSMutableDictionary *linkPoiMap = [@{} mutableCopy];
@@ -738,7 +744,7 @@ static NavNavigator* instance;
         }
         HLPPOI *poi = pois[j];
         
-        NSArray *links = nearestLinks(poi.location);
+        NSArray *links = nearestLinks(poi.location, nil);
         
         for(HLPLink* nearestLink in links) {
             NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
@@ -753,7 +759,7 @@ static NavNavigator* instance;
     for(HLPEntrance *ent in features) {
         if ([ent isKindOfClass:HLPEntrance.class]) {
             
-            NSArray *links = nearestLinks(ent.node.location);
+            NSArray *links = nearestLinks(ent.node.location, ent.node._id);
             for(HLPLink* nearestLink in links) {
                 if ([nearestLink.sourceNodeID isEqualToString:ent.node._id] ||
                     [nearestLink.targetNodeID isEqualToString:ent.node._id]) {
@@ -798,6 +804,31 @@ static NavNavigator* instance;
         }
         [linkPois addObject:ent];
     }
+    
+    
+    // optimize links for navigation
+    NSArray*(^combineLinks)(NSArray*) = ^(NSArray *array) {
+        NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
+        for(int i = 0; i < [temp count]-1; i++) {
+            HLPObject* obj1 = temp[i];
+            HLPObject* obj2 = temp[i+1];
+            if ([obj1 isKindOfClass:HLPLink.class] && [obj2 isKindOfClass:HLPLink.class]) {
+                HLPLink* link1 = (HLPLink*) obj1;
+                HLPLink* link2 = (HLPLink*) obj2;
+                
+                if ([HLPCombinedLink link:link1 shouldBeCombinedWithLink:link2]) {
+                    HLPLink* link12 = [[HLPCombinedLink alloc] initWithLink1:link1 andLink2:link2];
+                    [temp setObject:link12 atIndexedSubscript:i];
+                    [temp removeObjectAtIndex:i+1];
+                    i--;
+                }
+            }
+        }
+        return temp;
+    };
+    
+    route = combineLinks(route);
+    // end optimize links for navigation
     
     // prepare link info
     

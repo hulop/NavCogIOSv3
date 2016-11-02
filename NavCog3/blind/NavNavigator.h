@@ -142,6 +142,7 @@
 @end
 
 @interface NavPOI : NSObject
+@property (readonly) id origin;
 @property (readonly) NSString *text;
 @property (readonly) NSString *longDescription;
 @property (readonly) HLPLocation *poiLocation;

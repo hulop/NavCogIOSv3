@@ -41,6 +41,7 @@ static HLPSettingHelper *blindnaviSettingHelper;
 static HLPSettingHelper *mapSettingHelper;
 static HLPSettingHelper *configSettingHelper;
 static HLPSettingHelper *logSettingHelper;
+static HLPSettingHelper *routeOptionsSettingHelper;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -77,6 +78,9 @@ static HLPSettingHelper *logSettingHelper;
     if ([self.restorationIdentifier isEqualToString:@"choose_log"]) {
         [SettingViewController setupLogSettingHelper];
         helper = logSettingHelper;
+    }
+    if ([self.restorationIdentifier isEqualToString:@"route_options_setting"]) {
+        helper = routeOptionsSettingHelper;
     }
 
     
@@ -164,6 +168,7 @@ static HLPSettingHelper *logSettingHelper;
     [SettingViewController setupDeveloperSettings];
     [SettingViewController setupBlelocppSettings];
     [SettingViewController setupBlindNaviSettings];
+    [SettingViewController setupRouteOptionsSettings];
 }
 
 + (void)setupUserSettings
@@ -233,7 +238,7 @@ static HLPSettingHelper *logSettingHelper;
     [detailSettingHelper addSectionTitle:@"For WoW"];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset bleloc at start" Name:@"reset_as_start_point" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Current Location\"" Name:@"hide_current_location_from_start" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Toilet\"" Name:@"hide_toilet_from_to" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Facility\"" Name:@"hide_facility_from_to" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Accuracy for wow" Name:@"accuracy_for_wow" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSectionTitle:@"Test"];
@@ -369,6 +374,21 @@ static HLPSettingHelper *logSettingHelper;
         [logSettingHelper addActionTitle:[NSString stringWithFormat:@"%@ %.1fMB", [log stringByDeletingPathExtension], fileSize/1024.0/1024.0] Name:log];
     }
 
+}
+
++ (void)setupRouteOptionsSettings
+{
+    if (routeOptionsSettingHelper) {
+        return;
+    }
+    routeOptionsSettingHelper = [[HLPSettingHelper alloc] init];
+    
+    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Elevator", @"")
+                                             Name:@"route_use_elevator" DefaultValue:@(YES) Accept:nil];
+    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Escalator", @"")
+                                             Name:@"route_use_escalator" DefaultValue:@(NO) Accept:nil];
+    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Stairs", @"")
+                                             Name:@"route_use_stairs" DefaultValue:@(YES) Accept:nil];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -38,9 +38,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.routeOptionsButton.enabled = NO;
-    self.routeOptionsButton.hidden = YES;
-    
     self.fromButton.titleLabel.numberOfLines = 1;
     self.fromButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     self.fromButton.titleLabel.lineBreakMode = NSLineBreakByClipping;
@@ -125,54 +122,39 @@
     NavDataStore *nds = [NavDataStore sharedDataStore];
     nds.previewMode = YES;
     
-    NSDictionary *prefs = @{
-                            @"dist":@"500",
-                            @"preset":@"9",
-                            @"min_width":@"2",
-                            @"slope":@"9",
-                            @"road_condition":@"9",
-                            @"stairs":@"9",
-                            @"deff_LV":@"9",
-                            @"esc":@"1",
-                            @"elv":@"9"
-                            };
-    
-    [NavUtil showWaitingForView:self.view];
-    
-    [[NavDataStore sharedDataStore] requestRouteFrom:nds.from._id To:nds.to._id withPreferences:prefs complete:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [NavUtil hideWaitingForView:self.view];
-            [self.navigationController popViewControllerAnimated:YES];
-        });
-    }];
+    [self _startNavigation];
 }
 
 - (IBAction)startNavigation:(id)sender {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     nds.previewMode = NO;
-    
+    [self _startNavigation];
+}
+
+- (void) _startNavigation
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSDictionary *prefs = @{
                             @"dist":@"500",
                             @"preset":@"9",
                             @"min_width":@"2",
                             @"slope":@"9",
                             @"road_condition":@"9",
-                            @"stairs":@"9",
                             @"deff_LV":@"9",
-                            @"esc":@"1",
-                            @"elv":@"9"
+                            @"stairs":[ud boolForKey:@"route_use_stairs"]?@"9":@"1",
+                            @"esc":[ud boolForKey:@"route_use_escalator"]?@"9":@"1",
+                            @"elv":[ud boolForKey:@"route_use_elevator"]?@"9":@"1"
                             };
     
     [NavUtil showWaitingForView:self.view];
     
     [[NavDataStore sharedDataStore] requestRouteFrom:nds.from._id To:nds.to._id withPreferences:prefs complete:^{
-        
         dispatch_async(dispatch_get_main_queue(), ^{
             [NavUtil hideWaitingForView:self.view];
             [self.navigationController popViewControllerAnimated:YES];
         });
     }];
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -196,14 +178,8 @@
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    
-    if ([segue.identifier isEqualToString:@"fromSegue"]) {
-        segue.destinationViewController.restorationIdentifier = @"fromDestinations";
-    }
-    if ([segue.identifier isEqualToString:@"toSegue"]) {
-        segue.destinationViewController.restorationIdentifier = @"toDestinations";
-    }
+    // Pass the selected object to the new view controller.    
+    [segue destinationViewController].restorationIdentifier = segue.identifier;
 }
 
 

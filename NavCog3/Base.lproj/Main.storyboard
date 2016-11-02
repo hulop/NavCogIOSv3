@@ -639,7 +639,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <state key="normal" title="Button"/>
                                 <connections>
-                                    <segue destination="2QI-n6-OB0" kind="show" identifier="fromSegue" id="y9t-k8-dBv"/>
+                                    <segue destination="2QI-n6-OB0" kind="show" identifier="fromDestinations" id="y9t-k8-dBv"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="To" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0fd-8M-uXw">
@@ -651,7 +651,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <state key="normal" title="Button"/>
                                 <connections>
-                                    <segue destination="2QI-n6-OB0" kind="show" identifier="toSegue" id="y91-pz-cNT"/>
+                                    <segue destination="2QI-n6-OB0" kind="show" identifier="toDestinations" id="y91-pz-cNT"/>
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="UOX-Cy-faq">
@@ -682,6 +682,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4th-C5-Y98">
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <state key="normal" title="Route Options"/>
+                                <connections>
+                                    <segue destination="5By-Wf-lM7" kind="show" identifier="route_options_setting" id="BKg-hP-LrX"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&gt;" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4BS-F6-arL">
                                 <accessibility key="accessibilityConfiguration">
@@ -773,7 +776,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="prr-OR-PiR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1855" y="1945"/>
+            <point key="canvasLocation" x="788" y="1782"/>
         </scene>
         <!--Destination Table View Controller-->
         <scene sceneID="k1K-xw-B7r">
@@ -801,14 +804,14 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wzS-sp-heo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2686" y="1979"/>
+            <point key="canvasLocation" x="1996" y="1782"/>
         </scene>
     </scenes>
     <resources>
         <image name="Menu" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="GK1-dG-XDF"/>
+        <segue reference="BKg-hP-LrX"/>
         <segue reference="y9t-k8-dBv"/>
     </inferredMetricsTieBreakers>
 </document>

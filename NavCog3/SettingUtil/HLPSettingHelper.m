@@ -60,27 +60,30 @@
     for(HLPSetting *s in self.settings) {
         if (!s.visible) continue;
         
-        if (selected && s.type != SECTION) {
-            count++;
-        }
         if (first && s.type != SECTION) {
             current++;
         }
         else if (s.type == SECTION) {
             current++;
         }
+        
         if (current == section) {
             selected = YES;
         } else {
             selected = NO;
         }
+
+        if (selected && s.type != SECTION) {
+            count++;
+        }
+
         first = NO;
     }
     //NSLog(@"section %ld, row %d", section , count);
     return count;
 }
 
-- (HLPSetting*) getSetting: (NSIndexPath*) indexPath
+- (HLPSetting*) _getSetting: (NSIndexPath*) indexPath
 {
     if ([self.settings count] == 0) {
         return nil;
@@ -96,23 +99,28 @@
     
     for(HLPSetting *s in self.settings) {
         if (!s.visible) continue;
-
-        if (selected) {
+        
+        if (first && s.type != SECTION) {
+            current++;
+        }
+        else if (s.type == SECTION) {
+            current++;
+        }
+        
+        if (current == section) {
+            if (row == -1) {
+                return s;
+            }
+            selected = YES;
+        } else {
+            selected = NO;
+        }
+        
+        if (selected && s.type != SECTION) {
             if (count == row) {
                 return s;
             }
             count++;
-        }
-        
-        if (first && s.type != SECTION) {
-            current++;
-        } else if (s.type == SECTION) {
-            current++;
-        }
-        if (current == section) {
-            selected = YES;
-        } else {
-            selected = NO;
         }
         first = NO;
     }
@@ -149,7 +157,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HLPSetting *s = [self getSetting:indexPath];
+    HLPSetting *s = [self _getSetting:indexPath];
     if (s == nil) {
         return nil;
     }
@@ -164,7 +172,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HLPSetting *s = [self getSetting:indexPath];
+    HLPSetting *s = [self _getSetting:indexPath];
     if (s == nil) {
         return 44;
     }
@@ -376,45 +384,7 @@
 }
 
 
-- (HLPSetting*) _getSetting: (NSIndexPath*) indexPath
-{
-    if ([self.settings count] == 0) {
-        return nil;
-    }
-    
-    NSInteger section = indexPath.section;
-    NSInteger row = indexPath.row;
-    
-    BOOL first = YES;
-    NSInteger current = -1;
-    NSInteger count = 0;
-    BOOL selected = NO;
-    
-    for(HLPSetting *s in self.settings) {
-        if (first && s.type != SECTION) {
-            current++;
-        } else if (s.type == SECTION) {
-            current++;
-        }
-        if (current == section) {
-            if (row == -1) {
-                return s;
-            }
-            selected = YES;
-        } else {
-            selected = NO;
-        }
-        first = NO;
-        
-        if (selected) {
-            if (count == row) {
-                return s;
-            }
-            count++;
-        }
-    }
-    return nil;
-}
+
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

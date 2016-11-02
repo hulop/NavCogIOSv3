@@ -56,3 +56,6 @@
 "UI_Mode" = "UI Mode";
 "UI_WHEELCHAIR" = "Wheelchair User / Sighted User";
 "UI_BLIND" = "Blind User";
+"Use Elevator" = "Use Elevator";
+"Use Escalator" = "Use Escalator";
+"Use Stairs" = "Use Stairs";

@@ -475,6 +475,7 @@ void functionCalledToLog(void *inUserData, string text)
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     
     localizer->nStates = [ud doubleForKey:@"nStates"];
+    localizer->effectiveSampleSizeThreshold = [ud doubleForKey:@"nEffective"];
     localizer->alphaWeaken = [ud doubleForKey:@"alphaWeaken"];
     localizer->nSmooth = [ud doubleForKey:@"nSmooth"];
     localizer->nSmoothTracking = [ud doubleForKey:@"nSmoothTracking"];
@@ -500,7 +501,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->sigmaMove = 1.0;
     
     localizer->velocityRateFloor = 1.0;
-    localizer->velocityRateElevator = 0.5;
+    localizer->velocityRateElevator = 1.0;
     localizer->velocityRateStair = 0.5;
     
     localizer->nBurnIn = [ud doubleForKey:@"nStates"];
@@ -511,6 +512,11 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->mixProba = [ud doubleForKey:@"mixProba"];
     localizer->rejectDistance = [ud doubleForKey:@"rejectDistance"];
     localizer->rejectFloorDifference = [ud doubleForKey:@"rejectFloorDifference"];
+    
+    // for WeakPoseRandomWalker
+    localizer->probabilityOrientationBiasJump =0.0;
+    localizer->poseRandomWalkRate = 1.0;
+    localizer->randomWalkRate = 0.2;
     
     double lb = [ud doubleForKey:@"locLB"];
     double lbFloor = [ud doubleForKey:@"floorLB"];
@@ -949,6 +955,24 @@ int sendcount = 0;
 }
 
 
+Pose computeRepresentativePose(const Pose& meanPose, const std::vector<State>& states){
+    Pose refPose(meanPose);
+    NSString *rep_location = [[NSUserDefaults standardUserDefaults] stringForKey:@"rep_location"];
+    if([rep_location isEqualToString:@"mean"]){
+        // pass
+    }else if([rep_location isEqualToString:@"densest"]){
+        int idx = Location::findKDEDensestLocationIndex<State>(states);
+        Location locDensest = states.at(idx);
+        refPose.copyLocation(locDensest);
+    }else if([rep_location isEqualToString:@"closest_mean"]){
+        int idx = Location::findClosestLocationIndex(refPose, states);
+        Location locClosest = states.at(idx);
+        refPose.copyLocation(locClosest);
+    }
+    return refPose;
+}
+
+
 int dcount = 0;
 - (void)locationUpdated:(loc::Status*)status withResampledFlag:(BOOL)flag
 {
@@ -960,20 +984,7 @@ int dcount = 0;
         
         Pose refPose = *status->meanPose();
         std::vector<State> states = *status->states();
-        
-        // Compute representative location
-        NSString *rep_location = [[NSUserDefaults standardUserDefaults] stringForKey:@"rep_location"];
-        if([rep_location isEqualToString:@"mean"]){
-            // pass
-        }else if([rep_location isEqualToString:@"densest"]){
-            int idx = Location::findKDEDensestLocationIndex<State>(states);
-            Location locDensest = states.at(idx);
-            refPose.copyLocation(locDensest);
-        }else if([rep_location isEqualToString:@"closest_mean"]){
-            int idx = Location::findClosestLocationIndex(refPose, states);
-            Location locClosest = states.at(idx);
-            refPose.copyLocation(locClosest);
-        }
+        refPose = computeRepresentativePose(refPose, states);
         
         loc::LatLngConverter::Ptr projection = [self getProjection];
         auto global = projection->localToGlobal(refPose);

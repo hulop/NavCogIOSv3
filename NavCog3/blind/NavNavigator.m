@@ -1254,8 +1254,7 @@ static NavNavigator* instance;
             if (linkInfo.distanceToTargetFromSnappedLocationOnLink < approachedDistance()) {
                 
                 if (linkInfo.isNextDestination == NO) {
-                    if ((linkInfo.link.linkType != LINK_TYPE_STAIRWAY &&
-                        linkInfo.link.linkType != LINK_TYPE_ELEVATOR) ||
+                    if (linkInfo.link.linkType != LINK_TYPE_ELEVATOR ||
                         fabs(linkInfo.link.targetHeight - location.floor) < C.FLOOR_DIFF_THRESHOLD
                         ) {
                         if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {

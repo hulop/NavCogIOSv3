@@ -22,7 +22,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface HLPLocation : NSObject
+@interface HLPLocation : NSObject <NSCoding>
 @property (readonly) double lat;
 @property (readonly) double lng;
 @property (readonly) double accuracy;

@@ -51,26 +51,13 @@
     
     NavDataStore *nds = [NavDataStore sharedDataStore];
     
-    if (nds.fromID == nil && nds.toID == nil) {
-        NSDictionary *first = [nds.searchHistory firstObject];
-        first = nil;
-        
-        if (first) {
-            nds.fromID = first[@"fromID"];
-            nds.toID = first[@"toID"];
-            nds.fromTitle = first[@"fromTitle"];
-            nds.toTitle = first[@"toTitle"];
+    if (nds.from == nil && nds.to == nil) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"]) {
+            nds.from = [NavDestination selectStart];
         } else {
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"]) {
-                nds.fromTitle = @"_nav_select_start";
-                nds.fromID = nil;
-            } else {
-                nds.fromTitle = @"_nav_latlng";
-                nds.fromID = [NavDataStore idForCurrentLocation];
-            }
-            nds.toTitle = @"_nav_select_destination";
-            nds.toID = nil;
+            nds.from = [NavDataStore destinationForCurrentLocation];
         }
+        nds.to = [NavDestination selectDestination];
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(destinationsChanged:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
@@ -115,18 +102,10 @@
     
     self.previewButton.enabled =
     self.startButton.enabled =
-    self.switchButton.enabled = (nds.toID != nil && nds.fromID != nil);
+    self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil);
     
-    NSString*(^convert)(NSString*,NSString*) = ^(NSString* title, NSString* idstr) {
-        NSString *ret = NSLocalizedStringFromTable(title, @"BlindView", @"");
-        if ([title isEqualToString:@"_nav_latlng"]) {
-            ret = [NSString stringWithFormat:@"%@(%@)", ret, [idstr substringFromIndex:7]];
-        }
-        return ret;
-    };
-    
-    [self.fromButton setTitle:convert(nds.fromTitle, nds.fromID) forState:UIControlStateNormal];
-    [self.toButton setTitle:convert(nds.toTitle, nds.toID) forState:UIControlStateNormal];
+    [self.fromButton setTitle:nds.from.name forState:UIControlStateNormal];
+    [self.toButton setTitle:nds.to.name forState:UIControlStateNormal];
     
     self.historyClearButton.enabled = [[nds searchHistory] count] > 0;
 }
@@ -160,7 +139,7 @@
     
     [NavUtil showWaitingForView:self.view];
     
-    [[NavDataStore sharedDataStore] requestRouteFrom:nds.fromID To:nds.toID withPreferences:prefs complete:^{        
+    [[NavDataStore sharedDataStore] requestRouteFrom:nds.from._id To:nds.to._id withPreferences:prefs complete:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [NavUtil hideWaitingForView:self.view];
             [self.navigationController popViewControllerAnimated:YES];
@@ -186,7 +165,7 @@
     
     [NavUtil showWaitingForView:self.view];
     
-    [[NavDataStore sharedDataStore] requestRouteFrom:nds.fromID To:nds.toID withPreferences:prefs complete:^{
+    [[NavDataStore sharedDataStore] requestRouteFrom:nds.from._id To:nds.to._id withPreferences:prefs complete:^{
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [NavUtil hideWaitingForView:self.view];
@@ -206,11 +185,8 @@
     NSDictionary *hist = [historySource historyAtIndexPath:indexPath];
     
     NavDataStore *nds = [NavDataStore sharedDataStore];
-    nds.toTitle = hist[@"toTitle"];
-    nds.fromTitle = hist[@"fromTitle"];
-    
-    nds.toID = hist[@"toID"];
-    nds.fromID = hist[@"fromID"];
+    nds.to = [NSKeyedUnarchiver unarchiveObjectWithData:hist[@"to"]];
+    nds.from = [NSKeyedUnarchiver unarchiveObjectWithData:hist[@"from"]];
     [self updateView];
 }
 

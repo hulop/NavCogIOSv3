@@ -26,12 +26,30 @@
 #import "HLPLocation.h"
 #import "HLPGeoJson.h"
 
+typedef enum {
+    NavDestinationTypeLandmark = 1,
+    NavDestinationTypeLocation,
+    NavDestinationTypeFacility,
+    NavDestinationTypeSelectStart,
+    NavDestinationTypeSelectDestination
+} NavDestinationType;
+
+@interface NavDestination : NSObject <NSCoding>
+@property (readonly) NavDestinationType type;
+@property (readonly) NSString* name;
+@property (readonly) NSString* namePron;
+@property (readonly) NSString* _id;
+-(instancetype)initWithLandmark:(HLPLandmark*)landmark;
+-(instancetype)initWithLocation:(HLPLocation*)location;
+-(instancetype)initWithFacility:(NSString*)facilityType;
++(instancetype)selectStart;
++(instancetype)selectDestination;
+@end
+
 @interface NavDataStore : NSObject
 
-@property NSString *toTitle;
-@property NSString *fromTitle;
-@property NSString *toID;
-@property NSString *fromID;
+@property NavDestination *to;
+@property NavDestination *from;
 @property BOOL previewMode;
 
 + (instancetype) sharedDataStore;
@@ -57,20 +75,17 @@
 - (void) manualLocationReset:(NSDictionary*)location;
 - (void) clearSearchHistory;
 
-+ (NSString*) idForCurrentLocation;
++ (NavDestination*) destinationForCurrentLocation;
 
 @end
 
-@interface NavDestinationDataSource : NSObject <UIPickerViewDataSource, UITableViewDataSource>
-@property BOOL showCurrentLocation;
+@interface NavDestinationDataSource : NSObject <UITableViewDataSource>
 @property NSInteger selectedRow;
-@property BOOL showToilet;
 
-- (NSString*) idForRowAtIndexPath:(NSIndexPath *)indexPath;
-- (NSString*) titleForRowAtIndexPath:(NSIndexPath *)indexPath;
-- (NSString*) titleForRow:(NSInteger)row;
-- (NSString*) idForRow:(NSInteger)row;
+@property BOOL showCurrentLocation;
+@property BOOL showFacility;
 
+- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
 @end
 
 @interface NavSearchHistoryDataSource : NSObject < UITableViewDataSource>

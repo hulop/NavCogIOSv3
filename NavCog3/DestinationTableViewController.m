@@ -40,7 +40,7 @@
         source.showCurrentLocation = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"];
     }
     if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
-        source.showToilet = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_toilet_from_to"];
+        source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
     }
     
     [self.tableView reloadData];
@@ -91,12 +91,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
-        [NavDataStore sharedDataStore].fromID = [source idForRowAtIndexPath:indexPath];
-        [NavDataStore sharedDataStore].fromTitle = [source titleForRowAtIndexPath:indexPath];
+        [NavDataStore sharedDataStore].from = [source destinationForRowAtIndexPath:indexPath];
     }
     if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
-        [NavDataStore sharedDataStore].toID = [source idForRowAtIndexPath:indexPath];
-        [NavDataStore sharedDataStore].toTitle = [source titleForRowAtIndexPath:indexPath];
+        [NavDataStore sharedDataStore].to = [source destinationForRowAtIndexPath:indexPath];
     }
     [self.navigationController popViewControllerAnimated:YES];
 }

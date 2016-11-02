@@ -67,9 +67,11 @@ typedef enum {
 @property (nonatomic, readonly) NSString *category;
 @property (nonatomic, readonly) NSString *exit;
 @property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *namePron;
 @property (nonatomic, readonly) NSString *nodeID;
 
 - (NSString*) getLandmarkName;
+- (NSString*) getLandmarkNamePron;
 - (BOOL) isToilet;
 @end
 

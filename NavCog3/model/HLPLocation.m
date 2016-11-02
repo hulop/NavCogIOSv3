@@ -40,15 +40,41 @@ double(^normalize)(double) = ^(double deg) {
 
 - (instancetype) init
 {
-    self = [super self];
+    self = [super init];
     _lat = NAN;
     _lng = NAN;
     return self;
 }
 
+- (instancetype) initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    _lat = [[aDecoder decodeObjectForKey:@"lat"] doubleValue];
+    _lng = [[aDecoder decodeObjectForKey:@"lng"] doubleValue];
+    _accuracy = [[aDecoder decodeObjectForKey:@"accuracy"] doubleValue];
+    _floor = [[aDecoder decodeObjectForKey:@"floor"] doubleValue];
+    _speed = [[aDecoder decodeObjectForKey:@"speed"] doubleValue];
+    _orientation = [[aDecoder decodeObjectForKey:@"orientation"] doubleValue];
+    _orientationAccuracy = [[aDecoder decodeObjectForKey:@"orientationAccuracy"] doubleValue];
+    _params = [aDecoder decodeObjectForKey:@"params"];
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:[NSNumber numberWithDouble:_lat] forKey:@"lat"];
+    [aCoder encodeObject:[NSNumber numberWithDouble:_lng] forKey:@"lng"];
+    [aCoder encodeObject:[NSNumber numberWithDouble:_accuracy] forKey:@"accuracy"];
+    [aCoder encodeObject:[NSNumber numberWithDouble:_floor] forKey:@"floor"];
+    [aCoder encodeObject:[NSNumber numberWithDouble:_speed] forKey:@"speed"];
+    [aCoder encodeObject:[NSNumber numberWithDouble:_orientation] forKey:@"orientation"];
+    [aCoder encodeObject:[NSNumber numberWithDouble:_orientationAccuracy] forKey:@"orientationAccuracy"];
+    [aCoder encodeObject:_params forKey:@"params"];
+}
+
 - (instancetype) initWithLat:(double)lat Lng:(double)lng
 {
-    self = [super self];
+    self = [super init];
     _lat = normalize(lat);
     _lng = normalize(lng);
     return self;
@@ -56,7 +82,7 @@ double(^normalize)(double) = ^(double deg) {
 
 - (instancetype) initWithLat:(double)lat Lng:(double)lng Floor:(double)floor
 {
-    self = [super self];
+    self = [super init];
     _lat = normalize(lat);
     _lng = normalize(lng);
     _floor = floor;
@@ -65,7 +91,7 @@ double(^normalize)(double) = ^(double deg) {
 
 - (instancetype) initWithLat:(double)lat Lng:(double)lng Accuracy:(double)accuracy Floor:(double)floor Speed:(double)speed Orientation:(double)orientation OrientationAccuracy:(double)orientationAccuracy
 {
-    self = [super self];
+    self = [super init];
     _lat = normalize(lat);
     _lng = normalize(lng);
     _accuracy = accuracy;

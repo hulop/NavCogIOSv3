@@ -28,6 +28,171 @@
 #import "LocationEvent.h"
 #import "Logging.h"
 
+@implementation NavDestination {
+    NSString *_facilityType;
+    HLPLandmark *_landmark;
+    HLPLocation *_location;
+}
+
+- (BOOL) isEqual:(NavDestination*)obj
+{
+    if (_type != obj.type) {
+        return NO;
+    }
+    
+    switch(_type) {
+        case NavDestinationTypeLandmark:
+            return [_landmark isEqual:obj->_landmark];
+        case NavDestinationTypeLocation:
+            return [_location isEqual:obj->_location];
+        case NavDestinationTypeFacility:
+            return [_facilityType isEqualToString:obj->_facilityType];
+        default:
+            break;
+    }
+    return NO;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:[NSNumber numberWithInt:_type] forKey:@"type"];
+    HLPLocation *loc;
+    switch(_type) {
+        case NavDestinationTypeLandmark:
+            [aCoder encodeObject:_landmark forKey:@"landmark"];
+            break;
+        case NavDestinationTypeLocation:
+            if (_location == nil) {
+                loc = [[NavDataStore sharedDataStore] currentLocation];
+            } else {
+                loc = _location;
+            }
+            [aCoder encodeObject:loc forKey:@"location"];
+            break;
+        case NavDestinationTypeFacility:
+            [aCoder encodeObject:_facilityType forKey:@"facilityType"];
+            break;
+        default:
+            break;
+    }
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    _type = [[aDecoder decodeObjectForKey:@"type"] intValue];
+    switch(_type) {
+        case NavDestinationTypeLandmark:
+            _landmark = [aDecoder decodeObjectForKey:@"landmark"];
+            break;
+        case NavDestinationTypeLocation:
+            _location = [aDecoder decodeObjectForKey:@"location"];
+            break;
+        case NavDestinationTypeFacility:
+            _facilityType = [aDecoder decodeObjectForKey:@"facilityType"];
+            break;
+        default:
+            break;
+    }
+    return self;
+}
+
+- (instancetype)initWithFacility:(NSString *)facilityType
+{
+    self = [super init];
+    _type = NavDestinationTypeFacility;
+    _facilityType = facilityType;
+    return self;
+}
+
+- (instancetype)initWithLocation:(HLPLocation *)location
+{
+    self = [super init];
+    _type = NavDestinationTypeLocation;
+    _location = location;
+    return self;
+}
+
+- (instancetype)initWithLandmark:(HLPLandmark *)landmark
+{
+    self = [super init];
+    _type = NavDestinationTypeLandmark;
+    _landmark = landmark;
+    return self;
+}
+
++ (instancetype)selectStart
+{
+    NavDestination *ret = [[NavDestination alloc] init];
+    ret->_type = NavDestinationTypeSelectStart;
+    return ret;
+}
+
++ (instancetype)selectDestination
+{
+    NavDestination *ret = [[NavDestination alloc] init];
+    ret->_type = NavDestinationTypeSelectDestination;
+    return ret;
+}
+
+
+- (NSString*)_id
+{
+    HLPLocation *loc;
+    switch(_type) {
+        case NavDestinationTypeLandmark:
+            return [_landmark nodeID];
+        case NavDestinationTypeLocation:
+            if (_location == nil) {
+                loc = [[NavDataStore sharedDataStore] currentLocation];
+            } else {
+                loc = _location;
+            }
+            return [NSString stringWithFormat:@"latlng:%f:%f:%d", loc.lat, loc.lng, (int)loc.floor];
+        case NavDestinationTypeFacility:
+            //TODO
+            return @"";
+        default:
+            return nil;
+    }
+}
+
+- (NSString*)name
+{
+    HLPLocation *loc;
+    switch(_type) {
+        case NavDestinationTypeLandmark:
+            return [_landmark getLandmarkName];
+        case NavDestinationTypeLocation:
+            if (_location == nil) {
+                loc = [[NavDataStore sharedDataStore] currentLocation];
+            } else {
+                loc = _location;
+            }
+            return [NSString stringWithFormat:@"%@(%f,%f,%d)",
+                    NSLocalizedStringFromTable(@"_nav_latlng", @"BlindView", @""),loc.lat,loc.lng,(int)loc.floor];
+        case NavDestinationTypeFacility:
+            //TODO
+            return @"";
+        case NavDestinationTypeSelectStart:
+            return NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
+        case NavDestinationTypeSelectDestination:
+            return NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
+    }
+    return nil;
+}
+
+- (NSString*)namePron
+{
+    switch(_type) {
+        case NavDestinationTypeLandmark:
+            return [_landmark getLandmarkNamePron];
+        default:
+            return [self name];
+    }
+    return nil;
+}
+@end
 
 @implementation NavDataStore {
     // location instance that keep the current status should be handled
@@ -187,10 +352,6 @@ static NavDataStore* instance_ = nil;
 
 - (void) manualLocationChanged: (NSNotification*) notification
 {
-    if (_previewMode) {
-        return;
-    }
-    
     NSDictionary *obj = [notification object];
     double floor = [obj[@"floor"] doubleValue];
     if (floor >= 1) {
@@ -200,7 +361,10 @@ static NavDataStore* instance_ = nil;
         isManualLocation = NO;
         manualCurrentLocation = nil;
     } else {
-        isManualLocation = YES;
+        if (_previewMode) {
+            return;
+        }
+       isManualLocation = YES;
         manualCurrentLocation = [[HLPLocation alloc] initWithLat:[obj[@"lat"] doubleValue]
                                                              Lng:[obj[@"lng"] doubleValue]
                                                         Accuracy:1
@@ -315,7 +479,7 @@ static NavDataStore* instance_ = nil;
     [HLPDataUtil loadLandmarksAtLat:lat Lng:lng inDist:dist forUser:user withLang:user_lang withCallback:^(NSArray<HLPObject *> *result) {
         //NSLog(@"%ld landmarks are loaded", (unsigned long)[result count]);
         destinationCache = [result sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
-            return [[[obj1 getLandmarkName] lowercaseString] compare:[[obj2 getLandmarkName] lowercaseString]];
+            return [[[obj1 getLandmarkNamePron] lowercaseString] compare:[[obj2 getLandmarkNamePron] lowercaseString]];
         }];
         
         destinationCache = [destinationCache filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLandmark *evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
@@ -338,37 +502,40 @@ static NavDataStore* instance_ = nil;
 
 - (void) saveHistory
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSArray *history = [[NSUserDefaults standardUserDefaults] arrayForKey:@"searchHistory"];
-        if (!history) {
-            history = @[];
-        }
-        
-        NSDictionary *newHist =
-        @{
-          @"fromID":self.fromID,
-          @"fromTitle":[self.fromTitle isEqualToString:@"_nav_latlng"]?[self.fromID substringFromIndex:7]:self.fromTitle,
-          @"toID":self.toID,
-          @"toTitle":[self.toTitle isEqualToString:@"_nav_latlng"]?[self.toID substringFromIndex:7]:self.toTitle,
-          };
+    NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString* path = [documentsPath stringByAppendingPathComponent:@"history.object"];
 
+    NSArray *history = @[];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        history = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+    }
+    
+    NSDictionary *newHist = @{
+                              @"from":[NSKeyedArchiver archivedDataWithRootObject:_from],
+                              @"to":[NSKeyedArchiver archivedDataWithRootObject:_to]};
+    
+    
+    if ([history count] > 0) {
         BOOL __block flag = YES;
         [newHist enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-            flag = flag && [[history firstObject][key] isEqualToString:obj];
+            
+            NavDestination *dest1 = [NSKeyedUnarchiver unarchiveObjectWithData:[history firstObject][key]];
+            NavDestination *dest2 = [NSKeyedUnarchiver unarchiveObjectWithData:obj];
+            
+            flag = flag && [dest1 isEqual:dest2];
         }];
         if (flag) {
             return;
         }
-        NSMutableArray *temp = [history mutableCopy];
-        [temp insertObject:newHist
-                   atIndex:0];
-        
-        while([temp count] > 100) {
-            [temp removeLastObject];
-        }
-        [[NSUserDefaults standardUserDefaults] setObject:temp forKey:@"searchHistory"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    });
+    }
+    NSMutableArray *temp = [history mutableCopy];
+    [temp insertObject:newHist
+               atIndex:0];
+    
+    while([temp count] > 100) {
+        [temp removeLastObject];
+    }
+    [NSKeyedArchiver archiveRootObject:temp toFile:path];
 }
 
 - (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
@@ -428,21 +595,22 @@ static NavDataStore* instance_ = nil;
 
 - (NSArray*) searchHistory
 {
-    NSArray *hist = [[NSUserDefaults standardUserDefaults] arrayForKey:@"searchHistory"];
-    if (!hist) {
-        hist = @[];
+    NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString* path = [documentsPath stringByAppendingPathComponent:@"history.object"];
+    
+    NSArray *history = @[];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        history = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
     }
-    return hist;
+
+    return history;
 }
 
 - (void)switchFromTo
 {
-    NSString *tempID = _fromID;
-    NSString *tempTitle = _fromTitle;
-    _fromID = _toID;
-    _fromTitle = _toTitle;
-    _toID = tempID;
-    _toTitle = tempTitle;
+    NavDestination *temp = _from;
+    _from = _to;
+    _to = temp;
 }
 
 - (HLPLandmark*)destinationByID:(NSString *)key
@@ -491,17 +659,15 @@ static NavDataStore* instance_ = nil;
 
 - (void)clearSearchHistory
 {
-    [[NSUserDefaults standardUserDefaults] setObject:@[] forKey:@"searchHistory"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString* path = [documentsPath stringByAppendingPathComponent:@"history.object"];
+
+    [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
 }
 
-+ (NSString*) idForCurrentLocation
++ (NavDestination*) destinationForCurrentLocation;
 {
-    NavDataStore *nds = [NavDataStore sharedDataStore];
-    double floor = round(nds.currentLocation.floor);
-    floor = (floor >=0)?floor+1:floor;
-    NSString *ret = [NSString stringWithFormat:@"latlng:%f:%f:%d", nds.currentLocation.lat, nds.currentLocation.lng, (int)floor];
-    return ret;
+    return [[NavDestination alloc] initWithLocation:nil];
 }
 
 - (void)setPreviewMode:(BOOL)previewMode
@@ -525,7 +691,7 @@ static NavDataStore* instance_ = nil;
 @implementation NavDestinationDataSource {
     NSArray *sections;
     BOOL _showCurrentLocation;
-    BOOL _showToilet;
+    BOOL _showFacility;
 }
 
 - (instancetype) init {
@@ -547,14 +713,14 @@ static NavDataStore* instance_ = nil;
     [self update:nil];
 }
 
-- (BOOL) showToilet
+- (BOOL) showFacility
 {
-    return _showToilet;
+    return _showFacility;
 }
 
-- (void) setShowToilet:(BOOL) flag
+- (void) setShowFacility:(BOOL) flag
 {
-    _showToilet = flag;
+    _showFacility = flag;
     [self update:nil];
 }
 
@@ -569,35 +735,28 @@ static NavDataStore* instance_ = nil;
     
     if (_showCurrentLocation) {
         NSMutableArray *temp = [@[] mutableCopy];
-        [temp addObject:@{
-                          @"name": @"_nav_latlng",
-                          @"id": @"_nav_latlng"
-                          }];
-        
+        [temp addObject:[[NavDestination alloc] initWithLocation:nil]];
         [tempSections addObject:@{@"key":@"◎", @"rows":temp}];
     }
-    if (_showToilet) {
+    
+    if (_showFacility) {
         NSMutableArray *temp = [@[] mutableCopy];
-        [temp addObject:@{@"name":@"_nav_toilet_male",@"id":@"_nav_toilet_male"}];
-        [temp addObject:@{@"name":@"_nav_toilet_female",@"id":@"_nav_toilet_female"}];
-        [temp addObject:@{@"name":@"_nav_toilet_multi",@"id":@"_nav_toilet_multi"}];
+        [temp addObject:[[NavDestination alloc] initWithFacility:@"CAT_TOIL_A"]];
+        [temp addObject:[[NavDestination alloc] initWithFacility:@"CAT_TOIL_M"]];
+        [temp addObject:[[NavDestination alloc] initWithFacility:@"CAT_TOIL_F"]];
         [tempSections addObject:@{@"key":@"🚻", @"rows":temp}];
     }
     NSMutableArray __block *temp = [@[] mutableCopy];
     NSString __block *lastFirst = nil;
     [all enumerateObjectsUsingBlock:^(HLPLandmark *landmark, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSString *name = [landmark getLandmarkName];
+        NSString *name = [landmark getLandmarkNamePron];
         NSString *first = [[name substringWithRange:NSMakeRange(0, 1)] lowercaseString];
         
         if (![first isEqualToString:lastFirst]) {
             temp = [@[] mutableCopy];
             [tempSections addObject:@{@"key":first, @"rows":temp}];
         }
-        [temp addObject:@{
-                          @"name": name,
-                          @"id": [landmark nodeID],
-                          @"obj": landmark,
-                          }];
+        [temp addObject:[[NavDestination alloc] initWithLandmark:landmark]];
         lastFirst = first;
     }];
     
@@ -614,19 +773,11 @@ static NavDataStore* instance_ = nil;
     return [[sections objectAtIndex:section][@"rows"] count];
 }
 
-- (NSString*) idForRowAtIndexPath:(NSIndexPath *)indexPath
+- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *ret = [[sections objectAtIndex:indexPath.section][@"rows"] objectAtIndex:indexPath.row][@"id"];
+    NavDestination *ret = [[sections objectAtIndex:indexPath.section][@"rows"] objectAtIndex:indexPath.row];
     
-    if ([ret isEqualToString:@"_nav_latlng"]) {
-        ret = [NavDataStore idForCurrentLocation];
-    }
     return ret;
-}
-
-- (NSString *)titleForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return [[sections objectAtIndex:indexPath.section][@"rows"] objectAtIndex:indexPath.row][@"name"];
 }
 
 - (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView
@@ -656,56 +807,13 @@ static NavDataStore* instance_ = nil;
     cell.textLabel.numberOfLines = 1;
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.textLabel.lineBreakMode = NSLineBreakByClipping;
-    cell.textLabel.text = [[sections objectAtIndex:indexPath.section][@"rows"] objectAtIndex:indexPath.row][@"name"];
     
+    NavDestination *dest = [self destinationForRowAtIndexPath:indexPath];
+    
+    cell.textLabel.text = dest.name;
     cell.clipsToBounds = YES;
     return cell;
 }
-
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
-{
-    return 1;
-}
-
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
-{
-    NSInteger count = [[[NavDataStore sharedDataStore] destinations] count] + (_showCurrentLocation?1:0);
-    
-    return count;
-}
-
-
--(NSString*) titleForRow:(NSInteger)row
-{
-    long index = row;
-    if (_showCurrentLocation) {
-        index--;
-    }
-    if (index < 0) {
-        return @"_nav_latlng";
-    } else {
-        HLPLandmark *landmark = [[[NavDataStore sharedDataStore] destinations] objectAtIndex:index];
-        
-        return [landmark getLandmarkName];
-    }
-}
-
--(NSString*) idForRow:(NSInteger)row
-{
-    NavDataStore *nds = [NavDataStore sharedDataStore];
-    long index = row;
-    if (_showCurrentLocation) {
-        index--;
-    }
-    if (index < 0) {
-        return [NavDataStore idForCurrentLocation];
-    } else {
-        HLPLandmark *landmark = [[nds destinations] objectAtIndex:index];
-        
-        return [landmark nodeID];
-    }
-}
-
 
 @end
 
@@ -735,26 +843,14 @@ static NavDataStore* instance_ = nil;
     NSArray *hist = [[NavDataStore sharedDataStore] searchHistory];
     NSDictionary *dic = hist[indexPath.row];
     
-    NSString *from = [[[NavDataStore sharedDataStore] destinationByID:dic[@"fromID"]] getLandmarkName];
-    NSString *to = [[[NavDataStore sharedDataStore] destinationByID:dic[@"toID"]] getLandmarkName];
-    if (!from) { from = dic[@"fromTitle"]; }
-    if (!to) { to = dic[@"toTitle"]; }
-    
-    
-    /*
-    int max = 24;
-    if ([from length] > max) {
-        from = [[from substringWithRange:NSMakeRange(0, max-1)] stringByAppendingString:@".."];
-    }
-    if ([to length] > max) {
-        to = [[to substringWithRange:NSMakeRange(0, max-1)] stringByAppendingString:@".."];
-    }*/
+    NavDestination *from = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"from"]];
+    NavDestination *to = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"to"]];
     
     cell.textLabel.numberOfLines = 1;
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.textLabel.lineBreakMode = NSLineBreakByClipping;
-    cell.textLabel.text = to;
-    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedStringFromTable(@"from: %@", @"BlindView", @""), from];
+    cell.textLabel.text = to.name;
+    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedStringFromTable(@"from: %@", @"BlindView", @""), from.name];
     
     return cell;
 }

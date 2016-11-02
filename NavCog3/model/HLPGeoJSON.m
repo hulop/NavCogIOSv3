@@ -246,13 +246,23 @@
               @"category": @"category",
               @"exit": @"exit",
               @"name": @"name",
+              @"namePron": @"name_pron",
               @"nodeID": @"node"
               }];
 }
 
 - (NSString *)getLandmarkName
 {
-    NSString *name = _name;
+    return [self _getLandmarkName:_name];
+}
+
+- (NSString *)getLandmarkNamePron
+{
+    return [self _getLandmarkName:_namePron];
+}
+
+- (NSString *)_getLandmarkName:(NSString*)name
+{
     NSString *exit = _exit;
     NSString *category = _category;
     NSDictionary *properties = super.properties;

@@ -28,9 +28,10 @@
 
 + (NSURL*) urlForRouteSearchService
 {
-    NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
-    NSString *context = [[NSUserDefaults standardUserDefaults] stringForKey:@"hokoukukan_server_context"];
-    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSString *server = [ud stringForKey:@"selected_hokoukukan_server"];
+    NSString *context = [ud stringForKey:@"hokoukukan_server_context"];
+    NSString *https = [ud boolForKey:@"https_connection"]?@"https":@"http";
     return [NSURL URLWithString:[NSString stringWithFormat:ROUTE_SEARCH, https, server, context]];
 }
 

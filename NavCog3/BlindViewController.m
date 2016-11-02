@@ -682,7 +682,8 @@
     
     NSLog(@"%@", NSStringFromSelector(_cmd));
     NSMutableString *string = [[NSMutableString alloc] init];
-    NSString *destination = [NavDataStore sharedDataStore].toTitle;
+    NSString *destination = [NavDataStore sharedDataStore].to.namePron;
+    
     double totalLength = [properties[@"totalLength"] doubleValue];
     NSString *totalDist = [self distanceString:totalLength];
 
@@ -706,7 +707,7 @@
     
     NSString *destination = nil;
     if (properties[@"isEndOfLink"] && [properties[@"isEndOfLink"] boolValue] == YES) {
-        destination = [NavDataStore sharedDataStore].toTitle;
+        destination = [NavDataStore sharedDataStore].to.name;
     }
     
     NSMutableString *string = [[NSMutableString alloc] init];
@@ -832,7 +833,7 @@
         [string appendString:action];
     }
     else if (isNextDestination) {
-        NSString *destTitle = [[NavDataStore sharedDataStore] toTitle];
+        NSString *destTitle = [NavDataStore sharedDataStore].to.name;
         
         [string appendString: [NSString stringWithFormat:NSLocalizedStringFromTable(@"destination is in distance",@"BlindView",@"remaining distance to the destination"), destTitle, dist]];
     }
@@ -926,7 +927,7 @@
         NSString *ld = poi.longDescription;
 
         if (poi.isDestination) {
-            text = [NavDataStore sharedDataStore].toTitle;
+            text = [NavDataStore sharedDataStore].to.namePron;
         }
         
         NSMutableString *string = [@"" mutableCopy];

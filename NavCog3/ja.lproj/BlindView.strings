@@ -98,7 +98,7 @@
 "destination is in distance" = "%2$@先、%1$@です";
 
 /* distance to a destination name */
-"distance to %1$@" = "%2$@進んで、%1$@";
+"distance to %1$@" = "%1$@まで%2$@";
 
 /* distance to the destination */
 "distance to the destination" = "目的地まで残り%1$@";

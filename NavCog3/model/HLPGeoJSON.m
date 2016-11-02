@@ -514,10 +514,10 @@
 + (BOOL)link:(HLPLink *)link1 shouldBeCombinedWithLink:(HLPLink *)link2
 {
     if (link2.linkType == LINK_TYPE_ELEVATOR) {
-        return isnan(link2.initialBearingFromSource) && link1.length < 5;
+        return isnan(link2.initialBearingFromSource) && (link1.length < 5);
     }
     else if (link1.linkType == LINK_TYPE_ELEVATOR) {
-        return isnan(link1.lastBearingForTarget) && link2.length < 5;
+        return isnan(link1.lastBearingForTarget) && (link2.length < 5);
     }
 
     return  fabs(link1.lastBearingForTarget - link2.initialBearingFromSource) < 15.0 &&

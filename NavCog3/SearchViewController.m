@@ -89,6 +89,27 @@
 - (void) destinationsChanged:(NSNotification*)notification
 {
     [NavUtil hideWaitingForView:self.view];
+    
+    [notification object];
+    
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    if ([[nds destinations] count] == 0) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error"
+                                                                       message:@"No destinations"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                      dispatch_async(dispatch_get_main_queue(), ^(void){
+                                                          [self.navigationController popViewControllerAnimated:YES];
+                                                      });
+                                                  }]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self presentViewController:alert animated:YES completion:nil];
+        });
+
+    }
     [self updateView];
     updated = YES;
 }

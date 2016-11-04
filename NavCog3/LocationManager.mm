@@ -321,6 +321,7 @@ void functionCalledToLog(void *inUserData, string text)
                         double lat = stod(att_values.at(1));
                         double lng = stod(att_values.at(2));
                         double floor = stod(att_values.at(3));
+                        currentFloor = floor;
                         double accuracy = stod(att_values.at(4));
                         double orientation = stod(att_values.at(5));
                         double orientationAccuracy = stod(att_values.at(6));
@@ -628,10 +629,7 @@ void functionCalledToLog(void *inUserData, string text)
     if (putBeaconsCount < localizer->nSmooth) {
         return;
     }
-    BOOL flag = flagPutBeacon;
-    [processQueue addOperationWithBlock:^{
-        [self locationUpdated:status withResampledFlag:flag];
-    }];
+    [self locationUpdated:status withResampledFlag:flagPutBeacon];
 }
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading

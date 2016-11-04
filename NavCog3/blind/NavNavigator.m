@@ -135,14 +135,18 @@ static NavNavigatorConstants *_instance;
              @"REPEAT_ACTION_TIME_INTERVAL": @[@(15.0), @(5), @(100), @(5), FIXED],
 
              
-             @"OFF_ROUTE_THRESHOLD": @[@(5.0), @(1.0), @(50.0), @(1.0), FIXED],
+             @"OFF_ROUTE_THRESHOLD": @[@(5.0), @(1.0), @(50.0), @(1.0)],
+             @"OFF_ROUTE_EXT_LINK_THRETHOLD": @[@(3.0), @(1.0), @(10.0), @(1.0), FIXED],
+             @"REROUTE_DISTANCE_THRESHOLD": @[@(6.0), @(1.0), @(10.0), @(1.0), FIXED],
+             @"OFF_ROUTE_ANNOUNCE_MIN_INTERVAL": @[@(10), @(5), @(60), @(5), FIXED],
+             
              @"NUM_OF_LINKS_TO_CHECK": @[@(3), @(1), @(10), @(1), FIXED],
     
              @"OFF_ROUTE_BEARING_THRESHOLD": @[@(2.0), @(0), @(10), @(0.1), FIXED],
              @"CHANGE_HEADING_THRESHOLD": @[@(30.0), @(0), @(90), @(5), FIXED],
              @"ADJUST_HEADING_MARGIN": @[@(15.0), @(0), @(90), @(5), FIXED],
              
-             @"BACK_DETECTION_THRESHOLD": @[@(2.0), @(0), @(10), @(1) ,FIXED],
+             @"BACK_DETECTION_THRESHOLD": @[@(2.0), @(0), @(10), @(1)],
              @"BACK_DETECTION_HEADING_THRESHOLD": @[@(120), @(90), @(180), @(5), FIXED],
              @"BACK_ANNOUNCE_MIN_INTERVAL": @[@(10), @(5), @(60), @(5), FIXED],
              
@@ -482,6 +486,7 @@ static NavNavigatorConstants *_instance;
         
         _distanceToTargetFromUserLocation = [_userLocation distanceTo:_targetLocation];
         _distanceToTargetFromSnappedLocationOnLink = [_snappedLocationOnLink distanceTo:_targetLocation];
+        _distanceToSourceFromSnappedLocationOnLink = [_snappedLocationOnLink distanceTo:_sourceLocation];
         
         if (_backDetectedLocation) {
             _distanceFromBackDetectedLocationToSnappedLocationOnLink = [_backDetectedLocation distanceTo:_snappedLocationOnLink];
@@ -568,6 +573,7 @@ static NavNavigatorConstants *_instance;
     NSDictionary *linksMap;
     NSDictionary *nodeLinksMap;
     NSArray *pois;
+    NSArray *oneHopLinks;
     
     //NSString *destination;
     //NSString *startPoint;
@@ -634,11 +640,6 @@ static NavNavigator* instance;
     waitingStartUntil = [[NSDate date] timeIntervalSince1970] + 1.0;
     [self reset];
     
-    NSLog(@"ROUTE=================");
-    for(HLPObject *obj in route) {
-        NSLog(@"%@", obj);
-    }
-
     // prepare data
     features = nds.features;
     
@@ -649,6 +650,7 @@ static NavNavigator* instance;
     NSMutableDictionary *nodesMapTemp = [@{} mutableCopy];
     NSMutableDictionary *linksMapTemp = [@{} mutableCopy];
     NSMutableDictionary *nodeLinksMapTemp = [@{} mutableCopy];
+
     for(HLPObject *obj in features) {
         @try {
             idMapTemp[obj._id] = obj;
@@ -748,8 +750,42 @@ static NavNavigator* instance;
             return @[];
         }
     };
+
+    NSArray*(^collectLinks)(NSArray*) = ^(NSArray *array) {
+        NSMutableArray *temp = [@[] mutableCopy];
+        for(HLPObject *obj2 in array) {
+            if ([obj2 isKindOfClass:HLPLink.class]) {
+                HLPNode *sn = nodesMap[[(HLPLink*)obj2 sourceNodeID]];
+                HLPNode *tn = nodesMap[[(HLPLink*)obj2 targetNodeID]];
+                
+                for(HLPLink *lid in sn.connectedLinkIDs) {
+                    HLPLink *link = linksMap[lid];
+                    [link setTargetNodeIfNeeded:sn withNodesMap:nodesMap];
+                    if (![temp containsObject:link]) {
+                        [temp addObject:link];
+                    }
+                }
+                for(HLPLink *lid in tn.connectedLinkIDs) {
+                    HLPLink *link = linksMap[lid];
+                    [link setTargetNodeIfNeeded:tn withNodesMap:nodesMap];
+                    if (![temp containsObject:link]) {
+                        [temp addObject:link];
+                    }
+                }
+            }
+        }
+        return temp;
+    };
+    oneHopLinks = collectLinks(route);
     
-    // assign poi to nearest link
+
+    oneHopLinks = [oneHopLinks filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLink *link, NSDictionary<NSString *,id> * _Nullable bindings) {
+        return ![route containsObject:link] && [link length] > C.OFF_ROUTE_THRESHOLD;
+    }]];
+    
+    navIndex = 0;
+    
+    // associate pois to links
     NSMutableDictionary *linkPoiMap = [@{} mutableCopy];
     for(int j = 0; j < [pois count]; j++) {
         if ([pois[j] isKindOfClass:HLPPOI.class] == NO) {
@@ -790,33 +826,6 @@ static NavNavigator* instance;
     }
     // end assign poi to nearest link
     
-        
-    HLPNode *lastNode = [route lastObject];
-    HLPEntrance *ent = entranceMap[lastNode._id];
-    
-    // if the last node is a leaf, move it to second last
-    if ([lastNode.connectedLinkIDs count] == 1) {
-        NSString *linkID = [lastNode.connectedLinkIDs firstObject];
-        HLPLink *lastLink = linksMap[linkID];
-        if (lastLink.length < C.IGNORE_LAST_LINK_LENGTH_THRESHOLD) {
-            NSString *secondLastNodeID;
-            if ([lastLink.sourceNodeID isEqualToString:lastNode._id]) {
-                secondLastNodeID = lastLink.targetNodeID;
-            } else {
-                secondLastNodeID = lastLink.sourceNodeID;
-            }
-            lastNode = nodesMap[secondLastNodeID];
-        }
-    }
-    
-    for(NSString *linkID in lastNode.connectedLinkIDs) {
-        NSMutableArray *linkPois = linkPoiMap[linkID];
-        if (!linkPois) {
-            linkPois = [@[] mutableCopy];
-            linkPoiMap[linkID] = linkPois;
-        }
-        [linkPois addObject:ent];
-    }
     
     
     // optimize links for navigation
@@ -881,7 +890,7 @@ static NavNavigator* instance;
             
             linkInfos[i] = [[NavLinkInfo alloc] initWithLink:link1 nextLink:link2 andPOIs:linkPois];
             
-            NSLog(@"%@", linkInfos[i]);
+            //NSLog(@"%@", linkInfos[i]);
         }
     }
     
@@ -996,7 +1005,8 @@ static NavNavigator* instance;
                 [self.delegate didNavigationStarted:
                  @{
                    @"pois":info.pois,
-                   @"totalLength":@(totalLength)
+                   @"totalLength":@(totalLength),
+                   @"oneHopLinks":oneHopLinks
                    }];
             }
             isFirst = NO;
@@ -1026,76 +1036,6 @@ static NavNavigator* instance;
             return;
         }
         
-        // user may be off route
-        if (false && minDistance > C.OFF_ROUTE_THRESHOLD) { // DISABLED
-            int exMinIndex = -1;
-            double exMinDistance = DBL_MAX;
-            NSMutableArray* exlinkInfos = [@[] mutableCopy];
-            for(int i = 0; i < [features count]; i++) {
-                if ([features[i] isKindOfClass:HLPLink.class]) {
-                    HLPLink* link1 = (HLPLink*)features[i];
-                    NavLinkInfo *info = [[NavLinkInfo alloc] initWithLink:link1 nextLink:nil andPOIs:pois];
-                    [info updateWithLocation:location];
-                    [linkInfos addObject:info];
-                    if (info.distanceToUserLocationFromLink < exMinDistance &&
-                        fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
-                        fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) {
-                        exMinDistance = info.distanceToUserLocationFromLink;
-                        exMinIndex = i;
-                    }
-                }
-            }
-            NSLog(@"%d : %f", exMinIndex, exMinDistance);
-            
-            if (minIndex != exMinIndex && exMinDistance < minDistance) {
-                [self.delegate userMaybeOffRoute:nil];
-            }
-            return;
-        }
-        
-        // check if user goes backward
-        if (minIndex <= navIndex) {
-            
-            // BACK_DETECTION_THRESHOLD meters away from current link
-            // heading to backward of previous link direction
-            if ((minIndex == navIndex ||
-                 linkInfo.distanceToUserLocationFromLink > C.BACK_DETECTION_THRESHOLD) &&
-                fabs(minLinkInfo.diffBearingAtSnappedLocationOnLink) > C.BACK_DETECTION_HEADING_THRESHOLD
-                ) {
-                if (minLinkInfo.backDetectedLocation) {
-                    if ((minIndex < navIndex && minLinkInfo.distanceToTargetFromSnappedLocationOnLink > C.BACK_DETECTION_THRESHOLD) ||
-                         minLinkInfo.distanceFromBackDetectedLocationToSnappedLocationOnLink > C.BACK_DETECTION_THRESHOLD) {
-                        if (!minLinkInfo.hasBeenFixBackward || (now-minLinkInfo.lastBackNotified) > C.BACK_ANNOUNCE_MIN_INTERVAL) {
-                            navIndex = minIndex;
-                            minLinkInfo.hasBeenApproaching = NO;
-                            minLinkInfo.hasBeenWaitingAction = NO;
-                            minLinkInfo.hasBeenBearing = NO;
-                            minLinkInfo.hasBeenFixBackward = YES;
-                            minLinkInfo.nextTargetRemainingDistance = nextTargetRemainingDistance(minLinkInfo.distanceToTargetFromSnappedLocationOnLink, linkInfo.link.length);
-                            for(int i = navIndex+1; i < [linkInfos count]; i++) {
-                                if (![linkInfos[i] isEqual:[NSNull null]]) {
-                                    [linkInfos[i] reset];
-                                }
-                            }
-                            minLinkInfo.lastBackNotified = now;
-                            if ([self.delegate respondsToSelector:@selector(userMaybeGoingBackward:)]) {
-                                [self.delegate userMaybeGoingBackward:
-                                 @{
-                                   @"diffHeading": @(minLinkInfo.diffBearingAtUserLocation),
-                                   @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
-                                   }];
-                            }
-                        }
-                        return;
-                    }
-                } else {
-                    minLinkInfo.backDetectedLocation = location;
-                }
-                return;
-            }
-        }
-        
-        
         // TODO: check user skip some states
         
         // user should on the expected link
@@ -1105,6 +1045,190 @@ static NavNavigator* instance;
                 navIndex++;
                 return;
             }
+            
+            double(^approachingDistance)() = ^{
+                if (linkInfo.link.linkType == LINK_TYPE_ESCALATOR || linkInfo.link.linkType == LINK_TYPE_STAIRWAY) {
+                    return 3.0;
+                } else {
+                    return MIN(C.APPROACHING_DISTANCE_THRESHOLD, linkInfo.link.length/2);
+                }
+            };
+            double(^approachedDistance)(NavLinkInfo*) = ^(NavLinkInfo* linkInfo_){
+                if (linkInfo_.link.linkType == LINK_TYPE_ESCALATOR || linkInfo_.link.linkType == LINK_TYPE_STAIRWAY) {
+                    return 0.5;
+                } else {
+                    return MIN(C.APPROACHED_DISTANCE_THRESHOLD, linkInfo_.link.length/4);
+                }
+            };
+            
+            
+            // user may be off route
+            if (minDistance < DBL_MAX && (minDistance > C.OFF_ROUTE_THRESHOLD || linkInfo.mayBeOffRoute)) {
+                int exMinIndex = -1;
+                double exMinDistance = DBL_MAX;
+                NavLinkInfo *exMinLinkInfo = nil;
+                
+                if (!linkInfo.offRouteLinkInfo) {
+                    for(int i = 0; i < [oneHopLinks count]; i++) {
+                        if ([oneHopLinks[i] isKindOfClass:HLPLink.class]) {
+                            HLPLink* link1 = (HLPLink*)oneHopLinks[i];
+                            NavLinkInfo *info = [[NavLinkInfo alloc] initWithLink:link1 nextLink:nil andPOIs:nil];
+                            [info updateWithLocation:location];
+                            if (info.distanceToUserLocationFromLink < exMinDistance &&
+                                fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
+                                fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) {
+                                exMinDistance = info.distanceToUserLocationFromLink;
+                                exMinLinkInfo = info;
+                                exMinIndex = i;
+                            }
+                        }
+                    }
+                    //NSLog(@"%d : %f", exMinIndex, exMinDistance);
+                }
+
+                // リンクターゲットで迷った, 曲がり角を行き過ぎた, 反対に曲がった
+                // 一度曲がる方向に向いた上で（リンクソース）, 違う方向に行った
+                if (linkInfo.distanceToTargetFromSnappedLocationOnLink < C.OFF_ROUTE_EXT_LINK_THRETHOLD ||
+                    linkInfo.distanceToSourceFromSnappedLocationOnLink < C.OFF_ROUTE_EXT_LINK_THRETHOLD) {
+                    // 現在のリンクから一定以上離れて、one hopリンク上に居る -> 戻すことを試みる
+                    if (exMinLinkInfo && exMinDistance < C.OFF_ROUTE_EXT_LINK_THRETHOLD &&
+                        (!linkInfo.mayBeOffRoute || (now-linkInfo.lastOffRouteNotified) > C.OFF_ROUTE_ANNOUNCE_MIN_INTERVAL) &&
+                        fabs(exMinLinkInfo.diffBearingAtSnappedLocationOnLink) > C.BACK_DETECTION_HEADING_THRESHOLD) {
+                        linkInfo.offRouteLinkInfo = exMinLinkInfo;
+                        linkInfo.mayBeOffRoute = YES;
+                        
+                        if ([self.delegate respondsToSelector:@selector(userMaybeOffRoute:)]) {
+                            [self.delegate userMaybeOffRoute:
+                             @{
+                               // 延長リンク上の位置と、headingを指定
+                               // exMinLinkInfoがある場合
+                               @"distance": @(linkInfo.offRouteLinkInfo.distanceToTargetFromSnappedLocationOnLink),
+                               @"diffHeading": @(linkInfo.offRouteLinkInfo.diffBearingAtSnappedLocationOnLink)
+                               }];
+                        }
+                        linkInfo.hasBeenFixOffRoute = YES;
+                        linkInfo.hasBeenWaitingAction = NO;
+                        linkInfo.hasBeenApproaching = YES;
+                        linkInfo.lastOffRouteNotified = now;
+
+                    }
+                    else if (minIndex == navIndex && minDistance > C.REROUTE_DISTANCE_THRESHOLD) {
+                        // TODO: 不明な場所で、現在のリンクが一番近い -> 戻すことを試みる
+                        // linkInfo.mayBeOffRoute = YES;
+                        // リンクに近づける方角をアナウンス
+                    }
+                    else if (minDistance > C.REROUTE_DISTANCE_THRESHOLD) {
+                        // TODO: 不明な場所で、現在のリンクではないところが一番近い -> リルート
+                    }
+                }
+                
+                if (linkInfo.mayBeOffRoute) {
+                    [linkInfo.offRouteLinkInfo updateWithLocation:location];
+
+                    if (linkInfo.hasBeenFixOffRoute &&
+                               fabs(linkInfo.offRouteLinkInfo.diffBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
+                        linkInfo.hasBeenFixOffRoute = NO;
+                        
+                        if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
+                            [self.delegate userAdjustedHeading:@{}];
+                        }
+                        if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {
+                            
+                            double distance = linkInfo.offRouteLinkInfo.distanceToTargetFromSnappedLocationOnLink;
+                            
+                            [self.delegate userNeedsToWalk:
+                             @{
+                               //@"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
+                               @"isFirst": @(NO),
+                               @"distance": @(distance),
+                               @"noAndTurnMinDistance": @(DBL_MAX),
+                               @"linkType": @(linkInfo.link.linkType),
+                               }];
+                        }
+                    } else if (linkInfo.offRouteLinkInfo.distanceToTargetFromSnappedLocationOnLink < approachedDistance(linkInfo.offRouteLinkInfo) &&
+                         !linkInfo.hasBeenWaitingAction) {
+                        linkInfo.mayBeOffRoute = NO;
+                        linkInfo.hasBeenWaitingAction = YES;
+                        if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                            [self.delegate userNeedsToTakeAction:
+                             @{
+                               @"turnAngle": @(linkInfo.nextTurnAngle),
+                               @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
+                               @"nextLinkType": @(linkInfo.nextLink.linkType),
+                               @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                               @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                               }];
+                        }
+                        
+                    }
+                    return;
+                }
+                // 途中で勝手に曲がった
+                // bearingで処理
+            }
+            
+            
+            // TODO: consider better way to manage user's orientation.
+            /*
+             if (linkInfo.distanceToUserLocationFromLink > C.OFF_ROUTE_BEARING_THRESHOLD &&
+             !isnan(linkInfo.diffBearingAtUserLocation) &&
+             fabs(linkInfo.diffBearingAtUserLocation) > C.CHANGE_HEADING_THRESHOLD &&
+             !linkInfo.hasBeenBearing &&
+             !linkInfo.isComplex) {
+             linkInfo.hasBeenBearing = YES;
+             if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
+             [self.delegate userNeedsToChangeHeading:
+             @{
+             @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
+             @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
+             }];
+             }
+             return;
+             }
+             */
+            
+            // check if user goes backward
+            if (minIndex <= navIndex && !linkInfo.mayBeOffRoute) {
+                
+                // BACK_DETECTION_THRESHOLD meters away from current link
+                // heading to backward of previous link direction
+                if ((minIndex == navIndex ||
+                     linkInfo.distanceToUserLocationFromLink > C.BACK_DETECTION_THRESHOLD) &&
+                    fabs(minLinkInfo.diffBearingAtSnappedLocationOnLink) > C.BACK_DETECTION_HEADING_THRESHOLD
+                    ) {
+                    if (minLinkInfo.backDetectedLocation) {
+                        if ((minIndex < navIndex && minLinkInfo.distanceToTargetFromSnappedLocationOnLink > C.BACK_DETECTION_THRESHOLD) ||
+                            minLinkInfo.distanceFromBackDetectedLocationToSnappedLocationOnLink > C.BACK_DETECTION_THRESHOLD) {
+                            if (!minLinkInfo.hasBeenFixBackward || (now-minLinkInfo.lastBackNotified) > C.BACK_ANNOUNCE_MIN_INTERVAL) {
+                                navIndex = minIndex;
+                                minLinkInfo.hasBeenApproaching = NO;
+                                minLinkInfo.hasBeenWaitingAction = NO;
+                                minLinkInfo.hasBeenBearing = NO;
+                                minLinkInfo.hasBeenFixBackward = YES;
+                                minLinkInfo.nextTargetRemainingDistance = nextTargetRemainingDistance(minLinkInfo.distanceToTargetFromSnappedLocationOnLink, linkInfo.link.length);
+                                for(int i = navIndex+1; i < [linkInfos count]; i++) {
+                                    if (![linkInfos[i] isEqual:[NSNull null]]) {
+                                        [linkInfos[i] reset];
+                                    }
+                                }
+                                minLinkInfo.lastBackNotified = now;
+                                if ([self.delegate respondsToSelector:@selector(userMaybeGoingBackward:)]) {
+                                    [self.delegate userMaybeGoingBackward:
+                                     @{
+                                       @"diffHeading": @(minLinkInfo.diffBearingAtUserLocation),
+                                       @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
+                                       }];
+                                }
+                            }
+                            return;
+                        }
+                    } else {
+                        minLinkInfo.backDetectedLocation = minLinkInfo.snappedLocationOnLink;
+                    }
+                    return;
+                }
+            }
+        
             
             if (linkInfo.link.length < C.NO_APPROACHING_DISTANCE_THRESHOLD) {
                 linkInfo.hasBeenApproaching = YES;
@@ -1143,24 +1267,6 @@ static NavNavigator* instance;
                 return;
             }
             
-            // TODO: consider better way to manage user's orientation.
-            /*
-            if (linkInfo.distanceToUserLocationFromLink > C.OFF_ROUTE_BEARING_THRESHOLD &&
-                !isnan(linkInfo.diffBearingAtUserLocation) &&
-                fabs(linkInfo.diffBearingAtUserLocation) > C.CHANGE_HEADING_THRESHOLD &&
-                !linkInfo.hasBeenBearing &&
-                !linkInfo.isComplex) {
-                linkInfo.hasBeenBearing = YES;
-                if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
-                    [self.delegate userNeedsToChangeHeading:
-                     @{
-                       @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
-                       @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
-                       }];
-                }
-                return;
-            }
-             */
             
             if (linkInfo.hasBeenBearing) {
                 if (fabs(linkInfo.diffBearingAtUserLocation) < C.ADJUST_HEADING_MARGIN) {
@@ -1173,7 +1279,7 @@ static NavNavigator* instance;
                 // return;
             }
             if (linkInfo.hasBeenFixBackward) {
-                if (fabs(linkInfo.diffBearingAtUserLocation) < C.ADJUST_HEADING_MARGIN) {
+                if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
                     linkInfo.hasBeenFixBackward = NO;
                     linkInfo.backDetectedLocation = nil;
                     if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
@@ -1261,17 +1367,10 @@ static NavNavigator* instance;
                 }
             }
             
-            double(^approachingDistance)() = ^{
-                if (linkInfo.link.linkType == LINK_TYPE_ESCALATOR || linkInfo.link.linkType == LINK_TYPE_STAIRWAY) {
-                    return 3.0;
-                } else {
-                    return MIN(C.APPROACHING_DISTANCE_THRESHOLD, linkInfo.link.length/2);
-                }
-            };
             
             // to do adjust approaching distance for short link
             if (linkInfo.distanceToTargetFromSnappedLocationOnLink < approachingDistance() &&
-                fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < C.CHANGE_HEADING_THRESHOLD &&
+                fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < 45 &&
                 !linkInfo.hasBeenApproaching) {
                 if ([self.delegate respondsToSelector:@selector(userIsApproachingToTarget:)]) {
                     [self.delegate userIsApproachingToTarget:
@@ -1287,15 +1386,7 @@ static NavNavigator* instance;
                 return;
             }
             
-            double(^approachedDistance)() = ^{
-                if (linkInfo.link.linkType == LINK_TYPE_ESCALATOR || linkInfo.link.linkType == LINK_TYPE_STAIRWAY) {
-                    return 0.5;
-                } else {
-                    return MIN(C.APPROACHED_DISTANCE_THRESHOLD, linkInfo.link.length/4);
-                }
-            };
-            
-            if (linkInfo.distanceToTargetFromSnappedLocationOnLink < approachedDistance()) {
+            if (linkInfo.distanceToTargetFromSnappedLocationOnLink < approachedDistance(linkInfo)) {
                 
                 if (linkInfo.isNextDestination == NO) {
                     if (fabs(linkInfo.link.targetHeight - location.floor) < C.FLOOR_DIFF_THRESHOLD) {

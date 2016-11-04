@@ -750,6 +750,12 @@ static NavDataStore* instance_ = nil;
     NSString __block *lastFirst = nil;
     [all enumerateObjectsUsingBlock:^(HLPLandmark *landmark, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *name = [landmark getLandmarkNamePron];
+
+        if (name == nil || [name length] == 0) {
+            NSLog(@"no name landmark %@", landmark);
+            return;
+        }
+
         NSString *first = [[name substringWithRange:NSMakeRange(0, 1)] lowercaseString];
         
         if (![first isEqualToString:lastFirst]) {

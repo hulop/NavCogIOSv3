@@ -143,6 +143,7 @@ typedef enum: int {
 - (HLPLocation*) targetLocation;
 - (HLPLocation*) locationDistanceToTarget:(double) distance;
 - (void) updateWithNodesMap:(NSDictionary*)nodesMap;
+- (void) setTargetNodeIfNeeded:(HLPNode*)node withNodesMap:(NSDictionary*)nodesMap;
 
 @end
 

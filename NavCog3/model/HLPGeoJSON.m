@@ -394,11 +394,18 @@
     _sourceHeight = [self.properties[@"sourceHeight"] doubleValue];
     _targetNodeID = self.properties[@"targetNode"];
     _targetHeight = [self.properties[@"targetHeight"] doubleValue];
+
+    _linkType = [self.properties[PROPKEY_LINK_TYPE] intValue];
     
+    [self update];
+    return self;
+}
+
+- (void) update
+{
     _sourceHeight = (_sourceHeight >= 1)?_sourceHeight-1:_sourceHeight;
     _targetHeight = (_targetHeight >= 1)?_targetHeight-1:_targetHeight;
     
-    _linkType = [self.properties[PROPKEY_LINK_TYPE] intValue];
     
     _backward = [self.properties[PROPKEY_TARGET_NODE_ID] isEqualToString:_sourceNodeID];
 
@@ -431,8 +438,6 @@
             initialBearingFromSource = lastBearingForTarget = NAN;
         }
     }
-    
-    return self;
 }
 
 - (void)updateWithNodesMap:(NSDictionary *)nodesMap
@@ -507,6 +512,28 @@
     return loc;
 }
 
+- (void)setTargetNodeIfNeeded:(HLPNode *)node withNodesMap:(NSDictionary *)nodesMap
+{
+    if (_sourceNodeID && _targetNodeID) {
+        return;
+    }
+    _targetNodeID = node._id;
+    if ([self.properties[PROPKEY_TARGET_NODE_ID] isEqualToString:_targetNodeID]) {
+        _sourceNodeID = self.properties[PROPKEY_SOURCE_NODE_ID];
+    } else {
+        _sourceNodeID = self.properties[PROPKEY_TARGET_NODE_ID];
+    }
+
+    if (nodesMap[_sourceNodeID]) {
+        _sourceHeight = [nodesMap[_sourceNodeID] height];
+    }
+    if (nodesMap[_targetNodeID]) {
+        _targetHeight = [nodesMap[_targetNodeID] height];
+    }
+    [self update];
+    
+}
+
 @end
 
 @implementation HLPCombinedLink
@@ -571,6 +598,14 @@
             [coords addObjectsFromArray:link2.geometry.coordinates];
         } else {
             [coords addObjectsFromArray:[[link2.geometry.coordinates reverseObjectEnumerator] allObjects]];
+        }
+    }
+    
+    for(long i = [coords count]-2; i>=0; i--) {
+        if ([coords[i][0] doubleValue] == [coords[i+1][0] doubleValue] &&
+            [coords[i][1] doubleValue] == [coords[i+1][1] doubleValue]
+            ) {
+            [coords removeObjectAtIndex:i+1];
         }
     }
     

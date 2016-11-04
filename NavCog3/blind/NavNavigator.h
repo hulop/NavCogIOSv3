@@ -51,6 +51,10 @@
 @property (readonly) double REPEAT_ACTION_TIME_INTERVAL;
 
 @property (readonly) double OFF_ROUTE_THRESHOLD;
+@property (readonly) double OFF_ROUTE_EXT_LINK_THRETHOLD;
+@property (readonly) double REROUTE_DISTANCE_THRESHOLD;
+@property (readonly) double OFF_ROUTE_ANNOUNCE_MIN_INTERVAL;
+
 @property (readonly) int NUM_OF_LINKS_TO_CHECK;
 
 @property (readonly) double OFF_ROUTE_BEARING_THRESHOLD;
@@ -112,6 +116,7 @@
 @property (readonly) double distanceToUserLocationFromLink;
 @property (readonly) double distanceToTargetFromUserLocation;
 @property (readonly) double distanceToTargetFromSnappedLocationOnLink;
+@property (readonly) double distanceToSourceFromSnappedLocationOnLink;
 
 @property (readonly) double nextTurnAngle;
 @property (readonly) double diffBearingAtUserLocation;
@@ -129,11 +134,17 @@
 @property BOOL hasBeenApproaching;
 @property BOOL hasBeenWaitingAction;
 @property BOOL hasBeenFixBackward;
+@property BOOL hasBeenFixOffRoute;
 @property double nextTargetRemainingDistance;
 @property NSTimeInterval expirationTimeOfPreventRemainingDistanceEvent;
 @property HLPLocation *backDetectedLocation;
 @property (readonly) double distanceFromBackDetectedLocationToSnappedLocationOnLink;
 @property NSTimeInterval lastBackNotified;
+@property NSTimeInterval lastOffRouteNotified;
+
+@property BOOL mayBeOffRoute;
+@property NavLinkInfo* offRouteLinkInfo;
+
 
 - (instancetype)initWithLink:(HLPLink*)link nextLink:(HLPLink*)nextLink andPOIs:(NSArray*)allPOIs;
 - (void)reset;

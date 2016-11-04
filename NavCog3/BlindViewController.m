@@ -46,6 +46,8 @@
     double targetAngle;
     double targetDistance;
     double targetFloor;
+    
+    NSTimer *timerForSimulator;
 }
 
 @end
@@ -282,13 +284,14 @@
 }
 
 - (void)manualGoFloor:(double)floor {
-    NSLog(@"go floor %f", floor);
+    //NSLog(@"go floor %f", floor);
     
     if ([NavDataStore sharedDataStore].previewMode) {
         HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
         [loc updateLat:loc.lat Lng:loc.lng Accuracy:loc.accuracy Floor:floor];
         [[NavDataStore sharedDataStore] manualLocation:loc];
     } else {
+
         int ifloor = round(floor<0?floor:floor+1);
         [helper evalScript:[NSString stringWithFormat:@"$hulop.indoor.showFloor(%d);", ifloor]];
         [self manualGoForward:0];
@@ -476,6 +479,13 @@
     HLPLinkType linkType = [properties[@"linkType"] intValue];
     HLPLinkType nextLinkType = [properties[@"nextLinkType"] intValue];
     double turnAngle = [properties[@"turnAngle"] doubleValue];
+    
+    if (properties[@"diffHeading"]) {
+        if (fabs([HLPLocation normalizeDegree:[properties[@"diffHeading"] doubleValue] - turnAngle]) > 45 &&
+            linkType != LINK_TYPE_ELEVATOR) {
+            turnAngle = [properties[@"diffHeading"] doubleValue];
+        }
+    }
     NSString *string = nil;
     
     if (nextLinkType == LINK_TYPE_ELEVATOR || nextLinkType == LINK_TYPE_ESCALATOR || nextLinkType == LINK_TYPE_STAIRWAY) {
@@ -655,6 +665,12 @@
         
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_point"]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:properties];
+
+                // if there is no location manager response
+                timerForSimulator = [NSTimer scheduledTimerWithTimeInterval:2 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                    [self manualGoFloor: [properties[@"location"] floor]];
+                    [self manualGoForward:0];
+                }];
             }
             
             [NavUtil showWaitingForView:self.view];
@@ -682,13 +698,19 @@
 
 - (void)didNavigationStarted:(NSDictionary *)properties
 {
+    if (timerForSimulator) {
+        [timerForSimulator invalidate];
+        timerForSimulator = nil;
+    }
     dispatch_async(dispatch_get_main_queue(), ^{
         [helper evalScript:[NSString stringWithFormat:@"$hulop.map.getMap().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
     });
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [NavUtil hideWaitingForView:self.view];
-        [helper showRoute:[[NavDataStore sharedDataStore] route]];
+        NSArray *temp = [[NavDataStore sharedDataStore] route];
+        //temp = [temp arrayByAddingObjectsFromArray:properties[@"oneHopLinks"]];
+        [helper showRoute:temp];
     });
 
     
@@ -902,7 +924,21 @@
 - (void)userMaybeOffRoute:(NSDictionary*)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
+    
+    double diffHeading = [properties[@"diffHeading"] doubleValue];
+    targetAngle = diffHeading;
+    
+    NSString *hAction = [self headingActionString:properties];
+    
+    if (hAction) {
+        NSString *string = NSLocalizedStringFromTable(@"%@, you might be going wrong direction.", @"BlindView", @"");
+        string = [NSString stringWithFormat:string, hAction];
+        [[NavDeviceTTS sharedTTS] speak:string completionHandler:^{
+            
+        }];
+    }
 }
+
 - (void)userMayGetBackOnRoute:(NSDictionary*)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));

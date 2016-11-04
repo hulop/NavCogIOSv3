@@ -193,20 +193,35 @@ void functionCalledToLog(void *inUserData, string text)
         
         BOOL bRealtime = [[NSUserDefaults standardUserDefaults] boolForKey:@"replay_in_realtime"];
         BOOL bSensor = [[NSUserDefaults standardUserDefaults] boolForKey:@"replay_sensor"];
+        BOOL bShowSensorLog = [[NSUserDefaults standardUserDefaults] boolForKey:@"replay_show_sensor_log"];
         BOOL bResetInLog = [[NSUserDefaults standardUserDefaults] boolForKey:@"replay_with_reset"];
         BOOL bNavigation = [[NSUserDefaults standardUserDefaults] boolForKey:@"replay_navigation"];
         
+        NSMutableDictionary *marker = [@{} mutableCopy];
+        long count = 0;
         while (getline(ifs, str) && isLogReplaying)
         {
-            [NSThread sleepForTimeInterval:0.0001];
+            [NSThread sleepForTimeInterval:0.001];
+
+            NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+            
+            long diffr = (now - start)*1000;
+            long difft = timestamp - first;
 
             progress += str.length()+1;
-            [[NSNotificationCenter defaultCenter] postNotificationName:LOG_REPLAY_PROGRESS object:@{@"progress":@(progress),@"total":@(total)}];
+            if (count*500 < difft) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:LOG_REPLAY_PROGRESS object:
+                 @{
+                   @"progress":@(progress),
+                   @"total":@(total),
+                   @"marker":marker,
+                   @"floor":@(currentFloor),
+                   @"difft":@(difft)
+                   }];
+                count++;
+            }
             
-            long diffr = ([[NSDate date] timeIntervalSince1970] - start)*1000;
-            long difft = timestamp - first;
-            
-            if (difft - diffr > 1000) {
+            if (difft - diffr > 1000 && bRealtime) { // skip
                 first +=  difft - diffr - 1000;
                 difft = diffr + 1000;
             }
@@ -238,14 +253,18 @@ void functionCalledToLog(void *inUserData, string text)
                     // Parsing acceleration values
                     else if (logString.compare(0, 3, "Acc") == 0) {
                         Acceleration acc = LogUtil::toAcceleration(logString);
-                        std::cout << "LogReplay:" << acc.timestamp() << ",Acc," << acc << std::endl;
+                        if (bShowSensorLog) {
+                            std::cout << "LogReplay:" << acc.timestamp() << ",Acc," << acc << std::endl;
+                        }
                         timestamp = acc.timestamp();
                         localizer->putAcceleration(acc);
                     }
                     // Parsing motion values
                     else if (logString.compare(0, 6, "Motion") == 0) {
                         Attitude att = LogUtil::toAttitude(logString);
-                        std::cout << "LogReplay:" << att.timestamp() << ",Motion," << att << std::endl;
+                        if (bShowSensorLog) {
+                            std::cout << "LogReplay:" << att.timestamp() << ",Motion," << att << std::endl;
+                        }
                         timestamp = att.timestamp();
                         localizer->putAttitude(att);
                     }
@@ -263,7 +282,10 @@ void functionCalledToLog(void *inUserData, string text)
                             std::cout << "LogReplay:" << timestamp << ",Reset,";
                             std::cout << std::setprecision(10) << lat <<"," <<lng;
                             std::cout <<"," <<floor <<"," <<orientation << std::endl;
-                            
+                            marker[@"lat"] = @(lat);
+                            marker[@"lng"] = @(lng);
+                            marker[@"floor"] = @(floor);
+
                             HLPLocation *loc = [[HLPLocation alloc] initWithLat:lat Lng:lng Floor:floor];
                             NSDictionary* properties = @{@"location" : loc,
                                                          @"heading": @(orientation)
@@ -283,6 +305,9 @@ void functionCalledToLog(void *inUserData, string text)
                         std::cout << "LogReplay:" << timestamp << ",Marker,";
                         std::cout << std::setprecision(10) << lat << "," << lng;
                         std::cout << "," << floor << std::endl;
+                        marker[@"lat"] = @(lat);
+                        marker[@"lng"] = @(lng);
+                        marker[@"floor"] = @(floor);
                     }
                 }
 
@@ -1064,17 +1089,19 @@ int dcount = 0;
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSString __block *mapName = [ud stringForKey:@"bleloc_map_data"];
-    if (!mapName) {
-        for(NSString *file in [ConfigManager filenamesWithSuffix:@"json"]) {
-            mapName = file;
-            [ud setObject:mapName forKey:@"bleloc_map_data"];
-            break;
+    
+    NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    while(YES) {
+        NSString* path = [documentsPath stringByAppendingPathComponent:mapName];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path] == NO) {
+            for(NSString *file in [ConfigManager filenamesWithSuffix:@"json"]) {
+                mapName = file;
+                [ud setValue:mapName forKey:@"bleloc_map_data"];
+                break;
+            }
+            continue;
         }
-    }
-
-    if (mapName) {
-        NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        NSString *path = [documentsPath stringByAppendingPathComponent:mapName];
+        
         [[[NSOperationQueue alloc] init] addOperationWithBlock:^{
             NSInputStream *stream = [NSInputStream inputStreamWithFileAtPath:path];
             [stream open];
@@ -1085,6 +1112,7 @@ int dcount = 0;
             
             [self setModelAtPath:path withWorkingDir:tempDir];
         }];
+        break;
     }
 
 }

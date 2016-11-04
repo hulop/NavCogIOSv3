@@ -71,6 +71,7 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
     
     UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, w-size, size)];
     label.text = @"Log Replaying";
+    label.font = [UIFont fontWithName:@"Courier" size:14];
     
     UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(w-size, 0, size, size)];
     [btn setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];

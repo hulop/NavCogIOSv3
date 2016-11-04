@@ -130,8 +130,18 @@
         id observer = [[NSNotificationCenter defaultCenter] addObserverForName:LOG_REPLAY_PROGRESS object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
             long progress = [[note object][@"progress"] longValue];
             long total = [[note object][@"total"] longValue];
+            NSDictionary *marker = [note object][@"marker"];
+            double floor = [[note object][@"floor"] doubleValue];
+            double difft = [[note object][@"difft"] doubleValue]/1000;
+            
             dispatch_async(dispatch_get_main_queue(), ^{
-                mv.message.text = [NSString stringWithFormat:@"Log Replaying %.0f%%", (progress /(double)total)*100];
+                if (marker) {
+                    mv.message.text = [NSString stringWithFormat:@"Log %03.0f%%:%03.1fs (%d:%.2f)",
+                                       (progress /(double)total)*100, difft, [marker[@"floor"] intValue], floor];
+                } else {
+                    mv.message.text = [NSString stringWithFormat:@"Log %03.0f%%", (progress /(double)total)*100];
+                }
+                NSLog(@"%@", mv.message.text);
             });
             
             if (progress == total) {

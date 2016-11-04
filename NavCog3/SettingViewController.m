@@ -358,6 +358,7 @@ static HLPSettingHelper *routeOptionsSettingHelper;
     [logSettingHelper addSectionTitle:@"Log Replay"];
     [logSettingHelper addSettingWithType:BOOLEAN Label:@"Replay in realtime" Name:@"replay_in_realtime" DefaultValue:@(NO) Accept:nil];
     [logSettingHelper addSettingWithType:BOOLEAN Label:@"Use sensor log" Name:@"replay_sensor" DefaultValue:@(NO) Accept:nil];
+    [logSettingHelper addSettingWithType:BOOLEAN Label:@"Show sensor log" Name:@"replay_show_sensor_log" DefaultValue:@(NO) Accept:nil];
     [logSettingHelper addSettingWithType:BOOLEAN Label:@"Use reset in sensor log" Name:@"replay_with_reset" DefaultValue:@(YES) Accept:nil];
     [logSettingHelper addSettingWithType:BOOLEAN Label:@"Use navigation log" Name:@"replay_navigation" DefaultValue:@(YES) Accept:nil];
     

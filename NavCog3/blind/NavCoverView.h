@@ -20,44 +20,8 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-/* label for distance unit option */
-"Distance unit" = "Distance unit";
+#import <UIKit/UIKit.h>
 
-/* meter distance unit label */
-"Meter" = "Meter";
+@interface NavCoverView : UIView
 
-/* feet distance unit label */
-"Feet" = "Feet";
-
-/* Toilet for people with disability */
-"FOR_DISABLED" = "Multi purpose toilet";
-
-/* Toilet for female */
-"FOR_FEMALE" = "for female";
-
-/* Toilet for male */
-"FOR_MALE" = "for male";
-
-/* label for tts options */
-"Speech" = "Speech";
-
-/* label for speech speed option */
-"Speech speed" = "Speech speed";
-
-/* label for preview speed option */
-"Preview speed" = "Preview speed";
-
-/* Toilet */
-"TOILET" = "Toilet";
-
-/* Label text for network connection error */
-"checkNetworkConnection" = "Check network connection";
-
-"UI_Mode" = "UI Mode";
-"UI_WHEELCHAIR" = "Wheelchair User / Sighted User";
-"UI_BLIND" = "Blind User";
-"Use Elevator" = "Use Elevator";
-"Use Escalator" = "Use Escalator";
-"Use Stairs" = "Use Stairs";
-"Navigation" = "Navigation History";
-"Loading, please wait" = "Loading, please wait";
+@end

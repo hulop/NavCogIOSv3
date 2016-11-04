@@ -50,10 +50,10 @@
 "Watch your step, %@" = "足元注意、%@";
 
 /* arrived message */
-"You arrived" = "目的地付近に到着しました。お疲れ様でした";
+"You arrived" = "目的地付近に到着しました。。。お疲れ様でした";
 
 /* arrived message with destination name */
-"You arrived at %1$@" = "%1$@付近に到着しました。お疲れ様でした";
+"You arrived at %1$@" = "%1$@付近に到着しました。。。お疲れ様でした";
 
 /* (No Commment) */
 "_nav_latlng" = "現在地";
@@ -170,10 +170,10 @@
 "proceed distance ..." = "%1$@進み、";
 
 /* (No Commment) */
-"proceed distance on floor" = "%2$@。%1$@進む";
+"proceed distance on floor" = "%2$@。。。%1$@進む";
 
 /* (No Commment) */
-"proceed distance on floor ..." = "%2$@。%1$@進み、";
+"proceed distance on floor ..." = "%2$@。。。%1$@進み、";
 
 /* No comment provided by engineer. */
 "remaining distance" = "残り%@";
@@ -198,4 +198,8 @@
 
 /* head to the right direction */
 "turn to the right" = "右に向く";
+
+"Stop Navigation" = "案内を終了";
+"Search Route" = "ルートを検索";
+
 

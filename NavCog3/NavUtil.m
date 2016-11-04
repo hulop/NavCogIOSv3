@@ -46,6 +46,9 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
 
     [view addSubview:overlay];
     
+    [overlay setIsAccessibilityElement:YES];
+    [overlay setAccessibilityLabel:NSLocalizedString(@"Loading, please wait",@"")];
+    
     if (!waitingViewMap) {
         waitingViewMap = [@{} mutableCopy];
     }

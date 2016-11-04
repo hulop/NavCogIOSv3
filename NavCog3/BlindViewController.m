@@ -90,6 +90,8 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         self.searchButton.title = NSLocalizedStringFromTable([navigator isActive]?@"Stop":@"Search", @"BlindView", @"");
+        [self.searchButton setAccessibilityLabel:NSLocalizedStringFromTable([navigator isActive]?@"Stop Navigation":@"Search Route", @"BlindView", @"")];
+        
         BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
         BOOL previewMode = [NavDataStore sharedDataStore].previewMode;
         BOOL isActive = [navigator isActive];
@@ -365,7 +367,7 @@
                         return;
                     }
                     
-                    if (!isnan(targetFloor) && forwardAction) {
+                    if (!isnan(targetFloor) && turnAction) {
                         [self manualGoFloor:targetFloor];
                         targetFloor = NAN;
                         return;

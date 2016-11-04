@@ -48,6 +48,7 @@
 		7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC371D1E0E5E00AC111A /* LocationManager.mm */; };
 		7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */; };
 		7EF6FBB21DA4DD8200382F76 /* NavSound.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF6FBB11DA4DD8200382F76 /* NavSound.m */; };
+		7EF7F7721DCC1E08000A625A /* NavCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7711DCC1E08000A625A /* NavCoverView.m */; };
 		EFECDB67D098DB64F968F630 /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E76041D7EED01032E66D8CCF /* libPods-NavCog3.a */; };
 /* End PBXBuildFile section */
 
@@ -136,6 +137,8 @@
 		7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		7EF6FBB01DA4DD8200382F76 /* NavSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavSound.h; path = blind/NavSound.h; sourceTree = "<group>"; };
 		7EF6FBB11DA4DD8200382F76 /* NavSound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavSound.m; path = blind/NavSound.m; sourceTree = "<group>"; };
+		7EF7F7701DCC1E08000A625A /* NavCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavCoverView.h; path = blind/NavCoverView.h; sourceTree = "<group>"; };
+		7EF7F7711DCC1E08000A625A /* NavCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavCoverView.m; path = blind/NavCoverView.m; sourceTree = "<group>"; };
 		E76041D7EED01032E66D8CCF /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -242,6 +245,8 @@
 				7EAE6F111D264C5700614C35 /* NavJSNativeHandler.m */,
 				7EAE6F0B1D2642D600614C35 /* NavWebviewHelper.h */,
 				7EAE6F0C1D2642D600614C35 /* NavWebviewHelper.m */,
+				7EF7F7701DCC1E08000A625A /* NavCoverView.h */,
+				7EF7F7711DCC1E08000A625A /* NavCoverView.m */,
 			);
 			name = navigation;
 			sourceTree = "<group>";
@@ -450,6 +455,7 @@
 				7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,
 				7EAE6F0D1D2642D600614C35 /* NavWebviewHelper.m in Sources */,
+				7EF7F7721DCC1E08000A625A /* NavCoverView.m in Sources */,
 				7E96D9361DAD185800D57C8C /* DestinationTableViewController.m in Sources */,
 				7E433DD41D6E84D300C6C993 /* NavUtil.m in Sources */,
 				7EDEDC271D1E0C6800AC111A /* ViewController.m in Sources */,

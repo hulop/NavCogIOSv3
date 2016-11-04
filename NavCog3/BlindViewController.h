@@ -23,6 +23,7 @@
 #import <UIKit/UIKit.h>
 #import "NavNavigator.h"
 #import "NavWebviewHelper.h"
+#import "NavCoverView.h"
 
 @interface BlindViewController : UIViewController <NavWebviewHelperDelegate, NavNavigatorDelegate>
 
@@ -33,7 +34,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *retryButton;
 @property (weak, nonatomic) IBOutlet UILabel *errorMessage;
 
-@property (weak, nonatomic) IBOutlet UIView *cover;
+@property (weak, nonatomic) IBOutlet NavCoverView *cover;
 @property (weak, nonatomic) IBOutlet UIButton *devLeft;
 @property (weak, nonatomic) IBOutlet UIButton *devRight;
 @property (weak, nonatomic) IBOutlet UIButton *devGo;

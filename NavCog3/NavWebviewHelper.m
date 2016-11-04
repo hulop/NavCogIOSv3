@@ -30,6 +30,20 @@
 
 #define UI_PAGE @"%@://%@/%@mobile.jsp?noheader"
 
+@implementation NavWebView
+
+- (BOOL)isAccessibilityElement
+{
+    return YES;
+}
+
+- (NSString *)accessibilityLabel
+{
+    return @"";
+}
+
+@end
+
 @implementation NavWebviewHelper {
     UIWebView *webView;
     NavJSNativeHandler *handler;
@@ -308,9 +322,10 @@
     if ([ret isEqualToString:@"true"]) {
         [timer invalidate];
         [self insertBridge];
+        return;
     }
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-    if (now - lastRequestTime > 10) {
+    if (now - lastRequestTime > 15) {
         [timer invalidate];
         [self.delegate checkConnection];
     }

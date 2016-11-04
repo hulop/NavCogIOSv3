@@ -30,6 +30,10 @@
 #define ROUTE_SEARCH_BUTTON @"route_search_button"
 #define END_NAVIGATION @"end_navigation"
 
+@interface NavWebView : UIWebView
+
+@end
+
 @protocol NavWebviewHelperDelegate <NSObject>
 - (void) startLoading;
 - (void) loaded;

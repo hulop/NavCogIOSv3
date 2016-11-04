@@ -31,7 +31,7 @@
 #define ORIENTATION_CHANGED_NOTIFICATION @"orientation_changed_notification"
 
 #define NAV_LOCATION_CHANGED_NOTIFICATION @"nav_location_changed_notification"
-#define NAV_ROUTE_CHANGED_NOTIFICATION @"nav_route_changed_notirifation"
+#define NAV_ROUTE_CHANGED_NOTIFICATION @"nav_route_changed_notification"
 #define NAV_ROUTE_INDEX_CHANGED_NOTIFICATION @"nav_route_index_changed_notification"
 
 #define DESTINATIONS_CHANGED_NOTIFICATION @"destinations_changed_notification"
@@ -47,5 +47,7 @@
 
 #define REQUEST_PROCESS_INIT_TARGET_LOG @"request_process_init_target_log"
 #define REQUEST_PROCESS_SHOW_ROUTE_LOG @"request_process_show_route_log"
+
+#define SPEAK_TEXT_QUEUEING @"speak_text_queueing"
 
 #endif /* LocationEvent_h */

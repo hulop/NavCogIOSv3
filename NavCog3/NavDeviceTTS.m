@@ -22,6 +22,7 @@
 
 #import "NavDeviceTTS.h"
 #import <UIKit/UIKit.h>
+#import "LocationEvent.h"
 
 @implementation HLPSpeechEntry
 
@@ -162,6 +163,8 @@ static NavDeviceTTS *instance = nil;
         }
     }
 
+    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:@{@"text":text}];
+    
     double speechRate = [[NSUserDefaults standardUserDefaults] doubleForKey:SPEECH_SPEED];
     
     //NSLog(@"self speak=%@ %@", text, flag?@"Force":@"");

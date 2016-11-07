@@ -1091,7 +1091,7 @@ int dcount = 0;
     NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     while(YES) {
         NSString* path = [documentsPath stringByAppendingPathComponent:mapName];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path] == NO) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path] == NO || mapName==nil) {
             for(NSString *file in [ConfigManager filenamesWithSuffix:@"json"]) {
                 mapName = file;
                 [ud setValue:mapName forKey:@"bleloc_map_data"];

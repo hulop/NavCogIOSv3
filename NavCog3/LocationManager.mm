@@ -433,7 +433,8 @@ void functionCalledToLog(void *inUserData, string text)
     
     NSTimeInterval uptime = [[NSDate date] timeIntervalSince1970] - [[NSProcessInfo processInfo] systemUptime];
     
-    [motionManager startDeviceMotionUpdatesToQueue: processQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
+    [motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical
+                                                       toQueue:processQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
         if (!_isActive || isLogReplaying) {
             return;
         }

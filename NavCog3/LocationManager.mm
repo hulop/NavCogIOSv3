@@ -438,7 +438,7 @@ void functionCalledToLog(void *inUserData, string text)
             return;
         }
         Attitude attitude((uptime+motion.timestamp)*1000,
-                          motion.attitude.roll, motion.attitude.pitch, motion.attitude.yaw);
+                          motion.attitude.pitch, motion.attitude.roll, motion.attitude.yaw);
         
         try {
             localizer->putAttitude(attitude);

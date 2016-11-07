@@ -282,11 +282,19 @@
         self.groups[group] = g;
     }
     [self.groups[group] addOption:s];
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    
+    [self.groups[group] setCurrentValue:[ud stringForKey:group]];
 
     if ([(NSNumber*)defaultValue boolValue]) {
-        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
         NSDictionary *def = [[NSDictionary alloc] initWithObjectsAndKeys: group, name, nil];
         [ud registerDefaults:def];
+
+        if (![self.groups[group] currentValue]) {
+            [self.groups[group] setCurrentValue:name];
+            [ud setObject:name forKey:group];
+        }
     }
     
     return s;

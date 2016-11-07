@@ -22,6 +22,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define HLPSettingChanged @"HLPSettingChanged"
+
 @class HLPSetting;
 
 @interface HLPOptionGroup : NSObject
@@ -31,6 +33,7 @@
 - (void) addOption:(HLPSetting*)setting;
 - (void) checkOption:(HLPSetting*)setting;
 - (void) exportSetting:(NSMutableDictionary*)dic;
+- (void) update;
 @end
 
 typedef NS_ENUM (NSUInteger, NavCogSettingType) {

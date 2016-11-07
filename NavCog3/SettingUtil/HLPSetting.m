@@ -22,7 +22,9 @@
 
 #import "HLPSetting.h"
 
-@implementation  HLPOptionGroup
+@implementation  HLPOptionGroup {
+    BOOL _changing;
+}
 - (instancetype)init
 {
     self = [super init];
@@ -36,36 +38,23 @@
     }
     [self.options addObject:setting];
     setting.group = self;
-    [self save];
 }
 - (void)checkOption:(HLPSetting *)setting
 {
-    for(HLPSetting *option in self.options) {
-        if (option == setting) {
-            [option setCurrentValue:@(YES)];
-        } else {
-            [option setCurrentValue:@(NO)];
-        }
-        [option save];
-    }
+    _currentValue = setting.name;
     [self save];
+}
+- (void)update
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _currentValue = [ud objectForKey:_name];
+    [[NSNotificationCenter defaultCenter] postNotificationName:HLPSettingChanged object:self];
 }
 - (void)save
 {
-    HLPSetting *s = nil;
-    _currentValue = nil;
-    for(HLPSetting *option in self.options) {
-        if ([option boolValue]) {
-            s = option;
-            break;
-        }
-    }
-    if (s) {
-        _currentValue = s.name;
-        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        [ud setObject:_currentValue forKey:_name];
-        [ud synchronize];
-    }
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    [ud setObject:_currentValue forKey:_name];
+    [ud synchronize];
 }
 - (void) exportSetting:(NSMutableDictionary*)dic{
     if (_currentValue) {
@@ -74,7 +63,9 @@
 }
 @end
 
-@implementation HLPSetting
+@implementation HLPSetting {
+    BOOL _changing;
+}
 
 - (id) init
 {
@@ -89,7 +80,7 @@
 
 - (void) userDefaultsDidChange:(NSNotification*)notification
 {
-    if (!_name) {
+    if (!_name || _changing) {
         return;
     }
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
@@ -97,11 +88,17 @@
     NSString *list_key = [NSString stringWithFormat:@"%@_list", _name];
     
     if (_isList) {
-        _selectedValue = [ud objectForKey:selected_key];
         _currentValue = [ud arrayForKey:list_key];
+        _selectedValue = [ud objectForKey:selected_key];
     } else {
-        _currentValue = [ud objectForKey:_name];
+        if (self.group) {
+            [self.group update];
+        } else {
+            _currentValue = [ud objectForKey:_name];
+        }
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:HLPSettingChanged object:self];
 }
 
 - (NSString*) description
@@ -113,16 +110,22 @@
     if(_name == nil) {
         return;
     }
+    _changing = YES;
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     if (self.isList) {
         NSString *selected_key = [NSString stringWithFormat:@"selected_%@", self.name];
         NSString *list_key = [NSString stringWithFormat:@"%@_list", self.name];
-        [ud setObject:self.selectedValue forKey: selected_key];
         [ud setObject:self.currentValue forKey: list_key];
+        [ud setObject:self.selectedValue forKey: selected_key];
     } else {
-        [ud setObject:self.currentValue forKey: self.name];
+        if (self.group) {
+            [self.group save];
+        } else {
+            [ud setObject:self.currentValue forKey: self.name];
+        }
     }
     [ud synchronize];
+    _changing = NO;
 }
 
 - (void)setHandler:(NSObject *(^)(NSObject *))_handler
@@ -218,7 +221,10 @@
 
 - (BOOL)boolValue
 {
-    if ([self.currentValue isKindOfClass:[NSNumber class]]) {
+    if (self.group) {
+        return [self.name isEqualToString:(NSString*)self.group.currentValue];
+    }
+    else if ([self.currentValue isKindOfClass:[NSNumber class]]) {
         return [(NSNumber*) self.currentValue boolValue];
     }
     return NO;
@@ -249,11 +255,11 @@
             [dic setObject:_currentValue forKey:list_key];
         }
     } else {
-        if (_currentValue) {
-            [dic setObject:_currentValue forKey:_name];
-        }
         if (self.group) {
             [self.group exportSetting:dic];
+        }
+        else if (_currentValue) {
+            [dic setObject:_currentValue forKey:_name];
         }
     }
 }

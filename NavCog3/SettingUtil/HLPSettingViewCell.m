@@ -31,21 +31,18 @@
 {
     self = [super initWithCoder:aDecoder];
     
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserver:self
-               selector:@selector(userDefaultsDidChange:)
-                   name:NSUserDefaultsDidChangeNotification
-                 object:nil];
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
     [self addGestureRecognizer:recognizer];
 
     return self;
 }
 
-- (void) userDefaultsDidChange:(NSNotification*) notification
+- (void) changed:(NSNotification*) notification
 {
     if (self.setting) {
-        [self update:self.setting];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self update:self.setting];
+        });
     }
 }
 
@@ -54,6 +51,20 @@
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     self.setting = setting;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    if (self.setting.group) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(changed:)
+                                                     name:HLPSettingChanged
+                                                   object:self.setting.group];
+    } else {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(changed:)
+                                                     name:HLPSettingChanged
+                                                   object:self.setting];
+    }
+
     
     self.title.text = self.setting.label;
     self.title.adjustsFontSizeToFitWidth = YES;
@@ -103,7 +114,7 @@
 - (void) updateView
 {
     [self.pickerView reloadAllComponents];
-    if ([self.setting selectedRow] > 0) {
+    if ([self.setting selectedRow] >= 0) {
         [self.pickerView selectRow:[self.setting selectedRow] inComponent:0 animated:YES];
     }
     
@@ -137,8 +148,8 @@
         
         if (add) {
             [self.setting addObject: add];
-            [self updateView];
             [self.setting save];
+            [self updateView];
         }
     }]];
     
@@ -164,8 +175,8 @@
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK",@"HLPSettingView",@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.setting removeSelected];
-        [self updateView];
         [self.setting save];
+        [self updateView];
     }]];
     
     UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;

@@ -191,7 +191,6 @@
 @property (readonly) BOOL isActive;
 @property (weak) id<NavNavigatorDelegate> delegate;
 
-+ (instancetype) sharedNavigator;
 - (void) stop;
 //- (void)preventRemainingDistanceEventFor:(NSTimeInterval)timeInSeconds;
 //- (void)preventRemainingDistanceEventBy:(double)nextTargetDistance;

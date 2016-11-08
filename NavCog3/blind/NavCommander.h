@@ -20,30 +20,13 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import <UIKit/UIKit.h>
-#import "NavWebviewHelper.h"
-#import "NavCoverView.h"
+#import <Foundation/Foundation.h>
 #import "NavNavigator.h"
 
-@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, NavNavigatorDelegate>
+@interface NavCommander : NSObject <NavNavigatorDelegate>
 
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *searchButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *micButton;
-@property (weak, nonatomic) IBOutlet UIButton *retryButton;
-@property (weak, nonatomic) IBOutlet UILabel *errorMessage;
-
-@property (weak, nonatomic) IBOutlet NavCoverView *cover;
-@property (weak, nonatomic) IBOutlet UIButton *devLeft;
-@property (weak, nonatomic) IBOutlet UIButton *devRight;
-@property (weak, nonatomic) IBOutlet UIButton *devGo;
-@property (weak, nonatomic) IBOutlet UIButton *devAuto;
-@property (weak, nonatomic) IBOutlet UIButton *devReset;
-@property (weak, nonatomic) IBOutlet UIButton *devMarker;
-@property (weak, nonatomic) IBOutlet UIButton *devUp;
-@property (weak, nonatomic) IBOutlet UIButton *devDown;
-@property (weak, nonatomic) IBOutlet UIButton *devNote;
-
+@property double targetAngle;
+@property double targetDistance;
+@property double targetFloor;
 
 @end

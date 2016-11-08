@@ -588,16 +588,6 @@ static NavNavigatorConstants *_instance;
     NSTimer *timeoutTimer;
 }
 
-static NavNavigator* instance;
-
-+ (instancetype)sharedNavigator
-{
-    if (!instance) {
-        instance = [[NavNavigator alloc] init];
-    }
-    return instance;
-}
-
 - (instancetype)init
 {
     self = [super init];
@@ -620,7 +610,10 @@ static NavNavigator* instance;
 - (void) stop
 {
     _isActive = NO;
-    [self.delegate didActiveStatusChanged:@{}];
+    [self.delegate didActiveStatusChanged:
+     @{
+       @"isActive": @(_isActive)
+       }];
 }
 
 - (void)routeChanged:(NSNotification*)notification
@@ -897,6 +890,7 @@ static NavNavigator* instance;
     NavLinkInfo *info = linkInfos[firstLinkIndex];
     [self.delegate didActiveStatusChanged:
      @{
+       @"isActive": @(_isActive),
        @"location":info.link.sourceLocation,
        @"heading":@(info.link.initialBearingFromSource)
        }];

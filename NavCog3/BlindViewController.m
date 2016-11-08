@@ -21,8 +21,6 @@
  *******************************************************************************/
 
 #import "BlindViewController.h"
-#import "NavCommander.h"
-#import "NavPreviewer.h"
 
 #import "NavDeviceTTS.h"
 #import "NavSound.h"
@@ -31,6 +29,10 @@
 #import "NavDataStore.h"
 #import "NavUtil.h"
 
+@import JavaScriptCore;
+@import CoreMotion;
+
+
 @interface BlindViewController () {
     NavWebviewHelper *helper;
     NavNavigator *navigator;
@@ -38,6 +40,16 @@
     NavPreviewer *previewer;
     
     NSTimer *timerForSimulator;
+    
+    CMMotionManager *motionManager;
+    NSOperationQueue *motionQueue;
+    double yaws[10];
+    int yawsIndex;
+    double accs[10];
+    int accsIndex;
+    
+    double turnAction;
+    BOOL forwardAction;
 }
 
 @end
@@ -252,6 +264,62 @@
     [self updateView];
 }
 
+- (double)turnAction
+{
+    return turnAction;
+}
+
+- (BOOL)forwardAction
+{
+    return forwardAction;
+}
+
+- (void)stopAction
+{
+    [motionManager stopDeviceMotionUpdates];    
+}
+
+- (void)startAction
+{
+    BOOL needAction = [[NSUserDefaults standardUserDefaults] boolForKey:@"preview_with_action"];
+    if (!motionManager && needAction) {
+        motionManager = [[CMMotionManager alloc] init];
+        motionManager.deviceMotionUpdateInterval = 0.1;
+        motionQueue = [[NSOperationQueue alloc] init];
+        motionQueue.maxConcurrentOperationCount = 1;
+        motionQueue.qualityOfService = NSQualityOfServiceBackground;
+    }
+    if (needAction) {
+        [motionManager startDeviceMotionUpdatesToQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
+            yaws[yawsIndex] = motion.attitude.yaw;
+            yawsIndex = (yawsIndex+1)%10;
+            double ave = 0;
+            for(int i = 0; i < 10; i++) {
+                ave += yaws[i]*0.1;
+            }
+            //NSLog(@"angle=, %f, %f, %f", ave, motion.attitude.yaw, fabs(ave - motion.attitude.yaw));
+            if (fabs(ave - motion.attitude.yaw) > M_PI*10/180) {
+                turnAction = ave - motion.attitude.yaw;
+            } else {
+                turnAction = 0;
+            }
+            
+            CMAcceleration acc =  motion.userAcceleration;
+            double d = sqrt(pow(acc.x, 2)+pow(acc.y, 2)+pow(acc.z, 2));
+            accs[accsIndex] = d;
+            accsIndex = (accsIndex+1)%10;
+            ave = 0;
+            for(int i = 0; i < 10; i++) {
+                ave += accs[i]*0.1;
+            }
+            //NSLog(@"angle=, %f", ave);
+            forwardAction = ave > 0.3;
+            
+        }];
+        
+    }
+}
+
 #pragma mark - DialogViewControllerDelegate
 
 - (void)startNavigationWithOptions:(NSDictionary *)options
@@ -446,6 +514,47 @@
 - (void)playSuccess
 {
     [[NavSound sharedInstance] playSuccess];
+}
+
+- (void)executeCommand:(NSString *)command
+{    
+    JSContext *ctx = [[JSContext alloc] init];
+    ctx[@"speak"] = ^(NSString *message) {
+        [self speak:message completionHandler:^{
+        }];
+    };
+    ctx[@"openURL"] = ^(NSString *url, NSString *title, NSString *message) {
+        if (!title || !message || !url) {
+            if (url) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+                });
+            }
+            return;
+        }
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"Cancel", @"BlindView", @"")
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  }]];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                      dispatch_async(dispatch_get_main_queue(), ^(void){
+                                                          [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+                                                      });
+                                                  }]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //TODO [self presentViewController:alert animated:YES completion:nil];
+        });
+    };
+    ctx.exceptionHandler = ^(JSContext *ctx, JSValue *e) {
+        NSLog(@"%@", e);
+        NSLog(@"%@", [e toDictionary]);
+    };
+    [ctx evaluateScript:command];
 }
 
 #pragma mark - Navigation

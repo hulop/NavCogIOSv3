@@ -22,9 +22,7 @@
 
 #import "NavCommander.h"
 #import "TTTOrdinalNumberFormatter.h"
-#import "NavUtil.h"
 #import "NavDataStore.h"
-@import JavaScriptCore;
 
 @implementation NavCommander
 
@@ -36,7 +34,10 @@
     
     if ([type isEqualToString:@"ordinal"]) {
         TTTOrdinalNumberFormatter*ordinalNumberFormatter = [[TTTOrdinalNumberFormatter alloc] init];
-        [ordinalNumberFormatter setLocale:[NSLocale currentLocale]];
+        
+        NSString *localeStr = [[NSUserDefaults standardUserDefaults] stringForKey:@"AppleLocale"];
+        NSLocale *locale = [NSLocale localeWithLocaleIdentifier:localeStr];
+        [ordinalNumberFormatter setLocale:locale];
         [ordinalNumberFormatter setGrammaticalGender:TTTOrdinalNumberFormatterMaleGender];
         
         floor = round(floor*2.0)/2.0;
@@ -534,44 +535,7 @@
             if ([result count] < 2) {
                 return;
             }
-            
-            JSContext *ctx = [[JSContext alloc] init];
-            ctx[@"speak"] = ^(NSString *message) {
-                [_delegate speak:message completionHandler:^{
-                }];
-            };
-            ctx[@"openURL"] = ^(NSString *url, NSString *title, NSString *message) {
-                if (!title || !message || !url) {
-                    if (url) {
-                        dispatch_async(dispatch_get_main_queue(), ^(void){
-                            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-                        });
-                    }
-                    return;
-                }
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
-                                                                               message:message
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                
-                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"Cancel", @"BlindView", @"")
-                                                          style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                          }]];
-                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
-                                                          style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                              dispatch_async(dispatch_get_main_queue(), ^(void){
-                                                                  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-                                                              });
-                                                          }]];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    //TODO [self presentViewController:alert animated:YES completion:nil];
-                });
-            };
-            ctx.exceptionHandler = ^(JSContext *ctx, JSValue *e) {
-                NSLog(@"%@", e);
-                NSLog(@"%@", [e toDictionary]);
-            };
-            [ctx evaluateScript:result[1]];
+            [_delegate executeCommand:result[1]];
         }];
     }
 }

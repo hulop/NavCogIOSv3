@@ -23,12 +23,20 @@
 #import <Foundation/Foundation.h>
 #import "NavNavigator.h"
 
+@protocol NavPreviewerDelegate
+- (double) turnAction;
+- (BOOL) forwardAction;
+- (void) startAction;
+- (void) stopAction;
+@end
+
 @interface NavPreviewer : NSObject <NavNavigatorDelegate>
 
 @property BOOL autoProceed;
 @property double targetAngle;
 @property double targetDistance;
 @property double targetFloor;
+@property id<NavPreviewerDelegate> delegate;
 
 - (void)manualTurn:(double)angle;
 - (void)manualGoForward:(double)distance;

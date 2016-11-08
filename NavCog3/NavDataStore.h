@@ -68,7 +68,7 @@ typedef enum {
 
 - (void) saveLocation;
 - (void) switchFromTo;
-- (HLPLandmark*) destinationByID:(NSString*)key;
+- (NavDestination*) destinationByID:(NSString*)key;
 - (void) manualTurn:(double)diffOrientation;
 - (void) manualLocation:(HLPLocation*)location;
 - (void) manualLocationReset:(NSDictionary*)location;

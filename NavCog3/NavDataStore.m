@@ -613,9 +613,9 @@ static NavDataStore* instance_ = nil;
     _to = temp;
 }
 
-- (HLPLandmark*)destinationByID:(NSString *)key
+- (NavDestination*)destinationByID:(NSString *)key
 {
-    return [destinationHash objectForKey:key];
+    return [[NavDestination alloc] initWithLandmark: [destinationHash objectForKey:key]];
 }
 
 - (void)manualTurn:(double)diffOrientation

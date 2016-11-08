@@ -52,6 +52,8 @@
 		7EF7F7A01DD178F7000A625A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F79F1DD178F7000A625A /* main.m */; };
 		7EF7F7A51DD17A8D000A625A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF7F7A41DD17A8D000A625A /* Foundation.framework */; };
 		7EF7F7A81DD17D4A000A625A /* NavCommander.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7A71DD17D4A000A625A /* NavCommander.m */; };
+		7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
+		7EF7F7AE1DD1949C000A625A /* NavDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AD1DD1949C000A625A /* NavDataSource.m */; };
 		EFECDB67D098DB64F968F630 /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E76041D7EED01032E66D8CCF /* libPods-NavCog3.a */; };
 /* End PBXBuildFile section */
 
@@ -161,6 +163,10 @@
 		7EF7F7A41DD17A8D000A625A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		7EF7F7A61DD17D4A000A625A /* NavCommander.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavCommander.h; path = blind/NavCommander.h; sourceTree = "<group>"; };
 		7EF7F7A71DD17D4A000A625A /* NavCommander.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavCommander.m; path = blind/NavCommander.m; sourceTree = "<group>"; };
+		7EF7F7A91DD189B0000A625A /* NavPreviewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavPreviewer.h; path = blind/NavPreviewer.h; sourceTree = "<group>"; };
+		7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavPreviewer.m; path = blind/NavPreviewer.m; sourceTree = "<group>"; };
+		7EF7F7AC1DD1949C000A625A /* NavDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavDataSource.h; path = blind/NavDataSource.h; sourceTree = "<group>"; };
+		7EF7F7AD1DD1949C000A625A /* NavDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavDataSource.m; path = blind/NavDataSource.m; sourceTree = "<group>"; };
 		98A27DBDFDA4A2425F9F4D82 /* Pods-NavCogTool.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.debug.xcconfig"; sourceTree = "<group>"; };
 		E76041D7EED01032E66D8CCF /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -270,12 +276,16 @@
 				7E5150A31D8BF32800ED25FB /* NavNavigator.m */,
 				7EF7F7A61DD17D4A000A625A /* NavCommander.h */,
 				7EF7F7A71DD17D4A000A625A /* NavCommander.m */,
+				7EF7F7A91DD189B0000A625A /* NavPreviewer.h */,
+				7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */,
 				7EF6FBB01DA4DD8200382F76 /* NavSound.h */,
 				7EF6FBB11DA4DD8200382F76 /* NavSound.m */,
 				7E433DC91D6E846300C6C993 /* NavDeviceTTS.h */,
 				7E433DCA1D6E846300C6C993 /* NavDeviceTTS.m */,
 				7E0E97141D98B80100CF2960 /* NavDataStore.h */,
 				7E0E97151D98B80100CF2960 /* NavDataStore.m */,
+				7EF7F7AC1DD1949C000A625A /* NavDataSource.h */,
+				7EF7F7AD1DD1949C000A625A /* NavDataSource.m */,
 				7E433DD21D6E84D300C6C993 /* NavUtil.h */,
 				7E433DD31D6E84D300C6C993 /* NavUtil.m */,
 				7EAE6F101D264C5700614C35 /* NavJSNativeHandler.h */,
@@ -559,6 +569,7 @@
 				7EAE6F0D1D2642D600614C35 /* NavWebviewHelper.m in Sources */,
 				7EF7F7721DCC1E08000A625A /* NavCoverView.m in Sources */,
 				7E96D9361DAD185800D57C8C /* DestinationTableViewController.m in Sources */,
+				7EF7F7AE1DD1949C000A625A /* NavDataSource.m in Sources */,
 				7E433DD41D6E84D300C6C993 /* NavUtil.m in Sources */,
 				7EDEDC271D1E0C6800AC111A /* ViewController.m in Sources */,
 				7E433DCF1D6E846300C6C993 /* NavDeviceTTS.m in Sources */,
@@ -567,6 +578,7 @@
 				7EDEDC241D1E0C6800AC111A /* AppDelegate.mm in Sources */,
 				7E5150A41D8BF32800ED25FB /* NavNavigator.m in Sources */,
 				7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */,
+				7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */,
 				7E9238E81D5189F100875766 /* HLPSettingTableView.m in Sources */,
 				7EAE6F121D264C5700614C35 /* NavJSNativeHandler.m in Sources */,
 				7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */,

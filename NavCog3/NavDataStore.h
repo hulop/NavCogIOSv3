@@ -22,7 +22,6 @@
 
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #import "HLPLocation.h"
 #import "HLPGeoJson.h"
 
@@ -51,6 +50,7 @@ typedef enum {
 @property NavDestination *to;
 @property NavDestination *from;
 @property BOOL previewMode;
+@property NSString* userID;
 
 + (instancetype) sharedDataStore;
 
@@ -63,7 +63,6 @@ typedef enum {
 - (HLPLocation*) currentLocation;
 - (NSArray*) route;
 - (NSArray*) features;
-- (NSString*) userID;
 - (NSString*) userLanguage;
 - (NSArray*) searchHistory;
 
@@ -79,16 +78,4 @@ typedef enum {
 
 @end
 
-@interface NavDestinationDataSource : NSObject <UITableViewDataSource>
-@property NSInteger selectedRow;
-
-@property BOOL showCurrentLocation;
-@property BOOL showFacility;
-
-- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
-@end
-
-@interface NavSearchHistoryDataSource : NSObject < UITableViewDataSource>
-- (NSDictionary*) historyAtIndexPath:(NSIndexPath*)indexPath;
-@end
 

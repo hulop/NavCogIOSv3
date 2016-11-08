@@ -23,14 +23,16 @@
 #import <Foundation/Foundation.h>
 #import "NavNavigator.h"
 
-@protocol NavCommanderDelegate
-- (void)speak:(NSString*)text completionHandler:(void (^)())handler;
-- (void)speak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)())handler;
-- (void)playSuccess;
-@end
+@interface NavPreviewer : NSObject <NavNavigatorDelegate>
 
-@interface NavCommander : NSObject <NavNavigatorDelegate>
+@property BOOL autoProceed;
+@property double targetAngle;
+@property double targetDistance;
+@property double targetFloor;
 
-@property id<NavCommanderDelegate> delegate;
+- (void)manualTurn:(double)angle;
+- (void)manualGoForward:(double)distance;
+- (void)manualLocation:(HLPLocation*)loc;
+- (void)manualGoFloor:(double)floor;
 
 @end

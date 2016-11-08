@@ -159,15 +159,32 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(destinationChanged:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeChanged:) name:ROUTE_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeCleared:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
-    
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(manualLocation:) name:MANUAL_LOCATION object:nil];
     
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
-
+    
     
     return self;
 }
 
 #pragma mark - notification handlers
+
+- (void) manualLocation: (NSNotification*) notification
+{
+    HLPLocation* loc = [notification object];
+    int ifloor = round(loc.floor<0?loc.floor:loc.floor+1);
+    
+    NSMutableString* script = [[NSMutableString alloc] init];
+    [script appendFormat:@"$hulop.map.setSync(false);"];
+    [script appendFormat:@"var map = $hulop.map.getMap();"];
+    [script appendFormat:@"var c = new google.maps.LatLng(%f, %f);", loc.lat, loc.lng];
+    [script appendFormat:@"map.setCenter(c);"];
+    [script appendFormat:@"$hulop.indoor.showFloor(%d);", ifloor];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self evalScript:script];
+    });
+}
 
 - (void) locationChanged: (NSNotification*) notification
 {

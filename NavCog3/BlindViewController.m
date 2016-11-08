@@ -22,27 +22,21 @@
 
 #import "BlindViewController.h"
 #import "NavCommander.h"
+#import "NavPreviewer.h"
+
+#import "NavDeviceTTS.h"
+#import "NavSound.h"
 
 #import "LocationEvent.h"
 #import "NavDataStore.h"
 #import "NavUtil.h"
-@import CoreMotion;
 
 @interface BlindViewController () {
     NavWebviewHelper *helper;
     NavNavigator *navigator;
     NavCommander *commander;
+    NavPreviewer *previewer;
     
-    NSTimer *autoTimer;
-    CMMotionManager *motionManager;
-    NSOperationQueue *motionQueue;
-    double yaws[10];
-    int yawsIndex;
-    double accs[10];
-    int accsIndex;
-    
-    BOOL autoProceed;
-        
     NSTimer *timerForSimulator;
 }
 
@@ -59,8 +53,6 @@
     [navigator stop];
     navigator.delegate = nil;
     navigator = nil;
-    
-    [autoTimer invalidate];
 }
 
 - (void)viewDidLoad {
@@ -72,7 +64,10 @@
     navigator = [[NavNavigator alloc] init];
     
     commander = [[NavCommander alloc] init];
+    commander.delegate = self;
     navigator.delegate = self;
+    
+    previewer = [[NavPreviewer alloc] init];
     
     self.searchButton.enabled = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
@@ -107,7 +102,7 @@
         self.devDown.hidden = !devMode || previewMode;
         self.devNote.hidden = !devMode || previewMode;
         
-        self.devAuto.selected = autoProceed;
+        self.devAuto.selected = previewer.autoProceed;
         self.cover.hidden = devMode || !isActive;
         
         self.navigationItem.title = NSLocalizedStringFromTable(previewMode?@"Preview":@"NavCog", @"BlindView", @"");
@@ -190,26 +185,26 @@
 
 - (IBAction)turnLeftBit:(id)sender
 {
-    [self manualTurn:-10];
+    [previewer manualTurn:-10];
 }
 
 - (IBAction)turnRightBit:(id)sender {
-    [self manualTurn:10];
+    [previewer manualTurn:10];
 }
 
 - (IBAction)goForwardBit:(id)sender {
-    [self manualGoForward:0.5];
+    [previewer manualGoForward:0.5];
 }
 
 - (IBAction)floorUp:(id)sender {
     double floor = [[[NavDataStore sharedDataStore] currentLocation] floor];
     
-    [self manualGoFloor:floor+1];
+    [previewer manualGoFloor:floor+1];
 }
 
 - (IBAction)floorDown:(id)sender {
     double floor = [[[NavDataStore sharedDataStore] currentLocation] floor];
-    [self manualGoFloor:floor-1];
+    [previewer manualGoFloor:floor-1];
 }
 
 - (IBAction)addNote:(id)sender {
@@ -252,164 +247,10 @@
 }
 
 
-#pragma mark - manual movement functions
-
-- (void) manualTurn:(double)angle
-{
-    [[NavDataStore sharedDataStore] manualTurn:angle];
-}
-
-- (void)manualGoForward:(double)distance {
-    HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
-    HLPLocation *newLoc = [loc offsetLocationByDistance:distance Bearing:loc.orientation];
-    
-    [self manualLocation:newLoc];
-}
-
-- (void)manualLocation:(HLPLocation*)loc {
-    if ([NavDataStore sharedDataStore].previewMode) {
-        [[NavDataStore sharedDataStore] manualLocation:loc];
-    } else {
-        NSMutableString* script = [[NSMutableString alloc] init];
-        [script appendFormat:@"$hulop.map.setSync(false);"];
-        [script appendFormat:@"var map = $hulop.map.getMap();"];
-        [script appendFormat:@"var c = new google.maps.LatLng(%f, %f);", loc.lat, loc.lng];
-        [script appendFormat:@"map.setCenter(c);"];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [helper evalScript:script];
-        });
-    }
-}
-
-- (void)manualGoFloor:(double)floor {
-    //NSLog(@"go floor %f", floor);
-    
-    if ([NavDataStore sharedDataStore].previewMode) {
-        HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
-        [loc updateLat:loc.lat Lng:loc.lng Accuracy:loc.accuracy Floor:floor];
-        [[NavDataStore sharedDataStore] manualLocation:loc];
-    } else {
-
-        int ifloor = round(floor<0?floor:floor+1);
-        [helper evalScript:[NSString stringWithFormat:@"$hulop.indoor.showFloor(%d);", ifloor]];
-        [self manualGoForward:0];
-    }
-}
-
 - (IBAction)autoProceed:(id)sender {
-    [self setAutoProceed:!autoProceed];
+    [previewer setAutoProceed:!previewer.autoProceed];
     [self updateView];
 }
-
-- (void) setAutoProceed:(BOOL) flag
-{
-    autoProceed = flag;
-    if (autoProceed) {
-        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        BOOL needAction = [ud boolForKey:@"preview_with_action"];
-        BOOL __block forwardAction = NO;
-        double __block turnAction = 0;
-        if (!motionManager && needAction) {
-            motionManager = [[CMMotionManager alloc] init];
-            motionManager.deviceMotionUpdateInterval = 0.1;
-            motionQueue = [[NSOperationQueue alloc] init];
-            motionQueue.maxConcurrentOperationCount = 1;
-            motionQueue.qualityOfService = NSQualityOfServiceBackground;
-        }
-        if (needAction) {
-            [motionManager startDeviceMotionUpdatesToQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
-                yaws[yawsIndex] = motion.attitude.yaw;
-                yawsIndex = (yawsIndex+1)%10;
-                double ave = 0;
-                for(int i = 0; i < 10; i++) {
-                    ave += yaws[i]*0.1;
-                }
-                //NSLog(@"angle=, %f, %f, %f", ave, motion.attitude.yaw, fabs(ave - motion.attitude.yaw));
-                if (fabs(ave - motion.attitude.yaw) > M_PI*10/180) {
-                    turnAction = ave - motion.attitude.yaw;
-                } else {
-                    turnAction = 0;
-                }
-                
-                CMAcceleration acc =  motion.userAcceleration;
-                double d = sqrt(pow(acc.x, 2)+pow(acc.y, 2)+pow(acc.z, 2));
-                accs[accsIndex] = d;
-                accsIndex = (accsIndex+1)%10;
-                ave = 0;
-                for(int i = 0; i < 10; i++) {
-                    ave += accs[i]*0.1;
-                }
-                //NSLog(@"angle=, %f", ave);
-                forwardAction = ave > 0.3;
-
-            }];
-           
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            BOOL pm = [NavDataStore sharedDataStore].previewMode;
-            double ps = 1.0 / [ud doubleForKey:@"preview_speed"];
-            
-            autoTimer = [NSTimer scheduledTimerWithTimeInterval:pm?ps:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-                //NSLog(@"angle=%f, dist=%f, floor=%f, f=%d, t=%f", commander.targetAngle, commander.targetDistance, commander.targetFloor, forwardAction, turnAction);
-                if (needAction) {
-                    if (fabs(commander.targetAngle) > 5 && turnAction != 0) {
-                        if (commander.targetAngle < 0 && turnAction < 0) {
-                            [[NavDataStore sharedDataStore] manualTurn:commander.targetAngle];
-                            commander.targetAngle = 0;
-                        } else if (commander.targetAngle > 0 && turnAction > 0) {
-                            [[NavDataStore sharedDataStore] manualTurn:commander.targetAngle];
-                            commander.targetAngle = 0;
-                        }
-                    }
-                    
-                    if (!isnan(commander.targetDistance) && commander.targetDistance > 0 && forwardAction) {
-                        [self manualGoForward:0.2];
-                        commander.targetDistance -= 0.2;
-                        return;
-                    }
-                    
-                    if (!isnan(commander.targetFloor) && turnAction) {
-                        [self manualGoFloor:commander.targetFloor];
-                        commander.targetFloor = NAN;
-                        return;
-                    }
-                } else {
-                    if (fabs(commander.targetAngle) > 5) {
-                        if (isnan(commander.targetDistance) || commander.targetDistance < 0) {
-                            if (fabs(commander.targetAngle) > 1) {
-                                const double PREVIEW_TURN_RATE = 0.75;
-                                [[NavDataStore sharedDataStore] manualTurn:commander.targetAngle*PREVIEW_TURN_RATE];
-                                commander.targetAngle *= (1.0-PREVIEW_TURN_RATE);
-                                return;
-                            }
-                        } else {
-                            [[NavDataStore sharedDataStore] manualTurn:commander.targetAngle<0?-5:5];
-                            commander.targetAngle -= commander.targetAngle<0?-5:5;
-                        }
-                    }
-                    
-                    if (!isnan(commander.targetDistance) && commander.targetDistance > 0) {
-                        [self manualGoForward:0.2];
-                        commander.targetDistance -= 0.2;
-                        return;
-                    }
-                    
-                    if (!isnan(commander.targetFloor)) {
-                        [self manualGoFloor:commander.targetFloor];
-                        commander.targetFloor = NAN;
-                        return;
-                    }
-                }
-                [[NavDataStore sharedDataStore] manualLocation:nil];
-
-            }];
-        });
-    } else {
-        [autoTimer invalidate];
-        [motionManager stopDeviceMotionUpdates];
-    }
-}
-
 
 #pragma mark - DialogViewControllerDelegate
 
@@ -458,8 +299,8 @@
 - (void)didActiveStatusChanged:(NSDictionary *)properties
 {
     [commander didActiveStatusChanged:properties];
+    [previewer didActiveStatusChanged:properties];
     if ([properties[@"isActive"] boolValue]) {
-        
         dispatch_async(dispatch_get_main_queue(), ^{
             [helper evalScript:@"$hulop.map.setSync(true);"];
             
@@ -468,8 +309,8 @@
                 
                 // if there is no location manager response
                 timerForSimulator = [NSTimer scheduledTimerWithTimeInterval:2 repeats:YES block:^(NSTimer * _Nonnull timer) {
-                    [self manualGoFloor: [properties[@"location"] floor]];
-                    [self manualGoForward:0];
+                    [previewer manualGoFloor: [properties[@"location"] floor]];
+                    [previewer manualGoForward:0];
                 }];
             }
             
@@ -481,12 +322,12 @@
                 double delayInSeconds = 2.0;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [self setAutoProceed:YES];
+                    [previewer setAutoProceed:YES];
                 });
             }
         });
     } else {
-        [self setAutoProceed:NO];
+        [previewer setAutoProceed:NO];
     }
     [self updateView];
 }
@@ -494,6 +335,7 @@
 - (void)couldNotStartNavigation:(NSDictionary *)properties
 {
     [commander couldNotStartNavigation:properties];
+    [previewer couldNotStartNavigation:properties];
 }
 
 - (void)didNavigationStarted:(NSDictionary *)properties
@@ -514,69 +356,96 @@
     });
     
     [commander didNavigationStarted:properties];
+    [previewer didNavigationStarted:properties];
 }
 
 - (void)didNavigationFinished:(NSDictionary *)properties
 {
     [commander didNavigationFinished:properties];
-    
-    [self setAutoProceed:NO];
-    
-    [NavDataStore sharedDataStore].previewMode = NO;
+    [previewer didNavigationFinished:properties];
 }
 
 // basic functions
 - (void)userNeedsToChangeHeading:(NSDictionary*)properties
 {
     [commander userNeedsToChangeHeading:properties];
+    [previewer userNeedsToChangeHeading:properties];
 }
 - (void)userAdjustedHeading:(NSDictionary*)properties
 {
     [commander userAdjustedHeading:properties];
+    [previewer userAdjustedHeading:properties];
 }
 - (void)remainingDistanceToTarget:(NSDictionary*)properties
 {
     [commander remainingDistanceToTarget:properties];
+    [previewer remainingDistanceToTarget:properties];
 }
 - (void)userIsApproachingToTarget:(NSDictionary*)properties
 {
     [commander userIsApproachingToTarget:properties];
+    [previewer userIsApproachingToTarget:properties];
 }
 - (void)userNeedsToTakeAction:(NSDictionary*)properties
 {
     [commander userNeedsToTakeAction:properties];
+    [previewer userNeedsToTakeAction:properties];
 }
 - (void)userNeedsToWalk:(NSDictionary*)properties
 {
     [commander userNeedsToWalk:properties];
+    [previewer userNeedsToWalk:properties];
 }
 
 // advanced functions
 - (void)userMaybeGoingBackward:(NSDictionary*)properties
 {
     [commander userMaybeGoingBackward:properties];
+    [previewer userMaybeGoingBackward:properties];
 }
 - (void)userMaybeOffRoute:(NSDictionary*)properties
 {
     [commander userMaybeOffRoute:properties];
+    [previewer userMaybeOffRoute:properties];
 }
 - (void)userMayGetBackOnRoute:(NSDictionary*)properties
 {
     [commander userMayGetBackOnRoute:properties];
+    [previewer userMayGetBackOnRoute:properties];
 }
 - (void)userShouldAdjustBearing:(NSDictionary*)properties
 {
     [commander userShouldAdjustBearing:properties];
+    [previewer userShouldAdjustBearing:properties];
 }
 
 // POI
 - (void)userIsApproachingToPOI:(NSDictionary*)properties
 {
     [commander userIsApproachingToPOI:properties];
+    [previewer userIsApproachingToPOI:properties];
 }
 - (void)userIsLeavingFromPOI:(NSDictionary*)properties
 {
     [commander userIsLeavingFromPOI:properties];
+    [previewer userIsLeavingFromPOI:properties];
+}
+
+#pragma mark - NavCommanderDelegate
+
+- (void)speak:(NSString *)text completionHandler:(void (^)())handler
+{
+    [[NavDeviceTTS sharedTTS] speak:text completionHandler:handler];
+}
+
+- (void)speak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)())handler
+{
+    [[NavDeviceTTS sharedTTS] speak:text force:flag completionHandler:handler];
+}
+
+- (void)playSuccess
+{
+    [[NavSound sharedInstance] playSuccess];
 }
 
 #pragma mark - Navigation
@@ -593,7 +462,7 @@
     if ([identifier isEqualToString:@"show_search"] && [navigator isActive]) {
         [[NavDataStore sharedDataStore] clearRoute];
         [NavDataStore sharedDataStore].previewMode = NO;
-        [self setAutoProceed:NO];
+        [previewer setAutoProceed:NO];
         dispatch_async(dispatch_get_main_queue(), ^{
             [NavUtil hideWaitingForView:self.view];
         });

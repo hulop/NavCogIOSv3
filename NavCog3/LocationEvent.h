@@ -50,4 +50,6 @@
 
 #define SPEAK_TEXT_QUEUEING @"speak_text_queueing"
 
+#define MANUAL_LOCATION @"manual_location"
+
 #endif /* LocationEvent_h */

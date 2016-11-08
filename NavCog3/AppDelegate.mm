@@ -53,7 +53,8 @@
     //manager = [[LocationManager alloc] init];
     //manager.delegate = self;
     
-    [NavDataStore sharedDataStore];
+    [NavDataStore sharedDataStore].userID = [UIDevice currentDevice].identifierForVendor.UUIDString;
+
     [NavDeviceTTS sharedTTS];
     
     // check location privilege

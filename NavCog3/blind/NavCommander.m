@@ -24,8 +24,6 @@
 #import "TTTOrdinalNumberFormatter.h"
 #import "NavUtil.h"
 #import "NavDataStore.h"
-#import "NavDeviceTTS.h"
-#import "NavSound.h"
 @import JavaScriptCore;
 
 @implementation NavCommander
@@ -228,7 +226,6 @@
 - (NSString*) headingActionString:(NSDictionary*)properties
 {
     double diffHeading = [properties[@"diffHeading"] doubleValue];
-    _targetAngle = diffHeading;
     double threshold = [properties[@"threshold"] doubleValue];
     
     NSString *string;
@@ -258,11 +255,6 @@
 
 - (void)didActiveStatusChanged:(NSDictionary *)properties
 {
-    if ([properties[@"isActive"] boolValue]) {
-        _targetFloor = NAN;
-        _targetDistance = NAN;
-        _targetAngle = NAN;
-    }
 }
 
 - (void)couldNotStartNavigation:(NSDictionary *)properties
@@ -288,7 +280,7 @@
         [string appendFormat:NSLocalizedStringFromTable(@"distance to the destination", @"BlindView", @"distance to the destination"), totalDist];
     }
     
-    [[NavDeviceTTS sharedTTS] speak:string completionHandler:^{
+    [_delegate speak:string completionHandler:^{
     }];
     
 }
@@ -309,7 +301,7 @@
         [string appendFormat:NSLocalizedStringFromTable(@"You arrived",@"BlindView", @"arrived message")];
     }
     
-    [[NavDeviceTTS sharedTTS] speak:string completionHandler:^{
+    [_delegate speak:string completionHandler:^{
         [[NavDataStore sharedDataStore] clearRoute];
     }];
 }
@@ -317,14 +309,11 @@
 - (void)userNeedsToChangeHeading:(NSDictionary*)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
-    
-    double diffHeading = [properties[@"diffHeading"] doubleValue];
-    _targetAngle = diffHeading;
-    
+        
     NSString *string = [self headingActionString:properties];
     
     if (string) {
-        [[NavDeviceTTS sharedTTS] speak:string completionHandler:^{
+        [_delegate speak:string completionHandler:^{
             
         }];
     }
@@ -335,7 +324,7 @@
     NSLog(@"%@", NSStringFromSelector(_cmd));
     dispatch_async(dispatch_get_main_queue(), ^{
         NSLog(@"speak,<play success sound>");
-        [[NavSound sharedInstance] playSuccess];
+        [_delegate playSuccess];
     });
 }
 
@@ -344,13 +333,11 @@
     double distance = [properties[@"distance"] doubleValue];
     BOOL target = [properties[@"target"] boolValue];
     
-    _targetDistance = distance;
-    
     if (target) {
         NSLog(@"%@", NSStringFromSelector(_cmd));
         NSString *dist = [self distanceString:distance];
         NSString *string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"remaining distance",@"BlindView", @""),  dist];
-        [[NavDeviceTTS sharedTTS] speak:string completionHandler:^{
+        [_delegate speak:string completionHandler:^{
             
         }];
     }
@@ -368,7 +355,7 @@
         string = NSLocalizedStringFromTable(@"approaching",@"BlindView",@"approaching");
     }
     
-    [[NavDeviceTTS sharedTTS] speak:string force:YES completionHandler:^{
+    [_delegate speak:string force:YES completionHandler:^{
         
     }];
 }
@@ -377,14 +364,8 @@
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
     NSString *string = [self actionString:properties];
-    double diffHeading = [properties[@"diffHeading"] doubleValue];
-    _targetAngle = diffHeading;
-    if (properties[@"nextTargetHeight"]) {
-        int targetHeight = [properties[@"nextTargetHeight"] intValue];
-        _targetFloor = targetHeight;
-    }
     
-    [[NavDeviceTTS sharedTTS] speak:string force:YES completionHandler:^{
+    [_delegate speak:string force:YES completionHandler:^{
         
     }];
 }
@@ -410,7 +391,6 @@
     NSString *floorInfo = [self floorPOIString:pois];
     NSString *cornerInfo = [self cornerPOIString:pois];
     
-    _targetDistance = distance;
     NSString *dist = [self distanceString:distance];
     
     
@@ -447,7 +427,7 @@
         }
     }
     
-    [[NavDeviceTTS sharedTTS] speak:string completionHandler:^{
+    [_delegate speak:string completionHandler:^{
         
     }];
 }
@@ -457,15 +437,12 @@
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
     
-    double diffHeading = [properties[@"diffHeading"] doubleValue];
-    _targetAngle = diffHeading;
-    
     NSString *hAction = [self headingActionString:properties];
     
     if (hAction) {
         NSString *string = NSLocalizedStringFromTable(@"%@, you might be going backward.", @"BlindView", @"");
         string = [NSString stringWithFormat:string, hAction];
-        [[NavDeviceTTS sharedTTS] speak:string completionHandler:^{
+        [_delegate speak:string completionHandler:^{
             
         }];
     }
@@ -476,15 +453,12 @@
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
     
-    double diffHeading = [properties[@"diffHeading"] doubleValue];
-    _targetAngle = diffHeading;
-    
     NSString *hAction = [self headingActionString:properties];
     
     if (hAction) {
         NSString *string = NSLocalizedStringFromTable(@"%@, you might be going wrong direction.", @"BlindView", @"");
         string = [NSString stringWithFormat:string, hAction];
-        [[NavDeviceTTS sharedTTS] speak:string completionHandler:^{
+        [_delegate speak:string completionHandler:^{
             
         }];
     }
@@ -556,14 +530,14 @@
         
         NSArray *result = [self checkCommand:string];
         
-        [[NavDeviceTTS sharedTTS] speak:result[0] completionHandler:^{
+        [_delegate speak:result[0] completionHandler:^{
             if ([result count] < 2) {
                 return;
             }
             
             JSContext *ctx = [[JSContext alloc] init];
             ctx[@"speak"] = ^(NSString *message) {
-                [[NavDeviceTTS sharedTTS] speak:message completionHandler:^{
+                [_delegate speak:message completionHandler:^{
                 }];
             };
             ctx[@"openURL"] = ^(NSString *url, NSString *title, NSString *message) {

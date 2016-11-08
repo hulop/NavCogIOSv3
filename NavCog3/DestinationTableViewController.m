@@ -21,7 +21,7 @@
  *******************************************************************************/
 
 #import "DestinationTableViewController.h"
-#import "NavDataStore.h"
+#import "NavDataSource.h"
 
 @interface DestinationTableViewController ()
 

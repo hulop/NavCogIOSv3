@@ -21,7 +21,7 @@
  *******************************************************************************/
 
 #import "SearchViewController.h"
-#import "NavDataStore.h"
+#import "NavDataSource.h"
 #import "NavUtil.h"
 #import "LocationEvent.h"
 

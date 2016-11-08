@@ -21,16 +21,18 @@
  *******************************************************************************/
 
 #import <Foundation/Foundation.h>
-#import "NavNavigator.h"
+#import <UIKit/UIKit.h>
+#import "NavDataStore.h"
 
-@protocol NavCommanderDelegate
-- (void)speak:(NSString*)text completionHandler:(void (^)())handler;
-- (void)speak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)())handler;
-- (void)playSuccess;
+@interface NavDestinationDataSource : NSObject <UITableViewDataSource>
+@property NSInteger selectedRow;
+
+@property BOOL showCurrentLocation;
+@property BOOL showFacility;
+
+- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
 @end
 
-@interface NavCommander : NSObject <NavNavigatorDelegate>
-
-@property id<NavCommanderDelegate> delegate;
-
+@interface NavSearchHistoryDataSource : NSObject < UITableViewDataSource>
+- (NSDictionary*) historyAtIndexPath:(NSIndexPath*)indexPath;
 @end

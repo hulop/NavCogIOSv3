@@ -222,7 +222,7 @@
         
     }
     
-    return temp;
+    return [temp stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
 }
 
 - (void)updateWithLang:(NSString *)lang
@@ -312,7 +312,7 @@
         
     }
     
-    return temp;
+    return [temp stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
 }
 
 - (BOOL)isToilet

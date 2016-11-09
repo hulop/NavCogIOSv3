@@ -375,6 +375,8 @@ Option parseArguments(int argc, char * argv[]){
 {
     [commander didActiveStatusChanged:properties];
     [previewer didActiveStatusChanged:properties];
+    
+    NSLog(@"Navigation,%@,%@",dataStore.from.name,dataStore.to.name);
     if ([properties[@"isActive"] boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             
@@ -400,6 +402,10 @@ Option parseArguments(int argc, char * argv[]){
     [previewer couldNotStartNavigation:properties];
     [previewer setAutoProceed:NO];
     std::cout << [properties[@"reason"] UTF8String];
+    if ([fromToList count] == 0) {
+        std::cout << std::endl;
+        exit(4);
+    }
     [self processOne];
 }
 

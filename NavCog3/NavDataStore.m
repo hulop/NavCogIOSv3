@@ -650,6 +650,7 @@ static NavDataStore* instance_ = nil;
         HLPLocation *loc = properties[@"location"];
         [loc updateLat:loc.lat Lng:loc.lng Accuracy:1.5 Floor:loc.floor];
         double heading = [properties[@"heading"] doubleValue];
+        heading = isnan(heading)?0:heading;
         manualOrientation = heading;
         [loc updateOrientation:heading withAccuracy:-1];
         [currentLocation update:loc];

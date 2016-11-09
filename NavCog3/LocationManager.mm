@@ -373,11 +373,12 @@ void functionCalledToLog(void *inUserData, string text)
     if (!_isActive || !isMapLoaded) {
         NSDictionary *properties = [notification object];
         HLPLocation *loc = properties[@"location"];
+        double heading = [properties[@"heading"] doubleValue];
         NSDictionary *data = @{
                                @"lat": @(loc.lat),
                                @"lng": @(loc.lng),
                                @"floor": @(loc.floor),
-                               @"orientation": properties[@"heading"],
+                               @"orientation": @(isnan(heading)?0:heading),
                                @"orientationAccuracy": @(1)
                                };
         [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];

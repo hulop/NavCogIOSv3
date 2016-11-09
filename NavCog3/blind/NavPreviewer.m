@@ -162,6 +162,10 @@
 }
 - (void)userIsApproachingToTarget:(NSDictionary*)properties
 {
+    if (properties[@"nextSourceHeight"]) {
+        int targetHeight = [properties[@"nextSourceHeight"] intValue];
+        _targetFloor = targetHeight;
+    }
 }
 - (void)userNeedsToTakeAction:(NSDictionary*)properties
 {

@@ -970,7 +970,7 @@ static NavNavigatorConstants *_instance;
             if (info.distanceToUserLocationFromLink < minDistance &&
                 ((fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
                 fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) ||
-                 navIndex == 1)
+                 i == 1)
                  ) {
                 minDistance = info.distanceToUserLocationFromLink;
                 minIndex = i;
@@ -1384,7 +1384,8 @@ static NavNavigatorConstants *_instance;
                      @{
                        @"target": @(YES),
                        @"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
-                       @"diffHeading": @(linkInfo.diffBearingAtUserLocation)
+                       @"diffHeading": @((linkInfo.distanceToTargetFromSnappedLocationOnLink>1)?
+                           linkInfo.diffBearingAtUserLocation:linkInfo.diffBearingAtSnappedLocationOnLink)
                        }];
                 }
 

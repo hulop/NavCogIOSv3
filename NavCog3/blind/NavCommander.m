@@ -261,6 +261,7 @@
 - (void)couldNotStartNavigation:(NSDictionary *)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"Reason,%@", properties[@"reason"]);
 }
 
 - (void)didNavigationStarted:(NSDictionary *)properties
@@ -505,7 +506,7 @@
         }
         
         NSMutableString *string = [@"" mutableCopy];
-        if (angle) {
+        if (angle && (poi.text || text)) {
             if (poi.isDestination) {
                 [string appendFormat:NSLocalizedStringFromTable(@"destination is %@", @"BlindView", @""), text, angle];
                 if (poi.text) {

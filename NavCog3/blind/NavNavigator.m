@@ -622,9 +622,15 @@ static NavNavigatorConstants *_instance;
     NavNavigatorConstants *C = [NavNavigatorConstants constants];
     route = nds.route;
     
+    if (route == nil) {
+        if ([self.delegate respondsToSelector:@selector(couldNotStartNavigation:)]) {
+            [self.delegate couldNotStartNavigation:@{@"reason":@"NETWORK_ERROR"}];
+        }
+        return;
+    }
     if ([route count] == 0) {
         if ([self.delegate respondsToSelector:@selector(couldNotStartNavigation:)]) {
-            [self.delegate couldNotStartNavigation:@{}];
+            [self.delegate couldNotStartNavigation:@{@"reason":@"NO_ROUTE"}];
         }
         return;
     }
@@ -855,15 +861,6 @@ static NavNavigatorConstants *_instance;
         if ([route[i] isKindOfClass:HLPLink.class]) {
             HLPLink* link1 = (HLPLink*)route[i];
             
-            if (isFirstLink) {
-                isFirstLink = NO;
-                if (link1.length < C.IGNORE_FIRST_LINK_LENGTH_THRESHOLD) {
-                    firstLinkIndex = 2;
-                    continue;
-                }
-                firstLinkIndex = 1;
-            }
-            
             HLPLink* link2 = nil;
             int j=i+1;
             for(; j < [route count]; j++) {
@@ -871,6 +868,19 @@ static NavNavigatorConstants *_instance;
                     link2 = (HLPLink*)route[j];
                     break;
                 }
+            }
+            
+            if (isFirstLink) {
+                isFirstLink = NO;
+                if (link1.length < C.IGNORE_FIRST_LINK_LENGTH_THRESHOLD &&
+                    link2.linkType != LINK_TYPE_ELEVATOR &&
+                    link2.linkType != LINK_TYPE_ESCALATOR &&
+                    link2.linkType != LINK_TYPE_STAIRWAY
+                    ) {
+                    firstLinkIndex = 2;
+                    continue;
+                }
+                firstLinkIndex = 1;
             }
             
             NSMutableArray *linkPois = [@[] mutableCopy];
@@ -958,8 +968,10 @@ static NavNavigatorConstants *_instance;
             }
             [info updateWithLocation:location];
             if (info.distanceToUserLocationFromLink < minDistance &&
-                fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
-                fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) {
+                ((fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
+                fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) ||
+                 navIndex == 1)
+                 ) {
                 minDistance = info.distanceToUserLocationFromLink;
                 minIndex = i;
             }
@@ -1230,7 +1242,8 @@ static NavNavigatorConstants *_instance;
 
             
             if (linkInfo.hasBeenWaitingAction) {
-                if (linkInfo.nextLink.linkType == LINK_TYPE_ELEVATOR) {
+                if (linkInfo.nextLink.linkType == LINK_TYPE_ELEVATOR ||
+                    (navIndex == 1 && linkInfo.link.linkType == LINK_TYPE_ELEVATOR)) {
                     navIndex++;
                 }
                 else if (fabs(linkInfo.diffNextBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
@@ -1245,17 +1258,42 @@ static NavNavigatorConstants *_instance;
             
             if (linkInfo.link.linkType == LINK_TYPE_ELEVATOR) {
                 if (fabs(linkInfo.link.targetHeight - location.floor) < C.FLOOR_DIFF_THRESHOLD) {
-                    linkInfo.hasBeenWaitingAction = YES;
-                    if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
-                        [self.delegate userNeedsToTakeAction:
-                         @{
-                           @"turnAngle": @(linkInfo.nextTurnAngle),
-                           @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
-                           @"linkType": @(linkInfo.link.linkType),
-                           @"nextLinkType": @(linkInfo.nextLink.linkType),
-                           @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
-                           }];
+                    if (linkInfo.isNextDestination) {
+                        if ([self.delegate respondsToSelector:@selector(didNavigationFinished:)]) {
+                            [self.delegate didNavigationFinished:
+                             @{
+                               @"isEndOfLink": @(linkInfo.nextLink == nil),
+                               @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                               }];
+
+                        }
+                        
+                        navIndex = (int)[linkInfos count];
+                    } else {
+                        linkInfo.hasBeenWaitingAction = YES;
+                        if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                            [self.delegate userNeedsToTakeAction:
+                             @{
+                               @"turnAngle": @(linkInfo.nextTurnAngle),
+                               @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
+                               @"linkType": @(linkInfo.link.linkType),
+                               @"nextLinkType": @(linkInfo.nextLink.linkType),
+                               @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                               @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                               }];
+                        }
+                    }
+                } else {
+                    if (navIndex == 1) {
+                        if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                            [self.delegate userNeedsToTakeAction:
+                             @{
+                               @"diffHeading": @(0),
+                               @"nextLinkType": @(linkInfo.link.linkType),
+                               @"nextSourceHeight": @(linkInfo.link.sourceHeight),
+                               @"nextTargetHeight": @(linkInfo.link.targetHeight)
+                               }];
+                        }
                     }
                 }
                 return;
@@ -1345,7 +1383,8 @@ static NavNavigatorConstants *_instance;
                     [self.delegate remainingDistanceToTarget:
                      @{
                        @"target": @(YES),
-                       @"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink)
+                       @"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
+                       @"diffHeading": @(linkInfo.diffBearingAtUserLocation)
                        }];
                 }
 
@@ -1356,7 +1395,8 @@ static NavNavigatorConstants *_instance;
                     [self.delegate remainingDistanceToTarget:
                      @{
                        @"target": @(NO),
-                       @"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink)
+                       @"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
+                       @"diffHeading": @(linkInfo.diffBearingAtUserLocation)
                        }];
                 }
             }

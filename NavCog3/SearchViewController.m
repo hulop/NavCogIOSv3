@@ -159,7 +159,7 @@
     NSDictionary *prefs = @{
                             @"dist":@"500",
                             @"preset":@"9",
-                            @"min_width":@"2",
+                            @"min_width":@"8",
                             @"slope":@"9",
                             @"road_condition":@"9",
                             @"deff_LV":@"9",

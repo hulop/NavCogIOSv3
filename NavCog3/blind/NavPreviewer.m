@@ -135,6 +135,11 @@
 
 - (void)didNavigationFinished:(NSDictionary *)properties
 {
+    if (properties[@"nextTargetHeight"]) {
+        int targetHeight = [properties[@"nextTargetHeight"] intValue];
+        _targetFloor = targetHeight;
+    }
+
     [self setAutoProceed:NO];
     [NavDataStore sharedDataStore].previewMode = NO;
 }
@@ -152,6 +157,8 @@
 {
     double distance = [properties[@"distance"] doubleValue];
     _targetDistance = distance;
+    double diffHeading = [properties[@"diffHeading"] doubleValue];
+    _targetAngle = diffHeading;
 }
 - (void)userIsApproachingToTarget:(NSDictionary*)properties
 {

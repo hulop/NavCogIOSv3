@@ -30,11 +30,17 @@ typedef struct {
     BOOL useStairs = NO;
     BOOL useEscalator = NO;
     BOOL useElevator = YES;
+    BOOL listDestinations = NO;
+    std::string filter = "";
+    BOOL combinations = NO;
 }Option;
 
 void printHelp() {
     std::cout << "NavCogTool" << std::endl;
     std::cout << "-h                     print this help" << std::endl;
+    std::cout << "--list                 print all destinations" << std::endl;
+    std::cout << "--filter <json>        filter destinations" << std::endl;
+    std::cout << "--combinations         output all combinations of destinations" << std::endl;
     std::cout << "-f <string>            from node ID for route search" << std::endl;
     std::cout << "-t <string>            to node ID for route search" << std::endl;
     std::cout << "-p <double>,<double>   lat,lng for init" << std::endl;
@@ -43,9 +49,9 @@ void printHelp() {
     std::cout << "-l <string>            set user language" << std::endl;
     std::cout << "-c <string>            config file name" << std::endl;
     std::cout << "-o <string>            set output file path" << std::endl;
-    std::cout << "-useStairs [YES|NO]    set useStairs" << std::endl;
-    std::cout << "-useEscalator [YES|NO] set useEscalator" << std::endl;
-    std::cout << "-useElevator [YES|NO]  set useElevator" << std::endl;
+    std::cout << "--useStairs [1|0]      set useStairs" << std::endl;
+    std::cout << "--useEscalator [1|0]   set useEscalator" << std::endl;
+    std::cout << "--useElevator [1|0]    set useElevator" << std::endl;
 }
 
 Option parseArguments(int argc, char * argv[]){
@@ -54,6 +60,9 @@ Option parseArguments(int argc, char * argv[]){
     int c;
     int option_index = 0;
     struct option long_options[] = {
+        {"list",          no_argument, NULL,  0 },
+        {"filter",        required_argument, NULL,  0 },
+        {"combinations",  no_argument, NULL,  0 },
         {"useStairs",     required_argument, NULL,  0 },
         {"useEscalator",  required_argument, NULL,  0 },
         {"useElevator",   required_argument, NULL,  0 },
@@ -63,15 +72,25 @@ Option parseArguments(int argc, char * argv[]){
     while ((c = getopt_long(argc, argv, "hf:t:p:d:c:u:l:o:", long_options, &option_index )) != -1)
         switch (c)
     {
-        case '0':
+        case 0:
             if (strcmp(long_options[option_index].name, "useStairs") == 0){
-                sscanf(optarg, "%s", &opt.useStairs);
+                sscanf(optarg, "%d", (int*)&opt.useStairs);
             }
             if (strcmp(long_options[option_index].name, "useEscalator") == 0){
-                sscanf(optarg, "%s", &opt.useEscalator);
+                sscanf(optarg, "%d", (int*)&opt.useEscalator);
             }
             if (strcmp(long_options[option_index].name, "useElevator") == 0){
-                sscanf(optarg, "%s", &opt.useElevator);
+                sscanf(optarg, "%d", (int*)&opt.useElevator);
+            }
+            if (strcmp(long_options[option_index].name, "list") == 0){
+                opt.listDestinations = YES;
+            }
+            if (strcmp(long_options[option_index].name, "filter") == 0){
+                opt.filter.assign(optarg);
+                std::cout << opt.filter << std::endl;
+            }
+            if (strcmp(long_options[option_index].name, "combinations") == 0){
+                opt.combinations = YES;
             }
             break;
         case 'h':
@@ -121,18 +140,16 @@ Option parseArguments(int argc, char * argv[]){
     NavCommander *commander;
     NavPreviewer *previewer;
     Option opt;
+    
+    NSArray *fromToList;
+    NSTimer *timeoutTimer;
+    int countDown;
 }
 
 - (instancetype) init
 {
     self = [super init];
     dataStore = [NavDataStore sharedDataStore];
-    navigator = [[NavNavigator alloc] init];
-    commander = [[NavCommander alloc] init];
-    previewer = [[NavPreviewer alloc] init];
-    navigator.delegate = self;
-    commander.delegate = self;
-    previewer.delegate = self;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(destinationChanged:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
@@ -148,16 +165,145 @@ Option parseArguments(int argc, char * argv[]){
     NSLog(@"User,%@", userID);
     
     dataStore.userID = userID;
-    dataStore.previewMode = YES;
     [dataStore reloadDestinationsAtLat:opt.lat Lng:opt.lng forUser:dataStore.userID withUserLang:dataStore.userLanguage];
 }
 
 - (void)destinationChanged:(NSNotification*)note
 {
+    if (opt.listDestinations) {
+        NSDictionary *filter = nil;
+        if(opt.filter.length() > 0) {
+            NSError *error;
+            NSData *data = [NSData dataWithBytes:opt.filter.c_str() length:opt.filter.length()];
+            filter = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+            if (error) {
+                std::cerr << "Could not parse filter \"" << opt.filter << "\"" << std::endl;
+                std::cerr << [error.localizedDescription UTF8String] << std::endl;
+                abort();
+            }
+        }
+        NSArray *list = [dataStore.destinations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLandmark* l, NSDictionary<NSString *,id> * _Nullable bindings) {
+            if (filter == nil) {
+                return YES;
+            }
+            BOOL flag = YES;
+            for(NSString *key in filter.allKeys) {
+                flag = flag && [l.properties[key] isEqualToString:filter[key]];
+            }
+            return flag;
+        }]];
+        for(HLPLandmark *l in list) {
+            std::cout << [l.nodeID UTF8String];
+            std::cout << "\t";
+            std::cout << [l.getLandmarkName UTF8String];
+            std::cout << std::endl;
+            //std::cout << [l.description UTF8String];
+            //std::cout << std::endl;
+        }
+        
+        if (opt.combinations) {
+            NSString *dir = @".";
+            if (opt.outputPath.length() > 0) {
+                dir = [NSString stringWithFormat:@"%s", opt.outputPath.c_str()];
+                NSError *error;
+                BOOL isDir;
+                if (![[NSFileManager defaultManager] fileExistsAtPath:dir isDirectory:&isDir]) {
+                    if (![[NSFileManager defaultManager] createDirectoryAtPath:dir
+                                                   withIntermediateDirectories:NO
+                                                                    attributes:nil
+                                                                         error:&error])
+                    {
+                        std::cout << "Create directory error: " << [error.localizedDescription UTF8String] << std::endl;
+                        exit(1);
+                    }
+                } else if(isDir == NO) {
+                    std::cout << "Path is not directory: " << opt.outputPath << std::endl;
+                    exit(2);
+                }
+            }
+            NSMutableArray *temp = [@[] mutableCopy];
+            for(HLPLandmark* l1 in list) {
+                for(HLPLandmark* l2 in list) {
+                    if ([l1 isEqual:l2]) {
+                        continue;
+                    }
+                    [temp addObject:@{
+                                      @"from":l1.nodeID,
+                                      @"to":l2.nodeID,
+                                      @"file":[NSString stringWithFormat:@"%@/%@-%@.log", dir, l1.nodeID, l2.nodeID]
+                                      }];
+                }
+            }
+            fromToList = temp;
+        }
+    } else {
+        NSString *fromID = [NSString stringWithCString:opt.fromID.c_str() encoding:NSUTF8StringEncoding];
+        NSString *toID = [NSString stringWithCString:opt.toID.c_str() encoding:NSUTF8StringEncoding];
+        if (opt.outputPath.length() > 0) {
+            fromToList = @[@{@"from":fromID, @"to":toID, @"file":[NSString stringWithCString:opt.outputPath.c_str() encoding:NSUTF8StringEncoding]}];
+        }
+        else {
+            fromToList = @[@{@"from":fromID, @"to":toID}];
+        }
+    }
+
+    [self processOne];
+}
+
+-(void) processOne
+{
+    if ([fromToList count] > 0) {
+        int index = arc4random_uniform((int)[fromToList count]);
+        
+        NSDictionary *param = fromToList[index];
+        
+        if (timeoutTimer) {
+            std::cout << std::endl;
+            [timeoutTimer invalidate];
+        }
+        std::cout << [param[@"from"] UTF8String] << "-" << [param[@"to"] UTF8String];
+        fflush(stdout);
+        
+        countDown = 30;
+        timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+            if (countDown <= 0) {
+                std::cout << "Timeout";
+                fflush(stdout);
+                [previewer setAutoProceed:NO];
+                [self processOne];
+            } else {
+                countDown--;
+                std::cout << ".";
+                fflush(stdout);
+            }
+        }];
+        
+        dataStore.previewMode = YES;
+        [self navigationFrom:param[@"from"] To:param[@"to"] File:param[@"file"]];
+        
+        fromToList = [fromToList mtl_arrayByRemovingObject:param];
+    } else {
+        exit(0);
+    }
+}
+
+-(void) navigationFrom:(NSString*)fromID To:(NSString*)toID File:(NSString*)filename
+{
+    navigator = [[NavNavigator alloc] init];
+    commander = [[NavCommander alloc] init];
+    previewer = [[NavPreviewer alloc] init];
+    navigator.delegate = self;
+    commander.delegate = self;
+    previewer.delegate = self;
+    
+    if (filename) {
+        freopen([filename UTF8String], "w", stderr);
+    }
+
     NSDictionary *prefs = @{
                             @"dist":@"500",
                             @"preset":@"9",
-                            @"min_width":@"2",
+                            @"min_width":@"9",
                             @"slope":@"9",
                             @"road_condition":@"9",
                             @"deff_LV":@"9",
@@ -166,14 +312,11 @@ Option parseArguments(int argc, char * argv[]){
                             @"elv":opt.useElevator?@"9":@"1"
                             };
 
-    if (opt.fromID.length() == 0 || opt.toID.length() == 0) {
-        NSLog(@"missing fromID(%s) or toID(%s)", opt.fromID.c_str(), opt.toID.c_str());
-        exit(-2);
+    if (!fromID || !toID || [fromID length] == 0 || [toID length] == 0) {
+        NSLog(@"missing fromID(%@) or toID(%@)", fromID, toID);
+        exit(3);
     }
     
-    NSString *fromID = [NSString stringWithCString:opt.fromID.c_str() encoding:NSUTF8StringEncoding];
-    NSString *toID = [NSString stringWithCString:opt.toID.c_str() encoding:NSUTF8StringEncoding];
-
     dataStore.from = [dataStore destinationByID:fromID];
     dataStore.to = [dataStore destinationByID:toID];
     
@@ -255,7 +398,9 @@ Option parseArguments(int argc, char * argv[]){
 {
     [commander couldNotStartNavigation:properties];
     [previewer couldNotStartNavigation:properties];
-    exit(-3);
+    [previewer setAutoProceed:NO];
+    std::cout << [properties[@"reason"] UTF8String];
+    [self processOne];
 }
 
 - (void)didNavigationStarted:(NSDictionary *)properties
@@ -268,7 +413,8 @@ Option parseArguments(int argc, char * argv[]){
 {
     [commander didNavigationFinished:properties];
     [previewer didNavigationFinished:properties];
-    exit(0);
+    [previewer setAutoProceed:NO];
+    [self processOne];
 }
 
 // basic functions
@@ -350,11 +496,6 @@ int main(int argc, char * argv[]) {
         
         Option opt = parseArguments(argc, argv);
         
-        if (opt.outputPath.length() > 0) {
-            freopen(opt.outputPath.c_str(),"a+",stderr);
-        }
-        dup2(STDOUT_FILENO, STDERR_FILENO);
-        
         NSString *userLang = [NSString stringWithCString:opt.userLang.c_str() encoding:NSUTF8StringEncoding];
         
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
@@ -362,8 +503,8 @@ int main(int argc, char * argv[]) {
         NSString* path = [NSString stringWithCString:opt.configPath.c_str() encoding:NSUTF8StringEncoding];
         NSDictionary* dic = [[NSDictionary alloc] initWithContentsOfFile:path];
         if (!dic) {
-            NSLog(@"Config file could not be loaded");
-            exit(-1);
+            std::cout << "Config file could not be loaded" << std::endl;
+            exit(5);
         }
         NSLog(@"Config,%@", path);
         for(NSString *key in dic) {
@@ -372,6 +513,7 @@ int main(int argc, char * argv[]) {
         // set language for i18n
         [ud setObject:@[userLang] forKey:@"AppleLanguages"];
         [ud setObject:userLang forKey:@"AppleLocale"];
+        [ud setObject:@(10000) forKey:@"preview_speed"];
         
         NSLog(@"Language,%@", userLang);
         

@@ -90,7 +90,7 @@
                         }
                     }
                     
-                    if (!isnan(_targetDistance) && _targetDistance > 0) {
+                    if (!isnan(_targetDistance) && _targetDistance > 0.2) {
                         [self manualGoForward:0.2];
                         _targetDistance -= 0.2;
                         return;

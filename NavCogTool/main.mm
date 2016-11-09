@@ -59,6 +59,7 @@ Option parseArguments(int argc, char * argv[]){
     
     int c;
     int option_index = 0;
+    int boolean;
     struct option long_options[] = {
         {"list",          no_argument, NULL,  0 },
         {"filter",        required_argument, NULL,  0 },
@@ -74,13 +75,16 @@ Option parseArguments(int argc, char * argv[]){
     {
         case 0:
             if (strcmp(long_options[option_index].name, "useStairs") == 0){
-                sscanf(optarg, "%d", (int*)&opt.useStairs);
+                sscanf(optarg, "%d", &boolean);
+                opt.useStairs = boolean;
             }
             if (strcmp(long_options[option_index].name, "useEscalator") == 0){
-                sscanf(optarg, "%d", (int*)&opt.useEscalator);
+                sscanf(optarg, "%d", &boolean);
+                opt.useEscalator = boolean;
             }
             if (strcmp(long_options[option_index].name, "useElevator") == 0){
-                sscanf(optarg, "%d", (int*)&opt.useElevator);
+                sscanf(optarg, "%d", &boolean);
+                opt.useElevator = boolean;
             }
             if (strcmp(long_options[option_index].name, "list") == 0){
                 opt.listDestinations = YES;
@@ -303,7 +307,7 @@ Option parseArguments(int argc, char * argv[]){
     NSDictionary *prefs = @{
                             @"dist":@"500",
                             @"preset":@"9",
-                            @"min_width":@"9",
+                            @"min_width":@"8",
                             @"slope":@"9",
                             @"road_condition":@"9",
                             @"deff_LV":@"9",

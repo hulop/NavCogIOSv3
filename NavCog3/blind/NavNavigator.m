@@ -1050,40 +1050,37 @@ static NavNavigatorConstants *_instance;
                 }
             }
             
+            NavLinkInfo *firstLinkInfo = linkInfos[firstLinkIndex];
             // TODO improve length from current location not from existing node
             double totalLength = [self lengthOfRoute:route offset:0 size:[route count]];
             if ([self.delegate respondsToSelector:@selector(didNavigationStarted:)]) {
-                NavLinkInfo *info = linkInfos[firstLinkIndex];
+
                 
                 [self.delegate didNavigationStarted:
                  @{
-                   @"pois":info.pois,
+                   @"pois":firstLinkInfo.pois,
                    @"totalLength":@(totalLength),
                    @"oneHopLinks":oneHopLinks
                    }];
             }
-            isFirst = NO;
-            return;
-        }
-
-        
-        // initial heading
-        if (navIndex == 1) {
+       
             if (minDistance > C.NAVIGATION_START_CAUTION_DISTANCE_LIMIT) {
             }
             //TODO add fix protocol with lower accuracy
-            if (fabs(linkInfo.diffBearingAtUserLocation) > C.ADJUST_HEADING_MARGIN) {
-                if (!linkInfo.hasBeenBearing && !linkInfo.hasBeenActivated) {
-                    linkInfo.hasBeenBearing = YES;
+            if (fabs(firstLinkInfo.diffBearingAtUserLocation) > C.ADJUST_HEADING_MARGIN) {
+                if (!firstLinkInfo.hasBeenBearing && !firstLinkInfo.hasBeenActivated) {
+                    firstLinkInfo.hasBeenBearing = YES;
                     if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
                         [self.delegate userNeedsToChangeHeading:
                          @{
-                           @"diffHeading": @(linkInfo.diffBearingAtSnappedLocationOnLink),
+                           @"diffHeading": @(firstLinkInfo.diffBearingAtSnappedLocationOnLink),
                            @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
                            }];
                     }
                 }
             }
+        
+            isFirst = NO;
         }
         
         // TODO: check user skip some states

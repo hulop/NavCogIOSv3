@@ -102,6 +102,15 @@ double(^normalize)(double) = ^(double deg) {
     return self;
 }
 
+- (BOOL) isEqual:(id)obj
+{
+    if ([obj isKindOfClass:HLPLocation.class]) {
+        HLPLocation *loc = (HLPLocation*)obj;
+        return _lat == loc.lat && _lng == loc.lng && _floor == loc.floor;
+    }
+    return [super isEqual:obj];
+}
+
 - (NSString*) description
 {
     return [NSString stringWithFormat:@"%f,%f,%f,%f,%f,%f,%f", _lat, _lng, _accuracy, _floor, _speed, _orientation, _orientationAccuracy];

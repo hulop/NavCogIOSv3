@@ -28,7 +28,7 @@
 #import "Logging.h"
 
 @implementation NavDestination {
-    NSString *_facilityType;
+    NavDestinationFacilityType _facilityType;
     HLPLandmark *_landmark;
     HLPLocation *_location;
 }
@@ -45,7 +45,7 @@
         case NavDestinationTypeLocation:
             return [_location isEqual:obj->_location];
         case NavDestinationTypeFacility:
-            return [_facilityType isEqualToString:obj->_facilityType];
+            return _facilityType == obj->_facilityType;
         default:
             break;
     }
@@ -69,7 +69,7 @@
             [aCoder encodeObject:loc forKey:@"location"];
             break;
         case NavDestinationTypeFacility:
-            [aCoder encodeObject:_facilityType forKey:@"facilityType"];
+            [aCoder encodeObject:@(_facilityType) forKey:@"facilityType"];
             break;
         default:
             break;
@@ -88,7 +88,7 @@
             _location = [aDecoder decodeObjectForKey:@"location"];
             break;
         case NavDestinationTypeFacility:
-            _facilityType = [aDecoder decodeObjectForKey:@"facilityType"];
+            _facilityType = [[aDecoder decodeObjectForKey:@"facilityType"] intValue];
             break;
         default:
             break;
@@ -96,7 +96,7 @@
     return self;
 }
 
-- (instancetype)initWithFacility:(NSString *)facilityType
+- (instancetype)initWithFacility:(NavDestinationFacilityType)facilityType
 {
     self = [super init];
     _type = NavDestinationTypeFacility;
@@ -117,6 +117,15 @@
     self = [super init];
     _type = NavDestinationTypeLandmark;
     _landmark = landmark;
+    return self;
+}
+
+- (instancetype)initWithLabel:(NSString*)label Filter:(NSDictionary *)filter
+{
+    self = [super init];
+    _type = NavDestinationTypeFilter;
+    _label = label;
+    _filter = filter;
     return self;
 }
 
@@ -162,6 +171,7 @@
 - (NSString*)name
 {
     HLPLocation *loc;
+    NSMutableString *temp;
     int floor;
     switch(_type) {
         case NavDestinationTypeLandmark:
@@ -181,12 +191,27 @@
                         NSLocalizedStringFromTable(@"_nav_latlng_fix", @"BlindView", @""),loc.lat,loc.lng,floor<0?@"B":@"",abs(floor)];
             }
         case NavDestinationTypeFacility:
-            //TODO
-            return @"";
+            temp = [[NSMutableString alloc] init];
+            switch(_facilityType) {
+            case NavDestinationFacilityTypeToiletA:
+                [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
+                break;
+            case NavDestinationFacilityTypeToiletM:
+                [temp appendString:NSLocalizedString(@"FOR_MALE",@"Toilet for male")];
+                break;
+            case NavDestinationFacilityTypeToiletF:
+                [temp appendString:NSLocalizedString(@"FOR_FEMALE",@"Toilet for female")];
+                break;
+            }
+            [temp appendString:NSLocalizedString(@"TOILET",@"Toilet")];
+            
+            return temp;
         case NavDestinationTypeSelectStart:
             return NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
         case NavDestinationTypeSelectDestination:
             return NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
+        case NavDestinationTypeFilter:
+            return _label;
     }
     return nil;
 }
@@ -486,6 +511,13 @@ static NavDataStore* instance_ = nil;
     [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang];
 }
 
+- (NSString*)normalizePron:(NSString*)str
+{
+    NSMutableString* retStr = [[NSMutableString alloc] initWithString:str];
+    CFStringTransform((CFMutableStringRef)retStr, NULL, kCFStringTransformHiraganaKatakana, YES);
+    return retStr;
+}
+
 - (void)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
 {
     int dist = 500;
@@ -495,11 +527,11 @@ static NavDataStore* instance_ = nil;
     [HLPDataUtil loadLandmarksAtLat:lat Lng:lng inDist:dist forUser:user withLang:user_lang withCallback:^(NSArray<HLPObject *> *result) {
         //NSLog(@"%ld landmarks are loaded", (unsigned long)[result count]);
         destinationCache = [result sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
-            return [[[obj1 getLandmarkNamePron] lowercaseString] compare:[[obj2 getLandmarkNamePron] lowercaseString]];
+            return [[self normalizePron:[obj1 getLandmarkNamePron]] compare:[self normalizePron:[obj2 getLandmarkNamePron]]];
         }];
         
         destinationCache = [destinationCache filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLandmark *evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-            return ![evaluatedObject isToilet];
+            return ![evaluatedObject isFacility];
         }]];
         
         NSMutableDictionary *temp = [@{} mutableCopy];

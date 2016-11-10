@@ -321,6 +321,15 @@
     return [_category isEqualToString:CATEGORY_TOILET];
 }
 
+- (BOOL)isFacility
+{
+    return [_properties[@"sub_category"] isEqualToString:@"NURS"] ||
+    [_properties[@"sub_category"] isEqualToString:@"SMOK"] ||
+    [_properties[@"sub_category"] isEqualToString:@"ATM"] ||
+    [_properties[@"sub_category"] isEqualToString:@"RE_L"] ||
+    [self isToilet];
+}
+
 
 @end
 

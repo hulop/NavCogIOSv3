@@ -30,17 +30,29 @@ typedef enum {
     NavDestinationTypeLocation,
     NavDestinationTypeFacility,
     NavDestinationTypeSelectStart,
-    NavDestinationTypeSelectDestination
+    NavDestinationTypeSelectDestination,
+    NavDestinationTypeFilter
 } NavDestinationType;
+
+typedef enum {
+    NavDestinationFacilityTypeToiletA = 1,
+    NavDestinationFacilityTypeToiletM,
+    NavDestinationFacilityTypeToiletF,
+} NavDestinationFacilityType;
+
 
 @interface NavDestination : NSObject <NSCoding>
 @property (readonly) NavDestinationType type;
 @property (readonly) NSString* name;
 @property (readonly) NSString* namePron;
 @property (readonly) NSString* _id;
+@property (readonly) NSDictionary* filter;
+@property (readonly) NSString* label;
+
 -(instancetype)initWithLandmark:(HLPLandmark*)landmark;
 -(instancetype)initWithLocation:(HLPLocation*)location;
--(instancetype)initWithFacility:(NSString*)facilityType;
+-(instancetype)initWithFacility:(NavDestinationFacilityType)facilityType;
+-(instancetype)initWithLabel:(NSString*)label Filter:(NSDictionary*)filter;
 +(instancetype)selectStart;
 +(instancetype)selectDestination;
 @end

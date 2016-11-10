@@ -73,7 +73,11 @@ static NavNavigatorConstants *_instance;
                 continue;
             }
         }
-        [self setValue:[ud valueForKey:propertyName] forKey:propertyName];
+        if ([ud valueForKey:propertyName]) {
+            [self setValue:[ud valueForKey:propertyName] forKey:propertyName];
+        } else {
+            [self setValue:vals[0] forKey:propertyName];
+        }
     }
 
     return self;
@@ -1104,7 +1108,7 @@ static NavNavigatorConstants *_instance;
                 if (linkInfo_.link.linkType == LINK_TYPE_ESCALATOR || linkInfo_.link.linkType == LINK_TYPE_STAIRWAY) {
                     return 0.5;
                 } else {
-                    return MIN(C.APPROACHED_DISTANCE_THRESHOLD, linkInfo_.link.length/4);
+                    return MAX(MIN(C.APPROACHED_DISTANCE_THRESHOLD, linkInfo_.link.length/4), 0.5);
                 }
             };
             if (linkInfo.link.length < C.NO_APPROACHING_DISTANCE_THRESHOLD) {

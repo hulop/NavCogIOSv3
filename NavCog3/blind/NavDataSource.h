@@ -28,9 +28,14 @@
 @property NSInteger selectedRow;
 
 @property BOOL showCurrentLocation;
+@property BOOL showBuilding;
+@property BOOL showShops;
 @property BOOL showFacility;
+@property BOOL showSectionIndex;
+@property NSDictionary *filter;
 
 - (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)update:(NSNotification*)note;
 @end
 
 @interface NavSearchHistoryDataSource : NSObject < UITableViewDataSource>

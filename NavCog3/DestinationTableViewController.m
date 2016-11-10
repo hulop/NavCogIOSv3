@@ -29,19 +29,32 @@
 
 @implementation DestinationTableViewController {
     NavDestinationDataSource *source;
+    NavDestination *filterDest;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     source = [[NavDestinationDataSource alloc] init];
+    source.filter = filterDest.filter;
+    if (source.filter) {
+        source.showShops = YES;
+        source.showSectionIndex = YES;
+    }
     
     if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
-        source.showCurrentLocation = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"];
+        if (!source.filter) {
+            source.showCurrentLocation = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"];
+            source.showBuilding = YES;
+        }
     }
     if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
-        source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
+        if (!source.filter) {
+            source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
+            source.showBuilding = YES;
+        }
     }
+    [source update:nil];
     
     [self.tableView reloadData];
     
@@ -90,23 +103,37 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
-        [NavDataStore sharedDataStore].from = [source destinationForRowAtIndexPath:indexPath];
+    NavDestination *dest = [source destinationForRowAtIndexPath:indexPath];
+    
+    if (dest.type == NavDestinationTypeFilter) {
+        filterDest = dest;
+        [self performSegueWithIdentifier:@"sub_category" sender:self];
+    } else {
+        if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
+            [NavDataStore sharedDataStore].from = dest;
+        }
+        if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
+            [NavDataStore sharedDataStore].to = dest;
+        }
+        [self.navigationController popToViewController:_root animated:YES];
     }
-    if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
-        [NavDataStore sharedDataStore].to = [source destinationForRowAtIndexPath:indexPath];
-    }
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    
+    if ([segue.identifier isEqualToString:@"sub_category"]) {
+        if ([segue.destinationViewController isKindOfClass:DestinationTableViewController.class]) {
+            DestinationTableViewController *dView = (DestinationTableViewController*)segue.destinationViewController;
+            dView.restorationIdentifier = self.restorationIdentifier;
+            dView->filterDest = filterDest;
+            dView.root = _root;
+        }
+    }
 }
-*/
+
 
 @end

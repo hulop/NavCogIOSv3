@@ -73,6 +73,7 @@ typedef enum {
 - (NSString*) getLandmarkName;
 - (NSString*) getLandmarkNamePron;
 - (BOOL) isToilet;
+- (BOOL) isFacility;
 @end
 
 @interface HLPNode : HLPObject

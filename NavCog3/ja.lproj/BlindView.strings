@@ -61,7 +61,8 @@
 
 /* (No Commment) */
 "_nav_latlng" = "現在地";
-
+"_nav_facility" = "施設";
+"_nav_building" = "建物";
 "_nav_latlng_fix" = "位置";
 
 /* (No Commment) */

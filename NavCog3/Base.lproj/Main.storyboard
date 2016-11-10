@@ -819,6 +819,9 @@
                                     <frame key="frameInset" width="375" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="2QI-n6-OB0" kind="show" identifier="sub_category" id="JJX-g1-TfI"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

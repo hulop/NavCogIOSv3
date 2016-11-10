@@ -125,6 +125,7 @@ typedef enum: int {
     BOOL _backward;
     HLPLocation *sourceLocation;
     HLPLocation *targetLocation;
+    double _minimumWidth;
 }
 
 @property (nonatomic, readonly) double length;
@@ -135,6 +136,7 @@ typedef enum: int {
 @property (nonatomic, readonly) double targetHeight;
 @property (nonatomic, readonly) HLPLinkType linkType;
 @property (nonatomic, readonly) BOOL backward;
+@property (nonatomic, readonly) double minimumWidth;
 
 + (NSString*) nameOfLinkType:(HLPLinkType)type;
 - (double) initialBearingFromSource;

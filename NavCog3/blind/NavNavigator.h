@@ -67,6 +67,9 @@
     
 @property (readonly) double FLOOR_DIFF_THRESHOLD;
 
+@property (readonly) double CRANK_REMOVE_SAFE_RATE;
+
+
 + (instancetype) constants;
 + (NSArray*) propertyNames;
 + (NSDictionary*) defaults;

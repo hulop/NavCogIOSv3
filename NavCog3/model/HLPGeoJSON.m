@@ -40,6 +40,7 @@
 #define PROPKEY_ENTRANCE_NAME @"出入口の名称"
 #define PROPKEY_MALE_OR_FEMALE @"男女別"
 #define PROPKEY_MULTI_PURPOSE_TOILET @"多目的トイレ"
+#define PROPKEY_EFFECTIVE_WIDTH @"有効幅員"
 
 // for extension
 #define PROPKEY_EXT_MAJOR_CATEGORY @"major_category"
@@ -396,6 +397,14 @@
     _targetHeight = [self.properties[@"targetHeight"] doubleValue];
 
     _linkType = [self.properties[PROPKEY_LINK_TYPE] intValue];
+    
+    switch([self.properties[PROPKEY_EFFECTIVE_WIDTH] intValue]) {
+        case 0: _minimumWidth = 1; break;
+        case 1: _minimumWidth = 1.0; break;
+        case 2: _minimumWidth = 1.5; break;
+        case 3: _minimumWidth = 2.0; break;
+        case 9: _minimumWidth = 3.0; break;
+    }
     
     [self update];
     return self;

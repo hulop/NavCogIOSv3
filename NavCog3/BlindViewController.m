@@ -112,6 +112,7 @@
         self.devUp.hidden = !devMode || previewMode;
         self.devDown.hidden = !devMode || previewMode;
         self.devNote.hidden = !devMode || previewMode;
+        self.devRestart.hidden = !devMode || previewMode;
         
         self.devAuto.selected = previewer.autoProceed;
         self.cover.hidden = devMode || !isActive;
@@ -249,6 +250,10 @@
     HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
     long timestamp = (long)([[NSDate date] timeIntervalSince1970]*1000);
     NSLog(@"Marker,%f,%f,%f,%ld",loc.lat,loc.lng,loc.floor,timestamp);
+}
+
+- (IBAction)restartLocalization:(id)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESTART object:nil];
 }
 
 - (IBAction)retry:(id)sender {

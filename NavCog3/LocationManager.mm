@@ -139,6 +139,7 @@ void functionCalledToLog(void *inUserData, string text)
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestRssiBias:) name:REQUEST_RSSI_BIAS object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationRestart:) name:REQUEST_LOCATION_RESTART object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationReset:) name:REQUEST_LOCATION_RESET object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplay:) name:REQUEST_LOG_REPLAY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplayStop:) name:REQUEST_LOG_REPLAY_STOP object:nil];
@@ -165,9 +166,13 @@ void functionCalledToLog(void *inUserData, string text)
     isLogReplaying = YES;
     
     //localizer->resetStatus();
+    
+    [processQueue addOperationWithBlock:^{
+        [self stop];
+    }];
+    
     dispatch_queue_t queue = dispatch_queue_create("org.hulop.logreplay", NULL);
     dispatch_async(queue, ^{
-        [self stop];
         [NSThread sleepForTimeInterval:1.0];
         [self start];
         
@@ -367,6 +372,14 @@ void functionCalledToLog(void *inUserData, string text)
 }
 
 
+- (void) requestLocationRestart:(NSNotification*) notification
+{
+    [processQueue addOperationWithBlock:^{
+        [self stop];
+        [NSThread sleepForTimeInterval:1.0];
+        [self start];
+    }];
+}
 
 - (void) requestLocationReset:(NSNotification*) notification
 {

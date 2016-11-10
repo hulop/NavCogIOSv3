@@ -473,6 +473,28 @@
                                     <action selector="makeMarker:" destination="1gp-c3-Yyi" eventType="touchUpInside" id="v7T-Y0-YLm"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c9d-DM-4vK">
+                                <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="GhF-Jh-WNs"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="kz3-gS-KbM"/>
+                                    <constraint firstAttribute="height" constant="50" id="sZ4-yN-tud"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="yqD-Fy-CPO"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Restart"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                        <integer key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="restartLocalization:" destination="1gp-c3-Yyi" eventType="touchUpInside" id="epG-xt-ycz"/>
+                                </connections>
+                            </button>
                             <button hidden="YES" opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tdh-uv-IeP">
                                 <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -561,8 +583,10 @@
                             <constraint firstItem="7Cs-ZC-ieK" firstAttribute="leading" secondItem="t9O-hh-LqB" secondAttribute="trailing" constant="8" id="o1o-2W-GDo"/>
                             <constraint firstItem="rXg-ft-RDc" firstAttribute="top" secondItem="ckT-Tm-n01" secondAttribute="bottom" constant="20" id="o7j-TP-8C2"/>
                             <constraint firstItem="t9O-hh-LqB" firstAttribute="top" secondItem="o5u-Kq-7q4" secondAttribute="bottom" id="pA7-rN-vtI"/>
+                            <constraint firstItem="c9d-DM-4vK" firstAttribute="leading" secondItem="Vhx-Qg-XmL" secondAttribute="leading" constant="16" id="rCx-zF-wXi"/>
                             <constraint firstItem="rXg-ft-RDc" firstAttribute="top" secondItem="t8J-sc-MUY" secondAttribute="bottom" constant="20" id="rs8-bm-MPX"/>
                             <constraint firstAttribute="trailing" secondItem="tBq-Mg-lUf" secondAttribute="trailing" id="tsa-Rc-KEA"/>
+                            <constraint firstItem="cMN-Lw-Y8t" firstAttribute="top" secondItem="c9d-DM-4vK" secondAttribute="bottom" constant="50" id="u37-xy-m9g"/>
                             <constraint firstItem="t9O-hh-LqB" firstAttribute="centerX" secondItem="Vhx-Qg-XmL" secondAttribute="centerX" id="uXD-WS-1ru"/>
                             <constraint firstItem="8Qc-Ae-cih" firstAttribute="centerX" secondItem="3qj-Dh-1lE" secondAttribute="centerX" id="vJe-GV-0DO"/>
                             <constraint firstItem="w8D-6y-H77" firstAttribute="centerX" secondItem="7Cs-ZC-ieK" secondAttribute="centerX" id="z64-df-cTx"/>
@@ -589,6 +613,7 @@
                         <outlet property="devMarker" destination="cMN-Lw-Y8t" id="hJZ-xv-Gc0"/>
                         <outlet property="devNote" destination="Tdh-uv-IeP" id="VlR-CF-ZPa"/>
                         <outlet property="devReset" destination="t8J-sc-MUY" id="rMO-5E-4D0"/>
+                        <outlet property="devRestart" destination="c9d-DM-4vK" id="P5n-2H-1uN"/>
                         <outlet property="devRight" destination="7Cs-ZC-ieK" id="fOy-1m-DFY"/>
                         <outlet property="devUp" destination="w8D-6y-H77" id="ASC-yD-oP8"/>
                         <outlet property="errorMessage" destination="5yL-Mp-iYF" id="iSM-Ge-Op7"/>

@@ -46,6 +46,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *devUp;
 @property (weak, nonatomic) IBOutlet UIButton *devDown;
 @property (weak, nonatomic) IBOutlet UIButton *devNote;
+@property (weak, nonatomic) IBOutlet UIButton *devRestart;
 
 
 @end

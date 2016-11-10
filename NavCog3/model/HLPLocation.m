@@ -153,7 +153,10 @@ double(^normalize)(double) = ^(double deg) {
 - (void) updateOrientation:(double)orientation withAccuracy:(double)accuracy
 {
     @synchronized (self) {
-        _orientation = orientation;
+        double x = cos(orientation/180*M_PI);
+        double y = sin(orientation/180*M_PI);
+        
+        _orientation = atan2(y,x)/M_PI*180;
         _orientationAccuracy = accuracy;
     }
 }

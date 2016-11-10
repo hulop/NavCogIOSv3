@@ -62,6 +62,8 @@
 /* (No Commment) */
 "_nav_latlng" = "現在地";
 
+"_nav_latlng_fix" = "位置";
+
 /* (No Commment) */
 "_nav_select_destination" = "目的地を選択";
 

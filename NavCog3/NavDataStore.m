@@ -147,7 +147,7 @@
             } else {
                 loc = _location;
             }
-            return [NSString stringWithFormat:@"latlng:%f:%f:%d", loc.lat, loc.lng, (int)loc.floor];
+            return [NSString stringWithFormat:@"latlng:%f:%f:%d", loc.lat, loc.lng, (int)round(loc.floor)];
         case NavDestinationTypeFacility:
             //TODO
             return @"";
@@ -165,11 +165,13 @@
         case NavDestinationTypeLocation:
             if (_location == nil) {
                 loc = [[NavDataStore sharedDataStore] currentLocation];
+                return [NSString stringWithFormat:@"%@(%f,%f,%d)",
+                        NSLocalizedStringFromTable(@"_nav_latlng", @"BlindView", @""),loc.lat,loc.lng,(int)round(loc.floor)];
             } else {
                 loc = _location;
+                return [NSString stringWithFormat:@"%@(%f,%f,%d)",
+                        NSLocalizedStringFromTable(@"_nav_latlng_fix", @"BlindView", @""),loc.lat,loc.lng,(int)round(loc.floor)];
             }
-            return [NSString stringWithFormat:@"%@(%f,%f,%d)",
-                    NSLocalizedStringFromTable(@"_nav_latlng", @"BlindView", @""),loc.lat,loc.lng,(int)round(loc.floor)];
         case NavDestinationTypeFacility:
             //TODO
             return @"";

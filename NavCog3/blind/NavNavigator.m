@@ -831,7 +831,7 @@ static NavNavigatorConstants *_instance;
             }
         }
     }
-    // end assign poi to nearest link
+    // end associate pois to links
     
     
     
@@ -929,10 +929,12 @@ static NavNavigatorConstants *_instance;
             }
             
             NSMutableArray *linkPois = [@[] mutableCopy];
-            [linkPois addObjectsFromArray:linkPoiMap[link1._id]];
-            if ([link1 isKindOfClass:HLPCombinedLink.class]) {
-                for(HLPLink *link in [(HLPCombinedLink*) link1 links]) {
-                    [linkPois addObjectsFromArray:linkPoiMap[link._id]];
+            if (!isFirstLink) {
+                [linkPois addObjectsFromArray:linkPoiMap[link1._id]];
+                if ([link1 isKindOfClass:HLPCombinedLink.class]) {
+                    for(HLPLink *link in [(HLPCombinedLink*) link1 links]) {
+                        [linkPois addObjectsFromArray:linkPoiMap[link._id]];
+                    }
                 }
             }
             
@@ -1066,25 +1068,22 @@ static NavNavigatorConstants *_instance;
 
         
         // initial heading
-        if (navIndex == 0) {
-            
+        if (navIndex == 1) {
             if (minDistance > C.NAVIGATION_START_CAUTION_DISTANCE_LIMIT) {
-
             }
-            
-            if (linkInfo.diffBearingAtUserLocation) {
-                linkInfo.hasBeenBearing = YES;
-                if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
-                    [self.delegate userNeedsToChangeHeading:
-                     @{
-                       @"diffHeading": @(linkInfo.diffBearingAtSnappedLocationOnLink),
-                       @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
-                       }];
+            //TODO add fix protocol with lower accuracy
+            if (fabs(linkInfo.diffBearingAtUserLocation) > C.ADJUST_HEADING_MARGIN) {
+                if (!linkInfo.hasBeenBearing && !linkInfo.hasBeenActivated) {
+                    linkInfo.hasBeenBearing = YES;
+                    if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
+                        [self.delegate userNeedsToChangeHeading:
+                         @{
+                           @"diffHeading": @(linkInfo.diffBearingAtSnappedLocationOnLink),
+                           @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
+                           }];
+                    }
                 }
             }
-
-            navIndex++;
-            return;
         }
         
         // TODO: check user skip some states
@@ -1220,7 +1219,7 @@ static NavNavigatorConstants *_instance;
                 // return;
             }
             
-            if (!linkInfo.hasBeenActivated) {
+            if (!linkInfo.hasBeenActivated && !linkInfo.hasBeenBearing) {
                 
                 linkInfo.hasBeenActivated = YES;
                 if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {

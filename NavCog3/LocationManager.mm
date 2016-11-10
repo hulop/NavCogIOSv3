@@ -1037,7 +1037,12 @@ int dcount = 0;
         int orientationAccuracy = 999;
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"tracking"] ||
             localizer->tracksOrientation()) {
-            orientationAccuracy = 1;
+            
+            auto dirStats = loc::Pose::computeDirectionalStatistics(states);
+            double m = dirStats.circularMean();
+            double v = dirStats.circularVariance();
+
+            orientationAccuracy = v/M_PI*180;
         }
         
         double acc = [[NSUserDefaults standardUserDefaults] boolForKey:@"accuracy_for_wow"]?0.5:5.0;

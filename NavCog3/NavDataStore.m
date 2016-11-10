@@ -138,6 +138,7 @@
 - (NSString*)_id
 {
     HLPLocation *loc;
+    int floor;
     switch(_type) {
         case NavDestinationTypeLandmark:
             return [_landmark nodeID];
@@ -147,7 +148,9 @@
             } else {
                 loc = _location;
             }
-            return [NSString stringWithFormat:@"latlng:%f:%f:%d", loc.lat, loc.lng, (int)round(loc.floor)];
+            floor = (int)round(loc.floor);
+            floor = (floor >= 0)?floor+1:floor;
+            return [NSString stringWithFormat:@"latlng:%f:%f:%d", loc.lat, loc.lng, floor];
         case NavDestinationTypeFacility:
             //TODO
             return @"";
@@ -159,18 +162,23 @@
 - (NSString*)name
 {
     HLPLocation *loc;
+    int floor;
     switch(_type) {
         case NavDestinationTypeLandmark:
             return [_landmark getLandmarkName];
         case NavDestinationTypeLocation:
             if (_location == nil) {
                 loc = [[NavDataStore sharedDataStore] currentLocation];
-                return [NSString stringWithFormat:@"%@(%f,%f,%d)",
-                        NSLocalizedStringFromTable(@"_nav_latlng", @"BlindView", @""),loc.lat,loc.lng,(int)round(loc.floor)];
+                floor = (int)round(loc.floor);
+                floor = (floor >= 0)?floor+1:floor;
+                return [NSString stringWithFormat:@"%@(%f,%f,%@%dF)",
+                        NSLocalizedStringFromTable(@"_nav_latlng", @"BlindView", @""),loc.lat,loc.lng,floor<0?@"B":@"",abs(floor)];
             } else {
                 loc = _location;
-                return [NSString stringWithFormat:@"%@(%f,%f,%d)",
-                        NSLocalizedStringFromTable(@"_nav_latlng_fix", @"BlindView", @""),loc.lat,loc.lng,(int)round(loc.floor)];
+                floor = (int)round(loc.floor);
+                floor = (floor >= 0)?floor+1:floor;
+                return [NSString stringWithFormat:@"%@(%f,%f,%@%dF)",
+                        NSLocalizedStringFromTable(@"_nav_latlng_fix", @"BlindView", @""),loc.lat,loc.lng,floor<0?@"B":@"",abs(floor)];
             }
         case NavDestinationTypeFacility:
             //TODO

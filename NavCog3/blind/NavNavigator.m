@@ -143,8 +143,8 @@ static NavNavigatorConstants *_instance;
              @"NUM_OF_LINKS_TO_CHECK": @[@(3), @(1), @(10), @(1), FIXED],
     
              @"OFF_ROUTE_BEARING_THRESHOLD": @[@(2.0), @(0), @(10), @(0.1), FIXED],
-             @"CHANGE_HEADING_THRESHOLD": @[@(30.0), @(0), @(90), @(5), FIXED],
-             @"ADJUST_HEADING_MARGIN": @[@(15.0), @(0), @(90), @(5), FIXED],
+             @"CHANGE_HEADING_THRESHOLD": @[@(30.0), @(0), @(90), @(5)],
+             @"ADJUST_HEADING_MARGIN": @[@(15.0), @(0), @(90), @(5)],
              
              @"BACK_DETECTION_THRESHOLD": @[@(2.0), @(0), @(10), @(1)],
              @"BACK_DETECTION_HEADING_THRESHOLD": @[@(120), @(90), @(180), @(5), FIXED],

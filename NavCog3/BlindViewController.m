@@ -74,12 +74,11 @@
     helper.delegate = self;
     
     navigator = [[NavNavigator alloc] init];
-    
     commander = [[NavCommander alloc] init];
-    commander.delegate = self;
-    navigator.delegate = self;
-    
     previewer = [[NavPreviewer alloc] init];
+    navigator.delegate = self;
+    commander.delegate = self;
+    previewer.delegate = self;    
     
     self.searchButton.enabled = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];

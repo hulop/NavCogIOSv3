@@ -147,6 +147,7 @@ Option parseArguments(int argc, char * argv[]){
     
     NSArray *fromToList;
     NSTimer *timeoutTimer;
+    NSDictionary *processing;
     int countDown;
 }
 
@@ -158,6 +159,11 @@ Option parseArguments(int argc, char * argv[]){
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(destinationChanged:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     return self;
+}
+
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)start:(Option)_opt
@@ -174,6 +180,10 @@ Option parseArguments(int argc, char * argv[]){
 
 - (void)destinationChanged:(NSNotification*)note
 {
+    if (dataStore.destinations == nil) {
+        std::cerr << "Could not load destinations" << std::endl;
+        exit(10);
+    }
     if (opt.listDestinations) {
         NSDictionary *filter = nil;
         if(opt.filter.length() > 0) {
@@ -183,7 +193,7 @@ Option parseArguments(int argc, char * argv[]){
             if (error) {
                 std::cerr << "Could not parse filter \"" << opt.filter << "\"" << std::endl;
                 std::cerr << [error.localizedDescription UTF8String] << std::endl;
-                abort();
+                exit(11);
             }
         }
         NSArray *list = [dataStore.destinations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLandmark* l, NSDictionary<NSString *,id> * _Nullable bindings) {
@@ -256,25 +266,46 @@ Option parseArguments(int argc, char * argv[]){
 
 -(void) processOne
 {
+    [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:NO block:^(NSTimer * _Nonnull timer) {
+        [self _processOne];
+    }];
+}
+
+- (void) _processOne
+{
+    if (processing) {
+        return;
+    }
+    
     if ([fromToList count] > 0) {
         int index = arc4random_uniform((int)[fromToList count]);
         
-        NSDictionary *param = fromToList[index];
+        processing = fromToList[index];
         
         if (timeoutTimer) {
             std::cout << std::endl;
             [timeoutTimer invalidate];
         }
-        std::cout << [param[@"from"] UTF8String] << "-" << [param[@"to"] UTF8String];
+        std::cout << [processing[@"from"] UTF8String] << "-" << [processing[@"to"] UTF8String] << "-";
         fflush(stdout);
         
-        countDown = 30;
+        countDown = 20;
+    
+        __block __weak NavPreviewer *weakPreviewer = previewer;
+        __block __weak NavController *weakSelf = self;
         timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
             if (countDown <= 0) {
                 std::cout << "Timeout";
                 fflush(stdout);
-                [previewer setAutoProceed:NO];
-                [self processOne];
+                if ([fromToList count] == 0) {
+                    std::cout << std::endl;
+                    exit(6);
+                }
+                [timer invalidate];
+                timeoutTimer = nil;
+                [weakPreviewer setAutoProceed:NO];
+                [weakSelf processDone];
+                [weakSelf processOne];
             } else {
                 countDown--;
                 std::cout << ".";
@@ -283,11 +314,25 @@ Option parseArguments(int argc, char * argv[]){
         }];
         
         dataStore.previewMode = YES;
-        [self navigationFrom:param[@"from"] To:param[@"to"] File:param[@"file"]];
+        [self navigationFrom:processing[@"from"] To:processing[@"to"] File:processing[@"file"]];
         
-        fromToList = [fromToList mtl_arrayByRemovingObject:param];
+        fromToList = [fromToList mtl_arrayByRemovingObject:processing];
     } else {
         exit(0);
+    }
+}
+
+- (void) processDone
+{
+    @autoreleasepool {
+        processing = nil;
+        navigator.delegate = nil;
+        navigator = nil;
+        commander.delegate = nil;
+        commander = nil;
+        previewer.delegate = nil;
+        [previewer setAutoProceed:NO];
+        previewer = nil;
     }
 }
 
@@ -382,18 +427,16 @@ Option parseArguments(int argc, char * argv[]){
     
     NSLog(@"Navigation,%@,%@",dataStore.from.name,dataStore.to.name);
     if ([properties[@"isActive"] boolValue]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        __block __weak NavPreviewer *weakPreviewer = previewer;
+        if (dataStore.previewMode) {
+            [dataStore manualLocationReset:properties];
             
-            if (dataStore.previewMode) {
-                [dataStore manualLocationReset:properties];
-                
-                double delayInSeconds = 1.0;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [previewer setAutoProceed:YES];
-                });
-            }
-        });
+            double delayInSeconds = 1.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [weakPreviewer setAutoProceed:YES];
+            });
+        }
     } else {
         [previewer setAutoProceed:NO];
         _isActive = NO;
@@ -404,12 +447,12 @@ Option parseArguments(int argc, char * argv[]){
 {
     [commander couldNotStartNavigation:properties];
     [previewer couldNotStartNavigation:properties];
-    [previewer setAutoProceed:NO];
     std::cout << [properties[@"reason"] UTF8String];
     if ([fromToList count] == 0) {
         std::cout << std::endl;
         exit(4);
     }
+    [self processDone];
     [self processOne];
 }
 
@@ -423,7 +466,7 @@ Option parseArguments(int argc, char * argv[]){
 {
     [commander didNavigationFinished:properties];
     [previewer didNavigationFinished:properties];
-    [previewer setAutoProceed:NO];
+    [self processDone];
     [self processOne];
 }
 
@@ -523,7 +566,7 @@ int main(int argc, char * argv[]) {
         // set language for i18n
         [ud setObject:@[userLang] forKey:@"AppleLanguages"];
         [ud setObject:userLang forKey:@"AppleLocale"];
-        [ud setObject:@(10000) forKey:@"preview_speed"];
+        [ud setObject:@(100) forKey:@"preview_speed"];
         
         NSLog(@"Language,%@", userLang);
         

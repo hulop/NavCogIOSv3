@@ -37,6 +37,8 @@
 @property double targetDistance;
 @property double targetFloor;
 @property id<NavPreviewerDelegate> delegate;
+@property NSTimer *autoTimer;
+
 
 - (void)manualTurn:(double)angle;
 - (void)manualGoForward:(double)distance;

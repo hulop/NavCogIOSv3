@@ -25,14 +25,13 @@
 #import "LocationEvent.h"
 
 @implementation NavPreviewer{
-    NSTimer *autoTimer;
     
     BOOL _autoProceed;
 }
 
 - (void)dealloc
 {
-    [autoTimer invalidate];
+    //NSLog(@"NavPreviewer dealloc");
 }
 
 - (void)setAutoProceed:(BOOL)autoProceed
@@ -46,70 +45,77 @@
         }
         BOOL pm = [NavDataStore sharedDataStore].previewMode;
         double ps = 1.0 / [ud doubleForKey:@"preview_speed"];
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            autoTimer = [NSTimer scheduledTimerWithTimeInterval:pm?ps:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-                double turnAction = self.delegate.turnAction;
-                BOOL forwardAction = self.delegate.forwardAction;
-                //NSLog(@"angle=%f, dist=%f, floor=%f, f=%d, t=%f", _targetAngle, _targetDistance, _targetFloor, forwardAction, turnAction);
-                
-                if (needAction) {
-                    if (fabs(_targetAngle) > 5 && turnAction != 0) {
-                        if (_targetAngle < 0 && turnAction < 0) {
-                            [[NavDataStore sharedDataStore] manualTurn:_targetAngle];
-                            _targetAngle = 0;
-                        } else if (_targetAngle > 0 && turnAction > 0) {
-                            [[NavDataStore sharedDataStore] manualTurn:_targetAngle];
-                            _targetAngle = 0;
-                        }
-                    }
-                    
-                    if (!isnan(_targetDistance) && _targetDistance > 0 && forwardAction) {
-                        [self manualGoForward:0.2];
-                        _targetDistance -= 0.2;
-                        return;
-                    }
-                    
-                    if (!isnan(_targetFloor) && turnAction) {
-                        [self manualGoFloor:_targetFloor];
-                        _targetFloor = NAN;
-                        return;
-                    }
-                } else {
-                    if (fabs(_targetAngle) > 5) {
-                        if (isnan(_targetDistance) || _targetDistance < 0) {
-                            if (fabs(_targetAngle) > 1) {
-                                const double PREVIEW_TURN_RATE = 0.75;
-                                [[NavDataStore sharedDataStore] manualTurn:_targetAngle*PREVIEW_TURN_RATE];
-                                _targetAngle *= (1.0-PREVIEW_TURN_RATE);
-                                return;
-                            }
-                        } else {
-                            [[NavDataStore sharedDataStore] manualTurn:_targetAngle<0?-5:5];
-                            _targetAngle -= _targetAngle<0?-5:5;
-                        }
-                    }
-                    
-                    if (!isnan(_targetDistance) && _targetDistance > 0.2) {
-                        [self manualGoForward:0.2];
-                        _targetDistance -= 0.2;
-                        return;
-                    }
-                    
-                    if (!isnan(_targetFloor)) {
-                        [self manualGoFloor:_targetFloor];
-                        _targetFloor = NAN;
-                        return;
-                    }
-                }
-                [[NavDataStore sharedDataStore] manualLocation:nil];
-            }];
-        });
-
+        
+        _autoTimer = [NSTimer timerWithTimeInterval:pm?ps:0.1 target:self selector:@selector(processPreview:) userInfo:nil repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:_autoTimer forMode:NSDefaultRunLoopMode];
     } else {
-        [autoTimer invalidate];
+        @autoreleasepool {
+            [_autoTimer invalidate];
+            _autoTimer = nil;
+        }
         [self.delegate stopAction];
     }
+}
+
+- (void) processPreview:(NSTimer*)timer
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    BOOL needAction = [ud boolForKey:@"preview_with_action"];
+
+    double turnAction = _delegate.turnAction;
+    BOOL forwardAction = _delegate.forwardAction;
+    NSLog(@"angle=%f, dist=%f, floor=%f, f=%d, t=%f", _targetAngle, _targetDistance, _targetFloor, forwardAction, turnAction);
+    
+    if (needAction) {
+        if (fabs(_targetAngle) > 5 && turnAction != 0) {
+            if (_targetAngle < 0 && turnAction < 0) {
+                [[NavDataStore sharedDataStore] manualTurn:_targetAngle];
+                _targetAngle = 0;
+            } else if (_targetAngle > 0 && turnAction > 0) {
+                [[NavDataStore sharedDataStore] manualTurn:_targetAngle];
+                _targetAngle = 0;
+            }
+        }
+        
+        if (!isnan(_targetDistance) && _targetDistance > 0 && forwardAction) {
+            [self manualGoForward:0.2];
+            _targetDistance -= 0.2;
+            return;
+        }
+        
+        if (!isnan(_targetFloor) && turnAction) {
+            [self manualGoFloor:_targetFloor];
+            _targetFloor = NAN;
+            return;
+        }
+    } else {
+        if (fabs(_targetAngle) > 5) {
+            if (isnan(_targetDistance) || _targetDistance < 0) {
+                if (fabs(_targetAngle) > 1) {
+                    const double PREVIEW_TURN_RATE = 0.75;
+                    [[NavDataStore sharedDataStore] manualTurn:_targetAngle*PREVIEW_TURN_RATE];
+                    _targetAngle *= (1.0-PREVIEW_TURN_RATE);
+                    return;
+                }
+            } else {
+                [[NavDataStore sharedDataStore] manualTurn:_targetAngle<0?-5:5];
+                _targetAngle -= _targetAngle<0?-5:5;
+            }
+        }
+        
+        if (!isnan(_targetDistance) && _targetDistance > 0.2) {
+            [self manualGoForward:0.2];
+            _targetDistance -= 0.2;
+            return;
+        }
+        
+        if (!isnan(_targetFloor)) {
+            [self manualGoFloor:_targetFloor];
+            _targetFloor = NAN;
+            return;
+        }
+    }
+    [[NavDataStore sharedDataStore] manualLocation:nil];
 }
 
 - (BOOL) autoProceed

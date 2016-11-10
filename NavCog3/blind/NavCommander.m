@@ -28,6 +28,11 @@
 
 #pragma mark - string builder functions
 
+- (void)dealloc
+{
+    //NSLog(@"NavCommander dealloc");
+}
+
 - (NSString*) floorString:(double) floor
 {
     NSString *type = NSLocalizedStringFromTable(@"FloorNumType", @"BlindView", @"floor num type");

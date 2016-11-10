@@ -169,7 +169,7 @@
                 loc = _location;
             }
             return [NSString stringWithFormat:@"%@(%f,%f,%d)",
-                    NSLocalizedStringFromTable(@"_nav_latlng", @"BlindView", @""),loc.lat,loc.lng,(int)loc.floor];
+                    NSLocalizedStringFromTable(@"_nav_latlng", @"BlindView", @""),loc.lat,loc.lng,(int)round(loc.floor)];
         case NavDestinationTypeFacility:
             //TODO
             return @"";

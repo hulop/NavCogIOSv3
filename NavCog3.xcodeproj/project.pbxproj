@@ -812,6 +812,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3183A4AC87D00547DB0D0F4A /* Pods-NavCog3.debug.xcconfig */;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -828,6 +829,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2D0BA6402B080DF19AC9266A /* Pods-NavCog3.release.xcconfig */;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;

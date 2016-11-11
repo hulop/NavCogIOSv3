@@ -1,9 +1,8 @@
-"%@, you might be going backward." = "%@, 反対方向に進んでいるようです";
-"%@, you might be going wrong direction." = "%@, 道を間違えたようです";
-
-
 /* No comment provided by engineer. */
 "%@, you might be going backward." = "%@, 逆戻りしているようです";
+
+/* No comment provided by engineer. */
+"%@, you might be going wrong direction." = "%@, 道を間違えたようです";
 
 /* No comment provided by engineer. */
 "After getting off the elevator, %@" = "エレベーターを降りたら、%@";
@@ -24,10 +23,16 @@
 "FloorNumType" = "cardinal";
 
 /* No comment provided by engineer. */
+"From_button" = "%@から";
+
+/* No comment provided by engineer. */
 "Go to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@にいきます。現在は%3$@にいます。";
 
 /* No comment provided by engineer. */
 "Go to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ";
+
+/* No comment provided by engineer. */
+"Locating..." = "現在地を取得中...";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
@@ -42,13 +47,22 @@
 "Search" = "検索";
 
 /* (No Commment) */
+"Search Route" = "ルート検索";
+
+/* (No Commment) */
 "Stop" = "終了";
+
+/* (No Commment) */
+"Stop Navigation" = "案内終了";
 
 /* No comment provided by engineer. */
 "TTS_PAUSE_CHAR" = "。";
 
 /* No comment provided by engineer. */
 "There is a sign says %@" = "%@という看板があります";
+
+/* No comment provided by engineer. */
+"To_button" = "%@まで";
 
 /* No comment provided by engineer. */
 "Watch your step, %@" = "足元注意、%@";
@@ -59,16 +73,22 @@
 /* arrived message with destination name */
 "You arrived at %1$@" = "%1$@付近に到着しました。。。お疲れ様でした";
 
-/* (No Commment) */
-"_nav_latlng" = "現在地";
-"_nav_facility" = "施設";
+/* No comment provided by engineer. */
 "_nav_building" = "建物";
+
+/* No comment provided by engineer. */
+"_nav_facility" = "施設";
+
+/* No comment provided by engineer. */
+"_nav_latlng" = "現在地";
+
+/* No comment provided by engineer. */
 "_nav_latlng_fix" = "位置";
 
-/* (No Commment) */
+/* No comment provided by engineer. */
 "_nav_select_destination" = "目的地を選択";
 
-/* (No Commment) */
+/* No comment provided by engineer. */
 "_nav_select_start" = "開始地点を選択";
 
 /* (No Commment) */
@@ -205,8 +225,4 @@
 
 /* head to the right direction */
 "turn to the right" = "右に向く";
-
-"Stop Navigation" = "案内を終了";
-"Search Route" = "ルートを検索";
-
 

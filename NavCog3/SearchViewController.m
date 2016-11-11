@@ -28,6 +28,7 @@
 
 @interface SearchViewController () {
     BOOL updated;
+    NSString *lastIdentifier;
 }
 
 @end
@@ -77,8 +78,9 @@
 {
     if (!updated) {
         [[NavDataStore sharedDataStore] reloadDestinations];
-        [NavUtil showWaitingForView:self.view];
+        [NavUtil showWaitingForView:self.view withMessage:NSLocalizedString(@"Loading, please wait",@"")];
     }
+    NSLog(@"%@", self.navigationController.viewControllers);
     [self updateView];
 }
 
@@ -90,6 +92,7 @@
 - (void) destinationsChanged:(NSNotification*)notification
 {
     [NavUtil hideWaitingForView:self.view];
+
     
     [notification object];
     
@@ -124,9 +127,27 @@
     self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil);
     
     [self.fromButton setTitle:nds.from.name forState:UIControlStateNormal];
+    
+    if (nds.from.type == NavDestinationTypeSelectStart) {
+        self.fromButton.accessibilityLabel = nds.from.name;
+    } else {
+        self.fromButton.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"From_button", @"BlindView", @""), nds.from.namePron];
+    }
+    
     [self.toButton setTitle:nds.to.name forState:UIControlStateNormal];
+    if (nds.to.type == NavDestinationTypeSelectDestination) {
+        self.toButton.accessibilityLabel = nds.to.name;
+    } else {
+        self.toButton.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"To_button", @"BlindView", @""), nds.to.namePron];
+    }
     
     self.historyClearButton.enabled = [[nds searchHistory] count] > 0;
+    
+    if ([lastIdentifier isEqualToString:@"toDestinations"]) {
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _toButton);        
+    } else {
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _fromButton);
+    }
 }
 
 - (IBAction)switchFromTo:(id)sender {
@@ -169,7 +190,7 @@
                             @"elv":[ud boolForKey:@"route_use_elevator"]?@"9":@"1"
                             };
     
-    [NavUtil showWaitingForView:self.view];
+    [NavUtil showWaitingForView:self.view withMessage:NSLocalizedString(@"Loading, please wait",@"")];
     
     [[NavDataStore sharedDataStore] requestRouteFrom:nds.from._id To:nds.to._id withPreferences:prefs complete:^{
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -203,7 +224,7 @@
     // Pass the selected object to the new view controller.
     if ([segue.destinationViewController isKindOfClass:DestinationTableViewController.class]) {
         DestinationTableViewController *dView = (DestinationTableViewController*)segue.destinationViewController;
-        dView.restorationIdentifier = segue.identifier;
+        lastIdentifier = dView.restorationIdentifier = segue.identifier;
         dView.root = self;
     }
 }

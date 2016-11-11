@@ -29,6 +29,8 @@
 
 #define LOCATION_CHANGED_NOTIFICATION @"location_changed_notification"
 #define ORIENTATION_CHANGED_NOTIFICATION @"orientation_changed_notification"
+#define START_LOCATING @"start_locating"
+#define FINISH_LOCATING @"finish_locating"
 
 #define NAV_LOCATION_CHANGED_NOTIFICATION @"nav_location_changed_notification"
 #define NAV_ROUTE_CHANGED_NOTIFICATION @"nav_route_changed_notification"

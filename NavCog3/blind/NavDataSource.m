@@ -169,6 +169,7 @@
     NavDestination *dest = [self destinationForRowAtIndexPath:indexPath];
     
     cell.textLabel.text = dest.name;
+    cell.accessibilityLabel = dest.namePron;
     cell.clipsToBounds = YES;
     return cell;
 }
@@ -208,7 +209,10 @@
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.textLabel.lineBreakMode = NSLineBreakByClipping;
     cell.textLabel.text = to.name;
+    cell.textLabel.accessibilityLabel = to.namePron;
+    
     cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedStringFromTable(@"from: %@", @"BlindView", @""), from.name];
+    cell.detailTextLabel.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"from: %@", @"BlindView", @""), from.namePron];
     
     return cell;
 }

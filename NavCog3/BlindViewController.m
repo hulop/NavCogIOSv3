@@ -83,6 +83,8 @@
     self.searchButton.enabled = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startLocating:) name:START_LOCATING object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishLocating:) name:FINISH_LOCATING object:nil];
     
     [self locationChanged:nil];
 }
@@ -162,6 +164,20 @@
         }];
         
         [mv.action addTarget:self action:@selector(actionPerformed) forControlEvents:UIControlEventTouchDown];
+    });
+}
+
+- (void)startLocating:(NSNotification*)note
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil showWaitingForView:self.view withMessage:NSLocalizedStringFromTable(@"Locating...", @"BlindView", @"")];
+    });
+}
+
+- (void)finishLocating:(NSNotification*)note
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil hideWaitingForView:self.view];
     });
 }
 
@@ -386,7 +402,7 @@
                 }];
             }
             
-            [NavUtil showWaitingForView:self.view];
+            [NavUtil showWaitingForView:self.view withMessage:NSLocalizedString(@"Loading, please wait",@"")];
             
             if ([NavDataStore sharedDataStore].previewMode) {
                 [[NavDataStore sharedDataStore] manualLocationReset:properties];

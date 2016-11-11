@@ -407,12 +407,15 @@
 
     _linkType = [self.properties[PROPKEY_LINK_TYPE] intValue];
     
-    switch([self.properties[PROPKEY_EFFECTIVE_WIDTH] intValue]) {
-        case 0: _minimumWidth = 1; break;
-        case 1: _minimumWidth = 1.0; break;
-        case 2: _minimumWidth = 1.5; break;
-        case 3: _minimumWidth = 2.0; break;
-        case 9: _minimumWidth = 3.0; break;
+    _minimumWidth = 3.0;
+    if (self.properties[PROPKEY_EFFECTIVE_WIDTH]) {
+        switch([self.properties[PROPKEY_EFFECTIVE_WIDTH] intValue]) {
+            case 0: _minimumWidth = 1; break;
+            case 1: _minimumWidth = 1.0; break;
+            case 2: _minimumWidth = 1.5; break;
+            case 3: _minimumWidth = 2.0; break;
+            case 9: _minimumWidth = 3.0; break;
+        }
     }
     
     [self update];

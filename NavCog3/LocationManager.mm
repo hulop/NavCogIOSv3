@@ -253,7 +253,6 @@ void functionCalledToLog(void *inUserData, string text)
                         std::cout << std::endl;
                         timestamp = beacons.timestamp();
                         [self processBeacons:beacons];
-                        putBeaconsCount++;
                     }
                     // Parsing acceleration values
                     else if (logString.compare(0, 3, "Acc") == 0) {
@@ -645,6 +644,10 @@ void functionCalledToLog(void *inUserData, string text)
     if (putBeaconsCount < localizer->nSmooth) {
         return;
     }
+    if (putBeaconsCount == localizer->nSmooth) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:FINISH_LOCATING object:nil];
+        return;
+    }
     
     [self locationUpdated:status withResampledFlag:flagPutBeacon];
 }
@@ -754,7 +757,6 @@ void functionCalledToLog(void *inUserData, string text)
         @try {
             [self processBeacons:cbeacons];
             [self sendBeacons:beacons];
-            putBeaconsCount++;
         }
         @catch (NSException *e) {
             NSLog(@"%@", [e debugDescription]);
@@ -793,8 +795,12 @@ void functionCalledToLog(void *inUserData, string text)
         } else {
             double s = [[NSDate date] timeIntervalSince1970];
             try {
+                if (putBeaconsCount == 0) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:START_LOCATING object:nil];
+                }
                 flagPutBeacon = YES;
                 localizer->putBeacons(cbeacons);
+                putBeaconsCount++;
                 flagPutBeacon = NO;
             } catch(const std::exception& ex) {
                 std::cout << ex.what() << std::endl;

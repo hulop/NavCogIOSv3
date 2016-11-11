@@ -221,6 +221,10 @@
     switch(_type) {
         case NavDestinationTypeLandmark:
             return [_landmark getLandmarkNamePron];
+        case NavDestinationTypeLocation:
+            if (_location == nil) {
+                return NSLocalizedStringFromTable(@"_nav_latlng", @"BlindView", @"");
+            }
         default:
             return [self name];
     }

@@ -298,7 +298,7 @@
     
     NSString *destination = nil;
     if (properties[@"isEndOfLink"] && [properties[@"isEndOfLink"] boolValue] == YES) {
-        destination = [NavDataStore sharedDataStore].to.name;
+        destination = [NavDataStore sharedDataStore].to.namePron;
     }
     
     NSMutableString *string = [[NSMutableString alloc] init];

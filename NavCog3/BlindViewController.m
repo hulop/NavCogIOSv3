@@ -230,7 +230,7 @@
                                               }]];
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
                                               style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                  NSLog(@"Note,%@",[[alert.textFields objectAtIndex:0]text]);
+                                                  NSLog(@"Note,%@,%ld",[[alert.textFields objectAtIndex:0]text],(long)([[NSDate date] timeIntervalSince1970]*1000));
                                               }]];
     
     [self presentViewController:alert animated:YES completion:nil];

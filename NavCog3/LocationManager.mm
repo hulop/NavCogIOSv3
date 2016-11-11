@@ -377,7 +377,7 @@ void functionCalledToLog(void *inUserData, string text)
     [processQueue addOperationWithBlock:^{
         [self stop];
         [NSThread sleepForTimeInterval:1.0];
-        NSLog(@"Restart");
+        NSLog(@"Restart,%ld", (long)([[NSDate date] timeIntervalSince1970]*1000));
         [self start];
     }];
 }
@@ -645,6 +645,7 @@ void functionCalledToLog(void *inUserData, string text)
     if (putBeaconsCount < localizer->nSmooth) {
         return;
     }
+    
     [self locationUpdated:status withResampledFlag:flagPutBeacon];
 }
 

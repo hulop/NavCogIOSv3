@@ -377,6 +377,7 @@ void functionCalledToLog(void *inUserData, string text)
     [processQueue addOperationWithBlock:^{
         [self stop];
         [NSThread sleepForTimeInterval:1.0];
+        NSLog(@"Restart");
         [self start];
     }];
 }

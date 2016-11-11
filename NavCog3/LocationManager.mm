@@ -1098,6 +1098,9 @@ int dcount = 0;
                 [ud setValue:mapName forKey:@"bleloc_map_data"];
                 break;
             }
+            if (mapName == nil) {
+                break;
+            }
             continue;
         }
         

@@ -153,18 +153,28 @@
 // basic functions
 - (void)userNeedsToChangeHeading:(NSDictionary*)properties
 {
-    double diffHeading = [properties[@"diffHeading"] doubleValue];
-    _targetAngle = diffHeading;
+    if (properties[@"diffHeading"]) {
+        double diffHeading = [properties[@"diffHeading"] doubleValue];
+        _targetAngle = diffHeading;
+    }
 }
 - (void)userAdjustedHeading:(NSDictionary*)properties
 {
 }
 - (void)remainingDistanceToTarget:(NSDictionary*)properties
 {
-    double distance = [properties[@"distance"] doubleValue];
-    _targetDistance = distance;
-    double diffHeading = [properties[@"diffHeading"] doubleValue];
-    _targetAngle = diffHeading;
+    if (properties[@"distance"]) {
+        double distance = [properties[@"distance"] doubleValue];
+        _targetDistance = distance;
+    }
+    if (properties[@"diffHeading"]) {
+        double diffHeading = [properties[@"diffHeading"] doubleValue];
+        _targetAngle = diffHeading;
+    }
+    if (properties[@"nextSourceHeight"]) {
+        int targetHeight = [properties[@"nextSourceHeight"] intValue];
+        _targetFloor = targetHeight;
+    }
 }
 - (void)userIsApproachingToTarget:(NSDictionary*)properties
 {
@@ -175,29 +185,40 @@
 }
 - (void)userNeedsToTakeAction:(NSDictionary*)properties
 {
-    double diffHeading = [properties[@"diffHeading"] doubleValue];
-    _targetAngle = diffHeading;
-    if (properties[@"nextTargetHeight"]) {
-        int targetHeight = [properties[@"nextTargetHeight"] intValue];
-        _targetFloor = targetHeight;
+    if (properties[@"diffHeading"]) {
+        double diffHeading = [properties[@"diffHeading"] doubleValue];
+        _targetAngle = diffHeading;
+    }
+//    if (properties[@"nextTargetHeight"]) {
+//        int targetHeight = [properties[@"nextTargetHeight"] intValue];
+//        _targetFloor = targetHeight;
+//    }
+    if (properties[@"distance"]) {
+        _targetDistance = [properties[@"distance"] doubleValue];
     }
 }
 - (void)userNeedsToWalk:(NSDictionary*)properties
 {
-    double distance = [properties[@"distance"] doubleValue];
-    _targetDistance = distance;
+    if (properties[@"distance"]) {
+        double distance = [properties[@"distance"] doubleValue];
+        _targetDistance = distance;
+    }
 }
 
 // advanced functions
 - (void)userMaybeGoingBackward:(NSDictionary*)properties
 {
-    double diffHeading = [properties[@"diffHeading"] doubleValue];
-    _targetAngle = diffHeading;
+    if (properties[@"diffHeading"]) {
+        double diffHeading = [properties[@"diffHeading"] doubleValue];
+        _targetAngle = diffHeading;
+    }
 }
 - (void)userMaybeOffRoute:(NSDictionary*)properties
 {
-    double diffHeading = [properties[@"diffHeading"] doubleValue];
-    _targetAngle = diffHeading;
+    if (properties[@"diffHeading"]) {
+        double diffHeading = [properties[@"diffHeading"] doubleValue];
+        _targetAngle = diffHeading;
+    }
 }
 - (void)userMayGetBackOnRoute:(NSDictionary*)properties
 {

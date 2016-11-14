@@ -911,7 +911,7 @@ static NavNavigatorConstants *_instance;
                 HLPLink* link2 = (HLPLink*) obj2;
                 
                 if (link1.linkType != LINK_TYPE_ELEVATOR &&
-                    link2.linkType == LINK_TYPE_ELEVATOR) {
+                    link2.linkType == LINK_TYPE_ELEVATOR && isnan(link2.initialBearingFromSource)) {
                     [link1 offsetTarget:-2 Orientation:link1.lastBearingForTarget];
                 }
             }
@@ -1044,7 +1044,9 @@ static NavNavigatorConstants *_instance;
             if (info.distanceToUserLocationFromLink < minDistance &&
                 ((fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
                 fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) ||
-                 (i == 1 && (info.link.linkType == LINK_TYPE_ESCALATOR || info.link.linkType == LINK_TYPE_STAIRWAY)))
+                 (i == 1 && (info.link.linkType == LINK_TYPE_ELEVATOR ||
+                             info.link.linkType == LINK_TYPE_ESCALATOR ||
+                             info.link.linkType == LINK_TYPE_STAIRWAY)))
                  ) {
                 minDistance = info.distanceToUserLocationFromLink;
                 minIndex = i;
@@ -1134,9 +1136,6 @@ static NavNavigatorConstants *_instance;
                     return MAX(MIN(C.APPROACHED_DISTANCE_THRESHOLD, linkInfo_.link.length/4), 0.5);
                 }
             };
-            if (linkInfo.link.length < C.NO_APPROACHING_DISTANCE_THRESHOLD) {
-                linkInfo.hasBeenApproaching = YES;
-            }
 
             
             if (linkInfo.hasBeenWaitingAction) {
@@ -1169,19 +1168,90 @@ static NavNavigatorConstants *_instance;
                         navIndex = (int)[linkInfos count];
                     } else {
                         linkInfo.hasBeenWaitingAction = YES;
-                        if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
-                            [self.delegate userNeedsToTakeAction:
-                             @{
-                               @"turnAngle": @(linkInfo.nextTurnAngle),
-                               @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
-                               @"linkType": @(linkInfo.link.linkType),
-                               @"nextLinkType": @(linkInfo.nextLink.linkType),
-                               @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                               @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
-                               }];
+                        
+                        if ([NavDataStore sharedDataStore].previewMode) {
+                            if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                                [self.delegate remainingDistanceToTarget:
+                                 @{
+                                   @"distance": @(linkInfo.link.length)
+                                   }];
+                            }
+                            double delayInSeconds = 1.0;
+                            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                                    [self.delegate userNeedsToTakeAction:
+                                     @{
+                                       @"turnAngle": @(linkInfo.nextTurnAngle),
+                                       @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
+                                       @"linkType": @(linkInfo.link.linkType),
+                                       @"nextLinkType": @(linkInfo.nextLink.linkType),
+                                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                                       }];
+                                }
+                            });
+                            
+                        } else {
+                            if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                                [self.delegate userNeedsToTakeAction:
+                                 @{
+                                   @"turnAngle": @(linkInfo.nextTurnAngle),
+                                   @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
+                                   @"linkType": @(linkInfo.link.linkType),
+                                   @"nextLinkType": @(linkInfo.nextLink.linkType),
+                                   @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                                   @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                                   @"distance": @(linkInfo.link.length)
+                                   }];
+                            }
                         }
                     }
                 } else {
+                    if (linkInfo.isNextDestination) {
+                        if (!linkInfo.hasBeenApproaching) {
+                            NSLog(@"speak_queue,about elevator");
+                            if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                                [self.delegate remainingDistanceToTarget:
+                                 @{
+                                   @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight)
+                                   }];
+                            };
+                            linkInfo.hasBeenApproaching = YES;
+                        }
+                    } else {
+                        if (fabs(linkInfo.link.lastBearingForTarget-location.orientation) < 45 &&
+                            !linkInfo.hasBeenApproaching) {
+                            NSLog(@"speak_queue,about elevator");
+                            if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                                [self.delegate remainingDistanceToTarget:
+                                 @{
+                                   @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight)
+                                   }];
+                            };
+                            linkInfo.hasBeenApproaching = YES;
+                        } else if (!linkInfo.hasBeenActivated) {
+                            // only for preview
+                            double delayInSeconds = 1.0;
+                            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
+                                if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                                    [self.delegate remainingDistanceToTarget:
+                                     @{
+                                       @"diffHeading": @(linkInfo.link.lastBearingForTarget-loc.orientation)
+                                       }];
+                                }
+                            });
+                            if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                                [self.delegate remainingDistanceToTarget:
+                                 @{
+                                   @"distance": @(C.APPROACHED_DISTANCE_THRESHOLD+2)
+                                   }];
+                            }
+                            linkInfo.hasBeenActivated = YES;
+                        }
+                    }
                     if (navIndex == 1) {
                         if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
                             [self.delegate userNeedsToTakeAction:
@@ -1197,6 +1267,9 @@ static NavNavigatorConstants *_instance;
                 return;
             }
             
+            if (linkInfo.link.length < C.NO_APPROACHING_DISTANCE_THRESHOLD) {
+                linkInfo.hasBeenApproaching = YES;
+            }
             
             if (linkInfo.hasBeenBearing) {
                 if (fabs(linkInfo.diffBearingAtUserLocation) < C.ADJUST_HEADING_MARGIN) {
@@ -1257,7 +1330,7 @@ static NavNavigatorConstants *_instance;
                      @{
                     //@"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
                        @"pois": linkInfo.pois,
-                       @"isFirst": @(navIndex == 1),
+                       @"isFirst": @(navIndex == firstLinkIndex),
                        @"distance": @(distance),
                        @"noAndTurnMinDistance": @(C.NO_ANDTURN_DISTANCE_THRESHOLD),
                        @"linkType": @(linkInfo.link.linkType),

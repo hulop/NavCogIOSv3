@@ -922,6 +922,7 @@ static NavNavigatorConstants *_instance;
             if (isFirstLink) {
                 isFirstLink = NO;
                 if (link1.length < C.IGNORE_FIRST_LINK_LENGTH_THRESHOLD &&
+                    link2 != nil &&
                     link2.linkType != LINK_TYPE_ELEVATOR &&
                     link2.linkType != LINK_TYPE_ESCALATOR &&
                     link2.linkType != LINK_TYPE_STAIRWAY
@@ -1021,7 +1022,7 @@ static NavNavigatorConstants *_instance;
             if (info.distanceToUserLocationFromLink < minDistance &&
                 ((fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
                 fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) ||
-                 i == 1)
+                 (i == 1 && (info.link.linkType == LINK_TYPE_ESCALATOR || info.link.linkType == LINK_TYPE_STAIRWAY)))
                  ) {
                 minDistance = info.distanceToUserLocationFromLink;
                 minIndex = i;

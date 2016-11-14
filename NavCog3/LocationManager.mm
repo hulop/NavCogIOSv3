@@ -410,6 +410,7 @@ void functionCalledToLog(void *inUserData, string text)
 {
     NSDictionary *properties = [notification object];
     HLPLocation *loc = properties[@"location"];
+    [loc updateOrientation:currentOrientation withAccuracy:0];
     [self resetLocation:loc];
 }
 
@@ -514,7 +515,7 @@ void functionCalledToLog(void *inUserData, string text)
                     }
                     double x = sin(orientation);
                     double y = cos(orientation);
-                    orientation = atan2(y, x) / M_PI * 180;
+                    currentOrientation = orientation = atan2(y, x) / M_PI * 180;
                     [self directionUpdated:orientation withAccuracy:45];
                 }
             }

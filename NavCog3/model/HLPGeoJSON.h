@@ -27,6 +27,8 @@
 @interface HLPGeometry : MTLModel<MTLJSONSerializing, NSCoding>
 @property (nonatomic, readonly) NSString *type;
 @property (nonatomic, readonly) NSArray *coordinates;
+
+- (void) updateCoordinates:(NSArray*)coordinates;
 @end
 
 
@@ -147,7 +149,7 @@ typedef enum: int {
 - (HLPLocation*) locationDistanceToTarget:(double) distance;
 - (void) updateWithNodesMap:(NSDictionary*)nodesMap;
 - (void) setTargetNodeIfNeeded:(HLPNode*)node withNodesMap:(NSDictionary*)nodesMap;
-
+- (void) offsetTarget:(double)distance Orientation:(double)orientation;
 @end
 
 @interface HLPCombinedLink : HLPLink

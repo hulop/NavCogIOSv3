@@ -841,6 +841,7 @@ static NavNavigatorConstants *_instance;
     
     // optimize links for navigation
     
+
     // remove crank
     NSArray*(^removeCrank)(NSArray*) = ^(NSArray *array) {
         NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
@@ -894,9 +895,30 @@ static NavNavigatorConstants *_instance;
             }
         }
         return temp;
-    };
-    
+    };    
     route = combineLinks(route);
+    
+    // shorten link before elevator
+    NSArray*(^shortenLinkBeforeElevator)(NSArray*) = ^(NSArray *array) {
+        NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
+        for(int i = 0; i < [temp count]-2; i++) {
+            HLPObject* obj1 = temp[i];
+            HLPObject* obj2 = temp[i+1];
+            if ([obj1 isKindOfClass:HLPLink.class] &&
+                [obj2 isKindOfClass:HLPLink.class]
+                ) {
+                HLPLink* link1 = (HLPLink*) obj1;
+                HLPLink* link2 = (HLPLink*) obj2;
+                
+                if (link1.linkType != LINK_TYPE_ELEVATOR &&
+                    link2.linkType == LINK_TYPE_ELEVATOR) {
+                    [link1 offsetTarget:-2 Orientation:link1.lastBearingForTarget];
+                }
+            }
+        }
+        return temp;
+    };
+    route = shortenLinkBeforeElevator(route);
     
     // end optimize links for navigation
     

@@ -81,6 +81,11 @@
              @"coordinates": @"coordinates"
              };
 }
+
+-(void)updateCoordinates:(NSArray *)coordinates
+{
+    _coordinates = coordinates;
+}
 @end
 
 @implementation HLPGeoJSON {
@@ -553,6 +558,27 @@
     }
     [self update];
     
+}
+
+- (void)offsetTarget:(double)distance Orientation:(double)orientation
+{
+    if (_length + distance <= 0) {
+        distance = -(_length - 0.1);
+    }
+    
+    HLPLocation *temp = [targetLocation offsetLocationByDistance:distance Bearing:orientation];
+    
+    NSMutableArray *newCoordinates = [_geometry.coordinates mutableCopy];
+    if (_backward) {
+        newCoordinates[0] = @[@(temp.lng), @(temp.lat)];
+    } else {
+        newCoordinates[[newCoordinates count]-1] = @[@(temp.lng), @(temp.lat)];
+    }
+    [_geometry updateCoordinates:newCoordinates];
+    
+    _length += distance;
+    
+    [self update];
 }
 
 @end

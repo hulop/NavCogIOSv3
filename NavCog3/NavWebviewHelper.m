@@ -51,6 +51,7 @@
     NSString *callback;
     BOOL bridgeHasBeenInjected;
     NSTimeInterval lastLocationSent;
+    NSTimeInterval lastOrientationSent;
     NSTimeInterval lastRequestTime;
 }
 
@@ -197,14 +198,20 @@
         return;
     }
 
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+
     double orientation = -location.orientation / 180 * M_PI;
     
-    [self sendData:@[@{
-                     @"type":@"ORIENTATION",
-                     @"z":@(orientation)
-                     }]
-          withName:@"Sensor"];
-
+    if (lastOrientationSent + 0.2 < now) {
+        [self sendData:@[@{
+                             @"type":@"ORIENTATION",
+                             @"z":@(orientation)
+                             }]
+              withName:@"Sensor"];
+        lastOrientationSent = now;
+    }
+    
+    
     location = locations[@"actual"];
     if (!location || [location isEqual:[NSNull null]]) {
         return;
@@ -213,7 +220,6 @@
         return;
     }
     
-    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
         if (!location.params) {
             return;

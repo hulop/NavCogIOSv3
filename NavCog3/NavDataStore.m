@@ -435,8 +435,15 @@ static NavDataStore* instance_ = nil;
                         Lng:manualCurrentLocation.lng
                    Accuracy:manualCurrentLocation.accuracy
                       Floor:manualCurrentLocation.floor];
-        [location updateOrientation:manualOrientation
-                       withAccuracy:0];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
+            [location updateOrientation:manualOrientation
+                           withAccuracy:0];
+        } else {
+            if (magneticOrientationAccuracy < location.orientationAccuracy) {
+                [location updateOrientation:magneticOrientation
+                               withAccuracy:magneticOrientationAccuracy];
+            }
+        }
     } else {
         if (magneticOrientationAccuracy < location.orientationAccuracy) {
             [location updateOrientation:magneticOrientation
@@ -722,7 +729,7 @@ static NavDataStore* instance_ = nil;
     _previewMode = previewMode;
     if (_previewMode) {
     } else {
-        [currentLocation updateOrientation:currentLocation.orientation withAccuracy:1];
+        [currentLocation updateOrientation:currentLocation.orientation withAccuracy:999];
     }
 }
 

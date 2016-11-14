@@ -44,10 +44,11 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
     CGFloat h = view.frame.size.height;
     CGFloat size = 30;
     UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((w-size)/2, (h-size)/2, size, size)];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, (h-size)/2-size, w, size)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, (h+size)/2+size, w, size*5)];
     label.text = message;
     label.textAlignment = NSTextAlignmentCenter;
     label.textColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
+    label.numberOfLines = 0;
     
     [overlay setBackgroundColor:
      [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]];

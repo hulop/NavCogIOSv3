@@ -50,6 +50,8 @@
     
     double turnAction;
     BOOL forwardAction;
+    
+    BOOL initFlag;
 }
 
 @end
@@ -86,7 +88,39 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startLocating:) name:START_LOCATING object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishLocating:) name:FINISH_LOCATING object:nil];
     
+    UILongPressGestureRecognizer* longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
+    longPressGesture.minimumPressDuration = 1.0;
+    longPressGesture.numberOfTouchesRequired = 1;
+    [self.navigationController.navigationBar setUserInteractionEnabled:YES];
+    [self.navigationController.navigationBar addGestureRecognizer:longPressGesture];
+    UILongPressGestureRecognizer* longPressGesture2 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
+    longPressGesture2.minimumPressDuration = 1.0;
+    longPressGesture2.numberOfTouchesRequired = 2;
+    [self.navigationController.navigationBar addGestureRecognizer:longPressGesture2];
+    
     [self locationChanged:nil];
+}
+
+- (void)handleLongPressGesture:(UILongPressGestureRecognizer*)sender
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"]) {
+        return;
+    }
+        
+    if (sender.state == UIGestureRecognizerStateBegan &&
+        ((UIAccessibilityIsVoiceOverRunning() == YES && sender.numberOfTouches == 1) ||
+        sender.numberOfTouches == 2)) {
+        initFlag = !initFlag;
+        if (initFlag) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:START_ORIENTATION_INIT object:nil];
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+            [NavUtil showWaitingForView:self.view withMessage:NSLocalizedStringFromTable(@"Init Orientation", @"BlindView", @"")];
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:STOP_ORIENTATION_INIT object:nil];
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+            [NavUtil hideWaitingForView:self.view];
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -255,7 +289,7 @@
 - (IBAction)resetLocation:(id)sender {
     HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_HEADING_RESET object:
      @{
        @"location":loc,
        @"heading":@(loc.orientation)
@@ -394,12 +428,12 @@
             
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_point"]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:properties];
-                
-                // if there is no location manager response
-                timerForSimulator = [NSTimer scheduledTimerWithTimeInterval:2 repeats:YES block:^(NSTimer * _Nonnull timer) {
-                    [previewer manualGoFloor: [properties[@"location"] floor]];
-                    [previewer manualGoForward:0];
-                }];
+//                
+//                // if there is no location manager response
+//                timerForSimulator = [NSTimer scheduledTimerWithTimeInterval:2 repeats:YES block:^(NSTimer * _Nonnull timer) {
+//                    [previewer manualGoFloor: [properties[@"location"] floor]];
+//                    [previewer manualGoForward:0];
+//                }];
             }
             
             [NavUtil showWaitingForView:self.view withMessage:NSLocalizedString(@"Loading, please wait",@"")];

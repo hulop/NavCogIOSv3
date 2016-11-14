@@ -64,7 +64,7 @@
 
     double turnAction = _delegate.turnAction;
     BOOL forwardAction = _delegate.forwardAction;
-    NSLog(@"angle=%f, dist=%f, floor=%f, f=%d, t=%f", _targetAngle, _targetDistance, _targetFloor, forwardAction, turnAction);
+    //NSLog(@"angle=%f, dist=%f, floor=%f, f=%d, t=%f", _targetAngle, _targetDistance, _targetFloor, forwardAction, turnAction);
     
     if (needAction) {
         if (fabs(_targetAngle) > 5 && turnAction != 0) {

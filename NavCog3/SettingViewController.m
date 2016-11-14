@@ -235,11 +235,12 @@ static HLPSettingHelper *routeOptionsSettingHelper;
     [detailSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"UI_WHEELCHAIR", @"") Name:@"UI_WHEELCHAIR" Group:@"ui_mode" DefaultValue:@(YES) Accept:nil];
     [detailSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"UI_BLIND", @"") Name:@"UI_BLIND" Group:@"ui_mode" DefaultValue:@(NO) Accept:nil];
 
-    [detailSettingHelper addSectionTitle:@"For WoW"];
+    [detailSettingHelper addSectionTitle:@"For Demo"];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use compass" Name:@"use_compass" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset bleloc at start" Name:@"reset_as_start_point" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Current Location\"" Name:@"hide_current_location_from_start" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Facility\"" Name:@"hide_facility_from_to" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Accuracy for wow" Name:@"accuracy_for_wow" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Accuracy for demo" Name:@"accuracy_for_demo" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSectionTitle:@"Test"];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Send beacon data" Name:@"send_beacon_data" DefaultValue:@(NO) Accept:nil];

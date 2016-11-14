@@ -76,6 +76,12 @@ typedef struct {
     
     BOOL flagPutBeacon;
     double currentFloor;
+    double currentOrientation;
+    double currentOrientationAccuracy;
+    
+    BOOL isOrientationInit;
+    double initStartYaw;
+    double offsetYaw;
 }
 
 static LocationManager *instance;
@@ -115,6 +121,9 @@ void functionCalledToLog(void *inUserData, string text)
     isMapLoaded = NO;
     valid = NO;
     
+    offsetYaw = M_PI_2;
+    currentOrientationAccuracy = 999;
+    
     userData.locationManager = self;
 
     locationQueue = [[NSOperationQueue alloc] init];
@@ -140,9 +149,13 @@ void functionCalledToLog(void *inUserData, string text)
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestRssiBias:) name:REQUEST_RSSI_BIAS object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationRestart:) name:REQUEST_LOCATION_RESTART object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationHeadingReset:) name:REQUEST_LOCATION_HEADING_RESET object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationReset:) name:REQUEST_LOCATION_RESET object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplay:) name:REQUEST_LOG_REPLAY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplayStop:) name:REQUEST_LOG_REPLAY_STOP object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startOrientationInit:) name:START_ORIENTATION_INIT object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopOrientationInit:) name:STOP_ORIENTATION_INIT object:nil];
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud addObserver:self forKeyPath:@"nSmooth" options:NSKeyValueObservingOptionNew context:nil];
@@ -155,6 +168,18 @@ void functionCalledToLog(void *inUserData, string text)
     [ud addObserver:self forKeyPath:@"location_tracking" options:NSKeyValueObservingOptionNew context:nil];
     
     return self;
+}
+
+- (void) startOrientationInit:(NSNotification*) notification
+{
+    isOrientationInit = YES;
+    initStartYaw = NAN;
+}
+- (void) stopOrientationInit:(NSNotification*) notification
+{
+    isOrientationInit = NO;
+    initStartYaw = NAN;
+    NSLog(@"OrientationInit,%f",offsetYaw);
 }
 
 - (void) requestLogReplayStop:(NSNotification*) notification
@@ -294,7 +319,7 @@ void functionCalledToLog(void *inUserData, string text)
                             NSDictionary* properties = @{@"location" : loc,
                                                          @"heading": @(orientation)
                                                          };
-                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object: properties];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_HEADING_RESET object: properties];
                         }
                     }
                     // Marker
@@ -383,26 +408,37 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void) requestLocationReset:(NSNotification*) notification
 {
-    if (!_isActive || !isMapLoaded) {
-        NSDictionary *properties = [notification object];
-        HLPLocation *loc = properties[@"location"];
-        double heading = [properties[@"heading"] doubleValue];
-        NSDictionary *data = @{
-                               @"lat": @(loc.lat),
-                               @"lng": @(loc.lng),
-                               @"floor": @(loc.floor),
-                               @"orientation": @(isnan(heading)?0:heading),
-                               @"orientationAccuracy": @(1)
-                               };
-        [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
+    NSDictionary *properties = [notification object];
+    HLPLocation *loc = properties[@"location"];
+    [self resetLocation:loc];
+}
 
+- (void) requestLocationHeadingReset:(NSNotification*) notification
+{
+    NSDictionary *properties = [notification object];
+    HLPLocation *loc = properties[@"location"];
+    double heading = [properties[@"heading"] doubleValue];
+    [loc updateOrientation:heading withAccuracy:0];
+    [self resetLocation:loc];
+}
+
+- (void) resetLocation:(HLPLocation*)loc
+{
+    double heading = loc.orientation;
+    NSDictionary *data = @{
+                           @"lat": @(loc.lat),
+                           @"lng": @(loc.lng),
+                           @"floor": @(loc.floor),
+                           @"orientation": @(isnan(heading)?0:heading),
+                           @"orientationAccuracy": @(currentOrientationAccuracy)
+                           };
+    if (!_isActive || !isMapLoaded) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
         return;
     }
-
+    
     [processQueue addOperationWithBlock:^{
-        NSDictionary *properties = [notification object];
-        HLPLocation *loc = properties[@"location"];
-        double heading = ([properties[@"heading"] doubleValue] - [anchor[@"rotate"] doubleValue])/180*M_PI;
+        double heading = (loc.orientation - [anchor[@"rotate"] doubleValue])/180*M_PI;
         double x = sin(heading);
         double y = cos(heading);
         heading = atan2(y,x);
@@ -423,10 +459,13 @@ void functionCalledToLog(void *inUserData, string text)
         long timestamp = [[NSDate date] timeIntervalSince1970]*1000;
         
         
-        NSLog(@"Reset,%f,%f,%f,%f,%ld",loc.lat,loc.lng,loc.floor,[properties[@"heading"] doubleValue],timestamp);
+        NSLog(@"Reset,%f,%f,%f,%f,%ld",loc.lat,loc.lng,loc.floor,loc.orientation,timestamp);
         localizer->resetStatus(newPose);
     }];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
 }
+
 
 - (void) stopAllBeaconRangingAndMonitoring
 {
@@ -440,7 +479,11 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void) startSensors
 {
-    [beaconManager startUpdatingHeading];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"] ||
+        [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_WHEELCHAIR"]
+        ) {
+        [beaconManager startUpdatingHeading];
+    }
     
     // remove all beacon region ranging and monitoring
     [self stopAllBeaconRangingAndMonitoring];
@@ -452,11 +495,37 @@ void functionCalledToLog(void *inUserData, string text)
         if (!_isActive || isLogReplaying) {
             return;
         }
-        Attitude attitude((uptime+motion.timestamp)*1000,
-                          motion.attitude.pitch, motion.attitude.roll, motion.attitude.yaw);
-        
         try {
-            localizer->putAttitude(attitude);
+            if (isOrientationInit) {
+                if (isnan(initStartYaw)) {
+                    initStartYaw = motion.attitude.yaw + offsetYaw;
+                } else {
+                    offsetYaw = initStartYaw - motion.attitude.yaw;
+                }
+            }
+            
+            if (![[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"] &&
+                ![[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_WHEELCHAIR"]
+                ) {
+                if (currentOrientationAccuracy >= 45) {
+                    double orientation = motion.attitude.yaw + offsetYaw;
+                    if (isOrientationInit) {
+                        orientation = initStartYaw;
+                    }
+                    double x = sin(orientation);
+                    double y = cos(orientation);
+                    orientation = atan2(y, x) / M_PI * 180;
+                    [self directionUpdated:orientation withAccuracy:45];
+                }
+            }
+            
+            if (!isOrientationInit) {
+                Attitude attitude((uptime+motion.timestamp)*1000,
+                                  motion.attitude.pitch, motion.attitude.roll, motion.attitude.yaw + offsetYaw);
+                
+            
+                localizer->putAttitude(attitude);
+            }
         } catch(const std::exception& ex) {
             std::cout << ex.what() << std::endl;
         }
@@ -1051,9 +1120,14 @@ int dcount = 0;
             double v = dirStats.circularVariance();
 
             orientationAccuracy = v/M_PI*180;
+            
+            if (orientationAccuracy < 45) {
+                currentOrientation = orientation;
+            }
         }
+        currentOrientationAccuracy = orientationAccuracy;
         
-        double acc = [[NSUserDefaults standardUserDefaults] boolForKey:@"accuracy_for_wow"]?0.5:5.0;
+        double acc = [[NSUserDefaults standardUserDefaults] boolForKey:@"accuracy_for_demo"]?0.5:5.0;
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"use_blelocpp_acc"]) {
             auto std = loc::Location::standardDeviation(states);
             double sigma = [[NSUserDefaults standardUserDefaults] doubleForKey:@"blelocpp_accuracy_sigma"];

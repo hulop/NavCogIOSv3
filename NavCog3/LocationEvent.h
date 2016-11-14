@@ -43,6 +43,7 @@
 #define CALIBRATION_BEACON_FOUND @"calibration_beacon_found_notification"
 
 #define REQUEST_RSSI_BIAS @"request_rssi_bias_notification"
+#define REQUEST_LOCATION_HEADING_RESET @"request_location_heading_reset_notification"
 #define REQUEST_LOCATION_RESET @"request_location_reset_notification"
 #define REQUEST_LOCATION_RESTART @"request_location_restart"
 #define REQUEST_LOG_REPLAY @"request_log_replay"
@@ -54,5 +55,8 @@
 #define SPEAK_TEXT_QUEUEING @"speak_text_queueing"
 
 #define MANUAL_LOCATION @"manual_location"
+
+#define START_ORIENTATION_INIT @"start_orientation_init"
+#define STOP_ORIENTATION_INIT @"stop_orientation_init"
 
 #endif /* LocationEvent_h */

@@ -380,7 +380,8 @@ static NavNavigatorConstants *_instance;
                             @"origin": ent,
                             @"forBeforeEnd": @(YES),
                             @"isDestination": @(YES),
-                            @"angleFromLocation": @(_nextLink.lastBearingForTarget)
+                            @"angleFromLocation": @(_nextLink.lastBearingForTarget),
+                            @"longDescription":  ent.facility.longDescriptionPron
                             }];
                 
             } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
@@ -604,7 +605,8 @@ static NavNavigatorConstants *_instance;
     
     //NSString *destination;
     //NSString *startPoint;
-    HLPNode *destinationNode;
+    HLPEntrance *destinationNode;
+    HLPEntrance *startNode;
     NSTimeInterval lastCouldNotStartNavigationTime;
     NSTimeInterval waitingStartUntil;
     
@@ -747,6 +749,7 @@ static NavNavigatorConstants *_instance;
     navIndex = 0;
     
     destinationNode = entranceMap[[[route lastObject] _id]];
+    startNode = entranceMapTemp[[[route firstObject] _id]];
     
     NSArray*(^nearestLinks)(HLPLocation*, NSDictionary*) = ^ NSArray* (HLPLocation *loc, NSDictionary* option) {
         NSMutableArray<HLPLink*> __block *nearestLinks = [@[] mutableCopy];
@@ -844,7 +847,13 @@ static NavNavigatorConstants *_instance;
     for(HLPEntrance *ent in features) {
         if ([ent isKindOfClass:HLPEntrance.class]) {
             
-            NSArray *links = nearestLinks(ent.node.location, @{@"nodeID": ent.node._id});
+            if ([startNode.forFacilityID isEqualToString:ent.forFacilityID]) {
+                continue;
+            }
+            
+            BOOL isLeaf = ([ent.node.connectedLinkIDs count] == 1);
+            
+            NSArray *links = nearestLinks(ent.node.location, isLeaf?@{@"nodeID": ent.node._id}:@{});
             for(HLPLink* nearestLink in links) {
                 if ([nearestLink.sourceNodeID isEqualToString:ent.node._id] ||
                     [nearestLink.targetNodeID isEqualToString:ent.node._id]) {

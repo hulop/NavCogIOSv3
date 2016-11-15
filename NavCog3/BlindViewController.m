@@ -606,7 +606,7 @@
                                                   }]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            //TODO [self presentViewController:alert animated:YES completion:nil];
+            [self presentViewController:alert animated:YES completion:nil];
         });
     };
     ctx.exceptionHandler = ^(JSContext *ctx, JSValue *e) {

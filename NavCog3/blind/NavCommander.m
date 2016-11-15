@@ -96,7 +96,7 @@
     NSString *string = nil;
     
     if (nextLinkType == LINK_TYPE_ELEVATOR || nextLinkType == LINK_TYPE_ESCALATOR || nextLinkType == LINK_TYPE_STAIRWAY) {
-        //int sourceHeight = [properties[@"nextSourceHeight"] intValue];
+        int sourceHeight = [properties[@"nextSourceHeight"] intValue];
         int targetHeight = [properties[@"nextTargetHeight"] intValue];
         NSString *mean = [HLPLink nameOfLinkType:nextLinkType];
         
@@ -121,8 +121,15 @@
             angle = NSLocalizedStringFromTable(@"in front of you",@"BlindView", @"something at your degree -22.5 ~ +22.5"); //@"正面";
         }
         
-        NSString *floor = [self floorString:targetHeight];
-        string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %3$@ by %2$@ %1$@",@"BlindView",@"") , angle, mean, floor];//@""
+        BOOL full = [properties[@"fullAction"] boolValue];
+        
+        NSString *tfloor = [self floorString:targetHeight];
+        NSString *sfloor = [self floorString:sourceHeight];
+        if (full) {
+            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %3$@ by %2$@ %1$@, now you are in %4$@",@"BlindView",@"") , angle, mean, tfloor, sfloor];//@""
+        } else {
+            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %3$@ by %2$@ %1$@",@"BlindView",@"") , angle, mean, tfloor];//@""
+        }
     }
     else if (linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
         int sourceHeight = [properties[@"sourceHeight"] intValue];

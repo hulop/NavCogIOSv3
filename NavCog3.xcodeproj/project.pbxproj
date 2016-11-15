@@ -438,7 +438,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0800;
-				ORGANIZATIONNAME = "Daisuke Sato";
+				ORGANIZATIONNAME = HULOP;
 				TargetAttributes = {
 					7EDEDC1B1D1E0C6800AC111A = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -842,7 +842,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				DEVELOPMENT_TEAM = PETKK2G752;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -856,7 +856,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				DEVELOPMENT_TEAM = PETKK2G752;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};

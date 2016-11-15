@@ -266,9 +266,11 @@ Option parseArguments(int argc, char * argv[]){
 
 -(void) processOne
 {
-    [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:NO block:^(NSTimer * _Nonnull timer) {
+    double delayInSeconds = 0.1;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [self _processOne];
-    }];
+    });
 }
 
 - (void) _processOne
@@ -290,28 +292,7 @@ Option parseArguments(int argc, char * argv[]){
         fflush(stdout);
         
         countDown = 20;
-    
-        __block __weak NavPreviewer *weakPreviewer = previewer;
-        __block __weak NavController *weakSelf = self;
-        timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-            if (countDown <= 0) {
-                std::cout << "Timeout";
-                fflush(stdout);
-                if ([fromToList count] == 0) {
-                    std::cout << std::endl;
-                    exit(6);
-                }
-                [timer invalidate];
-                timeoutTimer = nil;
-                [weakPreviewer setAutoProceed:NO];
-                [weakSelf processDone];
-                [weakSelf processOne];
-            } else {
-                countDown--;
-                std::cout << ".";
-                fflush(stdout);
-            }
-        }];
+        timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(handleTimeout:) userInfo:nil repeats:YES];
         
         dataStore.previewMode = YES;
         [self navigationFrom:processing[@"from"] To:processing[@"to"] File:processing[@"file"]];
@@ -321,6 +302,28 @@ Option parseArguments(int argc, char * argv[]){
         exit(0);
     }
 }
+
+- (void) handleTimeout:(NSTimer*)timer
+{
+    if (countDown <= 0) {
+        std::cout << "Timeout";
+        fflush(stdout);
+        if ([fromToList count] == 0) {
+            std::cout << std::endl;
+            exit(6);
+        }
+        [timer invalidate];
+        timeoutTimer = nil;
+        [previewer setAutoProceed:NO];
+        [self processDone];
+        [self processOne];
+    } else {
+        countDown--;
+        std::cout << ".";
+        fflush(stdout);
+    }
+}
+
 
 - (void) processDone
 {

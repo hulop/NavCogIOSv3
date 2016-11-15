@@ -34,6 +34,7 @@
 
 /* No comment provided by engineer. */
 "Go to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ";
+"Go to %3$@ by %2$@ %1$@, now you are in %4$@" = "%1$@の%2$@を使って%3$@へ。現在は%4$@にいます。";
 
 /* No comment provided by engineer. */
 "Locating..." = "現在地を取得中...";

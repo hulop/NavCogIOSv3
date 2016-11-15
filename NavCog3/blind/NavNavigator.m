@@ -1011,16 +1011,19 @@ static NavNavigatorConstants *_instance;
        }];
     //[self locationChanged:nil];
     
-    [self setTimeout:1 withBlock:^(NSTimer * _Nonnull timer) {
+    [self setTimeout:1 withBlock:^{
         [[NavDataStore sharedDataStore] manualLocation:nil];
     }];
 }
 
-- (void)setTimeout:(double)delay withBlock:(void(^)(NSTimer * _Nonnull timer)) block
+- (void)setTimeout:(double)delay withBlock:(void(^)()) block
 {
     if (![NavDataStore sharedDataStore].previewMode) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:delay repeats:NO block:block];
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            if (block) {
+                block();
+            }
         });
     }
 }
@@ -1416,7 +1419,8 @@ static NavNavigatorConstants *_instance;
                                @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
                                @"nextLinkType": @(linkInfo.nextLink.linkType),
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                               @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                               @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                               @"fullAction": @(YES)
                                }];
                         }
                         linkInfo.hasBeenWaitingAction = YES;

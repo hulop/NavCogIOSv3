@@ -194,6 +194,9 @@
 /* No comment provided by engineer. */
 "poi is %@" = "%1$@が%2$@にあります";
 
+/* No comment provided by engineer. */
+"name is %@" = "%1$@が%2$@にあります";
+
 /* (No Commment) */
 "proceed distance" = "%1$@進む";
 

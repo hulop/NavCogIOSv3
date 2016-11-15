@@ -528,6 +528,8 @@
             } else {
                 if (poi.flagPlural) {
                     [string appendFormat:NSLocalizedStringFromTable(@"poi are %@", @"BlindView", @""), text, angle];
+                } else if (poi.flagOnomastic) {
+                    [string appendFormat:NSLocalizedStringFromTable(@"name is %@", @"BlindView", @""), text, angle];
                 } else {
                     [string appendFormat:NSLocalizedStringFromTable(@"poi is %@", @"BlindView", @""), text, angle];
                 }

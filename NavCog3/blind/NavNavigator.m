@@ -401,7 +401,8 @@ static NavNavigatorConstants *_instance;
                               @{
                                 @"origin": ent,
                                 @"longDescription": [ent getLongDescriptionPron],
-                                @"angleFromLocation": @([nearest bearingTo:ent.node.location])
+                                @"angleFromLocation": @([nearest bearingTo:ent.node.location]),
+                                @"flagOnomastic":@(YES)
                                 }];
                 }
             }

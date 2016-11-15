@@ -171,6 +171,7 @@
 @property (readonly) BOOL forBeforeEnd;
 @property (readonly) BOOL flagCaution;
 @property (readonly) BOOL flagPlural;
+@property (readonly) BOOL flagOnomastic;
 @property (readonly) BOOL isDestination;
 @property (readonly) double angleFromLocation;
 

@@ -40,3 +40,25 @@
 /* 不明 */
 "unknown" = "不明";
 
+/* elevator */
+"ElvButtonRight" = "扉の右に呼び出しボタン";
+"ElvButtonLeft" = "扉の左に呼び出しボタン";
+"ElvButtonMiddle" = "扉と扉の間に呼び出しボタン";
+"ElvButtonRightPlural" = "扉の右に呼び出しボタン";
+"ElvButtonLeftPlural" = "扉の左に呼び出しボタン";
+"ElvButtonMiddlePlural" = "扉の間に呼び出しボタン";
+
+"ElvButtonWithBraille" = "%@。点字有り。";
+
+/* elevator equipments */
+"ElvEqButtonBoth" = "出口に向かって左右に操作ボタン。";
+"ElvEqButtonBothBraille" = "出口に向かって左右に操作ボタン。点字有り。";
+"ElvEqButtonBothLeftBraille" = "出口に向かって左右に操作ボタン。左側点字有り。";
+"ElvEqButtonBothRightBraille" = "出口に向かって左右に操作ボタン。右側点字有り。";
+
+"ElvEqButtonLeft" = "出口に向かって左に操作ボタン。";
+"ElvEqButtonLeftBraille" = "出口に向かって左に操作ボタン。点字有り。";
+"ElvEqButtonRight" = "出口に向かって右に操作ボタン。";
+"ElvEqButtonRightBraille" = "出口に向かって右に操作ボタン。点字有り。";
+
+"ElvEqWithVoiceGuide" = "音声案内有り。";

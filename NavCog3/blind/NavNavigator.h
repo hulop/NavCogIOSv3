@@ -94,6 +94,7 @@
 - (void)userIsApproachingToTarget:(NSDictionary*)properties;
 - (void)userNeedsToTakeAction:(NSDictionary*)properties;
 - (void)userNeedsToWalk:(NSDictionary*)properties;
+- (void)userGetsOnElevator:(NSDictionary*)properties;
 
 // advanced functions
 - (void)userMaybeGoingBackward:(NSDictionary*)properties;
@@ -104,6 +105,7 @@
 // POI
 - (void)userIsApproachingToPOI:(NSDictionary*)properties;
 - (void)userIsLeavingFromPOI:(NSDictionary*)properties;
+
 @end
 
 @interface NavLinkInfo : NSObject

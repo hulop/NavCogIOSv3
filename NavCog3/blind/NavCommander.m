@@ -405,7 +405,7 @@
         [string appendString:action];
     }
     else if (isNextDestination) {
-        NSString *destTitle = [NavDataStore sharedDataStore].to.name;
+        NSString *destTitle = [NavDataStore sharedDataStore].to.namePron;
         
         [string appendString: [NSString stringWithFormat:NSLocalizedStringFromTable(@"destination is in distance",@"BlindView",@"remaining distance to the destination"), destTitle, dist]];
     }
@@ -436,6 +436,13 @@
     
     [_delegate speak:string completionHandler:^{
         
+    }];
+}
+- (void)userGetsOnElevator:(NSDictionary *)properties
+{
+    NavPOI *poi = properties[@"poi"];
+
+    [_delegate speak:poi.text completionHandler:^{
     }];
 }
 

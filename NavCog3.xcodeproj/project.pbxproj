@@ -39,6 +39,10 @@
 		7EAE6F0D1D2642D600614C35 /* NavWebviewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavWebviewHelper.m */; };
 		7EAE6F0F1D264AC200614C35 /* ios_bridge.js in Resources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0E1D264AC200614C35 /* ios_bridge.js */; };
 		7EAE6F121D264C5700614C35 /* NavJSNativeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F111D264C5700614C35 /* NavJSNativeHandler.m */; };
+		7EC20B5A1DDAC9C900818E33 /* HLPGeoJSON.strings in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E96D92F1DACC56200D57C8C /* HLPGeoJSON.strings */; };
+		7EC20B5B1DDAC9C900818E33 /* BlindView.strings in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E96D9291DAC916C00D57C8C /* BlindView.strings */; };
+		7EC20B5C1DDAC9C900818E33 /* BlindView.stringsdict in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
+		7EC20B5D1DDAC9C900818E33 /* Localizable.strings in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E17F1A51D9A226100DB1F34 /* Localizable.strings */; };
 		7EDEDC211D1E0C6800AC111A /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC201D1E0C6800AC111A /* main.mm */; };
 		7EDEDC241D1E0C6800AC111A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC231D1E0C6800AC111A /* AppDelegate.mm */; };
 		7EDEDC271D1E0C6800AC111A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC261D1E0C6800AC111A /* ViewController.m */; };
@@ -62,10 +66,6 @@
 		7EF7F7B41DD1BC2B000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
 		7EF7F7B51DD1BC2B000A625A /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7EF7F7B71DD1C138000A625A /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
-		7EF7F7B91DD1D472000A625A /* HLPGeoJSON.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E96D92F1DACC56200D57C8C /* HLPGeoJSON.strings */; };
-		7EF7F7BA1DD1D472000A625A /* BlindView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E96D9291DAC916C00D57C8C /* BlindView.strings */; };
-		7EF7F7BB1DD1D472000A625A /* BlindView.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
-		7EF7F7BC1DD1D472000A625A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A51D9A226100DB1F34 /* Localizable.strings */; };
 		A39FCA9995435AF475B85C79 /* libPods-NavCogTool.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E27F3424451712BF8F128E6 /* libPods-NavCogTool.a */; };
 		EFECDB67D098DB64F968F630 /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E76041D7EED01032E66D8CCF /* libPods-NavCog3.a */; };
 /* End PBXBuildFile section */
@@ -73,12 +73,16 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		7EF7F79B1DD178F7000A625A /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1;
-			dstSubfolderSpec = 0;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
 			files = (
+				7EC20B5A1DDAC9C900818E33 /* HLPGeoJSON.strings in CopyFiles */,
+				7EC20B5B1DDAC9C900818E33 /* BlindView.strings in CopyFiles */,
+				7EC20B5C1DDAC9C900818E33 /* BlindView.stringsdict in CopyFiles */,
+				7EC20B5D1DDAC9C900818E33 /* Localizable.strings in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -417,7 +421,6 @@
 				7EF7F79A1DD178F7000A625A /* Frameworks */,
 				7EF7F79B1DD178F7000A625A /* CopyFiles */,
 				1B6ADE334E675031CD3C749F /* Copy Pods Resources */,
-				7EF7F7B81DD1D462000A625A /* Resources */,
 			);
 			buildRules = (
 			);
@@ -490,17 +493,6 @@
 				7E9238F11D5189FF00875766 /* HLPSettingView.strings in Resources */,
 				7E6E42E01D90C7A3006B6899 /* Settings.bundle in Resources */,
 				7E9238EE1D5189F100875766 /* HLPSettingViewTextCell.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7EF7F7B81DD1D462000A625A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				7EF7F7B91DD1D472000A625A /* HLPGeoJSON.strings in Resources */,
-				7EF7F7BA1DD1D472000A625A /* BlindView.strings in Resources */,
-				7EF7F7BB1DD1D472000A625A /* BlindView.stringsdict in Resources */,
-				7EF7F7BC1DD1D472000A625A /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

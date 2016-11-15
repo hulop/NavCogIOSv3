@@ -518,6 +518,11 @@
     [commander userNeedsToWalk:properties];
     [previewer userNeedsToWalk:properties];
 }
+- (void)userGetsOnElevator:(NSDictionary *)properties
+{
+    [commander userGetsOnElevator:properties];
+    [previewer userGetsOnElevator:properties];
+}
 
 // advanced functions
 - (void)userMaybeGoingBackward:(NSDictionary*)properties

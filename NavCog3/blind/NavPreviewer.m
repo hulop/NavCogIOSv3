@@ -88,7 +88,7 @@
             _targetFloor = NAN;
             return;
         }
-    } else {
+    } else {        
         if (fabs(_targetAngle) > 5) {
             if (isnan(_targetDistance) || _targetDistance < 0) {
                 if (fabs(_targetAngle) > 1) {
@@ -204,6 +204,14 @@
         _targetDistance = distance;
     }
 }
+- (void)userGetsOnElevator:(NSDictionary *)properties
+{
+    if (properties[@"nextSourceHeight"]) {
+        int targetHeight = [properties[@"nextSourceHeight"] intValue];
+        _targetFloor = targetHeight;
+    }
+}
+
 
 // advanced functions
 - (void)userMaybeGoingBackward:(NSDictionary*)properties

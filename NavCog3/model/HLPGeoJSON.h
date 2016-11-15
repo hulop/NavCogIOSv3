@@ -115,6 +115,21 @@ typedef enum: int {
 // 1：歩道、2：歩行者専用道路、3：園路、4：歩車共存道路、5：横断歩道、
 // 6：横断歩道の路面標示の無い交差点の道路、7：動く歩道、8：自由通路、
 // 9：踏切、10：エレベーター、11：エスカレーター、12：階段、13：スロープ、99：不明
+@interface HLPFlags: NSObject
+@end
+
+@interface HLPElevatorEquipments: HLPFlags
+@property BOOL buttonLeft;
+@property BOOL buttonLeftBraille;
+@property BOOL buttonRight;
+@property BOOL buttonRightBraille;
+@property BOOL voiceGuide;
+@property BOOL buttonWcLeft;
+@property BOOL buttonWcLeftBraille;
+@property BOOL buttonWcRight;
+@property BOOL buttonWcRightBraille;
+@end
+
 
 @interface HLPLink : HLPObject {
 @protected
@@ -129,6 +144,7 @@ typedef enum: int {
     HLPLocation *sourceLocation;
     HLPLocation *targetLocation;
     double _minimumWidth;
+    HLPElevatorEquipments *elevatorEquipments;
 }
 
 @property (nonatomic, readonly) double length;
@@ -144,12 +160,15 @@ typedef enum: int {
 + (NSString*) nameOfLinkType:(HLPLinkType)type;
 - (double) initialBearingFromSource;
 - (double) lastBearingForTarget;
+- (void) updateLastBearingForTarget:(double)bearing;
 - (HLPLocation*) sourceLocation;
 - (HLPLocation*) targetLocation;
 - (HLPLocation*) locationDistanceToTarget:(double) distance;
 - (void) updateWithNodesMap:(NSDictionary*)nodesMap;
 - (void) setTargetNodeIfNeeded:(HLPNode*)node withNodesMap:(NSDictionary*)nodesMap;
-- (void) offsetTarget:(double)distance Orientation:(double)orientation;
+- (void) offsetTarget:(double)distance;
+- (void) offsetSource:(double)distance;
+- (HLPElevatorEquipments*) elevatorEquipments;
 @end
 
 @interface HLPCombinedLink : HLPLink
@@ -168,7 +187,9 @@ typedef enum {
     HLP_POI_CATEGORY_FLOOR,
     HLP_POI_CATEGORY_SHOP,
     HLP_POI_CATEGORY_LIVE,
-    HLP_POI_CATEGORY_CORNER
+    HLP_POI_CATEGORY_CORNER,
+    HLP_POI_CATEGORY_ELEVATOR,
+    HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS,
 } HLPPOICategory;
 
 @interface HLPFacility : HLPObject
@@ -184,6 +205,16 @@ typedef enum {
 - (HLPLocation*) location;
 @end
 
+@interface HLPElevatorButtons: HLPFlags
+@property BOOL buttonLeft;
+@property BOOL buttonLeftBraille;
+@property BOOL buttonRight;
+@property BOOL buttonRightBraille;
+@property BOOL buttonMiddle;
+@property BOOL buttonMiddleBraille;
+@property BOOL flagPlural;
+@end
+
 @interface HLPPOI : HLPFacility
 @property (nonatomic, readonly) NSString* majorCategory;
 @property (nonatomic, readonly) NSString* subCategory;
@@ -193,7 +224,9 @@ typedef enum {
 @property (nonatomic, readonly) HLPPOICategory poiCategory;
 @property (nonatomic, readonly) BOOL flagCaution;
 @property (nonatomic, readonly) BOOL flagPlural;
-
+@property (nonatomic, readonly) HLPElevatorButtons *elevatorButtons;
+@property (nonatomic, readonly) HLPElevatorEquipments *elevatorEquipments;
+- (BOOL) allowsNoFloor;
 @end
 
 @interface HLPEntrance : HLPObject

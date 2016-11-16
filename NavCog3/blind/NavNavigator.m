@@ -428,46 +428,39 @@ static NavNavigatorConstants *_instance;
     }]];
     
     if ([doors count] > 0) {
-        if ([doors count] == 2 &&
-            [doors[0].location distanceTo:doors[1].location] < 5 &&
-            doors[0].flagAuto == doors[1].flagAuto
-            ) {
-            double d0 = [self.link.sourceLocation distanceTo:doors[0].location];
-            double d1 = [self.link.sourceLocation distanceTo:doors[1].location];
-            HLPLocation *nearest = doors[(d0<d1)?0:1].location;
-            BOOL forBeforeStart = [nearest distanceTo:self.link.sourceLocation] < C.POI_START_INFO_DISTANCE_THRESHOLD;
-            if (!forBeforeStart) {
-                nearest = [nearest offsetLocationByDistance:3 Bearing:180-self.link.initialBearingFromSource];
-            }
+        doors = [doors sortedArrayUsingComparator:^NSComparisonResult(HLPPOI *p1, HLPPOI *p2) {
+            HLPLocation *n1 = [_link nearestLocationTo:p1.location];
+            HLPLocation *n2 = [_link nearestLocationTo:p2.location];
+            return [@([n1 distanceTo:_sourceLocation]) compare:@([n2 distanceTo:_sourceLocation])];
+        }];
 
-            NavPOI *navpoi = [[NavPOI alloc] initWithText:nil Location:self.link.sourceLocation Options:
-                              @{
-                                @"origin":doors,
-                                @"forBeforeStart":@(forBeforeStart),
-                                @"forDoor":@(YES),
-                                @"doorCount":@(2),
-                                @"flagAuto":@(doors[0].flagAuto)
-                                }];
-            
-            [poisTemp addObject:navpoi];
-            doors = @[];
-        }
-        for(HLPPOI *door in doors) {
-            HLPLocation *nearest = [self.link nearestLocationTo:door.location];
-            BOOL forBeforeStart = [nearest distanceTo:self.link.sourceLocation] < C.POI_START_INFO_DISTANCE_THRESHOLD;
-            if (!forBeforeStart) {
-                nearest = [nearest offsetLocationByDistance:3 Bearing:180-self.link.initialBearingFromSource];
+        for(int start = 0; start < [doors count];){
+            HLPLocation *locStart = doors[start].location;
+            HLPLocation *locEnd = doors[start].location;
+            int end = start;
+            for(int i = start+1; i < [doors count]; i++) {
+                if ([locEnd distanceTo:doors[i].location] < 5 && doors[start].flagAuto == doors[i].flagAuto) {
+                    locEnd = doors[i].location;
+                    end = i;
+                } else {
+                    break;
+                }
             }
-            NavPOI *navpoi = [[NavPOI alloc] initWithText:nil Location:self.link.sourceLocation Options:
+            BOOL forBeforeStart = [locStart distanceTo:self.link.sourceLocation] < C.POI_START_INFO_DISTANCE_THRESHOLD;
+            if (!forBeforeStart) {
+                locStart = [locStart offsetLocationByDistance:3 Bearing:180-self.link.initialBearingFromSource];
+            }
+            int count = end - start + 1;
+            NavPOI *navpoi = [[NavPOI alloc] initWithText:nil Location:locStart Options:
                               @{
-                                @"origin":door,
+                                @"origin":[doors subarrayWithRange:NSMakeRange(start, count)],
                                 @"forBeforeStart":@(forBeforeStart),
                                 @"forDoor":@(YES),
-                                @"doorCount":@(1),
-                                @"flagAuto":@(door.flagAuto)
+                                @"doorCount":@(count),
+                                @"flagAuto":@(doors[start].flagAuto)
                                 }];
-            
             [poisTemp addObject:navpoi];
+            start = end+1;
         }
     }
     
@@ -1562,36 +1555,35 @@ static NavNavigatorConstants *_instance;
                         }
                         linkInfo.hasBeenWaitingAction = YES;
                     }
-                } else {
                     
+                    // read destInfo
+                    for(int i = 0; i < [linkInfo.pois count]; i++) {
+                        NavPOI *poi = linkInfo.pois[i];
+                        
+                        if (!poi.forAfterEnd) {
+                            continue;
+                        }
+                        
+                        if (!poi.hasBeenApproached) {
+                            if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
+                                [self.delegate userIsApproachingToPOI:
+                                 @{
+                                   @"poi": poi,
+                                   @"heading": @(poi.diffAngleFromUserOrientation)
+                                   }];
+                                poi.hasBeenApproached = YES;
+                            }
+                        }
+                    }
+                } else {
                     if ([self.delegate respondsToSelector:@selector(didNavigationFinished:)]) {
                         [self.delegate didNavigationFinished:
                          @{
+                           @"pois": linkInfo.pois,
                            @"isEndOfLink": @(linkInfo.nextLink == nil)
                            }];
-                    }
-                    
+                    }                    
                     navIndex = (int)[linkInfos count];
-                }
-                
-                // read destInfo
-                for(int i = 0; i < [linkInfo.pois count]; i++) {
-                    NavPOI *poi = linkInfo.pois[i];
-                    
-                    if (!poi.forAfterEnd) {
-                        continue;
-                    }
-                    
-                    if (!poi.hasBeenApproached) {
-                        if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
-                            [self.delegate userIsApproachingToPOI:
-                             @{
-                               @"poi": poi,
-                               @"heading": @(poi.diffAngleFromUserOrientation)
-                               }];
-                            poi.hasBeenApproached = YES;
-                        }
-                    }
                 }
                 
                 return;

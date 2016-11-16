@@ -2,10 +2,10 @@
 "Init Orientation" = "方向の調整\n正しい方向を向きます\n(\"NavCog\"を2本指ロングタップして終了)";
 "Others" = "その他";
 
-"There is a auto door" = "自動ドアがあります。";
-"There are %d auto doors" = "自動ドアが%dつあります。";
-"There is a door" = "ドアがあります。";
-"There are %d doors" = "ドアが%dつあります。";
+"There is a auto door" = "この先、自動ドアがあります。";
+"There are %d auto doors" = "この先、自動ドアが%dつあります。";
+"There is a door" = "この先、ドアがあります。";
+"There are %d doors" = "この先、ドアが%dつあります。";
 
 /* No comment provided by engineer. */
 "%@, you might be going backward." = "%@, 逆戻りしているようです";
@@ -85,7 +85,7 @@
 "Watch your step, %@" = "足元注意、%@";
 
 /* arrived message */
-"You arrived" = "目的地付近に到着しました。。。お疲れ様でした";
+"You arrived" = "到着しました。";
 
 /* arrived message with destination name */
 "You arrived at %1$@" = "%1$@付近に到着しました。。。お疲れ様でした";

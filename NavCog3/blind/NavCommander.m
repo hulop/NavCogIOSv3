@@ -365,12 +365,22 @@
     [_delegate speak:string completionHandler:^{
         [[NavDataStore sharedDataStore] clearRoute];
     }];
+    
+    NSArray *pois = [properties[@"pois"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forAfterEnd == YES"]];
+    
+    for(NavPOI *poi in pois) {
+        [self userIsApproachingToPOI:
+         @{
+           @"poi": poi,
+           @"heading": @(poi.diffAngleFromUserOrientation)
+           }];
+    }
 }
 
 - (void)userNeedsToChangeHeading:(NSDictionary*)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
-        
+    
     NSString *string = [self headingActionString:properties];
     
     if (string) {

@@ -1285,13 +1285,6 @@ static NavNavigatorConstants *_instance;
                         // face to the exit after getting in the elevator
                         if (fabs(linkInfo.link.lastBearingForTarget-location.orientation) < 45 &&
                             !linkInfo.hasBeenApproaching) {
-                            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
-                                HLPLocation *loc = elevatorLocation(linkInfo.link);
-                                [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
-                                
-                                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET
-                                                                                    object:@{@"location":loc}];
-                            }
                             if (equipmentPOI) {
                                 if ([self.delegate respondsToSelector:@selector(userGetsOnElevator:)]) {
                                     [self.delegate userGetsOnElevator:
@@ -1309,6 +1302,15 @@ static NavNavigatorConstants *_instance;
                                 }
                             }
                             linkInfo.hasBeenApproaching = YES;
+                            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
+                                HLPLocation *loc = elevatorLocation(linkInfo.link);
+                                [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
+                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET
+                                                                                        object:@{@"location":loc}];
+                                });
+                            }
                         } else if (!linkInfo.hasBeenActivated) {
                             // only for preview
                             double distance = C.APPROACHED_DISTANCE_THRESHOLD+2;

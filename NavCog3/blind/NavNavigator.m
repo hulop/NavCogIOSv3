@@ -271,7 +271,7 @@ static NavNavigatorConstants *_instance;
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
                                     @"origin": poi,
-                                    @"forBeforeEnd": @(YES),
+                                    @"forAfterEnd": @(YES),
                                     @"longDescription": poi.longDescription?poi.longDescription:@""
                                     }];
                     }
@@ -294,7 +294,7 @@ static NavNavigatorConstants *_instance;
                                                       Options:
                                   @{
                                     @"origin": poi,
-                                    @"forBeforeEnd": @(YES)
+                                    @"forAfterEnd": @(YES)
                                 }];
                     }
                     break;
@@ -362,7 +362,7 @@ static NavNavigatorConstants *_instance;
                                   @{
                                     @"origin": poi,
                                     @"angleFromLocation": @([nearest bearingTo:poi.location]),
-                                    @"forBeforeEnd": @(YES),
+                                    @"forAfterEnd": @(YES),
                                     @"longDescription": poi.longDescription?poi.longDescription:@""
                                     }];
                     }
@@ -382,7 +382,7 @@ static NavNavigatorConstants *_instance;
                 navpoi = [[NavPOI alloc] initWithText:nil Location:ent.facility.location Options:
                           @{
                             @"origin": ent,
-                            @"forBeforeEnd": @(YES),
+                            @"forAfterEnd": @(YES),
                             @"isDestination": @(YES),
                             @"angleFromLocation": @(_nextLink.lastBearingForTarget),
                             @"longDescription":  ent.facility.longDescriptionPron
@@ -395,7 +395,7 @@ static NavNavigatorConstants *_instance;
                                              Location:ent.node.location
                                               Options: @{
                                                          @"origin": ent,
-                                                         @"forBeforeEnd": @(YES)
+                                                         @"forAfterEnd": @(YES)
                                                          }];
             } else {
                 // mid in route
@@ -420,6 +420,56 @@ static NavNavigatorConstants *_instance;
         }
     }];
     
+    NSArray<HLPPOI*> *doors = [_allPOIs filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+        if ([evaluatedObject isKindOfClass:HLPPOI.class]) {
+            return [((HLPPOI*)evaluatedObject) poiCategory] == HLP_POI_CATEGORY_DOOR;
+        }
+        return false;
+    }]];
+    
+    if ([doors count] > 0) {
+        if ([doors count] == 2 &&
+            [doors[0].location distanceTo:doors[1].location] < 5 &&
+            doors[0].flagAuto == doors[1].flagAuto
+            ) {
+            double d0 = [self.link.sourceLocation distanceTo:doors[0].location];
+            double d1 = [self.link.sourceLocation distanceTo:doors[1].location];
+            HLPLocation *nearest = doors[(d0<d1)?0:1].location;
+            BOOL forBeforeStart = [nearest distanceTo:self.link.sourceLocation] < C.POI_START_INFO_DISTANCE_THRESHOLD;
+            if (!forBeforeStart) {
+                nearest = [nearest offsetLocationByDistance:3 Bearing:180-self.link.initialBearingFromSource];
+            }
+
+            NavPOI *navpoi = [[NavPOI alloc] initWithText:nil Location:self.link.sourceLocation Options:
+                              @{
+                                @"origin":doors,
+                                @"forBeforeStart":@(forBeforeStart),
+                                @"forDoor":@(YES),
+                                @"doorCount":@(2),
+                                @"flagAuto":@(doors[0].flagAuto)
+                                }];
+            
+            [poisTemp addObject:navpoi];
+            doors = @[];
+        }
+        for(HLPPOI *door in doors) {
+            HLPLocation *nearest = [self.link nearestLocationTo:door.location];
+            BOOL forBeforeStart = [nearest distanceTo:self.link.sourceLocation] < C.POI_START_INFO_DISTANCE_THRESHOLD;
+            if (!forBeforeStart) {
+                nearest = [nearest offsetLocationByDistance:3 Bearing:180-self.link.initialBearingFromSource];
+            }
+            NavPOI *navpoi = [[NavPOI alloc] initWithText:nil Location:self.link.sourceLocation Options:
+                              @{
+                                @"origin":door,
+                                @"forBeforeStart":@(forBeforeStart),
+                                @"forDoor":@(YES),
+                                @"doorCount":@(1),
+                                @"flagAuto":@(door.flagAuto)
+                                }];
+            
+            [poisTemp addObject:navpoi];
+        }
+    }
     
     // convert NAVCOG1/2 acc info into NavPOI
     [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -460,7 +510,7 @@ static NavNavigatorConstants *_instance;
                     NavPOI *poi = [[NavPOI alloc] initWithText:destInfo Location:poiloc Options:
                                    @{
                                      @"origin":destInfo,
-                                     @"forBeforeEnd": @(YES)
+                                     @"forAfterEnd": @(YES)
                                      }];
                     [poisTemp addObject:poi];
                 }
@@ -566,7 +616,7 @@ static NavNavigatorConstants *_instance;
     _forBeforeStart = NO;
     _forFloor = NO;
     _forCorner = NO;
-    _forBeforeEnd = NO;
+    _forAfterEnd = NO;
     _flagCaution = NO;
     _flagPlural = NO;
     _flagOnomastic = NO;
@@ -1195,7 +1245,7 @@ static NavNavigatorConstants *_instance;
                 if (linkInfo_.link.linkType == LINK_TYPE_ESCALATOR || linkInfo_.link.linkType == LINK_TYPE_STAIRWAY) {
                     return 0.5;
                 } else {
-                    return MAX(MIN(C.APPROACHED_DISTANCE_THRESHOLD, linkInfo_.link.length/4), 0.5);
+                    return MAX(MIN(C.APPROACHED_DISTANCE_THRESHOLD, linkInfo_.link.length/4), 1.0);
                 }
             };
 
@@ -1528,7 +1578,7 @@ static NavNavigatorConstants *_instance;
                 for(int i = 0; i < [linkInfo.pois count]; i++) {
                     NavPOI *poi = linkInfo.pois[i];
                     
-                    if (!poi.forBeforeEnd) {
+                    if (!poi.forAfterEnd) {
                         continue;
                     }
                     
@@ -1557,7 +1607,7 @@ static NavNavigatorConstants *_instance;
                     continue;
                 }
                 
-                if (poi.forBeforeEnd && linkInfo.nextLink != nil) {
+                if (poi.forAfterEnd && linkInfo.nextLink != nil) {
                     continue;
                 }
                 

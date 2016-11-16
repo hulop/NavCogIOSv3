@@ -168,11 +168,15 @@
 @property (readonly) BOOL forFloor;
 @property (readonly) BOOL forCorner;
 @property (readonly) BOOL forSign;
+@property (readonly) BOOL forDoor;
 @property (readonly) BOOL forBeforeEnd;
+@property (readonly) BOOL forAfterEnd;
 @property (readonly) BOOL flagCaution;
 @property (readonly) BOOL flagPlural;
 @property (readonly) BOOL flagEnd;
 @property (readonly) BOOL flagOnomastic;
+@property (readonly) BOOL flagAuto;
+@property (readonly) int doorCount;
 @property (readonly) BOOL isDestination;
 @property (readonly) double angleFromLocation;
 

@@ -178,6 +178,24 @@
     return string;
 }
 
+- (NSString*) doorString:(NavPOI*)poi
+{
+    if (poi.flagAuto) {
+        if (poi.doorCount == 1) {
+            return NSLocalizedStringFromTable(@"There is a auto door", @"BlindView", @"");
+        } else {
+            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"There are %d auto doors", @"BlindView", @""), poi.doorCount];
+        }
+    } else {
+        if (poi.doorCount == 1) {
+            return NSLocalizedStringFromTable(@"There is a door", @"BlindView", @"");
+        } else {
+            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"There are %d doors", @"BlindView", @""), poi.doorCount];
+        }
+    }
+    return nil;
+}
+
 - (NSString*) startPOIString:(NSArray*) pois
 {
     if (pois == nil || [pois count] == 0) {
@@ -192,6 +210,9 @@
         for(NavPOI *poi in infos) {
             if (poi.forSign) {
                 [string appendFormat:NSLocalizedStringFromTable(@"There is a sign says %@", @"BlindView", @""), poi.text];
+            } else if (poi.forDoor) {
+                [string appendString:[self doorString:poi]];
+                
             } else {
                 [string appendString:poi.text];
             }
@@ -311,7 +332,7 @@
     double totalLength = [properties[@"totalLength"] doubleValue];
     NSString *totalDist = [self distanceString:totalLength];
     
-    NSArray *pois = properties[@"pois"];
+    NSArray *pois = [properties[@"pois"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forDoor == NO"]];
     [string appendString:[self startPOIString:pois]];
     
     if (destination && ![destination isEqual:[NSNull null]] && [destination length] > 0){
@@ -426,6 +447,9 @@
     BOOL isFirst = [properties[@"isFirst"] boolValue];
     if (!isFirst) {
         [string appendString:[self startPOIString:pois]];
+    } else {
+        pois = [properties[@"pois"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forDoor == YES"]];
+        [string appendString:[self startPOIString:pois]];        
     }
     
     NSString *floorInfo = [self floorPOIString:pois];
@@ -540,7 +564,10 @@
     if (poi.needsToPlaySound) {
         // play something
     }
-    if (poi.requiresUserAction) {
+    if (poi.forDoor) {
+        [_delegate speak:[self doorString:poi] completionHandler:^{
+        }];
+    } else if (poi.requiresUserAction) {
     } else {
         NSString *angle;
         if (!isnan(heading)) {

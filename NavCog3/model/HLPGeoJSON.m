@@ -66,6 +66,7 @@
 #define POI_CATEGORY_FLOOR @"_nav_floor_"
 #define POI_CATEGORY_ELEVATOR @"_nav_elevator_"
 #define POI_CATEGORY_ELEVATOR_EQUIPMENTS @"_nav_elevator_equipments_"
+#define POI_CATEGORY_DOOR @"_nav_door_"
 
 #define POI_CATEGORY_SCENE @"_nav_scene_"
 
@@ -77,6 +78,7 @@
 #define POI_FLAGS_CAUTION @"_nav_caution_"
 #define POI_FLAGS_PLURAL @"_nav_plural_"
 #define POI_FLAGS_END @"_nav_end_"
+#define POI_FLAGS_AUTO @"_nav_auto_"
 
 
 
@@ -888,10 +890,13 @@
     } else if ([POI_CATEGORY_ELEVATOR_EQUIPMENTS isEqualToString:_subCategory]) {
         _poiCategory = HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS;
         _elevatorEquipments = [[HLPElevatorEquipments alloc] initWithString:_minorCategory];
+    } else if ([POI_CATEGORY_DOOR isEqualToString:_subCategory]) {
+      _poiCategory = HLP_POI_CATEGORY_DOOR;
     }
     _flagCaution = [_minorCategory containsString:POI_FLAGS_CAUTION];
     _flagPlural = [_minorCategory containsString:POI_FLAGS_PLURAL];
     _flagEnd = [_minorCategory containsString:POI_FLAGS_END];
+    _flagAuto = [_minorCategory containsString:POI_FLAGS_AUTO];
 
     if (prop[PROPKEY_EXT_HEADING]) {
         _heading = [prop[PROPKEY_EXT_HEADING] doubleValue];

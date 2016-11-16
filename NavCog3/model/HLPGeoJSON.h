@@ -193,7 +193,8 @@ typedef enum {
     HLP_POI_CATEGORY_LIVE,
     HLP_POI_CATEGORY_CORNER,
     HLP_POI_CATEGORY_ELEVATOR,
-    HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS
+    HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS,
+    HLP_POI_CATEGORY_DOOR
 } HLPPOICategory;
 
 @interface HLPFacility : HLPObject
@@ -229,6 +230,7 @@ typedef enum {
 @property (nonatomic, readonly) BOOL flagCaution;
 @property (nonatomic, readonly) BOOL flagPlural;
 @property (nonatomic, readonly) BOOL flagEnd;
+@property (nonatomic, readonly) BOOL flagAuto;
 @property (nonatomic, readonly) HLPElevatorButtons *elevatorButtons;
 @property (nonatomic, readonly) HLPElevatorEquipments *elevatorEquipments;
 - (BOOL) allowsNoFloor;

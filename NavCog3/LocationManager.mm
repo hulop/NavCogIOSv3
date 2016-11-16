@@ -904,11 +904,11 @@ void functionCalledToLog(void *inUserData, string text)
         } else {
             double s = [[NSDate date] timeIntervalSince1970];
             try {
+                flagPutBeacon = YES;
+                localizer->putBeacons(cbeacons);
                 if (putBeaconsCount == 0) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:START_LOCATING object:nil];
                 }
-                flagPutBeacon = YES;
-                localizer->putBeacons(cbeacons);
                 putBeaconsCount++;
                 flagPutBeacon = NO;
             } catch(const std::exception& ex) {

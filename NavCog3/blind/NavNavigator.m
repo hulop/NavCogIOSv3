@@ -245,7 +245,10 @@ static NavNavigatorConstants *_instance;
             
             double hInitial = [HLPLocation normalizeDegree:_link.initialBearingFromSource - 180];
             BOOL inAngleInitial = fabs([HLPLocation normalizeDegree:hInitial - poi.heading]) < poi.angle;
-            
+
+            double hLast = [HLPLocation normalizeDegree:_link.lastBearingForTarget - 180];
+            BOOL inAngleLast = fabs([HLPLocation normalizeDegree:hLast - poi.heading]) < poi.angle;
+
             
             NavPOI *navpoi = nil;
             
@@ -341,13 +344,14 @@ static NavNavigatorConstants *_instance;
                     }
                     break;
                 case HLP_POI_CATEGORY_OBJECT:
-                    if (inAngleAtTarget && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
+                    if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
                         // add corner info
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
                                     @"origin": poi,
                                     @"forCorner": @(YES),
                                     @"flagPlural": @(poi.flagPlural),
+                                    @"flagEnd": @(poi.flagEnd),
                                     @"longDescription": poi.longDescription?poi.longDescription:@""
                                     }];
                     }
@@ -565,6 +569,8 @@ static NavNavigatorConstants *_instance;
     _forBeforeEnd = NO;
     _flagCaution = NO;
     _flagPlural = NO;
+    _flagOnomastic = NO;
+    _flagEnd = NO;
     _angleFromLocation = NAN;
     _diffAngleFromUserOrientation = NAN;
     
@@ -1295,8 +1301,8 @@ static NavNavigatorConstants *_instance;
                                        }];
                                 }
                             } else {
-                                if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
-                                    [self.delegate remainingDistanceToTarget:
+                                if ([self.delegate respondsToSelector:@selector(userGetsOnElevator:)]) {
+                                    [self.delegate userGetsOnElevator:
                                      @{
                                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight)
                                        }];

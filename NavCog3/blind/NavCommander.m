@@ -122,14 +122,19 @@
         }
         
         BOOL full = [properties[@"fullAction"] boolValue];
+        BOOL up = targetHeight > sourceHeight;
         
         NSString *tfloor = [self floorString:targetHeight];
-        NSString *sfloor = [self floorString:sourceHeight];
-        if (full) {
-            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %3$@ by %2$@ %1$@, now you are in %4$@",@"BlindView",@"") , angle, mean, tfloor, sfloor];//@""
+        //NSString *sfloor = [self floorString:sourceHeight];
+        //if (full) {
+        //string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %3$@ by %2$@ %1$@, now you are in %4$@",@"BlindView",@"") , angle, mean, tfloor, sfloor];//@""
+        //} else {
+        if (up) {
+            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go up to %3$@ by %2$@ %1$@",@"BlindView",@"") , angle, mean, tfloor];//@""
         } else {
-            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %3$@ by %2$@ %1$@",@"BlindView",@"") , angle, mean, tfloor];//@""
+            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go down to %3$@ by %2$@ %1$@",@"BlindView",@"") , angle, mean, tfloor];//@""
         }
+        //}
     }
     else if (linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
         int sourceHeight = [properties[@"sourceHeight"] intValue];
@@ -137,7 +142,13 @@
         NSString *mean = [HLPLink nameOfLinkType:linkType];
         NSString *sfloor = [self floorString:sourceHeight];
         NSString *tfloor = [self floorString:targetHeight];
-        string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %2$@ by %1$@, now you are in %3$@",@"BlindView",@"") , mean, tfloor, sfloor]; //@"%1$@を使って%2$@にいきます。現在は%3$@にいます。"
+        //string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %2$@ by %1$@, now you are in %3$@",@"BlindView",@"") , mean, tfloor, sfloor];
+        BOOL up = targetHeight > sourceHeight;
+        if (up) {
+            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go up to %2$@ by %1$@",@"BlindView",@"") , mean, tfloor];
+        } else {
+            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go down to %2$@ by %1$@",@"BlindView",@"") , mean, tfloor];
+        }
     }
     else {
         if (turnAngle < -150 ) {
@@ -219,6 +230,21 @@
     return text;
 }
 
+- (BOOL) isCornerEnd:(NSArray*)pois
+{
+    BOOL ret = NO;
+    pois = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forCorner == YES && forBeforeStart == NO"]];
+    if ([pois count] > 1) {
+        // TODO: multiple floor info
+    }
+    if ([pois count] > 0) {
+        NavPOI *poi = pois[0];
+        if (poi.flagEnd) {
+            ret = YES;
+        }
+    }
+    return ret;
+}
 
 - (NSString*) cornerPOIString:(NSArray*)pois
 {
@@ -404,6 +430,7 @@
     
     NSString *floorInfo = [self floorPOIString:pois];
     NSString *cornerInfo = [self cornerPOIString:pois];
+    BOOL isCornerEnd = [self isCornerEnd:pois];
     
     NSString *dist = [self distanceString:distance];
     
@@ -426,8 +453,11 @@
         if (noAndTurnMinDistance < distance && distance < 50) {
             proceedString = [proceedString stringByAppendingString:@" ..."];
         }
-        if (cornerInfo) {
+        if (cornerInfo && !isCornerEnd) {
             nextActionString = [nextActionString stringByAppendingString:@" at near object"];
+        }
+        if (isCornerEnd) {
+            nextActionString = [nextActionString stringByAppendingString:@" at end object"];
         }
         
         proceedString = NSLocalizedStringFromTable(proceedString, @"BlindView", @"");
@@ -448,8 +478,14 @@
 - (void)userGetsOnElevator:(NSDictionary *)properties
 {
     NavPOI *poi = properties[@"poi"];
+    NSString *floor = [self floorString:[properties[@"nextSourceHeight"] doubleValue]];
+    NSString *string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %1$@", @"BlindView", @""), floor];
+    
+    if (poi) {
+        string = [string stringByAppendingString:poi.text];
+    }
 
-    [_delegate speak:poi.text completionHandler:^{
+    [_delegate speak:string completionHandler:^{
     }];
 }
 

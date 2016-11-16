@@ -30,11 +30,18 @@
 "From_button" = "%@から";
 
 /* No comment provided by engineer. */
-"Go to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@にいきます。現在は%3$@にいます。";
+"Go up to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ上がる";
+"Go up to %3$@ by %2$@ %1$@, now you are in %4$@" = "%1$@の%2$@を使って%3$@へ上がる。現在は%4$@にいます。";
+"Go down to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ降りる";
+"Go down to %3$@ by %2$@ %1$@, now you are in %4$@" = "%1$@の%2$@を使って%3$@へ降りる。現在は%4$@にいます。";
 
 /* No comment provided by engineer. */
-"Go to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ";
-"Go to %3$@ by %2$@ %1$@, now you are in %4$@" = "%1$@の%2$@を使って%3$@へ。現在は%4$@にいます。";
+"Go up to %2$@ by %1$@" = "%1$@を使って%2$@に上がります";
+"Go down to %2$@ by %1$@" = "%1$@を使って%2$@に降ります";
+"Go up to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@に上がります。現在は%3$@にいます。";
+"Go down to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@に降ります。現在は%3$@にいます。";
+"Go to %1$@" = "%1$@に行きます。";
+
 
 /* No comment provided by engineer. */
 "Locating..." = "現在地を取得中...";
@@ -110,6 +117,7 @@
 
 /* (No Commment) */
 "and action at near object" = "%2$@の近くで%1$@";
+"and action at end object" = "突き当たりを%1$@";
 
 /* approaching */
 "approaching" = "そろそろです";

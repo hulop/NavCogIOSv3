@@ -76,6 +76,7 @@
 #define POI_CATEGORY_LIVE @"_nav_live_"
 #define POI_FLAGS_CAUTION @"_nav_caution_"
 #define POI_FLAGS_PLURAL @"_nav_plural_"
+#define POI_FLAGS_END @"_nav_end_"
 
 
 
@@ -883,6 +884,7 @@
     }
     _flagCaution = [_minorCategory containsString:POI_FLAGS_CAUTION];
     _flagPlural = [_minorCategory containsString:POI_FLAGS_PLURAL];
+    _flagEnd = [_minorCategory containsString:POI_FLAGS_END];
 
     if (prop[PROPKEY_EXT_HEADING]) {
         _heading = [prop[PROPKEY_EXT_HEADING] doubleValue];

@@ -128,11 +128,17 @@
     if (_showShops) {
         NSMutableArray __block *temp = [@[] mutableCopy];
         NSString __block *lastFirst = nil;
+        NSMutableDictionary<NSString*,NavDestination*> __block *nameMap = [@{} mutableCopy];
         [all enumerateObjectsUsingBlock:^(HLPLandmark *landmark, NSUInteger idx, BOOL * _Nonnull stop) {
             NSString *name = [landmark getLandmarkNamePron];
             
             if (name == nil || [name length] == 0) {
                 NSLog(@"no name landmark %@", landmark);
+                return;
+            }
+            
+            if (nameMap[name]) {
+                [nameMap[name] addLandmark:landmark];
                 return;
             }
             
@@ -145,7 +151,9 @@
                 temp = [@[] mutableCopy];
                 [tempSections addObject:@{@"key":first, @"rows":temp}];
             }
-            [temp addObject:[[NavDestination alloc] initWithLandmark:landmark]];
+            NavDestination *dest = [[NavDestination alloc] initWithLandmark:landmark];
+            [temp addObject:dest];
+            nameMap[name] = dest;
             lastFirst = first;
         }];
     }
@@ -201,11 +209,32 @@
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.textLabel.lineBreakMode = NSLineBreakByClipping;
     cell.textLabel.minimumScaleFactor = 0.5;
+    cell.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     cell.detailTextLabel.numberOfLines = 1;
     cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
     cell.detailTextLabel.lineBreakMode = NSLineBreakByClipping;
     cell.detailTextLabel.minimumScaleFactor = 0.5;
-    
+    cell.detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    NSArray *c = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[textLabel(<=280)]-(>=2)-[detailTextLabel]-|"
+                                                                    options:0
+                                                                    metrics:@{@"space": @(10)}
+                                                                      views:@{@"textLabel": cell.textLabel,
+                                                                              @"detailTextLabel": cell.detailTextLabel}];
+    [cell.contentView addConstraints:c];
+    NSLayoutConstraint *lc = [NSLayoutConstraint constraintWithItem:cell.textLabel
+                                     attribute:NSLayoutAttributeCenterY
+                                     relatedBy:NSLayoutRelationEqual
+                                        toItem:cell.contentView
+                                     attribute:NSLayoutAttributeCenterY
+                                    multiplier:1.f constant:0.f];
+    [cell.contentView addConstraint:lc];
+    lc = [NSLayoutConstraint constraintWithItem:cell.detailTextLabel
+                                     attribute:NSLayoutAttributeCenterY
+                                     relatedBy:NSLayoutRelationEqual
+                                        toItem:cell.contentView
+                                     attribute:NSLayoutAttributeCenterY
+                                    multiplier:1.f constant:0.f];
+    [cell.contentView addConstraint:lc];
     NavDestination *dest = [self destinationForRowAtIndexPath:indexPath];
     NSString *floor = @"";
     if (_showShopFloor && dest.landmark) {

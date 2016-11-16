@@ -56,6 +56,8 @@
     [aCoder encodeObject:[NSNumber numberWithInt:_type] forKey:@"type"];
     HLPLocation *loc;
     switch(_type) {
+        case NavDestinationTypeLandmarks:
+            [aCoder encodeObject:_landmarks forKey:@"landmarks"];
         case NavDestinationTypeLandmark:
             [aCoder encodeObject:_landmark forKey:@"landmark"];
             break;
@@ -80,6 +82,8 @@
     self = [super init];
     _type = [[aDecoder decodeObjectForKey:@"type"] intValue];
     switch(_type) {
+        case NavDestinationTypeLandmarks:
+            _landmarks = [aDecoder decodeObjectForKey:@"landmarks"];
         case NavDestinationTypeLandmark:
             _landmark = [aDecoder decodeObjectForKey:@"landmark"];
             break;
@@ -127,6 +131,14 @@
     _filter = filter;
     return self;
 }
+-(void)addLandmark:(HLPLandmark *)landmark
+{
+    if (!_landmarks) {
+        _landmarks = @[_landmark];
+        _type = NavDestinationTypeLandmarks;
+    }
+    _landmarks = [_landmarks arrayByAddingObject:landmark];
+}
 
 + (instancetype)selectStart
 {
@@ -147,9 +159,18 @@
 {
     HLPLocation *loc;
     int floor;
+    NSMutableString* __block temp = [@"" mutableCopy];
     switch(_type) {
         case NavDestinationTypeLandmark:
             return [_landmark nodeID];
+        case NavDestinationTypeLandmarks:
+            for(HLPLandmark *l in _landmarks) {
+                if ([temp length] > 0) {
+                    [temp appendString:@"|"];
+                }
+                [temp appendString:[l nodeID]];
+            }
+            return temp;
         case NavDestinationTypeLocation:
             if (_location == nil) {
                 loc = [[NavDataStore sharedDataStore] currentLocation];
@@ -174,6 +195,7 @@
     int floor;
     switch(_type) {
         case NavDestinationTypeLandmark:
+        case NavDestinationTypeLandmarks:
             return [_landmark getLandmarkName];
         case NavDestinationTypeLocation:
             if (_location == nil) {
@@ -219,6 +241,7 @@
 {
     switch(_type) {
         case NavDestinationTypeLandmark:
+        case NavDestinationTypeLandmarks:
             return [_landmark getLandmarkNamePron];
         case NavDestinationTypeLocation:
             if (_location == nil) {

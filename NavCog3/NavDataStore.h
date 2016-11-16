@@ -31,7 +31,8 @@ typedef enum {
     NavDestinationTypeFacility,
     NavDestinationTypeSelectStart,
     NavDestinationTypeSelectDestination,
-    NavDestinationTypeFilter
+    NavDestinationTypeFilter,
+    NavDestinationTypeLandmarks
 } NavDestinationType;
 
 typedef enum {
@@ -49,11 +50,13 @@ typedef enum {
 @property (readonly) NSDictionary* filter;
 @property (readonly) NSString* label;
 @property (readonly) HLPLandmark* landmark;
+@property (readonly) NSArray<HLPLandmark*>* landmarks;
 
 -(instancetype)initWithLandmark:(HLPLandmark*)landmark;
 -(instancetype)initWithLocation:(HLPLocation*)location;
 -(instancetype)initWithFacility:(NavDestinationFacilityType)facilityType;
 -(instancetype)initWithLabel:(NSString*)label Filter:(NSDictionary*)filter;
+-(void)addLandmark:(HLPLandmark*)landmark;
 +(instancetype)selectStart;
 +(instancetype)selectDestination;
 @end

@@ -161,10 +161,10 @@
 "make a big right turn" = "大きく右に曲がる";
 
 /* make turn to -22.5 ~ -60 */
-"make a slight left turn" = "少し左に曲がる";
+"make a slight left turn" = "斜め、左に曲がる";
 
 /* make turn to +22.5 ~ +60 */
-"make a slight right turn" = "少し右に曲がる";
+"make a slight right turn" = "斜め、右に曲がる";
 
 /* make turn to -180 ~ -180 */
 "make a u-turn to the left" = "左に折り返す";

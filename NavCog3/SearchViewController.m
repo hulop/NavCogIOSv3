@@ -226,6 +226,8 @@
         DestinationTableViewController *dView = (DestinationTableViewController*)segue.destinationViewController;
         lastIdentifier = dView.restorationIdentifier = segue.identifier;
         dView.root = self;
+    } else {
+        segue.destinationViewController.restorationIdentifier = segue.identifier;
     }
 }
 

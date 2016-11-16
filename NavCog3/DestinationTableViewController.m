@@ -38,20 +38,30 @@
     source = [[NavDestinationDataSource alloc] init];
     source.filter = filterDest.filter;
     if (source.filter) {
+        self.navigationItem.title = filterDest.label;
         source.showShops = YES;
         source.showSectionIndex = YES;
+        source.showShopBuilding = NO;
+        source.showShopFloor = YES;
     }
     
     if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
         if (!source.filter) {
+            self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
             source.showCurrentLocation = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"];
+            source.showNearShops = YES;
             source.showBuilding = YES;
+            source.showShopBuilding = YES;
+            source.showShopFloor = YES;
         }
     }
     if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
         if (!source.filter) {
+            self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
             source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
             source.showBuilding = YES;
+            source.showShopBuilding = YES;
+            source.showShopFloor = YES;
         }
     }
     [source update:nil];

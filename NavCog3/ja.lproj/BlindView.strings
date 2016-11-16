@@ -101,7 +101,7 @@
 "_nav_select_destination" = "目的地を選択";
 
 /* No comment provided by engineer. */
-"_nav_select_start" = "開始地点を選択";
+"_nav_select_start" = "出発地を選択";
 
 /* (No Commment) */
 "_nav_toilet_female" = "女性用トイレ";
@@ -111,6 +111,8 @@
 
 /* (No Commment) */
 "_nav_toilet_multi" = "多目的トイレ";
+
+"_nav_near_shops" = "現在地周辺";
 
 /* (No Commment) */
 "and action" = "%1$@";

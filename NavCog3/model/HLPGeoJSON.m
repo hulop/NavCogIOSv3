@@ -285,8 +285,16 @@
               @"exit": @"exit",
               @"name": @"name",
               @"namePron": @"name_pron",
-              @"nodeID": @"node"
+              @"nodeID": @"node",
+              @"nodeHeight": @"node_height"
               }];
+}
+
+- (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError *__autoreleasing *)error
+{
+    self = [super initWithDictionary:dictionaryValue error:error];
+    _nodeHeight = (_nodeHeight >= 1)?_nodeHeight-1:_nodeHeight;
+    return self;
 }
 
 - (NSString *)getLandmarkName
@@ -347,7 +355,6 @@
     [_properties[@"sub_category"] isEqualToString:@"RE_L"] ||
     [self isToilet];
 }
-
 
 @end
 

@@ -62,6 +62,27 @@
         [tempSections addObject:@{@"key":NSLocalizedStringFromTable(@"_nav_latlng",@"BlindView",@""), @"rows":temp}];
     }
     
+    if (_showNearShops) {
+        NSMutableArray *temp = [@[] mutableCopy];
+        HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
+        [[all sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
+            NSComparisonResult r = [@(fabs(loc.floor - obj1.nodeHeight)) compare:@(fabs(loc.floor - obj2.nodeHeight))];
+            if (r == NSOrderedSame) {
+                HLPLocation *loc1 = [obj1 nearestLocationTo:loc];
+                HLPLocation *loc2 = [obj2 nearestLocationTo:loc];
+                return [@([loc1 distanceTo:loc]) compare:@([loc2 distanceTo:loc])];
+            }
+            return r;
+        }] enumerateObjectsUsingBlock:^(HLPLandmark *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            HLPLocation *loc1 = [obj nearestLocationTo:loc];
+            double dist = [loc1 distanceTo:loc];
+            if (idx < 5 && fabs(loc.floor - obj.nodeHeight) < 0.5 && dist < 25) {
+                [temp addObject:[[NavDestination alloc] initWithLandmark:obj]];
+            }
+        }];
+        [tempSections addObject:@{@"key":NSLocalizedStringFromTable(@"_nav_near_shops",@"BlindView",@""), @"rows":temp}];
+    }
+    
     if (_showBuilding) {
         BOOL __block noBuilding = NO;
         NSMutableArray __block *temp = [@[] mutableCopy];
@@ -168,24 +189,56 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *CellIdentifier = @"destinationCell";
+    NSString *CellIdentifier = @"NavDestinationDataSourceCell";
     //UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if(!cell){
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
     
     cell.textLabel.numberOfLines = 1;
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.textLabel.lineBreakMode = NSLineBreakByClipping;
+    cell.textLabel.minimumScaleFactor = 0.5;
+    cell.detailTextLabel.numberOfLines = 1;
+    cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
+    cell.detailTextLabel.lineBreakMode = NSLineBreakByClipping;
+    cell.detailTextLabel.minimumScaleFactor = 0.5;
     
     NavDestination *dest = [self destinationForRowAtIndexPath:indexPath];
+    NSString *floor = @"";
+    if (_showShopFloor && dest.landmark) {
+        if (_showShopBuilding && dest.landmark.properties[@"building"]) {
+            floor = dest.landmark.properties[@"building"];
+            floor = [floor stringByAppendingString:@" "];
+        }
+        floor = [floor stringByAppendingString:[self floorString:dest.landmark.nodeHeight]];
+    }
+    
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    if (dest.filter) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
     
     cell.textLabel.text = dest.name;
+    cell.detailTextLabel.text = floor;
     cell.accessibilityLabel = dest.namePron;
     cell.clipsToBounds = YES;
     return cell;
+}
+
+- (NSString*) floorString:(double) floor
+{
+    floor = round(floor*2.0)/2.0;
+    
+    floor = (floor >= 0)?floor+1:floor;
+        
+    if (floor < 0) {
+        return [NSString stringWithFormat:@"B%dF", (int)fabs(floor)];
+    } else {
+        return [NSString stringWithFormat:@"%dF", (int)fabs(floor)];
+    }
 }
 
 @end

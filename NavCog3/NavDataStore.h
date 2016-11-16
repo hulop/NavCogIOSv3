@@ -48,6 +48,7 @@ typedef enum {
 @property (readonly) NSString* _id;
 @property (readonly) NSDictionary* filter;
 @property (readonly) NSString* label;
+@property (readonly) HLPLandmark* landmark;
 
 -(instancetype)initWithLandmark:(HLPLandmark*)landmark;
 -(instancetype)initWithLocation:(HLPLocation*)location;

@@ -29,7 +29,6 @@
 
 @implementation NavDestination {
     NavDestinationFacilityType _facilityType;
-    HLPLandmark *_landmark;
     HLPLocation *_location;
 }
 

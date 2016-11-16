@@ -65,12 +65,15 @@ typedef enum {
 
 @end
 
+@class HLPNode;
+
 @interface HLPLandmark : HLPGeoJSON
 @property (nonatomic, readonly) NSString *category;
 @property (nonatomic, readonly) NSString *exit;
 @property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly) NSString *namePron;
 @property (nonatomic, readonly) NSString *nodeID;
+@property (nonatomic, readonly) double nodeHeight;
 
 - (NSString*) getLandmarkName;
 - (NSString*) getLandmarkNamePron;

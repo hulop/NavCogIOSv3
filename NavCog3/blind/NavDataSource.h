@@ -32,6 +32,10 @@
 @property BOOL showShops;
 @property BOOL showFacility;
 @property BOOL showSectionIndex;
+@property BOOL showNearShops;
+@property BOOL showShopBuilding;
+@property BOOL showShopFloor;
+
 @property NSDictionary *filter;
 
 - (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;

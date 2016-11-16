@@ -257,20 +257,17 @@ double(^normalize)(double) = ^(double deg) {
 
 - (HLPLocation *)offsetLocationByDistance:(double)distance Bearing:(double)bearing
 {
-    double R = EARTH_R;
-    double dR = distance/R;
-    bearing *= d2r;
-    double lat1 = self.lat*d2r;
-    double lng1 = self.lng*d2r;
-    double lat2 = asin(sin(lat1)*cos(dR) +
-                       cos(lat1)*sin(dR)*cos(bearing));
-    double lng2 = lng1 + atan2(sin(bearing)*sin(dR)*cos(lat1),
-                                    cos(dR)-sin(lat1)*sin(lat2));
-
-    lat2 *= r2d;
-    lng2 *= r2d;
-    lng2 = fmod(lng2+540,360)-180;
+    double rad = bearing / 180 * M_PI;
+    double x = distance * cos(rad);
+    double y = distance * sin(rad);
     
+    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(_lat, _lng);
+    MKCoordinateRegion tempRegion = MKCoordinateRegionMakeWithDistance(coord, x, y);
+    MKCoordinateSpan tempSpan = tempRegion.span;
+    
+    double lat2 = _lat + tempSpan.latitudeDelta;
+    double lng2 = _lng + tempSpan.longitudeDelta;
+
     HLPLocation *loc = [[HLPLocation alloc] init];
     [loc update:self];
     [loc updateLat:lat2 Lng:lng2 Accuracy:0 Floor:loc.floor];

@@ -763,6 +763,7 @@ static NavNavigatorConstants *_instance;
         
         NSString *nodeID = option[@"nodeID"];
         HLPLinkType linkType = [option[@"linkType"] intValue];
+        BOOL onlyEnd = [option[@"onlyEnd"] boolValue];
         
         [linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
 
@@ -776,12 +777,21 @@ static NavNavigatorConstants *_instance;
             }
             
             HLPLocation *nearest = [link nearestLocationTo:loc];
+            if (onlyEnd) {
+                double sd = [link.sourceLocation distanceTo:loc];
+                double td = [link.targetLocation distanceTo:loc];
+                if (sd > td) {
+                    nearest = link.targetLocation;
+                } else {
+                    nearest = link.sourceLocation;
+                }
+            }
             double distance = [loc distanceTo:nearest];
             
             if (distance < minDistance && (linkType == 0 || link.linkType == linkType)) {
                 minDistance = distance;
                 nearestLinks = [@[link] mutableCopy];
-            } else if (distance == minDistance) {
+            } else if (fabs(distance - minDistance) < 0.1) {
                 [nearestLinks addObject:link];
             }
         }];
@@ -858,8 +868,7 @@ static NavNavigatorConstants *_instance;
             }
             
             BOOL isLeaf = ent.node.isLeaf;
-            
-            NSArray *links = nearestLinks(ent.node.location, isLeaf?@{@"nodeID": ent.node._id}:@{});
+            NSArray *links = nearestLinks(ent.node.location, isLeaf?@{@"nodeID": ent.node._id, @"onlyEnd":@(YES)}:@{});
             for(HLPLink* nearestLink in links) {
                 if ([nearestLink.sourceNodeID isEqualToString:ent.node._id] ||
                     [nearestLink.targetNodeID isEqualToString:ent.node._id]) {

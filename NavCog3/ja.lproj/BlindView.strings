@@ -1,6 +1,6 @@
 
 "Init Orientation" = "方向の調整\n正しい方向を向きます\n(\"NavCog\"を2本指ロングタップして終了)";
-
+"Others" = "その他";
 
 /* No comment provided by engineer. */
 "%@, you might be going backward." = "%@, 逆戻りしているようです";

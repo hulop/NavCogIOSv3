@@ -63,6 +63,7 @@
     }
     
     if (_showBuilding) {
+        BOOL __block noBuilding = NO;
         NSMutableArray __block *temp = [@[] mutableCopy];
         NSMutableDictionary __block *buildings = [@{} mutableCopy];
         [all enumerateObjectsUsingBlock:^(HLPLandmark *landmark, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -72,6 +73,8 @@
                     [buildings setObject:[[NavDestination alloc] initWithLabel:building Filter:@{@"building":building}]
                                   forKey:building];
                 }
+            } else {
+                noBuilding = YES;
             }
         }];
         [[[buildings allKeys] sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
@@ -79,7 +82,18 @@
         }] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [temp addObject:buildings[obj]];
         }];
-        [tempSections addObject:@{@"key":NSLocalizedStringFromTable(@"_nav_building",@"BlindView",@""), @"rows":temp}];
+        if ([buildings count] > 0) {
+            [tempSections addObject:@{@"key":NSLocalizedStringFromTable(@"_nav_building",@"BlindView",@""), @"rows":temp}];
+            
+            if (noBuilding) {
+                [temp addObject:[[NavDestination alloc] initWithLabel:NSLocalizedStringFromTable(@"Others", @"BlindView", @"") Filter:@{@"building":@""}]];
+            }
+        } else {
+            if (noBuilding) {
+                _showBuilding = NO;
+                _showShops = YES;
+            }
+        }
     }
     
     if (_showFacility) {

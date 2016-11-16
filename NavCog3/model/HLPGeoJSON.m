@@ -249,8 +249,10 @@
     NSString *key = [NSString stringWithFormat:@"%@:%@", name, lang];
     if (self.properties[key]) {
         return self.properties[key];
-    } else {
+    } else if (self.properties[name]){
         return self.properties[name];
+    } else {
+        return @"";
     }
 }
 
@@ -261,8 +263,10 @@
     
     if (self.properties[pronKey]) {
         return self.properties[pronKey];
-    } else {
+    } else if (self.properties[key]){
         return self.properties[key];
+    } else {
+        return nil;
     }
 }
 
@@ -291,7 +295,7 @@
 
 - (NSString *)getLandmarkNamePron
 {
-    return [self _getLandmarkName:_namePron];
+    return [self _getLandmarkName:_namePron?_namePron:_name];
 }
 
 - (NSString *)_getLandmarkName:(NSString*)name
@@ -379,6 +383,14 @@
 - (HLPLocation*) location
 {
     return _location;
+}
+
+- (BOOL) isLeaf
+{
+    if (_connectedLinkIDs) {
+        return ([_connectedLinkIDs count] == 1);
+    }
+    return NO;
 }
 
 @end
@@ -496,6 +508,8 @@
     _sourceHeight = [self.properties[@"sourceHeight"] doubleValue];
     _targetNodeID = self.properties[@"targetNode"];
     _targetHeight = [self.properties[@"targetHeight"] doubleValue];
+    _sourceHeight = (_sourceHeight >= 1)?_sourceHeight-1:_sourceHeight;
+    _targetHeight = (_targetHeight >= 1)?_targetHeight-1:_targetHeight;
 
     _linkType = [self.properties[PROPKEY_LINK_TYPE] intValue];
     
@@ -516,10 +530,6 @@
 
 - (void) update
 {
-    _sourceHeight = (_sourceHeight >= 1)?_sourceHeight-1:_sourceHeight;
-    _targetHeight = (_targetHeight >= 1)?_targetHeight-1:_targetHeight;
-    
-    
     _backward = [self.properties[PROPKEY_TARGET_NODE_ID] isEqualToString:_sourceNodeID];
 
     if (self.geometry) {
@@ -648,6 +658,9 @@
     if (nodesMap[_targetNodeID]) {
         _targetHeight = [nodesMap[_targetNodeID] height];
     }
+    _sourceHeight = (_sourceHeight >= 1)?_sourceHeight-1:_sourceHeight;
+    _targetHeight = (_targetHeight >= 1)?_targetHeight-1:_targetHeight;
+
     [self update];
     
 }
@@ -679,7 +692,7 @@
         distance = -(_length - 0.1);
     }
     
-    HLPLocation *temp = [sourceLocation offsetLocationByDistance:distance Bearing:-initialBearingFromSource];
+    HLPLocation *temp = [sourceLocation offsetLocationByDistance:distance Bearing:180+initialBearingFromSource];
     
     NSMutableArray *newCoordinates = [_geometry.coordinates mutableCopy];
     if (_backward) {

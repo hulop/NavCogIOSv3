@@ -851,7 +851,7 @@ static NavNavigatorConstants *_instance;
                 continue;
             }
             
-            BOOL isLeaf = ([ent.node.connectedLinkIDs count] == 1);
+            BOOL isLeaf = ent.node.isLeaf;
             
             NSArray *links = nearestLinks(ent.node.location, isLeaf?@{@"nodeID": ent.node._id}:@{});
             for(HLPLink* nearestLink in links) {
@@ -919,6 +919,10 @@ static NavNavigatorConstants *_instance;
             if ([obj1 isKindOfClass:HLPLink.class] && [obj2 isKindOfClass:HLPLink.class]) {
                 HLPLink* link1 = (HLPLink*) obj1;
                 HLPLink* link2 = (HLPLink*) obj2;
+                
+                if ([nodesMap[link1.sourceNodeID] isLeaf] && C.IGNORE_FIRST_LINK_LENGTH_THRESHOLD) {
+                    continue;
+                }
                 
                 if ([HLPCombinedLink link:link1 shouldBeCombinedWithLink:link2]) {
                     HLPLink* link12 = [[HLPCombinedLink alloc] initWithLink1:link1 andLink2:link2];
@@ -1224,13 +1228,32 @@ static NavNavigatorConstants *_instance;
                         }
                     }
                 } else {
+                    NavPOI*(^findElevatorPOI)(NSArray*, HLPPOICategory) = ^(NSArray *array, HLPPOICategory category) {
+                        for(NavPOI *poi in array) {
+                            if ([poi.origin poiCategory] == category) {
+                                return poi;
+                            }
+                        }
+                        return (NavPOI*)nil;
+                    };
+                    
+                    NavPOI *elevatorPOI = findElevatorPOI(linkInfo.pois, HLP_POI_CATEGORY_ELEVATOR);
+                    NavPOI *equipmentPOI = findElevatorPOI(linkInfo.pois, HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS);
+                    
                     if (isnan(linkInfo.link.lastBearingForTarget)) { // elevator is the destination
                         if (!linkInfo.hasBeenApproaching) {
-                            if (linkInfo.pois[0]) {
+                            if (equipmentPOI) {
                                 if ([self.delegate respondsToSelector:@selector(userGetsOnElevator:)]) {
                                     [self.delegate userGetsOnElevator:
                                      @{
-                                       @"poi": linkInfo.pois[0],
+                                       @"poi":equipmentPOI,
+                                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight)
+                                       }];
+                                }
+                            } else {
+                                if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                                    [self.delegate remainingDistanceToTarget:
+                                     @{
                                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight)
                                        }];
                                 }
@@ -1238,14 +1261,43 @@ static NavNavigatorConstants *_instance;
                             linkInfo.hasBeenApproaching = YES;
                         }
                     } else {
+                        HLPLocation*(^elevatorLocation)(HLPLink*) = ^(HLPLink *link) {
+                            if ([link isKindOfClass:HLPCombinedLink.class]) {
+                                HLPCombinedLink *clink = ((HLPCombinedLink*)link);
+                                for(HLPLink *l in clink.links) {
+                                    if (l.linkType == LINK_TYPE_ELEVATOR) {
+                                        return l.targetLocation;
+                                    }
+                                }
+                            }
+                            if ([link isKindOfClass:HLPLink.class]) {
+                                return link.targetLocation;
+                            }
+                            return (HLPLocation*)nil;
+                        };
+                        
                         // face to the exit after getting in the elevator
                         if (fabs(linkInfo.link.lastBearingForTarget-location.orientation) < 45 &&
                             !linkInfo.hasBeenApproaching) {
-                            if (linkInfo.pois[0]) {
+                            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
+                                HLPLocation *loc = elevatorLocation(linkInfo.link);
+                                [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
+                                
+                                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET
+                                                                                    object:@{@"location":loc}];
+                            }
+                            if (equipmentPOI) {
                                 if ([self.delegate respondsToSelector:@selector(userGetsOnElevator:)]) {
                                     [self.delegate userGetsOnElevator:
                                      @{
-                                       @"poi": linkInfo.pois[0],
+                                       @"poi": equipmentPOI,
+                                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight)
+                                       }];
+                                }
+                            } else {
+                                if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                                    [self.delegate remainingDistanceToTarget:
+                                     @{
                                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight)
                                        }];
                                 }
@@ -1271,6 +1323,15 @@ static NavNavigatorConstants *_instance;
                                  @{
                                    @"distance": @(distance)
                                    }];
+                            }
+                            if (elevatorPOI) {
+                                if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
+                                    [self.delegate userIsApproachingToPOI:
+                                     @{
+                                       @"poi": elevatorPOI,
+                                       @"heading": @(NAN)
+                                       }];
+                                }
                             }
                             linkInfo.hasBeenActivated = YES;
                         }

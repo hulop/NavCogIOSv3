@@ -238,6 +238,7 @@ static HLPSettingHelper *routeOptionsSettingHelper;
     [detailSettingHelper addSectionTitle:@"For Demo"];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use compass" Name:@"use_compass" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset bleloc at start" Name:@"reset_as_start_point" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset at elevator" Name:@"reset_at_elevator" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Current Location\"" Name:@"hide_current_location_from_start" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Facility\"" Name:@"hide_facility_from_to" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Accuracy for demo" Name:@"accuracy_for_demo" DefaultValue:@(NO) Accept:nil];

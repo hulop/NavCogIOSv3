@@ -85,6 +85,7 @@ typedef enum {
 @property (nonatomic, readonly) double height;
 
 - (HLPLocation*) location;
+- (BOOL) isLeaf;
 @end
 
 typedef enum: int {

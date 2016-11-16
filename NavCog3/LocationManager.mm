@@ -38,6 +38,7 @@
 
 #define CALIBRATION_BEACON_UUID @"00000000-30A4-1001-B000-001C4D1E8637"
 #define CALIBRATION_BEACON_MAJOR 9999
+#define ORIENATION_ACCURACY_THRETHOLD 15
 
 using namespace std;
 using namespace loc;
@@ -73,6 +74,7 @@ typedef struct {
     BOOL valid;
     
     BOOL isLogReplaying;
+    HLPLocation *replayResetRequestLocation;
     
     BOOL flagPutBeacon;
     double currentFloor;
@@ -232,6 +234,34 @@ void functionCalledToLog(void *inUserData, string text)
         while (getline(ifs, str) && isLogReplaying)
         {
             [NSThread sleepForTimeInterval:0.001];
+            
+            if (replayResetRequestLocation) {
+                HLPLocation *loc = replayResetRequestLocation;
+                double heading = (loc.orientation - [anchor[@"rotate"] doubleValue])/180*M_PI;
+                double x = sin(heading);
+                double y = cos(heading);
+                heading = atan2(y,x);
+                
+                loc::LatLngConverter::Ptr projection = [self getProjection];
+                
+                loc::Location location;
+                loc::GlobalState<Location> global(location);
+                global.lat(loc.lat);
+                global.lng(loc.lng);
+                
+                location = projection->globalToLocal(global);
+                
+                loc::Pose newPose(location);
+                newPose.floor(round(loc.floor));
+                newPose.orientation(heading);
+                
+                loc::Pose stdevPose;
+                stdevPose.x(1).y(1).orientation(currentOrientationAccuracy/180*M_PI);
+                localizer->resetStatus(newPose, stdevPose);
+
+                replayResetRequestLocation = nil;
+            }
+            
 
             NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
             
@@ -438,6 +468,11 @@ void functionCalledToLog(void *inUserData, string text)
         return;
     }
     
+    if (isLogReplaying) {
+        replayResetRequestLocation = loc;
+        return;
+    }
+    
     [processQueue addOperationWithBlock:^{
         double heading = (loc.orientation - [anchor[@"rotate"] doubleValue])/180*M_PI;
         double x = sin(heading);
@@ -461,7 +496,11 @@ void functionCalledToLog(void *inUserData, string text)
         
         
         NSLog(@"Reset,%f,%f,%f,%f,%ld",loc.lat,loc.lng,loc.floor,loc.orientation,timestamp);
-        localizer->resetStatus(newPose);
+        //localizer->resetStatus(newPose);
+
+        loc::Pose stdevPose;
+        stdevPose.x(1).y(1).orientation(currentOrientationAccuracy/180*M_PI);
+        localizer->resetStatus(newPose, stdevPose);
     }];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
@@ -508,7 +547,7 @@ void functionCalledToLog(void *inUserData, string text)
             if (![[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"] &&
                 ![[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_WHEELCHAIR"]
                 ) {
-                if (currentOrientationAccuracy >= 45) {
+                if (currentOrientationAccuracy >= ORIENATION_ACCURACY_THRETHOLD) {
                     double orientation = motion.attitude.yaw + offsetYaw;
                     if (isOrientationInit) {
                         orientation = initStartYaw;
@@ -516,7 +555,7 @@ void functionCalledToLog(void *inUserData, string text)
                     double x = sin(orientation);
                     double y = cos(orientation);
                     currentOrientation = orientation = atan2(y, x) / M_PI * 180;
-                    [self directionUpdated:orientation withAccuracy:45];
+                    [self directionUpdated:orientation withAccuracy:ORIENATION_ACCURACY_THRETHOLD];
                 }
             }
             
@@ -1122,7 +1161,7 @@ int dcount = 0;
 
             orientationAccuracy = v/M_PI*180;
             
-            if (orientationAccuracy < 45) {
+            if (orientationAccuracy < ORIENATION_ACCURACY_THRETHOLD) {
                 currentOrientation = orientation;
             }
         }

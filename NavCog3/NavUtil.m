@@ -56,9 +56,10 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
     [overlay addSubview:label];
     [indicator startAnimating];
 
-    [[[[UIApplication sharedApplication] delegate] window] addSubview:overlay];
+    //TODO change view for purpose
+    //[[[[[UIApplication sharedApplication] delegate] window] subviews][0] addSubview:overlay];
     
-    //[view addSubview:overlay];
+    [view addSubview:overlay];
     
     [overlay setIsAccessibilityElement:YES];
     [overlay setAccessibilityLabel:message];

@@ -162,7 +162,9 @@
 {
     if (!self.searchButton.enabled) {
         if ([[NavDataStore sharedDataStore] currentLocation]) {
-            self.searchButton.enabled = YES;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.searchButton.enabled = YES;
+            });
         }
     }
 }

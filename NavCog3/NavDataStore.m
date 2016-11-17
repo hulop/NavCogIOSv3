@@ -238,6 +238,8 @@
     
     // cached data
     NSArray* destinationCache;
+    HLPLocation* destinationCacheLocation;
+    
     BOOL destinationRequesting;
     NSArray* routeCache;
     NSArray* featuresCache;
@@ -506,6 +508,16 @@ static NavDataStore* instance_ = nil;
 - (void)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
 {
     int dist = 500;
+    
+    HLPLocation *requestLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
+    if (destinationCacheLocation && [destinationCacheLocation distanceTo:requestLocation] < dist/2) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:destinationCache];
+        });
+        destinationRequesting = NO;
+        return;
+    }
+    
     NSDictionary *param = @{@"lat":@(lat), @"lng":@(lng), @"user":user, @"user_lang":user_lang};
     [Logging logType:@"initTarget" withParam:param];
     
@@ -514,6 +526,7 @@ static NavDataStore* instance_ = nil;
         destinationCache = [result sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
             return [[self normalizePron:[obj1 getLandmarkNamePron]] compare:[self normalizePron:[obj2 getLandmarkNamePron]]];
         }];
+        destinationCacheLocation = requestLocation;
                 
         NSMutableDictionary *temp = [@{} mutableCopy];
         [destinationCache enumerateObjectsUsingBlock:^(HLPLandmark *obj, NSUInteger idx, BOOL * _Nonnull stop) {

@@ -991,8 +991,8 @@
 {
     _lang = lang;
     NSString *langPron = [_lang stringByAppendingString:@"-Pron"];
-    _name = [self getI18nAttribute:PROPKEY_NAME Lang:_lang];
-    _namePron = [self getI18nAttribute:PROPKEY_NAME Lang:langPron];
+    _name = [self getI18nAttribute:PROPKEY_ENTRANCE_NAME Lang:_lang];
+    _namePron = [self getI18nAttribute:PROPKEY_ENTRANCE_NAME Lang:langPron];
     if (_namePron == nil) {
         _namePron = _name;
     }

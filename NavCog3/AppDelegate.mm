@@ -66,6 +66,8 @@
     // prevent automatic sleep
     application.idleTimerDisabled = YES;
     
+    _backgroundID = UIBackgroundTaskInvalid;
+    
     return YES;
     
 }
@@ -114,6 +116,12 @@ void uncaughtExceptionHandler(NSException *exception)
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_SAVE object:nil];
     //[[NavDataStore sharedDataStore] reset];
     //manager = nil;
+    UIApplication *app = [UIApplication sharedApplication];
+    _backgroundID = [app beginBackgroundTaskWithExpirationHandler:^{
+        [manager stop];
+        [app endBackgroundTask:_backgroundID];
+        _backgroundID = UIBackgroundTaskInvalid;
+    }];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -127,6 +135,12 @@ void uncaughtExceptionHandler(NSException *exception)
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [UIApplication.sharedApplication endBackgroundTask:_backgroundID];
+    
+    if (!manager.isActive) {
+        [manager start];
+    }
+    
     [Logging startLog];
     
     // check ui mode

@@ -29,12 +29,19 @@
 
 #define LOCATION_CHANGED_NOTIFICATION @"location_changed_notification"
 #define ORIENTATION_CHANGED_NOTIFICATION @"orientation_changed_notification"
-#define START_LOCATING @"start_locating"
-#define FINISH_LOCATING @"finish_locating"
 
 #define NAV_LOCATION_CHANGED_NOTIFICATION @"nav_location_changed_notification"
 #define NAV_ROUTE_CHANGED_NOTIFICATION @"nav_route_changed_notification"
 #define NAV_ROUTE_INDEX_CHANGED_NOTIFICATION @"nav_route_index_changed_notification"
+#define NAV_LOCATION_STATUS_CHANGE @"nav_location_status_changed"
+
+typedef NS_ENUM(NSUInteger, NavLocationStatus) {
+    NavLocationStatusStable,
+    NavLocationStatusLocating,
+    NavLocationStatusLost,
+    NavLocationStatusBackground,
+    NavLocationStatusUnknown
+};
 
 #define DESTINATIONS_CHANGED_NOTIFICATION @"destinations_changed_notification"
 #define ROUTE_CHANGED_NOTIFICATION @"route_changed_notification"

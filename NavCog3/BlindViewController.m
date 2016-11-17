@@ -85,8 +85,7 @@
     self.searchButton.enabled = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startLocating:) name:START_LOCATING object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishLocating:) name:FINISH_LOCATING object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
     
     UILongPressGestureRecognizer* longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
     longPressGesture.minimumPressDuration = 1.0;
@@ -203,17 +202,18 @@
     });
 }
 
-- (void)startLocating:(NSNotification*)note
+- (void)locationStatusChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [NavUtil showWaitingForView:self.view withMessage:NSLocalizedStringFromTable(@"Locating...", @"BlindView", @"")];
-    });
-}
-
-- (void)finishLocating:(NSNotification*)note
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [NavUtil hideWaitingForView:self.view];
+        NavLocationStatus status = [[note object][@"status"] unsignedIntegerValue];
+        
+        switch(status) {
+            case NavLocationStatusLocating:
+                [NavUtil showWaitingForView:self.view withMessage:NSLocalizedStringFromTable(@"Locating...", @"BlindView", @"")];
+                break;
+            default:
+                [NavUtil hideWaitingForView:self.view];
+        }        
     });
 }
 

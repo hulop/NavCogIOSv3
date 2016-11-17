@@ -84,6 +84,8 @@ typedef struct {
     BOOL isOrientationInit;
     double initStartYaw;
     double offsetYaw;
+    
+    NavLocationStatus _currentStatus;
 }
 
 static LocationManager *instance;
@@ -122,6 +124,7 @@ void functionCalledToLog(void *inUserData, string text)
     _isActive = NO;
     isMapLoaded = NO;
     valid = NO;
+    _currentStatus = NavLocationStatusUnknown;
     
     offsetYaw = M_PI_2;
     currentOrientationAccuracy = 999;
@@ -170,6 +173,19 @@ void functionCalledToLog(void *inUserData, string text)
     [ud addObserver:self forKeyPath:@"location_tracking" options:NSKeyValueObservingOptionNew context:nil];
     
     return self;
+}
+
+- (void) setCurrentStatus:(NavLocationStatus) status
+{
+    if (_currentStatus != status) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:NAV_LOCATION_STATUS_CHANGE
+                                                            object:@{@"status":@(status)}];
+    }
+    _currentStatus = status;
+}
+
+- (NavLocationStatus) currentStatus {
+    return _currentStatus;
 }
 
 - (void) startOrientationInit:(NSNotification*) notification
@@ -702,11 +718,11 @@ void functionCalledToLog(void *inUserData, string text)
     
     authorized = authorized_;
     if (authorized) {
+        _isActive = YES;
         [self buildLocalizer];
         [self startSensors];
         [self loadMaps];
         valid = YES;
-        _isActive = YES;
     } else {
         [self stop];
     }
@@ -750,14 +766,17 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void) updateStatus:(Status*) status
 {
-    if (putBeaconsCount < localizer->nSmooth) {
+    if (putBeaconsCount < localizer->nSmooth) {        
+        if (status->step() != loc::Status::PREDICTION) {
+            self.currentStatus = NavLocationStatusLocating;
+        }
         return;
     }
     if (putBeaconsCount == localizer->nSmooth) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:FINISH_LOCATING object:nil];
+        self.currentStatus = NavLocationStatusStable;
         return;
     }
-    
+    // TODO flagPutBeacon is not useful
     [self locationUpdated:status withResampledFlag:flagPutBeacon];
 }
 
@@ -906,12 +925,10 @@ void functionCalledToLog(void *inUserData, string text)
             try {
                 flagPutBeacon = YES;
                 localizer->putBeacons(cbeacons);
-                if (putBeaconsCount == 0) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:START_LOCATING object:nil];
-                }
                 putBeaconsCount++;
                 flagPutBeacon = NO;
             } catch(const std::exception& ex) {
+                self.currentStatus = NavLocationStatusLost;
                 std::cout << ex.what() << std::endl;
             }
             double e = [[NSDate date] timeIntervalSince1970];

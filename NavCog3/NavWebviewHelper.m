@@ -167,7 +167,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveLocation:) name:REQUEST_LOCATION_SAVE object:nil];
     
     
-    
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
     
     
@@ -194,6 +193,11 @@
 
 - (void) locationChanged: (NSNotification*) notification
 {
+    UIApplicationState state = [[UIApplication sharedApplication] applicationState];
+    if (state == UIApplicationStateBackground || state == UIApplicationStateInactive) {
+        return;
+    }
+
     NSDictionary *locations = [notification object];
     if (!locations) {
         return;

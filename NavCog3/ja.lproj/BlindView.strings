@@ -2,10 +2,10 @@
 "Init Orientation" = "方向の調整\n正しい方向を向きます\n(\"NavCog\"を2本指ロングタップして終了)";
 "Others" = "その他";
 
-"There is a auto door" = "この先、自動ドアがあります。";
-"There are %d auto doors" = "この先、自動ドアが%dつあります。";
-"There is a door" = "この先、ドアがあります。";
-"There are %d doors" = "この先、ドアが%dつあります。";
+"There is a auto door" = "この先、自動ドアあり。";
+"There are %d auto doors" = "この先、自動ドアが%dつ。";
+"There is a door" = "この先、ドアあり。";
+"There are %d doors" = "この先、ドアが%dつ。";
 
 /* No comment provided by engineer. */
 "%@, you might be going backward." = "%@, 逆戻りしているようです";
@@ -205,13 +205,16 @@
 "on your right side(front)" = "右斜め前";
 
 /* No comment provided by engineer. */
-"poi are %@" = "%1$@が%2$@にあります";
+//"poi are %@" = "%1$@が%2$@にあります";
+"poi are %@" = "%2$@に%1$@";
 
 /* No comment provided by engineer. */
-"poi is %@" = "%1$@が%2$@にあります";
+//"poi is %@" = "%1$@が%2$@にあります";
+"poi is %@" = "%2$@に%1$@";
 
 /* No comment provided by engineer. */
-"name is %@" = "%1$@が%2$@にあります";
+//"name is %@" = "%1$@が%2$@にあります";
+"name is %@" = "%2$@に%1$@";
 
 /* (No Commment) */
 "proceed distance" = "%1$@進む";

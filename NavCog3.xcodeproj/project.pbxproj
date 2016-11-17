@@ -443,6 +443,11 @@
 					7EDEDC1B1D1E0C6800AC111A = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 76CMF53Q35;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					7EF7F79C1DD178F7000A625A = {
 						CreatedOnToolsVersion = 8.0;

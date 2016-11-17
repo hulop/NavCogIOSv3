@@ -25,6 +25,7 @@
 #import "NavUtil.h"
 #import "LocationEvent.h"
 #import "DestinationTableViewController.h"
+@import AVFoundation;
 
 @interface SearchViewController () {
     BOOL updated;
@@ -192,6 +193,11 @@
     
     [NavUtil showWaitingForView:self.view withMessage:NSLocalizedString(@"Loading, please wait",@"")];
     
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
+                                     withOptions:AVAudioSessionCategoryOptionAllowBluetooth
+                                           error:nil];
+    [[AVAudioSession sharedInstance] setActive:YES error:nil];
+
     [[NavDataStore sharedDataStore] requestRouteFrom:nds.from._id To:nds.to._id withPreferences:prefs complete:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [NavUtil hideWaitingForView:self.view];

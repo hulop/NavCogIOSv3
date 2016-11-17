@@ -158,6 +158,7 @@ void functionCalledToLog(void *inUserData, string text)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationReset:) name:REQUEST_LOCATION_RESET object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplay:) name:REQUEST_LOG_REPLAY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplayStop:) name:REQUEST_LOG_REPLAY_STOP object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestBackgroundLocation:) name:REQUEST_BACKGROUND_LOCATION object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startOrientationInit:) name:START_ORIENTATION_INIT object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopOrientationInit:) name:STOP_ORIENTATION_INIT object:nil];
@@ -522,6 +523,16 @@ void functionCalledToLog(void *inUserData, string text)
     [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
 }
 
+- (void)requestBackgroundLocation:(NSNotification*)note
+{
+    beaconManager.allowsBackgroundLocationUpdates = [[note object] boolValue];
+    if (beaconManager.allowsBackgroundLocationUpdates) {
+        [beaconManager startUpdatingLocation];
+    } else {
+        [beaconManager stopUpdatingLocation];
+    }
+}
+
 
 - (void) stopAllBeaconRangingAndMonitoring
 {
@@ -700,7 +711,7 @@ void functionCalledToLog(void *inUserData, string text)
 {
 
     if (!authorized) {
-        [beaconManager requestAlwaysAuthorization];
+        [beaconManager requestWhenInUseAuthorization];
     } else {
         [self didChangeAuthorizationStatus:authorized];
     }
@@ -739,6 +750,7 @@ void functionCalledToLog(void *inUserData, string text)
     putBeaconsCount = 0;
     
     [self stopAllBeaconRangingAndMonitoring];
+    [beaconManager stopUpdatingLocation];
     
     if(altimeter){ [altimeter stopRelativeAltitudeUpdates]; }
     [motionManager stopDeviceMotionUpdates];
@@ -767,7 +779,9 @@ void functionCalledToLog(void *inUserData, string text)
 - (void) updateStatus:(Status*) status
 {
     if (putBeaconsCount < localizer->nSmooth) {        
-        if (status->step() != loc::Status::PREDICTION) {
+        if (status->step() != loc::Status::PREDICTION &&
+            status->step() != loc::Status::RESET
+            ) {
             self.currentStatus = NavLocationStatusLocating;
         }
         return;
@@ -860,6 +874,11 @@ void functionCalledToLog(void *inUserData, string text)
     return YES;
 }
 
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
+{
+    NSLog(@"%@", locations);
+}
+
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray<CLBeacon *> *)beacons inRegion:(CLBeaconRegion *)region
 {
     if (!_isActive || [beacons count] == 0 || isLogReplaying) {
@@ -943,9 +962,9 @@ void functionCalledToLog(void *inUserData, string text)
         case kCLAuthorizationStatusDenied:
         case kCLAuthorizationStatusRestricted:
         case kCLAuthorizationStatusNotDetermined:
-        case kCLAuthorizationStatusAuthorizedWhenInUse:
             [self didChangeAuthorizationStatus:NO];
             break;
+        case kCLAuthorizationStatusAuthorizedWhenInUse:
         case kCLAuthorizationStatusAuthorizedAlways:
             [self didChangeAuthorizationStatus:YES];
             break;

@@ -424,6 +424,15 @@
 {
     [commander didActiveStatusChanged:properties];
     [previewer didActiveStatusChanged:properties];
+    
+    BOOL isActive = [properties[@"isActive"] boolValue];
+    BOOL requestBackground = isActive && ![NavDataStore sharedDataStore].previewMode;
+    if (!requestBackground) {
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategorySoloAmbient error:nil];
+        [[AVAudioSession sharedInstance] setActive:YES error:nil];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_BACKGROUND_LOCATION object:@(requestBackground)];
     if ([properties[@"isActive"] boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [helper evalScript:@"$hulop.map.setSync(true);"];
@@ -460,6 +469,9 @@
 {
     [commander couldNotStartNavigation:properties];
     [previewer couldNotStartNavigation:properties];
+    
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategorySoloAmbient error:nil];
+    [[AVAudioSession sharedInstance] setActive:YES error:nil];
 }
 
 - (void)didNavigationStarted:(NSDictionary *)properties

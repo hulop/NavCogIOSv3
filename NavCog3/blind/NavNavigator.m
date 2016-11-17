@@ -719,7 +719,6 @@ static NavNavigatorConstants *_instance;
         return;
     }
     
-    _isActive = YES;
     waitingStartUntil = [[NSDate date] timeIntervalSince1970] + 1.0;
     [self reset];
     
@@ -1073,6 +1072,8 @@ static NavNavigatorConstants *_instance;
         }
     }
     
+    _isActive = YES;
+    
     NavLinkInfo *info = linkInfos[firstLinkIndex];
     [self.delegate didActiveStatusChanged:
      @{
@@ -1106,6 +1107,10 @@ static NavNavigatorConstants *_instance;
 
 - (void)locationChanged:(NSNotification*)notification
 {
+    if (!_isActive) {
+        return;
+    }
+    
     if (timeoutTimer) {
         [timeoutTimer invalidate];
         [self setTimeout:1 withBlock:^(NSTimer * _Nonnull timer) {

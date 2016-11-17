@@ -2,13 +2,13 @@
 "Distance unit" = "距離の単位";
 
 /* Toilet for people with disability */
-"FOR_DISABLED" = "多目的";
+"FOR_DISABLED" = "多目的トイレ";
 
 /* Toilet for female */
-"FOR_FEMALE" = "女性用";
+"FOR_FEMALE" = "女性用トイレ";
 
 /* Toilet for male */
-"FOR_MALE" = "男性用";
+"FOR_MALE" = "男性用トイレ";
 
 /* feet distance unit label */
 "Feet" = "フィート";

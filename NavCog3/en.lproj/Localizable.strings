@@ -33,10 +33,10 @@
 "FOR_DISABLED" = "Multi purpose toilet";
 
 /* Toilet for female */
-"FOR_FEMALE" = "for female";
+"FOR_FEMALE" = "Toilet for female";
 
 /* Toilet for male */
-"FOR_MALE" = "for male";
+"FOR_MALE" = "Toilet for male";
 
 /* label for tts options */
 "Speech" = "Speech";

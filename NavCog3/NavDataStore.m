@@ -28,7 +28,6 @@
 #import "Logging.h"
 
 @implementation NavDestination {
-    NavDestinationFacilityType _facilityType;
     HLPLocation *_location;
 }
 
@@ -43,8 +42,6 @@
             return [_landmark isEqual:obj->_landmark];
         case NavDestinationTypeLocation:
             return [_location isEqual:obj->_location];
-        case NavDestinationTypeFacility:
-            return _facilityType == obj->_facilityType;
         default:
             break;
     }
@@ -69,9 +66,6 @@
             }
             [aCoder encodeObject:loc forKey:@"location"];
             break;
-        case NavDestinationTypeFacility:
-            [aCoder encodeObject:@(_facilityType) forKey:@"facilityType"];
-            break;
         default:
             break;
     }
@@ -90,20 +84,9 @@
         case NavDestinationTypeLocation:
             _location = [aDecoder decodeObjectForKey:@"location"];
             break;
-        case NavDestinationTypeFacility:
-            _facilityType = [[aDecoder decodeObjectForKey:@"facilityType"] intValue];
-            break;
         default:
             break;
     }
-    return self;
-}
-
-- (instancetype)initWithFacility:(NavDestinationFacilityType)facilityType
-{
-    self = [super init];
-    _type = NavDestinationTypeFacility;
-    _facilityType = facilityType;
     return self;
 }
 
@@ -180,9 +163,6 @@
             floor = (int)round(loc.floor);
             floor = (floor >= 0)?floor+1:floor;
             return [NSString stringWithFormat:@"latlng:%f:%f:%d", loc.lat, loc.lng, floor];
-        case NavDestinationTypeFacility:
-            //TODO
-            return @"";
         default:
             return nil;
     }
@@ -211,22 +191,6 @@
                 return [NSString stringWithFormat:@"%@(%f,%f,%@%dF)",
                         NSLocalizedStringFromTable(@"_nav_latlng_fix", @"BlindView", @""),loc.lat,loc.lng,floor<0?@"B":@"",abs(floor)];
             }
-        case NavDestinationTypeFacility:
-            temp = [[NSMutableString alloc] init];
-            switch(_facilityType) {
-            case NavDestinationFacilityTypeToiletA:
-                [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
-                break;
-            case NavDestinationFacilityTypeToiletM:
-                [temp appendString:NSLocalizedString(@"FOR_MALE",@"Toilet for male")];
-                break;
-            case NavDestinationFacilityTypeToiletF:
-                [temp appendString:NSLocalizedString(@"FOR_FEMALE",@"Toilet for female")];
-                break;
-            }
-            [temp appendString:NSLocalizedString(@"TOILET",@"Toilet")];
-            
-            return temp;
         case NavDestinationTypeSelectStart:
             return NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
         case NavDestinationTypeSelectDestination:
@@ -336,12 +300,15 @@ static NavDataStore* instance_ = nil;
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 
-    if ([ud valueForKey:@"lastLat"]) {
-        double lng = [ud doubleForKey:@"lastLng"];
-        while(lng > 180) {
-            lng -= 360;
-        }
-        [currentLocation updateLat:[ud doubleForKey:@"lastLat"] Lng:lng Accuracy:0 Floor:[ud doubleForKey:@"lastFloor"]];
+    if ([ud dictionaryForKey:@"lastLocation"]) {
+        NSDictionary *dic = [ud dictionaryForKey:@"lastLocation"];
+        double lat = [dic[@"lat"] doubleValue];
+        double lng = [dic[@"lng"] doubleValue];
+        double x = cos(lng/180*M_PI);
+        double y = sin(lng/180*M_PI);
+        lng = atan2(y,x)/M_PI*180;
+
+        [currentLocation updateLat:lat Lng:lng Accuracy:0 Floor:0];
     }
 }
 
@@ -371,21 +338,6 @@ static NavDataStore* instance_ = nil;
     }
 }
 
--(void) saveLocation
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        @try {
-            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-            HLPLocation *loc = [self currentLocation];
-            [ud setObject:@(loc.lat) forKey:@"lastLat"];
-            [ud setObject:@(loc.lng) forKey:@"lastLng"];
-            [ud setObject:@(loc.floor) forKey:@"lastFloor"];
-            [ud synchronize];
-        }@catch(NSException *e) {
-            NSLog(@"%@", [e debugDescription]);
-        }
-    });
-}
 
 -(void) postLocationNotification
 {
@@ -562,11 +514,7 @@ static NavDataStore* instance_ = nil;
         destinationCache = [result sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
             return [[self normalizePron:[obj1 getLandmarkNamePron]] compare:[self normalizePron:[obj2 getLandmarkNamePron]]];
         }];
-        
-        destinationCache = [destinationCache filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLandmark *evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-            return ![evaluatedObject isFacility];
-        }]];
-        
+                
         NSMutableDictionary *temp = [@{} mutableCopy];
         [destinationCache enumerateObjectsUsingBlock:^(HLPLandmark *obj, NSUInteger idx, BOOL * _Nonnull stop) {
             temp[[obj nodeID]] = obj;

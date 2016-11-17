@@ -235,8 +235,6 @@
                 [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
             }
         }
-        [temp appendString:NSLocalizedString(@"TOILET",@"Toilet")];
-        
     }
     
     return [temp stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
@@ -337,8 +335,6 @@
                 [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
             }
         }
-        [temp appendString:NSLocalizedString(@"TOILET",@"Toilet")];
-        
     }
     
     return [temp stringByReplacingOccurrencesOfString:@"\n" withString:@" "];

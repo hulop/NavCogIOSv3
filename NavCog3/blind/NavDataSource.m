@@ -54,6 +54,9 @@
         return flag;
     }]];
     
+    NSArray *shops = [all filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isFacility = NO"]];
+    NSArray *facilities = [all filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isFacility = YES"]];
+    
     NSMutableArray *tempSections = [@[] mutableCopy];
     
     if (_showCurrentLocation) {
@@ -65,7 +68,7 @@
     if (_showNearShops) {
         NSMutableArray *temp = [@[] mutableCopy];
         HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
-        [[all sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
+        [[shops sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
             NSComparisonResult r = [@(fabs(loc.floor - obj1.nodeHeight)) compare:@(fabs(loc.floor - obj2.nodeHeight))];
             if (r == NSOrderedSame) {
                 HLPLocation *loc1 = [obj1 nearestLocationTo:loc];
@@ -87,7 +90,7 @@
         BOOL __block noBuilding = NO;
         NSMutableArray __block *temp = [@[] mutableCopy];
         NSMutableDictionary __block *buildings = [@{} mutableCopy];
-        [all enumerateObjectsUsingBlock:^(HLPLandmark *landmark, NSUInteger idx, BOOL * _Nonnull stop) {
+        [shops enumerateObjectsUsingBlock:^(HLPLandmark *landmark, NSUInteger idx, BOOL * _Nonnull stop) {
             NSString *building = landmark.properties[@"building"];
             if (building) {
                 if (!buildings[building]) {
@@ -118,10 +121,26 @@
     }
     
     if (_showFacility) {
-        NSMutableArray *temp = [@[] mutableCopy];
-        [temp addObject:[[NavDestination alloc] initWithFacility:NavDestinationFacilityTypeToiletA]];
-        [temp addObject:[[NavDestination alloc] initWithFacility:NavDestinationFacilityTypeToiletM]];
-        [temp addObject:[[NavDestination alloc] initWithFacility:NavDestinationFacilityTypeToiletF]];
+        NSMutableArray __block *temp = [@[] mutableCopy];
+        NSMutableDictionary<NSString*,NavDestination*> __block *nameMap = [@{} mutableCopy];
+        [facilities enumerateObjectsUsingBlock:^(HLPLandmark *landmark, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *name = [landmark getLandmarkNamePron];
+            
+            if (name == nil || [name length] == 0) {
+                NSLog(@"no name landmark %@", landmark);
+                return;
+            }
+            
+            if (nameMap[name]) {
+                [nameMap[name] addLandmark:landmark];
+                return;
+            }
+            
+            NavDestination *dest = [[NavDestination alloc] initWithLandmark:landmark];
+            [temp addObject:dest];
+            nameMap[name] = dest;
+        }];
+        
         [tempSections addObject:@{@"key":NSLocalizedStringFromTable(@"_nav_facility",@"BlindView",@""), @"rows":temp}];
     }
     
@@ -129,7 +148,7 @@
         NSMutableArray __block *temp = [@[] mutableCopy];
         NSString __block *lastFirst = nil;
         NSMutableDictionary<NSString*,NavDestination*> __block *nameMap = [@{} mutableCopy];
-        [all enumerateObjectsUsingBlock:^(HLPLandmark *landmark, NSUInteger idx, BOOL * _Nonnull stop) {
+        [shops enumerateObjectsUsingBlock:^(HLPLandmark *landmark, NSUInteger idx, BOOL * _Nonnull stop) {
             NSString *name = [landmark getLandmarkNamePron];
             
             if (name == nil || [name length] == 0) {
@@ -237,7 +256,7 @@
     [cell.contentView addConstraint:lc];
     NavDestination *dest = [self destinationForRowAtIndexPath:indexPath];
     NSString *floor = @"";
-    if (_showShopFloor && dest.landmark) {
+    if (_showShopFloor && dest.landmark && !dest.landmark.isFacility) {
         if (_showShopBuilding && dest.landmark.properties[@"building"]) {
             floor = dest.landmark.properties[@"building"];
             floor = [floor stringByAppendingString:@" "];

@@ -28,19 +28,11 @@
 typedef enum {
     NavDestinationTypeLandmark = 1,
     NavDestinationTypeLocation,
-    NavDestinationTypeFacility,
     NavDestinationTypeSelectStart,
     NavDestinationTypeSelectDestination,
     NavDestinationTypeFilter,
     NavDestinationTypeLandmarks
 } NavDestinationType;
-
-typedef enum {
-    NavDestinationFacilityTypeToiletA = 1,
-    NavDestinationFacilityTypeToiletM,
-    NavDestinationFacilityTypeToiletF,
-} NavDestinationFacilityType;
-
 
 @interface NavDestination : NSObject <NSCoding>
 @property (readonly) NavDestinationType type;
@@ -54,7 +46,6 @@ typedef enum {
 
 -(instancetype)initWithLandmark:(HLPLandmark*)landmark;
 -(instancetype)initWithLocation:(HLPLocation*)location;
--(instancetype)initWithFacility:(NavDestinationFacilityType)facilityType;
 -(instancetype)initWithLabel:(NSString*)label Filter:(NSDictionary*)filter;
 -(void)addLandmark:(HLPLandmark*)landmark;
 +(instancetype)selectStart;
@@ -82,7 +73,6 @@ typedef enum {
 - (NSString*) userLanguage;
 - (NSArray*) searchHistory;
 
-- (void) saveLocation;
 - (void) switchFromTo;
 - (NavDestination*) destinationByID:(NSString*)key;
 - (void) manualTurn:(double)diffOrientation;

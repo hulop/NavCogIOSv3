@@ -27,6 +27,7 @@
 - (void)speak:(NSString*)text completionHandler:(void (^)())handler;
 - (void)speak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)())handler;
 - (void)playSuccess;
+- (void)vibrate;
 - (void)executeCommand:(NSString*)command;
 @end
 

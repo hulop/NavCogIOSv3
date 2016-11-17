@@ -119,7 +119,7 @@ static NavNavigatorConstants *_instance;
              @"PREVENT_REMAINING_DISTANCE_EVENT_FOR_FIRST_N_METERS": @[@(7.0), @(0), @(20), @(1), FIXED],
              @"APPROACHING_DISTANCE_THRESHOLD": @[@(6.0), @(1), @(10), @(0.5)],
              @"APPROACHED_DISTANCE_THRESHOLD": @[@(2.0), @(0.5), @(5), @(0.25)],
-             @"NO_APPROACHING_DISTANCE_THRESHOLD": @[@(2.0), @(0.5), @(10), @(0.25)],
+             @"NO_APPROACHING_DISTANCE_THRESHOLD": @[@(2.0), @(0.5), @(15), @(0.25)],
              @"REMAINING_DISTANCE_INTERVAL": @[@(10.0), @(1), @(25), @(1)],
              @"NO_ANDTURN_DISTANCE_THRESHOLD": @[@(2.0), @(0), @(10), @(0.5)],
              

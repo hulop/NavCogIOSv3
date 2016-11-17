@@ -417,6 +417,10 @@ Option parseArguments(int argc, char * argv[]){
 {
 }
 
+- (void)vibrate
+{    
+}
+
 - (void)executeCommand:(NSString *)command
 {
 }

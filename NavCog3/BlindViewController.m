@@ -589,6 +589,11 @@
     [[NavSound sharedInstance] playSuccess];
 }
 
+- (void)vibrate
+{
+    [[NavSound sharedInstance] vibrate];
+}
+
 - (void)executeCommand:(NSString *)command
 {    
     JSContext *ctx = [[JSContext alloc] init];

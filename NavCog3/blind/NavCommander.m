@@ -436,6 +436,7 @@
     NSLog(@"%@", NSStringFromSelector(_cmd));
     NSString *string = [self actionString:properties];
     
+    [_delegate vibrate];
     [_delegate speak:string force:YES completionHandler:^{
         
     }];

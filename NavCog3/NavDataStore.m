@@ -21,7 +21,6 @@
  *******************************************************************************/
 
 
-#import <UIKit/UIKit.h>
 #import "NavDataStore.h"
 #import "HLPDataUtil.h"
 #import "HLPGeoJSON.h"
@@ -29,8 +28,6 @@
 #import "Logging.h"
 
 @implementation NavDestination {
-    NSString *_facilityType;
-    HLPLandmark *_landmark;
     HLPLocation *_location;
 }
 
@@ -45,8 +42,6 @@
             return [_landmark isEqual:obj->_landmark];
         case NavDestinationTypeLocation:
             return [_location isEqual:obj->_location];
-        case NavDestinationTypeFacility:
-            return [_facilityType isEqualToString:obj->_facilityType];
         default:
             break;
     }
@@ -58,6 +53,8 @@
     [aCoder encodeObject:[NSNumber numberWithInt:_type] forKey:@"type"];
     HLPLocation *loc;
     switch(_type) {
+        case NavDestinationTypeLandmarks:
+            [aCoder encodeObject:_landmarks forKey:@"landmarks"];
         case NavDestinationTypeLandmark:
             [aCoder encodeObject:_landmark forKey:@"landmark"];
             break;
@@ -69,9 +66,6 @@
             }
             [aCoder encodeObject:loc forKey:@"location"];
             break;
-        case NavDestinationTypeFacility:
-            [aCoder encodeObject:_facilityType forKey:@"facilityType"];
-            break;
         default:
             break;
     }
@@ -82,26 +76,17 @@
     self = [super init];
     _type = [[aDecoder decodeObjectForKey:@"type"] intValue];
     switch(_type) {
+        case NavDestinationTypeLandmarks:
+            _landmarks = [aDecoder decodeObjectForKey:@"landmarks"];
         case NavDestinationTypeLandmark:
             _landmark = [aDecoder decodeObjectForKey:@"landmark"];
             break;
         case NavDestinationTypeLocation:
             _location = [aDecoder decodeObjectForKey:@"location"];
             break;
-        case NavDestinationTypeFacility:
-            _facilityType = [aDecoder decodeObjectForKey:@"facilityType"];
-            break;
         default:
             break;
     }
-    return self;
-}
-
-- (instancetype)initWithFacility:(NSString *)facilityType
-{
-    self = [super init];
-    _type = NavDestinationTypeFacility;
-    _facilityType = facilityType;
     return self;
 }
 
@@ -119,6 +104,23 @@
     _type = NavDestinationTypeLandmark;
     _landmark = landmark;
     return self;
+}
+
+- (instancetype)initWithLabel:(NSString*)label Filter:(NSDictionary *)filter
+{
+    self = [super init];
+    _type = NavDestinationTypeFilter;
+    _label = label;
+    _filter = filter;
+    return self;
+}
+-(void)addLandmark:(HLPLandmark *)landmark
+{
+    if (!_landmarks) {
+        _landmarks = @[_landmark];
+        _type = NavDestinationTypeLandmarks;
+    }
+    _landmarks = [_landmarks arrayByAddingObject:landmark];
 }
 
 + (instancetype)selectStart
@@ -139,19 +141,28 @@
 - (NSString*)_id
 {
     HLPLocation *loc;
+    int floor;
+    NSMutableString* __block temp = [@"" mutableCopy];
     switch(_type) {
         case NavDestinationTypeLandmark:
             return [_landmark nodeID];
+        case NavDestinationTypeLandmarks:
+            for(HLPLandmark *l in _landmarks) {
+                if ([temp length] > 0) {
+                    [temp appendString:@"|"];
+                }
+                [temp appendString:[l nodeID]];
+            }
+            return temp;
         case NavDestinationTypeLocation:
             if (_location == nil) {
                 loc = [[NavDataStore sharedDataStore] currentLocation];
             } else {
                 loc = _location;
             }
-            return [NSString stringWithFormat:@"latlng:%f:%f:%d", loc.lat, loc.lng, (int)loc.floor];
-        case NavDestinationTypeFacility:
-            //TODO
-            return @"";
+            floor = (int)round(loc.floor);
+            floor = (floor >= 0)?floor+1:floor;
+            return [NSString stringWithFormat:@"latlng:%f:%f:%d", loc.lat, loc.lng, floor];
         default:
             return nil;
     }
@@ -160,24 +171,32 @@
 - (NSString*)name
 {
     HLPLocation *loc;
+    NSMutableString *temp;
+    int floor;
     switch(_type) {
         case NavDestinationTypeLandmark:
+        case NavDestinationTypeLandmarks:
             return [_landmark getLandmarkName];
         case NavDestinationTypeLocation:
             if (_location == nil) {
                 loc = [[NavDataStore sharedDataStore] currentLocation];
+                floor = (int)round(loc.floor);
+                floor = (floor >= 0)?floor+1:floor;
+                return [NSString stringWithFormat:@"%@(%f,%f,%@%dF)",
+                        NSLocalizedStringFromTable(@"_nav_latlng", @"BlindView", @""),loc.lat,loc.lng,floor<0?@"B":@"",abs(floor)];
             } else {
                 loc = _location;
+                floor = (int)round(loc.floor);
+                floor = (floor >= 0)?floor+1:floor;
+                return [NSString stringWithFormat:@"%@(%f,%f,%@%dF)",
+                        NSLocalizedStringFromTable(@"_nav_latlng_fix", @"BlindView", @""),loc.lat,loc.lng,floor<0?@"B":@"",abs(floor)];
             }
-            return [NSString stringWithFormat:@"%@(%f,%f,%d)",
-                    NSLocalizedStringFromTable(@"_nav_latlng", @"BlindView", @""),loc.lat,loc.lng,(int)loc.floor];
-        case NavDestinationTypeFacility:
-            //TODO
-            return @"";
         case NavDestinationTypeSelectStart:
             return NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
         case NavDestinationTypeSelectDestination:
             return NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
+        case NavDestinationTypeFilter:
+            return _label;
     }
     return nil;
 }
@@ -186,7 +205,12 @@
 {
     switch(_type) {
         case NavDestinationTypeLandmark:
+        case NavDestinationTypeLandmarks:
             return [_landmark getLandmarkNamePron];
+        case NavDestinationTypeLocation:
+            if (_location == nil) {
+                return NSLocalizedStringFromTable(@"_nav_latlng", @"BlindView", @"");
+            }
         default:
             return [self name];
     }
@@ -209,11 +233,13 @@
     double manualOrientation;
     
     // parameters for request
-    NSString* userID;
+    NSString* _userID;
     NSString* userLanguage;
     
     // cached data
     NSArray* destinationCache;
+    HLPLocation* destinationCacheLocation;
+    
     BOOL destinationRequesting;
     NSArray* routeCache;
     NSArray* featuresCache;
@@ -237,12 +263,9 @@ static NavDataStore* instance_ = nil;
     
     [self reset];
     
-    userID = [UIDevice currentDevice].identifierForVendor.UUIDString;
-    
     userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
     
     // prevent problem on server cache
-    userID = [NSString stringWithFormat:@"%@:%@", userID, userLanguage];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:ORIENTATION_CHANGED_NOTIFICATION object:nil];
@@ -253,6 +276,16 @@ static NavDataStore* instance_ = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processInitTargetLog:) name:REQUEST_PROCESS_INIT_TARGET_LOG object:nil];
 
     return self;
+}
+
+- (void) setUserID:(NSString *)userID
+{
+    _userID = [NSString stringWithFormat:@"%@:%@", userID, userLanguage];
+}
+
+- (NSString*) userID
+{
+    return _userID;
 }
 
 - (void) reset
@@ -269,12 +302,15 @@ static NavDataStore* instance_ = nil;
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 
-    if ([ud valueForKey:@"lastLat"]) {
-        double lng = [ud doubleForKey:@"lastLng"];
-        while(lng > 180) {
-            lng -= 360;
-        }
-        [currentLocation updateLat:[ud doubleForKey:@"lastLat"] Lng:lng Accuracy:0 Floor:[ud doubleForKey:@"lastFloor"]];
+    if ([ud dictionaryForKey:@"lastLocation"]) {
+        NSDictionary *dic = [ud dictionaryForKey:@"lastLocation"];
+        double lat = [dic[@"lat"] doubleValue];
+        double lng = [dic[@"lng"] doubleValue];
+        double x = cos(lng/180*M_PI);
+        double y = sin(lng/180*M_PI);
+        lng = atan2(y,x)/M_PI*180;
+
+        [currentLocation updateLat:lat Lng:lng Accuracy:0 Floor:0];
     }
 }
 
@@ -304,21 +340,6 @@ static NavDataStore* instance_ = nil;
     }
 }
 
--(void) saveLocation
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        @try {
-            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-            HLPLocation *loc = [self currentLocation];
-            [ud setObject:@(loc.lat) forKey:@"lastLat"];
-            [ud setObject:@(loc.lng) forKey:@"lastLng"];
-            [ud setObject:@(loc.floor) forKey:@"lastFloor"];
-            [ud synchronize];
-        }@catch(NSException *e) {
-            NSLog(@"%@", [e debugDescription]);
-        }
-    });
-}
 
 -(void) postLocationNotification
 {
@@ -390,8 +411,15 @@ static NavDataStore* instance_ = nil;
                         Lng:manualCurrentLocation.lng
                    Accuracy:manualCurrentLocation.accuracy
                       Floor:manualCurrentLocation.floor];
-        [location updateOrientation:manualOrientation
-                       withAccuracy:0];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
+            [location updateOrientation:manualOrientation
+                           withAccuracy:0];
+        } else {
+            if (magneticOrientationAccuracy < location.orientationAccuracy) {
+                [location updateOrientation:magneticOrientation
+                               withAccuracy:magneticOrientationAccuracy];
+            }
+        }
     } else {
         if (magneticOrientationAccuracy < location.orientationAccuracy) {
             [location updateOrientation:magneticOrientation
@@ -470,22 +498,36 @@ static NavDataStore* instance_ = nil;
     [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang];
 }
 
+- (NSString*)normalizePron:(NSString*)str
+{
+    NSMutableString* retStr = [[NSMutableString alloc] initWithString:str];
+    CFStringTransform((CFMutableStringRef)retStr, NULL, kCFStringTransformHiraganaKatakana, YES);
+    return retStr;
+}
+
 - (void)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
 {
     int dist = 500;
+    
+    HLPLocation *requestLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
+    if (destinationCacheLocation && [destinationCacheLocation distanceTo:requestLocation] < dist/2) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:destinationCache];
+        });
+        destinationRequesting = NO;
+        return;
+    }
+    
     NSDictionary *param = @{@"lat":@(lat), @"lng":@(lng), @"user":user, @"user_lang":user_lang};
     [Logging logType:@"initTarget" withParam:param];
     
     [HLPDataUtil loadLandmarksAtLat:lat Lng:lng inDist:dist forUser:user withLang:user_lang withCallback:^(NSArray<HLPObject *> *result) {
         //NSLog(@"%ld landmarks are loaded", (unsigned long)[result count]);
         destinationCache = [result sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
-            return [[[obj1 getLandmarkNamePron] lowercaseString] compare:[[obj2 getLandmarkNamePron] lowercaseString]];
+            return [[self normalizePron:[obj1 getLandmarkNamePron]] compare:[self normalizePron:[obj2 getLandmarkNamePron]]];
         }];
-        
-        destinationCache = [destinationCache filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLandmark *evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-            return ![evaluatedObject isToilet];
-        }]];
-        
+        destinationCacheLocation = requestLocation;
+                
         NSMutableDictionary *temp = [@{} mutableCopy];
         [destinationCache enumerateObjectsUsingBlock:^(HLPLandmark *obj, NSUInteger idx, BOOL * _Nonnull stop) {
             temp[[obj nodeID]] = obj;
@@ -582,12 +624,6 @@ static NavDataStore* instance_ = nil;
     return destinationCache;
 }
 
-
-- (NSString*) userID
-{
-    return userID;
-}
-
 - (NSString*) userLanguage
 {
     return userLanguage;
@@ -613,9 +649,9 @@ static NavDataStore* instance_ = nil;
     _to = temp;
 }
 
-- (HLPLandmark*)destinationByID:(NSString *)key
+- (NavDestination*)destinationByID:(NSString *)key
 {
-    return [destinationHash objectForKey:key];
+    return [[NavDestination alloc] initWithLandmark: [destinationHash objectForKey:key]];
 }
 
 - (void)manualTurn:(double)diffOrientation
@@ -650,6 +686,7 @@ static NavDataStore* instance_ = nil;
         HLPLocation *loc = properties[@"location"];
         [loc updateLat:loc.lat Lng:loc.lng Accuracy:1.5 Floor:loc.floor];
         double heading = [properties[@"heading"] doubleValue];
+        heading = isnan(heading)?0:heading;
         manualOrientation = heading;
         [loc updateOrientation:heading withAccuracy:-1];
         [currentLocation update:loc];
@@ -675,7 +712,7 @@ static NavDataStore* instance_ = nil;
     _previewMode = previewMode;
     if (_previewMode) {
     } else {
-        [currentLocation updateOrientation:currentLocation.orientation withAccuracy:1];
+        [currentLocation updateOrientation:currentLocation.orientation withAccuracy:999];
     }
 }
 
@@ -686,186 +723,3 @@ static NavDataStore* instance_ = nil;
 
 @end
 
-#pragma mark - Destination Data Source
-
-@implementation NavDestinationDataSource {
-    NSArray *sections;
-    BOOL _showCurrentLocation;
-    BOOL _showFacility;
-}
-
-- (instancetype) init {
-    self = [super init];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
-    [self update:nil];
-    return self;
-}
-
-- (BOOL) showCurrentLocation
-{
-    return _showCurrentLocation;
-}
-
-- (void) setShowCurrentLocation:(BOOL) flag
-{
-    _showCurrentLocation = flag;
-    [self update:nil];
-}
-
-- (BOOL) showFacility
-{
-    return _showFacility;
-}
-
-- (void) setShowFacility:(BOOL) flag
-{
-    _showFacility = flag;
-    [self update:nil];
-}
-
-- (void) dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void) update:(NSNotification*)notification {
-    NSArray *all = [[NavDataStore sharedDataStore] destinations];
-    NSMutableArray *tempSections = [@[] mutableCopy];
-    
-    if (_showCurrentLocation) {
-        NSMutableArray *temp = [@[] mutableCopy];
-        [temp addObject:[[NavDestination alloc] initWithLocation:nil]];
-        [tempSections addObject:@{@"key":@"◎", @"rows":temp}];
-    }
-    
-    if (_showFacility) {
-        NSMutableArray *temp = [@[] mutableCopy];
-        [temp addObject:[[NavDestination alloc] initWithFacility:@"CAT_TOIL_A"]];
-        [temp addObject:[[NavDestination alloc] initWithFacility:@"CAT_TOIL_M"]];
-        [temp addObject:[[NavDestination alloc] initWithFacility:@"CAT_TOIL_F"]];
-        [tempSections addObject:@{@"key":@"🚻", @"rows":temp}];
-    }
-    NSMutableArray __block *temp = [@[] mutableCopy];
-    NSString __block *lastFirst = nil;
-    [all enumerateObjectsUsingBlock:^(HLPLandmark *landmark, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSString *name = [landmark getLandmarkNamePron];
-
-        if (name == nil || [name length] == 0) {
-            NSLog(@"no name landmark %@", landmark);
-            return;
-        }
-
-        NSString *first = [[name substringWithRange:NSMakeRange(0, 1)] lowercaseString];
-        
-        if (![first isEqualToString:lastFirst]) {
-            temp = [@[] mutableCopy];
-            [tempSections addObject:@{@"key":first, @"rows":temp}];
-        }
-        [temp addObject:[[NavDestination alloc] initWithLandmark:landmark]];
-        lastFirst = first;
-    }];
-    
-    sections = tempSections;
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return [sections count];
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [[sections objectAtIndex:section][@"rows"] count];
-}
-
-- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NavDestination *ret = [[sections objectAtIndex:indexPath.section][@"rows"] objectAtIndex:indexPath.row];
-    
-    return ret;
-}
-
-- (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView
-{
-    NSMutableArray *titles = [@[] mutableCopy];
-    [sections enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [titles addObject:obj[@"key"]];
-    }];
-    return titles;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return [sections objectAtIndex:section][@"key"];
-}
-
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSString *CellIdentifier = @"destinationCell";
-    //UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if(!cell){
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
-    
-    cell.textLabel.numberOfLines = 1;
-    cell.textLabel.adjustsFontSizeToFitWidth = YES;
-    cell.textLabel.lineBreakMode = NSLineBreakByClipping;
-    
-    NavDestination *dest = [self destinationForRowAtIndexPath:indexPath];
-    
-    cell.textLabel.text = dest.name;
-    cell.clipsToBounds = YES;
-    return cell;
-}
-
-@end
-
-@implementation NavSearchHistoryDataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    NSArray *hist = [[NavDataStore sharedDataStore] searchHistory];
-    
-    return [hist count];
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSString *CellIdentifier = @"historyCell";
-    //UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if(!cell){
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    }
-    NSArray *hist = [[NavDataStore sharedDataStore] searchHistory];
-    NSDictionary *dic = hist[indexPath.row];
-    
-    NavDestination *from = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"from"]];
-    NavDestination *to = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"to"]];
-    
-    cell.textLabel.numberOfLines = 1;
-    cell.textLabel.adjustsFontSizeToFitWidth = YES;
-    cell.textLabel.lineBreakMode = NSLineBreakByClipping;
-    cell.textLabel.text = to.name;
-    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedStringFromTable(@"from: %@", @"BlindView", @""), from.name];
-    
-    return cell;
-}
-
--(NSDictionary *)historyAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSArray *hist = [[NavDataStore sharedDataStore] searchHistory];
-    
-    return [hist objectAtIndex:indexPath.row];
-}
-
-@end

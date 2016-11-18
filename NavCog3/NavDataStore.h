@@ -22,16 +22,16 @@
 
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #import "HLPLocation.h"
 #import "HLPGeoJson.h"
 
 typedef enum {
     NavDestinationTypeLandmark = 1,
     NavDestinationTypeLocation,
-    NavDestinationTypeFacility,
     NavDestinationTypeSelectStart,
-    NavDestinationTypeSelectDestination
+    NavDestinationTypeSelectDestination,
+    NavDestinationTypeFilter,
+    NavDestinationTypeLandmarks
 } NavDestinationType;
 
 @interface NavDestination : NSObject <NSCoding>
@@ -39,9 +39,15 @@ typedef enum {
 @property (readonly) NSString* name;
 @property (readonly) NSString* namePron;
 @property (readonly) NSString* _id;
+@property (readonly) NSDictionary* filter;
+@property (readonly) NSString* label;
+@property (readonly) HLPLandmark* landmark;
+@property (readonly) NSArray<HLPLandmark*>* landmarks;
+
 -(instancetype)initWithLandmark:(HLPLandmark*)landmark;
 -(instancetype)initWithLocation:(HLPLocation*)location;
--(instancetype)initWithFacility:(NSString*)facilityType;
+-(instancetype)initWithLabel:(NSString*)label Filter:(NSDictionary*)filter;
+-(void)addLandmark:(HLPLandmark*)landmark;
 +(instancetype)selectStart;
 +(instancetype)selectDestination;
 @end
@@ -51,6 +57,7 @@ typedef enum {
 @property NavDestination *to;
 @property NavDestination *from;
 @property BOOL previewMode;
+@property NSString* userID;
 
 + (instancetype) sharedDataStore;
 
@@ -63,13 +70,11 @@ typedef enum {
 - (HLPLocation*) currentLocation;
 - (NSArray*) route;
 - (NSArray*) features;
-- (NSString*) userID;
 - (NSString*) userLanguage;
 - (NSArray*) searchHistory;
 
-- (void) saveLocation;
 - (void) switchFromTo;
-- (HLPLandmark*) destinationByID:(NSString*)key;
+- (NavDestination*) destinationByID:(NSString*)key;
 - (void) manualTurn:(double)diffOrientation;
 - (void) manualLocation:(HLPLocation*)location;
 - (void) manualLocationReset:(NSDictionary*)location;
@@ -79,16 +84,4 @@ typedef enum {
 
 @end
 
-@interface NavDestinationDataSource : NSObject <UITableViewDataSource>
-@property NSInteger selectedRow;
-
-@property BOOL showCurrentLocation;
-@property BOOL showFacility;
-
-- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
-@end
-
-@interface NavSearchHistoryDataSource : NSObject < UITableViewDataSource>
-- (NSDictionary*) historyAtIndexPath:(NSIndexPath*)indexPath;
-@end
 

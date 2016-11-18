@@ -27,10 +27,12 @@
 #import <bleloc/Status.hpp>
 #import <bleloc/BLEBeacon.hpp>
 #import <bleloc/LatLngConverter.hpp>
+#import "LocationEvent.h"
 
 @interface LocationManager : NSObject < CLLocationManagerDelegate >
 
 @property BOOL isActive;
+@property NavLocationStatus currentStatus;
 
 - (instancetype) init NS_UNAVAILABLE;
 + (instancetype) sharedManager;

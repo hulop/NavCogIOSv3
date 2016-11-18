@@ -53,7 +53,8 @@
     //manager = [[LocationManager alloc] init];
     //manager.delegate = self;
     
-    [NavDataStore sharedDataStore];
+    [NavDataStore sharedDataStore].userID = [UIDevice currentDevice].identifierForVendor.UUIDString;
+
     [NavDeviceTTS sharedTTS];
     
     // check location privilege
@@ -64,6 +65,8 @@
     
     // prevent automatic sleep
     application.idleTimerDisabled = YES;
+    
+    _backgroundID = UIBackgroundTaskInvalid;
     
     return YES;
     
@@ -108,16 +111,22 @@ void uncaughtExceptionHandler(NSException *exception)
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-    [Logging stopLog];
     //[manager stop];
-    [[NavDataStore sharedDataStore] saveLocation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_SAVE object:nil];
     //[[NavDataStore sharedDataStore] reset];
     //manager = nil;
+    UIApplication *app = [UIApplication sharedApplication];
+    _backgroundID = [app beginBackgroundTaskWithExpirationHandler:^{
+        [manager stop];
+        [app endBackgroundTask:_backgroundID];
+        _backgroundID = UIBackgroundTaskInvalid;
+    }];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [self beginReceivingRemoteControlEvents];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -126,6 +135,12 @@ void uncaughtExceptionHandler(NSException *exception)
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [UIApplication.sharedApplication endBackgroundTask:_backgroundID];
+    [self endReceivingRemoteControlEvents];
+    if (!manager.isActive) {
+        [manager start];
+    }
+    [Logging stopLog];    
     [Logging startLog];
     
     // check ui mode
@@ -136,4 +151,20 @@ void uncaughtExceptionHandler(NSException *exception)
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (void) beginReceivingRemoteControlEvents {
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+    [self becomeFirstResponder];
+}
+- (void) endReceivingRemoteControlEvents {
+    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+    [self resignFirstResponder];
+}
+
+- (void)remoteControlReceivedWithEvent:(UIEvent *)event {
+    if (event.type == UIEventTypeRemoteControl) {
+        switch (event.subtype) {
+                // do something...
+        }
+    }
+}
 @end

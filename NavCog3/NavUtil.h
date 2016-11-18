@@ -32,7 +32,7 @@
 
 @interface NavUtil : NSObject
 
-+(void)showWaitingForView:(UIView*)view;
++(void)showWaitingForView:(UIView*)view withMessage:(NSString*)message;
 +(void)hideWaitingForView:(UIView*)view;
 +(UIMessageView*)showMessageView:(UIView*)view;
 +(void)hideMessageView:(UIView*)view;

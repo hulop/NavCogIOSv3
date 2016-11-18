@@ -20,10 +20,28 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "NavDataStore.h"
 
-@interface DestinationTableViewController : UITableViewController
+@interface NavDestinationDataSource : NSObject <UITableViewDataSource>
+@property NSInteger selectedRow;
 
-@property UIViewController *root;
+@property BOOL showCurrentLocation;
+@property BOOL showBuilding;
+@property BOOL showShops;
+@property BOOL showFacility;
+@property BOOL showSectionIndex;
+@property BOOL showNearShops;
+@property BOOL showShopBuilding;
+@property BOOL showShopFloor;
 
+@property NSDictionary *filter;
+
+- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)update:(NSNotification*)note;
+@end
+
+@interface NavSearchHistoryDataSource : NSObject < UITableViewDataSource>
+- (NSDictionary*) historyAtIndexPath:(NSIndexPath*)indexPath;
 @end

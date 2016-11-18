@@ -53,4 +53,9 @@ static NavSound *instance;
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
+-(void)vibrate
+{
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+}
+
 @end

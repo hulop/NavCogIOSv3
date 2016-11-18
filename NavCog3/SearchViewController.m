@@ -21,12 +21,15 @@
  *******************************************************************************/
 
 #import "SearchViewController.h"
-#import "NavDataStore.h"
+#import "NavDataSource.h"
 #import "NavUtil.h"
 #import "LocationEvent.h"
+#import "DestinationTableViewController.h"
+@import AVFoundation;
 
 @interface SearchViewController () {
     BOOL updated;
+    NSString *lastIdentifier;
 }
 
 @end
@@ -76,8 +79,9 @@
 {
     if (!updated) {
         [[NavDataStore sharedDataStore] reloadDestinations];
-        [NavUtil showWaitingForView:self.view];
+        [NavUtil showWaitingForView:self.view withMessage:NSLocalizedString(@"Loading, please wait",@"")];
     }
+    NSLog(@"%@", self.navigationController.viewControllers);
     [self updateView];
 }
 
@@ -89,6 +93,7 @@
 - (void) destinationsChanged:(NSNotification*)notification
 {
     [NavUtil hideWaitingForView:self.view];
+
     
     [notification object];
     
@@ -123,9 +128,27 @@
     self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil);
     
     [self.fromButton setTitle:nds.from.name forState:UIControlStateNormal];
+    
+    if (nds.from.type == NavDestinationTypeSelectStart) {
+        self.fromButton.accessibilityLabel = nds.from.name;
+    } else {
+        self.fromButton.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"From_button", @"BlindView", @""), nds.from.namePron];
+    }
+    
     [self.toButton setTitle:nds.to.name forState:UIControlStateNormal];
+    if (nds.to.type == NavDestinationTypeSelectDestination) {
+        self.toButton.accessibilityLabel = nds.to.name;
+    } else {
+        self.toButton.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"To_button", @"BlindView", @""), nds.to.namePron];
+    }
     
     self.historyClearButton.enabled = [[nds searchHistory] count] > 0;
+    
+    if ([lastIdentifier isEqualToString:@"toDestinations"]) {
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _toButton);        
+    } else {
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _fromButton);
+    }
 }
 
 - (IBAction)switchFromTo:(id)sender {
@@ -159,7 +182,7 @@
     NSDictionary *prefs = @{
                             @"dist":@"500",
                             @"preset":@"9",
-                            @"min_width":@"2",
+                            @"min_width":@"8",
                             @"slope":@"9",
                             @"road_condition":@"9",
                             @"deff_LV":@"9",
@@ -168,8 +191,13 @@
                             @"elv":[ud boolForKey:@"route_use_elevator"]?@"9":@"1"
                             };
     
-    [NavUtil showWaitingForView:self.view];
+    [NavUtil showWaitingForView:self.view withMessage:NSLocalizedString(@"Loading, please wait",@"")];
     
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
+                                     withOptions:AVAudioSessionCategoryOptionAllowBluetooth
+                                           error:nil];
+    [[AVAudioSession sharedInstance] setActive:YES error:nil];
+
     [[NavDataStore sharedDataStore] requestRouteFrom:nds.from._id To:nds.to._id withPreferences:prefs complete:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [NavUtil hideWaitingForView:self.view];
@@ -199,8 +227,14 @@
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.    
-    [segue destinationViewController].restorationIdentifier = segue.identifier;
+    // Pass the selected object to the new view controller.
+    if ([segue.destinationViewController isKindOfClass:DestinationTableViewController.class]) {
+        DestinationTableViewController *dView = (DestinationTableViewController*)segue.destinationViewController;
+        lastIdentifier = dView.restorationIdentifier = segue.identifier;
+        dView.root = self;
+    } else {
+        segue.destinationViewController.restorationIdentifier = segue.identifier;
+    }
 }
 
 

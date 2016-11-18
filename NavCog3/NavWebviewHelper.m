@@ -28,7 +28,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Mantle/Mantle.h>
 
-#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader"
+//#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader"
+#define UI_PAGE @"%@://%@/%@mobile.html?noheader" // for backward compatibility
 
 @implementation NavWebView
 
@@ -51,6 +52,7 @@
     NSString *callback;
     BOOL bridgeHasBeenInjected;
     NSTimeInterval lastLocationSent;
+    NSTimeInterval lastOrientationSent;
     NSTimeInterval lastRequestTime;
 }
 
@@ -159,18 +161,43 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(destinationChanged:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeChanged:) name:ROUTE_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeCleared:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(manualLocation:) name:MANUAL_LOCATION object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveLocation:) name:REQUEST_LOCATION_SAVE object:nil];
     
     
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
-
+    
     
     return self;
 }
 
 #pragma mark - notification handlers
 
+- (void) manualLocation: (NSNotification*) notification
+{
+    HLPLocation* loc = [notification object];
+    int ifloor = round(loc.floor<0?loc.floor:loc.floor+1);
+    
+    NSMutableString* script = [[NSMutableString alloc] init];
+    [script appendFormat:@"$hulop.map.setSync(false);"];
+    [script appendFormat:@"var map = $hulop.map.getMap();"];
+    [script appendFormat:@"var c = new google.maps.LatLng(%f, %f);", loc.lat, loc.lng];
+    [script appendFormat:@"map.setCenter(c);"];
+    [script appendFormat:@"$hulop.indoor.showFloor(%d);", ifloor];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self evalScript:script];
+    });
+}
+
 - (void) locationChanged: (NSNotification*) notification
 {
+    UIApplicationState state = [[UIApplication sharedApplication] applicationState];
+    if (state == UIApplicationStateBackground || state == UIApplicationStateInactive) {
+        return;
+    }
+
     NSDictionary *locations = [notification object];
     if (!locations) {
         return;
@@ -180,14 +207,20 @@
         return;
     }
 
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+
     double orientation = -location.orientation / 180 * M_PI;
     
-    [self sendData:@[@{
-                     @"type":@"ORIENTATION",
-                     @"z":@(orientation)
-                     }]
-          withName:@"Sensor"];
-
+    if (lastOrientationSent + 0.2 < now) {
+        [self sendData:@[@{
+                             @"type":@"ORIENTATION",
+                             @"z":@(orientation)
+                             }]
+              withName:@"Sensor"];
+        lastOrientationSent = now;
+    }
+    
+    
     location = locations[@"actual"];
     if (!location || [location isEqual:[NSNull null]]) {
         return;
@@ -196,7 +229,6 @@
         return;
     }
     
-    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
         if (!location.params) {
             return;
@@ -448,14 +480,13 @@
     return [webView stringByEvaluatingJavaScriptFromString:script];
 }
 
-- (HLPLocation *)getCenter
+- (void)saveLocation:(NSNotificationCenter*)notification
 {
-    NSString *ret = [self evalScript:@"(function(){return $hulop.map.getMap().getCenter().toJSON()})()"];
-    
+    NSString *ret = [self evalScript:@"(function(){return JSON.stringify($hulop.map.getMap().getCenter().toJSON())})();"];
     NSData *data = [ret dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    
-    return [[HLPLocation alloc] initWithLat:[dic[@"lat"] doubleValue] Lng:[dic[@"lng"] doubleValue]];
+    [[NSUserDefaults standardUserDefaults] setObject:dic forKey:@"lastLocation"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)retry

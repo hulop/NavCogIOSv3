@@ -1,11 +1,14 @@
+/* Class = "UIButton"; accessibilityHint = "Click to change"; ObjectID = "0AS-gk-VX3"; */
+"0AS-gk-VX3.accessibilityHint" = "変更するには選択します";
+
 /* Class = "UIButton"; normalTitle = "Button"; ObjectID = "0AS-gk-VX3"; */
 "0AS-gk-VX3.normalTitle" = "ボタン";
 
 /* Class = "UILabel"; text = "To"; ObjectID = "0fd-8M-uXw"; */
-"0fd-8M-uXw.text" = "行き先";
+"0fd-8M-uXw.text" = "目的地";
 
 /* Class = "UIButton"; accessibilityLabel = "Switch From and To"; ObjectID = "0nG-H5-lqv"; */
-"0nG-H5-lqv.accessibilityLabel" = "現在地と行き先を入れ替え";
+"0nG-H5-lqv.accessibilityLabel" = "現在地と目的地を入れ替え";
 
 /* Class = "UIButton"; normalTitle = "⇅"; ObjectID = "0nG-H5-lqv"; */
 "0nG-H5-lqv.normalTitle" = "⇅";
@@ -31,8 +34,11 @@
 /* Class = "UIButton"; normalTitle = "Right"; ObjectID = "7Cs-ZC-ieK"; */
 "7Cs-ZC-ieK.normalTitle" = "右";
 
+/* Class = "UIButton"; normalTitle = "Down"; ObjectID = "8Qc-Ae-cih"; */
+"8Qc-Ae-cih.normalTitle" = "下の階";
+
 /* Class = "UINavigationItem"; title = "Route"; ObjectID = "37Y-U9-0xf"; */
-"37Y-U9-0xf.title" = "ルート";
+"37Y-U9-0xf.title" = "ルート検索";
 
 /* Class = "UIBarButtonItem"; title = "Setting"; ObjectID = "ATn-7d-y1j"; */
 "ATn-7d-y1j.title" = "設定";
@@ -49,23 +55,38 @@
 /* (No Commment) */
 "LBt-N2-zq5.title" = "検索";
 
+/* Class = "UILabel"; text = "No Internet Connection"; ObjectID = "NRG-DQ-bhb"; */
+"NRG-DQ-bhb.text" = "インターネットに接続していません";
+
 /* Class = "UILabel"; text = "基本設定"; ObjectID = "QGQ-Xh-iSw"; */
 "QGQ-Xh-iSw.text" = "基本設定";
 
 /* (No Commment) */
 "QT7-QX-lRu.accessibilityLabel" = "音声認識ボタン";
 
+/* Class = "UIButton"; accessibilityHint = "Click to change"; ObjectID = "SC1-aF-UyA"; */
+"SC1-aF-UyA.accessibilityHint" = "変更するには選択します";
+
 /* Class = "UIButton"; normalTitle = "Button"; ObjectID = "SC1-aF-UyA"; */
 "SC1-aF-UyA.normalTitle" = "ボタン";
 
+/* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "SE5-WT-I7E"; */
+"SE5-WT-I7E.normalTitle" = "再接続";
+
 /* Class = "UIButton"; normalTitle = "clear"; ObjectID = "SYk-PE-6qn"; */
 "SYk-PE-6qn.normalTitle" = "消去";
+
+/* Class = "UIButton"; normalTitle = "Note"; ObjectID = "Tdh-uv-IeP"; */
+"Tdh-uv-IeP.normalTitle" = "ノート";
 
 /* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "TqI-cp-f3Y"; */
 "TqI-cp-f3Y.normalTitle" = "やり直す";
 
 /* (No Commment) */
-"aNk-8a-CVK.text" = "行き先";
+"aNk-8a-CVK.text" = "目的地";
+
+/* Class = "UIButton"; normalTitle = "Restart"; ObjectID = "c9d-DM-4vK"; */
+"c9d-DM-4vK.normalTitle" = "リスタート";
 
 /* Class = "UIButton"; normalTitle = "Marker"; ObjectID = "cMN-Lw-Y8t"; */
 "cMN-Lw-Y8t.normalTitle" = "マーカー";
@@ -102,6 +123,9 @@
 
 /* Class = "UILabel"; text = ">"; ObjectID = "uml-UV-BZ8"; */
 "uml-UV-BZ8.text" = ">";
+
+/* Class = "UIButton"; normalTitle = "Up"; ObjectID = "w8D-6y-H77"; */
+"w8D-6y-H77.normalTitle" = "上の階";
 
 /* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "xcm-nO-qOJ"; */
 "xcm-nO-qOJ.title" = "NavCog";

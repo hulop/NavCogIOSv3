@@ -27,5 +27,6 @@
 
 + (instancetype) sharedInstance;
 - (void) playSuccess;
+- (void) vibrate;
 
 @end

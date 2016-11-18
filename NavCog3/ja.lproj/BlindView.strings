@@ -1,9 +1,17 @@
-"%@, you might be going backward." = "%@, 反対方向に進んでいるようです";
-"%@, you might be going wrong direction." = "%@, 道を間違えたようです";
 
+"Init Orientation" = "方向の調整\n正しい方向を向きます\n(\"NavCog\"を2本指ロングタップして終了)";
+"Others" = "その他";
+
+"There is a auto door" = "この先、自動ドアあり。";
+"There are %d auto doors" = "この先、自動ドアが%dつ。";
+"There is a door" = "この先、ドアあり。";
+"There are %d doors" = "この先、ドアが%dつ。";
 
 /* No comment provided by engineer. */
 "%@, you might be going backward." = "%@, 逆戻りしているようです";
+
+/* No comment provided by engineer. */
+"%@, you might be going wrong direction." = "%@, 道を間違えたようです";
 
 /* No comment provided by engineer. */
 "After getting off the elevator, %@" = "エレベーターを降りたら、%@";
@@ -24,10 +32,24 @@
 "FloorNumType" = "cardinal";
 
 /* No comment provided by engineer. */
-"Go to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@にいきます。現在は%3$@にいます。";
+"From_button" = "%@から";
 
 /* No comment provided by engineer. */
-"Go to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ";
+"Go up to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ上がる";
+"Go up to %3$@ by %2$@ %1$@, now you are in %4$@" = "%1$@の%2$@を使って%3$@へ上がる。現在は%4$@にいます。";
+"Go down to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ降りる";
+"Go down to %3$@ by %2$@ %1$@, now you are in %4$@" = "%1$@の%2$@を使って%3$@へ降りる。現在は%4$@にいます。";
+
+/* No comment provided by engineer. */
+"Go up to %2$@ by %1$@" = "%1$@を使って%2$@に上がります";
+"Go down to %2$@ by %1$@" = "%1$@を使って%2$@に降ります";
+"Go up to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@に上がります。現在は%3$@にいます。";
+"Go down to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@に降ります。現在は%3$@にいます。";
+"Go to %1$@" = "%1$@に行きます。";
+
+
+/* No comment provided by engineer. */
+"Locating..." = "現在地を取得中...";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
@@ -42,7 +64,13 @@
 "Search" = "検索";
 
 /* (No Commment) */
+"Search Route" = "ルート検索";
+
+/* (No Commment) */
 "Stop" = "終了";
+
+/* (No Commment) */
+"Stop Navigation" = "案内終了";
 
 /* No comment provided by engineer. */
 "TTS_PAUSE_CHAR" = "。";
@@ -51,22 +79,34 @@
 "There is a sign says %@" = "%@という看板があります";
 
 /* No comment provided by engineer. */
+"To_button" = "%@まで";
+
+/* No comment provided by engineer. */
 "Watch your step, %@" = "足元注意、%@";
 
 /* arrived message */
-"You arrived" = "目的地付近に到着しました。。。お疲れ様でした";
+"You arrived" = "到着しました。";
 
 /* arrived message with destination name */
 "You arrived at %1$@" = "%1$@付近に到着しました。。。お疲れ様でした";
 
-/* (No Commment) */
+/* No comment provided by engineer. */
+"_nav_building" = "建物";
+
+/* No comment provided by engineer. */
+"_nav_facility" = "施設";
+
+/* No comment provided by engineer. */
 "_nav_latlng" = "現在地";
 
-/* (No Commment) */
+/* No comment provided by engineer. */
+"_nav_latlng_fix" = "位置";
+
+/* No comment provided by engineer. */
 "_nav_select_destination" = "目的地を選択";
 
-/* (No Commment) */
-"_nav_select_start" = "開始地点を選択";
+/* No comment provided by engineer. */
+"_nav_select_start" = "出発地を選択";
 
 /* (No Commment) */
 "_nav_toilet_female" = "女性用トイレ";
@@ -77,11 +117,14 @@
 /* (No Commment) */
 "_nav_toilet_multi" = "多目的トイレ";
 
+"_nav_near_shops" = "現在地周辺";
+
 /* (No Commment) */
 "and action" = "%1$@";
 
 /* (No Commment) */
 "and action at near object" = "%2$@の近くで%1$@";
+"and action at end object" = "突き当たりを%1$@";
 
 /* approaching */
 "approaching" = "そろそろです";
@@ -123,10 +166,10 @@
 "make a big right turn" = "大きく右に曲がる";
 
 /* make turn to -22.5 ~ -60 */
-"make a slight left turn" = "少し左に曲がる";
+"make a slight left turn" = "斜め、左に曲がる";
 
 /* make turn to +22.5 ~ +60 */
-"make a slight right turn" = "少し右に曲がる";
+"make a slight right turn" = "斜め、右に曲がる";
 
 /* make turn to -180 ~ -180 */
 "make a u-turn to the left" = "左に折り返す";
@@ -162,10 +205,16 @@
 "on your right side(front)" = "右斜め前";
 
 /* No comment provided by engineer. */
-"poi are %@" = "%1$@が%2$@にあります";
+//"poi are %@" = "%1$@が%2$@にあります";
+"poi are %@" = "%2$@に%1$@";
 
 /* No comment provided by engineer. */
-"poi is %@" = "%1$@が%2$@にあります";
+//"poi is %@" = "%1$@が%2$@にあります";
+"poi is %@" = "%2$@に%1$@";
+
+/* No comment provided by engineer. */
+//"name is %@" = "%1$@が%2$@にあります";
+"name is %@" = "%2$@に%1$@";
 
 /* (No Commment) */
 "proceed distance" = "%1$@進む";
@@ -202,8 +251,4 @@
 
 /* head to the right direction */
 "turn to the right" = "右に向く";
-
-"Stop Navigation" = "案内を終了";
-"Search Route" = "ルートを検索";
-
 

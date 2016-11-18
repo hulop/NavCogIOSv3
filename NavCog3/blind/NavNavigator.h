@@ -67,6 +67,9 @@
     
 @property (readonly) double FLOOR_DIFF_THRESHOLD;
 
+@property (readonly) double CRANK_REMOVE_SAFE_RATE;
+
+
 + (instancetype) constants;
 + (NSArray*) propertyNames;
 + (NSDictionary*) defaults;
@@ -91,6 +94,7 @@
 - (void)userIsApproachingToTarget:(NSDictionary*)properties;
 - (void)userNeedsToTakeAction:(NSDictionary*)properties;
 - (void)userNeedsToWalk:(NSDictionary*)properties;
+- (void)userGetsOnElevator:(NSDictionary*)properties;
 
 // advanced functions
 - (void)userMaybeGoingBackward:(NSDictionary*)properties;
@@ -101,6 +105,7 @@
 // POI
 - (void)userIsApproachingToPOI:(NSDictionary*)properties;
 - (void)userIsLeavingFromPOI:(NSDictionary*)properties;
+
 @end
 
 @interface NavLinkInfo : NSObject
@@ -163,9 +168,15 @@
 @property (readonly) BOOL forFloor;
 @property (readonly) BOOL forCorner;
 @property (readonly) BOOL forSign;
+@property (readonly) BOOL forDoor;
 @property (readonly) BOOL forBeforeEnd;
+@property (readonly) BOOL forAfterEnd;
 @property (readonly) BOOL flagCaution;
 @property (readonly) BOOL flagPlural;
+@property (readonly) BOOL flagEnd;
+@property (readonly) BOOL flagOnomastic;
+@property (readonly) BOOL flagAuto;
+@property (readonly) int doorCount;
 @property (readonly) BOOL isDestination;
 @property (readonly) double angleFromLocation;
 
@@ -191,7 +202,6 @@
 @property (readonly) BOOL isActive;
 @property (weak) id<NavNavigatorDelegate> delegate;
 
-+ (instancetype) sharedNavigator;
 - (void) stop;
 //- (void)preventRemainingDistanceEventFor:(NSTimeInterval)timeInSeconds;
 //- (void)preventRemainingDistanceEventBy:(double)nextTargetDistance;

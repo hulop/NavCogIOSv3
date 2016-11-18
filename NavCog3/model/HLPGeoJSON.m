@@ -22,6 +22,7 @@
 
 #import "HLPGeoJSON.h"
 #import "HLPLocation.h"
+#import "objc/runtime.h"
 
 #define PROPKEY_NODE_ID @"ノードID"
 #define PROPKEY_NODE_FOR_ID @"対応ノードID"
@@ -40,6 +41,8 @@
 #define PROPKEY_ENTRANCE_NAME @"出入口の名称"
 #define PROPKEY_MALE_OR_FEMALE @"男女別"
 #define PROPKEY_MULTI_PURPOSE_TOILET @"多目的トイレ"
+#define PROPKEY_EFFECTIVE_WIDTH @"有効幅員"
+#define PROPKEY_ELEVATOR_EQUIPMENTS @"elevator_equipments"
 
 // for extension
 #define PROPKEY_EXT_MAJOR_CATEGORY @"major_category"
@@ -61,6 +64,9 @@
 #define POI_CATEGORY_INFO @"_nav_info_"
 #define POI_CATEGORY_CORNER @"_nav_corner_"
 #define POI_CATEGORY_FLOOR @"_nav_floor_"
+#define POI_CATEGORY_ELEVATOR @"_nav_elevator_"
+#define POI_CATEGORY_ELEVATOR_EQUIPMENTS @"_nav_elevator_equipments_"
+#define POI_CATEGORY_DOOR @"_nav_door_"
 
 #define POI_CATEGORY_SCENE @"_nav_scene_"
 
@@ -71,6 +77,10 @@
 #define POI_CATEGORY_LIVE @"_nav_live_"
 #define POI_FLAGS_CAUTION @"_nav_caution_"
 #define POI_FLAGS_PLURAL @"_nav_plural_"
+#define POI_FLAGS_END @"_nav_end_"
+#define POI_FLAGS_AUTO @"_nav_auto_"
+
+
 
 @implementation HLPGeometry
 + (NSDictionary *)JSONKeyPathsByPropertyKey
@@ -79,6 +89,11 @@
              @"type": @"type",
              @"coordinates": @"coordinates"
              };
+}
+
+-(void)updateCoordinates:(NSArray *)coordinates
+{
+    _coordinates = coordinates;
 }
 @end
 
@@ -110,8 +125,10 @@
     double dist = DBL_MAX;
     HLPLocation *minloc;
     if ([self.geometry.type isEqualToString:@"Point"]) {
-        dist = [loc1 distanceToLat:[self.geometry.coordinates[1] doubleValue]
-                              Lng:[self.geometry.coordinates[0] doubleValue]];
+        [loc2 updateLat:[self.geometry.coordinates[1] doubleValue]
+                    Lng:[self.geometry.coordinates[0] doubleValue]];
+        minloc = loc2;
+        dist = [loc1 distanceTo:loc2];
     } else if ([self.geometry.type isEqualToString:@"LineString"]) {
         for(int i = 0; i < [self.geometry.coordinates count]-1; i++) {
             [loc2 updateLat:[self.geometry.coordinates[i][1] doubleValue]
@@ -218,11 +235,9 @@
                 [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
             }
         }
-        [temp appendString:NSLocalizedString(@"TOILET",@"Toilet")];
-        
     }
     
-    return temp;
+    return [temp stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
 }
 
 - (void)updateWithLang:(NSString *)lang
@@ -235,8 +250,10 @@
     NSString *key = [NSString stringWithFormat:@"%@:%@", name, lang];
     if (self.properties[key]) {
         return self.properties[key];
-    } else {
+    } else if (self.properties[name]){
         return self.properties[name];
+    } else {
+        return @"";
     }
 }
 
@@ -247,8 +264,10 @@
     
     if (self.properties[pronKey]) {
         return self.properties[pronKey];
-    } else {
+    } else if (self.properties[key]){
         return self.properties[key];
+    } else {
+        return nil;
     }
 }
 
@@ -266,8 +285,16 @@
               @"exit": @"exit",
               @"name": @"name",
               @"namePron": @"name_pron",
-              @"nodeID": @"node"
+              @"nodeID": @"node",
+              @"nodeHeight": @"node_height"
               }];
+}
+
+- (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError *__autoreleasing *)error
+{
+    self = [super initWithDictionary:dictionaryValue error:error];
+    _nodeHeight = (_nodeHeight >= 1)?_nodeHeight-1:_nodeHeight;
+    return self;
 }
 
 - (NSString *)getLandmarkName
@@ -277,7 +304,7 @@
 
 - (NSString *)getLandmarkNamePron
 {
-    return [self _getLandmarkName:_namePron];
+    return [self _getLandmarkName:_namePron?_namePron:_name];
 }
 
 - (NSString *)_getLandmarkName:(NSString*)name
@@ -308,11 +335,9 @@
                 [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
             }
         }
-        [temp appendString:NSLocalizedString(@"TOILET",@"Toilet")];
-        
     }
     
-    return temp;
+    return [temp stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
 }
 
 - (BOOL)isToilet
@@ -320,6 +345,14 @@
     return [_category isEqualToString:CATEGORY_TOILET];
 }
 
+- (BOOL)isFacility
+{
+    return [_properties[@"sub_category"] isEqualToString:@"NURS"] ||
+    [_properties[@"sub_category"] isEqualToString:@"SMOK"] ||
+    [_properties[@"sub_category"] isEqualToString:@"ATM"] ||
+    [_properties[@"sub_category"] isEqualToString:@"RE_L"] ||
+    [self isToilet];
+}
 
 @end
 
@@ -334,8 +367,11 @@
     _lat = [self.geometry.coordinates[1] doubleValue];
     _lng = [self.geometry.coordinates[0] doubleValue];
     
-    _height = [self.properties[PROPKEY_HEIGHT] doubleValue];
-    _height = (_height >= 1)?_height-1:_height;
+    _height = NAN;
+    if (self.properties[PROPKEY_HEIGHT]) {
+        _height = [self.properties[PROPKEY_HEIGHT] doubleValue];
+        _height = (_height >= 1)?_height-1:_height;
+    }
     
     _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];    
 
@@ -355,6 +391,88 @@
     return _location;
 }
 
+- (BOOL) isLeaf
+{
+    if (_connectedLinkIDs) {
+        return ([_connectedLinkIDs count] == 1);
+    }
+    return NO;
+}
+
+@end
+
+@implementation HLPFlags
+- (instancetype)initWithString:(NSString *)str
+{
+    self = [super init];
+    
+    if (str) {
+        NSString*(^camelToDash)(NSString*) = ^(NSString* str) {
+            NSRegularExpression *p = [NSRegularExpression regularExpressionWithPattern:@"([A-Z])" options:0 error:nil];
+            NSString *temp = [p stringByReplacingMatchesInString:str options:0 range:NSMakeRange(0, str.length) withTemplate:@"_$1"];
+            return [NSString stringWithFormat:@"_%@_", [temp lowercaseString]];
+        };
+        
+        for (NSString *name in [self allPropertyNames]) {
+            NSString *flagName = camelToDash(name);
+            if ([str containsString:flagName]) {
+                [self setValue:@(YES) forKey:name];
+            }
+        }
+    }
+    return self;
+}
+
+- (NSArray*) allPropertyNames
+{
+    unsigned int outCount, i;
+    
+    objc_property_t *properties = class_copyPropertyList(self.class, &outCount);
+    NSMutableArray *array = [@[] mutableCopy];
+    for(i = 0; i < outCount; i++) {
+        objc_property_t property = properties[i];
+        const char *propName = property_getName(property);
+        if(propName) {
+            NSString *propertyName = [NSString stringWithCString:propName encoding:NSUTF8StringEncoding];
+            [array addObject:propertyName];
+        }
+    }
+    free(properties);
+    
+    return array;
+}
+@end
+
+@implementation HLPElevatorEquipments: HLPFlags
+- (NSString*) description
+{
+    NSMutableString *string = [@"" mutableCopy];
+    if (_buttonLeft && _buttonRight) {
+        [string appendString:@"ElvEqButtonBoth"];
+        if (_buttonLeftBraille && _buttonRightBraille) {
+            [string appendString:@"Braille"];
+        } else if (_buttonLeftBraille) {
+            [string appendString:@"LeftBraille"];
+        } else if (_buttonRightBraille) {
+            [string appendString:@"RightBraille"];
+        }
+    } else if (_buttonRight) {
+        [string appendString:@"ElvEqButtonRight"];
+        if (_buttonRightBraille) {
+            [string appendString:@"Braille"];
+        }
+    } else if (_buttonLeft) {
+        [string appendString:@"ElvEqButtonLeft"];
+        if (_buttonLeftBraille) {
+            [string appendString:@"Braille"];
+        }
+    } else {
+        // no button
+        return nil;
+    }
+    NSString *elv = NSLocalizedStringFromTable(string, @"HLPGeoJSON", @"");    
+    return elv;
+}
 @end
 
 @implementation HLPLink {
@@ -386,6 +504,8 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
     self = [super initWithDictionary:dictionaryValue error:error];
     if (self == nil) return nil;
+    
+    elevatorEquipments = [[HLPElevatorEquipments alloc] initWithString:self.properties[PROPKEY_ELEVATOR_EQUIPMENTS]];
 
     _length = [self.properties[PROPKEY_LINK_LENGTH] doubleValue];
     
@@ -394,8 +514,21 @@
     _sourceHeight = [self.properties[@"sourceHeight"] doubleValue];
     _targetNodeID = self.properties[@"targetNode"];
     _targetHeight = [self.properties[@"targetHeight"] doubleValue];
+    _sourceHeight = (_sourceHeight >= 1)?_sourceHeight-1:_sourceHeight;
+    _targetHeight = (_targetHeight >= 1)?_targetHeight-1:_targetHeight;
 
     _linkType = [self.properties[PROPKEY_LINK_TYPE] intValue];
+    
+    _minimumWidth = 3.0;
+    if (self.properties[PROPKEY_EFFECTIVE_WIDTH]) {
+        switch([self.properties[PROPKEY_EFFECTIVE_WIDTH] intValue]) {
+            case 0: _minimumWidth = 1; break;
+            case 1: _minimumWidth = 1.0; break;
+            case 2: _minimumWidth = 1.5; break;
+            case 3: _minimumWidth = 2.0; break;
+            case 9: _minimumWidth = 3.0; break;
+        }
+    }
     
     [self update];
     return self;
@@ -403,10 +536,6 @@
 
 - (void) update
 {
-    _sourceHeight = (_sourceHeight >= 1)?_sourceHeight-1:_sourceHeight;
-    _targetHeight = (_targetHeight >= 1)?_targetHeight-1:_targetHeight;
-    
-    
     _backward = [self.properties[PROPKEY_TARGET_NODE_ID] isEqualToString:_sourceNodeID];
 
     if (self.geometry) {
@@ -463,6 +592,11 @@
 - (double)lastBearingForTarget
 {
     return lastBearingForTarget;
+}
+
+- (void) updateLastBearingForTarget:(double)bearing
+{
+    lastBearingForTarget = bearing;
 }
 
 - (HLPLocation *)sourceLocation
@@ -530,8 +664,58 @@
     if (nodesMap[_targetNodeID]) {
         _targetHeight = [nodesMap[_targetNodeID] height];
     }
+    _sourceHeight = (_sourceHeight >= 1)?_sourceHeight-1:_sourceHeight;
+    _targetHeight = (_targetHeight >= 1)?_targetHeight-1:_targetHeight;
+
     [self update];
     
+}
+
+- (void)offsetTarget:(double)distance
+{
+    if (_length + distance <= 0) {
+        distance = -(_length - 0.1);
+    }
+    
+    HLPLocation *temp = [targetLocation offsetLocationByDistance:distance Bearing:lastBearingForTarget];
+    
+    NSMutableArray *newCoordinates = [_geometry.coordinates mutableCopy];
+    if (_backward) {
+        newCoordinates[0] = @[@(temp.lng), @(temp.lat)];
+    } else {
+        newCoordinates[[newCoordinates count]-1] = @[@(temp.lng), @(temp.lat)];
+    }
+    [_geometry updateCoordinates:newCoordinates];
+    
+    _length += distance;
+    
+    [self update];
+}
+
+- (void)offsetSource:(double)distance
+{
+    if (_length + distance <= 0) {
+        distance = -(_length - 0.1);
+    }
+    
+    HLPLocation *temp = [sourceLocation offsetLocationByDistance:distance Bearing:180+initialBearingFromSource];
+    
+    NSMutableArray *newCoordinates = [_geometry.coordinates mutableCopy];
+    if (_backward) {
+        newCoordinates[[newCoordinates count]-1] = @[@(temp.lng), @(temp.lat)];
+    } else {
+        newCoordinates[0] = @[@(temp.lng), @(temp.lat)];
+    }
+    [_geometry updateCoordinates:newCoordinates];
+    
+    _length += distance;
+    
+    [self update];
+}
+
+- (HLPElevatorEquipments *)elevatorEquipments
+{
+    return elevatorEquipments;
 }
 
 @end
@@ -624,6 +808,7 @@
     _linkType = link1.linkType;
     if (link1.linkType == LINK_TYPE_ELEVATOR || link2.linkType == LINK_TYPE_ELEVATOR) {
         _linkType = LINK_TYPE_ELEVATOR;
+        elevatorEquipments = link1.elevatorEquipments?link1.elevatorEquipments:link2.elevatorEquipments;
     }
     
     _backward = NO;
@@ -637,6 +822,37 @@
 
 @end
 
+@implementation HLPElevatorButtons: HLPFlags
+- (NSString*)description
+{
+    BOOL brail = NO;
+    NSString *pos = nil;
+    if (_buttonRight) {
+        pos = @"ElvButtonRight";
+        brail = brail || _buttonRightBraille;
+    }
+    else if (_buttonLeft) {
+        pos = @"ElvButtonLeft";
+        brail = brail || _buttonLeftBraille;
+    }
+    else if (_buttonMiddle) {
+        pos = @"ElvButtonMiddle";
+        brail = brail || _buttonMiddleBraille;
+    }
+    
+    if (_flagPlural) {
+        pos = [pos stringByAppendingString:@"Plural"];
+    }
+    
+    NSString *str = NSLocalizedStringFromTable(pos, @"HLPGeoJSON", @"");
+    if (brail) {
+        str = [NSString stringWithFormat:NSLocalizedStringFromTable(@"ElvButtonWithBraille", @"HLPGeoJSON", @""), str];
+    }
+    
+    return str;
+}
+@end
+
 @implementation  HLPPOI
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
@@ -646,6 +862,8 @@
     NSDictionary *prop = self.properties;
     _majorCategory = prop[PROPKEY_EXT_MAJOR_CATEGORY];
     _subCategory = prop[PROPKEY_EXT_SUB_CATEGORY];
+    _minorCategory = prop[PROPKEY_EXT_MINOR_CATEGORY];
+    
     if ([POI_CATEGORY_INFO isEqualToString:_subCategory]) {
         _poiCategory = HLP_POI_CATEGORY_INFO;
     } else if ([POI_CATEGORY_SCENE isEqualToString:_subCategory]) {
@@ -662,10 +880,19 @@
         _poiCategory = HLP_POI_CATEGORY_LIVE;
     } else if ([POI_CATEGORY_CORNER isEqualToString:_subCategory]) {
         _poiCategory = HLP_POI_CATEGORY_CORNER;
+    } else if ([POI_CATEGORY_ELEVATOR isEqualToString:_subCategory]) {
+        _poiCategory = HLP_POI_CATEGORY_ELEVATOR;
+        _elevatorButtons = [[HLPElevatorButtons alloc] initWithString:_minorCategory];
+    } else if ([POI_CATEGORY_ELEVATOR_EQUIPMENTS isEqualToString:_subCategory]) {
+        _poiCategory = HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS;
+        _elevatorEquipments = [[HLPElevatorEquipments alloc] initWithString:_minorCategory];
+    } else if ([POI_CATEGORY_DOOR isEqualToString:_subCategory]) {
+      _poiCategory = HLP_POI_CATEGORY_DOOR;
     }
-    _minorCategory = prop[PROPKEY_EXT_MINOR_CATEGORY];
     _flagCaution = [_minorCategory containsString:POI_FLAGS_CAUTION];
     _flagPlural = [_minorCategory containsString:POI_FLAGS_PLURAL];
+    _flagEnd = [_minorCategory containsString:POI_FLAGS_END];
+    _flagAuto = [_minorCategory containsString:POI_FLAGS_AUTO];
 
     if (prop[PROPKEY_EXT_HEADING]) {
         _heading = [prop[PROPKEY_EXT_HEADING] doubleValue];
@@ -679,6 +906,11 @@
     }
 
     return self;
+}
+
+- (BOOL)allowsNoFloor
+{
+    return (_poiCategory == HLP_POI_CATEGORY_ELEVATOR) || (_poiCategory == HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS);
 }
 
 @end
@@ -701,7 +933,11 @@
     _height = NAN;
     if (self.properties[PROPKEY_EXT_HEIGHT]) {
         _height = [self.properties[PROPKEY_EXT_HEIGHT] doubleValue];
-        _height = (_height >= 1)?_height-1:_height;
+        if (_height == 0) {
+            _height = NAN;
+        } else {
+            _height = (_height >= 1)?_height-1:_height;
+        }
     }
     
     _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];
@@ -755,8 +991,8 @@
 {
     _lang = lang;
     NSString *langPron = [_lang stringByAppendingString:@"-Pron"];
-    _name = [self getI18nAttribute:PROPKEY_NAME Lang:_lang];
-    _namePron = [self getI18nAttribute:PROPKEY_NAME Lang:langPron];
+    _name = [self getI18nAttribute:PROPKEY_ENTRANCE_NAME Lang:_lang];
+    _namePron = [self getI18nAttribute:PROPKEY_ENTRANCE_NAME Lang:langPron];
     if (_namePron == nil) {
         _namePron = _name;
     }
@@ -764,36 +1000,40 @@
 
 - (NSString*)getName
 {
+    NSString *ret = nil;
     if (_facility) {
         if (_name) {
-            return [_facility.name stringByAppendingString:_name];
+            ret = [_facility.name stringByAppendingString:_name];
         } else {
-            return _facility.name;
+            ret = _facility.name;
         }
     } else {
         if (_name) {
-            return _name;
+            ret =  _name;
         } else {
-            return @"";
+            ret =  @"";
         }
     }
+    return [ret stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
 }
 
 - (NSString *)getNamePron
 {
+    NSString *ret = nil;
     if (_facility) {
         if (_name) {
-            return [_facility.namePron stringByAppendingString:_namePron];
+            ret = [_facility.namePron stringByAppendingString:_namePron];
         } else {
-            return _facility.namePron;
+            ret = _facility.namePron;
         }
     } else {
         if (_namePron) {
-            return _namePron;
+            ret = _namePron;
         } else {
-            return @"";
+            ret = @"";
         }
     }
+    return [ret stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
 }
 
 - (NSString*)getLongDescription

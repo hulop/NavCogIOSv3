@@ -39,6 +39,10 @@
 		7EAE6F0D1D2642D600614C35 /* NavWebviewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavWebviewHelper.m */; };
 		7EAE6F0F1D264AC200614C35 /* ios_bridge.js in Resources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0E1D264AC200614C35 /* ios_bridge.js */; };
 		7EAE6F121D264C5700614C35 /* NavJSNativeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F111D264C5700614C35 /* NavJSNativeHandler.m */; };
+		7EC20B5A1DDAC9C900818E33 /* HLPGeoJSON.strings in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E96D92F1DACC56200D57C8C /* HLPGeoJSON.strings */; };
+		7EC20B5B1DDAC9C900818E33 /* BlindView.strings in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E96D9291DAC916C00D57C8C /* BlindView.strings */; };
+		7EC20B5C1DDAC9C900818E33 /* BlindView.stringsdict in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
+		7EC20B5D1DDAC9C900818E33 /* Localizable.strings in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E17F1A51D9A226100DB1F34 /* Localizable.strings */; };
 		7EDEDC211D1E0C6800AC111A /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC201D1E0C6800AC111A /* main.mm */; };
 		7EDEDC241D1E0C6800AC111A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC231D1E0C6800AC111A /* AppDelegate.mm */; };
 		7EDEDC271D1E0C6800AC111A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC261D1E0C6800AC111A /* ViewController.m */; };
@@ -49,12 +53,44 @@
 		7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */; };
 		7EF6FBB21DA4DD8200382F76 /* NavSound.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF6FBB11DA4DD8200382F76 /* NavSound.m */; };
 		7EF7F7721DCC1E08000A625A /* NavCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7711DCC1E08000A625A /* NavCoverView.m */; };
+		7EF7F7A01DD178F7000A625A /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F79F1DD178F7000A625A /* main.mm */; };
+		7EF7F7A51DD17A8D000A625A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF7F7A41DD17A8D000A625A /* Foundation.framework */; };
+		7EF7F7A81DD17D4A000A625A /* NavCommander.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7A71DD17D4A000A625A /* NavCommander.m */; };
+		7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
+		7EF7F7AE1DD1949C000A625A /* NavDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AD1DD1949C000A625A /* NavDataSource.m */; };
+		7EF7F7AF1DD1BC2B000A625A /* HLPGeoJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */; };
+		7EF7F7B01DD1BC2B000A625A /* HLPDataUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */; };
+		7EF7F7B11DD1BC2B000A625A /* HLPLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33C51D92D13400D20CD5 /* HLPLocation.m */; };
+		7EF7F7B21DD1BC2B000A625A /* NavNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5150A31D8BF32800ED25FB /* NavNavigator.m */; };
+		7EF7F7B31DD1BC2B000A625A /* NavCommander.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7A71DD17D4A000A625A /* NavCommander.m */; };
+		7EF7F7B41DD1BC2B000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
+		7EF7F7B51DD1BC2B000A625A /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
+		7EF7F7B71DD1C138000A625A /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
+		A39FCA9995435AF475B85C79 /* libPods-NavCogTool.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E27F3424451712BF8F128E6 /* libPods-NavCogTool.a */; };
 		EFECDB67D098DB64F968F630 /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E76041D7EED01032E66D8CCF /* libPods-NavCog3.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		7EF7F79B1DD178F7000A625A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				7EC20B5A1DDAC9C900818E33 /* HLPGeoJSON.strings in CopyFiles */,
+				7EC20B5B1DDAC9C900818E33 /* BlindView.strings in CopyFiles */,
+				7EC20B5C1DDAC9C900818E33 /* BlindView.stringsdict in CopyFiles */,
+				7EC20B5D1DDAC9C900818E33 /* Localizable.strings in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		13DB81D9ACFAC0DB473C9AA1 /* Pods-NavCogTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.release.xcconfig"; sourceTree = "<group>"; };
 		2D0BA6402B080DF19AC9266A /* Pods-NavCog3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.release.xcconfig"; sourceTree = "<group>"; };
 		3183A4AC87D00547DB0D0F4A /* Pods-NavCog3.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.debug.xcconfig"; sourceTree = "<group>"; };
+		4E27F3424451712BF8F128E6 /* libPods-NavCogTool.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogTool.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E08DB561DB9F08E00E82161 /* ConfigManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigManager.h; sourceTree = "<group>"; };
 		7E08DB571DB9F08E00E82161 /* ConfigManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigManager.m; sourceTree = "<group>"; };
 		7E0E97141D98B80100CF2960 /* NavDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavDataStore.h; sourceTree = "<group>"; };
@@ -139,6 +175,16 @@
 		7EF6FBB11DA4DD8200382F76 /* NavSound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavSound.m; path = blind/NavSound.m; sourceTree = "<group>"; };
 		7EF7F7701DCC1E08000A625A /* NavCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavCoverView.h; path = blind/NavCoverView.h; sourceTree = "<group>"; };
 		7EF7F7711DCC1E08000A625A /* NavCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavCoverView.m; path = blind/NavCoverView.m; sourceTree = "<group>"; };
+		7EF7F79D1DD178F7000A625A /* NavCogTool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NavCogTool; sourceTree = BUILT_PRODUCTS_DIR; };
+		7EF7F79F1DD178F7000A625A /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		7EF7F7A41DD17A8D000A625A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		7EF7F7A61DD17D4A000A625A /* NavCommander.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavCommander.h; path = blind/NavCommander.h; sourceTree = "<group>"; };
+		7EF7F7A71DD17D4A000A625A /* NavCommander.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavCommander.m; path = blind/NavCommander.m; sourceTree = "<group>"; };
+		7EF7F7A91DD189B0000A625A /* NavPreviewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavPreviewer.h; path = blind/NavPreviewer.h; sourceTree = "<group>"; };
+		7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavPreviewer.m; path = blind/NavPreviewer.m; sourceTree = "<group>"; };
+		7EF7F7AC1DD1949C000A625A /* NavDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavDataSource.h; path = blind/NavDataSource.h; sourceTree = "<group>"; };
+		7EF7F7AD1DD1949C000A625A /* NavDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavDataSource.m; path = blind/NavDataSource.m; sourceTree = "<group>"; };
+		98A27DBDFDA4A2425F9F4D82 /* Pods-NavCogTool.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.debug.xcconfig"; sourceTree = "<group>"; };
 		E76041D7EED01032E66D8CCF /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -152,6 +198,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7EF7F79A1DD178F7000A625A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7EF7F7A51DD17A8D000A625A /* Foundation.framework in Frameworks */,
+				A39FCA9995435AF475B85C79 /* libPods-NavCogTool.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -160,6 +215,8 @@
 			children = (
 				3183A4AC87D00547DB0D0F4A /* Pods-NavCog3.debug.xcconfig */,
 				2D0BA6402B080DF19AC9266A /* Pods-NavCog3.release.xcconfig */,
+				98A27DBDFDA4A2425F9F4D82 /* Pods-NavCogTool.debug.xcconfig */,
+				13DB81D9ACFAC0DB473C9AA1 /* Pods-NavCogTool.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -167,9 +224,11 @@
 		0F5EA397BCF0C5EEF08F5111 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7EF7F7A41DD17A8D000A625A /* Foundation.framework */,
 				7E5150EA1D8D75C400ED25FB /* Mantle.framework */,
 				7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */,
 				E76041D7EED01032E66D8CCF /* libPods-NavCog3.a */,
+				4E27F3424451712BF8F128E6 /* libPods-NavCogTool.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -233,12 +292,18 @@
 			children = (
 				7E5150A21D8BF32800ED25FB /* NavNavigator.h */,
 				7E5150A31D8BF32800ED25FB /* NavNavigator.m */,
+				7EF7F7A61DD17D4A000A625A /* NavCommander.h */,
+				7EF7F7A71DD17D4A000A625A /* NavCommander.m */,
+				7EF7F7A91DD189B0000A625A /* NavPreviewer.h */,
+				7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */,
 				7EF6FBB01DA4DD8200382F76 /* NavSound.h */,
 				7EF6FBB11DA4DD8200382F76 /* NavSound.m */,
 				7E433DC91D6E846300C6C993 /* NavDeviceTTS.h */,
 				7E433DCA1D6E846300C6C993 /* NavDeviceTTS.m */,
 				7E0E97141D98B80100CF2960 /* NavDataStore.h */,
 				7E0E97151D98B80100CF2960 /* NavDataStore.m */,
+				7EF7F7AC1DD1949C000A625A /* NavDataSource.h */,
+				7EF7F7AD1DD1949C000A625A /* NavDataSource.m */,
 				7E433DD21D6E84D300C6C993 /* NavUtil.h */,
 				7E433DD31D6E84D300C6C993 /* NavUtil.m */,
 				7EAE6F101D264C5700614C35 /* NavJSNativeHandler.h */,
@@ -268,6 +333,7 @@
 			isa = PBXGroup;
 			children = (
 				7EDEDC1E1D1E0C6800AC111A /* NavCog3 */,
+				7EF7F79E1DD178F7000A625A /* NavCogTool */,
 				7EDEDC1D1D1E0C6800AC111A /* Products */,
 				0E9A9E5505E6B30B409D4C1B /* Pods */,
 				0F5EA397BCF0C5EEF08F5111 /* Frameworks */,
@@ -278,6 +344,7 @@
 			isa = PBXGroup;
 			children = (
 				7EDEDC1C1D1E0C6800AC111A /* NavCog3.app */,
+				7EF7F79D1DD178F7000A625A /* NavCogTool */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -314,6 +381,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		7EF7F79E1DD178F7000A625A /* NavCogTool */ = {
+			isa = PBXGroup;
+			children = (
+				7EF7F79F1DD178F7000A625A /* main.mm */,
+			);
+			path = NavCogTool;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -337,6 +412,25 @@
 			productReference = 7EDEDC1C1D1E0C6800AC111A /* NavCog3.app */;
 			productType = "com.apple.product-type.application";
 		};
+		7EF7F79C1DD178F7000A625A /* NavCogTool */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7EF7F7A31DD178F7000A625A /* Build configuration list for PBXNativeTarget "NavCogTool" */;
+			buildPhases = (
+				63667709DFC5129DBBBA86D6 /* Check Pods Manifest.lock */,
+				7EF7F7991DD178F7000A625A /* Sources */,
+				7EF7F79A1DD178F7000A625A /* Frameworks */,
+				7EF7F79B1DD178F7000A625A /* CopyFiles */,
+				1B6ADE334E675031CD3C749F /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NavCogTool;
+			productName = NavCogTool;
+			productReference = 7EF7F79D1DD178F7000A625A /* NavCogTool */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -344,11 +438,21 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0800;
-				ORGANIZATIONNAME = "Daisuke Sato";
+				ORGANIZATIONNAME = HULOP;
 				TargetAttributes = {
 					7EDEDC1B1D1E0C6800AC111A = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 76CMF53Q35;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
+					7EF7F79C1DD178F7000A625A = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = PETKK2G752;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -368,6 +472,7 @@
 			projectRoot = "";
 			targets = (
 				7EDEDC1B1D1E0C6800AC111A /* NavCog3 */,
+				7EF7F79C1DD178F7000A625A /* NavCogTool */,
 			);
 		};
 /* End PBXProject section */
@@ -399,7 +504,37 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1B6ADE334E675031CD3C749F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		1F8B44D3D02CF8583CF6077E /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		63667709DFC5129DBBBA86D6 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -457,13 +592,16 @@
 				7EAE6F0D1D2642D600614C35 /* NavWebviewHelper.m in Sources */,
 				7EF7F7721DCC1E08000A625A /* NavCoverView.m in Sources */,
 				7E96D9361DAD185800D57C8C /* DestinationTableViewController.m in Sources */,
+				7EF7F7AE1DD1949C000A625A /* NavDataSource.m in Sources */,
 				7E433DD41D6E84D300C6C993 /* NavUtil.m in Sources */,
 				7EDEDC271D1E0C6800AC111A /* ViewController.m in Sources */,
 				7E433DCF1D6E846300C6C993 /* NavDeviceTTS.m in Sources */,
 				7E6E42E91D90FD1B006B6899 /* BlindViewController.m in Sources */,
+				7EF7F7A81DD17D4A000A625A /* NavCommander.m in Sources */,
 				7EDEDC241D1E0C6800AC111A /* AppDelegate.mm in Sources */,
 				7E5150A41D8BF32800ED25FB /* NavNavigator.m in Sources */,
 				7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */,
+				7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */,
 				7E9238E81D5189F100875766 /* HLPSettingTableView.m in Sources */,
 				7EAE6F121D264C5700614C35 /* NavJSNativeHandler.m in Sources */,
 				7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */,
@@ -476,6 +614,22 @@
 				7E8A33C61D92D13400D20CD5 /* HLPLocation.m in Sources */,
 				7E9866CE1D5174780073CB49 /* Logging.m in Sources */,
 				7EF6FBB21DA4DD8200382F76 /* NavSound.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7EF7F7991DD178F7000A625A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7EF7F7B71DD1C138000A625A /* Logging.m in Sources */,
+				7EF7F7AF1DD1BC2B000A625A /* HLPGeoJSON.m in Sources */,
+				7EF7F7B01DD1BC2B000A625A /* HLPDataUtil.m in Sources */,
+				7EF7F7B11DD1BC2B000A625A /* HLPLocation.m in Sources */,
+				7EF7F7B21DD1BC2B000A625A /* NavNavigator.m in Sources */,
+				7EF7F7B31DD1BC2B000A625A /* NavCommander.m in Sources */,
+				7EF7F7B41DD1BC2B000A625A /* NavPreviewer.m in Sources */,
+				7EF7F7B51DD1BC2B000A625A /* NavDataStore.m in Sources */,
+				7EF7F7A01DD178F7000A625A /* main.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -655,6 +809,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3183A4AC87D00547DB0D0F4A /* Pods-NavCog3.debug.xcconfig */;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -671,6 +826,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2D0BA6402B080DF19AC9266A /* Pods-NavCog3.release.xcconfig */;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -680,6 +836,34 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ibm.research.tokyo.NavCog3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		7EF7F7A11DD178F7000A625A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 98A27DBDFDA4A2425F9F4D82 /* Pods-NavCogTool.debug.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_IDENTITY = "-";
+				DEVELOPMENT_TEAM = PETKK2G752;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		7EF7F7A21DD178F7000A625A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 13DB81D9ACFAC0DB473C9AA1 /* Pods-NavCogTool.release.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_IDENTITY = "-";
+				DEVELOPMENT_TEAM = PETKK2G752;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -700,6 +884,15 @@
 			buildConfigurations = (
 				7EDEDC341D1E0C6800AC111A /* Debug */,
 				7EDEDC351D1E0C6800AC111A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7EF7F7A31DD178F7000A625A /* Build configuration list for PBXNativeTarget "NavCogTool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7EF7F7A11DD178F7000A625A /* Debug */,
+				7EF7F7A21DD178F7000A625A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

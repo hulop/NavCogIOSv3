@@ -2,13 +2,13 @@
 "Distance unit" = "距離の単位";
 
 /* Toilet for people with disability */
-"FOR_DISABLED" = "多目的";
+"FOR_DISABLED" = "多目的トイレ";
 
 /* Toilet for female */
-"FOR_FEMALE" = "女性用";
+"FOR_FEMALE" = "女性用トイレ";
 
 /* Toilet for male */
-"FOR_MALE" = "男性用";
+"FOR_MALE" = "男性用トイレ";
 
 /* feet distance unit label */
 "Feet" = "フィート";
@@ -16,11 +16,17 @@
 /* No comment provided by engineer. */
 "Initial zoom level for navigation" = "ナビゲーション開始時のズーム";
 
+/* No comment provided by engineer. */
+"Loading, please wait" = "読み込んでいます、少々お待ちください";
+
 /* label for map */
 "Map" = "地図";
 
 /* meter distance unit label */
 "Meter" = "メートル";
+
+/* No comment provided by engineer. */
+"Navigation" = "案内の履歴";
 
 /* No comment provided by engineer. */
 "Preview speed" = "プレビュー速度";
@@ -46,11 +52,15 @@
 /* No comment provided by engineer. */
 "UI_WHEELCHAIR" = "車椅子ユーザ / 晴眼者ユーザ";
 
+/* No comment provided by engineer. */
+"Use Elevator" = "エレベーターを使う";
+
+/* No comment provided by engineer. */
+"Use Escalator" = "エスカレーターを使う";
+
+/* No comment provided by engineer. */
+"Use Stairs" = "階段を使う";
+
 /* (No Commment) */
 "checkNetworkConnection" = "ネットワークの接続を確認してください";
 
-"Use Elevator" = "エレベーターを使う";
-"Use Escalator" = "エスカレーターを使う";
-"Use Stairs" = "階段を使う";
-"Navigation" = "案内の履歴";
-"Loading, please wait" = "読み込みちゅう、少々お待ちください";

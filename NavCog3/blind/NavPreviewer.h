@@ -20,10 +20,29 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "NavNavigator.h"
 
-@interface DestinationTableViewController : UITableViewController
+@protocol NavPreviewerDelegate
+- (double) turnAction;
+- (BOOL) forwardAction;
+- (void) startAction;
+- (void) stopAction;
+@end
 
-@property UIViewController *root;
+@interface NavPreviewer : NSObject <NavNavigatorDelegate>
+
+@property BOOL autoProceed;
+@property double targetAngle;
+@property double targetDistance;
+@property double targetFloor;
+@property id<NavPreviewerDelegate> delegate;
+@property NSTimer *autoTimer;
+
+
+- (void)manualTurn:(double)angle;
+- (void)manualGoForward:(double)distance;
+- (void)manualLocation:(HLPLocation*)loc;
+- (void)manualGoFloor:(double)floor;
 
 @end

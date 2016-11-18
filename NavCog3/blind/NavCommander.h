@@ -20,10 +20,19 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "NavNavigator.h"
 
-@interface DestinationTableViewController : UITableViewController
+@protocol NavCommanderDelegate
+- (void)speak:(NSString*)text completionHandler:(void (^)())handler;
+- (void)speak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)())handler;
+- (void)playSuccess;
+- (void)vibrate;
+- (void)executeCommand:(NSString*)command;
+@end
 
-@property UIViewController *root;
+@interface NavCommander : NSObject <NavNavigatorDelegate>
+
+@property id<NavCommanderDelegate> delegate;
 
 @end

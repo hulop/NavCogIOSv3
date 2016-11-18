@@ -30,36 +30,54 @@
 
 static NSMutableDictionary<NSString*, UIView*>* waitingViewMap;
 static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
-+(void)showWaitingForView:(UIView*)view
++(void)showWaitingForView:(UIView*)view withMessage:(NSString *)message
 {
+    NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
+    if (waitingViewMap && waitingViewMap[address]) {
+        [waitingViewMap[address].subviews[1] setText:message];
+        return;
+    }
+    
     UIView *overlay = [[UIView alloc]initWithFrame:view.frame];
     
     CGFloat w = view.frame.size.width;
     CGFloat h = view.frame.size.height;
     CGFloat size = 30;
     UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((w-size)/2, (h-size)/2, size, size)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, (h+size)/2+size, w, size*5)];
+    label.text = message;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
+    label.numberOfLines = 0;
     
     [overlay setBackgroundColor:
-     [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
+     [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]];
     [overlay addSubview:indicator];
+    [overlay addSubview:label];
     [indicator startAnimating];
 
+    //TODO change view for purpose
+    //[[[[[UIApplication sharedApplication] delegate] window] subviews][0] addSubview:overlay];
+    
     [view addSubview:overlay];
     
     [overlay setIsAccessibilityElement:YES];
-    [overlay setAccessibilityLabel:NSLocalizedString(@"Loading, please wait",@"")];
+    [overlay setAccessibilityLabel:message];
     
     if (!waitingViewMap) {
         waitingViewMap = [@{} mutableCopy];
     }
-    [waitingViewMap setObject:overlay forKey:[NSString stringWithFormat:@"%ld", (long) view]];
+    [waitingViewMap setObject:overlay forKey:address];
 }
 
 +(void)hideWaitingForView:(UIView*)view
 {
     NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
     UIView *overlay = waitingViewMap[address];
-    [overlay removeFromSuperview];
+    if (overlay) {
+        [overlay removeFromSuperview];
+        [waitingViewMap removeObjectForKey:address];
+    }
 }
 
 +(UIMessageView*)showMessageView:(UIView *)view

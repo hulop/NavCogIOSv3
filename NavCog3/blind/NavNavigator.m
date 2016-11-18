@@ -73,7 +73,11 @@ static NavNavigatorConstants *_instance;
                 continue;
             }
         }
-        [self setValue:[ud valueForKey:propertyName] forKey:propertyName];
+        if ([ud valueForKey:propertyName]) {
+            [self setValue:[ud valueForKey:propertyName] forKey:propertyName];
+        } else {
+            [self setValue:vals[0] forKey:propertyName];
+        }
     }
 
     return self;
@@ -115,7 +119,7 @@ static NavNavigatorConstants *_instance;
              @"PREVENT_REMAINING_DISTANCE_EVENT_FOR_FIRST_N_METERS": @[@(7.0), @(0), @(20), @(1), FIXED],
              @"APPROACHING_DISTANCE_THRESHOLD": @[@(6.0), @(1), @(10), @(0.5)],
              @"APPROACHED_DISTANCE_THRESHOLD": @[@(2.0), @(0.5), @(5), @(0.25)],
-             @"NO_APPROACHING_DISTANCE_THRESHOLD": @[@(2.0), @(0.5), @(10), @(0.25)],
+             @"NO_APPROACHING_DISTANCE_THRESHOLD": @[@(2.0), @(0.5), @(15), @(0.25)],
              @"REMAINING_DISTANCE_INTERVAL": @[@(10.0), @(1), @(25), @(1)],
              @"NO_ANDTURN_DISTANCE_THRESHOLD": @[@(2.0), @(0), @(10), @(0.5)],
              
@@ -143,14 +147,16 @@ static NavNavigatorConstants *_instance;
              @"NUM_OF_LINKS_TO_CHECK": @[@(3), @(1), @(10), @(1), FIXED],
     
              @"OFF_ROUTE_BEARING_THRESHOLD": @[@(2.0), @(0), @(10), @(0.1), FIXED],
-             @"CHANGE_HEADING_THRESHOLD": @[@(30.0), @(0), @(90), @(5), FIXED],
-             @"ADJUST_HEADING_MARGIN": @[@(15.0), @(0), @(90), @(5), FIXED],
+             @"CHANGE_HEADING_THRESHOLD": @[@(30.0), @(0), @(90), @(5)],
+             @"ADJUST_HEADING_MARGIN": @[@(15.0), @(0), @(90), @(5)],
              
              @"BACK_DETECTION_THRESHOLD": @[@(2.0), @(0), @(10), @(1)],
              @"BACK_DETECTION_HEADING_THRESHOLD": @[@(120), @(90), @(180), @(5), FIXED],
              @"BACK_ANNOUNCE_MIN_INTERVAL": @[@(10), @(5), @(60), @(5), FIXED],
              
-             @"FLOOR_DIFF_THRESHOLD": @[@(0.1), @(0), @(0.5), @(0.1)]
+             @"FLOOR_DIFF_THRESHOLD": @[@(0.1), @(0), @(0.5), @(0.1)],
+             
+             @"CRANK_REMOVE_SAFE_RATE": @[@(0.75), @(0), @(1.0), @(0.05), FIXED]
              };
 }
 @end
@@ -239,7 +245,10 @@ static NavNavigatorConstants *_instance;
             
             double hInitial = [HLPLocation normalizeDegree:_link.initialBearingFromSource - 180];
             BOOL inAngleInitial = fabs([HLPLocation normalizeDegree:hInitial - poi.heading]) < poi.angle;
-            
+
+            double hLast = [HLPLocation normalizeDegree:_link.lastBearingForTarget - 180];
+            BOOL inAngleLast = fabs([HLPLocation normalizeDegree:hLast - poi.heading]) < poi.angle;
+
             
             NavPOI *navpoi = nil;
             
@@ -262,7 +271,7 @@ static NavNavigatorConstants *_instance;
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
                                     @"origin": poi,
-                                    @"forBeforeEnd": @(YES),
+                                    @"forAfterEnd": @(YES),
                                     @"longDescription": poi.longDescription?poi.longDescription:@""
                                     }];
                     }
@@ -276,6 +285,26 @@ static NavNavigatorConstants *_instance;
                                     @"flagCaution": @(poi.flagCaution)
                                     }];
                     }
+                    break;
+                case HLP_POI_CATEGORY_ELEVATOR:
+                    if (inAngleInitial &&
+                        dLocToTarget < C.POI_END_INFO_DISTANCE_THRESHOLD) {
+                        navpoi = [[NavPOI alloc] initWithText:poi.elevatorButtons.description
+                                                     Location:_link.targetLocation
+                                                      Options:
+                                  @{
+                                    @"origin": poi,
+                                    @"forAfterEnd": @(YES)
+                                }];
+                    }
+                    break;
+                case HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS:
+                    navpoi = [[NavPOI alloc] initWithText:poi.elevatorEquipments.description
+                                                 Location:poi.location
+                                                  Options:
+                              @{
+                                @"origin": poi
+                                }];
                     break;
                 case HLP_POI_CATEGORY_FLOOR:
                     if (dLocToNearest < C.POI_FLOOR_DISTANCE_THRESHOLD && inAngleInitial) {
@@ -315,13 +344,14 @@ static NavNavigatorConstants *_instance;
                     }
                     break;
                 case HLP_POI_CATEGORY_OBJECT:
-                    if (inAngleAtTarget && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
+                    if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
                         // add corner info
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
                                     @"origin": poi,
                                     @"forCorner": @(YES),
                                     @"flagPlural": @(poi.flagPlural),
+                                    @"flagEnd": @(poi.flagEnd),
                                     @"longDescription": poi.longDescription?poi.longDescription:@""
                                     }];
                     }
@@ -332,7 +362,7 @@ static NavNavigatorConstants *_instance;
                                   @{
                                     @"origin": poi,
                                     @"angleFromLocation": @([nearest bearingTo:poi.location]),
-                                    @"forBeforeEnd": @(YES),
+                                    @"forAfterEnd": @(YES),
                                     @"longDescription": poi.longDescription?poi.longDescription:@""
                                     }];
                     }
@@ -352,9 +382,10 @@ static NavNavigatorConstants *_instance;
                 navpoi = [[NavPOI alloc] initWithText:nil Location:ent.facility.location Options:
                           @{
                             @"origin": ent,
-                            @"forBeforeEnd": @(YES),
+                            @"forAfterEnd": @(YES),
                             @"isDestination": @(YES),
-                            @"angleFromLocation": @(_nextLink.lastBearingForTarget)
+                            @"angleFromLocation": @(_nextLink.lastBearingForTarget),
+                            @"longDescription":  ent.facility.longDescriptionPron
                             }];
                 
             } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
@@ -364,7 +395,7 @@ static NavNavigatorConstants *_instance;
                                              Location:ent.node.location
                                               Options: @{
                                                          @"origin": ent,
-                                                         @"forBeforeEnd": @(YES)
+                                                         @"forAfterEnd": @(YES)
                                                          }];
             } else {
                 // mid in route
@@ -375,7 +406,8 @@ static NavNavigatorConstants *_instance;
                               @{
                                 @"origin": ent,
                                 @"longDescription": [ent getLongDescriptionPron],
-                                @"angleFromLocation": @([nearest bearingTo:ent.node.location])
+                                @"angleFromLocation": @([nearest bearingTo:ent.node.location]),
+                                @"flagOnomastic":@(YES)
                                 }];
                 }
             }
@@ -388,6 +420,49 @@ static NavNavigatorConstants *_instance;
         }
     }];
     
+    NSArray<HLPPOI*> *doors = [_allPOIs filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+        if ([evaluatedObject isKindOfClass:HLPPOI.class]) {
+            return [((HLPPOI*)evaluatedObject) poiCategory] == HLP_POI_CATEGORY_DOOR;
+        }
+        return false;
+    }]];
+    
+    if ([doors count] > 0) {
+        doors = [doors sortedArrayUsingComparator:^NSComparisonResult(HLPPOI *p1, HLPPOI *p2) {
+            HLPLocation *n1 = [_link nearestLocationTo:p1.location];
+            HLPLocation *n2 = [_link nearestLocationTo:p2.location];
+            return [@([n1 distanceTo:_sourceLocation]) compare:@([n2 distanceTo:_sourceLocation])];
+        }];
+
+        for(int start = 0; start < [doors count];){
+            HLPLocation *locStart = doors[start].location;
+            HLPLocation *locEnd = doors[start].location;
+            int end = start;
+            for(int i = start+1; i < [doors count]; i++) {
+                if ([locEnd distanceTo:doors[i].location] < 5 && doors[start].flagAuto == doors[i].flagAuto) {
+                    locEnd = doors[i].location;
+                    end = i;
+                } else {
+                    break;
+                }
+            }
+            BOOL forBeforeStart = [locStart distanceTo:self.link.sourceLocation] < C.POI_START_INFO_DISTANCE_THRESHOLD;
+            if (!forBeforeStart) {
+                locStart = [locStart offsetLocationByDistance:3 Bearing:180-self.link.initialBearingFromSource];
+            }
+            int count = end - start + 1;
+            NavPOI *navpoi = [[NavPOI alloc] initWithText:nil Location:locStart Options:
+                              @{
+                                @"origin":[doors subarrayWithRange:NSMakeRange(start, count)],
+                                @"forBeforeStart":@(forBeforeStart),
+                                @"forDoor":@(YES),
+                                @"doorCount":@(count),
+                                @"flagAuto":@(doors[start].flagAuto)
+                                }];
+            [poisTemp addObject:navpoi];
+            start = end+1;
+        }
+    }
     
     // convert NAVCOG1/2 acc info into NavPOI
     [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -428,7 +503,7 @@ static NavNavigatorConstants *_instance;
                     NavPOI *poi = [[NavPOI alloc] initWithText:destInfo Location:poiloc Options:
                                    @{
                                      @"origin":destInfo,
-                                     @"forBeforeEnd": @(YES)
+                                     @"forAfterEnd": @(YES)
                                      }];
                     [poisTemp addObject:poi];
                 }
@@ -534,9 +609,11 @@ static NavNavigatorConstants *_instance;
     _forBeforeStart = NO;
     _forFloor = NO;
     _forCorner = NO;
-    _forBeforeEnd = NO;
+    _forAfterEnd = NO;
     _flagCaution = NO;
     _flagPlural = NO;
+    _flagOnomastic = NO;
+    _flagEnd = NO;
     _angleFromLocation = NAN;
     _diffAngleFromUserOrientation = NAN;
     
@@ -577,7 +654,8 @@ static NavNavigatorConstants *_instance;
     
     //NSString *destination;
     //NSString *startPoint;
-    HLPNode *destinationNode;
+    HLPEntrance *destinationNode;
+    HLPEntrance *startNode;
     NSTimeInterval lastCouldNotStartNavigationTime;
     NSTimeInterval waitingStartUntil;
     
@@ -586,16 +664,6 @@ static NavNavigatorConstants *_instance;
     int firstLinkIndex;
     
     NSTimer *timeoutTimer;
-}
-
-static NavNavigator* instance;
-
-+ (instancetype)sharedNavigator
-{
-    if (!instance) {
-        instance = [[NavNavigator alloc] init];
-    }
-    return instance;
 }
 
 - (instancetype)init
@@ -612,6 +680,12 @@ static NavNavigator* instance;
     return self;
 }
 
+- (void)dealloc
+{
+    //NSLog(@"NavNavigator dealloc");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void) reset
 {
     isFirst = YES;
@@ -620,7 +694,10 @@ static NavNavigator* instance;
 - (void) stop
 {
     _isActive = NO;
-    [self.delegate didActiveStatusChanged:@{}];
+    [self.delegate didActiveStatusChanged:
+     @{
+       @"isActive": @(_isActive)
+       }];
 }
 
 - (void)routeChanged:(NSNotification*)notification
@@ -629,14 +706,19 @@ static NavNavigator* instance;
     NavNavigatorConstants *C = [NavNavigatorConstants constants];
     route = nds.route;
     
+    if (route == nil) {
+        if ([self.delegate respondsToSelector:@selector(couldNotStartNavigation:)]) {
+            [self.delegate couldNotStartNavigation:@{@"reason":@"NETWORK_ERROR"}];
+        }
+        return;
+    }
     if ([route count] == 0) {
         if ([self.delegate respondsToSelector:@selector(couldNotStartNavigation:)]) {
-            [self.delegate couldNotStartNavigation:@{}];
+            [self.delegate couldNotStartNavigation:@{@"reason":@"NO_ROUTE"}];
         }
         return;
     }
     
-    _isActive = YES;
     waitingStartUntil = [[NSDate date] timeIntervalSince1970] + 1.0;
     [self reset];
     
@@ -715,12 +797,15 @@ static NavNavigator* instance;
     navIndex = 0;
     
     destinationNode = entranceMap[[[route lastObject] _id]];
-    //destination = [entranceMap[[[route lastObject] _id]] getLandmarkName];
-    //startPoint = [entranceMap[[[route firstObject] _id]] getLandmarkName];
+    startNode = entranceMapTemp[[[route firstObject] _id]];
     
-    NSArray*(^nearestLinks)(HLPLocation*, NSString*) = ^ NSArray* (HLPLocation *loc, NSString* nodeID) {
+    NSArray*(^nearestLinks)(HLPLocation*, NSDictionary*) = ^ NSArray* (HLPLocation *loc, NSDictionary* option) {
         NSMutableArray<HLPLink*> __block *nearestLinks = [@[] mutableCopy];
         double __block minDistance = DBL_MAX;
+        
+        NSString *nodeID = option[@"nodeID"];
+        HLPLinkType linkType = [option[@"linkType"] intValue];
+        BOOL onlyEnd = [option[@"onlyEnd"] boolValue];
         
         [linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
 
@@ -734,12 +819,21 @@ static NavNavigator* instance;
             }
             
             HLPLocation *nearest = [link nearestLocationTo:loc];
+            if (onlyEnd) {
+                double sd = [link.sourceLocation distanceTo:loc];
+                double td = [link.targetLocation distanceTo:loc];
+                if (sd > td) {
+                    nearest = link.targetLocation;
+                } else {
+                    nearest = link.sourceLocation;
+                }
+            }
             double distance = [loc distanceTo:nearest];
             
-            if (distance < minDistance) {
+            if (distance < minDistance && (linkType == 0 || link.linkType == linkType)) {
                 minDistance = distance;
                 nearestLinks = [@[link] mutableCopy];
-            } else if (distance == minDistance) {
+            } else if (fabs(distance - minDistance) < 0.1) {
                 [nearestLinks addObject:link];
             }
         }];
@@ -792,8 +886,11 @@ static NavNavigator* instance;
             continue;
         }
         HLPPOI *poi = pois[j];
-        
-        NSArray *links = nearestLinks(poi.location, nil);
+        HLPLinkType linkType = 0;
+        if (poi.poiCategory == HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS) {
+            linkType = LINK_TYPE_ELEVATOR;
+        }
+        NSArray *links = nearestLinks(poi.location, @{@"linkType":@(linkType)});
         
         for(HLPLink* nearestLink in links) {
             NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
@@ -808,7 +905,12 @@ static NavNavigator* instance;
     for(HLPEntrance *ent in features) {
         if ([ent isKindOfClass:HLPEntrance.class]) {
             
-            NSArray *links = nearestLinks(ent.node.location, ent.node._id);
+            if ([startNode.forFacilityID isEqualToString:ent.forFacilityID]) {
+                continue;
+            }
+            
+            BOOL isLeaf = ent.node.isLeaf;
+            NSArray *links = nearestLinks(ent.node.location, isLeaf?@{@"nodeID": ent.node._id, @"onlyEnd":@(YES)}:@{});
             for(HLPLink* nearestLink in links) {
                 if ([nearestLink.sourceNodeID isEqualToString:ent.node._id] ||
                     [nearestLink.targetNodeID isEqualToString:ent.node._id]) {
@@ -824,11 +926,48 @@ static NavNavigator* instance;
             }
         }
     }
-    // end assign poi to nearest link
+    // end associate pois to links
     
     
     
     // optimize links for navigation
+    
+
+    // remove crank
+    NSArray*(^removeCrank)(NSArray*) = ^(NSArray *array) {
+        NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
+        for(int i = 0; i < [temp count]-2; i++) {
+            HLPObject* obj1 = temp[i];
+            HLPObject* obj2 = temp[i+1];
+            HLPObject* obj3 = temp[i+2];
+            if ([obj1 isKindOfClass:HLPLink.class] &&
+                [obj2 isKindOfClass:HLPLink.class] &&
+                [obj3 isKindOfClass:HLPLink.class]
+                ) {
+                HLPLink* link1 = (HLPLink*) obj1;
+                HLPLink* link2 = (HLPLink*) obj2;
+                HLPLink* link3 = (HLPLink*) obj3;
+                
+                if (![HLPCombinedLink link:link1 shouldBeCombinedWithLink:link2] &&
+                    ![HLPCombinedLink link:link2 shouldBeCombinedWithLink:link3] &&
+                    [HLPCombinedLink link:link1 shouldBeCombinedWithLink:link3]
+                    ) {
+                    double mw1 = link1.minimumWidth;
+                    double mw3 = link3.minimumWidth;
+                    if (link2.length < (mw1 + mw3) / 2 * C.CRANK_REMOVE_SAFE_RATE) {
+                        
+                        // need to update links
+                        [temp removeObjectAtIndex:i+1];
+                        i--;
+                    }
+                }
+            }
+        }
+        return temp;
+    };
+    route = removeCrank(route);
+    
+    // combine links
     NSArray*(^combineLinks)(NSArray*) = ^(NSArray *array) {
         NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
         for(int i = 0; i < [temp count]-1; i++) {
@@ -837,6 +976,10 @@ static NavNavigator* instance;
             if ([obj1 isKindOfClass:HLPLink.class] && [obj2 isKindOfClass:HLPLink.class]) {
                 HLPLink* link1 = (HLPLink*) obj1;
                 HLPLink* link2 = (HLPLink*) obj2;
+                
+                if ([nodesMap[link1.sourceNodeID] isLeaf] && C.IGNORE_FIRST_LINK_LENGTH_THRESHOLD) {
+                    continue;
+                }
                 
                 if ([HLPCombinedLink link:link1 shouldBeCombinedWithLink:link2]) {
                     HLPLink* link12 = [[HLPCombinedLink alloc] initWithLink1:link1 andLink2:link2];
@@ -847,9 +990,37 @@ static NavNavigator* instance;
             }
         }
         return temp;
-    };
-    
+    };    
     route = combineLinks(route);
+    
+    // shorten link before elevator, set bearing after elevator
+    NSArray*(^shortenLinkBeforeElevator)(NSArray*) = ^(NSArray *array) {
+        NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
+        for(int i = 0; i < [temp count]-2; i++) {
+            HLPObject* obj1 = temp[i];
+            HLPObject* obj2 = temp[i+1];
+            if ([obj1 isKindOfClass:HLPLink.class] &&
+                [obj2 isKindOfClass:HLPLink.class]
+                ) {
+                HLPLink* link1 = (HLPLink*) obj1;
+                HLPLink* link2 = (HLPLink*) obj2;
+                
+                if (link1.linkType != LINK_TYPE_ELEVATOR &&
+                    link2.linkType == LINK_TYPE_ELEVATOR && isnan(link2.initialBearingFromSource)) {
+                    [link1 offsetTarget:-2];
+                }
+                
+                if (link1.linkType == LINK_TYPE_ELEVATOR &&
+                    link2.linkType != LINK_TYPE_ELEVATOR && isnan(link1.lastBearingForTarget)) {
+                    [link1 updateLastBearingForTarget: link2.initialBearingFromSource];
+                    [link2 offsetSource:-2];
+                }
+            }
+        }
+        return temp;
+    };
+    route = shortenLinkBeforeElevator(route);
+    
     // end optimize links for navigation
     
     // prepare link info
@@ -862,15 +1033,6 @@ static NavNavigator* instance;
         if ([route[i] isKindOfClass:HLPLink.class]) {
             HLPLink* link1 = (HLPLink*)route[i];
             
-            if (isFirstLink) {
-                isFirstLink = NO;
-                if (link1.length < C.IGNORE_FIRST_LINK_LENGTH_THRESHOLD) {
-                    firstLinkIndex = 2;
-                    continue;
-                }
-                firstLinkIndex = 1;
-            }
-            
             HLPLink* link2 = nil;
             int j=i+1;
             for(; j < [route count]; j++) {
@@ -880,38 +1042,60 @@ static NavNavigator* instance;
                 }
             }
             
-            NSMutableArray *linkPois = [@[] mutableCopy];
-            [linkPois addObjectsFromArray:linkPoiMap[link1._id]];
-            if ([link1 isKindOfClass:HLPCombinedLink.class]) {
-                for(HLPLink *link in [(HLPCombinedLink*) link1 links]) {
-                    [linkPois addObjectsFromArray:linkPoiMap[link._id]];
+            if (isFirstLink) {
+                isFirstLink = NO;
+                if (link1.length < C.IGNORE_FIRST_LINK_LENGTH_THRESHOLD &&
+                    link2 != nil &&
+                    link2.linkType != LINK_TYPE_ELEVATOR &&
+                    link2.linkType != LINK_TYPE_ESCALATOR &&
+                    link2.linkType != LINK_TYPE_STAIRWAY
+                    ) {
+                    firstLinkIndex = 2;
+                    continue;
+                }
+                firstLinkIndex = 1;
+            }
+            
+            NSMutableSet *linkPois = [[NSMutableSet alloc] init];
+            if (!isFirstLink) {
+                [linkPois addObjectsFromArray:linkPoiMap[link1._id]];
+                if ([link1 isKindOfClass:HLPCombinedLink.class]) {
+                    for(HLPLink *link in [(HLPCombinedLink*) link1 links]) {
+                        [linkPois addObjectsFromArray:linkPoiMap[link._id]];
+                    }
                 }
             }
             
-            linkInfos[i] = [[NavLinkInfo alloc] initWithLink:link1 nextLink:link2 andPOIs:linkPois];
+            linkInfos[i] = [[NavLinkInfo alloc] initWithLink:link1 nextLink:link2 andPOIs:[linkPois allObjects]];
             
             //NSLog(@"%@", linkInfos[i]);
         }
     }
     
+    _isActive = YES;
+    
     NavLinkInfo *info = linkInfos[firstLinkIndex];
     [self.delegate didActiveStatusChanged:
      @{
+       @"isActive": @(_isActive),
        @"location":info.link.sourceLocation,
        @"heading":@(info.link.initialBearingFromSource)
        }];
     //[self locationChanged:nil];
     
-    [self setTimeout:1 withBlock:^(NSTimer * _Nonnull timer) {
+    [self setTimeout:1 withBlock:^{
         [[NavDataStore sharedDataStore] manualLocation:nil];
     }];
 }
 
-- (void)setTimeout:(double)delay withBlock:(void(^)(NSTimer * _Nonnull timer)) block
+- (void)setTimeout:(double)delay withBlock:(void(^)()) block
 {
     if (![NavDataStore sharedDataStore].previewMode) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:delay repeats:NO block:block];
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            if (block) {
+                block();
+            }
         });
     }
 }
@@ -923,6 +1107,10 @@ static NavNavigator* instance;
 
 - (void)locationChanged:(NSNotification*)notification
 {
+    if (!_isActive) {
+        return;
+    }
+    
     if (timeoutTimer) {
         [timeoutTimer invalidate];
         [self setTimeout:1 withBlock:^(NSTimer * _Nonnull timer) {
@@ -964,8 +1152,12 @@ static NavNavigator* instance;
             }
             [info updateWithLocation:location];
             if (info.distanceToUserLocationFromLink < minDistance &&
-                fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
-                fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) {
+                ((fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
+                fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) ||
+                 (i == 1 && (info.link.linkType == LINK_TYPE_ELEVATOR ||
+                             info.link.linkType == LINK_TYPE_ESCALATOR ||
+                             info.link.linkType == LINK_TYPE_STAIRWAY)))
+                 ) {
                 minDistance = info.distanceToUserLocationFromLink;
                 minIndex = i;
             }
@@ -997,43 +1189,37 @@ static NavNavigator* instance;
                 }
             }
             
+            NavLinkInfo *firstLinkInfo = linkInfos[firstLinkIndex];
             // TODO improve length from current location not from existing node
             double totalLength = [self lengthOfRoute:route offset:0 size:[route count]];
             if ([self.delegate respondsToSelector:@selector(didNavigationStarted:)]) {
-                NavLinkInfo *info = linkInfos[firstLinkIndex];
+
                 
                 [self.delegate didNavigationStarted:
                  @{
-                   @"pois":info.pois,
+                   @"pois":firstLinkInfo.pois,
                    @"totalLength":@(totalLength),
                    @"oneHopLinks":oneHopLinks
                    }];
             }
-            isFirst = NO;
-            return;
-        }
-
-        
-        // initial heading
-        if (navIndex == 0) {
-            
+       
             if (minDistance > C.NAVIGATION_START_CAUTION_DISTANCE_LIMIT) {
-
             }
-            
-            if (linkInfo.diffBearingAtUserLocation) {
-                linkInfo.hasBeenBearing = YES;
-                if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
-                    [self.delegate userNeedsToChangeHeading:
-                     @{
-                       @"diffHeading": @(linkInfo.diffBearingAtSnappedLocationOnLink),
-                       @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
-                       }];
+            //TODO add fix protocol with lower accuracy
+            if (fabs(firstLinkInfo.diffBearingAtUserLocation) > C.ADJUST_HEADING_MARGIN) {
+                if (!firstLinkInfo.hasBeenBearing && !firstLinkInfo.hasBeenActivated) {
+                    firstLinkInfo.hasBeenBearing = YES;
+                    if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
+                        [self.delegate userNeedsToChangeHeading:
+                         @{
+                           @"diffHeading": @(firstLinkInfo.diffBearingAtSnappedLocationOnLink),
+                           @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
+                           }];
+                    }
                 }
             }
-
-            navIndex++;
-            return;
+        
+            isFirst = NO;
         }
         
         // TODO: check user skip some states
@@ -1057,9 +1243,404 @@ static NavNavigator* instance;
                 if (linkInfo_.link.linkType == LINK_TYPE_ESCALATOR || linkInfo_.link.linkType == LINK_TYPE_STAIRWAY) {
                     return 0.5;
                 } else {
-                    return MIN(C.APPROACHED_DISTANCE_THRESHOLD, linkInfo_.link.length/4);
+                    return MAX(MIN(C.APPROACHED_DISTANCE_THRESHOLD, linkInfo_.link.length/4), 1.0);
                 }
             };
+
+            
+            if (linkInfo.hasBeenWaitingAction) {
+                if (linkInfo.nextLink.linkType == LINK_TYPE_ELEVATOR ||
+                    (navIndex == 1 && linkInfo.link.linkType == LINK_TYPE_ELEVATOR)) {
+                    navIndex++;
+                }
+                else if (fabs(linkInfo.diffNextBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
+                    if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
+                        [self.delegate userAdjustedHeading:@{}];
+                    }
+                    navIndex++;
+                }
+
+                return;
+            }
+            
+            if (linkInfo.link.linkType == LINK_TYPE_ELEVATOR) {
+                if (fabs(linkInfo.link.targetHeight - location.floor) < C.FLOOR_DIFF_THRESHOLD) {
+                    if (linkInfo.isNextDestination) { // elevator is the destination
+                        if ([self.delegate respondsToSelector:@selector(didNavigationFinished:)]) {
+                            [self.delegate didNavigationFinished:
+                             @{
+                               @"isEndOfLink": @(linkInfo.nextLink == nil),
+                               @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                               }];
+
+                        }
+                        navIndex = (int)[linkInfos count];
+                    } else { // arrived the target floor
+                        linkInfo.hasBeenWaitingAction = YES;
+                        if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                            [self.delegate userNeedsToTakeAction:
+                             @{
+                               @"turnAngle": @(linkInfo.nextTurnAngle),
+                               @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
+                               @"linkType": @(linkInfo.link.linkType),
+                               @"nextLinkType": @(linkInfo.nextLink.linkType),
+                               @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                               @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                               @"distance": @(linkInfo.link.length)
+                               }];
+                        }
+                    }
+                } else {
+                    NavPOI*(^findElevatorPOI)(NSArray*, HLPPOICategory) = ^(NSArray *array, HLPPOICategory category) {
+                        for(NavPOI *poi in array) {
+                            if ([poi.origin poiCategory] == category) {
+                                return poi;
+                            }
+                        }
+                        return (NavPOI*)nil;
+                    };
+                    
+                    NavPOI *elevatorPOI = findElevatorPOI(linkInfo.pois, HLP_POI_CATEGORY_ELEVATOR);
+                    NavPOI *equipmentPOI = findElevatorPOI(linkInfo.pois, HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS);
+                    
+                    if (isnan(linkInfo.link.lastBearingForTarget)) { // elevator is the destination
+                        if (!linkInfo.hasBeenApproaching) {
+                            if (equipmentPOI) {
+                                if ([self.delegate respondsToSelector:@selector(userGetsOnElevator:)]) {
+                                    [self.delegate userGetsOnElevator:
+                                     @{
+                                       @"poi":equipmentPOI,
+                                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight)
+                                       }];
+                                }
+                            } else {
+                                if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                                    [self.delegate remainingDistanceToTarget:
+                                     @{
+                                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight)
+                                       }];
+                                }
+                            }
+                            linkInfo.hasBeenApproaching = YES;
+                        }
+                    } else {
+                        HLPLocation*(^elevatorLocation)(HLPLink*) = ^(HLPLink *link) {
+                            if ([link isKindOfClass:HLPCombinedLink.class]) {
+                                HLPCombinedLink *clink = ((HLPCombinedLink*)link);
+                                for(HLPLink *l in clink.links) {
+                                    if (l.linkType == LINK_TYPE_ELEVATOR) {
+                                        return l.targetLocation;
+                                    }
+                                }
+                            }
+                            if ([link isKindOfClass:HLPLink.class]) {
+                                return link.targetLocation;
+                            }
+                            return (HLPLocation*)nil;
+                        };
+                        
+                        // face to the exit after getting in the elevator
+                        if (fabs(linkInfo.link.lastBearingForTarget-location.orientation) < 45 &&
+                            !linkInfo.hasBeenApproaching) {
+                            if (equipmentPOI) {
+                                if ([self.delegate respondsToSelector:@selector(userGetsOnElevator:)]) {
+                                    [self.delegate userGetsOnElevator:
+                                     @{
+                                       @"poi": equipmentPOI,
+                                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight)
+                                       }];
+                                }
+                            } else {
+                                if ([self.delegate respondsToSelector:@selector(userGetsOnElevator:)]) {
+                                    [self.delegate userGetsOnElevator:
+                                     @{
+                                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight)
+                                       }];
+                                }
+                            }
+                            linkInfo.hasBeenApproaching = YES;
+                            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
+                                HLPLocation *loc = elevatorLocation(linkInfo.link);
+                                [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
+                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET
+                                                                                        object:@{@"location":loc}];
+                                });
+                            }
+                        } else if (!linkInfo.hasBeenActivated) {
+                            // only for preview
+                            double distance = C.APPROACHED_DISTANCE_THRESHOLD+2;
+                            double previewSpeed = [[NSUserDefaults standardUserDefaults] doubleForKey:@"preview_speed"];
+                            double delayInSeconds = (distance / 0.2) * (1.0 / previewSpeed) * 1.5;
+                            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
+                                if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                                    [self.delegate remainingDistanceToTarget:
+                                     @{
+                                       @"diffHeading": @(linkInfo.link.lastBearingForTarget-loc.orientation)
+                                       }];
+                                }
+                            });
+                            if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                                [self.delegate remainingDistanceToTarget:
+                                 @{
+                                   @"distance": @(distance)
+                                   }];
+                            }
+                            if (elevatorPOI) {
+                                if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
+                                    [self.delegate userIsApproachingToPOI:
+                                     @{
+                                       @"poi": elevatorPOI,
+                                       @"heading": @(NAN)
+                                       }];
+                                }
+                            }
+                            linkInfo.hasBeenActivated = YES;
+                        }
+                    }
+                    if (navIndex == 1) {
+                        // starts at elevator
+                        if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                            [self.delegate userNeedsToTakeAction:
+                             @{
+                               @"diffHeading": @(0),
+                               @"nextLinkType": @(linkInfo.link.linkType),
+                               @"nextSourceHeight": @(linkInfo.link.sourceHeight),
+                               @"nextTargetHeight": @(linkInfo.link.targetHeight)
+                               }];
+                        }
+                    }
+                }
+                return;
+            }
+            
+            if (linkInfo.link.length < C.NO_APPROACHING_DISTANCE_THRESHOLD) {
+                linkInfo.hasBeenApproaching = YES;
+            }
+            
+            if (linkInfo.hasBeenBearing) {
+                if (fabs(linkInfo.diffBearingAtUserLocation) < C.ADJUST_HEADING_MARGIN) {
+                    linkInfo.hasBeenBearing = NO;
+                    if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
+                        [self.delegate userAdjustedHeading:@{}];
+                    }
+                }
+                // TODO if skip this turn
+                // return;
+            }
+            if (linkInfo.hasBeenFixBackward) {
+                if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
+                    linkInfo.hasBeenFixBackward = NO;
+                    linkInfo.backDetectedLocation = nil;
+                    if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
+                        [self.delegate userAdjustedHeading:@{}];
+                    }
+                    if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {
+                        
+                        double distance = linkInfo.distanceToTargetFromSnappedLocationOnLink;
+                        
+                        [self.delegate userNeedsToWalk:
+                         @{
+                           //@"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
+                           @"pois": linkInfo.pois,
+                           @"noCautionPOI": @(YES),
+                           @"isFirst": @(navIndex == 1),
+                           @"distance": @(distance),
+                           @"noAndTurnMinDistance": @(C.NO_ANDTURN_DISTANCE_THRESHOLD),
+                           @"linkType": @(linkInfo.link.linkType),
+                           @"nextLinkType": @(linkInfo.nextLink.linkType),
+                           @"turnAngle": @(linkInfo.nextTurnAngle),
+                           @"isNextDestination": @(linkInfo.isNextDestination),
+                           @"sourceHeight": @(linkInfo.link.sourceHeight),
+                           @"targetHeight": @(linkInfo.link.targetHeight),
+                           @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                           
+                           }];
+                    }
+                }
+                // TODO if skip this turn
+                // return;
+            }
+            
+            if (!linkInfo.hasBeenActivated && !linkInfo.hasBeenBearing) {
+                
+                linkInfo.hasBeenActivated = YES;
+                if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {
+                    
+                    double distance = linkInfo.link.length;
+                    if (linkInfo.distanceToUserLocationFromLink - distance > 2) {
+                        distance = linkInfo.distanceToTargetFromUserLocation;
+                    }
+                    
+                    [self.delegate userNeedsToWalk:
+                     @{
+                    //@"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
+                       @"pois": linkInfo.pois,
+                       @"isFirst": @(navIndex == firstLinkIndex),
+                       @"distance": @(distance),
+                       @"noAndTurnMinDistance": @(C.NO_ANDTURN_DISTANCE_THRESHOLD),
+                       @"linkType": @(linkInfo.link.linkType),
+                       @"nextLinkType": @(linkInfo.nextLink.linkType),
+                       @"turnAngle": @(linkInfo.nextTurnAngle),
+                       @"isNextDestination": @(linkInfo.isNextDestination),
+                       @"sourceHeight": @(linkInfo.link.sourceHeight),
+                       @"targetHeight": @(linkInfo.link.targetHeight),
+                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+
+                       }];
+                }
+                linkInfo.nextTargetRemainingDistance = nextTargetRemainingDistance(linkInfo.link.length, linkInfo.link.length);
+                
+                return;
+            }
+            
+            if (linkInfo.distanceToTargetFromSnappedLocationOnLink < linkInfo.nextTargetRemainingDistance) {
+                if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                    [self.delegate remainingDistanceToTarget:
+                     @{
+                       @"target": @(YES),
+                       @"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
+                       @"diffHeading": @((linkInfo.distanceToTargetFromSnappedLocationOnLink>5)?
+                           linkInfo.diffBearingAtUserLocation:linkInfo.diffBearingAtSnappedLocationOnLink)
+                       }];
+                }
+
+                linkInfo.nextTargetRemainingDistance = nextTargetRemainingDistance(linkInfo.distanceToTargetFromSnappedLocationOnLink, linkInfo.link.length);
+                return;
+            } else {
+                if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
+                    [self.delegate remainingDistanceToTarget:
+                     @{
+                       @"target": @(NO),
+                       @"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
+                       @"diffHeading": @((linkInfo.distanceToTargetFromSnappedLocationOnLink>5)?
+                           linkInfo.diffBearingAtUserLocation:linkInfo.diffBearingAtSnappedLocationOnLink)
+                       }];
+                }
+            }
+            
+            
+            // to do adjust approaching distance for short link
+            if (linkInfo.distanceToTargetFromSnappedLocationOnLink < approachingDistance() &&
+                fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < 45 &&
+                !linkInfo.hasBeenApproaching) {
+                if ([self.delegate respondsToSelector:@selector(userIsApproachingToTarget:)]) {
+                    [self.delegate userIsApproachingToTarget:
+                     @{
+                       @"turnAngle": @(linkInfo.nextTurnAngle),
+                       @"nextLinkType": @(linkInfo.nextLink.linkType),
+                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                       }];
+                    
+                }
+                linkInfo.hasBeenApproaching = YES;
+                return;
+            }
+            
+            if (linkInfo.distanceToTargetFromSnappedLocationOnLink < approachedDistance(linkInfo)) {
+                
+                if (linkInfo.isNextDestination == NO) {
+                    if (fabs(linkInfo.link.targetHeight - location.floor) < C.FLOOR_DIFF_THRESHOLD) {
+                        if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                            [self.delegate userNeedsToTakeAction:
+                             @{
+                               @"turnAngle": @(linkInfo.nextTurnAngle),
+                               @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
+                               @"nextLinkType": @(linkInfo.nextLink.linkType),
+                               @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                               @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                               @"fullAction": @(YES)
+                               }];
+                        }
+                        linkInfo.hasBeenWaitingAction = YES;
+                    }
+                    
+                    // read destInfo
+                    for(int i = 0; i < [linkInfo.pois count]; i++) {
+                        NavPOI *poi = linkInfo.pois[i];
+                        
+                        if (!poi.forAfterEnd) {
+                            continue;
+                        }
+                        
+                        if (!poi.hasBeenApproached) {
+                            if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
+                                [self.delegate userIsApproachingToPOI:
+                                 @{
+                                   @"poi": poi,
+                                   @"heading": @(poi.diffAngleFromUserOrientation)
+                                   }];
+                                poi.hasBeenApproached = YES;
+                            }
+                        }
+                    }
+                } else {
+                    if ([self.delegate respondsToSelector:@selector(didNavigationFinished:)]) {
+                        [self.delegate didNavigationFinished:
+                         @{
+                           @"pois": linkInfo.pois,
+                           @"isEndOfLink": @(linkInfo.nextLink == nil)
+                           }];
+                    }                    
+                    navIndex = (int)[linkInfos count];
+                }
+                
+                return;
+            }
+            
+            
+            // check distance to POI and read if it's close
+            
+            for(int i = 0; i < [linkInfo.pois count]; i++) {
+                NavPOI *poi = linkInfo.pois[i];
+                
+                if (poi.forBeforeStart || poi.forCorner || poi.forFloor) {
+                    continue;
+                }
+                
+                if (poi.forAfterEnd && linkInfo.nextLink != nil) {
+                    continue;
+                }
+                
+                if (!poi.hasBeenApproached && now - poi.lastApproached > C.POI_ANNOUNCE_MIN_INTERVAL) {
+                    if (poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
+                        poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE) {
+                        if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
+                            [self.delegate userIsApproachingToPOI:
+                             @{
+                               @"poi": poi,
+                               @"heading": @(poi.diffAngleFromUserOrientation)
+                               }];
+                            poi.hasBeenApproached = YES;
+                            poi.hasBeenLeft = NO;
+                            poi.lastApproached = now;
+                            poi.count++;
+                        }
+                    }
+                } else {
+                    if (!poi.hasBeenLeft) {
+                        if (poi.distanceFromSnappedLocation > C.POI_ANNOUNCE_DISTANCE) {
+                            if ([self.delegate respondsToSelector:@selector(userIsLeavingFromPOI:)]) {
+                                [self.delegate userIsLeavingFromPOI:
+                                 @{
+                                   @"poi": poi,
+                                   @"heading": @(poi.diffAngleFromUserOrientation)
+                                   }];
+                                poi.hasBeenLeft = YES;
+                                poi.hasBeenApproached = NO;
+                                poi.lastLeft = now;
+                            }
+                        }
+                    }
+                }
+            }
+            
             
             
             // user may be off route
@@ -1226,261 +1807,6 @@ static NavNavigator* instance;
                         minLinkInfo.backDetectedLocation = minLinkInfo.snappedLocationOnLink;
                     }
                     return;
-                }
-            }
-        
-            
-            if (linkInfo.link.length < C.NO_APPROACHING_DISTANCE_THRESHOLD) {
-                linkInfo.hasBeenApproaching = YES;
-            }
-
-            
-            if (linkInfo.hasBeenWaitingAction) {
-                if (linkInfo.nextLink.linkType == LINK_TYPE_ELEVATOR) {
-                    navIndex++;
-                }
-                else if (fabs(linkInfo.diffNextBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
-                    if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
-                        [self.delegate userAdjustedHeading:@{}];
-                    }
-                    navIndex++;
-                }
-
-                return;
-            }
-            
-            if (linkInfo.link.linkType == LINK_TYPE_ELEVATOR) {
-                if (fabs(linkInfo.link.targetHeight - location.floor) < C.FLOOR_DIFF_THRESHOLD) {
-                    linkInfo.hasBeenWaitingAction = YES;
-                    if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
-                        [self.delegate userNeedsToTakeAction:
-                         @{
-                           @"turnAngle": @(linkInfo.nextTurnAngle),
-                           @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
-                           @"linkType": @(linkInfo.link.linkType),
-                           @"nextLinkType": @(linkInfo.nextLink.linkType),
-                           @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
-                           }];
-                    }
-                }
-                return;
-            }
-            
-            
-            if (linkInfo.hasBeenBearing) {
-                if (fabs(linkInfo.diffBearingAtUserLocation) < C.ADJUST_HEADING_MARGIN) {
-                    linkInfo.hasBeenBearing = NO;
-                    if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
-                        [self.delegate userAdjustedHeading:@{}];
-                    }
-                }
-                // TODO if skip this turn
-                // return;
-            }
-            if (linkInfo.hasBeenFixBackward) {
-                if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
-                    linkInfo.hasBeenFixBackward = NO;
-                    linkInfo.backDetectedLocation = nil;
-                    if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
-                        [self.delegate userAdjustedHeading:@{}];
-                    }
-                    if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {
-                        
-                        double distance = linkInfo.distanceToTargetFromSnappedLocationOnLink;
-                        
-                        [self.delegate userNeedsToWalk:
-                         @{
-                           //@"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
-                           @"pois": linkInfo.pois,
-                           @"noCautionPOI": @(YES),
-                           @"isFirst": @(navIndex == 1),
-                           @"distance": @(distance),
-                           @"noAndTurnMinDistance": @(C.NO_ANDTURN_DISTANCE_THRESHOLD),
-                           @"linkType": @(linkInfo.link.linkType),
-                           @"nextLinkType": @(linkInfo.nextLink.linkType),
-                           @"turnAngle": @(linkInfo.nextTurnAngle),
-                           @"isNextDestination": @(linkInfo.isNextDestination),
-                           @"sourceHeight": @(linkInfo.link.sourceHeight),
-                           @"targetHeight": @(linkInfo.link.targetHeight),
-                           @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
-                           
-                           }];
-                    }
-                }
-                // TODO if skip this turn
-                // return;
-            }
-            
-            if (!linkInfo.hasBeenActivated) {
-                
-                linkInfo.hasBeenActivated = YES;
-                if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {
-                    
-                    double distance = linkInfo.link.length;
-                    if (linkInfo.distanceToUserLocationFromLink - distance > 2) {
-                        distance = linkInfo.distanceToTargetFromUserLocation;
-                    }
-                    
-                    [self.delegate userNeedsToWalk:
-                     @{
-                    //@"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
-                       @"pois": linkInfo.pois,
-                       @"isFirst": @(navIndex == 1),
-                       @"distance": @(distance),
-                       @"noAndTurnMinDistance": @(C.NO_ANDTURN_DISTANCE_THRESHOLD),
-                       @"linkType": @(linkInfo.link.linkType),
-                       @"nextLinkType": @(linkInfo.nextLink.linkType),
-                       @"turnAngle": @(linkInfo.nextTurnAngle),
-                       @"isNextDestination": @(linkInfo.isNextDestination),
-                       @"sourceHeight": @(linkInfo.link.sourceHeight),
-                       @"targetHeight": @(linkInfo.link.targetHeight),
-                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
-
-                       }];
-                }
-                linkInfo.nextTargetRemainingDistance = nextTargetRemainingDistance(linkInfo.link.length, linkInfo.link.length);
-                
-                return;
-            }
-            
-            if (linkInfo.distanceToTargetFromSnappedLocationOnLink < linkInfo.nextTargetRemainingDistance) {
-                if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
-                    [self.delegate remainingDistanceToTarget:
-                     @{
-                       @"target": @(YES),
-                       @"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink)
-                       }];
-                }
-
-                linkInfo.nextTargetRemainingDistance = nextTargetRemainingDistance(linkInfo.distanceToTargetFromSnappedLocationOnLink, linkInfo.link.length);
-                return;
-            } else {
-                if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
-                    [self.delegate remainingDistanceToTarget:
-                     @{
-                       @"target": @(NO),
-                       @"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink)
-                       }];
-                }
-            }
-            
-            
-            // to do adjust approaching distance for short link
-            if (linkInfo.distanceToTargetFromSnappedLocationOnLink < approachingDistance() &&
-                fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < 45 &&
-                !linkInfo.hasBeenApproaching) {
-                if ([self.delegate respondsToSelector:@selector(userIsApproachingToTarget:)]) {
-                    [self.delegate userIsApproachingToTarget:
-                     @{
-                       @"turnAngle": @(linkInfo.nextTurnAngle),
-                       @"nextLinkType": @(linkInfo.nextLink.linkType),
-                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
-                       }];
-                    
-                }
-                linkInfo.hasBeenApproaching = YES;
-                return;
-            }
-            
-            if (linkInfo.distanceToTargetFromSnappedLocationOnLink < approachedDistance(linkInfo)) {
-                
-                if (linkInfo.isNextDestination == NO) {
-                    if (fabs(linkInfo.link.targetHeight - location.floor) < C.FLOOR_DIFF_THRESHOLD) {
-                        if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
-                            [self.delegate userNeedsToTakeAction:
-                             @{
-                               @"turnAngle": @(linkInfo.nextTurnAngle),
-                               @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
-                               @"nextLinkType": @(linkInfo.nextLink.linkType),
-                               @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                               @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
-                               }];
-                        }
-                        linkInfo.hasBeenWaitingAction = YES;
-                    }
-                } else {
-                    
-                    if ([self.delegate respondsToSelector:@selector(didNavigationFinished:)]) {
-                        [self.delegate didNavigationFinished:
-                         @{
-                           @"isEndOfLink": @(linkInfo.nextLink == nil)
-                           }];
-                    }
-                    
-                    navIndex = (int)[linkInfos count];
-                }
-                
-                // read destInfo
-                for(int i = 0; i < [linkInfo.pois count]; i++) {
-                    NavPOI *poi = linkInfo.pois[i];
-                    
-                    if (!poi.forBeforeEnd) {
-                        continue;
-                    }
-                    
-                    if (!poi.hasBeenApproached) {
-                        if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
-                            [self.delegate userIsApproachingToPOI:
-                             @{
-                               @"poi": poi,
-                               @"heading": @(poi.diffAngleFromUserOrientation)
-                               }];
-                            poi.hasBeenApproached = YES;
-                        }
-                    }
-                }
-                
-                return;
-            }
-            
-            
-            // check distance to POI and read if it's close
-            
-            for(int i = 0; i < [linkInfo.pois count]; i++) {
-                NavPOI *poi = linkInfo.pois[i];
-                
-                if (poi.forBeforeStart || poi.forCorner || poi.forFloor) {
-                    continue;
-                }
-                
-                if (poi.forBeforeEnd && linkInfo.nextLink != nil) {
-                    continue;
-                }
-                
-                if (!poi.hasBeenApproached && now - poi.lastApproached > C.POI_ANNOUNCE_MIN_INTERVAL) {
-                    if (poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
-                        poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE) {
-                        if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
-                            [self.delegate userIsApproachingToPOI:
-                             @{
-                               @"poi": poi,
-                               @"heading": @(poi.diffAngleFromUserOrientation)
-                               }];
-                            poi.hasBeenApproached = YES;
-                            poi.hasBeenLeft = NO;
-                            poi.lastApproached = now;
-                            poi.count++;
-                        }
-                    }
-                } else {
-                    if (!poi.hasBeenLeft) {
-                        if (poi.distanceFromSnappedLocation > C.POI_ANNOUNCE_DISTANCE) {
-                            if ([self.delegate respondsToSelector:@selector(userIsLeavingFromPOI:)]) {
-                                [self.delegate userIsLeavingFromPOI:
-                                 @{
-                                   @"poi": poi,
-                                   @"heading": @(poi.diffAngleFromUserOrientation)
-                                   }];
-                                poi.hasBeenLeft = YES;
-                                poi.hasBeenApproached = NO;
-                                poi.lastLeft = now;
-                            }
-                        }
-                    }
                 }
             }
             

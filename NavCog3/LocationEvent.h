@@ -33,6 +33,15 @@
 #define NAV_LOCATION_CHANGED_NOTIFICATION @"nav_location_changed_notification"
 #define NAV_ROUTE_CHANGED_NOTIFICATION @"nav_route_changed_notification"
 #define NAV_ROUTE_INDEX_CHANGED_NOTIFICATION @"nav_route_index_changed_notification"
+#define NAV_LOCATION_STATUS_CHANGE @"nav_location_status_changed"
+
+typedef NS_ENUM(NSUInteger, NavLocationStatus) {
+    NavLocationStatusStable,
+    NavLocationStatusLocating,
+    NavLocationStatusLost,
+    NavLocationStatusBackground,
+    NavLocationStatusUnknown
+};
 
 #define DESTINATIONS_CHANGED_NOTIFICATION @"destinations_changed_notification"
 #define ROUTE_CHANGED_NOTIFICATION @"route_changed_notification"
@@ -41,13 +50,22 @@
 #define CALIBRATION_BEACON_FOUND @"calibration_beacon_found_notification"
 
 #define REQUEST_RSSI_BIAS @"request_rssi_bias_notification"
+#define REQUEST_LOCATION_HEADING_RESET @"request_location_heading_reset_notification"
 #define REQUEST_LOCATION_RESET @"request_location_reset_notification"
+#define REQUEST_LOCATION_RESTART @"request_location_restart"
+#define REQUEST_LOCATION_SAVE @"request_location_save"
 #define REQUEST_LOG_REPLAY @"request_log_replay"
 #define REQUEST_LOG_REPLAY_STOP @"request_log_replay_stop"
+#define REQUEST_BACKGROUND_LOCATION @"request_background_location"
 
 #define REQUEST_PROCESS_INIT_TARGET_LOG @"request_process_init_target_log"
 #define REQUEST_PROCESS_SHOW_ROUTE_LOG @"request_process_show_route_log"
 
 #define SPEAK_TEXT_QUEUEING @"speak_text_queueing"
+
+#define MANUAL_LOCATION @"manual_location"
+
+#define START_ORIENTATION_INIT @"start_orientation_init"
+#define STOP_ORIENTATION_INIT @"stop_orientation_init"
 
 #endif /* LocationEvent_h */

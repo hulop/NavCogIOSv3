@@ -68,6 +68,7 @@
     
     self.title.text = self.setting.label;
     self.title.adjustsFontSizeToFitWidth = YES;
+    self.title.isAccessibilityElement = NO;
 
     if (self.slider) {
         self.slider.minimumValue = self.setting.min;
@@ -75,9 +76,12 @@
         if ([self.setting.currentValue isKindOfClass:[NSNumber class]]) {
             self.slider.value = [(NSNumber*)self.setting.currentValue floatValue];
         }
+        self.slider.accessibilityLabel = self.setting.label;
+        self.valueLabel.isAccessibilityElement = NO;
     }
     if (self.switchView) {
         self.switchView.on = [self.setting boolValue];
+        self.switchView.accessibilityLabel = self.setting.label;
     }
     if (self.subtitle) {
         if (self.setting.type == OPTION) {
@@ -93,6 +97,7 @@
     if (self.textInput) {
         self.textInput.secureTextEntry = (setting.type == PASSINPUT);
         self.textInput.text = [self.setting stringValue];
+        self.textInput.accessibilityLabel = self.setting.label;
     }
     [self updateView];
 }
@@ -114,6 +119,7 @@
 - (void) updateView
 {
     [self.pickerView reloadAllComponents];
+    [self.pickerView setAccessibilityLabel:self.setting.label];
     if ([self.setting selectedRow] >= 0) {
         [self.pickerView selectRow:[self.setting selectedRow] inComponent:0 animated:YES];
     }
@@ -121,9 +127,18 @@
     if (self.valueLabel) {
         if (self.setting.interval < 0.01) {
             self.valueLabel.text = [NSString stringWithFormat:@"%.3f", [self.setting floatValue]];
-        } else {            
+            self.slider.accessibilityValue = self.valueLabel.text;
+        } else if (self.setting.interval < 0.1) {
             self.valueLabel.text = [NSString stringWithFormat:@"%.2f", [self.setting floatValue]];
+            self.slider.accessibilityValue = self.valueLabel.text;
+        } else if (self.setting.interval < 1) {
+            self.valueLabel.text = [NSString stringWithFormat:@"%.1f", [self.setting floatValue]];
+            self.slider.accessibilityValue = self.valueLabel.text;
+        } else {
+            self.valueLabel.text = [NSString stringWithFormat:@"%.0f", [self.setting floatValue]];
+            self.slider.accessibilityValue = self.valueLabel.text;
         }
+
     }
 }
 

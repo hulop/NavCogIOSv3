@@ -167,7 +167,7 @@ static NavDeviceTTS *instance = nil;
     
     double speechRate = [[NSUserDefaults standardUserDefaults] doubleForKey:SPEECH_SPEED];
     
-    //NSLog(@"self speak=%@ %@", text, flag?@"Force":@"");
+    NSLog(@"speak_queue,%@,%@", text, flag?@"Force":@"");
     HLPSpeechEntry *se = [[HLPSpeechEntry alloc] init];
     se.ut = [AVSpeechUtterance speechUtteranceWithString:text];
     se.ut.volume = 1.0;

@@ -54,6 +54,7 @@
     NSTimeInterval lastLocationSent;
     NSTimeInterval lastOrientationSent;
     NSTimeInterval lastRequestTime;
+    
 }
 
 - (void)dealloc {
@@ -165,6 +166,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(manualLocation:) name:MANUAL_LOCATION object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveLocation:) name:REQUEST_LOCATION_SAVE object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartDialog:) name:REQUEST_START_DIALOG object:nil];
     
     
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
@@ -334,7 +337,7 @@
 }
 
 - (void)loadUIPageWithHash:(NSString*)hash {
-    NSString *script = [NSString stringWithFormat:@"location.hash=%@", hash];
+    NSString *script = [NSString stringWithFormat:@"location.hash=\"%@\"", hash];
     [self evalScript:script];
 }
 
@@ -488,6 +491,12 @@
     [[NSUserDefaults standardUserDefaults] setObject:dic forKey:@"lastLocation"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
+
+- (void)requestStartDialog:(NSNotificationCenter*)notification
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"navcogdialog://start_dialog/?"]];
+}
+
 
 - (void)retry
 {

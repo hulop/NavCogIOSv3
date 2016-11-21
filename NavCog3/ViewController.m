@@ -49,6 +49,8 @@
     recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
     recognizer.delegate = self;
     [self.webView addGestureRecognizer:recognizer];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
 }
 
 - (void) startLoading {
@@ -92,6 +94,12 @@
 }
 
 
+- (void)requestStartNavigation:(NSNotification*)note
+{
+    NSDictionary *options = [note object];    
+    NSString *hash = [NSString stringWithFormat:@"navigate=%@", options[@"toID"]];
+    [helper setBrowserHash: hash];
+}
 
 - (void)startNavigationWithOptions:(NSDictionary *)options
 {

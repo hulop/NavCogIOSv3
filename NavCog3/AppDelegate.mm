@@ -167,4 +167,23 @@ void uncaughtExceptionHandler(NSException *exception)
         }
     }
 }
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    if ([[url scheme] isEqualToString:@"navcog3"]) {
+        if ([[url host] isEqualToString:@"start_navigation"]) {
+            NSURLComponents *comp = [[NSURLComponents alloc] initWithString:[url absoluteString]];
+
+            NSMutableDictionary *opt = [@{} mutableCopy];
+            for(NSURLQueryItem *item in comp.queryItems) {
+                opt[item.name] = item.value;
+            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_START_NAVIGATION object:opt];
+            return YES;
+        }
+    }
+    return NO;
+}
+
 @end

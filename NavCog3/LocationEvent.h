@@ -57,6 +57,8 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 #define REQUEST_LOG_REPLAY @"request_log_replay"
 #define REQUEST_LOG_REPLAY_STOP @"request_log_replay_stop"
 #define REQUEST_BACKGROUND_LOCATION @"request_background_location"
+#define REQUEST_START_NAVIGATION @"request_start_navigation"
+#define REQUEST_START_DIALOG @"request_start_dialog"
 
 #define REQUEST_PROCESS_INIT_TARGET_LOG @"request_process_init_target_log"
 #define REQUEST_PROCESS_SHOW_ROUTE_LOG @"request_process_show_route_log"

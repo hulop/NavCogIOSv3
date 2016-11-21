@@ -1293,7 +1293,7 @@ static NavNavigatorConstants *_instance;
                 } else {
                     NavPOI*(^findElevatorPOI)(NSArray*, HLPPOICategory) = ^(NSArray *array, HLPPOICategory category) {
                         for(NavPOI *poi in array) {
-                            if ([poi.origin poiCategory] == category) {
+                            if ([poi isKindOfClass:HLPPOI.class] && [poi.origin poiCategory] == category) {
                                 return poi;
                             }
                         }

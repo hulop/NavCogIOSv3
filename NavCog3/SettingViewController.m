@@ -116,11 +116,12 @@ static HLPSettingHelper *routeOptionsSettingHelper;
             NSString *name = alert.textFields[0].text;
             if (name && [name length] > 0) {
                 NSMutableDictionary *dic = [@{} mutableCopy];
-                //[userSettingHelper exportSetting:dic];
+                [userSettingHelper exportSetting:dic];
                 [detailSettingHelper exportSetting:dic];
                 [blelocppSettingHelper exportSetting:dic];
                 [blindnaviSettingHelper exportSetting:dic];
                 [mapSettingHelper exportSetting:dic];
+                [routeOptionsSettingHelper exportSetting:dic];
                 if (![ConfigManager saveConfig:dic withName:name Force:NO]) {
                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Overwrite?"
                                                                                    message:[NSString stringWithFormat:@"Are you sure to overwrite %@?", name]
@@ -414,6 +415,11 @@ static HLPSettingHelper *routeOptionsSettingHelper;
     if ([id isEqualToString:@"end_navigation"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":END_NAVIGATION}];
         [self.navigationController popViewControllerAnimated:YES];
+    }
+    if ([id isEqualToString:@"dialog_search"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_START_DIALOG object:@{}];
+        [self.navigationController popViewControllerAnimated:YES];
+        
     }
 }
 

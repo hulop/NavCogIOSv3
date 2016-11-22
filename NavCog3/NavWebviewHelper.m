@@ -28,8 +28,9 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Mantle/Mantle.h>
 
-//#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader"
-#define UI_PAGE @"%@://%@/%@mobile.html?noheader" // for backward compatibility
+#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader"
+//#define UI_PAGE @"%@://%@/%@mobile.html?noheader" // for backward compatibility
+// does not work with old server
 
 @implementation NavWebView
 
@@ -494,7 +495,20 @@
 
 - (void)requestStartDialog:(NSNotificationCenter*)notification
 {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"navcogdialog://start_dialog/?"]];
+    BOOL result = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"navcogdialog://start_dialog/?"]];
+    if (!result) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"No Dialog App"
+                                                                       message:@"You need to install NavCog dialog app"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                                  style:UIAlertActionStyleDefault handler:nil]];
+        
+        UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (topController.presentedViewController) {
+            topController = topController.presentedViewController;
+        }
+        [topController presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 

@@ -567,8 +567,8 @@ void functionCalledToLog(void *inUserData, string text)
                 }
             }
             
-            if (![[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"] &&
-                ![[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_WHEELCHAIR"]
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"] ||
+                [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_WHEELCHAIR"]
                 ) {
                 if (currentOrientationAccuracy >= ORIENATION_ACCURACY_THRETHOLD) {
                     double orientation = motion.attitude.yaw + offsetYaw;

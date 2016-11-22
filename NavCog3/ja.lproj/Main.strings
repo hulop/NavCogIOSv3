@@ -1,4 +1,4 @@
-/* Class = "UIButton"; accessibilityHint = "Click to change"; ObjectID = "0AS-gk-VX3"; */
+/* Class = "UIButton"; accessibilityHint = "Select to change"; ObjectID = "0AS-gk-VX3"; */
 "0AS-gk-VX3.accessibilityHint" = "変更するには選択します";
 
 /* Class = "UIButton"; normalTitle = "Button"; ObjectID = "0AS-gk-VX3"; */
@@ -34,6 +34,9 @@
 /* Class = "UIButton"; normalTitle = "Right"; ObjectID = "7Cs-ZC-ieK"; */
 "7Cs-ZC-ieK.normalTitle" = "右";
 
+/* Class = "UILabel"; text = "Search with Dialog"; ObjectID = "7Zd-hq-Kgd"; */
+"7Zd-hq-Kgd.text" = "対話検索";
+
 /* Class = "UIButton"; normalTitle = "Down"; ObjectID = "8Qc-Ae-cih"; */
 "8Qc-Ae-cih.normalTitle" = "下の階";
 
@@ -64,7 +67,7 @@
 /* (No Commment) */
 "QT7-QX-lRu.accessibilityLabel" = "音声認識ボタン";
 
-/* Class = "UIButton"; accessibilityHint = "Click to change"; ObjectID = "SC1-aF-UyA"; */
+/* Class = "UIButton"; accessibilityHint = "Select to change"; ObjectID = "SC1-aF-UyA"; */
 "SC1-aF-UyA.accessibilityHint" = "変更するには選択します";
 
 /* Class = "UIButton"; normalTitle = "Button"; ObjectID = "SC1-aF-UyA"; */

@@ -1,3 +1,73 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2016  IBM Corporation, Carnegie Mellon University and others
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *******************************************************************************/
+
+/* (No Commment) */
+"ElvButtonLeft" = "扉の左に呼び出しボタン";
+
+/* (No Commment) */
+"ElvButtonLeftPlural" = "扉の左に呼び出しボタン";
+
+/* (No Commment) */
+"ElvButtonMiddle" = "扉と扉の間に呼び出しボタン";
+
+/* (No Commment) */
+"ElvButtonMiddlePlural" = "扉の間に呼び出しボタン";
+
+/* (No Commment) */
+"ElvButtonRight" = "扉の右に呼び出しボタン";
+
+/* (No Commment) */
+"ElvButtonRightPlural" = "扉の右に呼び出しボタン";
+
+/* No comment provided by engineer. */
+"ElvButtonWithBraille" = "%@。点字有り。";
+
+/* (No Commment) */
+"ElvEqButtonBoth" = "出口に向かって左右に操作ボタン。";
+
+/* (No Commment) */
+"ElvEqButtonBothBraille" = "出口に向かって左右に操作ボタン。点字有り。";
+
+/* (No Commment) */
+"ElvEqButtonBothLeftBraille" = "出口に向かって左右に操作ボタン。左側点字有り。";
+
+/* (No Commment) */
+"ElvEqButtonBothRightBraille" = "出口に向かって左右に操作ボタン。右側点字有り。";
+
+/* (No Commment) */
+"ElvEqButtonLeft" = "出口に向かって左に操作ボタン。";
+
+/* (No Commment) */
+"ElvEqButtonLeftBraille" = "出口に向かって左に操作ボタン。点字有り。";
+
+/* (No Commment) */
+"ElvEqButtonRight" = "出口に向かって右に操作ボタン。";
+
+/* (No Commment) */
+"ElvEqButtonRightBraille" = "出口に向かって右に操作ボタン。点字有り。";
+
+/* (No Commment) */
+"ElvEqWithVoiceGuide" = "音声案内有り。";
+
 /* 横断歩道 */
 "crossing" = "横断歩道";
 
@@ -40,25 +110,3 @@
 /* 不明 */
 "unknown" = "不明";
 
-/* elevator */
-"ElvButtonRight" = "扉の右に呼び出しボタン";
-"ElvButtonLeft" = "扉の左に呼び出しボタン";
-"ElvButtonMiddle" = "扉と扉の間に呼び出しボタン";
-"ElvButtonRightPlural" = "扉の右に呼び出しボタン";
-"ElvButtonLeftPlural" = "扉の左に呼び出しボタン";
-"ElvButtonMiddlePlural" = "扉の間に呼び出しボタン";
-
-"ElvButtonWithBraille" = "%@。点字有り。";
-
-/* elevator equipments */
-"ElvEqButtonBoth" = "出口に向かって左右に操作ボタン。";
-"ElvEqButtonBothBraille" = "出口に向かって左右に操作ボタン。点字有り。";
-"ElvEqButtonBothLeftBraille" = "出口に向かって左右に操作ボタン。左側点字有り。";
-"ElvEqButtonBothRightBraille" = "出口に向かって左右に操作ボタン。右側点字有り。";
-
-"ElvEqButtonLeft" = "出口に向かって左に操作ボタン。";
-"ElvEqButtonLeftBraille" = "出口に向かって左に操作ボタン。点字有り。";
-"ElvEqButtonRight" = "出口に向かって右に操作ボタン。";
-"ElvEqButtonRightBraille" = "出口に向かって右に操作ボタン。点字有り。";
-
-"ElvEqWithVoiceGuide" = "音声案内有り。";

@@ -23,12 +23,6 @@
 /* label for distance unit option */
 "Distance unit" = "Distance unit";
 
-/* meter distance unit label */
-"Meter" = "Meter";
-
-/* feet distance unit label */
-"Feet" = "Feet";
-
 /* Toilet for people with disability */
 "FOR_DISABLED" = "Multi purpose toilet";
 
@@ -38,26 +32,48 @@
 /* Toilet for male */
 "FOR_MALE" = "Toilet for male";
 
+/* feet distance unit label */
+"Feet" = "Feet";
+
+/* No comment provided by engineer. */
+"Loading, please wait" = "Loading, please wait";
+
+/* meter distance unit label */
+"Meter" = "Meter";
+
+/* No comment provided by engineer. */
+"Navigation" = "Navigation History";
+
+/* No comment provided by engineer. */
+"Preview speed" = "Preview speed";
+
 /* label for tts options */
 "Speech" = "Speech";
 
 /* label for speech speed option */
 "Speech speed" = "Speech speed";
 
-/* label for preview speed option */
-"Preview speed" = "Preview speed";
-
-/* Toilet */
+/* (No Commment) */
 "TOILET" = "Toilet";
 
-/* Label text for network connection error */
+/* No comment provided by engineer. */
+"UI_BLIND" = "Blind User";
+
+/* No comment provided by engineer. */
+"UI_Mode" = "UI Mode";
+
+/* No comment provided by engineer. */
+"UI_WHEELCHAIR" = "Wheelchair User / Sighted User";
+
+/* No comment provided by engineer. */
+"Use Elevator" = "Use Elevator";
+
+/* No comment provided by engineer. */
+"Use Escalator" = "Use Escalator";
+
+/* No comment provided by engineer. */
+"Use Stairs" = "Use Stairs";
+
+/* (No Commment) */
 "checkNetworkConnection" = "Check network connection";
 
-"UI_Mode" = "UI Mode";
-"UI_WHEELCHAIR" = "Wheelchair User / Sighted User";
-"UI_BLIND" = "Blind User";
-"Use Elevator" = "Use Elevator";
-"Use Escalator" = "Use Escalator";
-"Use Stairs" = "Use Stairs";
-"Navigation" = "Navigation History";
-"Loading, please wait" = "Loading, please wait";

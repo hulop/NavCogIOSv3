@@ -1,4 +1,3 @@
-
 /* Class = "UITableViewSection"; headerTitle = "設定"; ObjectID = "2FQ-fL-pff"; */
 "2FQ-fL-pff.headerTitle" = "Settings";
 
@@ -11,25 +10,25 @@
 /* Class = "UITableViewSection"; headerTitle = "ナビゲーション"; ObjectID = "Fjv-at-SH9"; */
 "Fjv-at-SH9.headerTitle" = "Navigation";
 
-/* Class = "UINavigationItem"; title = "Search"; ObjectID = "LBt-N2-zq5"; */
+/* (No Commment) */
 "LBt-N2-zq5.title" = "Search Route";
 
 /* Class = "UILabel"; text = "基本設定"; ObjectID = "QGQ-Xh-iSw"; */
 "QGQ-Xh-iSw.text" = "Basic settings";
 
-/* Class = "UIButton"; accessibilityLabel = "音声認識ボタン"; ObjectID = "QT7-QX-lRu"; */
+/* (No Commment) */
 "QT7-QX-lRu.accessibilityLabel" = "Voice reco button";
 
-/* Class = "UILabel"; text = "To"; ObjectID = "aNk-8a-CVK"; */
+/* (No Commment) */
 "aNk-8a-CVK.text" = "To";
 
 /* Class = "UILabel"; text = "ルート検索"; ObjectID = "cPv-rD-5Zy"; */
 "cPv-rD-5Zy.text" = "Search route";
 
-/* Class = "UIBarButtonItem"; title = "Voice Reco"; ObjectID = "eX6-IM-K8T"; */
+/* (No Commment) */
 "eX6-IM-K8T.title" = "Voice Reco";
 
-/* Class = "UIButton"; normalTitle = "Start"; ObjectID = "f33-5l-IQM"; */
+/* (No Commment) */
 "f33-5l-IQM.normalTitle" = "Start";
 
 /* Class = "UILabel"; text = "詳細設定"; ObjectID = "fF4-sj-EDd"; */
@@ -38,7 +37,7 @@
 /* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "hf2-Dc-ViP"; */
 "hf2-Dc-ViP.title" = "NavCog";
 
-/* Class = "UILabel"; text = "From"; ObjectID = "uf4-3V-jsg"; */
+/* (No Commment) */
 "uf4-3V-jsg.text" = "From";
 
 /* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "xcm-nO-qOJ"; */
@@ -49,3 +48,4 @@
 
 /* Class = "UILabel"; text = "ルート検索条件設定"; ObjectID = "yPF-YL-WSv"; */
 "yPF-YL-WSv.text" = "Route search setting";
+

@@ -99,12 +99,8 @@
 		7E17F1951D9A211000DB1F34 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		7E17F1971D9A211300DB1F34 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		7E17F1981D9A213600DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = SettingUtil/ja.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
-		7E17F1991D9A21D000DB1F34 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/Main.strings"; sourceTree = "<group>"; };
-		7E17F19A1D9A21D000DB1F34 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
-		7E17F19B1D9A21D000DB1F34 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "SettingUtil/en-US.lproj/HLPSettingView.strings"; sourceTree = "<group>"; };
 		7E17F19F1D9A225A00DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7E17F1A41D9A226100DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
-		7E17F1A61D9A226B00DB1F34 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		7E308BDC1DAF147600E525F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/BlindView.stringsdict; sourceTree = "<group>"; };
@@ -152,6 +148,7 @@
 		7E96D9351DAD185800D57C8C /* DestinationTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DestinationTableViewController.m; sourceTree = "<group>"; };
 		7E9866CC1D5174780073CB49 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		7E9866CD1D5174780073CB49 /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
+		7E9EF44D1DE3D06300F694FB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7EAE6F0B1D2642D600614C35 /* NavWebviewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavWebviewHelper.h; sourceTree = "<group>"; };
 		7EAE6F0C1D2642D600614C35 /* NavWebviewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavWebviewHelper.m; sourceTree = "<group>"; };
 		7EAE6F0E1D264AC200614C35 /* ios_bridge.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ios_bridge.js; sourceTree = "<group>"; };
@@ -421,6 +418,7 @@
 				7EF7F79A1DD178F7000A625A /* Frameworks */,
 				7EF7F79B1DD178F7000A625A /* CopyFiles */,
 				46C40777C2A019F41E953B02 /* [CP] Copy Pods Resources */,
+				7E9EF43A1DE3C61500F694FB /* Resources */,
 			);
 			buildRules = (
 			);
@@ -463,7 +461,6 @@
 				en,
 				Base,
 				ja,
-				"en-US",
 			);
 			mainGroup = 7EDEDC131D1E0C6800AC111A;
 			productRefGroup = 7EDEDC1D1D1E0C6800AC111A /* Products */;
@@ -477,6 +474,13 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		7E9EF43A1DE3C61500F694FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7EDEDC1A1D1E0C6800AC111A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -639,7 +643,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				7E17F19F1D9A225A00DB1F34 /* ja */,
-				7E17F1A61D9A226B00DB1F34 /* en-US */,
+				7E9EF44D1DE3D06300F694FB /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -668,7 +672,6 @@
 				7E9238F01D5189FF00875766 /* Base */,
 				7E9238F21D518A1400875766 /* en */,
 				7E17F1981D9A213600DB1F34 /* ja */,
-				7E17F19B1D9A21D000DB1F34 /* en-US */,
 			);
 			name = HLPSettingView.strings;
 			sourceTree = "<group>";
@@ -697,7 +700,6 @@
 				7EDEDC291D1E0C6800AC111A /* Base */,
 				7E17F1921D9A20EB00DB1F34 /* ja */,
 				7E17F1951D9A211000DB1F34 /* en */,
-				7E17F1991D9A21D000DB1F34 /* en-US */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -708,7 +710,6 @@
 				7EDEDC2E1D1E0C6800AC111A /* Base */,
 				7E17F1931D9A20EB00DB1F34 /* ja */,
 				7E17F1971D9A211300DB1F34 /* en */,
-				7E17F19A1D9A21D000DB1F34 /* en-US */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

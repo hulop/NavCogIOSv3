@@ -546,11 +546,7 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void) startSensors
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"] ||
-        [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_WHEELCHAIR"]
-        ) {
-        [beaconManager startUpdatingHeading];
-    }
+    [beaconManager startUpdatingHeading];
     
     // remove all beacon region ranging and monitoring
     [self stopAllBeaconRangingAndMonitoring];
@@ -796,12 +792,15 @@ void functionCalledToLog(void *inUserData, string text)
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
 {
-    if (newHeading.headingAccuracy < 0) {
-        return;
+    if (newHeading.headingAccuracy >= 0) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"] ||
+            [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_WHEELCHAIR"]
+            ) {
+            [processQueue addOperationWithBlock:^{
+                [self directionUpdated:newHeading.magneticHeading withAccuracy:newHeading.headingAccuracy];
+            }];
+        }
     }
-    [processQueue addOperationWithBlock:^{
-        [self directionUpdated:newHeading.magneticHeading withAccuracy:newHeading.headingAccuracy];
-    }];
     [processQueue addOperationWithBlock:^{
         // logging
         if (!_isActive || isLogReplaying) {

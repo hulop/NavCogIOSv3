@@ -23,6 +23,7 @@
 
 #import "NavDataSource.h"
 #import "LocationEvent.h"
+#import "TTTOrdinalNumberFormatter.h"
 
 
 #pragma mark - Destination Data Source
@@ -256,12 +257,15 @@
     [cell.contentView addConstraint:lc];
     NavDestination *dest = [self destinationForRowAtIndexPath:indexPath];
     NSString *floor = @"";
+    NSString *floorPron = @"";
     if (_showShopFloor && dest.landmark && !dest.landmark.isFacility) {
         if (_showShopBuilding && dest.landmark.properties[@"building"]) {
-            floor = dest.landmark.properties[@"building"];
+            floorPron = floor = dest.landmark.properties[@"building"];
             floor = [floor stringByAppendingString:@" "];
+            floorPron = [floorPron stringByAppendingString:@" "];
         }
         floor = [floor stringByAppendingString:[self floorString:dest.landmark.nodeHeight]];
+        floorPron = [floorPron stringByAppendingString:[self floorStringPron:dest.landmark.nodeHeight]];
     }
     
     cell.accessoryType = UITableViewCellAccessoryNone;
@@ -271,7 +275,8 @@
     
     cell.textLabel.text = dest.name;
     cell.detailTextLabel.text = floor;
-    cell.accessibilityLabel = dest.namePron;
+    cell.accessibilityLabel = [NSString stringWithFormat:@"%@ %@ %@",
+                               dest.namePron,NSLocalizedStringFromTable(@"PERIOD",@"BlindView",@""),floorPron];
     cell.clipsToBounds = YES;
     return cell;
 }
@@ -289,9 +294,52 @@
     }
 }
 
+- (NSString*) floorStringPron:(double) floor
+{
+    NSString *type = NSLocalizedStringFromTable(@"FloorNumType", @"BlindView", @"floor num type");
+    
+    if ([type isEqualToString:@"ordinal"]) {
+        TTTOrdinalNumberFormatter*ordinalNumberFormatter = [[TTTOrdinalNumberFormatter alloc] init];
+        
+        NSString *localeStr = [[NSUserDefaults standardUserDefaults] stringForKey:@"AppleLocale"];
+        NSLocale *locale = [NSLocale localeWithLocaleIdentifier:localeStr];
+        [ordinalNumberFormatter setLocale:locale];
+        [ordinalNumberFormatter setGrammaticalGender:TTTOrdinalNumberFormatterMaleGender];
+        
+        floor = round(floor*2.0)/2.0;
+        
+        if (floor < 0) {
+            NSString *ordinalNumber = [ordinalNumberFormatter stringFromNumber:@(fabs(floor))];
+            
+            return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorBasementD", @"BlindView", @"basement floor"), ordinalNumber];
+        } else {
+            NSString *ordinalNumber = [ordinalNumberFormatter stringFromNumber:@(floor+1)];
+            
+            return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorD", @"BlindView", @"floor"), ordinalNumber];
+        }
+    } else {
+        floor = round(floor*2.0)/2.0;
+        
+        if (floor < 0) {
+            return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorBasementD", @"BlindView", @"basement floor"), @(fabs(floor))];
+        } else {
+            return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorD", @"BlindView", @"floor"), @(floor+1)];
+        }
+    }
+}
+
 @end
 
-@implementation NavSearchHistoryDataSource
+@implementation NavSearchHistoryDataSource {
+}
+
+- (BOOL)isKnownHist:(NSDictionary*)dic
+{
+    NavDestination *from = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"from"]];
+    NavDestination *to = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"to"]];
+    return [[NavDataStore sharedDataStore] isKnownDestination:from] &&
+    [[NavDataStore sharedDataStore] isKnownDestination:to];
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -301,7 +349,6 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSArray *hist = [[NavDataStore sharedDataStore] searchHistory];
-    
     return [hist count];
 }
 
@@ -316,6 +363,7 @@
     }
     NSArray *hist = [[NavDataStore sharedDataStore] searchHistory];
     NSDictionary *dic = hist[indexPath.row];
+    BOOL isKnown = [self isKnownHist:dic];
     
     NavDestination *from = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"from"]];
     NavDestination *to = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"to"]];
@@ -324,10 +372,12 @@
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.textLabel.lineBreakMode = NSLineBreakByClipping;
     cell.textLabel.text = to.name;
-    cell.textLabel.accessibilityLabel = to.namePron;
+    cell.textLabel.accessibilityLabel = isKnown?to.namePron:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Disabled", @"BlindView", @""), to.namePron];
     
     cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedStringFromTable(@"from: %@", @"BlindView", @""), from.name];
     cell.detailTextLabel.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"from: %@", @"BlindView", @""), from.namePron];
+    
+    cell.contentView.layer.opacity = isKnown?1.0:0.5;
     
     return cell;
 }
@@ -335,7 +385,6 @@
 -(NSDictionary *)historyAtIndexPath:(NSIndexPath *)indexPath
 {
     NSArray *hist = [[NavDataStore sharedDataStore] searchHistory];
-    
     return [hist objectAtIndex:indexPath.row];
 }
 

@@ -490,10 +490,13 @@ static NavDataStore* instance_ = nil;
 }
 
 
-- (void)reloadDestinations
+- (BOOL)reloadDestinations:(BOOL)force;
 {
     if (destinationRequesting) {
-        return;
+        return NO;
+    }
+    if (force) {
+        destinationCacheLocation = nil;
     }
     destinationRequesting = YES;
     double lat = [self mapCenter].lat;
@@ -502,7 +505,7 @@ static NavDataStore* instance_ = nil;
     NSString *user = [self userID];
     NSString *user_lang = [self userLanguage];
     
-    [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang];
+    return [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang];
 }
 
 - (NSString*)normalizePron:(NSString*)str
@@ -512,7 +515,7 @@ static NavDataStore* instance_ = nil;
     return retStr;
 }
 
-- (void)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
+- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
 {
     int dist = 500;
     
@@ -522,13 +525,23 @@ static NavDataStore* instance_ = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:destinationCache];
         });
         destinationRequesting = NO;
-        return;
+        return NO;
     }
     
     NSDictionary *param = @{@"lat":@(lat), @"lng":@(lng), @"user":user, @"user_lang":user_lang};
     [Logging logType:@"initTarget" withParam:param];
     
     [HLPDataUtil loadLandmarksAtLat:lat Lng:lng inDist:dist forUser:user withLang:user_lang withCallback:^(NSArray<HLPObject *> *result) {
+        if (result == nil) {
+            destinationRequesting = NO;
+            destinationCache = nil;
+            destinationCacheLocation = nil;
+            destinationHash = nil;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:destinationCache];
+            });
+            return;
+        }
         //NSLog(@"%ld landmarks are loaded", (unsigned long)[result count]);
         destinationCache = [result sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
             return [[self normalizePron:[obj1 getLandmarkNamePron]] compare:[self normalizePron:[obj2 getLandmarkNamePron]]];
@@ -547,6 +560,7 @@ static NavDataStore* instance_ = nil;
 
         destinationRequesting = NO;
     }];
+    return YES;
 }
 
 - (void) saveHistory
@@ -581,7 +595,7 @@ static NavDataStore* instance_ = nil;
     [temp insertObject:newHist
                atIndex:0];
     
-    while([temp count] > 100) {
+    while([temp count] > 5) {
         [temp removeLastObject];
     }
     [NSKeyedArchiver archiveRootObject:temp toFile:path];
@@ -707,6 +721,19 @@ static NavDataStore* instance_ = nil;
     NSString* path = [documentsPath stringByAppendingPathComponent:@"history.object"];
 
     [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+}
+
+- (BOOL)isKnownDestination:(NavDestination *)dest
+{
+    switch(dest.type) {
+        case NavDestinationTypeLocation:
+            return YES;
+        case NavDestinationTypeLandmark:
+        case NavDestinationTypeLandmarks:
+            return [destinationHash objectForKey:dest.landmark.nodeID] != nil;
+        default:
+            return NO;
+    }
 }
 
 + (NavDestination*) destinationForCurrentLocation;

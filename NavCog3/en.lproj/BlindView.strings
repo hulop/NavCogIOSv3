@@ -280,3 +280,6 @@ Head to the correct orientation
 /* head to the right direction */
 "turn to the right" = "turn to the right";
 
+/* */
+"Disabled" = "%@. disabled.";
+

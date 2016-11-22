@@ -29,6 +29,7 @@
 
 @interface SearchViewController () {
     BOOL updated;
+    BOOL actionEnabled;
     NSString *lastIdentifier;
 }
 
@@ -68,6 +69,8 @@
     _historyView.delegate = self;
     [_historyView reloadData];
     
+    actionEnabled = NO;
+    [self updateViewWithFlag:NO];
     // Do any additional setup after loading the view.
 }
 
@@ -76,27 +79,38 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    if (!updated) {
-        [[NavDataStore sharedDataStore] reloadDestinations];
-        [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait",@"")];
-    }
-    NSLog(@"%@", self.navigationController.viewControllers);
-    [self updateView];
+    [self loadDestinations:NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
 }
 
+- (IBAction)refreshDestinations:(id)sender {
+    updated = false;
+    [self loadDestinations:YES];
+}
+
+- (void) loadDestinations:(BOOL) force
+{
+    if (!updated) {
+        if ([[NavDataStore sharedDataStore] reloadDestinations:force]) {
+            actionEnabled = NO;
+            [self updateViewWithFlag:NO];
+            [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait",@"")];
+            return;
+        }
+    }
+    actionEnabled = YES;
+    [self updateViewWithFlag:YES];
+}
+
 - (void) destinationsChanged:(NSNotification*)notification
 {
     [NavUtil hideModalWaiting];
 
-    
-    [notification object];
-    
     NavDataStore *nds = [NavDataStore sharedDataStore];
     if ([[nds destinations] count] == 0) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error"
@@ -115,59 +129,79 @@
         });
 
     }
-    [self updateView];
     updated = YES;
+    actionEnabled = YES;
+    [self updateViewWithFlag:YES];
 }
 
 - (void) locationChanged:(NSNotification*)notification
 {
-    [self updateView];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NavDataStore *nds = [NavDataStore sharedDataStore];
+        HLPLocation *loc = [nds currentLocation];
+        BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
+        self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation && actionEnabled);
+    });
 }
 
-- (void) updateView
+- (void) updateViewWithFlag:(BOOL)voiceoverNotificationFlag
 {
-    NavDataStore *nds = [NavDataStore sharedDataStore];
-    HLPLocation *loc = [nds currentLocation];
-    BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && isnan(loc.floor);
-    
-    self.previewButton.enabled =
-    self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil);
-    
-    self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation);
-    
-    [self.fromButton setTitle:nds.from.name forState:UIControlStateNormal];
-    
-    if (nds.from.type == NavDestinationTypeSelectStart) {
-        self.fromButton.accessibilityLabel = nds.from.name;
-    } else {
-        self.fromButton.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"From_button", @"BlindView", @""), nds.from.namePron];
-    }
-    
-    [self.toButton setTitle:nds.to.name forState:UIControlStateNormal];
-    if (nds.to.type == NavDestinationTypeSelectDestination) {
-        self.toButton.accessibilityLabel = nds.to.name;
-    } else {
-        self.toButton.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"To_button", @"BlindView", @""), nds.to.namePron];
-    }
-    
-    self.historyClearButton.enabled = [[nds searchHistory] count] > 0;
-    
-    if ([lastIdentifier isEqualToString:@"toDestinations"]) {
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _toButton);        
-    } else {
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _fromButton);
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.navigationItem.hidesBackButton = !updated || !actionEnabled;
+        
+        NavDataStore *nds = [NavDataStore sharedDataStore];
+        HLPLocation *loc = [nds currentLocation];
+        BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
+        
+        self.fromButton.enabled = updated && actionEnabled;
+        self.toButton.enabled = updated && actionEnabled;
+        self.refreshButton.enabled = updated && actionEnabled;
+        self.routeOptionsButton.enabled = updated && actionEnabled;
+        
+        self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
+        self.previewButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
+        self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation && actionEnabled);
+        
+        
+        [self.fromButton setTitle:nds.from.name forState:UIControlStateNormal];
+        
+        if (nds.from.type == NavDestinationTypeSelectStart) {
+            self.fromButton.accessibilityLabel = nds.from.name;
+        } else {
+            self.fromButton.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"From_button", @"BlindView", @""), nds.from.namePron];
+        }
+        
+        [self.toButton setTitle:nds.to.name forState:UIControlStateNormal];
+        if (nds.to.type == NavDestinationTypeSelectDestination) {
+            self.toButton.accessibilityLabel = nds.to.name;
+        } else {
+            self.toButton.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"To_button", @"BlindView", @""), nds.to.namePron];
+        }
+        
+        self.historyClearButton.enabled = ([[nds searchHistory] count] > 0) && updated && actionEnabled;
+        
+        if (voiceoverNotificationFlag) {
+            if ([lastIdentifier isEqualToString:@"toDestinations"]) {
+                UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _toButton);
+            } else {
+                UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _fromButton);
+            }
+        }
+        
+        [self.historyView reloadData];
+        
+    });
 }
 
 - (IBAction)switchFromTo:(id)sender {
     [[NavDataStore sharedDataStore] switchFromTo];
-    [self updateView];
+    [self updateViewWithFlag:YES];
 }
 
 - (IBAction)clearHistory:(id)sender {
     [[NavDataStore sharedDataStore] clearSearchHistory];
     [_historyView reloadData];
-    [self updateView];
+    [self updateViewWithFlag:YES];
 }
 
 - (IBAction)previewNavigation:(id)sender {
@@ -199,6 +233,8 @@
                             @"elv":[ud boolForKey:@"route_use_elevator"]?@"9":@"1"
                             };
     
+    actionEnabled = NO;
+    [self updateViewWithFlag:NO];
     [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait",@"")];    
     
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
@@ -218,14 +254,33 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSDictionary *hist = [historySource historyAtIndexPath:indexPath];
+    
+    if ([historySource isKnownHist:hist]) {
+        return indexPath;
+    }
+    return nil;
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSDictionary *hist = [historySource historyAtIndexPath:indexPath];
+    
+    return [historySource isKnownHist:hist];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary *hist = [historySource historyAtIndexPath:indexPath];
     
-    NavDataStore *nds = [NavDataStore sharedDataStore];
-    nds.to = [NSKeyedUnarchiver unarchiveObjectWithData:hist[@"to"]];
-    nds.from = [NSKeyedUnarchiver unarchiveObjectWithData:hist[@"from"]];
-    [self updateView];
+    if ([historySource isKnownHist:hist]) {
+        NavDataStore *nds = [NavDataStore sharedDataStore];
+        nds.to = [NSKeyedUnarchiver unarchiveObjectWithData:hist[@"to"]];
+        nds.from = [NSKeyedUnarchiver unarchiveObjectWithData:hist[@"from"]];
+        [self updateViewWithFlag:YES];
+    }
 }
 
 

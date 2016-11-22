@@ -29,8 +29,8 @@
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="aPe-k5-pXe">
                                 <rect key="frame" x="177.5" y="323.5" width="20" height="20"/>
                             </activityIndicatorView>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Internet Connection" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NRG-DQ-bhb">
-                                <rect key="frame" x="98.5" y="237" width="178.5" height="20.5"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network Error" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NRG-DQ-bhb">
+                                <rect key="frame" x="134.5" y="237" width="106.5" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.70388170809999995" green="0.70388170809999995" blue="0.70388170809999995" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -553,8 +553,8 @@
                                     <action selector="addNote:" destination="1gp-c3-Yyi" eventType="touchUpInside" id="xsS-gO-dPp"/>
                                 </connections>
                             </button>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Internet Connection" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5yL-Mp-iYF">
-                                <rect key="frame" x="98.5" y="235.5" width="178.5" height="20.5"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network Error" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5yL-Mp-iYF">
+                                <rect key="frame" x="134.5" y="235.5" width="106.5" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.70388170809999995" green="0.70388170809999995" blue="0.70388170809999995" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -709,7 +709,6 @@
                                 <rect key="frame" x="24" y="100.5" width="316" height="41"/>
                                 <accessibility key="accessibilityConfiguration" hint="Select to change"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="Button"/>
                                 <connections>
                                     <segue destination="2QI-n6-OB0" kind="show" identifier="fromDestinations" id="y9t-k8-dBv"/>
                                 </connections>
@@ -727,7 +726,6 @@
                                 <rect key="frame" x="24" y="178" width="316" height="41"/>
                                 <accessibility key="accessibilityConfiguration" hint="Select to change"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="Button"/>
                                 <connections>
                                     <segue destination="2QI-n6-OB0" kind="show" identifier="toDestinations" id="y91-pz-cNT"/>
                                 </connections>
@@ -787,8 +785,12 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0nG-H5-lqv">
-                                <rect key="frame" x="172.5" y="145" width="30" height="30"/>
+                                <rect key="frame" x="137.5" y="139.5" width="100" height="41"/>
                                 <accessibility key="accessibilityConfiguration" label="Switch From and To"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="WhD-Mw-GK4"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                 <state key="normal" title="⇅"/>
                                 <connections>
                                     <action selector="switchFromTo:" destination="M0g-Fg-mUv" eventType="touchUpInside" id="U4q-HX-JUF"/>
@@ -849,12 +851,19 @@
                             <constraint firstItem="uml-UV-BZ8" firstAttribute="trailing" secondItem="EXu-Yu-iRX" secondAttribute="trailingMargin" id="vj0-Xd-qKf"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Route" id="37Y-U9-0xf"/>
+                    <navigationItem key="navigationItem" title="Route" id="37Y-U9-0xf">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="DXV-25-jo1">
+                            <connections>
+                                <action selector="refreshDestinations:" destination="M0g-Fg-mUv" id="hIg-jS-gEF"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="fromButton" destination="0AS-gk-VX3" id="7Xl-Q3-yjD"/>
                         <outlet property="historyClearButton" destination="SYk-PE-6qn" id="I9W-gs-kb5"/>
                         <outlet property="historyView" destination="UOX-Cy-faq" id="nsg-Zx-3j5"/>
                         <outlet property="previewButton" destination="zGZ-Nf-Jjr" id="Sgy-1x-24U"/>
+                        <outlet property="refreshButton" destination="DXV-25-jo1" id="Aa0-dQ-Di6"/>
                         <outlet property="routeOptionsButton" destination="4th-C5-Y98" id="wkI-ND-7bK"/>
                         <outlet property="startButton" destination="JF6-KQ-nx5" id="1ew-KL-qyE"/>
                         <outlet property="switchButton" destination="0nG-H5-lqv" id="UJM-dp-Nws"/>
@@ -917,7 +926,7 @@
         <image name="Menu" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="BKg-hP-LrX"/>
         <segue reference="y9t-k8-dBv"/>
-        <segue reference="ZyX-BJ-sMh"/>
     </inferredMetricsTieBreakers>
 </document>

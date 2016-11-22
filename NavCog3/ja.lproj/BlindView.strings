@@ -80,7 +80,7 @@
 (\"NavCog\"を2本指ロングタップして終了)";
 
 /* No comment provided by engineer. */
-"Locating..." = "現在地を取得中...";
+"Locating..." = "現在地を取得中";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
@@ -297,4 +297,7 @@
 
 /* head to the right direction */
 "turn to the right" = "右に向く";
+
+/* */
+"Disabled" = "%@。無効の";
 

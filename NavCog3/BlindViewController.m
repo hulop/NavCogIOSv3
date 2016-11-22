@@ -80,7 +80,10 @@
     previewer = [[NavPreviewer alloc] init];
     navigator.delegate = self;
     commander.delegate = self;
-    previewer.delegate = self;    
+    previewer.delegate = self;
+    
+    _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
     
     self.searchButton.enabled = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
@@ -160,7 +163,10 @@
 - (void)locationChanged:(NSNotification*)notification
 {
     if ([[NavDataStore sharedDataStore] mapCenter]) {
-        self.searchButton.enabled = true;
+        if (self.searchButton.enabled == NO) {
+            self.searchButton.enabled = YES;
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.searchButton);
+        }
     }
 }
 

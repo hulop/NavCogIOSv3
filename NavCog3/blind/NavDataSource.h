@@ -44,4 +44,5 @@
 
 @interface NavSearchHistoryDataSource : NSObject < UITableViewDataSource>
 - (NSDictionary*) historyAtIndexPath:(NSIndexPath*)indexPath;
+- (BOOL)isKnownHist:(NSDictionary*)hist;
 @end

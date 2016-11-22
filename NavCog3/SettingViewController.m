@@ -43,6 +43,8 @@ static HLPSettingHelper *configSettingHelper;
 static HLPSettingHelper *logSettingHelper;
 static HLPSettingHelper *routeOptionsSettingHelper;
 
+static HLPSetting *speechSpeedSetting;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -59,6 +61,7 @@ static HLPSettingHelper *routeOptionsSettingHelper;
     if ([self.restorationIdentifier isEqualToString:@"user_settings"] ||
         [self.restorationIdentifier isEqualToString:@"blind_settings"]
         ) {
+        [SettingViewController setupUserSettings];
         helper = userSettingHelper;
     }
     if ([self.restorationIdentifier isEqualToString:@"adjust_blelocpp"]) {
@@ -175,12 +178,15 @@ static HLPSettingHelper *routeOptionsSettingHelper;
 + (void)setupUserSettings
 {
     if (userSettingHelper) {
+        if (speechSpeedSetting) {
+            speechSpeedSetting.visible = !UIAccessibilityIsVoiceOverRunning();
+        }
         return;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
     
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech", @"label for tts options")];
-    [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
+    speechSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
                                      Name:@"speech_speed" DefaultValue:@(0.6) Min:0 Max:1 Interval:0.05];
     [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
     [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];

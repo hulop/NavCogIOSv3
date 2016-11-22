@@ -63,8 +63,8 @@ typedef enum {
 + (instancetype) sharedDataStore;
 
 - (void) reset;
-- (void) reloadDestinations;
-- (void) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang;
+- (BOOL) reloadDestinations:(BOOL)force;
+- (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang;
 - (void) requestRouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)())complete;
 - (void) clearRoute;
 - (NSArray*) destinations;
@@ -80,6 +80,7 @@ typedef enum {
 - (void) manualLocation:(HLPLocation*)location;
 - (void) manualLocationReset:(NSDictionary*)location;
 - (void) clearSearchHistory;
+- (BOOL) isKnownDestination:(NavDestination*)dest;
 
 + (NavDestination*) destinationForCurrentLocation;
 

@@ -2,7 +2,7 @@
 "0AS-gk-VX3.accessibilityHint" = "変更するには選択します";
 
 /* Class = "UIButton"; normalTitle = "Button"; ObjectID = "0AS-gk-VX3"; */
-"0AS-gk-VX3.normalTitle" = "ボタン";
+"0AS-gk-VX3.normalTitle" = "";
 
 /* Class = "UILabel"; text = "To"; ObjectID = "0fd-8M-uXw"; */
 "0fd-8M-uXw.text" = "目的地";
@@ -29,7 +29,7 @@
 "4th-C5-Y98.normalTitle" = "検索設定";
 
 /* Class = "UILabel"; text = "No Internet Connection"; ObjectID = "5yL-Mp-iYF"; */
-"5yL-Mp-iYF.text" = "インターネット接続がありません";
+"5yL-Mp-iYF.text" = "ネットワークに問題があります";
 
 /* Class = "UIButton"; normalTitle = "Right"; ObjectID = "7Cs-ZC-ieK"; */
 "7Cs-ZC-ieK.normalTitle" = "右";
@@ -59,7 +59,7 @@
 "LBt-N2-zq5.title" = "検索";
 
 /* Class = "UILabel"; text = "No Internet Connection"; ObjectID = "NRG-DQ-bhb"; */
-"NRG-DQ-bhb.text" = "インターネットに接続していません";
+"NRG-DQ-bhb.text" = "ネットワークに問題があります";
 
 /* Class = "UILabel"; text = "基本設定"; ObjectID = "QGQ-Xh-iSw"; */
 "QGQ-Xh-iSw.text" = "基本設定";
@@ -71,7 +71,7 @@
 "SC1-aF-UyA.accessibilityHint" = "変更するには選択します";
 
 /* Class = "UIButton"; normalTitle = "Button"; ObjectID = "SC1-aF-UyA"; */
-"SC1-aF-UyA.normalTitle" = "ボタン";
+"SC1-aF-UyA.normalTitle" = "";
 
 /* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "SE5-WT-I7E"; */
 "SE5-WT-I7E.normalTitle" = "再接続";

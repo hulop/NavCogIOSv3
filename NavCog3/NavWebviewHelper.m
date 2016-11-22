@@ -28,20 +28,29 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Mantle/Mantle.h>
 
+#define LOADING_TIMEOUT 30
+
 #define UI_PAGE @"%@://%@/%@mobile.jsp?noheader"
 //#define UI_PAGE @"%@://%@/%@mobile.html?noheader" // for backward compatibility
 // does not work with old server
 
+
+// override UIWebView accessibility to prevent reading Map contents
 @implementation NavWebView
 
 - (BOOL)isAccessibilityElement
 {
-    return YES;
+    return NO;
 }
 
-- (NSString *)accessibilityLabel
+- (NSArray *)accessibilityElements
 {
-    return @"";
+    return nil;
+}
+
+- (NSInteger)accessibilityElementCount
+{
+    return 0;
 }
 
 @end
@@ -56,6 +65,7 @@
     NSTimeInterval lastOrientationSent;
     NSTimeInterval lastRequestTime;
     
+    NSURLRequest *currentRequest;
 }
 
 - (void)dealloc {
@@ -334,6 +344,7 @@
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:UI_PAGE, https, server, context]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [webView loadRequest: request];
+    currentRequest = request;
     lastRequestTime = [[NSDate date] timeIntervalSince1970];
 }
 
@@ -361,8 +372,9 @@
         return;
     }
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-    if (now - lastRequestTime > 15) {
+    if (now - lastRequestTime > LOADING_TIMEOUT) {
         [timer invalidate];
+        [webView stopLoading];
         [self.delegate checkConnection];
     }
 }

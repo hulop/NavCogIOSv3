@@ -69,13 +69,12 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
     [overlay addSubview:label];
     [indicator startAnimating];
 
-    //TODO change view for purpose
-    //[[[[[UIApplication sharedApplication] delegate] window] subviews][0] addSubview:overlay];
-    
     [view addSubview:overlay];
     
     [overlay setIsAccessibilityElement:YES];
     [overlay setAccessibilityLabel:message];
+    
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, message);
     
     if (!waitingViewMap) {
         waitingViewMap = [@{} mutableCopy];

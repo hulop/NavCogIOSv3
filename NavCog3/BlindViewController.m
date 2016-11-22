@@ -159,12 +159,8 @@
 
 - (void)locationChanged:(NSNotification*)notification
 {
-    if (!self.searchButton.enabled) {
-        if ([[NavDataStore sharedDataStore] currentLocation]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.searchButton.enabled = YES;
-            });
-        }
+    if ([[NavDataStore sharedDataStore] mapCenter]) {
+        self.searchButton.enabled = true;
     }
 }
 
@@ -445,9 +441,7 @@
 //                    [previewer manualGoFloor: [properties[@"location"] floor]];
 //                    [previewer manualGoForward:0];
 //                }];
-            }
-            
-            [NavUtil showWaitingForView:self.view withMessage:NSLocalizedString(@"Loading, please wait",@"")];
+            }                        
             
             if ([NavDataStore sharedDataStore].previewMode) {
                 [[NavDataStore sharedDataStore] manualLocationReset:properties];
@@ -472,6 +466,10 @@
     
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategorySoloAmbient error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil hideModalWaiting];
+    });
 }
 
 - (void)didNavigationStarted:(NSDictionary *)properties
@@ -485,7 +483,7 @@
     });
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [NavUtil hideWaitingForView:self.view];
+        [NavUtil hideModalWaiting];
         NSArray *temp = [[NavDataStore sharedDataStore] route];
         //temp = [temp arrayByAddingObjectsFromArray:properties[@"oneHopLinks"]];
         [helper showRoute:temp];
@@ -642,6 +640,9 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     [segue destinationViewController].restorationIdentifier = segue.identifier;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil hideWaitingForView:self.view];
+    });
 }
 
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
@@ -650,9 +651,6 @@
         [[NavDataStore sharedDataStore] clearRoute];
         [NavDataStore sharedDataStore].previewMode = NO;
         [previewer setAutoProceed:NO];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [NavUtil hideWaitingForView:self.view];
-        });
 
         return NO;
     }

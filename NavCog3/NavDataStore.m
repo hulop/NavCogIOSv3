@@ -60,7 +60,7 @@
             break;
         case NavDestinationTypeLocation:
             if (_location == nil) {
-                loc = [[NavDataStore sharedDataStore] currentLocation];
+                loc = [[NavDataStore sharedDataStore] mapCenter];
             } else {
                 loc = _location;
             }
@@ -156,7 +156,7 @@
             return temp;
         case NavDestinationTypeLocation:
             if (_location == nil) {
-                loc = [[NavDataStore sharedDataStore] currentLocation];
+                loc = [[NavDataStore sharedDataStore] mapCenter];
             } else {
                 loc = _location;
             }
@@ -179,7 +179,7 @@
             return [_landmark getLandmarkName];
         case NavDestinationTypeLocation:
             if (_location == nil) {
-                loc = [[NavDataStore sharedDataStore] currentLocation];
+                loc = [[NavDataStore sharedDataStore] mapCenter];
                 floor = (int)round(loc.floor);
                 floor = (floor >= 0)?floor+1:floor;
                 return [NSString stringWithFormat:@"%@(%f,%f,%@%dF)",
@@ -226,6 +226,7 @@
     BOOL isManualLocation;
     HLPLocation *manualCurrentLocation;
     HLPLocation *currentLocation;
+    HLPLocation *savedLocation;
     double magneticOrientation;
     double magneticOrientationAccuracy;
     BOOL _previewMode;
@@ -299,7 +300,8 @@ static NavDataStore* instance_ = nil;
     [location updateOrientation:0 withAccuracy:999];
     currentLocation = [[HLPLocation alloc] init];
     [currentLocation updateOrientation:0 withAccuracy:999];
-    
+
+    /*
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 
     if ([ud dictionaryForKey:@"lastLocation"]) {
@@ -312,6 +314,7 @@ static NavDataStore* instance_ = nil;
 
         [currentLocation updateLat:lat Lng:lng Accuracy:0 Floor:0];
     }
+     */
 }
 
 
@@ -378,22 +381,26 @@ static NavDataStore* instance_ = nil;
     if (floor >= 1) {
         floor -= 1;
     }
+    BOOL firstMapCenter = (_mapCenter == nil);
+    _mapCenter = [[HLPLocation alloc] initWithLat:[obj[@"lat"] doubleValue]
+                                             Lng:[obj[@"lng"] doubleValue]
+                                        Accuracy:1
+                                           Floor:floor
+                                           Speed:0
+                                     Orientation:0
+                             OrientationAccuracy:999];
     if ([[notification object][@"sync"] boolValue]) {
+        if (firstMapCenter) {
+            [self postLocationNotification];
+        }
         isManualLocation = NO;
         manualCurrentLocation = nil;
     } else {
         if (_previewMode) {
             return;
         }
-       isManualLocation = YES;
-        manualCurrentLocation = [[HLPLocation alloc] initWithLat:[obj[@"lat"] doubleValue]
-                                                             Lng:[obj[@"lng"] doubleValue]
-                                                        Accuracy:1
-                                                           Floor:floor
-                                                           Speed:0
-                                                     Orientation:0
-                                             OrientationAccuracy:999];
-
+        isManualLocation = YES;
+        manualCurrentLocation = _mapCenter;
         [self postLocationNotification];
     }
 }
@@ -489,8 +496,8 @@ static NavDataStore* instance_ = nil;
         return;
     }
     destinationRequesting = YES;
-    double lat = [self currentLocation].lat;
-    double lng = [self currentLocation].lng;
+    double lat = [self mapCenter].lat;
+    double lng = [self mapCenter].lng;
     
     NSString *user = [self userID];
     NSString *user_lang = [self userLanguage];
@@ -711,8 +718,14 @@ static NavDataStore* instance_ = nil;
 {
     _previewMode = previewMode;
     if (_previewMode) {
+        if (!savedLocation) {
+            savedLocation = [[HLPLocation alloc] init];
+            [savedLocation update:currentLocation];
+        }
     } else {
-        [currentLocation updateOrientation:currentLocation.orientation withAccuracy:999];
+        [currentLocation update:savedLocation];
+        savedLocation = nil;
+        //[currentLocation updateOrientation:currentLocation.orientation withAccuracy:999];
     }
 }
 

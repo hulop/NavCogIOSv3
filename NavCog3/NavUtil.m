@@ -30,6 +30,19 @@
 
 static NSMutableDictionary<NSString*, UIView*>* waitingViewMap;
 static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
+
++(void)showModalWaitingWithMessage:(NSString *)message
+{
+    UIView *view = [[[[UIApplication sharedApplication] delegate] window] subviews][0];
+    [NavUtil showWaitingForView:view withMessage:message];
+}
+
++(void)hideModalWaiting
+{
+    UIView *view = [[[[UIApplication sharedApplication] delegate] window] subviews][0];
+    [NavUtil hideWaitingForView:view];
+}
+
 +(void)showWaitingForView:(UIView*)view withMessage:(NSString *)message
 {
     NSString *address = [NSString stringWithFormat:@"%ld", (long) view];

@@ -61,6 +61,7 @@
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(destinationsChanged:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
 
     historySource = [[NavSearchHistoryDataSource alloc] init];
     _historyView.dataSource = historySource;
@@ -79,7 +80,7 @@
 {
     if (!updated) {
         [[NavDataStore sharedDataStore] reloadDestinations];
-        [NavUtil showWaitingForView:self.view withMessage:NSLocalizedString(@"Loading, please wait",@"")];
+        [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait",@"")];
     }
     NSLog(@"%@", self.navigationController.viewControllers);
     [self updateView];
@@ -87,12 +88,11 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [NavUtil hideWaitingForView:self.view];
 }
 
 - (void) destinationsChanged:(NSNotification*)notification
 {
-    [NavUtil hideWaitingForView:self.view];
+    [NavUtil hideModalWaiting];
 
     
     [notification object];
@@ -119,13 +119,21 @@
     updated = YES;
 }
 
+- (void) locationChanged:(NSNotification*)notification
+{
+    [self updateView];
+}
+
 - (void) updateView
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
+    HLPLocation *loc = [nds currentLocation];
+    BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && isnan(loc.floor);
     
     self.previewButton.enabled =
-    self.startButton.enabled =
     self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil);
+    
+    self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation);
     
     [self.fromButton setTitle:nds.from.name forState:UIControlStateNormal];
     
@@ -191,7 +199,7 @@
                             @"elv":[ud boolForKey:@"route_use_elevator"]?@"9":@"1"
                             };
     
-    [NavUtil showWaitingForView:self.view withMessage:NSLocalizedString(@"Loading, please wait",@"")];
+    [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait",@"")];    
     
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
                                      withOptions:AVAudioSessionCategoryOptionAllowBluetooth
@@ -200,7 +208,6 @@
 
     [[NavDataStore sharedDataStore] requestRouteFrom:nds.from._id To:nds.to._id withPreferences:prefs complete:^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            [NavUtil hideWaitingForView:self.view];
             [self.navigationController popViewControllerAnimated:YES];
         });
     }];

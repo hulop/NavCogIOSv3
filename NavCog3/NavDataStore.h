@@ -58,6 +58,7 @@ typedef enum {
 @property NavDestination *from;
 @property BOOL previewMode;
 @property NSString* userID;
+@property HLPLocation *mapCenter;
 
 + (instancetype) sharedDataStore;
 

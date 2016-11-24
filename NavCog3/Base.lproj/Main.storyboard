@@ -661,6 +661,7 @@
                         <outlet property="indicator" destination="LpH-RC-RJy" id="X0G-cb-weh"/>
                         <outlet property="retryButton" destination="TqI-cp-f3Y" id="aDj-QM-HC4"/>
                         <outlet property="searchButton" destination="yBn-Ni-tgc" id="0sU-Or-JLY"/>
+                        <outlet property="settingButton" destination="ATn-7d-y1j" id="IdR-7G-Xa9"/>
                         <outlet property="webView" destination="tBq-Mg-lUf" id="vsV-kl-Rxx"/>
                     </connections>
                 </viewController>
@@ -926,7 +927,7 @@
         <image name="Menu" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="BKg-hP-LrX"/>
+        <segue reference="GK1-dG-XDF"/>
         <segue reference="y9t-k8-dBv"/>
     </inferredMetricsTieBreakers>
 </document>

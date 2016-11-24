@@ -126,6 +126,7 @@
             [NavDataStore sharedDataStore].to = dest;
         }
         [self.navigationController popToViewController:_root animated:YES];
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _voTarget);        
     }
 }
 

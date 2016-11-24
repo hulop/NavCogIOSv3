@@ -68,9 +68,10 @@
     _historyView.dataSource = historySource;
     _historyView.delegate = self;
     [_historyView reloadData];
+    [self loadDestinations:NO];
     
     actionEnabled = NO;
-    [self updateViewWithFlag:NO];
+    
     // Do any additional setup after loading the view.
 }
 
@@ -81,11 +82,8 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [self loadDestinations:NO];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
+    [super viewDidAppear:animated];
+    [self updateViewWithFlag:YES];
 }
 
 - (IBAction)refreshDestinations:(id)sender {
@@ -104,7 +102,7 @@
         }
     }
     actionEnabled = YES;
-    [self updateViewWithFlag:YES];
+    [self updateViewWithFlag:NO];
 }
 
 - (void) destinationsChanged:(NSNotification*)notification
@@ -131,7 +129,8 @@
     }
     updated = YES;
     actionEnabled = YES;
-    [self updateViewWithFlag:YES];
+    [self.historyView reloadData];
+    [self updateViewWithFlag:NO];
 }
 
 - (void) locationChanged:(NSNotification*)notification
@@ -148,6 +147,9 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         self.navigationItem.hidesBackButton = !updated || !actionEnabled;
+        if (!updated || !actionEnabled) {
+            self.navigationItem.leftBarButtonItem = nil;
+        }
         
         NavDataStore *nds = [NavDataStore sharedDataStore];
         HLPLocation *loc = [nds currentLocation];
@@ -179,17 +181,6 @@
         }
         
         self.historyClearButton.enabled = ([[nds searchHistory] count] > 0) && updated && actionEnabled;
-        
-        if (voiceoverNotificationFlag) {
-            if ([lastIdentifier isEqualToString:@"toDestinations"]) {
-                UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _toButton);
-            } else {
-                UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _fromButton);
-            }
-        }
-        
-        [self.historyView reloadData];
-        
     });
 }
 
@@ -294,6 +285,13 @@
         DestinationTableViewController *dView = (DestinationTableViewController*)segue.destinationViewController;
         lastIdentifier = dView.restorationIdentifier = segue.identifier;
         dView.root = self;
+        
+        if ([lastIdentifier isEqualToString:@"toDestinations"]) {
+            dView.voTarget = _toButton;
+        } else {
+            dView.voTarget = _fromButton;
+        }
+    
     } else {
         segue.destinationViewController.restorationIdentifier = segue.identifier;
     }

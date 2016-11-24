@@ -67,6 +67,8 @@
     [navigator stop];
     navigator.delegate = nil;
     navigator = nil;
+    
+    _settingButton = nil;
 }
 
 - (void)viewDidLoad {
@@ -154,6 +156,12 @@
         
         self.devAuto.selected = previewer.autoProceed;
         self.cover.hidden = devMode || !isActive;
+        
+        if ((isActive && !devMode) || previewMode) {
+            self.navigationItem.leftBarButtonItem = nil;
+        } else {
+            self.navigationItem.leftBarButtonItem = _settingButton;
+        }
         
         self.navigationItem.title = NSLocalizedStringFromTable(previewMode?@"Preview":@"NavCog", @"BlindView", @"");
     });
@@ -437,7 +445,9 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_BACKGROUND_LOCATION object:@(requestBackground)];
     if ([properties[@"isActive"] boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [helper evalScript:@"$hulop.map.setSync(true);"];
+            if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
+                [helper evalScript:@"$hulop.map.setSync(true);"];
+            }
             
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_point"]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:properties];
@@ -488,7 +498,9 @@
         [helper evalScript:[NSString stringWithFormat:@"$hulop.map.getMap().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
     });
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    double delayInSeconds = 0.5;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [NavUtil hideModalWaiting];
         NSArray *temp = [[NavDataStore sharedDataStore] route];
         //temp = [temp arrayByAddingObjectsFromArray:properties[@"oneHopLinks"]];
@@ -590,12 +602,13 @@
 
 - (void)playSuccess
 {
+    [[NavSound sharedInstance] vibrate:nil];
     [[NavSound sharedInstance] playSuccess];
 }
 
 - (void)vibrate
 {
-    [[NavSound sharedInstance] vibrate];
+    [[NavSound sharedInstance] vibrate:nil];
 }
 
 - (void)executeCommand:(NSString *)command

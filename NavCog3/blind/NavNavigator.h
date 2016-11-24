@@ -135,6 +135,7 @@
 
 #pragma mark - flags for navigation
 @property BOOL hasBeenBearing;
+@property double bearingTargetThreshold;
 @property BOOL hasBeenActivated;
 @property BOOL hasBeenApproaching;
 @property BOOL hasBeenWaitingAction;
@@ -146,6 +147,7 @@
 @property (readonly) double distanceFromBackDetectedLocationToSnappedLocationOnLink;
 @property NSTimeInterval lastBackNotified;
 @property NSTimeInterval lastOffRouteNotified;
+@property NSTimeInterval lastBearingDetected;
 
 @property BOOL mayBeOffRoute;
 @property NavLinkInfo* offRouteLinkInfo;

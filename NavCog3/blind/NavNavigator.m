@@ -1209,6 +1209,7 @@ static NavNavigatorConstants *_instance;
             if (fabs(firstLinkInfo.diffBearingAtUserLocation) > C.ADJUST_HEADING_MARGIN) {
                 if (!firstLinkInfo.hasBeenBearing && !firstLinkInfo.hasBeenActivated) {
                     firstLinkInfo.hasBeenBearing = YES;
+                    firstLinkInfo.bearingTargetThreshold = C.ADJUST_HEADING_MARGIN;
                     if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
                         [self.delegate userNeedsToChangeHeading:
                          @{
@@ -1293,7 +1294,7 @@ static NavNavigatorConstants *_instance;
                 } else {
                     NavPOI*(^findElevatorPOI)(NSArray*, HLPPOICategory) = ^(NSArray *array, HLPPOICategory category) {
                         for(NavPOI *poi in array) {
-                            if ([poi isKindOfClass:HLPPOI.class] && [poi.origin poiCategory] == category) {
+                            if ([poi.origin isKindOfClass:HLPPOI.class] && [poi.origin poiCategory] == category) {
                                 return poi;
                             }
                         }
@@ -1422,7 +1423,7 @@ static NavNavigatorConstants *_instance;
             }
             
             if (linkInfo.hasBeenBearing) {
-                if (fabs(linkInfo.diffBearingAtUserLocation) < C.ADJUST_HEADING_MARGIN) {
+                if (fabs(linkInfo.diffBearingAtUserLocation) < linkInfo.bearingTargetThreshold) {
                     linkInfo.hasBeenBearing = NO;
                     if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
                         [self.delegate userAdjustedHeading:@{}];
@@ -1748,6 +1749,43 @@ static NavNavigatorConstants *_instance;
                 // bearingで処理
             }
             
+            if (!linkInfo.hasBeenBearing) {
+                double BEARING_TARGET_DISTANCE = 20;
+                double BEARING_DIFF_THRETHOLD = 3.0;
+                double BEARING_DURATION_FACTOR = 0.1;
+                double BEARING_NOTIFY_WAIT = 3.0;
+                
+                double distance = MIN(BEARING_TARGET_DISTANCE, linkInfo.distanceToTargetFromUserLocation);
+                
+                HLPLocation *bearingTarget = [linkInfo.userLocation offsetLocationByDistance:distance Bearing:[linkInfo.userLocation bearingTo:linkInfo.targetLocation]];
+                
+                HLPLocation *predicted = [linkInfo.userLocation offsetLocationByDistance:distance Bearing:linkInfo.userLocation.orientation];
+                
+                double diffBearingDistance = [bearingTarget distanceTo:predicted];
+                double bearingThreshold = BEARING_DIFF_THRETHOLD + distance / linkInfo.userLocation.speed * BEARING_DURATION_FACTOR;
+                if (diffBearingDistance > bearingThreshold) {
+                    if (linkInfo.lastBearingDetected == 0) {
+                        linkInfo.lastBearingDetected = now;
+                    }
+                    
+                    if (now - linkInfo.lastBearingDetected > BEARING_NOTIFY_WAIT) {
+                        //NSLog(@"needs to bearing: %f degree", linkInfo.diffBearingAtUserLocation);
+                        if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
+                            [self.delegate userNeedsToChangeHeading:
+                             @{
+                               @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
+                               @"threshold": @(0)
+                               }];
+                        }
+                        linkInfo.hasBeenBearing = YES;
+                        linkInfo.bearingTargetThreshold = fabs(linkInfo.diffBearingAtUserLocation / 2);
+                        linkInfo.lastBearingDetected = 0;
+                    }
+                } else {
+                    linkInfo.lastBearingDetected = 0;
+                }
+            }
+
             
             // TODO: consider better way to manage user's orientation.
             /*

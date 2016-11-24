@@ -50,10 +50,9 @@ static NavSound *instance;
 -(void)playSuccess
 {
     AudioServicesPlaySystemSound(successSoundID);
-    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
--(void)vibrate
+-(void)vibrate:(NSDictionary*)param
 {
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }

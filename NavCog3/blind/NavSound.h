@@ -27,6 +27,5 @@
 
 + (instancetype) sharedInstance;
 - (void) playSuccess;
-- (void) vibrate;
-
+- (void) vibrate:(NSDictionary*)param;
 @end

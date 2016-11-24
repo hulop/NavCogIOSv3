@@ -192,14 +192,23 @@
 - (void) manualLocation: (NSNotification*) notification
 {
     HLPLocation* loc = [notification object];
-    int ifloor = round(loc.floor<0?loc.floor:loc.floor+1);
     
     NSMutableString* script = [[NSMutableString alloc] init];
+    if (loc && !isnan(loc.floor) ) {
+        int ifloor = round(loc.floor<0?loc.floor:loc.floor+1);
+        [script appendFormat:@"$hulop.indoor.showFloor(%d);", ifloor];
+    }
     [script appendFormat:@"$hulop.map.setSync(false);"];
-    [script appendFormat:@"var map = $hulop.map.getMap();"];
-    [script appendFormat:@"var c = new google.maps.LatLng(%f, %f);", loc.lat, loc.lng];
-    [script appendFormat:@"map.setCenter(c);"];
-    [script appendFormat:@"$hulop.indoor.showFloor(%d);", ifloor];
+    if (loc) {
+        [script appendFormat:@"var map = $hulop.map.getMap();"];
+        [script appendFormat:@"var c = new google.maps.LatLng(%f, %f);", loc.lat, loc.lng];
+        [script appendFormat:@"map.setCenter(c);"];
+    } else {
+        [script appendFormat:@"var map = $hulop.map.getMap();"];
+        [script appendFormat:@"var c = map.getCenter();"];
+        [script appendFormat:@"map.setCenter(c);"];        
+    }
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self evalScript:script];
     });

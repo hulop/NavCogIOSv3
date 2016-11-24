@@ -386,7 +386,7 @@ static NavDataStore* instance_ = nil;
                                              Lng:[obj[@"lng"] doubleValue]
                                         Accuracy:1
                                            Floor:floor
-                                           Speed:0
+                                           Speed:1.0
                                      Orientation:0
                              OrientationAccuracy:999];
     if ([[notification object][@"sync"] boolValue]) {
@@ -418,6 +418,7 @@ static NavDataStore* instance_ = nil;
                         Lng:manualCurrentLocation.lng
                    Accuracy:manualCurrentLocation.accuracy
                       Floor:manualCurrentLocation.floor];
+        [location updateSpeed:manualCurrentLocation.speed];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
             [location updateOrientation:manualOrientation
                            withAccuracy:0];
@@ -743,17 +744,18 @@ static NavDataStore* instance_ = nil;
 
 - (void)setPreviewMode:(BOOL)previewMode
 {
-    _previewMode = previewMode;
-    if (_previewMode) {
-        if (!savedLocation) {
-            savedLocation = [[HLPLocation alloc] init];
-            [savedLocation update:currentLocation];
+    if (_previewMode != previewMode) {
+        if (previewMode) {
+            if (!savedLocation) {
+                savedLocation = [[HLPLocation alloc] init];
+                [savedLocation update:currentLocation];
+            }
+        } else {
+            [currentLocation update:savedLocation];
+            savedLocation = nil;
         }
-    } else {
-        [currentLocation update:savedLocation];
-        savedLocation = nil;
-        //[currentLocation updateOrientation:currentLocation.orientation withAccuracy:999];
     }
+    _previewMode = previewMode;
 }
 
 - (BOOL)previewMode

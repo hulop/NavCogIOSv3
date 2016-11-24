@@ -152,6 +152,13 @@ double(^normalize)(double) = ^(double deg) {
     }
 }
 
+- (void) updateFloor:(double)floor
+{
+    @synchronized (self) {
+        _floor = floor;
+    }
+}
+
 - (void) updateSpeed:(double)speed
 {
     @synchronized (self) {

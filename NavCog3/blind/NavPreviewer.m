@@ -252,6 +252,10 @@
 
 - (void)manualGoForward:(double)distance {
     HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
+    if (loc == nil) {
+        [self manualLocation:nil];
+        return;
+    }
     HLPLocation *newLoc = [loc offsetLocationByDistance:distance Bearing:loc.orientation];
     
     [self manualLocation:newLoc];
@@ -261,6 +265,7 @@
     if ([NavDataStore sharedDataStore].previewMode) {
         [[NavDataStore sharedDataStore] manualLocation:loc];
     } else {
+        [loc updateFloor:NAN];
         [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:loc];
     }
 }

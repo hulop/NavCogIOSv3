@@ -380,7 +380,9 @@ Option parseArguments(int argc, char * argv[]){
 {
     NSDictionary *dict = [note object];
     HLPLocation *current = dict[@"current"];
-    NSLog(@"Pose,%f,%f,%f,%f", current.lat, current.lng, current.floor, current.orientation);
+    if (![current isEqual:[NSNull null]]) {
+        NSLog(@"Pose,%f,%f,%f,%f", current.lat, current.lng, current.floor, current.orientation);
+    }
 }
 
 #pragma mark - NavPreviewerDelegate

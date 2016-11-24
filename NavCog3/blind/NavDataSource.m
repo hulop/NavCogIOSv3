@@ -235,6 +235,7 @@
     cell.detailTextLabel.lineBreakMode = NSLineBreakByClipping;
     cell.detailTextLabel.minimumScaleFactor = 0.5;
     cell.detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    /*
     NSArray *c = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[textLabel(<=280)]-(>=2)-[detailTextLabel]-|"
                                                                     options:0
                                                                     metrics:@{@"space": @(10)}
@@ -255,6 +256,8 @@
                                      attribute:NSLayoutAttributeCenterY
                                     multiplier:1.f constant:0.f];
     [cell.contentView addConstraint:lc];
+     */
+    
     NavDestination *dest = [self destinationForRowAtIndexPath:indexPath];
     NSString *floor = @"";
     NSString *floorPron = @"";

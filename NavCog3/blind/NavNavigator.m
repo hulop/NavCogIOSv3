@@ -977,7 +977,7 @@ static NavNavigatorConstants *_instance;
                 HLPLink* link1 = (HLPLink*) obj1;
                 HLPLink* link2 = (HLPLink*) obj2;
                 
-                if ([nodesMap[link1.sourceNodeID] isLeaf] && C.IGNORE_FIRST_LINK_LENGTH_THRESHOLD) {
+                if ([nodesMap[link1.sourceNodeID] isLeaf] && link1.length < C.IGNORE_FIRST_LINK_LENGTH_THRESHOLD) {
                     continue;
                 }
                 

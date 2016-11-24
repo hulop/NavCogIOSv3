@@ -364,13 +364,16 @@
         [string appendFormat:NSLocalizedStringFromTable(@"You arrived",@"BlindView", @"arrived message")];
     }
     
+    NSArray *destPois = [properties[@"pois"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forAfterEnd == YES AND isDestination == YES"]];
+    BOOL hasDestinationPOI = [destPois count] > 0;
+    
     [_delegate speak:string completionHandler:^{
-        [[NavDataStore sharedDataStore] clearRoute];
+        if (hasDestinationPOI == NO) {
+            [[NavDataStore sharedDataStore] clearRoute];
+        }
     }];
     
-    NSArray *pois = [properties[@"pois"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forAfterEnd == YES"]];
-    
-    for(NavPOI *poi in pois) {
+    for(NavPOI *poi in destPois) {
         [self userIsApproachingToPOI:
          @{
            @"poi": poi,
@@ -574,6 +577,8 @@
     NavPOI *poi = properties[@"poi"];
     double heading = [properties[@"heading"] doubleValue];
     
+    BOOL isDestinationPOI = NO;
+    
     if (poi.needsToPlaySound) {
         // play something
     }
@@ -608,6 +613,7 @@
                     [string appendString:NSLocalizedStringFromTable(@"PERIOD", @"BlindView", @"")];
                     [string appendString:poi.text];
                 }
+                isDestinationPOI = YES;
             } else {
                 if (poi.flagPlural) {
                     [string appendFormat:NSLocalizedStringFromTable(@"poi are %@", @"BlindView", @""), text, angle];
@@ -630,6 +636,10 @@
         NSArray *result = [self checkCommand:string];
         
         [_delegate speak:result[0] completionHandler:^{
+            if (isDestinationPOI) {
+                [[NavDataStore sharedDataStore] clearRoute];
+            }
+            
             if ([result count] < 2) {
                 return;
             }

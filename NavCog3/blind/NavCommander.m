@@ -196,6 +196,20 @@
     return nil;
 }
 
+- (NSString*) welcomePOIString:(NSArray*) pois
+{
+    if (pois == nil || [pois count] == 0) {
+        return @"";
+    }
+    NSMutableString *string = [@"" mutableCopy];
+    pois = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forWelcome == YES"]];
+    for(NavPOI *poi in pois) {
+        [string appendString:poi.text];
+        [string appendString:NSLocalizedStringFromTable(@"PERIOD", @"BlindView", @"")];
+    }
+    return string;
+}
+
 - (NSString*) startPOIString:(NSArray*) pois
 {
     if (pois == nil || [pois count] == 0) {
@@ -212,7 +226,6 @@
                 [string appendFormat:NSLocalizedStringFromTable(@"There is a sign says %@", @"BlindView", @""), poi.text];
             } else if (poi.forDoor) {
                 [string appendString:[self doorString:poi]];
-                
             } else {
                 [string appendString:poi.text];
             }
@@ -334,8 +347,8 @@
     double totalLength = [properties[@"totalLength"] doubleValue];
     NSString *totalDist = [self distanceString:totalLength];
     
-    NSArray *pois = [properties[@"pois"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forDoor == NO"]];
-    [string appendString:[self startPOIString:pois]];
+    NSArray *pois = properties[@"pois"];
+    [string appendString:[self welcomePOIString:pois]];
     
     if (destination && ![destination isEqual:[NSNull null]] && [destination length] > 0){
         [string appendFormat:NSLocalizedStringFromTable(@"distance to %1$@", @"BlindView", @"distance to a destination name"), destination, totalDist];
@@ -460,20 +473,14 @@
     NSMutableString *string = [@"" mutableCopy];
     
     NSArray *pois = properties[@"pois"];
-    BOOL isFirst = [properties[@"isFirst"] boolValue];
-    if (!isFirst) {
-        [string appendString:[self startPOIString:pois]];
-    } else {
-        pois = [properties[@"pois"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forDoor == YES"]];
-        [string appendString:[self startPOIString:pois]];        
-    }
+    [string appendString:[self startPOIString:pois]];
+
     
     NSString *floorInfo = [self floorPOIString:pois];
     NSString *cornerInfo = [self cornerPOIString:pois];
     BOOL isCornerEnd = [self isCornerEnd:pois];
     
     NSString *dist = [self distanceString:distance];
-    
     
     if (linkType == LINK_TYPE_ELEVATOR || linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
         [string appendString:action];

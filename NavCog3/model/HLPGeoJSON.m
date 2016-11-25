@@ -61,26 +61,6 @@
 #define CATEGORY_TOILET @"公共用トイレの情報"
 
 #define NAV_POI @"_nav_poi_"
-#define POI_CATEGORY_INFO @"_nav_info_"
-#define POI_CATEGORY_CORNER @"_nav_corner_"
-#define POI_CATEGORY_FLOOR @"_nav_floor_"
-#define POI_CATEGORY_ELEVATOR @"_nav_elevator_"
-#define POI_CATEGORY_ELEVATOR_EQUIPMENTS @"_nav_elevator_equipments_"
-#define POI_CATEGORY_DOOR @"_nav_door_"
-
-#define POI_CATEGORY_SCENE @"_nav_scene_"
-
-#define POI_CATEGORY_OBJECT @"_nav_object_"
-#define POI_CATEGORY_SIGN @"_nav_sign_"
-
-#define POI_CATEGORY_SHOP @"_nav_shop_"
-#define POI_CATEGORY_LIVE @"_nav_live_"
-#define POI_FLAGS_CAUTION @"_nav_caution_"
-#define POI_FLAGS_PLURAL @"_nav_plural_"
-#define POI_FLAGS_END @"_nav_end_"
-#define POI_FLAGS_AUTO @"_nav_auto_"
-
-
 
 @implementation HLPGeometry
 + (NSDictionary *)JSONKeyPathsByPropertyKey
@@ -401,7 +381,10 @@
 
 @end
 
-@implementation HLPFlags
+@implementation HLPPOIFlags {
+    @protected
+    BOOL _flagPlural;
+}
 - (instancetype)initWithString:(NSString *)str
 {
     self = [super init];
@@ -443,7 +426,7 @@
 }
 @end
 
-@implementation HLPElevatorEquipments: HLPFlags
+@implementation HLPPOIElevatorEquipments: HLPPOIFlags
 - (NSString*) description
 {
     NSMutableString *string = [@"" mutableCopy];
@@ -472,6 +455,37 @@
     }
     NSString *elv = NSLocalizedStringFromTable(string, @"HLPGeoJSON", @"");    
     return elv;
+}
+@end
+
+@implementation HLPPOIElevatorButtons: HLPPOIFlags
+- (NSString*)description
+{
+    BOOL brail = NO;
+    NSString *pos = nil;
+    if (_buttonRight) {
+        pos = @"ElvButtonRight";
+        brail = brail || _buttonRightBraille;
+    }
+    else if (_buttonLeft) {
+        pos = @"ElvButtonLeft";
+        brail = brail || _buttonLeftBraille;
+    }
+    else if (_buttonMiddle) {
+        pos = @"ElvButtonMiddle";
+        brail = brail || _buttonMiddleBraille;
+    }
+    
+    if (_flagPlural) {
+        pos = [pos stringByAppendingString:@"Plural"];
+    }
+    
+    NSString *str = NSLocalizedStringFromTable(pos, @"HLPGeoJSON", @"");
+    if (brail) {
+        str = [NSString stringWithFormat:NSLocalizedStringFromTable(@"ElvButtonWithBraille", @"HLPGeoJSON", @""), str];
+    }
+    
+    return str;
 }
 @end
 
@@ -505,7 +519,7 @@
     self = [super initWithDictionary:dictionaryValue error:error];
     if (self == nil) return nil;
     
-    elevatorEquipments = [[HLPElevatorEquipments alloc] initWithString:self.properties[PROPKEY_ELEVATOR_EQUIPMENTS]];
+    elevatorEquipments = [[HLPPOIElevatorEquipments alloc] initWithString:self.properties[PROPKEY_ELEVATOR_EQUIPMENTS]];
 
     _length = [self.properties[PROPKEY_LINK_LENGTH] doubleValue];
     
@@ -713,7 +727,7 @@
     [self update];
 }
 
-- (HLPElevatorEquipments *)elevatorEquipments
+- (HLPPOIElevatorEquipments *)elevatorEquipments
 {
     return elevatorEquipments;
 }
@@ -822,36 +836,7 @@
 
 @end
 
-@implementation HLPElevatorButtons: HLPFlags
-- (NSString*)description
-{
-    BOOL brail = NO;
-    NSString *pos = nil;
-    if (_buttonRight) {
-        pos = @"ElvButtonRight";
-        brail = brail || _buttonRightBraille;
-    }
-    else if (_buttonLeft) {
-        pos = @"ElvButtonLeft";
-        brail = brail || _buttonLeftBraille;
-    }
-    else if (_buttonMiddle) {
-        pos = @"ElvButtonMiddle";
-        brail = brail || _buttonMiddleBraille;
-    }
-    
-    if (_flagPlural) {
-        pos = [pos stringByAppendingString:@"Plural"];
-    }
-    
-    NSString *str = NSLocalizedStringFromTable(pos, @"HLPGeoJSON", @"");
-    if (brail) {
-        str = [NSString stringWithFormat:NSLocalizedStringFromTable(@"ElvButtonWithBraille", @"HLPGeoJSON", @""), str];
-    }
-    
-    return str;
-}
-@end
+
 
 @implementation  HLPPOI
 
@@ -863,37 +848,23 @@
     _majorCategory = prop[PROPKEY_EXT_MAJOR_CATEGORY];
     _subCategory = prop[PROPKEY_EXT_SUB_CATEGORY];
     _minorCategory = prop[PROPKEY_EXT_MINOR_CATEGORY];
-    
-    if ([POI_CATEGORY_INFO isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_INFO;
-    } else if ([POI_CATEGORY_SCENE isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_SCENE;
-    } else if ([POI_CATEGORY_OBJECT isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_OBJECT;
-    } else if ([POI_CATEGORY_SIGN isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_SIGN;
-    } else if ([POI_CATEGORY_FLOOR isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_FLOOR;
-    } else if ([POI_CATEGORY_SHOP isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_SHOP;
-    } else if ([POI_CATEGORY_LIVE isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_LIVE;
-    } else if ([POI_CATEGORY_CORNER isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_CORNER;
-    } else if ([POI_CATEGORY_ELEVATOR isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_ELEVATOR;
-        _elevatorButtons = [[HLPElevatorButtons alloc] initWithString:_minorCategory];
-    } else if ([POI_CATEGORY_ELEVATOR_EQUIPMENTS isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS;
-        _elevatorEquipments = [[HLPElevatorEquipments alloc] initWithString:_minorCategory];
-    } else if ([POI_CATEGORY_DOOR isEqualToString:_subCategory]) {
-      _poiCategory = HLP_POI_CATEGORY_DOOR;
-    }
-    _flagCaution = [_minorCategory containsString:POI_FLAGS_CAUTION];
-    _flagPlural = [_minorCategory containsString:POI_FLAGS_PLURAL];
-    _flagEnd = [_minorCategory containsString:POI_FLAGS_END];
-    _flagAuto = [_minorCategory containsString:POI_FLAGS_AUTO];
 
+    // check poi type
+    _poiCategory = HLPPOICategoryCOUNT;
+    for(int i = 0; i < HLPPOICategoryCOUNT; i++) {
+        if ([[NSString stringWithUTF8String:HLPPOICategoryStrings[i]] isEqualToString:_subCategory]) {
+            _poiCategory = i;
+            break;
+        }
+    }
+    if (_poiCategory == HLPPOICategoryCOUNT) { // error check
+        NSLog(@"error: unknown poi category %@", _subCategory);
+    }
+    // check flags
+    _flags = [[HLPPOIFlags alloc] initWithString:_minorCategory];
+    _elevatorButtons = [[HLPPOIElevatorButtons alloc] initWithString:_minorCategory];
+    _elevatorEquipments = [[HLPPOIElevatorEquipments alloc] initWithString:_minorCategory];
+    
     if (prop[PROPKEY_EXT_HEADING]) {
         _heading = [prop[PROPKEY_EXT_HEADING] doubleValue];
     } else {
@@ -910,7 +881,7 @@
 
 - (BOOL)allowsNoFloor
 {
-    return (_poiCategory == HLP_POI_CATEGORY_ELEVATOR) || (_poiCategory == HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS);
+    return (_poiCategory == HLPPOICategoryElevator) || (_poiCategory == HLPPOICategoryElevatorEquipments);
 }
 
 @end

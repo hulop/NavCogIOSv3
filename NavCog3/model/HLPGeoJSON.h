@@ -119,21 +119,35 @@ typedef enum: int {
 // 1：歩道、2：歩行者専用道路、3：園路、4：歩車共存道路、5：横断歩道、
 // 6：横断歩道の路面標示の無い交差点の道路、7：動く歩道、8：自由通路、
 // 9：踏切、10：エレベーター、11：エスカレーター、12：階段、13：スロープ、99：不明
-@interface HLPFlags: NSObject
+
+@interface HLPPOIFlags: NSObject
+@property (nonatomic, readonly) BOOL flagCaution;
+@property (nonatomic, readonly) BOOL flagOnomastic;
+@property (nonatomic, readonly) BOOL flagSingular;
+@property (nonatomic, readonly) BOOL flagPlural;
+@property (nonatomic, readonly) BOOL flagAuto;
 @end
 
-@interface HLPElevatorEquipments: HLPFlags
-@property BOOL buttonLeft;
-@property BOOL buttonLeftBraille;
-@property BOOL buttonRight;
-@property BOOL buttonRightBraille;
-@property BOOL voiceGuide;
-@property BOOL buttonWcLeft;
-@property BOOL buttonWcLeftBraille;
-@property BOOL buttonWcRight;
-@property BOOL buttonWcRightBraille;
+@interface HLPPOIElevatorEquipments: HLPPOIFlags
+@property (nonatomic, readonly) BOOL buttonLeft;
+@property (nonatomic, readonly) BOOL buttonLeftBraille;
+@property (nonatomic, readonly) BOOL buttonRight;
+@property (nonatomic, readonly) BOOL buttonRightBraille;
+@property (nonatomic, readonly) BOOL voiceGuide;
+@property (nonatomic, readonly) BOOL buttonWcLeft;
+@property (nonatomic, readonly) BOOL buttonWcLeftBraille;
+@property (nonatomic, readonly) BOOL buttonWcRight;
+@property (nonatomic, readonly) BOOL buttonWcRightBraille;
 @end
 
+@interface HLPPOIElevatorButtons: HLPPOIFlags
+@property (nonatomic, readonly) BOOL buttonLeft;
+@property (nonatomic, readonly) BOOL buttonLeftBraille;
+@property (nonatomic, readonly) BOOL buttonRight;
+@property (nonatomic, readonly) BOOL buttonRightBraille;
+@property (nonatomic, readonly) BOOL buttonMiddle;
+@property (nonatomic, readonly) BOOL buttonMiddleBraille;
+@end
 
 @interface HLPLink : HLPObject {
 @protected
@@ -148,7 +162,7 @@ typedef enum: int {
     HLPLocation *sourceLocation;
     HLPLocation *targetLocation;
     double _minimumWidth;
-    HLPElevatorEquipments *elevatorEquipments;
+    HLPPOIElevatorEquipments *elevatorEquipments;
 }
 
 @property (nonatomic, readonly) double length;
@@ -172,7 +186,7 @@ typedef enum: int {
 - (void) setTargetNodeIfNeeded:(HLPNode*)node withNodesMap:(NSDictionary*)nodesMap;
 - (void) offsetTarget:(double)distance;
 - (void) offsetSource:(double)distance;
-- (HLPElevatorEquipments*) elevatorEquipments;
+- (HLPPOIElevatorEquipments*) elevatorEquipments;
 @end
 
 @interface HLPCombinedLink : HLPLink
@@ -182,20 +196,6 @@ typedef enum: int {
 -(instancetype) initWithLink1:(HLPLink*)link1 andLink2:(HLPLink*) link2;
 
 @end
-
-typedef enum {
-    HLP_POI_CATEGORY_INFO=1,
-    HLP_POI_CATEGORY_SCENE,
-    HLP_POI_CATEGORY_OBJECT,
-    HLP_POI_CATEGORY_SIGN,
-    HLP_POI_CATEGORY_FLOOR,
-    HLP_POI_CATEGORY_SHOP,
-    HLP_POI_CATEGORY_LIVE,
-    HLP_POI_CATEGORY_CORNER,
-    HLP_POI_CATEGORY_ELEVATOR,
-    HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS,
-    HLP_POI_CATEGORY_DOOR
-} HLPPOICategory;
 
 @interface HLPFacility : HLPObject
 @property (nonatomic, readonly) double lat;
@@ -210,15 +210,27 @@ typedef enum {
 - (HLPLocation*) location;
 @end
 
-@interface HLPElevatorButtons: HLPFlags
-@property BOOL buttonLeft;
-@property BOOL buttonLeftBraille;
-@property BOOL buttonRight;
-@property BOOL buttonRightBraille;
-@property BOOL buttonMiddle;
-@property BOOL buttonMiddleBraille;
-@property BOOL flagPlural;
-@end
+typedef NS_ENUM(NSInteger, HLPPOICategory) {
+    HLPPOICategoryInfo=0,
+    HLPPOICategoryFloor,
+    HLPPOICategoryCornerEnd,
+    HLPPOICategoryCornerLandmark,
+    HLPPOICategoryElevator,
+    HLPPOICategoryElevatorEquipments,
+    HLPPOICategoryDoor,
+    HLPPOICategoryObstacle,
+    HLPPOICategoryCOUNT
+};
+static const char* HLPPOICategoryStrings[] = {
+    "_nav_info_",
+    "_nav_floor_",
+    "_nav_corner_end_",
+    "_nav_corner_landmark_",
+    "_nav_elevator_",
+    "_nav_elevator_equipments_",
+    "_nav_door_",
+    "_nav_obstacle_"
+};
 
 @interface HLPPOI : HLPFacility
 @property (nonatomic, readonly) NSString* majorCategory;
@@ -227,12 +239,9 @@ typedef enum {
 @property (nonatomic, readonly) double heading;
 @property (nonatomic, readonly) double angle;
 @property (nonatomic, readonly) HLPPOICategory poiCategory;
-@property (nonatomic, readonly) BOOL flagCaution;
-@property (nonatomic, readonly) BOOL flagPlural;
-@property (nonatomic, readonly) BOOL flagEnd;
-@property (nonatomic, readonly) BOOL flagAuto;
-@property (nonatomic, readonly) HLPElevatorButtons *elevatorButtons;
-@property (nonatomic, readonly) HLPElevatorEquipments *elevatorEquipments;
+@property (nonatomic, readonly) HLPPOIFlags* flags;
+@property (nonatomic, readonly) HLPPOIElevatorButtons *elevatorButtons;
+@property (nonatomic, readonly) HLPPOIElevatorEquipments *elevatorEquipments;
 - (BOOL) allowsNoFloor;
 @end
 

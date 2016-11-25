@@ -111,6 +111,7 @@
 @interface NavLinkInfo : NSObject
 @property (readonly) HLPLink* link;
 @property (readonly) HLPLink* nextLink;
+@property (readonly) NSDictionary* options;
 @property (readonly) NSArray* allPOIs;
 @property (readonly) NSArray<NavPOI*>* pois;
 @property (readonly) HLPLocation *userLocation;
@@ -131,6 +132,7 @@
 @property (readonly) double diffBearingAtUserLocationToSnappedLocationOnLink;
 
 @property (readonly) double isComplex;
+@property (readonly) BOOL isFirst;
 @property (readonly) BOOL isNextDestination;
 
 #pragma mark - flags for navigation
@@ -153,7 +155,7 @@
 @property NavLinkInfo* offRouteLinkInfo;
 
 
-- (instancetype)initWithLink:(HLPLink*)link nextLink:(HLPLink*)nextLink andPOIs:(NSArray*)allPOIs;
+- (instancetype)initWithLink:(HLPLink*)link nextLink:(HLPLink*)nextLink andOptions:(NSDictionary*)options;
 - (void)reset;
 - (void)updateWithLocation:(HLPLocation*)location;
 
@@ -166,6 +168,7 @@
 @property (readonly) HLPLocation *poiLocation;
 @property (readonly) BOOL needsToPlaySound;
 @property (readonly) BOOL requiresUserAction;
+@property (readonly) BOOL forWelcome;
 @property (readonly) BOOL forBeforeStart;
 @property (readonly) BOOL forFloor;
 @property (readonly) BOOL forCorner;
@@ -175,8 +178,8 @@
 @property (readonly) BOOL forAfterEnd;
 @property (readonly) BOOL flagCaution;
 @property (readonly) BOOL flagPlural;
-@property (readonly) BOOL flagEnd;
 @property (readonly) BOOL flagOnomastic;
+@property (readonly) BOOL flagEnd;
 @property (readonly) BOOL flagAuto;
 @property (readonly) int doorCount;
 @property (readonly) BOOL isDestination;

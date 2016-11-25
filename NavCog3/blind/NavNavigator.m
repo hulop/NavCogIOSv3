@@ -165,12 +165,14 @@ static NavNavigatorConstants *_instance;
  * This represents link information and navigation state on the route.
  */
 @implementation NavLinkInfo
-- initWithLink:(HLPLink*)link nextLink:(HLPLink*)nextLink andPOIs:(NSArray *)allPOIs
+- initWithLink:(HLPLink*)link nextLink:(HLPLink*)nextLink andOptions:(NSDictionary*)options
 {
     self = [super self];
     _link = link;
     _nextLink = nextLink;
-    _allPOIs = allPOIs;
+    _options = options;
+    _allPOIs = options[@"allPOIs"];
+    _isFirst = options[@"isFirst"];
     [self reset];
     return self;
 }
@@ -253,16 +255,17 @@ static NavNavigatorConstants *_instance;
             NavPOI *navpoi = nil;
             
             switch(poi.poiCategory) {
-                case HLP_POI_CATEGORY_INFO:
+                case HLPPOICategoryInfo:
                     if (inAngleInitial &&
-                        (dLocToSource < C.POI_START_INFO_DISTANCE_THRESHOLD || poi.flagCaution)) {
+                        (dLocToSource < C.POI_START_INFO_DISTANCE_THRESHOLD || poi.flags.flagCaution)) {
                         // add info at first link source before navigation announce
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:_link.sourceLocation Options:
                                   @{
                                     @"origin": poi,
-                                    @"forBeforeStart": @(YES),
+                                    @"forBeforeStart": @(!_isFirst),
+                                    @"forWelcome": @(_isFirst),
                                     @"longDescription": poi.longDescription?poi.longDescription:@"",
-                                    @"flagCaution": @(poi.flagCaution)
+                                    @"flagCaution": @(poi.flags.flagCaution)
                                     }];
                     }
                     else if (inAngleInitial &&
@@ -280,13 +283,23 @@ static NavNavigatorConstants *_instance;
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
                                     @"origin": poi,
-                                    @"forBeforeStart": @(poi.flagCaution),
+                                    @"forBeforeStart": @(poi.flags.flagCaution),
                                     @"longDescription": poi.longDescription?poi.longDescription:@"",
-                                    @"flagCaution": @(poi.flagCaution)
+                                    @"flagCaution": @(poi.flags.flagCaution)
+                                    }];
+                    }
+                    else if (inAngleAtNearest && dLocToNearest < C.POI_DISTANCE_MIN_THRESHOLD) {
+                        // add poi info at location
+                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
+                                  @{
+                                    @"origin": poi,
+                                    @"angleFromLocation": @([nearest bearingTo:poi.location]),
+                                    @"flagPlural": @(poi.flags.flagPlural),
+                                    @"longDescription": poi.longDescription?poi.longDescription:@""
                                     }];
                     }
                     break;
-                case HLP_POI_CATEGORY_ELEVATOR:
+                case HLPPOICategoryElevator:
                     if (inAngleInitial &&
                         dLocToTarget < C.POI_END_INFO_DISTANCE_THRESHOLD) {
                         navpoi = [[NavPOI alloc] initWithText:poi.elevatorButtons.description
@@ -298,7 +311,7 @@ static NavNavigatorConstants *_instance;
                                 }];
                     }
                     break;
-                case HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS:
+                case HLPPOICategoryElevatorEquipments:
                     navpoi = [[NavPOI alloc] initWithText:poi.elevatorEquipments.description
                                                  Location:poi.location
                                                   Options:
@@ -306,69 +319,73 @@ static NavNavigatorConstants *_instance;
                                 @"origin": poi
                                 }];
                     break;
-                case HLP_POI_CATEGORY_FLOOR:
+                case HLPPOICategoryFloor:
                     if (dLocToNearest < C.POI_FLOOR_DISTANCE_THRESHOLD && inAngleInitial) {
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
                                     @"origin": poi,
-                                    @"forBeforeStart": @(poi.flagCaution),
+                                    @"forBeforeStart": @(poi.flags.flagCaution),
                                     @"forFloor": @(YES),
                                     @"longDescription": poi.longDescription?poi.longDescription:@"",
-                                    @"flagCaution": @(poi.flagCaution)
-                                    }];                    }
-                    break;
-                case HLP_POI_CATEGORY_SCENE:
-                case HLP_POI_CATEGORY_SHOP:
-                case HLP_POI_CATEGORY_LIVE:
-                    if (inAngleAtNearest && dLocToNearest < C.POI_DISTANCE_MIN_THRESHOLD) {
-                        // add poi info at location
-                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
-                                  @{
-                                    @"origin": poi,
-                                    @"angleFromLocation": @([nearest bearingTo:poi.location]),
-                                    @"flagPlural": @(poi.flagPlural),
-                                    @"longDescription": poi.longDescription?poi.longDescription:@""
+                                    @"flagCaution": @(poi.flags.flagCaution)
                                     }];
-                    }
                     break;
-                case HLP_POI_CATEGORY_SIGN:
-                    if (inAngleAtSource && dLocToSource < C.POI_TARGET_DISTANCE_THRESHOLD) {
-                        // add corner info
-                        navpoi = [[NavPOI alloc] initWithText:poi.longDescription Location:nearest Options:
-                                  @{
-                                    @"origin": poi,
-                                    @"forBeforeStart": @(YES),
-                                    @"forSign": @(YES),
-                                    @"longDescription": poi.longDescription?poi.longDescription:@""
-                                    }];
+//                case HLP_POI_CATEGORY_SCENE:
+//                case HLP_POI_CATEGORY_SHOP:
+//                case HLP_POI_CATEGORY_LIVE:
+//                    if (inAngleAtNearest && dLocToNearest < C.POI_DISTANCE_MIN_THRESHOLD) {
+//                        // add poi info at location
+//                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
+//                                  @{
+//                                    @"origin": poi,
+//                                    @"angleFromLocation": @([nearest bearingTo:poi.location]),
+//                                    @"flagPlural": @(poi.flagPlural),
+//                                    @"longDescription": poi.longDescription?poi.longDescription:@""
+//                                    }];
+//                    }
+//                    break;
+//                case HLP_POI_CATEGORY_SIGN:
+//                    if (inAngleAtSource && dLocToSource < C.POI_TARGET_DISTANCE_THRESHOLD) {
+//                        // add corner info
+//                        navpoi = [[NavPOI alloc] initWithText:poi.longDescription Location:nearest Options:
+//                                  @{
+//                                    @"origin": poi,
+//                                    @"forBeforeStart": @(YES),
+//                                    @"forSign": @(YES),
+//                                    @"longDescription": poi.longDescription?poi.longDescription:@""
+//                                    }];
+//                    }
+//                    break;
+//                case HLP_POI_CATEGORY_OBJECT:
+//                    if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
+//                        // add corner info
+//                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
+//                                  @{
+//                                    @"origin": poi,
+//                                    @"forCorner": @(YES),
+//                                    @"flagPlural": @(poi.flagPlural),
+//                                    @"flagEnd": @(poi.flagEnd),
+//                                    @"longDescription": poi.longDescription?poi.longDescription:@""
+//                                    }];
+//                    }
+//                    break;
+                case HLPPOICategoryCornerEnd:
+                case HLPPOICategoryCornerLandmark:
+                        if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
+                            navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
+                                      @{
+                                        @"origin": poi,
+                                        @"forCorner": @(YES),
+                                        @"flagPlural": @(poi.flags.flagPlural),
+                                        @"flagEnd": @(poi.poiCategory == HLPPOICategoryCornerEnd),
+                                        @"longDescription": poi.longDescription?poi.longDescription:@""
+                                        }];
+                        }
+                        break;
                     }
-                    break;
-                case HLP_POI_CATEGORY_OBJECT:
-                    if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
-                        // add corner info
-                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
-                                  @{
-                                    @"origin": poi,
-                                    @"forCorner": @(YES),
-                                    @"flagPlural": @(poi.flagPlural),
-                                    @"flagEnd": @(poi.flagEnd),
-                                    @"longDescription": poi.longDescription?poi.longDescription:@""
-                                    }];
-                    }
-                    break;
-                case HLP_POI_CATEGORY_CORNER:
-                    if (inAngleAtNearest && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
-                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
-                                  @{
-                                    @"origin": poi,
-                                    @"angleFromLocation": @([nearest bearingTo:poi.location]),
-                                    @"forAfterEnd": @(YES),
-                                    @"longDescription": poi.longDescription?poi.longDescription:@""
-                                    }];
-                    }
+                default:
                     break;
             }
-            
             if (navpoi != nil) {
                 [poisTemp addObject:navpoi];
             }
@@ -422,7 +439,7 @@ static NavNavigatorConstants *_instance;
     
     NSArray<HLPPOI*> *doors = [_allPOIs filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
         if ([evaluatedObject isKindOfClass:HLPPOI.class]) {
-            return [((HLPPOI*)evaluatedObject) poiCategory] == HLP_POI_CATEGORY_DOOR;
+            return [((HLPPOI*)evaluatedObject) poiCategory] == HLPPOICategoryDoor;
         }
         return false;
     }]];
@@ -439,7 +456,7 @@ static NavNavigatorConstants *_instance;
             HLPLocation *locEnd = doors[start].location;
             int end = start;
             for(int i = start+1; i < [doors count]; i++) {
-                if ([locEnd distanceTo:doors[i].location] < 5 && doors[start].flagAuto == doors[i].flagAuto) {
+                if ([locEnd distanceTo:doors[i].location] < 5 && doors[start].flags.flagAuto == doors[i].flags.flagAuto) {
                     locEnd = doors[i].location;
                     end = i;
                 } else {
@@ -447,9 +464,6 @@ static NavNavigatorConstants *_instance;
                 }
             }
             BOOL forBeforeStart = [locStart distanceTo:self.link.sourceLocation] < C.POI_START_INFO_DISTANCE_THRESHOLD;
-            if (!forBeforeStart) {
-                locStart = [locStart offsetLocationByDistance:3 Bearing:180-self.link.initialBearingFromSource];
-            }
             int count = end - start + 1;
             NavPOI *navpoi = [[NavPOI alloc] initWithText:nil Location:locStart Options:
                               @{
@@ -457,7 +471,7 @@ static NavNavigatorConstants *_instance;
                                 @"forBeforeStart":@(forBeforeStart),
                                 @"forDoor":@(YES),
                                 @"doorCount":@(count),
-                                @"flagAuto":@(doors[start].flagAuto)
+                                @"flagAuto":@(doors[start].flags.flagAuto)
                                 }];
             [poisTemp addObject:navpoi];
             start = end+1;
@@ -887,7 +901,7 @@ static NavNavigatorConstants *_instance;
         }
         HLPPOI *poi = pois[j];
         HLPLinkType linkType = 0;
-        if (poi.poiCategory == HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS) {
+        if (poi.poiCategory == HLPPOICategoryElevatorEquipments) {
             linkType = LINK_TYPE_ELEVATOR;
         }
         NSArray *links = nearestLinks(poi.location, @{@"linkType":@(linkType)});
@@ -1066,9 +1080,11 @@ static NavNavigatorConstants *_instance;
                 }
             }
             
-            linkInfos[i] = [[NavLinkInfo alloc] initWithLink:link1 nextLink:link2 andPOIs:[linkPois allObjects]];
-            
-            //NSLog(@"%@", linkInfos[i]);
+            linkInfos[i] = [[NavLinkInfo alloc] initWithLink:link1 nextLink:link2 andOptions:
+                            @{
+                              @"allPOIs": [linkPois allObjects],
+                              @"isFirst": @(i == firstLinkIndex)
+                              }];
         }
     }
     
@@ -1301,8 +1317,8 @@ static NavNavigatorConstants *_instance;
                         return (NavPOI*)nil;
                     };
                     
-                    NavPOI *elevatorPOI = findElevatorPOI(linkInfo.pois, HLP_POI_CATEGORY_ELEVATOR);
-                    NavPOI *equipmentPOI = findElevatorPOI(linkInfo.pois, HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS);
+                    NavPOI *elevatorPOI = findElevatorPOI(linkInfo.pois, HLPPOICategoryElevator);
+                    NavPOI *equipmentPOI = findElevatorPOI(linkInfo.pois, HLPPOICategoryElevatorEquipments);
                     
                     if (isnan(linkInfo.link.lastBearingForTarget)) { // elevator is the destination
                         if (!linkInfo.hasBeenApproaching) {
@@ -1654,7 +1670,7 @@ static NavNavigatorConstants *_instance;
                     for(int i = 0; i < [oneHopLinks count]; i++) {
                         if ([oneHopLinks[i] isKindOfClass:HLPLink.class]) {
                             HLPLink* link1 = (HLPLink*)oneHopLinks[i];
-                            NavLinkInfo *info = [[NavLinkInfo alloc] initWithLink:link1 nextLink:nil andPOIs:nil];
+                            NavLinkInfo *info = [[NavLinkInfo alloc] initWithLink:link1 nextLink:nil andOptions:nil];
                             [info updateWithLocation:location];
                             if (info.distanceToUserLocationFromLink < exMinDistance &&
                                 fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
@@ -1785,26 +1801,6 @@ static NavNavigatorConstants *_instance;
                     linkInfo.lastBearingDetected = 0;
                 }
             }
-
-            
-            // TODO: consider better way to manage user's orientation.
-            /*
-             if (linkInfo.distanceToUserLocationFromLink > C.OFF_ROUTE_BEARING_THRESHOLD &&
-             !isnan(linkInfo.diffBearingAtUserLocation) &&
-             fabs(linkInfo.diffBearingAtUserLocation) > C.CHANGE_HEADING_THRESHOLD &&
-             !linkInfo.hasBeenBearing &&
-             !linkInfo.isComplex) {
-             linkInfo.hasBeenBearing = YES;
-             if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
-             [self.delegate userNeedsToChangeHeading:
-             @{
-             @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
-             @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
-             }];
-             }
-             return;
-             }
-             */
             
             // check if user goes backward
             if (minIndex <= navIndex && !linkInfo.mayBeOffRoute) {

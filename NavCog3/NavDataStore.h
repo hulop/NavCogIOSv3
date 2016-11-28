@@ -59,6 +59,7 @@ typedef enum {
 @property BOOL previewMode;
 @property NSString* userID;
 @property HLPLocation *mapCenter;
+@property (readonly) NSDictionary *buildingInfo;
 
 + (instancetype) sharedDataStore;
 

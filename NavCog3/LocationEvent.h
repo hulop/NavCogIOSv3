@@ -70,4 +70,6 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 #define START_ORIENTATION_INIT @"start_orientation_init"
 #define STOP_ORIENTATION_INIT @"stop_orientation_init"
 
+#define BUILDING_CHANGED_NOTIFICATION @"building_changed_notification"
+
 #endif /* LocationEvent_h */

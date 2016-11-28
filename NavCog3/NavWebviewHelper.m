@@ -156,6 +156,12 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RSSI_BIAS object:param];
         } else {
+            if ([text rangeOfString:@"buildingChanged,"].location == 0) {
+                NSData *data = [[text substringFromIndex:[@"buildingChanged," length]] dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:param];                
+            }
             if ([Logging isLogging]) {
                 NSLog(@"%@", text);
             }

@@ -276,6 +276,8 @@ static NavDataStore* instance_ = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processShowRouteLog:) name:REQUEST_PROCESS_SHOW_ROUTE_LOG object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processInitTargetLog:) name:REQUEST_PROCESS_INIT_TARGET_LOG object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(buildingChanged:) name:BUILDING_CHANGED_NOTIFICATION object:nil];
+
     return self;
 }
 
@@ -761,6 +763,12 @@ static NavDataStore* instance_ = nil;
 - (BOOL)previewMode
 {
     return _previewMode;
+}
+
+- (void)buildingChanged:(NSNotification*)note
+{
+    NSDictionary *dict = [note object];
+    _buildingInfo = dict;
 }
 
 @end

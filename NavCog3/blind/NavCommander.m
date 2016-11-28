@@ -181,19 +181,81 @@
 - (NSString*) doorString:(NavPOI*)poi
 {
     if (poi.flagAuto) {
-        if (poi.doorCount == 1) {
+        if (poi.count == 1) {
             return NSLocalizedStringFromTable(@"There is a auto door", @"BlindView", @"");
         } else {
-            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"There are %d auto doors", @"BlindView", @""), poi.doorCount];
+            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"There are %d auto doors", @"BlindView", @""), poi.count];
         }
     } else {
-        if (poi.doorCount == 1) {
+        if (poi.count == 1) {
             return NSLocalizedStringFromTable(@"There is a door", @"BlindView", @"");
         } else {
-            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"There are %d doors", @"BlindView", @""), poi.doorCount];
+            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"There are %d doors", @"BlindView", @""), poi.count];
         }
     }
     return nil;
+}
+
+- (NSString*) obstacleString:(NavPOI*)poi
+{
+    NSString *side = nil;
+    if (poi.leftSide && poi.rightSide) {
+        side = NSLocalizedStringFromTable(@"BothSide", @"BlindView", @"");
+    } else if (poi.leftSide) {
+        side = NSLocalizedStringFromTable(@"LeftSide", @"BlindView", @"");
+    } else if (poi.rightSide) {
+        side = NSLocalizedStringFromTable(@"RightSide", @"BlindView", @"");
+    }
+    
+    if (side) {
+        if (poi.count == 1) {
+            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"ObstaclePOIString1", @"BlindView", @""), side];
+        } else {
+            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"ObstaclePOIString2", @"BlindView", @""), side];
+        }
+    }
+    
+    return nil;
+}
+
+- (NSString*) poiString:(NavPOI*) poi
+{
+    if (poi == nil) {
+        return @"";
+    }
+    
+    NSMutableString *string = [@"" mutableCopy];
+    if (poi.forFloor) {
+        if (poi.flagCaution) {
+            [string appendFormat:NSLocalizedStringFromTable(@"Watch your step, %@", @"BlindView", @""), poi.text];
+        }
+    }
+    else if (poi.forSign) {
+        [string appendFormat:NSLocalizedStringFromTable(@"There is a sign says %@", @"BlindView", @""), poi.text];
+    }
+    else if (poi.forDoor) {
+        [string appendString:[self doorString:poi]];
+    }
+    else if (poi.forObstacle) {
+        [string appendString:[self obstacleString:poi]];
+    }
+    else {
+        NSString *temp = @"";
+        if (poi.text) {
+            temp = [temp stringByAppendingString:poi.text];
+        }
+        if (poi.longDescription) {
+            if ([temp length] > 0) {
+                temp = [temp stringByAppendingString:NSLocalizedStringFromTable(@"PERIOD", @"BlindView", @"")];
+            }
+            temp = [temp stringByAppendingString:poi.longDescription];
+        }
+        if (poi.flagCaution) {
+            temp = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Caution, %@", @"BlindView", @""), temp];
+        }
+        [string appendString:temp];
+    }
+    return string;
 }
 
 - (NSString*) welcomePOIString:(NSArray*) pois
@@ -204,7 +266,7 @@
     NSMutableString *string = [@"" mutableCopy];
     pois = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forWelcome == YES"]];
     for(NavPOI *poi in pois) {
-        [string appendString:poi.text];
+        [string appendString:[self poiString:poi]];
         [string appendString:NSLocalizedStringFromTable(@"PERIOD", @"BlindView", @"")];
     }
     return string;
@@ -222,24 +284,12 @@
     if (pois && [pois count] > 0) {
         NSArray *infos = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"flagCaution == NO"]];
         for(NavPOI *poi in infos) {
-            if (poi.forSign) {
-                [string appendFormat:NSLocalizedStringFromTable(@"There is a sign says %@", @"BlindView", @""), poi.text];
-            } else if (poi.forDoor) {
-                [string appendString:[self doorString:poi]];
-            } else {
-                [string appendString:poi.text];
-            }
+            [string appendString:[self poiString:poi]];
             [string appendString:NSLocalizedStringFromTable(@"PERIOD", @"BlindView", @"")];
         }
         NSArray *cautions = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"flagCaution == YES"]];
         for(NavPOI *poi in cautions) {
-            if (poi.forFloor) {
-                [string appendFormat:NSLocalizedStringFromTable(@"Watch your step, %@", @"BlindView", @""), poi.text];
-            } else if (poi.forSign) {
-                [string appendFormat:NSLocalizedStringFromTable(@"There is a sign says %@", @"BlindView", @""), poi.text];
-            } else {
-                [string appendFormat:NSLocalizedStringFromTable(@"Caution, %@", @"BlindView", @""), poi.text];
-            }
+            [string appendString:[self poiString:poi]];
             [string appendString:NSLocalizedStringFromTable(@"PERIOD", @"BlindView", @"")];
         }
     }
@@ -589,8 +639,8 @@
     if (poi.needsToPlaySound) {
         // play something
     }
-    if (poi.forDoor) {
-        [_delegate speak:[self doorString:poi] completionHandler:^{
+    if (poi.forDoor || poi.forObstacle) {
+        [_delegate speak:[self poiString:poi] completionHandler:^{
         }];
     } else if (poi.requiresUserAction) {
     } else {

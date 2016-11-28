@@ -437,6 +437,8 @@ static NavNavigatorConstants *_instance;
         }
     }];
     
+    
+    // handle door poi
     NSArray<HLPPOI*> *doors = [_allPOIs filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
         if ([evaluatedObject isKindOfClass:HLPPOI.class]) {
             return [((HLPPOI*)evaluatedObject) poiCategory] == HLPPOICategoryDoor;
@@ -452,12 +454,13 @@ static NavNavigatorConstants *_instance;
         }];
 
         for(int start = 0; start < [doors count];){
-            HLPLocation *locStart = doors[start].location;
-            HLPLocation *locEnd = doors[start].location;
+            HLPLocation *locStart = [_link nearestLocationTo:doors[start].location];
+            HLPLocation *locEnd = [_link nearestLocationTo:doors[start].location];
             int end = start;
             for(int i = start+1; i < [doors count]; i++) {
-                if ([locEnd distanceTo:doors[i].location] < 5 && doors[start].flags.flagAuto == doors[i].flags.flagAuto) {
-                    locEnd = doors[i].location;
+                HLPLocation *loc = [_link nearestLocationTo:doors[i].location];
+                if ([locEnd distanceTo:loc] < 5 && doors[start].flags.flagAuto == doors[i].flags.flagAuto) {
+                    locEnd = loc;
                     end = i;
                 } else {
                     break;
@@ -470,13 +473,66 @@ static NavNavigatorConstants *_instance;
                                 @"origin":[doors subarrayWithRange:NSMakeRange(start, count)],
                                 @"forBeforeStart":@(forBeforeStart),
                                 @"forDoor":@(YES),
-                                @"doorCount":@(count),
+                                @"count":@(count),
                                 @"flagAuto":@(doors[start].flags.flagAuto)
                                 }];
             [poisTemp addObject:navpoi];
             start = end+1;
         }
     }
+    
+    // handle obstacle poi
+    
+    NSArray<HLPPOI*> *obstacles = [_allPOIs filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+        if ([evaluatedObject isKindOfClass:HLPPOI.class]) {
+            return [((HLPPOI*)evaluatedObject) poiCategory] == HLPPOICategoryObstacle;
+        }
+        return false;
+    }]];
+    
+    if ([obstacles count] > 0) {
+        obstacles = [obstacles sortedArrayUsingComparator:^NSComparisonResult(HLPPOI *p1, HLPPOI *p2) {
+            HLPLocation *n1 = [_link nearestLocationTo:p1.location];
+            HLPLocation *n2 = [_link nearestLocationTo:p2.location];
+            return [@([n1 distanceTo:_sourceLocation]) compare:@([n2 distanceTo:_sourceLocation])];
+        }];
+        
+        for(int start = 0; start < [obstacles count];){
+            HLPLocation *locStart = [_link nearestLocationTo:obstacles[start].location];
+            HLPLocation *locEnd = [_link nearestLocationTo:obstacles[start].location];
+            BOOL rightSide = NO;
+            BOOL leftSide = NO;
+            int end = start;
+            for(int i = start; i < [obstacles count]; i++) {
+                HLPLocation *loc = [_link nearestLocationTo:obstacles[i].location];
+                double side = [HLPLocation normalizeDegree:[loc bearingTo:obstacles[i].location] - _link.initialBearingFromSource];
+                if (30 < fabs(side) && fabs(side) < 150) {
+                    rightSide = rightSide || (side > 0);
+                    leftSide = leftSide || (side < 0);
+                }
+                if ([locEnd distanceTo:loc] < 5) {
+                    locEnd = loc;
+                    end = i;
+                } else {
+                    break;
+                }
+            }
+            BOOL forBeforeStart = [locStart distanceTo:self.link.sourceLocation] < C.POI_START_INFO_DISTANCE_THRESHOLD;
+            int count = end - start + 1;
+            NavPOI *navpoi = [[NavPOI alloc] initWithText:nil Location:locStart Options:
+                              @{
+                                @"origin":[obstacles subarrayWithRange:NSMakeRange(start, count)],
+                                @"forBeforeStart":@(forBeforeStart),
+                                @"forObstacle":@(YES),
+                                @"count":@(count),
+                                @"rightSide":@(rightSide),
+                                @"leftSide":@(leftSide)
+                                }];
+            [poisTemp addObject:navpoi];
+            start = end+1;
+        }
+    }
+    
     
     // convert NAVCOG1/2 acc info into NavPOI
     [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -1617,11 +1673,11 @@ static NavNavigatorConstants *_instance;
             for(int i = 0; i < [linkInfo.pois count]; i++) {
                 NavPOI *poi = linkInfo.pois[i];
                 
-                if (poi.forBeforeStart || poi.forCorner || poi.forFloor) {
+                if (poi.forBeforeStart || poi.forWelcome || poi.forCorner || poi.forFloor) {
                     continue;
                 }
                 
-                if (poi.forAfterEnd && linkInfo.nextLink != nil) {
+                if (poi.forAfterEnd && linkInfo.isNextDestination) {
                     continue;
                 }
                 
@@ -1637,7 +1693,7 @@ static NavNavigatorConstants *_instance;
                             poi.hasBeenApproached = YES;
                             poi.hasBeenLeft = NO;
                             poi.lastApproached = now;
-                            poi.count++;
+                            poi.countApproached++;
                         }
                     }
                 } else {

@@ -174,6 +174,7 @@
 @property (readonly) BOOL forCorner;
 @property (readonly) BOOL forSign;
 @property (readonly) BOOL forDoor;
+@property (readonly) BOOL forObstacle;
 @property (readonly) BOOL forBeforeEnd;
 @property (readonly) BOOL forAfterEnd;
 @property (readonly) BOOL flagCaution;
@@ -181,9 +182,11 @@
 @property (readonly) BOOL flagOnomastic;
 @property (readonly) BOOL flagEnd;
 @property (readonly) BOOL flagAuto;
-@property (readonly) int doorCount;
+@property (readonly) int count;
 @property (readonly) BOOL isDestination;
 @property (readonly) double angleFromLocation;
+@property (readonly) BOOL leftSide;
+@property (readonly) BOOL rightSide;
 
 @property (readonly) HLPLocation *snappedLocationOnLink;
 @property (readonly) HLPLocation *userLocation;
@@ -197,7 +200,7 @@
 @property NSTimeInterval lastApproached;
 @property BOOL hasBeenLeft;
 @property NSTimeInterval lastLeft;
-@property BOOL count;
+@property int countApproached;
 
 - (instancetype)initWithText:(NSString*)text Location:(HLPLocation*)location Options:(NSDictionary*)options;
 - (void)updateWithLocation:(HLPLocation*)location andUserLocation:(HLPLocation*)userLocation;

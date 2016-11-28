@@ -109,6 +109,21 @@ Head to the correct orientation
 /* No comment provided by engineer. */
 "There is a sign says %@" = "There is a sign says %@";
 
+/* */
+"ObstaclePOIString1" = "There is a obstacle in your %@";
+
+/* */
+"ObstaclePOIString2" = "There are obstacles in your %@";
+
+/* */
+"BothSide" = "both side";
+
+/* */
+"LeftSide" = "left";
+
+/* */
+"RightSide" = "right";
+
 /* No comment provided by engineer. */
 "To_button" = "To %@";
 

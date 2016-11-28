@@ -124,6 +124,21 @@
 /* No comment provided by engineer. */
 "There is a sign says %@" = "%@という看板があります";
 
+/* */
+"ObstaclePOIString1" = "この先、%@に障害物あり";
+
+/* */
+"ObstaclePOIString2" = "この先、%@に障害物あり";
+
+/* */
+"BothSide" = "両側";
+
+/* */
+"LeftSide" = "左側";
+
+/* */
+"RightSide" = "右側";
+
 /* No comment provided by engineer. */
 "To_button" = "%@まで";
 

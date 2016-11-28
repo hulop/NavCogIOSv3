@@ -533,6 +533,19 @@ static NavNavigatorConstants *_instance;
         }
     }
     
+    // handle link type as POI
+    // generate POI from links
+    for(HLPLink* link in links) {
+        if (link.linkType == LINK_TYPE_RAMP) {
+            NavPOI *poi = [[NavPOI alloc] initWithText:nil Location:link.sourceLocation Options:
+                           @{
+                             @"origin":link,
+                             @"forRamp":@(YES)
+                             }];
+            [poisTemp addObject:poi];
+        }
+    }
+    
     
     // convert NAVCOG1/2 acc info into NavPOI
     [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -679,6 +692,9 @@ static NavNavigatorConstants *_instance;
     _forBeforeStart = NO;
     _forFloor = NO;
     _forCorner = NO;
+    _forDoor = NO;
+    _forObstacle = NO;
+    _forRamp = NO;
     _forAfterEnd = NO;
     _flagCaution = NO;
     _flagPlural = NO;
@@ -998,8 +1014,6 @@ static NavNavigatorConstants *_instance;
     }
     // end associate pois to links
     
-    
-    
     // optimize links for navigation
     
 
@@ -1056,13 +1070,24 @@ static NavNavigatorConstants *_instance;
                     [temp setObject:link12 atIndexedSubscript:i];
                     [temp removeObjectAtIndex:i+1];
                     i--;
+                    continue;
                 }
+                
+                if ([link1 isSafeLinkType] && link2.linkType == LINK_TYPE_RAMP &&
+                    [HLPCombinedLink link:link1 canBeCombinedWithLink:link2]) {
+                    HLPLink* link12 = [[HLPCombinedLink alloc] initWithLink1:link1 andLink2:link2];
+                    [temp setObject:link12 atIndexedSubscript:i];
+                    [temp removeObjectAtIndex:i+1];
+                    i--;
+                    continue;
+                }
+                
             }
         }
         return temp;
     };    
     route = combineLinks(route);
-    
+        
     // shorten link before elevator, set bearing after elevator
     NSArray*(^shortenLinkBeforeElevator)(NSArray*) = ^(NSArray *array) {
         NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];

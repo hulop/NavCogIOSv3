@@ -218,6 +218,12 @@
     return nil;
 }
 
+- (NSString*) rampString:(NavPOI*)poi
+{
+    return [NSString stringWithFormat:NSLocalizedStringFromTable(@"RampPOIString", @"BlindView", @"")];
+}
+
+
 - (NSString*) poiString:(NavPOI*) poi
 {
     if (poi == nil) {
@@ -238,6 +244,9 @@
     }
     else if (poi.forObstacle) {
         [string appendString:[self obstacleString:poi]];
+    }
+    else if (poi.forRamp) {
+        [string appendString:[self rampString:poi]];
     }
     else {
         NSString *temp = @"";
@@ -639,7 +648,7 @@
     if (poi.needsToPlaySound) {
         // play something
     }
-    if (poi.forDoor || poi.forObstacle) {
+    if (poi.forDoor || poi.forObstacle || poi.forRamp) {
         [_delegate speak:[self poiString:poi] completionHandler:^{
         }];
     } else if (poi.requiresUserAction) {

@@ -732,6 +732,14 @@
     return elevatorEquipments;
 }
 
+- (BOOL)isSafeLinkType
+{
+    return _linkType == LINK_TYPE_FREE_WALKWAY ||
+    _linkType == LINK_TYPE_SIDEWALK ||
+    _linkType == LINK_TYPE_GARDEN_WALK ||
+    _linkType == LINK_TYPE_PEDESTRIAN_ROAD;
+}
+
 @end
 
 @implementation HLPCombinedLink
@@ -745,13 +753,18 @@
         return isnan(link1.lastBearingForTarget) && (link2.length < 5);
     }
 
+    return [HLPCombinedLink link:link1 canBeCombinedWithLink:link2] &&
+    link1.linkType == link2.linkType;
+}
+
++ (BOOL) link:(HLPLink *)link1 canBeCombinedWithLink:(HLPLink *)link2
+{
     return  fabs(link1.lastBearingForTarget - link2.initialBearingFromSource) < 15.0 &&
     [link1.type isEqualToString:link2.type] &&
     link1.direction == link2.direction &&
     link1.sourceHeight == link1.targetHeight &&
     link1.targetHeight == link2.sourceHeight &&
-    link2.sourceHeight == link2.targetHeight &&
-    link1.linkType == link2.linkType;
+    link2.sourceHeight == link2.targetHeight;
 }
 
 -(instancetype)initWithLink1:(HLPLink *)link1 andLink2:(HLPLink *)link2

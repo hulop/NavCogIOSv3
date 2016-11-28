@@ -298,3 +298,6 @@ Head to the correct orientation
 /* */
 "Disabled" = "%@. disabled.";
 
+/* */
+"RampPOIString" = "There is a ramp";
+

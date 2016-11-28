@@ -187,12 +187,14 @@ typedef enum: int {
 - (void) offsetTarget:(double)distance;
 - (void) offsetSource:(double)distance;
 - (HLPPOIElevatorEquipments*) elevatorEquipments;
+- (BOOL) isSafeLinkType;
 @end
 
 @interface HLPCombinedLink : HLPLink
 
 @property (nonatomic, readonly) NSArray* links;
 +(BOOL) link:(HLPLink*)link1 shouldBeCombinedWithLink:(HLPLink*)link2;
++(BOOL) link:(HLPLink*)link1 canBeCombinedWithLink:(HLPLink*)link2;
 -(instancetype) initWithLink1:(HLPLink*)link1 andLink2:(HLPLink*) link2;
 
 @end

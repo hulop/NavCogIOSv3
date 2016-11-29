@@ -21,22 +21,22 @@
  *******************************************************************************/
 
 /* (No Commment) */
-"ElvButtonLeft" = "扉の左に呼び出しボタン";
+"ElvButtonLeft" = "エレベーターの左に呼び出しボタン";
 
 /* (No Commment) */
-"ElvButtonLeftPlural" = "扉の左に呼び出しボタン";
+"ElvButtonLeftPlural" = "エレベーターの左に呼び出しボタン";
 
 /* (No Commment) */
-"ElvButtonMiddle" = "扉と扉の間に呼び出しボタン";
+"ElvButtonMiddle" = "エレベーターとエレベーターの間に呼び出しボタン";
 
 /* (No Commment) */
-"ElvButtonMiddlePlural" = "扉の間に呼び出しボタン";
+"ElvButtonMiddlePlural" = "エレベーターとエレベーターの間に呼び出しボタン";
 
 /* (No Commment) */
-"ElvButtonRight" = "扉の右に呼び出しボタン";
+"ElvButtonRight" = "エレベーターの右に呼び出しボタン";
 
 /* (No Commment) */
-"ElvButtonRightPlural" = "扉の右に呼び出しボタン";
+"ElvButtonRightPlural" = "エレベーターの右に呼び出しボタン";
 
 /* No comment provided by engineer. */
 "ElvButtonWithBraille" = "%@。点字有り。";

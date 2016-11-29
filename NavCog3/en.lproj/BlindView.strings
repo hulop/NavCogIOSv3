@@ -94,17 +94,30 @@ Head to the correct orientation
 /* No comment provided by engineer. */
 "TTS_PAUSE_CHAR" = ".";
 
-/* No comment provided by engineer. */
-"There are %d auto doors" = "There are %d auto doors";
 
 /* No comment provided by engineer. */
-"There are %d doors" = "There are %d doors";
+"AutoDoorPOIString2" = "There are %d auto doors";
 
 /* No comment provided by engineer. */
-"There is a auto door" = "There is a auto door";
+"DoorPOIString2" = "There are %d doors";
 
 /* No comment provided by engineer. */
-"There is a door" = "There is a door";
+"AutoDoorPOIString1" = "There is an auto door";
+
+/* No comment provided by engineer. */
+"DoorPOIString1" = "There is a door";
+
+/* No comment provided by engineer. */
+"AutoDoorPOIString2Short" = "%d auto doors";
+
+/* No comment provided by engineer. */
+"DoorPOIString2Short" = "%d doors";
+
+/* No comment provided by engineer. */
+"AutoDoorPOIString1Short" = "an auto door";
+
+/* No comment provided by engineer. */
+"DoorPOIString1Short" = "a door";
 
 /* No comment provided by engineer. */
 "There is a sign says %@" = "There is a sign says %@";
@@ -114,6 +127,12 @@ Head to the correct orientation
 
 /* */
 "ObstaclePOIString2" = "There are obstacles in your %@";
+
+/* */
+"ObstaclePOIString1Short" = "a obstacle in your %@";
+
+/* */
+"ObstaclePOIString2Short" = "obstacles in your %@";
 
 /* */
 "BothSide" = "both side";
@@ -309,3 +328,13 @@ Head to the correct orientation
 
 /* */
 "BrailleBlock" = "on Braille blocks";
+
+/* */
+"RampPOIStringShort" = "a ramp";
+
+/* */
+"BrailleBlockPOIStringShort" = "Braille blocks available";
+
+/* */
+"NoBrailleBlockPOIStringShort" = "Braille blocks not available";
+

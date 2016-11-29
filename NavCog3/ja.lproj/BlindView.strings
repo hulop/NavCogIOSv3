@@ -110,16 +110,28 @@
 "TTS_PAUSE_CHAR" = "。";
 
 /* No comment provided by engineer. */
-"There are %d auto doors" = "この先、自動ドアが%dつ。";
+"AutoDoorPOIString2" = "この先、自動ドアが%dつ。";
 
 /* No comment provided by engineer. */
-"There are %d doors" = "この先、ドアが%dつ。";
+"DoorPOIString2" = "この先、ドアが%dつ。";
 
 /* No comment provided by engineer. */
-"There is a auto door" = "この先、自動ドアあり。";
+"AutoDoorPOIString1" = "この先、自動ドアあり。";
 
 /* No comment provided by engineer. */
-"There is a door" = "この先、ドアあり。";
+"DoorPOIString1" = "この先、ドアあり。";
+
+/* No comment provided by engineer. */
+"AutoDoorPOIString2Short" = "自動ドアが%dつ。";
+
+/* No comment provided by engineer. */
+"DoorPOIString2Short" = "ドアが%dつ。";
+
+/* No comment provided by engineer. */
+"AutoDoorPOIString1Short" = "自動ドアあり。";
+
+/* No comment provided by engineer. */
+"DoorPOIString1Short" = "ドアあり。";
 
 /* No comment provided by engineer. */
 "There is a sign says %@" = "%@という看板があります";
@@ -129,6 +141,12 @@
 
 /* */
 "ObstaclePOIString2" = "この先、%@に障害物あり";
+
+/* */
+"ObstaclePOIString1Short" = "%@に障害物あり";
+
+/* */
+"ObstaclePOIString2Short" = "%@に障害物あり";
 
 /* */
 "BothSide" = "両側";
@@ -327,3 +345,13 @@
 
 /* */
 "BrailleBlock" = "点字ブロックあり";
+
+/* */
+"RampPOIStringShort" = "スロープあり";
+
+/* */
+"BrailleBlockPOIStringShort" = "点字ブロックあり";
+
+/* */
+"NoBrailleBlockPOIStringShort" = "点字ブロックなし";
+

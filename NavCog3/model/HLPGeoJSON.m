@@ -108,7 +108,8 @@
     if ([self.geometry.type isEqualToString:@"Point"]) {
         [loc2 updateLat:[self.geometry.coordinates[1] doubleValue]
                     Lng:[self.geometry.coordinates[0] doubleValue]];
-        minloc = loc2;
+        minloc = [[HLPLocation alloc] init];
+        [minloc update:loc2];
         dist = [loc1 distanceTo:loc2];
     } else if ([self.geometry.type isEqualToString:@"LineString"]) {
         for(int i = 0; i < [self.geometry.coordinates count]-1; i++) {
@@ -119,6 +120,11 @@
             
             HLPLocation *loc = [loc1 nearestLocationToLineFromLocation:loc2 ToLocation:loc3];
             double temp = [loc1 distanceToLineFromLocation:loc2 ToLocation:loc3];
+            if ([loc2 distanceTo:loc3] < 1e-5) {
+                loc = [[HLPLocation alloc] init];
+                [loc update:loc2];
+                temp = [loc2 distanceTo:loc1];
+            }
             if (temp < dist) {
                 dist = temp;
                 minloc = loc;
@@ -825,8 +831,8 @@
     
     _geometry = [[HLPGeometry alloc] initWithDictionary:
                  @{
-                   @"type":@"LineString",
-                   @"coordinates":coords
+                   @"type":([coords count]==1)?@"Point":@"LineString",
+                   @"coordinates":([coords count]==1)?coords[0]:coords
                    } error:nil];
     
     _length = link1.length + link2.length;

@@ -24,7 +24,9 @@
 #import "TTTOrdinalNumberFormatter.h"
 #import "NavDataStore.h"
 
-@implementation NavCommander
+@implementation NavCommander {
+    NSTimeInterval lastPOIAnnounceTime;
+}
 
 #pragma mark - string builder functions
 
@@ -178,25 +180,18 @@
     return string;
 }
 
-- (NSString*) doorString:(NavPOI*)poi
+- (NSString*) doorString:(NavPOI*)poi withOption:option
 {
-    if (poi.flagAuto) {
-        if (poi.count == 1) {
-            return NSLocalizedStringFromTable(@"There is a auto door", @"BlindView", @"");
-        } else {
-            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"There are %d auto doors", @"BlindView", @""), poi.count];
-        }
-    } else {
-        if (poi.count == 1) {
-            return NSLocalizedStringFromTable(@"There is a door", @"BlindView", @"");
-        } else {
-            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"There are %d doors", @"BlindView", @""), poi.count];
-        }
-    }
-    return nil;
+    BOOL shortSentence = option && option[@"short"] && [option[@"short"] boolValue];
+    NSString *format = @"DoorPOIString";
+    format = [(poi.flagAuto)?@"Auto":@"" stringByAppendingString:format];
+    format = [format stringByAppendingString:(poi.count == 1)?@"1":@"2"];
+    format = [format stringByAppendingString:(shortSentence)?@"Short":@""];
+    
+    return [NSString stringWithFormat:NSLocalizedStringFromTable(format, @"BlindView", @""), poi.count];
 }
 
-- (NSString*) obstacleString:(NavPOI*)poi
+- (NSString*) obstacleString:(NavPOI*)poi withOption:option
 {
     NSString *side = nil;
     if (poi.leftSide && poi.rightSide) {
@@ -207,32 +202,43 @@
         side = NSLocalizedStringFromTable(@"RightSide", @"BlindView", @"");
     }
     
+    BOOL shortSentence = option && option[@"short"] && [option[@"short"] boolValue];
+
     if (side) {
-        if (poi.count == 1) {
-            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"ObstaclePOIString1", @"BlindView", @""), side];
-        } else {
-            return [NSString stringWithFormat:NSLocalizedStringFromTable(@"ObstaclePOIString2", @"BlindView", @""), side];
-        }
+        NSString *format = @"ObstaclePOIString";
+        format = [format stringByAppendingString:(poi.count == 1)?@"1":@"2"];
+        format = [format stringByAppendingString:(shortSentence)?@"Short":@""];
+        return [NSString stringWithFormat:NSLocalizedStringFromTable(format, @"BlindView", @""), side];
     }
     
     return nil;
 }
 
-- (NSString*) rampString:(NavPOI*)poi
+- (NSString*) rampString:(NavPOI*)poi withOption:option
 {
-    return [NSString stringWithFormat:NSLocalizedStringFromTable(@"RampPOIString", @"BlindView", @"")];
+    BOOL shortSentence = option && option[@"short"] && [option[@"short"] boolValue];
+    NSString *format = @"RampPOIString";
+    format = [format stringByAppendingString:(shortSentence)?@"Short":@""];
+    
+    return NSLocalizedStringFromTable(format, @"BlindView", @"");
 }
 
-- (NSString*) brailleBlockString:(NavPOI*)poi
+- (NSString*) brailleBlockString:(NavPOI*)poi withOption:option
 {
-    if (poi.flagEnd) {
-        return [NSString stringWithFormat:NSLocalizedStringFromTable(@"NoBrailleBlockPOIString", @"BlindView", @"")];
-    }
-    return [NSString stringWithFormat:NSLocalizedStringFromTable(@"BrailleBlockPOIString", @"BlindView", @"")];
+    BOOL shortSentence = option && option[@"short"] && [option[@"short"] boolValue];
+    NSString *format = @"BrailleBlockPOIString";
+    format = [poi.flagEnd?@"No":@"" stringByAppendingString:format];
+    format = [format stringByAppendingString:(shortSentence)?@"Short":@""];
+    
+    return NSLocalizedStringFromTable(format, @"BlindView", @"");
 }
-
 
 - (NSString*) poiString:(NavPOI*) poi
+{
+    return [self poiString:poi withOption:nil];
+}
+
+- (NSString*) poiString:(NavPOI*) poi withOption:(NSDictionary*)option
 {
     if (poi == nil) {
         return @"";
@@ -248,16 +254,16 @@
         [string appendFormat:NSLocalizedStringFromTable(@"There is a sign says %@", @"BlindView", @""), poi.text];
     }
     else if (poi.forDoor) {
-        [string appendString:[self doorString:poi]];
+        [string appendString:[self doorString:poi withOption:option]];
     }
     else if (poi.forObstacle) {
-        [string appendString:[self obstacleString:poi]];
+        [string appendString:[self obstacleString:poi withOption:option]];
     }
     else if (poi.forRamp) {
-        [string appendString:[self rampString:poi]];
+        [string appendString:[self rampString:poi withOption:option]];
     }
     else if (poi.forBrailleBlock) {
-        [string appendString:[self brailleBlockString:poi]];
+        [string appendString:[self brailleBlockString:poi withOption:option]];
     }
     else {
         NSString *temp = @"";
@@ -654,19 +660,23 @@
 // POI
 - (void)userIsApproachingToPOI:(NSDictionary*)properties
 {
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    
     NSLog(@"%@", NSStringFromSelector(_cmd));
     NavPOI *poi = properties[@"poi"];
     double heading = [properties[@"heading"] doubleValue];
     
     BOOL isDestinationPOI = NO;
+    BOOL shortSentence = (now - lastPOIAnnounceTime) < 3;
     
     if (poi.needsToPlaySound) {
         // play something
     }
     if (poi.forDoor || poi.forObstacle || poi.forRamp || poi.forBrailleBlock) {
         if (poi.countApproached == 0) { // only for first time
-            [_delegate speak:[self poiString:poi] completionHandler:^{
+            [_delegate speak:[self poiString:poi withOption:@{@"short":@(shortSentence)}] completionHandler:^{
             }];
+            lastPOIAnnounceTime = now;
         }
     } else if (poi.requiresUserAction) {
     } else {
@@ -728,6 +738,7 @@
             }
             [_delegate executeCommand:result[1]];
         }];
+        lastPOIAnnounceTime = now;
     }
 }
 

@@ -976,7 +976,7 @@ static NavNavigatorConstants *_instance;
             if (distance < minDistance && (linkType == 0 || link.linkType == linkType)) {
                 minDistance = distance;
                 nearestLinks = [@[link] mutableCopy];
-            } else if (fabs(distance - minDistance) < 0.1) {
+            } else if (fabs(distance - minDistance) < 0.1 && (linkType == 0 || link.linkType == linkType)) {
                 [nearestLinks addObject:link];
             }
         }];

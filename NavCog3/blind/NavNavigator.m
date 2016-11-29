@@ -417,15 +417,22 @@ static NavNavigatorConstants *_instance;
             } else {
                 // mid in route
                 HLPLocation *nearest = [_link nearestLocationTo:ent.node.location];
-                double angle = [HLPLocation normalizeDegree:[nearest bearingTo:ent.node.location] - _link.initialBearingFromSource];
-                if (45 < fabs(angle) && fabs(angle) < 135) {
+                if ([nearest distanceTo:ent.node.location] < 1e-3) {
                     navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
                               @{
-                                @"origin": ent,
-                                @"longDescription": [ent getLongDescriptionPron],
-                                @"angleFromLocation": @([nearest bearingTo:ent.node.location]),
-                                @"flagOnomastic":@(YES)
+                                @"origin": ent
                                 }];
+                } else {
+                    double angle = [HLPLocation normalizeDegree:[nearest bearingTo:ent.node.location] - _link.initialBearingFromSource];
+                    if (45 < fabs(angle) && fabs(angle) < 135) {
+                        navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
+                                  @{
+                                    @"origin": ent,
+                                    @"longDescription": [ent getLongDescriptionPron],
+                                    @"angleFromLocation": @([nearest bearingTo:ent.node.location]),
+                                    @"flagOnomastic":@(YES)
+                                    }];
+                    }
                 }
             }
             if (navpoi) {
@@ -1051,7 +1058,7 @@ static NavNavigatorConstants *_instance;
                 if ([nearestLink.sourceNodeID isEqualToString:ent.node._id] ||
                     [nearestLink.targetNodeID isEqualToString:ent.node._id]) {
                     //TODO announce about building
-                    continue;
+                    //continue;
                 }
                 NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
                 if (!linkPois) {

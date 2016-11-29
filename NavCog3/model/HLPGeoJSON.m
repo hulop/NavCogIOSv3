@@ -43,6 +43,7 @@
 #define PROPKEY_MULTI_PURPOSE_TOILET @"多目的トイレ"
 #define PROPKEY_EFFECTIVE_WIDTH @"有効幅員"
 #define PROPKEY_ELEVATOR_EQUIPMENTS @"elevator_equipments"
+#define PROPKEY_BRAILLE_BLOCK @"視覚障害者誘導用ブロック"
 
 // for extension
 #define PROPKEY_EXT_MAJOR_CATEGORY @"major_category"
@@ -533,6 +534,8 @@
 
     _linkType = [self.properties[PROPKEY_LINK_TYPE] intValue];
     
+    _brailleBlockType = [self.properties[PROPKEY_BRAILLE_BLOCK] intValue];
+    
     _minimumWidth = 3.0;
     if (self.properties[PROPKEY_EFFECTIVE_WIDTH]) {
         switch([self.properties[PROPKEY_EFFECTIVE_WIDTH] intValue]) {
@@ -843,6 +846,8 @@
     lastBearingForTarget = link2.lastBearingForTarget;
     sourceLocation = [link1 sourceLocation];
     targetLocation = [link2 targetLocation];
+    
+    _brailleBlockType = link1.brailleBlockType;
     
     return self;
 }

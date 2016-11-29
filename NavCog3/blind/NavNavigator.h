@@ -176,6 +176,7 @@
 @property (readonly) BOOL forDoor;
 @property (readonly) BOOL forObstacle;
 @property (readonly) BOOL forRamp;
+@property (readonly) BOOL forBrailleBlock;
 @property (readonly) BOOL forBeforeEnd;
 @property (readonly) BOOL forAfterEnd;
 @property (readonly) BOOL flagCaution;

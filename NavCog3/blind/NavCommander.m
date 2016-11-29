@@ -223,6 +223,14 @@
     return [NSString stringWithFormat:NSLocalizedStringFromTable(@"RampPOIString", @"BlindView", @"")];
 }
 
+- (NSString*) brailleBlockString:(NavPOI*)poi
+{
+    if (poi.flagEnd) {
+        return [NSString stringWithFormat:NSLocalizedStringFromTable(@"NoBrailleBlockPOIString", @"BlindView", @"")];
+    }
+    return [NSString stringWithFormat:NSLocalizedStringFromTable(@"BrailleBlockPOIString", @"BlindView", @"")];
+}
+
 
 - (NSString*) poiString:(NavPOI*) poi
 {
@@ -247,6 +255,9 @@
     }
     else if (poi.forRamp) {
         [string appendString:[self rampString:poi]];
+    }
+    else if (poi.forBrailleBlock) {
+        [string appendString:[self brailleBlockString:poi]];
     }
     else {
         NSString *temp = @"";
@@ -316,8 +327,12 @@
     }
     if ([pois count] > 0) {
         NavPOI *poi = pois[0];
-        if (poi.text && [poi.text length] > 0) {
-            text = poi.text;
+        if (poi.forBrailleBlock) {
+            text = NSLocalizedStringFromTable(@"BrailleBlock", @"BlindView", @"");
+        } else {
+            if (poi.text && [poi.text length] > 0) {
+                text = poi.text;
+            }
         }
     }
     return text;
@@ -648,7 +663,7 @@
     if (poi.needsToPlaySound) {
         // play something
     }
-    if (poi.forDoor || poi.forObstacle || poi.forRamp) {
+    if (poi.forDoor || poi.forObstacle || poi.forRamp || poi.forBrailleBlock) {
         [_delegate speak:[self poiString:poi] completionHandler:^{
         }];
     } else if (poi.requiresUserAction) {

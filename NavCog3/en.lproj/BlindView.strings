@@ -301,3 +301,11 @@ Head to the correct orientation
 /* */
 "RampPOIString" = "There is a ramp";
 
+/* */
+"BrailleBlockPOIString" = "Braille blocks are going to be available";
+
+/* */
+"NoBrailleBlockPOIString" = "Braille blocks are going to be not available";
+
+/* */
+"BrailleBlock" = "on Braille blocks";

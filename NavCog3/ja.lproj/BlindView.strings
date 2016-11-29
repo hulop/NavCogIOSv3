@@ -319,3 +319,11 @@
 /* */
 "RampPOIString" = "この先、スロープがあります";
 
+/* */
+"BrailleBlockPOIString" = "この先、点字ブロックがあります";
+
+/* */
+"NoBrailleBlockPOIString" = "この先、点字ブロックがなくなります";
+
+/* */
+"BrailleBlock" = "点字ブロックあり";

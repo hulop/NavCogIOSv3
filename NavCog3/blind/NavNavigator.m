@@ -535,17 +535,67 @@ static NavNavigatorConstants *_instance;
     
     // handle link type as POI
     // generate POI from links
-    for(HLPLink* link in links) {
-        if (link.linkType == LINK_TYPE_RAMP) {
-            NavPOI *poi = [[NavPOI alloc] initWithText:nil Location:link.sourceLocation Options:
-                           @{
-                             @"origin":link,
-                             @"forRamp":@(YES)
-                             }];
-            [poisTemp addObject:poi];
+    void(^checkLinkFeatures)(NSArray*, BOOL(^)(HLPLink*), void(^)(NSRange)) =
+    ^(NSArray* links, BOOL(^condition)(HLPLink*), void(^found)(NSRange)) {
+        for(int start = 0; start < [links count];) {
+            HLPLocation *locEnd = nil;
+            int end = start;
+            for(int i = start; i < [links count]; i++) {
+                HLPLink *link = links[i];
+                if (condition(link)) {
+                    locEnd = link.targetLocation;
+                    end = i;
+                } else {
+                    break;
+                }
+            }
+            if (locEnd) {
+                found(NSMakeRange(start, end-start+1));
+            }
+            start = end+1;
         }
-    }
+    };
+
+    // handle ramp
+    checkLinkFeatures(links, ^ BOOL (HLPLink *link) {
+        return link.linkType == LINK_TYPE_RAMP;
+    }, ^(NSRange range) {
+        NSArray *result = [links subarrayWithRange:range];
+        HLPLink *link = result[0];
+        [poisTemp addObject:[[NavPOI alloc] initWithText:nil Location:link.sourceLocation Options:
+                       @{
+                         @"origin":result,
+                         @"forRamp":@(YES)
+                         }]];
+    });
     
+    // handle Braille block
+    checkLinkFeatures(links, ^ BOOL (HLPLink *link) {
+        return link.brailleBlockType == HLPBrailleBlockTypeAvailable;
+    }, ^(NSRange range) {
+        NSArray *result = [links subarrayWithRange:range];
+        HLPLink *link = result[0];
+        HLPLink *link2 = [result lastObject];
+        [poisTemp addObject:[[NavPOI alloc] initWithText:nil Location:link.sourceLocation Options:
+                             @{
+                               @"origin":link,
+                               @"forBrailleBlock":@(YES),
+                               @"forFloor":@(range.location == 0)
+                               }]];
+        
+        BOOL lastLinkHasBraille = (range.location+range.length == [links count]);
+        
+        if (!lastLinkHasBraille || _nextLink.brailleBlockType != HLPBrailleBlockTypeAvailable) {
+            [poisTemp addObject:[[NavPOI alloc] initWithText:nil Location:link2.targetLocation Options:
+                                 @{
+                                   @"origin":result,
+                                   @"forBrailleBlock":@(YES),
+                                   @"flagEnd":@(YES),
+                                   @"forAfterEnd":@(lastLinkHasBraille)
+                                   }]];
+        }
+    });
+
     
     // convert NAVCOG1/2 acc info into NavPOI
     [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -1702,7 +1752,7 @@ static NavNavigatorConstants *_instance;
                     continue;
                 }
                 
-                if (poi.forAfterEnd && linkInfo.isNextDestination) {
+                if (poi.forAfterEnd) {
                     continue;
                 }
                 

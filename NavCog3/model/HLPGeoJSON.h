@@ -98,6 +98,11 @@ typedef enum: int {
     DIRECTION_TYPE_UNKNOWN = 9
 } HLPDirectionType;
 
+typedef NS_ENUM(NSInteger, HLPBrailleBlockType) {
+    HLPBrailleBlockTypeNone = 0,
+    HLPBrailleBlockTypeAvailable = 1,
+    HLPBrailleBlockTypeUnknown = 9
+};
 
 typedef enum: int {
     LINK_TYPE_SIDEWALK = 1,
@@ -163,6 +168,7 @@ typedef enum: int {
     HLPLocation *targetLocation;
     double _minimumWidth;
     HLPPOIElevatorEquipments *elevatorEquipments;
+    HLPBrailleBlockType _brailleBlockType;
 }
 
 @property (nonatomic, readonly) double length;
@@ -174,6 +180,7 @@ typedef enum: int {
 @property (nonatomic, readonly) HLPLinkType linkType;
 @property (nonatomic, readonly) BOOL backward;
 @property (nonatomic, readonly) double minimumWidth;
+@property (nonatomic, readonly) HLPBrailleBlockType brailleBlockType;
 
 + (NSString*) nameOfLinkType:(HLPLinkType)type;
 - (double) initialBearingFromSource;

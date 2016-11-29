@@ -539,6 +539,9 @@
     _targetHeight = (_targetHeight >= 1)?_targetHeight-1:_targetHeight;
 
     _linkType = [self.properties[PROPKEY_LINK_TYPE] intValue];
+    if(_linkType == LINK_TYPE_ELEVATOR) {
+        _length = 0;
+    }
     
     _brailleBlockType = [self.properties[PROPKEY_BRAILLE_BLOCK] intValue];
     

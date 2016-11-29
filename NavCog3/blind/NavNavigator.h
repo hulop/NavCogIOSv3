@@ -69,6 +69,7 @@
 
 @property (readonly) double CRANK_REMOVE_SAFE_RATE;
 
+@property (readonly) double MINIMUM_OBSTACLES_POI;
 
 + (instancetype) constants;
 + (NSArray*) propertyNames;

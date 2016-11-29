@@ -132,6 +132,17 @@
     [self updateView];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_ACCELEARATION object:nil];
+}
+
+
 - (void) updateView
 {
     dispatch_async(dispatch_get_main_queue(), ^{

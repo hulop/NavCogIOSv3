@@ -156,7 +156,10 @@ static NavNavigatorConstants *_instance;
              
              @"FLOOR_DIFF_THRESHOLD": @[@(0.1), @(0), @(0.5), @(0.1)],
              
-             @"CRANK_REMOVE_SAFE_RATE": @[@(0.75), @(0), @(1.0), @(0.05), FIXED]
+             @"CRANK_REMOVE_SAFE_RATE": @[@(0.75), @(0), @(1.0), @(0.05), FIXED],
+
+             @"MINIMUM_OBSTACLES_POI": @[@(5), @(0), @(10), @(1)]
+             
              };
 }
 @end
@@ -497,7 +500,7 @@ static NavNavigatorConstants *_instance;
         return false;
     }]];
     
-    if ([obstacles count] > 0) {
+    if ([obstacles count] > C.MINIMUM_OBSTACLES_POI) {
         obstacles = [obstacles sortedArrayUsingComparator:^NSComparisonResult(HLPPOI *p1, HLPPOI *p2) {
             HLPLocation *n1 = [_link nearestLocationTo:p1.location];
             HLPLocation *n2 = [_link nearestLocationTo:p2.location];
@@ -976,7 +979,32 @@ static NavNavigatorConstants *_instance;
             if (distance < minDistance && (linkType == 0 || link.linkType == linkType)) {
                 minDistance = distance;
                 nearestLinks = [@[link] mutableCopy];
-            } else if (fabs(distance - minDistance) < 0.1 && (linkType == 0 || link.linkType == linkType)) {
+            }
+        }];
+        [linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
+            
+            if (!isnan(loc.floor) &&
+                (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
+                return;
+            }
+            if ([link.sourceNodeID isEqualToString:nodeID] ||
+                [link.targetNodeID isEqualToString:nodeID]) {
+                return;
+            }
+            
+            HLPLocation *nearest = [link nearestLocationTo:loc];
+            if (onlyEnd) {
+                double sd = [link.sourceLocation distanceTo:loc];
+                double td = [link.targetLocation distanceTo:loc];
+                if (sd > td) {
+                    nearest = link.targetLocation;
+                } else {
+                    nearest = link.sourceLocation;
+                }
+            }
+            double distance = [loc distanceTo:nearest];
+            
+            if (fabs(distance - minDistance) < 0.5 && (linkType == 0 || link.linkType == linkType)) {
                 [nearestLinks addObject:link];
             }
         }];
@@ -1593,6 +1621,29 @@ static NavNavigatorConstants *_instance;
                                @"distance": @(linkInfo.link.length)
                                }];
                         }
+                        HLPLocation*(^elevatorLocation)(HLPLink*) = ^(HLPLink *link) {
+                            if ([link isKindOfClass:HLPCombinedLink.class]) {
+                                HLPCombinedLink *clink = ((HLPCombinedLink*)link);
+                                for(HLPLink *l in clink.links) {
+                                    if (l.linkType == LINK_TYPE_ELEVATOR) {
+                                        return l.targetLocation;
+                                    }
+                                }
+                            }
+                            if ([link isKindOfClass:HLPLink.class]) {
+                                return link.targetLocation;
+                            }
+                            return (HLPLocation*)nil;
+                        };
+                        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
+                            HLPLocation *loc = elevatorLocation(linkInfo.link);
+                            [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
+                            
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET
+                                                                                    object:@{@"location":loc}];
+                            });
+                        }
                     }
                 } else {
                     NavPOI*(^findElevatorPOI)(NSArray*, HLPPOICategory) = ^(NSArray *array, HLPPOICategory category) {
@@ -1628,20 +1679,6 @@ static NavNavigatorConstants *_instance;
                             linkInfo.hasBeenApproaching = YES;
                         }
                     } else {
-                        HLPLocation*(^elevatorLocation)(HLPLink*) = ^(HLPLink *link) {
-                            if ([link isKindOfClass:HLPCombinedLink.class]) {
-                                HLPCombinedLink *clink = ((HLPCombinedLink*)link);
-                                for(HLPLink *l in clink.links) {
-                                    if (l.linkType == LINK_TYPE_ELEVATOR) {
-                                        return l.targetLocation;
-                                    }
-                                }
-                            }
-                            if ([link isKindOfClass:HLPLink.class]) {
-                                return link.targetLocation;
-                            }
-                            return (HLPLocation*)nil;
-                        };
                         
                         // face to the exit after getting in the elevator
                         if (fabs(linkInfo.link.lastBearingForTarget-location.orientation) < 45 &&
@@ -1663,15 +1700,7 @@ static NavNavigatorConstants *_instance;
                                 }
                             }
                             linkInfo.hasBeenApproaching = YES;
-                            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
-                                HLPLocation *loc = elevatorLocation(linkInfo.link);
-                                [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
-                                
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET
-                                                                                        object:@{@"location":loc}];
-                                });
-                            }
+                            
                         } else if (!linkInfo.hasBeenActivated) {
                             // only for preview
                             double distance = C.APPROACHED_DISTANCE_THRESHOLD+2;
@@ -1770,7 +1799,8 @@ static NavNavigatorConstants *_instance;
                 // return;
             }
             
-            if (!linkInfo.hasBeenActivated && !linkInfo.hasBeenBearing) {
+            //if (!linkInfo.hasBeenActivated && !linkInfo.hasBeenBearing) {
+            if (!linkInfo.hasBeenActivated) {
                 
                 linkInfo.hasBeenActivated = YES;
                 if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {

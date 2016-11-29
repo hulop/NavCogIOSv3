@@ -85,6 +85,8 @@ typedef struct {
     double initStartYaw;
     double offsetYaw;
     
+    BOOL disableAcceleration;
+    
     NavLocationStatus _currentStatus;
 }
 
@@ -163,6 +165,9 @@ void functionCalledToLog(void *inUserData, string text)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startOrientationInit:) name:START_ORIENTATION_INIT object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopOrientationInit:) name:STOP_ORIENTATION_INIT object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableAcceleration:) name:DISABLE_ACCELEARATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableAcceleration:) name:ENABLE_ACCELEARATION object:nil];
+    
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud addObserver:self forKeyPath:@"nSmooth" options:NSKeyValueObservingOptionNew context:nil];
     [ud addObserver:self forKeyPath:@"nStates" options:NSKeyValueObservingOptionNew context:nil];
@@ -199,6 +204,16 @@ void functionCalledToLog(void *inUserData, string text)
     isOrientationInit = NO;
     initStartYaw = NAN;
     NSLog(@"OrientationInit,%f",offsetYaw);
+}
+
+- (void)disableAcceleration:(NSNotification*) notification
+{
+    disableAcceleration = YES;
+}
+
+- (void)enableAcceleration:(NSNotification*) notification
+{
+    disableAcceleration = NO;
 }
 
 - (void) requestLogReplayStop:(NSNotification*) notification
@@ -567,8 +582,8 @@ void functionCalledToLog(void *inUserData, string text)
                 }
             }
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"] ||
-                [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_WHEELCHAIR"]
+            if (![[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"] &&
+                ![[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_WHEELCHAIR"]
                 ) {
                 if (currentOrientationAccuracy >= ORIENATION_ACCURACY_THRETHOLD) {
                     double orientation = motion.attitude.yaw + offsetYaw;
@@ -594,7 +609,7 @@ void functionCalledToLog(void *inUserData, string text)
         }
     }];
     [motionManager startAccelerometerUpdatesToQueue: processQueue withHandler:^(CMAccelerometerData * _Nullable acc, NSError * _Nullable error) {
-        if (!_isActive || isLogReplaying) {
+        if (!_isActive || isLogReplaying || disableAcceleration) {
             return;
         }
         Acceleration acceleration((uptime+acc.timestamp)*1000,

@@ -72,4 +72,7 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 
 #define BUILDING_CHANGED_NOTIFICATION @"building_changed_notification"
 
+#define ENABLE_ACCELEARATION @"enable_acceleration"
+#define DISABLE_ACCELEARATION @"disable_acceleration"
+
 #endif /* LocationEvent_h */

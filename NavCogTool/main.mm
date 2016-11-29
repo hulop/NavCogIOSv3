@@ -291,7 +291,7 @@ Option parseArguments(int argc, char * argv[]){
         std::cout << [processing[@"from"] UTF8String] << "-" << [processing[@"to"] UTF8String] << "-";
         fflush(stdout);
         
-        countDown = 20;
+        countDown = 60;
         timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(handleTimeout:) userInfo:nil repeats:YES];
         
         dataStore.previewMode = YES;

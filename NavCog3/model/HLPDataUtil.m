@@ -210,7 +210,7 @@
         NSMutableURLRequest *request = [NSMutableURLRequest
                                         requestWithURL: url
                                         cachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                        timeoutInterval: 30.0];
+                                        timeoutInterval: 60.0];
         
         NSMutableString *temp = [[NSMutableString alloc] init];
         for(NSString *key in [data allKeys]) {

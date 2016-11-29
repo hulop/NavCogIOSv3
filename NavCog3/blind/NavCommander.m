@@ -127,16 +127,11 @@
         BOOL up = targetHeight > sourceHeight;
         
         NSString *tfloor = [self floorString:targetHeight];
-        //NSString *sfloor = [self floorString:sourceHeight];
-        //if (full) {
-        //string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %3$@ by %2$@ %1$@, now you are in %4$@",@"BlindView",@"") , angle, mean, tfloor, sfloor];//@""
-        //} else {
-        if (up) {
-            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go up to %3$@ by %2$@ %1$@",@"BlindView",@"") , angle, mean, tfloor];//@""
-        } else {
-            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go down to %3$@ by %2$@ %1$@",@"BlindView",@"") , angle, mean, tfloor];//@""
-        }
-        //}
+        NSString *format = @"FloorChangeActionString3";
+        format = [format stringByAppendingString:up?@"Up":@"Down"];
+        format = [format stringByAppendingString:full?@"Full":@""];
+
+        string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , angle, mean, tfloor];//@""
     }
     else if (linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
         int sourceHeight = [properties[@"sourceHeight"] intValue];
@@ -146,11 +141,9 @@
         NSString *tfloor = [self floorString:targetHeight];
         //string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %2$@ by %1$@, now you are in %3$@",@"BlindView",@"") , mean, tfloor, sfloor];
         BOOL up = targetHeight > sourceHeight;
-        if (up) {
-            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go up to %2$@ by %1$@",@"BlindView",@"") , mean, tfloor];
-        } else {
-            string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go down to %2$@ by %1$@",@"BlindView",@"") , mean, tfloor];
-        }
+        NSString *format = @"FloorChangeActionString2";
+        format = [format stringByAppendingString:up?@"Up":@"Down"];
+        string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , mean, tfloor];
     }
     else {
         if (turnAngle < -150 ) {

@@ -39,31 +39,26 @@
 "From_button" = "From %@";
 
 /* No comment provided by engineer. */
-"Go down to %2$@ by %1$@" = "Go down to the %2$@ by %1$@.";
-
-/* (No Commment) */
-"Go down to %2$@ by %1$@, now you are in %3$@" = "Go down to the %2$@ by %1$@, now you are in the %3$@.";
-
-/* No comment provided by engineer. */
-"Go down to %3$@ by %2$@ %1$@" = "Go down to the %3$@ by %2$@ %1$@.";
-
-/* (No Commment) */
-"Go down to %3$@ by %2$@ %1$@, now you are in %4$@" = "Go down to the %3$@ by %2$@ %1$@, now you are in %4$@.";
-
-/* No comment provided by engineer. */
 "Go to %1$@" = "Go to the %1$@.";
 
 /* No comment provided by engineer. */
-"Go up to %2$@ by %1$@" = "Go up to the %2$@ by %1$@.";
-
-/* (No Commment) */
-"Go up to %2$@ by %1$@, now you are in %3$@" = "Go up to the %2$@ by %1$@, now you are in the %3$@.";
+"FloorChangeActionString2Down" = "Go down to the %2$@ by %1$@.";
 
 /* No comment provided by engineer. */
-"Go up to %3$@ by %2$@ %1$@" = "Go up to the %3$@ by %2$@ %1$@.";
+"FloorChangeActionString3Down" = "Go down to the %3$@ by %2$@ %1$@.";
 
-/* (No Commment) */
-"Go up to %3$@ by %2$@ %1$@, now you are in %4$@" = "Go up to the %3$@ by %2$@ %1$@, now you are in %4$@.";
+/* No comment provided by engineer. */
+"FloorChangeActionString2Up" = "Go up to the %2$@ by %1$@.";
+
+/* No comment provided by engineer. */
+"FloorChangeActionString3Up" = "Go up to the %3$@ by %2$@ %1$@.";
+
+/* No comment provided by engineer. */
+"FloorChangeActionString3DownFull" = "%2$@ is %1$@, Go down to the %3$@.";
+
+/* No comment provided by engineer. */
+"FloorChangeActionString3UpFull" = "%2$@ is %1$@, Go up to the %3$@.";
+
 
 /* No comment provided by engineer. */
 "Init Orientation" = "Init Orientation

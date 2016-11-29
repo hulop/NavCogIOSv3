@@ -27,7 +27,7 @@
 "%@, you might be going wrong direction." = "%@, 道を間違えたようです";
 
 /* No comment provided by engineer. */
-"After getting off the elevator, %@" = "エレベーターを降りたら、%@";
+"After getting off the elevator, %@" = "エレベーターをおりたら、%@";
 
 /* No comment provided by engineer. */
 "Cancel" = "キャンセル";
@@ -48,31 +48,26 @@
 "From_button" = "%@から";
 
 /* No comment provided by engineer. */
-"Go down to %2$@ by %1$@" = "%1$@を使って%2$@に降ります";
-
-/* (No Commment) */
-"Go down to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@に降ります。現在は%3$@にいます。";
-
-/* No comment provided by engineer. */
-"Go down to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ降りる";
-
-/* (No Commment) */
-"Go down to %3$@ by %2$@ %1$@, now you are in %4$@" = "%1$@の%2$@を使って%3$@へ降りる。現在は%4$@にいます。";
-
-/* No comment provided by engineer. */
 "Go to %1$@" = "%1$@に行きます。";
 
 /* No comment provided by engineer. */
-"Go up to %2$@ by %1$@" = "%1$@を使って%2$@に上がります";
-
-/* (No Commment) */
-"Go up to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@に上がります。現在は%3$@にいます。";
+"FloorChangeActionString2Down" = "%1$@を使って%2$@におります";
 
 /* No comment provided by engineer. */
-"Go up to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ上がる";
+"FloorChangeActionString3Down" = "%1$@の%2$@を使って%3$@へおりる";
 
-/* (No Commment) */
-"Go up to %3$@ by %2$@ %1$@, now you are in %4$@" = "%1$@の%2$@を使って%3$@へ上がる。現在は%4$@にいます。";
+/* No comment provided by engineer. */
+"FloorChangeActionString2Up" = "%1$@を使って%2$@に上がります";
+
+/* No comment provided by engineer. */
+"FloorChangeActionString3Up" = "%1$@の%2$@を使って%3$@へ上がる";
+
+/* No comment provided by engineer. */
+"FloorChangeActionString3DownFull" = "%1$@の%2$@を使って%3$@へおりる";
+
+/* No comment provided by engineer. */
+"FloorChangeActionString3UpFull" = "%1$@の%2$@を使って%3$@へ上がる";
+
 
 /* No comment provided by engineer. */
 "Init Orientation" = "方向の調整

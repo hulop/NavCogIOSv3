@@ -97,6 +97,9 @@
 - (void)requestStartNavigation:(NSNotification*)note
 {
     NSDictionary *options = [note object];    
+    if (options[@"toID"] == nil) {
+        return;
+    }
     NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f", options[@"toID"], [[NSDate date] timeIntervalSince1970]];
     [helper setBrowserHash: hash];
 }

@@ -664,8 +664,10 @@
         // play something
     }
     if (poi.forDoor || poi.forObstacle || poi.forRamp || poi.forBrailleBlock) {
-        [_delegate speak:[self poiString:poi] completionHandler:^{
-        }];
+        if (poi.countApproached == 0) { // only for first time
+            [_delegate speak:[self poiString:poi] completionHandler:^{
+            }];
+        }
     } else if (poi.requiresUserAction) {
     } else {
         NSString *angle;

@@ -38,7 +38,7 @@
 
 #define CALIBRATION_BEACON_UUID @"00000000-30A4-1001-B000-001C4D1E8637"
 #define CALIBRATION_BEACON_MAJOR 9999
-#define ORIENATION_ACCURACY_THRETHOLD 15
+#define ORIENATION_ACCURACY_THRETHOLD 25
 
 using namespace std;
 using namespace loc;
@@ -585,8 +585,9 @@ void functionCalledToLog(void *inUserData, string text)
                     offsetYaw = initStartYaw - motion.attitude.yaw;
                 }
             }
-            
-            if (currentOrientationAccuracy >= ORIENATION_ACCURACY_THRETHOLD) {
+
+            if (!localizer->tracksOrientation() ||
+                currentOrientationAccuracy >= ORIENATION_ACCURACY_THRETHOLD) {
                 double orientation = motion.attitude.yaw + offsetYaw;
                 if (isOrientationInit) {
                     orientation = initStartYaw;
@@ -594,7 +595,7 @@ void functionCalledToLog(void *inUserData, string text)
                 double x = sin(orientation);
                 double y = cos(orientation);
                 currentOrientation = orientation = atan2(y, x) / M_PI * 180;
-                [self directionUpdated:orientation withAccuracy:ORIENATION_ACCURACY_THRETHOLD];
+                [self directionUpdated:orientation withAccuracy:ORIENATION_ACCURACY_THRETHOLD];            
             }
             
             if (!isOrientationInit) {
@@ -1262,6 +1263,10 @@ int dcount = 0;
         currentLocation = data;
         
         if (!validHeading && [[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"]) {
+            double delayInSeconds = 0.1;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+
             double lat = [currentLocation[@"lat"] doubleValue];
             double lng = [currentLocation[@"lng"] doubleValue];
             double floor = [currentLocation[@"floor"] doubleValue];
@@ -1287,12 +1292,17 @@ int dcount = 0;
                 newPose.orientation(heading);
                 
                 long timestamp = [[NSDate date] timeIntervalSince1970] * 1000.0;
-                NSLog(@"Reset,%f,%f,%f,%f,%f,%ld",lat,lng,floor,ori,oriacc,timestamp);
+                NSLog(@"ResetHeading,%f,%f,%f,%f,%f,%ld",lat,lng,floor,ori,oriacc,timestamp);
                 
                 loc::Pose stdevPose;
                 stdevPose.x(1).y(1).orientation(oriacc/180*M_PI);
-                localizer->resetStatus(newPose, stdevPose, 0.7);
+                //localizer->resetStatus(newPose, stdevPose, 0.3);
+                
+                double x1 = sin((ori-currentOrientation)/180*M_PI);
+                double y1 = cos((ori-currentOrientation)/180*M_PI);
+                offsetYaw = atan2(y1,x1);
             }];
+            });
             validHeading = YES;
         } else {
             validHeading = YES;

@@ -373,25 +373,38 @@
 {
     double diffHeading = [properties[@"diffHeading"] doubleValue];
     double threshold = [properties[@"threshold"] doubleValue];
+    BOOL looseDirection = [properties[@"looseDirection"] boolValue];
     
     NSString *string;
-    if (diffHeading < -150 || 150 < diffHeading) {
-        string = NSLocalizedStringFromTable(@"turn around",@"BlindView", @"head to the back");
-    } else if (diffHeading < -120) {
-        string = NSLocalizedStringFromTable(@"turn to the backward left",@"BlindView", @"head to the diagonally backward left direction");
-    } else if (diffHeading > 120) {
-        string = NSLocalizedStringFromTable(@"turn to the backward right",@"BlindView", @"head to the diagonally backward right direction");
-    } else if (diffHeading < -60) {
-        string = NSLocalizedStringFromTable(@"turn to the left",@"BlindView", @"head to the left direction");
-    } else if (diffHeading > 60) {
-        string = NSLocalizedStringFromTable(@"turn to the right",@"BlindView", @"head to the right direction");
-    } else if (diffHeading < -threshold) {
-        string = NSLocalizedStringFromTable(@"bear left",@"BlindView", @"head to the diagonally forward left direction");
-    } else if (diffHeading > threshold) {
-        string = NSLocalizedStringFromTable(@"bear right",@"BlindView", @"head to the diagonally forward right direction");
+    if (looseDirection) {
+        if (diffHeading < -135 || 135 < diffHeading) {
+            string = NSLocalizedStringFromTable(@"turn around",@"BlindView", @"head to the back");
+        } else if (diffHeading < -45) {
+            string = NSLocalizedStringFromTable(@"turn to the left",@"BlindView", @"head to the left direction");
+        } else if (diffHeading > 45) {
+            string = NSLocalizedStringFromTable(@"turn to the right",@"BlindView", @"head to the right direction");
+        } else {
+            return nil;
+        }
     } else {
-        //@throw [[NSException alloc] initWithName:@"wrong parameters" reason:@"abs(diffHeading) is smaller than threshold" userInfo:nil];
-        return nil;
+        if (diffHeading < -150 || 150 < diffHeading) {
+            string = NSLocalizedStringFromTable(@"turn around",@"BlindView", @"head to the back");
+        } else if (diffHeading < -120) {
+            string = NSLocalizedStringFromTable(@"turn to the backward left",@"BlindView", @"head to the diagonally backward left direction");
+        } else if (diffHeading > 120) {
+            string = NSLocalizedStringFromTable(@"turn to the backward right",@"BlindView", @"head to the diagonally backward right direction");
+        } else if (diffHeading < -60) {
+            string = NSLocalizedStringFromTable(@"turn to the left",@"BlindView", @"head to the left direction");
+        } else if (diffHeading > 60) {
+            string = NSLocalizedStringFromTable(@"turn to the right",@"BlindView", @"head to the right direction");
+        } else if (diffHeading < -threshold) {
+            string = NSLocalizedStringFromTable(@"bear left",@"BlindView", @"head to the diagonally forward left direction");
+        } else if (diffHeading > threshold) {
+            string = NSLocalizedStringFromTable(@"bear right",@"BlindView", @"head to the diagonally forward right direction");
+        } else {
+            //@throw [[NSException alloc] initWithName:@"wrong parameters" reason:@"abs(diffHeading) is smaller than threshold" userInfo:nil];
+            return nil;
+        }
     }
     
     return string;

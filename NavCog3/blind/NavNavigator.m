@@ -202,7 +202,7 @@ static NavNavigatorConstants *_instance;
     _nextTargetRemainingDistance = NAN;
     _expirationTimeOfPreventRemainingDistanceEvent = NAN;
     _backDetectedLocation = nil;
-    _distanceFromBackDetectedLocationToSnappedLocationOnLink = NAN;
+    _distanceFromBackDetectedLocationToLocation = NAN;
     
     _isComplex = fabs([HLPLocation normalizeDegree:_link.initialBearingFromSource - _link.lastBearingForTarget]) > 10;
     
@@ -707,7 +707,7 @@ static NavNavigatorConstants *_instance;
         _distanceToSourceFromSnappedLocationOnLink = [_snappedLocationOnLink distanceTo:_sourceLocation];
         
         if (_backDetectedLocation) {
-            _distanceFromBackDetectedLocationToSnappedLocationOnLink = [_backDetectedLocation distanceTo:_snappedLocationOnLink];
+            _distanceFromBackDetectedLocationToLocation = [_backDetectedLocation distanceTo:_userLocation];
         }
         
         if ([_link.geometry.type isEqualToString:@"LineString"]) {
@@ -1395,7 +1395,8 @@ static NavNavigatorConstants *_instance;
                         [self.delegate userNeedsToChangeHeading:
                          @{
                            @"diffHeading": @(firstLinkInfo.diffBearingAtSnappedLocationOnLink),
-                           @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
+                           @"threshold": @(C.CHANGE_HEADING_THRESHOLD),
+                           @"looseDirection": @(YES)
                            }];
                     }
                 }
@@ -1517,16 +1518,33 @@ static NavNavigatorConstants *_instance;
                         } else if (linkInfo.offRouteLinkInfo.distanceToTargetFromSnappedLocationOnLink < approachedDistance(linkInfo.offRouteLinkInfo) &&
                                    !linkInfo.hasBeenWaitingAction) {
                             linkInfo.mayBeOffRoute = NO;
-                            linkInfo.hasBeenWaitingAction = YES;
-                            if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
-                                [self.delegate userNeedsToTakeAction:
-                                 @{
-                                   @"turnAngle": @(linkInfo.nextTurnAngle),
-                                   @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
-                                   @"nextLinkType": @(linkInfo.nextLink.linkType),
-                                   @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                                   @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
-                                   }];
+                            
+                            if (linkInfo.distanceToTargetFromUserLocation < C.OFF_ROUTE_EXT_LINK_THRETHOLD) {
+                                linkInfo.hasBeenWaitingAction = YES;
+                                if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                                    [self.delegate userNeedsToTakeAction:
+                                     @{
+                                       @"turnAngle": @(linkInfo.nextTurnAngle),
+                                       @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
+                                       @"nextLinkType": @(linkInfo.nextLink.linkType),
+                                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                                       }];
+                                }
+                            } else {
+                                linkInfo.hasBeenBearing = YES;
+                                linkInfo.hasBeenActivated = NO;
+                                if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                                    [self.delegate userNeedsToTakeAction:
+                                     @{
+                                       @"turnAngle": @(linkInfo.diffBearingAtSnappedLocationOnLink),
+                                       @"diffHeading": @(linkInfo.diffBearingAtSnappedLocationOnLink),
+                                       @"nextLinkType": @(linkInfo.link.linkType),
+                                       @"nextSourceHeight": @(linkInfo.link.sourceHeight),
+                                       @"nextTargetHeight": @(linkInfo.link.targetHeight)
+                                       }];
+                                }
+                                
                             }
                             
                         }
@@ -1547,7 +1565,7 @@ static NavNavigatorConstants *_instance;
                         ) {
                         if (minLinkInfo.backDetectedLocation) {
                             if ((minIndex < navIndex && minLinkInfo.distanceToTargetFromSnappedLocationOnLink > C.BACK_DETECTION_THRESHOLD) ||
-                                minLinkInfo.distanceFromBackDetectedLocationToSnappedLocationOnLink > C.BACK_DETECTION_THRESHOLD) {
+                                minLinkInfo.distanceFromBackDetectedLocationToLocation > C.BACK_DETECTION_THRESHOLD) {
                                 if (!minLinkInfo.hasBeenFixBackward || (now-minLinkInfo.lastBackNotified) > C.BACK_ANNOUNCE_MIN_INTERVAL) {
                                     navIndex = minIndex;
                                     minLinkInfo.hasBeenApproaching = NO;

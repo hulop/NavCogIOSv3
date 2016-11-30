@@ -147,7 +147,7 @@
 @property double nextTargetRemainingDistance;
 @property NSTimeInterval expirationTimeOfPreventRemainingDistanceEvent;
 @property HLPLocation *backDetectedLocation;
-@property (readonly) double distanceFromBackDetectedLocationToSnappedLocationOnLink;
+@property (readonly) double distanceFromBackDetectedLocationToLocation;
 @property NSTimeInterval lastBackNotified;
 @property NSTimeInterval lastOffRouteNotified;
 @property NSTimeInterval lastBearingDetected;

@@ -26,6 +26,7 @@
 #import "NavNavigator.h"
 #import "ConfigManager.h"
 #import "LocationEvent.h"
+#import "NavDebugHelper.h"
 
 @interface SettingViewController ()
 
@@ -157,9 +158,37 @@ static HLPSetting *speechSpeedSetting;
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY object:path];
         
         [self.navigationController popToRootViewControllerAnimated:YES];
+    } else if ([setting.name isEqualToString:@"p2p_debug"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NavDebugHelper *helper = [NavDebugHelper sharedHelper];
+            [helper start];
+            
+            MCBrowserViewController *viewController = [[MCBrowserViewController alloc] initWithServiceType:NAVCOG3_DEBUG_SERVICE_TYPE
+                                                                                                   session:helper.session];
+            viewController.delegate = self;
+
+            [self presentViewController:viewController animated:YES completion:nil];
+        });
     } else {
         [self performSegueWithIdentifier:setting.name sender:self];
     }
+}
+
+- (BOOL)browserViewController:(MCBrowserViewController *)browserViewController
+      shouldPresentNearbyPeer:(MCPeerID *)peerID
+            withDiscoveryInfo:(NSDictionary *)info
+{
+    return YES;
+}
+
+- (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController
+{
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController
+{
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)dealloc
@@ -225,6 +254,8 @@ static HLPSetting *speechSpeedSetting;
     
     
     [detailSettingHelper addSectionTitle:@"Developer mode"];
+    [detailSettingHelper addSettingWithType:ACTION Label:@"P2P Debug" Name:@"p2p_debug" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"P2P Debug Follower" Name:@"p2p_debug_follower" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Developer mode" Name:@"developer_mode" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:100 Interval:1];
 

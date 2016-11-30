@@ -20,12 +20,19 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import <UIKit/UIKit.h>
-#import "HLPSettingHelper.h"
-#import <MultipeerConnectivity/MultipeerConnectivity.h>
+#import <Foundation/Foundation.h>
+@import MultipeerConnectivity;
 
-@interface SettingViewController : UITableViewController <HLPSettingHelperDelegate, MCBrowserViewControllerDelegate>
+#define NAVCOG3_DEBUG_SERVICE_TYPE @"navcog3-debug"
 
-+(void)setup;
+@interface NavDebugHelper : NSObject <MCSessionDelegate>
+@property MCPeerID *peerID;
+@property MCSession *session;
+@property MCAdvertiserAssistant *assistant;
+@property NSMutableArray *peers;
 
++ (instancetype) sharedHelper;
+- (void) start;
+- (void) sendData:(NSData*)data;
 @end
+

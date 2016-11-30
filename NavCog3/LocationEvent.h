@@ -63,6 +63,8 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 #define REQUEST_PROCESS_INIT_TARGET_LOG @"request_process_init_target_log"
 #define REQUEST_PROCESS_SHOW_ROUTE_LOG @"request_process_show_route_log"
 
+#define REQUEST_PROCESS_SHOW_ROUTE @"request_process_show_route"
+
 #define SPEAK_TEXT_QUEUEING @"speak_text_queueing"
 
 #define MANUAL_LOCATION @"manual_location"

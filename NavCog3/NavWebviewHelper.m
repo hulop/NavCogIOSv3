@@ -186,6 +186,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartDialog:) name:REQUEST_START_DIALOG object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestShowRoute:) name:REQUEST_PROCESS_SHOW_ROUTE object:nil];
+    
     
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
     
@@ -536,6 +538,12 @@
         }
         [topController presentViewController:alert animated:YES completion:nil];
     }
+}
+
+- (void)requestShowRoute:(NSNotification*)notification
+{
+    NSArray *route = [notification object];
+    [self showRoute:route];
 }
 
 

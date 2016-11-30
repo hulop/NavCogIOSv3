@@ -511,7 +511,9 @@
         [NavUtil hideModalWaiting];
         NSArray *temp = [[NavDataStore sharedDataStore] route];
         //temp = [temp arrayByAddingObjectsFromArray:properties[@"oneHopLinks"]];
-        [helper showRoute:temp];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_SHOW_ROUTE object:temp];
+        //[helper showRoute:temp];
     });
     
     [commander didNavigationStarted:properties];

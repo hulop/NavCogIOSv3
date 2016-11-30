@@ -63,6 +63,9 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(destinationsChanged:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
+
 
     historySource = [[NavSearchHistoryDataSource alloc] init];
     _historyView.dataSource = historySource;
@@ -73,6 +76,20 @@
     actionEnabled = NO;
     
     // Do any additional setup after loading the view.
+}
+
+- (void)requestStartNavigation:(NSNotification*)note
+{
+    NSDictionary *param = [note object];
+    NSString *toID = param[@"toID"];
+    
+    if (toID) {
+        NavDestination *dest = [[NavDataStore sharedDataStore] destinationByID:toID];
+        if (dest) {
+            [NavDataStore sharedDataStore].to = dest;
+            [self updateViewWithFlag:YES];
+        }
+    }
 }
 
 - (void)dealloc

@@ -137,6 +137,12 @@
     return ret;
 }
 
++ (instancetype)dialogSearch
+{
+    NavDestination *ret = [[NavDestination alloc] init];
+    ret->_type = NavDestinationTypeDialogSearch;
+    return ret;
+}
 
 - (NSString*)_id
 {
@@ -197,6 +203,8 @@
             return NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
         case NavDestinationTypeFilter:
             return _label;
+        case NavDestinationTypeDialogSearch:
+            return NSLocalizedStringFromTable(@"DialogSearch", @"BlindView", @"");
     }
     return nil;
 }

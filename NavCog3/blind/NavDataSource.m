@@ -49,7 +49,11 @@
         BOOL flag = YES;
         if (_filter) {
             for(NSString *key in _filter.allKeys) {
-                flag = flag && [landmark.properties[key] isEqual:_filter[key]];
+                if ([[NSNull null] isEqual:_filter[key]]) {
+                    flag = flag && landmark.properties[key] == nil;
+                } else {
+                    flag = flag && [landmark.properties[key] isEqual:_filter[key]];
+                }
             }
         }
         return flag;
@@ -59,6 +63,12 @@
     NSArray *facilities = [all filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isFacility = YES"]];
     
     NSMutableArray *tempSections = [@[] mutableCopy];
+    
+    if (_showDialog) {
+        NSMutableArray *temp = [@[] mutableCopy];
+        [temp addObject:[NavDestination dialogSearch]];
+        [tempSections addObject:@{@"key":NSLocalizedStringFromTable(@"DialogSearch",@"BlindView",@""), @"rows":temp}];        
+    }
     
     if (_showCurrentLocation) {
         NSMutableArray *temp = [@[] mutableCopy];
@@ -111,7 +121,7 @@
             [tempSections addObject:@{@"key":NSLocalizedStringFromTable(@"_nav_building",@"BlindView",@""), @"rows":temp}];
             
             if (noBuilding) {
-                [temp addObject:[[NavDestination alloc] initWithLabel:NSLocalizedStringFromTable(@"Others", @"BlindView", @"") Filter:@{@"building":@""}]];
+                [temp addObject:[[NavDestination alloc] initWithLabel:NSLocalizedStringFromTable(@"Others", @"BlindView", @"") Filter:@{@"building":[NSNull null]}]];
             }
         } else {
             if (noBuilding) {

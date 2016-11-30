@@ -22,6 +22,7 @@
 
 #import "DestinationTableViewController.h"
 #import "NavDataSource.h"
+#import "LocationEvent.h"
 
 @interface DestinationTableViewController ()
 
@@ -58,6 +59,7 @@
     if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
         if (!source.filter) {
             self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
+            source.showDialog = YES;
             source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
             source.showBuilding = YES;
             source.showShopBuilding = YES;
@@ -118,6 +120,9 @@
     if (dest.type == NavDestinationTypeFilter) {
         filterDest = dest;
         [self performSegueWithIdentifier:@"sub_category" sender:self];
+    } else if (dest.type == NavDestinationTypeDialogSearch) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_START_DIALOG object:@{}];
+        [self.navigationController popToViewController:_root animated:YES];
     } else {
         if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
             [NavDataStore sharedDataStore].from = dest;

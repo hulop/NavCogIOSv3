@@ -19,6 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *******************************************************************************/
+/* */
+"DialogSearch" = "Search with dialog";
 
 /* */
 "%@, you might be going backward." = "%@, you might be going backward.";

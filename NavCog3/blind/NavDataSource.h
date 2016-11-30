@@ -35,6 +35,7 @@
 @property BOOL showNearShops;
 @property BOOL showShopBuilding;
 @property BOOL showShopFloor;
+@property BOOL showDialog;
 
 @property NSDictionary *filter;
 

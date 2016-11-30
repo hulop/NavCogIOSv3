@@ -31,7 +31,8 @@ typedef enum {
     NavDestinationTypeSelectStart,
     NavDestinationTypeSelectDestination,
     NavDestinationTypeFilter,
-    NavDestinationTypeLandmarks
+    NavDestinationTypeLandmarks,
+    NavDestinationTypeDialogSearch
 } NavDestinationType;
 
 @interface NavDestination : NSObject <NSCoding>
@@ -50,6 +51,7 @@ typedef enum {
 -(void)addLandmark:(HLPLandmark*)landmark;
 +(instancetype)selectStart;
 +(instancetype)selectDestination;
++(instancetype)dialogSearch;
 @end
 
 @interface NavDataStore : NSObject

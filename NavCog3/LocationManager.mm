@@ -1261,7 +1261,7 @@ int dcount = 0;
         
         currentLocation = data;
         
-        if (!validHeading) {
+        if (!validHeading && [[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"]) {
             double lat = [currentLocation[@"lat"] doubleValue];
             double lng = [currentLocation[@"lng"] doubleValue];
             double floor = [currentLocation[@"floor"] doubleValue];
@@ -1293,9 +1293,9 @@ int dcount = 0;
                 stdevPose.x(1).y(1).orientation(oriacc/180*M_PI);
                 localizer->resetStatus(newPose, stdevPose, 0.7);
             }];
-            
             validHeading = YES;
         } else {
+            validHeading = YES;
             [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
         }
     }

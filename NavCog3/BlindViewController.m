@@ -107,10 +107,6 @@
 
 - (void)handleLongPressGesture:(UILongPressGestureRecognizer*)sender
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"]) {
-        return;
-    }
-        
     if (sender.state == UIGestureRecognizerStateBegan &&
         ((UIAccessibilityIsVoiceOverRunning() == YES && sender.numberOfTouches == 1) ||
         sender.numberOfTouches == 2)) {

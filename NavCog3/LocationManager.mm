@@ -72,6 +72,8 @@ typedef struct {
     
     BOOL authorized;
     BOOL valid;
+    BOOL validHeading;
+    NSDictionary *currentLocation;
     
     BOOL isLogReplaying;
     HLPLocation *replayResetRequestLocation;
@@ -80,6 +82,7 @@ typedef struct {
     double currentFloor;
     double currentOrientation;
     double currentOrientationAccuracy;
+    CLHeading *currentMagneticHeading;
     
     BOOL isOrientationInit;
     double initStartYaw;
@@ -126,6 +129,7 @@ void functionCalledToLog(void *inUserData, string text)
     _isActive = NO;
     isMapLoaded = NO;
     valid = NO;
+    validHeading = NO;
     _currentStatus = NavLocationStatusUnknown;
     
     offsetYaw = M_PI_2;
@@ -582,19 +586,15 @@ void functionCalledToLog(void *inUserData, string text)
                 }
             }
             
-            if (![[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"] &&
-                ![[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_WHEELCHAIR"]
-                ) {
-                if (currentOrientationAccuracy >= ORIENATION_ACCURACY_THRETHOLD) {
-                    double orientation = motion.attitude.yaw + offsetYaw;
-                    if (isOrientationInit) {
-                        orientation = initStartYaw;
-                    }
-                    double x = sin(orientation);
-                    double y = cos(orientation);
-                    currentOrientation = orientation = atan2(y, x) / M_PI * 180;
-                    [self directionUpdated:orientation withAccuracy:ORIENATION_ACCURACY_THRETHOLD];
+            if (currentOrientationAccuracy >= ORIENATION_ACCURACY_THRETHOLD) {
+                double orientation = motion.attitude.yaw + offsetYaw;
+                if (isOrientationInit) {
+                    orientation = initStartYaw;
                 }
+                double x = sin(orientation);
+                double y = cos(orientation);
+                currentOrientation = orientation = atan2(y, x) / M_PI * 180;
+                [self directionUpdated:orientation withAccuracy:ORIENATION_ACCURACY_THRETHOLD];
             }
             
             if (!isOrientationInit) {
@@ -807,10 +807,9 @@ void functionCalledToLog(void *inUserData, string text)
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
 {
+    currentMagneticHeading = newHeading;
     if (newHeading.headingAccuracy >= 0) {
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"] ||
-            [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_WHEELCHAIR"]
-            ) {
+        if (!localizer->tracksOrientation()) {
             [processQueue addOperationWithBlock:^{
                 [self directionUpdated:newHeading.magneticHeading withAccuracy:newHeading.headingAccuracy];
             }];
@@ -838,9 +837,6 @@ void functionCalledToLog(void *inUserData, string text)
 - (BOOL)checkCalibrationBeacon:(CLBeacon *)beacon
 {
     if (!anchor) {
-        return NO;
-    }
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"tracking"]) {
         return NO;
     }
     if ([[NSDate date] timeIntervalSince1970] - lastCalibrationTime < 5) {
@@ -1202,8 +1198,7 @@ int dcount = 0;
         orientation = atan2(x, y) / M_PI * 180;
         
         int orientationAccuracy = 999;
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"tracking"] ||
-            localizer->tracksOrientation()) {
+        if (localizer->tracksOrientation()) {
             
             auto dirStats = loc::Pose::computeDirectionalStatistics(states);
             double m = dirStats.circularMean();
@@ -1264,7 +1259,45 @@ int dcount = 0;
             data[@"debug_latlng"] = debug_latlng;
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
+        currentLocation = data;
+        
+        if (!validHeading) {
+            double lat = [currentLocation[@"lat"] doubleValue];
+            double lng = [currentLocation[@"lng"] doubleValue];
+            double floor = [currentLocation[@"floor"] doubleValue];
+            double ori = currentMagneticHeading.trueHeading;
+            double oriacc = currentMagneticHeading.headingAccuracy;
+            [processQueue addOperationWithBlock:^{
+                double heading = (ori - [anchor[@"rotate"] doubleValue])/180*M_PI;
+                double x = sin(heading);
+                double y = cos(heading);
+                heading = atan2(y,x);
+                
+                loc::LatLngConverter::Ptr projection = [self getProjection];
+                
+                loc::Location location;
+                loc::GlobalState<Location> global(location);
+                global.lat(lat);
+                global.lng(lng);
+                
+                location = projection->globalToLocal(global);
+                
+                loc::Pose newPose(location);
+                newPose.floor(round(floor));
+                newPose.orientation(heading);
+                
+                long timestamp = [[NSDate date] timeIntervalSince1970] * 1000.0;
+                NSLog(@"Reset,%f,%f,%f,%f,%f,%ld",lat,lng,floor,ori,oriacc,timestamp);
+                
+                loc::Pose stdevPose;
+                stdevPose.x(1).y(1).orientation(oriacc/180*M_PI);
+                localizer->resetStatus(newPose, stdevPose, 0.7);
+            }];
+            
+            validHeading = YES;
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
+        }
     }
     @catch(NSException *e) {
         NSLog(@"%@", [e debugDescription]);

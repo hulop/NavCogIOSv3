@@ -1173,6 +1173,7 @@ int dcount = 0;
             return;
         }
         
+        bool wasFloorUpdated = status->wasFloorUpdated();
         Pose refPose = *status->meanPose();
         std::vector<State> states = *status->states();
         refPose = computeRepresentativePose(refPose, states);
@@ -1210,7 +1211,11 @@ int dcount = 0;
             acc = MAX(acc, (std.x()+std.y())/2.0*sigma);
         }
         
-        if (flag) {
+        //if (flag) {
+        //    currentFloor = refPose.floor();
+        //}
+        
+        if(wasFloorUpdated){
             currentFloor = refPose.floor();
         }
         

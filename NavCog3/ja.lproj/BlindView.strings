@@ -20,6 +20,9 @@
  * THE SOFTWARE.
  *******************************************************************************/
 /* */
+"Follow" = "-NavCog-";
+
+/* */
 "DialogSearch" = "対話検索";
 
 /* No comment provided by engineer. */

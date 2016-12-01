@@ -333,6 +333,9 @@ static NavDataStore* instance_ = nil;
     if (_previewMode) {
         return;
     }
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"]) {
+        return;
+    }
     
     NSDictionary *obj = [notification object];
     

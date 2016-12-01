@@ -23,6 +23,20 @@
 #import "NavCoverView.h"
 #import "LocationEvent.h"
 
+@interface NavAnnounceItem: UIAccessibilityElement
+@end
+
+@implementation NavAnnounceItem
+
+- (void)accessibilityElementDidBecomeFocused
+{
+    NSString *text = self.accessibilityLabel;
+    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:
+     @{@"text":text,@"force":@(YES),@"debug":@(YES)}];
+}
+
+@end
+
 @implementation NavCoverView {
     NSArray *elements;
     NSArray *speaks;
@@ -60,6 +74,10 @@
     BOOL flag = NO;
     @synchronized (self) {
         NSDictionary *dict = [notification object];
+        BOOL debug = [dict[@"debug"] boolValue];
+        if (debug) {
+            return;
+        }
         NSString *text = dict[@"text"];
         
         if (!speaks) {
@@ -76,7 +94,8 @@
         for(int i = 0 ; i < [speaks count]; i++) {
             NSString *s = speaks[i];
             BOOL last = (i == [speaks count] - 1);
-            UIAccessibilityElement *e = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
+            
             
             e.accessibilityLabel = s;
             if (last) {

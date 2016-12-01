@@ -123,7 +123,7 @@ static NavDebugHelper* instance;
         
         if ([SPEAK_TEXT_QUEUEING isEqualToString:name]) {
             NSDictionary *param = (NSDictionary*)object;
-            [[NavDeviceTTS sharedTTS] speak:param[@"text"] force:[param[@"flag"] boolValue] completionHandler:nil];
+            [[NavDeviceTTS sharedTTS] speak:param[@"text"] force:[param[@"force"] boolValue] completionHandler:nil];
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:name object:object];
         }

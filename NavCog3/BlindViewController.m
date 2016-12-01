@@ -146,6 +146,7 @@
         [self.searchButton setAccessibilityLabel:NSLocalizedStringFromTable([navigator isActive]?@"Stop Navigation":@"Search Route", @"BlindView", @"")];
         
         BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+        BOOL debugFollower = [[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"];
         BOOL previewMode = [NavDataStore sharedDataStore].previewMode;
         BOOL isActive = [navigator isActive];
 
@@ -171,6 +172,13 @@
         }
         
         self.navigationItem.title = NSLocalizedStringFromTable(previewMode?@"Preview":@"NavCog", @"BlindView", @"");
+        
+        if (debugFollower) {
+            self.navigationItem.title = NSLocalizedStringFromTable(@"Follow", @"BlindView", @"");
+            self.navigationItem.rightBarButtonItem = nil;
+        } else {
+            self.navigationItem.rightBarButtonItem = _searchButton;
+        }
     });
 
 }

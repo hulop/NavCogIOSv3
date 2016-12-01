@@ -68,6 +68,7 @@
 		7EF7F7B41DD1BC2B000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
 		7EF7F7B51DD1BC2B000A625A /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7EF7F7B71DD1C138000A625A /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
+		FB81E7311DF0228D00CAD286 /* NavDebugHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FB81E7301DF0228D00CAD286 /* NavDebugHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -183,6 +184,8 @@
 		8DDC99F4D9772DC8C3D1284B /* Pods-NavCogTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.release.xcconfig"; sourceTree = "<group>"; };
 		A8BCABBA91517640CB17D3D9 /* libPods-NavCogTool.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogTool.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B457074B97BDC2155C8D1A0A /* Pods-NavCog3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.release.xcconfig"; sourceTree = "<group>"; };
+		FB81E72F1DF0228D00CAD286 /* NavDebugHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavDebugHelper.h; sourceTree = "<group>"; };
+		FB81E7301DF0228D00CAD286 /* NavDebugHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavDebugHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -274,6 +277,8 @@
 		7E5078C01D4A45C300F5A0F7 /* helper */ = {
 			isa = PBXGroup;
 			children = (
+				FB81E72F1DF0228D00CAD286 /* NavDebugHelper.h */,
+				FB81E7301DF0228D00CAD286 /* NavDebugHelper.m */,
 				7EDEDC361D1E0E5E00AC111A /* LocationManager.h */,
 				7EDEDC371D1E0E5E00AC111A /* LocationManager.mm */,
 				7E08DB561DB9F08E00E82161 /* ConfigManager.h */,
@@ -611,6 +616,7 @@
 				7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */,
 				7E9238E61D5189F100875766 /* HLPSetting.m in Sources */,
 				7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */,
+				FB81E7311DF0228D00CAD286 /* NavDebugHelper.m in Sources */,
 				7E96D9331DACD0C700D57C8C /* SearchViewController.m in Sources */,
 				7EDEDC211D1E0C6800AC111A /* main.mm in Sources */,
 				7E9238E91D5189F100875766 /* HLPSettingViewCell.m in Sources */,

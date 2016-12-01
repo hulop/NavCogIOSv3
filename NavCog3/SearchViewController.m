@@ -180,7 +180,7 @@
         self.refreshButton.enabled = updated && actionEnabled;
         self.routeOptionsButton.enabled = updated && actionEnabled;
         
-        self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
+        self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled && nds.to.type != NavDestinationTypeLandmarks);
         self.previewButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
         self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation && actionEnabled);
         
@@ -255,6 +255,11 @@
 
     [[NavDataStore sharedDataStore] requestRouteFrom:nds.from._id To:nds.to._id withPreferences:prefs complete:^{
         dispatch_async(dispatch_get_main_queue(), ^{
+            if (nds.route && nds.to.type == NavDestinationTypeLandmarks) {
+                HLPNode *dest = [nds.route lastObject];
+                nds.to = [nds destinationByID:dest._id];
+            }
+            
             [self.navigationController popViewControllerAnimated:YES];
         });
     }];

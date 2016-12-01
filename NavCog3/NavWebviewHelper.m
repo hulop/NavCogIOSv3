@@ -25,7 +25,7 @@
 #import "NavJSNativeHandler.h"
 #import "Logging.h"
 #import "LocationEvent.h"
-#import <AVFoundation/AVFoundation.h>
+#import "NavDeviceTTS.h"
 #import <Mantle/Mantle.h>
 
 #define LOADING_TIMEOUT 30
@@ -58,7 +58,6 @@
 @implementation NavWebviewHelper {
     UIWebView *webView;
     NavJSNativeHandler *handler;
-    AVSpeechSynthesizer *speech;
     NSString *callback;
     BOOL bridgeHasBeenInjected;
     NSTimeInterval lastLocationSent;
@@ -71,7 +70,6 @@
 - (void)dealloc {
     webView = nil;
     handler = nil;
-    speech = nil;
     callback = nil;
 }
 
@@ -104,27 +102,17 @@
     
     [self loadUIPage];
     
-    speech = [[AVSpeechSynthesizer alloc] init];
-    
     handler = [[NavJSNativeHandler alloc] init];
     [handler registerWebView:webView];
     
     [handler registerFunc:^(NSDictionary *param, UIWebView *webView) {
         NSString *text = [param objectForKey:@"text"];
-        
-        //NSLog(@"speak local %@", text);
-        if ([[param objectForKey:@"flush"] boolValue]) {
-            [speech stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-        }
-        AVSpeechUtterance *speechUtterance = [AVSpeechUtterance speechUtteranceWithString:text];
-        speechUtterance.rate = 0.5f;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [speech speakUtterance:speechUtterance];
-        });
+        BOOL flush = [[param objectForKey:@"flush"] boolValue];
+        [[NavDeviceTTS sharedTTS] speak:text force:flush completionHandler:nil];
     } withName:@"speak" inComponent:@"SpeechSynthesizer"];
     
     [handler registerFunc:^(NSDictionary *param, UIWebView *wv) {
-        NSString *result = [speech isSpeaking] ? @"true" : @"false";
+        NSString *result = [[NavDeviceTTS sharedTTS] isSpeaking]?@"true":@"flase";
         NSString *name = param[@"callbackname"];
         [wv stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.%@(%@)", callback, name, result]];
     } withName:@"isSpeaking" inComponent:@"SpeechSynthesizer"];

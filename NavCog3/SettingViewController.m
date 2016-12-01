@@ -27,6 +27,7 @@
 #import "ConfigManager.h"
 #import "LocationEvent.h"
 #import "NavDebugHelper.h"
+#import "NavCog3-Swift.h"
 
 @interface SettingViewController ()
 
@@ -93,14 +94,34 @@ static HLPSetting *speechSpeedSetting;
         helper.delegate = self;
         self.tableView.delegate = helper;
         self.tableView.dataSource = helper;
-        [self.tableView reloadData];
     }
+    [self updateView];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void) configChanged:(NSNotification*)note
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateView];
+    });
+}
+
+- (void) updateView
+{
+    [self.tableView reloadData];
+    
+    BOOL dialog = [[DialogManager sharedManager] isDialogAvailable];
+    if (self.dialogSearchCell) {
+        self.dialogSearchCell.selectionStyle = dialog?UITableViewCellSelectionStyleGray:UITableViewCellSelectionStyleNone;
+        self.dialogSearchCell.textLabel.enabled = dialog;
+    }
 }
 
 -(void)actionPerformed:(HLPSetting*)setting
@@ -453,11 +474,15 @@ static HLPSetting *speechSpeedSetting;
         [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":END_NAVIGATION}];
         [self.navigationController popViewControllerAnimated:YES];
     }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canFocusRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *id = [[tableView cellForRowAtIndexPath:indexPath] reuseIdentifier];
     if ([id isEqualToString:@"dialog_search"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_START_DIALOG object:@{}];
-        [self.navigationController popViewControllerAnimated:YES];
-        
+        return [[DialogManager sharedManager] isDialogAvailable];
     }
+    return YES;
 }
 
 - (BOOL) isBlindMode
@@ -491,6 +516,14 @@ static HLPSetting *speechSpeedSetting;
 }
 
 #pragma mark - Navigation
+
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    if ([identifier isEqualToString:@"show_dialog_wc"]) {
+        return [[DialogManager sharedManager] isDialogAvailable];
+    }
+    return YES;
+}
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

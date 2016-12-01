@@ -27,5 +27,6 @@
 @interface SettingViewController : UITableViewController <HLPSettingHelperDelegate, MCBrowserViewControllerDelegate>
 
 +(void)setup;
+@property (weak, nonatomic) IBOutlet UITableViewCell *dialogSearchCell;
 
 @end

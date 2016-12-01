@@ -50,6 +50,7 @@ typedef enum {
 @property (readonly) NSTimeInterval issued;
 @property (readonly) NSTimeInterval speakStart;
 @property (readonly) NSTimeInterval speakFinish;
+@property BOOL selfvoicing;
 @end
 
 @interface NavDeviceTTS : NSObject <AVSpeechSynthesizerDelegate>{
@@ -64,8 +65,11 @@ typedef enum {
 + (instancetype) sharedTTS;
 - (AVSpeechUtterance*) speak:(NSString*)text completionHandler:(void(^)())handler;
 - (AVSpeechUtterance*) speak:(NSString*)text force:(BOOL)flag completionHandler:(void(^)())handler;
+- (AVSpeechUtterance*) selfspeak:(NSString*)text completionHandler:(void(^)())handler;
+- (AVSpeechUtterance*) selfspeak:(NSString*)text force:(BOOL)flag completionHandler:(void(^)())handler;
 - (void) reset;
-- (void) stop;
+- (void) stop:(BOOL)immediate;
+- (BOOL) isSpeaking;
 
 @end
     

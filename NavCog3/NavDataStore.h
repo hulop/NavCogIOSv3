@@ -69,6 +69,7 @@ typedef enum {
 - (BOOL) reloadDestinations:(BOOL)force;
 - (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang;
 - (void) requestRouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)())complete;
+- (void) requestServerConfigWithComplete:(void(^)())complete;
 - (void) clearRoute;
 - (NSArray*) destinations;
 - (HLPLocation*) currentLocation;
@@ -76,6 +77,7 @@ typedef enum {
 - (NSArray*) features;
 - (NSString*) userLanguage;
 - (NSArray*) searchHistory;
+- (NSDictionary*) serverConfig;
 
 - (void) switchFromTo;
 - (NavDestination*) destinationByID:(NSString*)key;

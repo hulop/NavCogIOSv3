@@ -27,6 +27,8 @@
 #import "LocationEvent.h"
 #import "NavDataStore.h"
 #import "NavDeviceTTS.h"
+#import <Speech/Speech.h> // for Swift header
+#import "NavCog3-Swift.h"
 
 @interface AppDelegate ()
 
@@ -53,7 +55,13 @@
     //manager = [[LocationManager alloc] init];
     //manager.delegate = self;
     
-    [NavDataStore sharedDataStore].userID = [UIDevice currentDevice].identifierForVendor.UUIDString;
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    nds.userID = [UIDevice currentDevice].identifierForVendor.UUIDString;
+    [nds requestServerConfigWithComplete:^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:SERVER_CONFIG_CHANGED_NOTIFICATION object:nds.serverConfig];
+    }];
+
+    [DialogManager sharedManager];
 
     [NavDeviceTTS sharedTTS];
     

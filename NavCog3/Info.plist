@@ -48,6 +48,10 @@
 	<string>This app use beacon location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app use beacon location</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>For conversation</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>For conversation</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

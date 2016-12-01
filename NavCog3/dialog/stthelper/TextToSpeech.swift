@@ -20,19 +20,24 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import <Foundation/Foundation.h>
-#import "HLPGeoJSON.h"
+import Foundation
+import AVFoundation
+import UIKit
 
-@interface HLPDataUtil : NSObject
+protocol TTSProtocol {
+    func speak(text:String?, callback:(Void)->Void)
+    func stop()
+    func stop(immediate: Bool)
+}
 
-+ (void) loadRouteFromNode:(NSString*)from toNode:(NSString*)to forUser:(NSString*) user withLang:(NSString*)lang withPrefs:(NSDictionary*) prefs withCallback:(void(^)(NSArray<HLPObject*>* result))callback;
-
-+ (void) loadLandmarksAtLat:(double) lat Lng:(double) lng inDist:(int) dist forUser:(NSString*) user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result))callback;
-
-// need to call loadLandmarksAtLat first before calling the following methods
-+ (void) loadNodeMapForUser:(NSString*)user WithCallback:(void(^)(NSArray<HLPObject*>* result))callback;
-+ (void) loadFeaturesForUser:(NSString*)user WithCallback:(void(^)(NSArray<HLPObject*>* result))callback;
-
-+ (void) getJSON:(NSURL*)url withCallback:(void(^)(NSObject* result))callback;
-
-@end
+class DefaultTTS: TTSProtocol {
+    func speak(text: String?, callback: (Void) -> Void) {
+        NavDeviceTTS.sharedTTS().selfspeak(text, completionHandler: callback)
+    }
+    func stop() {
+        self.stop(false)
+    }
+    func stop(immediate: Bool) {
+        NavDeviceTTS.sharedTTS().stop(immediate)
+    }
+}

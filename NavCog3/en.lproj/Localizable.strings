@@ -77,3 +77,10 @@
 /* (No Commment) */
 "checkNetworkConnection" = "Check network connection";
 
+"SPEAK_NOW" = "<Speak Now!>";
+
+"PAUSING" = "<Pausing>";
+
+"DialogStart" = "Restart";
+
+"DialogStartHint" = "Double tap to start voice recognition";

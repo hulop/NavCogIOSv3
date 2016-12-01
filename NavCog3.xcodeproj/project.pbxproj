@@ -13,6 +13,31 @@
 		7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7E17F19E1D9A225A00DB1F34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A01D9A225A00DB1F34 /* InfoPlist.strings */; };
 		7E17F1A31D9A226100DB1F34 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A51D9A226100DB1F34 /* Localizable.strings */; };
+		7E1F9F2A1DEEB1D3003E1B23 /* NavDebugHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */; };
+		7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */; };
+		7E1F9F3B1DF01AA5003E1B23 /* ConversationEx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F2F1DF01AA5003E1B23 /* ConversationEx.swift */; };
+		7E1F9F3C1DF01AA5003E1B23 /* CustomArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F301DF01AA5003E1B23 /* CustomArrow.swift */; };
+		7E1F9F3D1DF01AA5003E1B23 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F311DF01AA5003E1B23 /* CustomTableViewCell.swift */; };
+		7E1F9F3E1DF01AA5003E1B23 /* LocalContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F321DF01AA5003E1B23 /* LocalContext.swift */; };
+		7E1F9F3F1DF01AA5003E1B23 /* AnimLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F341DF01AA5003E1B23 /* AnimLayer.swift */; };
+		7E1F9F401DF01AA5003E1B23 /* DialogViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F351DF01AA5003E1B23 /* DialogViewHelper.swift */; };
+		7E1F9F411DF01AA5003E1B23 /* icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E1F9F361DF01AA5003E1B23 /* icons.xcassets */; };
+		7E1F9F431DF01AA5003E1B23 /* STTHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F381DF01AA5003E1B23 /* STTHelper.swift */; };
+		7E1F9F441DF01AA5003E1B23 /* TextToSpeech.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F391DF01AA5003E1B23 /* TextToSpeech.swift */; };
+		7E1F9F451DF01AA5003E1B23 /* DialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */; };
+		7E1F9F491DF01BC2003E1B23 /* ConversationV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */; };
+		7E1F9F4A1DF01BC2003E1B23 /* ConversationV1.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7E1F9F4B1DF01BC2003E1B23 /* DialogV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */; };
+		7E1F9F4C1DF01BC2003E1B23 /* DialogV1.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7E1F9F4D1DF01BC2003E1B23 /* RestKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F481DF01BC2003E1B23 /* RestKit.framework */; };
+		7E1F9F4E1DF01BC2003E1B23 /* RestKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F481DF01BC2003E1B23 /* RestKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7E1F9F511DF01C86003E1B23 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F501DF01C86003E1B23 /* Alamofire.framework */; };
+		7E1F9F521DF01C86003E1B23 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F501DF01C86003E1B23 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7E1F9F551DF01FA9003E1B23 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F531DF01FA9003E1B23 /* Freddy.framework */; };
+		7E1F9F561DF01FA9003E1B23 /* Freddy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F531DF01FA9003E1B23 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7E1F9F571DF01FA9003E1B23 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F541DF01FA9003E1B23 /* Starscream.framework */; };
+		7E1F9F581DF01FA9003E1B23 /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F541DF01FA9003E1B23 /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7E1F9F5F1DF14E6F003E1B23 /* DialogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */; };
 		7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */; };
 		7E308BDB1DAF147600E525F6 /* BlindView.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
 		7E433DCF1D6E846300C6C993 /* NavDeviceTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E433DCA1D6E846300C6C993 /* NavDeviceTTS.m */; };
@@ -72,6 +97,22 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		7E1F9F4F1DF01BC2003E1B23 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				7E1F9F561DF01FA9003E1B23 /* Freddy.framework in Embed Frameworks */,
+				7E1F9F581DF01FA9003E1B23 /* Starscream.framework in Embed Frameworks */,
+				7E1F9F4A1DF01BC2003E1B23 /* ConversationV1.framework in Embed Frameworks */,
+				7E1F9F4C1DF01BC2003E1B23 /* DialogV1.framework in Embed Frameworks */,
+				7E1F9F4E1DF01BC2003E1B23 /* RestKit.framework in Embed Frameworks */,
+				7E1F9F521DF01C86003E1B23 /* Alamofire.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7EF7F79B1DD178F7000A625A /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
@@ -102,6 +143,27 @@
 		7E17F1981D9A213600DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = SettingUtil/ja.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
 		7E17F19F1D9A225A00DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7E17F1A41D9A226100DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		7E1F9F281DEEB1D3003E1B23 /* NavDebugHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavDebugHelper.h; sourceTree = "<group>"; };
+		7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavDebugHelper.m; sourceTree = "<group>"; };
+		7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
+		7E1F9F2E1DF01AA4003E1B23 /* NavCog3-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NavCog3-Bridging-Header.h"; sourceTree = "<group>"; };
+		7E1F9F2F1DF01AA5003E1B23 /* ConversationEx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConversationEx.swift; path = dialog/ConversationEx.swift; sourceTree = "<group>"; };
+		7E1F9F301DF01AA5003E1B23 /* CustomArrow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomArrow.swift; path = dialog/CustomArrow.swift; sourceTree = "<group>"; };
+		7E1F9F311DF01AA5003E1B23 /* CustomTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomTableViewCell.swift; path = dialog/CustomTableViewCell.swift; sourceTree = "<group>"; };
+		7E1F9F321DF01AA5003E1B23 /* LocalContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalContext.swift; path = dialog/LocalContext.swift; sourceTree = "<group>"; };
+		7E1F9F341DF01AA5003E1B23 /* AnimLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimLayer.swift; sourceTree = "<group>"; };
+		7E1F9F351DF01AA5003E1B23 /* DialogViewHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogViewHelper.swift; sourceTree = "<group>"; };
+		7E1F9F361DF01AA5003E1B23 /* icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = icons.xcassets; sourceTree = "<group>"; };
+		7E1F9F381DF01AA5003E1B23 /* STTHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STTHelper.swift; sourceTree = "<group>"; };
+		7E1F9F391DF01AA5003E1B23 /* TextToSpeech.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextToSpeech.swift; sourceTree = "<group>"; };
+		7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogViewController.swift; path = dialog/DialogViewController.swift; sourceTree = "<group>"; };
+		7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ConversationV1.framework; path = Carthage/Build/iOS/ConversationV1.framework; sourceTree = "<group>"; };
+		7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DialogV1.framework; path = Carthage/Build/iOS/DialogV1.framework; sourceTree = "<group>"; };
+		7E1F9F481DF01BC2003E1B23 /* RestKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RestKit.framework; path = Carthage/Build/iOS/RestKit.framework; sourceTree = "<group>"; };
+		7E1F9F501DF01C86003E1B23 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		7E1F9F531DF01FA9003E1B23 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/iOS/Freddy.framework; sourceTree = "<group>"; };
+		7E1F9F541DF01FA9003E1B23 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = "<group>"; };
+		7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogManager.swift; path = dialog/DialogManager.swift; sourceTree = "<group>"; };
 		7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		7E308BDC1DAF147600E525F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/BlindView.stringsdict; sourceTree = "<group>"; };
@@ -193,8 +255,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
+				7E1F9F551DF01FA9003E1B23 /* Freddy.framework in Frameworks */,
+				7E1F9F4B1DF01BC2003E1B23 /* DialogV1.framework in Frameworks */,
+				7E1F9F571DF01FA9003E1B23 /* Starscream.framework in Frameworks */,
+				7E1F9F491DF01BC2003E1B23 /* ConversationV1.framework in Frameworks */,
+				7E1F9F511DF01C86003E1B23 /* Alamofire.framework in Frameworks */,
 				12CE60FFF66333BF27326795 /* libPods-NavCog3.a in Frameworks */,
+				7E1F9F4D1DF01BC2003E1B23 /* RestKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +282,7 @@
 		0F5EA397BCF0C5EEF08F5111 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */,
 				7EF7F7A41DD17A8D000A625A /* Foundation.framework */,
 				7E5150EA1D8D75C400ED25FB /* Mantle.framework */,
 				7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */,
@@ -231,6 +301,34 @@
 				8DDC99F4D9772DC8C3D1284B /* Pods-NavCogTool.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		7E1F9F2D1DF0190F003E1B23 /* dialog */ = {
+			isa = PBXGroup;
+			children = (
+				7E1F9F2F1DF01AA5003E1B23 /* ConversationEx.swift */,
+				7E1F9F301DF01AA5003E1B23 /* CustomArrow.swift */,
+				7E1F9F311DF01AA5003E1B23 /* CustomTableViewCell.swift */,
+				7E1F9F321DF01AA5003E1B23 /* LocalContext.swift */,
+				7E1F9F331DF01AA5003E1B23 /* stthelper */,
+				7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */,
+				7E1F9F2E1DF01AA4003E1B23 /* NavCog3-Bridging-Header.h */,
+				7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */,
+			);
+			name = dialog;
+			sourceTree = "<group>";
+		};
+		7E1F9F331DF01AA5003E1B23 /* stthelper */ = {
+			isa = PBXGroup;
+			children = (
+				7E1F9F341DF01AA5003E1B23 /* AnimLayer.swift */,
+				7E1F9F351DF01AA5003E1B23 /* DialogViewHelper.swift */,
+				7E1F9F361DF01AA5003E1B23 /* icons.xcassets */,
+				7E1F9F381DF01AA5003E1B23 /* STTHelper.swift */,
+				7E1F9F391DF01AA5003E1B23 /* TextToSpeech.swift */,
+			);
+			name = stthelper;
+			path = dialog/stthelper;
 			sourceTree = "<group>";
 		};
 		7E5078BE1D4A45B000F5A0F7 /* view */ = {
@@ -285,6 +383,8 @@
 				7E08DB571DB9F08E00E82161 /* ConfigManager.m */,
 				7E9866CC1D5174780073CB49 /* Logging.h */,
 				7E9866CD1D5174780073CB49 /* Logging.m */,
+				7E1F9F281DEEB1D3003E1B23 /* NavDebugHelper.h */,
+				7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */,
 			);
 			name = helper;
 			sourceTree = "<group>";
@@ -334,6 +434,12 @@
 		7EDEDC131D1E0C6800AC111A = {
 			isa = PBXGroup;
 			children = (
+				7E1F9F531DF01FA9003E1B23 /* Freddy.framework */,
+				7E1F9F541DF01FA9003E1B23 /* Starscream.framework */,
+				7E1F9F501DF01C86003E1B23 /* Alamofire.framework */,
+				7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */,
+				7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */,
+				7E1F9F481DF01BC2003E1B23 /* RestKit.framework */,
 				7EDEDC1E1D1E0C6800AC111A /* NavCog3 */,
 				7EF7F79E1DD178F7000A625A /* NavCogTool */,
 				7EDEDC1D1D1E0C6800AC111A /* Products */,
@@ -354,6 +460,7 @@
 		7EDEDC1E1D1E0C6800AC111A /* NavCog3 */ = {
 			isa = PBXGroup;
 			children = (
+				7E1F9F2D1DF0190F003E1B23 /* dialog */,
 				7E5150EC1D8D75D100ED25FB /* model */,
 				7E5150A11D8BF2C500ED25FB /* navigation */,
 				7E5078C01D4A45C300F5A0F7 /* helper */,
@@ -404,6 +511,7 @@
 				7EDEDC1A1D1E0C6800AC111A /* Resources */,
 				3AD4AA683ED6D64EDE1BF2E8 /* [CP] Embed Pods Frameworks */,
 				5F71D1C14A5EA1F4F8125B8B /* [CP] Copy Pods Resources */,
+				7E1F9F4F1DF01BC2003E1B23 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -496,6 +604,7 @@
 				7E9238EB1D5189F100875766 /* HLPSettingViewSliderCell.xib in Resources */,
 				7E9238EC1D5189F100875766 /* HLPSettingViewSubtitleCell.xib in Resources */,
 				7E308BDB1DAF147600E525F6 /* BlindView.stringsdict in Resources */,
+				7E1F9F411DF01AA5003E1B23 /* icons.xcassets in Resources */,
 				7E96D9271DAC916C00D57C8C /* BlindView.strings in Resources */,
 				7E9238ED1D5189F100875766 /* HLPSettingViewSwitchCell.xib in Resources */,
 				7EDEDC2C1D1E0C6800AC111A /* Assets.xcassets in Resources */,
@@ -595,6 +704,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */,
+				7E1F9F3B1DF01AA5003E1B23 /* ConversationEx.swift in Sources */,
+				7E1F9F3F1DF01AA5003E1B23 /* AnimLayer.swift in Sources */,
 				7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,
 				7EAE6F0D1D2642D600614C35 /* NavWebviewHelper.m in Sources */,
@@ -605,18 +716,26 @@
 				7EDEDC271D1E0C6800AC111A /* ViewController.m in Sources */,
 				7E433DCF1D6E846300C6C993 /* NavDeviceTTS.m in Sources */,
 				7E6E42E91D90FD1B006B6899 /* BlindViewController.m in Sources */,
+				7E1F9F5F1DF14E6F003E1B23 /* DialogManager.swift in Sources */,
 				7EF7F7A81DD17D4A000A625A /* NavCommander.m in Sources */,
+				7E1F9F401DF01AA5003E1B23 /* DialogViewHelper.swift in Sources */,
 				7EDEDC241D1E0C6800AC111A /* AppDelegate.mm in Sources */,
+				7E1F9F3E1DF01AA5003E1B23 /* LocalContext.swift in Sources */,
 				7E5150A41D8BF32800ED25FB /* NavNavigator.m in Sources */,
 				7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */,
 				7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */,
+				7E1F9F451DF01AA5003E1B23 /* DialogViewController.swift in Sources */,
+				7E1F9F3C1DF01AA5003E1B23 /* CustomArrow.swift in Sources */,
+				7E1F9F431DF01AA5003E1B23 /* STTHelper.swift in Sources */,
+				7E1F9F3D1DF01AA5003E1B23 /* CustomTableViewCell.swift in Sources */,
 				7E9238E81D5189F100875766 /* HLPSettingTableView.m in Sources */,
 				7EAE6F121D264C5700614C35 /* NavJSNativeHandler.m in Sources */,
+				7E1F9F441DF01AA5003E1B23 /* TextToSpeech.swift in Sources */,
 				7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */,
 				7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */,
 				7E9238E61D5189F100875766 /* HLPSetting.m in Sources */,
 				7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */,
-				FB81E7311DF0228D00CAD286 /* NavDebugHelper.m in Sources */,
+				7E1F9F2A1DEEB1D3003E1B23 /* NavDebugHelper.m in Sources */,
 				7E96D9331DACD0C700D57C8C /* SearchViewController.m in Sources */,
 				7EDEDC211D1E0C6800AC111A /* main.mm in Sources */,
 				7E9238E91D5189F100875766 /* HLPSettingViewCell.m in Sources */,
@@ -817,15 +936,22 @@
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = NavCog3/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCog3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -835,15 +961,21 @@
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = NavCog3/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCog3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};

@@ -254,7 +254,7 @@
     NSArray* featuresCache;
     
     NSDictionary *destinationHash;
-    
+    NSDictionary *serverConfig;
 }
 
 static NavDataStore* instance_ = nil;
@@ -646,6 +646,28 @@ static NavDataStore* instance_ = nil;
         }];
     }];
     
+}
+
+#define CONFIG_JSON @"%@://%@/%@config/dialog_config.json"
+
+- (void)requestServerConfigWithComplete:(void(^)())complete
+{
+    NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
+    NSString *context = [[NSUserDefaults standardUserDefaults] stringForKey:@"hokoukukan_server_context"];
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:CONFIG_JSON, https, server, context]];
+
+    [HLPDataUtil getJSON:url withCallback:^(NSObject* json){
+        if (json && [json isKindOfClass:NSDictionary.class]) {
+            serverConfig = (NSDictionary*)json;
+        }
+        complete();
+    }];
+}
+
+- (NSDictionary*)serverConfig
+{
+    return serverConfig;
 }
 
 - (void)clearRoute

@@ -98,9 +98,16 @@ static NavDeviceTTS *instance = nil;
     voice.delegate = self;    
 }
 
-- (void) stop
+- (void) stop:(BOOL) immediate
 {
-    [speakTimer invalidate];
+    if (isSpeaking) {
+        [voice stopSpeakingAtBoundary:immediate?AVSpeechBoundaryImmediate:AVSpeechBoundaryWord];
+    }
+}
+
+- (BOOL)isSpeaking
+{
+    return isSpeaking;
 }
 
 + (AVSpeechSynthesisVoice*)getVoice {
@@ -131,12 +138,27 @@ static NavDeviceTTS *instance = nil;
     }
 }
 
+- (AVSpeechUtterance *)selfspeak:(NSString *)text completionHandler:(void (^)())handler
+{
+    return [self selfspeak:text force:NO completionHandler:handler];
+}
+
+- (AVSpeechUtterance *)selfspeak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)())handler
+{
+    return [self _speak:text force:flag selfvoicing:YES completionHandler:handler];
+}
+
 - (AVSpeechUtterance*) speak: (NSString*) text completionHandler:(void (^)())handler
 {
     return [self speak:text force:NO completionHandler:handler];
 }
 
 - (AVSpeechUtterance*) speak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)())handler
+{
+    return [self _speak:text force:flag selfvoicing:NO completionHandler:handler];
+}
+
+- (AVSpeechUtterance*) _speak:(NSString*)text force:(BOOL)flag selfvoicing:(BOOL)selfvoicing completionHandler:(void (^)())handler
 {
     if (text == nil) {
         handler();
@@ -173,6 +195,7 @@ static NavDeviceTTS *instance = nil;
     se.ut.volume = 1.0;
     se.ut.rate = speechRate;
     se.ut.voice = [NavDeviceTTS getVoice];
+    se.selfvoicing = selfvoicing;
 
     
     se.completionHandler = handler;
@@ -219,7 +242,7 @@ static NavDeviceTTS *instance = nil;
     
     [processing setObject:se forKey:se.ut.speechString];
     isSpeaking = YES;
-    if ([self speakWithVoiceOver:se.ut.speechString]) {
+    if (!se.selfvoicing && [self speakWithVoiceOver:se.ut.speechString]) {
         return;
     }
     [voice speakUtterance:se.ut];
@@ -230,6 +253,13 @@ static NavDeviceTTS *instance = nil;
 {
     isSpeaking = NO;
     isProcessing = NO;
+    
+    HLPSpeechEntry *se = [processing objectForKey:utterance.speechString];
+    [processing removeObjectForKey:utterance.speechString];
+    
+    if (se && se.completionHandler) {
+        se.completionHandler();
+    }
 }
 
 
@@ -261,15 +291,16 @@ static NavDeviceTTS *instance = nil;
     NSDictionary *userInfo = [notification userInfo];
     NSString *speechString = userInfo[UIAccessibilityAnnouncementKeyStringValue];
     
-    isSpeaking = NO;
-    isProcessing = NO;
-    
     HLPSpeechEntry *se = [processing objectForKey:speechString];
     [processing removeObjectForKey:speechString];
     
-    if (se && se.completionHandler) {
-        se.completionHandler();
-    }
+    if (se) {
+        isSpeaking = NO;
+        isProcessing = NO;
+        if (se.completionHandler) {
+            se.completionHandler();
+        }
+    }    
 }
 
 - (BOOL) speakWithVoiceOver:(NSString*)str

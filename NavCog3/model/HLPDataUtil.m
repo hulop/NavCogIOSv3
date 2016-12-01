@@ -250,4 +250,35 @@
     }
 }
 
++ (void)getJSON:(NSURL *)url withCallback:(void (^)(NSObject *))callback
+{
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest
+                                    requestWithURL: url
+                                    cachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                    timeoutInterval: 60.0];
+    [request setHTTPMethod: @"GET"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest: request  completionHandler: ^(NSData *data, NSURLResponse *response, NSError *error) {
+        @try {
+            if (response && ! error) {
+                NSError *error2;
+                NSObject *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error2];
+                if (json && !error2) {
+                    callback(json);
+                } else {
+                    NSLog(@"Error2: %@", [error2 localizedDescription]);
+                }
+            } else {
+                NSLog(@"Error: %@", [error localizedDescription]);
+            }
+            callback(nil);
+        }
+        @catch(NSException *e) {
+            NSLog(@"%@", [e debugDescription]);
+        }
+    }] resume];
+}
 @end

@@ -23,6 +23,7 @@
 #import "DestinationTableViewController.h"
 #import "NavDataSource.h"
 #import "LocationEvent.h"
+#import "NavCog3-Swift.h"
 
 @interface DestinationTableViewController ()
 
@@ -70,6 +71,7 @@
     
     [self.tableView reloadData];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -80,6 +82,10 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)configChanged:(NSNotification*)note {
+    [self.tableView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -108,6 +114,13 @@
     
     cell.textLabel.text = NSLocalizedStringFromTable(cell.textLabel.text, @"BlindView", @"");
     
+    NavDestination *dest = [source destinationForRowAtIndexPath:indexPath];
+    if (dest.type == NavDestinationTypeDialogSearch) {
+        BOOL dialog = [[DialogManager sharedManager] isDialogAvailable];
+        cell.textLabel.enabled = dialog;
+        cell.selectionStyle = dialog?UITableViewCellSelectionStyleGray:UITableViewCellSelectionStyleNone;
+    }
+    
     return cell;
 }
 
@@ -121,8 +134,9 @@
         filterDest = dest;
         [self performSegueWithIdentifier:@"sub_category" sender:self];
     } else if (dest.type == NavDestinationTypeDialogSearch) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_START_DIALOG object:@{}];
-        [self.navigationController popToViewController:_root animated:YES];
+        if ([[DialogManager sharedManager] isDialogAvailable]) {
+            [self performSegueWithIdentifier:@"show_dialog" sender:self];
+        }
     } else {
         if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
             [NavDataStore sharedDataStore].from = dest;
@@ -148,6 +162,10 @@
             dView->filterDest = filterDest;
             dView.root = _root;
         }
+    }
+    if ([segue.destinationViewController isKindOfClass:DialogViewController.class]){
+        DialogViewController* dView = (DialogViewController*)segue.destinationViewController;
+        dView.root = _root;
     }
 }
 

@@ -273,7 +273,8 @@
               @"name": @"name",
               @"namePron": @"name_pron",
               @"nodeID": @"node",
-              @"nodeHeight": @"node_height"
+              @"nodeHeight": @"node_height",
+              @"nodeCoordinates": @"node_coordinates"
               }];
 }
 
@@ -281,6 +282,13 @@
 {
     self = [super initWithDictionary:dictionaryValue error:error];
     _nodeHeight = (_nodeHeight >= 1)?_nodeHeight-1:_nodeHeight;
+    
+    if(dictionaryValue[@"nodeCoordinates"]) {
+        double lat = [dictionaryValue[@"nodeCoordinates"][1] doubleValue];
+        double lng = [dictionaryValue[@"nodeCoordinates"][0] doubleValue];
+        _nodeLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng Floor:_nodeHeight];
+    }
+    
     return self;
 }
 

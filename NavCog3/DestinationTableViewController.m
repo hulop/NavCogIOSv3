@@ -138,7 +138,7 @@
             [self performSegueWithIdentifier:@"show_dialog" sender:self];
         }
     } else {
-        if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
+        if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {            
             [NavDataStore sharedDataStore].from = dest;
         }
         if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {

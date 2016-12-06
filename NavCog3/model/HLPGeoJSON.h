@@ -74,6 +74,8 @@ typedef enum {
 @property (nonatomic, readonly) NSString *namePron;
 @property (nonatomic, readonly) NSString *nodeID;
 @property (nonatomic, readonly) double nodeHeight;
+@property (nonatomic, readonly) NSArray* nodeCoordinates;
+@property (nonatomic, readonly) HLPLocation *nodeLocation;
 
 - (NSString*) getLandmarkName;
 - (NSString*) getLandmarkNamePron;

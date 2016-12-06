@@ -40,6 +40,7 @@ typedef enum {
 @property (readonly) NSString* name;
 @property (readonly) NSString* namePron;
 @property (readonly) NSString* _id;
+@property (readonly) NSString* singleId;
 @property (readonly) NSDictionary* filter;
 @property (readonly) NSString* label;
 @property (readonly) HLPLandmark* landmark;
@@ -81,6 +82,8 @@ typedef enum {
 
 - (void) switchFromTo;
 - (NavDestination*) destinationByID:(NSString*)key;
+- (NavDestination*) destinationByIDs:(NSArray*)keys;
+- (NavDestination*) closestDestinationInLandmarks:(NSArray*)landmarks;
 - (void) manualTurn:(double)diffOrientation;
 - (void) manualLocation:(HLPLocation*)location;
 - (void) manualLocationReset:(NSDictionary*)location;

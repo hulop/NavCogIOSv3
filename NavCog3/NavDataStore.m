@@ -174,6 +174,17 @@
     }
 }
 
+
+- (NSString*)singleId
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    if (_type == NavDestinationTypeLandmarks) {
+        NavDestination *dest = [nds closestDestinationInLandmarks:_landmarks];
+        return dest._id;
+    }
+    return self._id;
+}
+
 - (NSString*)name
 {
     HLPLocation *loc;
@@ -710,6 +721,38 @@ static NavDataStore* instance_ = nil;
 {
     return [[NavDestination alloc] initWithLandmark: [destinationHash objectForKey:key]];
 }
+
+- (NavDestination *)destinationByIDs:(NSArray *)keys
+{
+    NavDestination *dest = nil;
+    for(NSString *key in keys) {
+        HLPLandmark *l = [destinationHash objectForKey:key];
+        if (dest == nil) {
+            dest = [[NavDestination alloc] initWithLandmark:l];
+        } else {
+            [dest addLandmark:l];
+        }
+    }
+    return dest;
+}
+
+- (NavDestination *)closestDestinationInLandmarks:(NSArray *)landmarks
+{
+    HLPLocation *loc = [self currentLocation];
+    double min = DBL_MAX;
+    HLPLandmark *minl = nil;
+    for(HLPLandmark *l in landmarks) {
+        if (l) {
+            double d = [[l nodeLocation] distanceTo:loc];
+            if (d < min) {
+                min = d;
+                minl = l;
+            }
+        }
+    }
+    return [[NavDestination alloc] initWithLandmark: minl];
+}
+
 
 - (void)manualTurn:(double)diffOrientation
 {

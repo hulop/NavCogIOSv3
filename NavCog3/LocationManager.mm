@@ -110,7 +110,8 @@ void functionCalledAfterUpdate(void *inUserData, Status *status)
     if (!(userData->locationManager.isActive)) {
         return;
     }
-    [userData->locationManager updateStatus:status];
+    std::shared_ptr<Status> statusCopy(new Status(*status));
+    [userData->locationManager updateStatus: statusCopy.get()];
 }
 
 void functionCalledToLog(void *inUserData, string text)
@@ -631,6 +632,11 @@ void functionCalledToLog(void *inUserData, string text)
             NSNumber* relAlt=  altitudeData.relativeAltitude;
             NSNumber* pressure = altitudeData.pressure;
             long ts = ((uptime+altitudeData.timestamp))*1000;
+            
+            // putAltimeter
+            Altimeter alt(ts, [relAlt doubleValue], [pressure doubleValue]);
+            localizer->putAltimeter(alt);
+            
             std::stringstream ss;
             // "Altimeter",relativeAltitude,pressure,timestamp
             ss << "Altimeter," << [relAlt doubleValue] << "," << [pressure doubleValue]<< "," << ts;
@@ -712,6 +718,8 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->locLB = Location(lb, lb, 1e-6, lbFloor);
 
     //localizer->normalFunction(TDIST, 3);
+    
+    localizer->usesAltimeterForFloorTransCheck = true;
 }
 
 - (void) dealloc
@@ -1184,6 +1192,7 @@ int dcount = 0;
             return;
         }
         
+        bool wasFloorUpdated = status->wasFloorUpdated();
         Pose refPose = *status->meanPose();
         std::vector<State> states = *status->states();
         refPose = computeRepresentativePose(refPose, states);
@@ -1220,7 +1229,8 @@ int dcount = 0;
             acc = MAX(acc, (std.x()+std.y())/2.0*sigma);
         }
         
-        if (flag) {
+        //if (flag) {
+        if(wasFloorUpdated){
             currentFloor = refPose.floor();
         }
         
@@ -1243,7 +1253,8 @@ int dcount = 0;
            @"rotate":anchor[@"rotate"]
            } mutableCopy];
         
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"show_states"] && dcount % 10 == 0) {
+        bool showsState = [[NSUserDefaults standardUserDefaults] boolForKey:@"show_states"] ;
+        if (showsState && ( wasFloorUpdated ||  dcount % 10 == 0)) {
             NSMutableArray *debug = [@[] mutableCopy];
             for(loc::State &s: states) {
                 [debug addObject:@(s.Location::x())];

@@ -238,7 +238,10 @@ static HLPSetting *speechSpeedSetting;
 
 - (void)dealloc
 {
-    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"speech_speed"];
+    @try {
+        [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"speech_speed"];
+    } @catch(NSException *e) {
+    }
 }
 
 + (void)setup

@@ -203,6 +203,7 @@ static NavNavigatorConstants *_instance;
     _expirationTimeOfPreventRemainingDistanceEvent = NAN;
     _backDetectedLocation = nil;
     _distanceFromBackDetectedLocationToLocation = NAN;
+    _noBearing = NO;
     
     _isComplex = fabs([HLPLocation normalizeDegree:_link.initialBearingFromSource - _link.lastBearingForTarget]) > 10;
     
@@ -583,6 +584,7 @@ static NavNavigatorConstants *_instance;
     checkLinkFeatures(links, ^ BOOL (HLPLink *link) {
         return link.brailleBlockType == HLPBrailleBlockTypeAvailable;
     }, ^(NSRange range) {
+        _noBearing = YES;
         NSArray *result = [links subarrayWithRange:range];
         HLPLink *link = result[0];
         HLPLink *link2 = [result lastObject];
@@ -1798,7 +1800,7 @@ static NavNavigatorConstants *_instance;
                            //@"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
                            @"pois": linkInfo.pois,
                            @"noCautionPOI": @(YES),
-                           @"isFirst": @(navIndex == 1),
+                           @"isFirst": @(navIndex == firstLinkIndex),
                            @"distance": @(distance),
                            @"noAndTurnMinDistance": @(C.NO_ANDTURN_DISTANCE_THRESHOLD),
                            @"linkType": @(linkInfo.link.linkType),
@@ -1995,7 +1997,7 @@ static NavNavigatorConstants *_instance;
             
             
             
-            if (!linkInfo.hasBeenBearing) {
+            if (!linkInfo.hasBeenBearing && !linkInfo.noBearing) {
                 double BEARING_TARGET_DISTANCE = 20;
                 double BEARING_DIFF_THRETHOLD = 3.0;
                 double BEARING_DURATION_FACTOR = 0.1;

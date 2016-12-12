@@ -138,6 +138,7 @@
 
 #pragma mark - flags for navigation
 @property BOOL hasBeenBearing;
+@property BOOL noBearing;
 @property double bearingTargetThreshold;
 @property BOOL hasBeenActivated;
 @property BOOL hasBeenApproaching;

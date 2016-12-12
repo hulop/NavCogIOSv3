@@ -1742,6 +1742,7 @@ static NavNavigatorConstants *_instance;
                                    @"distance": @(distance)
                                    }];
                             }
+                            /*
                             if (elevatorPOI) {
                                 if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
                                     [self.delegate userIsApproachingToPOI:
@@ -1751,6 +1752,7 @@ static NavNavigatorConstants *_instance;
                                        }];
                                 }
                             }
+                             */
                             linkInfo.hasBeenActivated = YES;
                         }
                     }

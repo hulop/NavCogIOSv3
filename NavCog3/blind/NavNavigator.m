@@ -219,12 +219,30 @@ static NavNavigatorConstants *_instance;
     
     _isNextDestination = (_nextLink == nil);
     
-    NavNavigatorConstants *C = [NavNavigatorConstants constants];
+    BOOL __block noMidInRoot = NO;
     
+    // check destination POI before adding POI actually to enable isNextDestination
+    NavNavigatorConstants *C = [NavNavigatorConstants constants];
+    [_allPOIs enumerateObjectsUsingBlock:^(HLPObject *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:HLPEntrance.class]) { // non poi information (facility and entrance)
+            HLPEntrance *ent = (HLPEntrance*)obj;
+            
+            if ([_nextLink.targetNodeID isEqualToString:ent.node._id]) {
+                noMidInRoot = YES;
+                if (_nextLink.length < 3) {
+                    // destination with a leaf node, make second last link as last link
+                    _isNextDestination = YES;
+                }
+            } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
+                noMidInRoot = YES;
+                _isNextDestination = YES;
+            }
+        }
+    }];
     
     // check NavPOI
     [_allPOIs enumerateObjectsUsingBlock:^(HLPObject *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        
+    
         //BOOL isFirstLink = (idx == 0);
 
         if ([obj isKindOfClass:HLPPOI.class]) { // poi information
@@ -397,9 +415,9 @@ static NavNavigatorConstants *_instance;
             HLPEntrance *ent = (HLPEntrance*)obj;
             NavPOI *navpoi = nil;
             
-            if ([_nextLink.targetNodeID isEqualToString:ent.node._id]) {
+            if ([_nextLink.targetNodeID isEqualToString:ent.node._id] && _nextLink.length < 3) {
                 // destination with a leaf node, make second last link as last link
-                _isNextDestination = YES;
+                //_isNextDestination = YES;
                 navpoi = [[NavPOI alloc] initWithText:nil Location:ent.facility.location Options:
                           @{
                             @"origin": ent,
@@ -411,14 +429,14 @@ static NavNavigatorConstants *_instance;
                 
             } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
                 // destination with non-leaf node
-                _isNextDestination = YES;
+                //_isNextDestination = YES;
                 navpoi = [[NavPOI alloc] initWithText:obj.properties[@"long_description"]
                                              Location:ent.node.location
                                               Options: @{
                                                          @"origin": ent,
                                                          @"forAfterEnd": @(YES)
                                                          }];
-            } else {
+            } else if (!noMidInRoot && !_isNextDestination){
                 // mid in route
                 HLPLocation *nearest = [_link nearestLocationTo:ent.node.location];
                 if ([nearest distanceTo:ent.node.location] < 1e-3) {
@@ -432,7 +450,7 @@ static NavNavigatorConstants *_instance;
                         navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
                                   @{
                                     @"origin": ent,
-                                    @"longDescription": [ent getLongDescriptionPron],
+                                    //@"longDescription": [ent getLongDescriptionPron],
                                     @"angleFromLocation": @([nearest bearingTo:ent.node.location]),
                                     @"flagOnomastic":@(YES)
                                     }];
@@ -951,7 +969,6 @@ static NavNavigatorConstants *_instance;
         NSMutableArray<HLPLink*> __block *nearestLinks = [@[] mutableCopy];
         double __block minDistance = DBL_MAX;
         
-        NSString *nodeID = option[@"nodeID"];
         HLPLinkType linkType = [option[@"linkType"] intValue];
         BOOL onlyEnd = [option[@"onlyEnd"] boolValue];
         
@@ -961,12 +978,12 @@ static NavNavigatorConstants *_instance;
                 (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
                 return;
             }
-            if ([link.sourceNodeID isEqualToString:nodeID] ||
-                [link.targetNodeID isEqualToString:nodeID]) {
+            if (link.isLeaf) {
                 return;
             }
             
             HLPLocation *nearest = [link nearestLocationTo:loc];
+            
             if (onlyEnd) {
                 double sd = [link.sourceLocation distanceTo:loc];
                 double td = [link.targetLocation distanceTo:loc];
@@ -989,8 +1006,7 @@ static NavNavigatorConstants *_instance;
                 (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
                 return;
             }
-            if ([link.sourceNodeID isEqualToString:nodeID] ||
-                [link.targetNodeID isEqualToString:nodeID]) {
+            if (link.isLeaf) {
                 return;
             }
             
@@ -1081,9 +1097,12 @@ static NavNavigatorConstants *_instance;
             if ([startNode.forFacilityID isEqualToString:ent.forFacilityID]) {
                 continue;
             }
+            if ([destinationNode.forFacilityID isEqualToString:ent.forFacilityID]) {
+                NSLog(@"%@", ent);
+            }
             
             BOOL isLeaf = ent.node.isLeaf;
-            NSArray *links = nearestLinks(ent.node.location, isLeaf?@{@"nodeID": ent.node._id, @"onlyEnd":@(YES)}:@{});
+            NSArray *links = nearestLinks(ent.node.location, isLeaf?@{@"onlyEnd":@(YES)}:@{});
             for(HLPLink* nearestLink in links) {
                 if ([nearestLink.sourceNodeID isEqualToString:ent.node._id] ||
                     [nearestLink.targetNodeID isEqualToString:ent.node._id]) {
@@ -1093,7 +1112,7 @@ static NavNavigatorConstants *_instance;
                 NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
                 if (!linkPois) {
                     linkPois = [@[] mutableCopy];
-                        linkPoiMap[nearestLink._id] = linkPois;
+                    linkPoiMap[nearestLink._id] = linkPois;
                 }
                 [linkPois addObject:ent];
             }

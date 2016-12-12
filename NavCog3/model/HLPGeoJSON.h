@@ -184,6 +184,7 @@ typedef enum: int {
 @property (nonatomic, readonly) BOOL backward;
 @property (nonatomic, readonly) double minimumWidth;
 @property (nonatomic, readonly) HLPBrailleBlockType brailleBlockType;
+@property (nonatomic, readonly) BOOL isLeaf;
 
 + (NSString*) nameOfLinkType:(HLPLinkType)type;
 - (double) initialBearingFromSource;

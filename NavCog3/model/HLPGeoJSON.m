@@ -620,6 +620,11 @@
     if (tnode) {
         _targetHeight = tnode.height;
     }
+    
+    if ([snode.connectedLinkIDs count] == 1 ||
+        [tnode.connectedLinkIDs count] == 1 ) {
+        _isLeaf = YES;
+    }
 }
 
 - (double)initialBearingFromSource

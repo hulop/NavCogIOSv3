@@ -38,6 +38,24 @@
 /* (No Commment) */
 "ElvButtonRightPlural" = "エレベーターの右に呼び出しボタン";
 
+/* (No Commment) */
+"ElvButtonLeftLower" = "エレベーターの左、少し下に呼び出しボタン";
+
+/* (No Commment) */
+"ElvButtonLeftPluralLower" = "エレベーターの左、少し下に呼び出しボタン";
+
+/* (No Commment) */
+"ElvButtonMiddleLower" = "エレベーターとエレベーターの間、少し下に呼び出しボタン";
+
+/* (No Commment) */
+"ElvButtonMiddlePluralLower" = "エレベーターとエレベーターの間、少し下に呼び出しボタン";
+
+/* (No Commment) */
+"ElvButtonRightLower" = "エレベーターの右、少し下に呼び出しボタン";
+
+/* (No Commment) */
+"ElvButtonRightPluralLower" = "エレベーターの右、少し下に呼び出しボタン";
+
 /* No comment provided by engineer. */
 "ElvButtonWithBraille" = "%@。点字有り。";
 

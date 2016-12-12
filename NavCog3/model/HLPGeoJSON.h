@@ -154,6 +154,7 @@ typedef enum: int {
 @property (nonatomic, readonly) BOOL buttonRightBraille;
 @property (nonatomic, readonly) BOOL buttonMiddle;
 @property (nonatomic, readonly) BOOL buttonMiddleBraille;
+@property (nonatomic, readonly) BOOL flagLower;
 @end
 
 @interface HLPLink : HLPObject {

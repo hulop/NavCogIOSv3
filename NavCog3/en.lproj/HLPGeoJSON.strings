@@ -38,6 +38,25 @@
 /* (No Commment) */
 "ElvButtonRightPlural" = "Elevator buttons are right side of the door";
 
+/* (No Commment) */
+"ElvButtonLeftLower" = "Elevator button is lower left side of the door";
+
+/* (No Commment) */
+"ElvButtonLeftPluralLower" = "Elevator buttons are lower left side of the door";
+
+/* (No Commment) */
+"ElvButtonMiddleLower" = "Elevator button is lower middle of the doors";
+
+/* (No Commment) */
+"ElvButtonMiddlePluralLower" = "Elevator buttons are lower middle of the doors";
+
+/* (No Commment) */
+"ElvButtonRightLower" = "Elevator button is lower right side of the door";
+
+/* (No Commment) */
+"ElvButtonRightPluralLower" = "Elevator buttons are lower right side of the door";
+
+
 /* No comment provided by engineer. */
 "ElvButtonWithBraille" = "%@ with Braille.";
 

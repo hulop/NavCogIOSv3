@@ -495,6 +495,10 @@
         pos = [pos stringByAppendingString:@"Plural"];
     }
     
+    if (_flagLower) {
+        pos = [pos stringByAppendingString:@"Lower"];
+    }
+    
     NSString *str = NSLocalizedStringFromTable(pos, @"HLPGeoJSON", @"");
     if (brail) {
         str = [NSString stringWithFormat:NSLocalizedStringFromTable(@"ElvButtonWithBraille", @"HLPGeoJSON", @""), str];

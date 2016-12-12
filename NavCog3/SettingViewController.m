@@ -28,6 +28,7 @@
 #import "LocationEvent.h"
 #import "NavDebugHelper.h"
 #import "NavCog3-Swift.h"
+#import "NavDeviceTTS.h"
 
 @interface SettingViewController ()
 
@@ -65,6 +66,11 @@ static HLPSetting *speechSpeedSetting;
         ) {
         [SettingViewController setupUserSettings];
         helper = userSettingHelper;
+        
+        [[NSUserDefaults standardUserDefaults] addObserver:self
+                                                forKeyPath:@"speech_speed"
+                                                   options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+                                                   context:nil];
     }
     if ([self.restorationIdentifier isEqualToString:@"adjust_blelocpp"]) {
         helper = blelocppSettingHelper;
@@ -98,6 +104,7 @@ static HLPSetting *speechSpeedSetting;
     [self updateView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -111,6 +118,23 @@ static HLPSetting *speechSpeedSetting;
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateView];
     });
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    NSLog(@"%@,%@,%@", keyPath, object, change);
+    //[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    if (object == [NSUserDefaults standardUserDefaults]) {
+        if ([keyPath isEqualToString:@"speech_speed"] && change[@"new"] && change[@"old"]) {
+            if ([change[@"new"] doubleValue] != [change[@"old"] doubleValue]) {
+                double value = [change[@"new"] doubleValue];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString *string = NSLocalizedString(@"SPEECH_SPEED_CHECK", "");
+                    [[NavDeviceTTS sharedTTS] speak:[NSString stringWithFormat:string, value] force:YES completionHandler:nil];
+                });
+            }
+        }
+    }
 }
 
 - (void) updateView
@@ -214,6 +238,7 @@ static HLPSetting *speechSpeedSetting;
 
 - (void)dealloc
 {
+    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"speech_speed"];
 }
 
 + (void)setup
@@ -237,7 +262,7 @@ static HLPSetting *speechSpeedSetting;
     
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech", @"label for tts options")];
     speechSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
-                                     Name:@"speech_speed" DefaultValue:@(0.6) Min:0 Max:1 Interval:0.05];
+                                     Name:@"speech_speed" DefaultValue:@(0.6) Min:0.1 Max:1 Interval:0.05];
     [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
     [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
     

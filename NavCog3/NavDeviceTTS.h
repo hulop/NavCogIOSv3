@@ -47,9 +47,9 @@ typedef enum {
 @property HLPLocation* location;
 @property double validRadius; // in meter
 @property (strong, nonatomic) void (^completionHandler)();
-@property (readonly) NSTimeInterval issued;
-@property (readonly) NSTimeInterval speakStart;
-@property (readonly) NSTimeInterval speakFinish;
+@property NSTimeInterval issued;
+@property NSTimeInterval speakStart;
+@property NSTimeInterval speakFinish;
 @property BOOL selfvoicing;
 @end
 

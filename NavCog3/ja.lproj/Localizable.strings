@@ -94,3 +94,4 @@
 
 "DialogStartHint" = "音声認識を再開するにはダブルタップします";
 
+"SPEECH_SPEED_CHECK" = "読み上げ速度:%.2f";

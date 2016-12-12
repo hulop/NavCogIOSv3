@@ -28,7 +28,9 @@
 
 @end
 
-@implementation NavDeviceTTS
+@implementation NavDeviceTTS {
+    NSTimeInterval expire;
+}
 
 static NavDeviceTTS *instance = nil;
 
@@ -43,6 +45,8 @@ static NavDeviceTTS *instance = nil;
 - (instancetype) init
 {
     self = [super init];
+    
+    expire = NAN;
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(routeChanged)
@@ -196,11 +200,11 @@ static NavDeviceTTS *instance = nil;
     se.ut.rate = speechRate;
     se.ut.voice = [NavDeviceTTS getVoice];
     se.selfvoicing = selfvoicing;
-
+    se.issued = [[NSDate date] timeIntervalSince1970];
     
     se.completionHandler = handler;
     
-    if (isProcessing && flag) {
+    if (flag) {
         [voice stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
         @synchronized(speaking) {
             [speaking removeAllObjects];
@@ -220,6 +224,11 @@ static NavDeviceTTS *instance = nil;
 
 - (void) processSpeak:(NSTimer*) timer
 {
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    if (!isnan(expire) && now > expire) {
+        isProcessing = isSpeaking = NO;
+        expire = NAN;
+    }
     if (!speaking || [speaking count] == 0 || isProcessing) {
         return;
     }
@@ -238,10 +247,26 @@ static NavDeviceTTS *instance = nil;
         return;
     }
     
-    NSLog(@"speak,%@", se.ut.speechString);
-    
     [processing setObject:se forKey:se.ut.speechString];
+    se.speakStart = [[NSDate date] timeIntervalSince1970];
     isSpeaking = YES;
+    double(^estimatedDuration)(HLPSpeechEntry *) = ^(HLPSpeechEntry* se) {
+        double r = se.ut.rate;
+        double r2 = r*r+0.23*r+0.1; // based on an experiment, estimated speech speed
+        double safe_rate = 1.5;
+        
+        double languageRate = 20; // en
+        NSString *lang = AVSpeechSynthesisVoice.currentLanguageCode;
+        if ([lang isEqualToString:@"ja-JP"]) {
+            languageRate = 10;
+        }
+        return se.ut.speechString.length / languageRate / r2 * safe_rate;
+    };
+    double duration = estimatedDuration(se);
+    expire = now + duration;
+
+    NSLog(@"speak,%@,%f", se.ut.speechString, duration);
+    
     if (!se.selfvoicing && [self speakWithVoiceOver:se.ut.speechString]) {
         return;
     }
@@ -253,8 +278,11 @@ static NavDeviceTTS *instance = nil;
 {
     isSpeaking = NO;
     isProcessing = NO;
+    expire = NAN;
     
     HLPSpeechEntry *se = [processing objectForKey:utterance.speechString];
+    se.speakFinish = [[NSDate date] timeIntervalSince1970];
+    NSLog(@"speak_finish,%.2f,%.2f", se.speakStart - se.issued, se.speakFinish - se.speakStart);
     [processing removeObjectForKey:utterance.speechString];
     
     if (se && se.completionHandler) {
@@ -277,8 +305,11 @@ static NavDeviceTTS *instance = nil;
 {
     isSpeaking = NO;
     isProcessing = NO;
+    expire = NAN;
     
     HLPSpeechEntry *se = [processing objectForKey:utterance.speechString];
+    se.speakFinish = [[NSDate date] timeIntervalSince1970];
+    NSLog(@"speak_finish,%.2f,%.2f", se.speakStart - se.issued, se.speakFinish - se.speakStart);
     [processing removeObjectForKey:utterance.speechString];
     
     if (se && se.completionHandler) {
@@ -292,11 +323,14 @@ static NavDeviceTTS *instance = nil;
     NSString *speechString = userInfo[UIAccessibilityAnnouncementKeyStringValue];
     
     HLPSpeechEntry *se = [processing objectForKey:speechString];
+    se.speakFinish = [[NSDate date] timeIntervalSince1970];
+    NSLog(@"speak_finish,%.2f,%.2f", se.speakStart - se.issued, se.speakFinish - se.speakStart);
     [processing removeObjectForKey:speechString];
     
     if (se) {
         isSpeaking = NO;
         isProcessing = NO;
+        expire = NAN;
         if (se.completionHandler) {
             se.completionHandler();
         }
@@ -305,6 +339,7 @@ static NavDeviceTTS *instance = nil;
 
 - (BOOL) speakWithVoiceOver:(NSString*)str
 {
+    
     if ([str length] == 0 || !UIAccessibilityIsVoiceOverRunning()) {
         return NO;
     }

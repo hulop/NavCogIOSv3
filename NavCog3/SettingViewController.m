@@ -367,6 +367,7 @@ static HLPSetting *speechSpeedSetting;
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"nEffective (recommended gt or eq nStates/2)" Name:@"nEffective" DefaultValue:@(250) Min:50 Max:2000 Interval:50];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"alphaWeaken" Name:@"alphaWeaken" DefaultValue:@(0.3)  Min:0 Max:1.0 Interval:0.1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"RSSI bias" Name:@"rssi_bias" DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev coefficient for different floor" Name:@"coeffDiffFloorStdev" DefaultValue:@(5)  Min:5 Max:1000 Interval:5];
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use wheelchair PDR threthold" Name:@"wheelchair_pdr" DefaultValue:@(NO) Accept:nil];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability from likelihood" Name:@"mixProba" DefaultValue:@(0) Min:0 Max:0.01 Interval:0.001];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix reject distance [m]" Name:@"rejectDistance" DefaultValue:@(5) Min:5 Max:100 Interval:5];

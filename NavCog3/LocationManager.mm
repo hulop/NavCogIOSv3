@@ -720,6 +720,7 @@ void functionCalledToLog(void *inUserData, string text)
     //localizer->normalFunction(TDIST, 3);
     
     localizer->usesAltimeterForFloorTransCheck = true;
+    localizer->coeffDiffFloorStdev = [ud doubleForKey:@"coeffDiffFloorStdev"];
 }
 
 - (void) dealloc

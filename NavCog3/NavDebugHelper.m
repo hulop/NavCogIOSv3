@@ -24,7 +24,9 @@
 #import "LocationEvent.h"
 #import "NavDeviceTTS.h"
 
-@implementation NavDebugHelper
+@implementation NavDebugHelper {
+    NSMutableDictionary *_lastSent;
+}
 
 static NavDebugHelper* instance;
 
@@ -40,6 +42,7 @@ static NavDebugHelper* instance;
 {
     self = [super init];
     _peers = [@[] mutableCopy];
+    _lastSent = [@{} mutableCopy];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processData:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
 
@@ -58,12 +61,22 @@ static NavDebugHelper* instance;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"]) {
         return;
     }
+    NSString *name = [note name];
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    
+    if ([name isEqualToString:NAV_LOCATION_CHANGED_NOTIFICATION] && _lastSent[name]) {
+        if (now - [_lastSent[name] doubleValue] < 0.1) {
+            return;
+        }
+    }
+    _lastSent[name] = @([[NSDate date] timeIntervalSince1970]);
 
     NSObject *object = [note object];
 
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:
                     @{
-                      @"name": [note name],
+                      @"name": name,
+                      @"timestamp": @([[NSDate date] timeIntervalSince1970]),
                       @"object": object?object:[NSNull null]
                       }];
     if (data) {
@@ -88,10 +101,14 @@ static NavDebugHelper* instance;
 - (void)sendData:(NSData *)data
 {
     NSError *error;
-    [_session sendData:data
-               toPeers:_peers
-              withMode:MCSessionSendDataReliable
-                 error:&error];
+    
+    if ([_peers count] > 0) {
+        NSLog(@"sendData,%ld", data.length);
+        [_session sendData:data
+                   toPeers:_peers
+                  withMode:MCSessionSendDataUnreliable
+                     error:&error];
+    }
 }
 
 #pragma mark - delegate methods
@@ -114,20 +131,7 @@ static NavDebugHelper* instance;
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"]) {
         return;
     }
- 
-    NSDictionary *json = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    if (json) {
-        NSString *name = json[@"name"];
-        NSObject *object = json[@"object"];
-        
-        
-        if ([SPEAK_TEXT_QUEUEING isEqualToString:name]) {
-            NSDictionary *param = (NSDictionary*)object;
-            [[NavDeviceTTS sharedTTS] speak:param[@"text"] force:[param[@"force"] boolValue] completionHandler:nil];
-        } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:name object:object];
-        }
-    }
+    [self processReceivedData:data];
 }
 
 - (void)session:(MCSession *)session
@@ -150,6 +154,26 @@ didReceiveStream:(NSInputStream *)stream
        withName:(NSString *)streamName
        fromPeer:(MCPeerID *)peerID
 {
+}
+
+- (void) processReceivedData:(NSData*)data
+{
+    NSDictionary *json = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (json) {
+            NSString *name = json[@"name"];
+            double timestamp = [json[@"timestamp"] doubleValue];
+            NSObject *object = json[@"object"];
+        
+            NSLog(@"receiveData,%ld,%f", [data length], [[NSDate date] timeIntervalSince1970] - timestamp);
+            if ([SPEAK_TEXT_QUEUEING isEqualToString:name]) {
+                NSDictionary *param = (NSDictionary*)object;
+                [[NavDeviceTTS sharedTTS] speak:param[@"text"] force:[param[@"force"] boolValue] completionHandler:nil];
+            } else {
+                [[NSNotificationCenter defaultCenter] postNotificationName:name object:object];
+            }
+        }
+    });
 }
 
 - (void) session:(MCSession *)session

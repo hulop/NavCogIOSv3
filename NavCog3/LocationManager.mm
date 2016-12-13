@@ -133,6 +133,8 @@ void functionCalledToLog(void *inUserData, string text)
     validHeading = NO;
     _currentStatus = NavLocationStatusUnknown;
     
+    currentFloor = NAN;
+    
     offsetYaw = M_PI_2;
     currentOrientationAccuracy = 999;
     
@@ -810,7 +812,7 @@ void functionCalledToLog(void *inUserData, string text)
     }
     if (putBeaconsCount == localizer->nSmooth) {
         self.currentStatus = NavLocationStatusStable;
-        return;
+        //return;
     }
     // TODO flagPutBeacon is not useful
     [self locationUpdated:status withResampledFlag:flagPutBeacon];
@@ -1232,7 +1234,7 @@ int dcount = 0;
         }
         
         //if (flag) {
-        if(wasFloorUpdated){
+        if(wasFloorUpdated || isnan(currentFloor)){
             currentFloor = refPose.floor();
         }
         

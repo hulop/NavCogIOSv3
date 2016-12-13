@@ -284,5 +284,10 @@
     }
 }
 
+- (NSString *)summaryString:(NSDictionary *)properties
+{
+    return nil;
+}
+
 
 @end

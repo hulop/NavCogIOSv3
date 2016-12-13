@@ -83,6 +83,7 @@
     navigator.delegate = self;
     commander.delegate = self;
     previewer.delegate = self;
+    _cover.fsSource = navigator;
     
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
@@ -603,6 +604,12 @@
 {
     [commander userIsLeavingFromPOI:properties];
     [previewer userIsLeavingFromPOI:properties];
+}
+
+// Summary
+- (NSString*)summaryString:(NSDictionary *)properties
+{
+    return [commander summaryString:properties];
 }
 
 #pragma mark - NavCommanderDelegate

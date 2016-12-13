@@ -26,6 +26,11 @@
 
 @class NavPOI;
 
+@protocol NavFutureSummarySource
+- (NSInteger)numberOfSummary;
+- (NSString*)summaryAtIndex:(NSInteger)index;
+@end
+
 @interface NavNavigatorConstants : NSObject
     
 @property (readonly) double PREVENT_REMAINING_DISTANCE_EVENT_FOR_FIRST_N_METERS;
@@ -106,6 +111,9 @@
 // POI
 - (void)userIsApproachingToPOI:(NSDictionary*)properties;
 - (void)userIsLeavingFromPOI:(NSDictionary*)properties;
+
+// Summary
+- (NSString*)summaryString:(NSDictionary*)properties;
 
 @end
 
@@ -210,7 +218,7 @@
 - (void)updateWithLocation:(HLPLocation*)location andUserLocation:(HLPLocation*)userLocation;
 @end
 
-@interface NavNavigator : NSObject
+@interface NavNavigator : NSObject <NavFutureSummarySource>
 @property (readonly) BOOL isActive;
 @property (weak) id<NavNavigatorDelegate> delegate;
 

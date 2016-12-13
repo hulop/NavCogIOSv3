@@ -2065,6 +2065,65 @@ static NavNavigatorConstants *_instance;
     }
 }
 
+- (NSInteger)numberOfSummary
+{
+    int count = 0;
+    for(int i = 0; i < [linkInfos count]; i++) {
+        id obj = linkInfos[i];
+        if ([obj isKindOfClass:NavLinkInfo.class]) {
+            NavLinkInfo *info = (NavLinkInfo*)obj;
+            if (!info.hasBeenActivated) {
+                count++;
+            }
+            if (info.isNextDestination) {
+                break;
+            }
+        }
+    }
+    return count;
+}
+
+- (NSString *)summaryAtIndex:(NSInteger)index
+{
+    NavNavigatorConstants *C = [NavNavigatorConstants constants];
+    int count = 0;
+    for(int i = 0; i < [linkInfos count]; i++) {
+        id obj = linkInfos[i];
+        if ([obj isKindOfClass:NavLinkInfo.class]) {
+            NavLinkInfo *linkInfo = (NavLinkInfo*)obj;
+            if (!linkInfo.hasBeenActivated) {
+                if (index == count) {
+                    if ([self.delegate respondsToSelector:@selector(summaryString:)]) {
+                        double distance = linkInfo.link.length;
+
+                        return [self.delegate summaryString:
+                         @{
+                           @"pois": linkInfo.pois,
+                           @"isFirst": @(navIndex == firstLinkIndex),
+                           @"distance": @(distance),
+                           @"noAndTurnMinDistance": @(C.NO_ANDTURN_DISTANCE_THRESHOLD),
+                           @"linkType": @(linkInfo.link.linkType),
+                           @"nextLinkType": @(linkInfo.nextLink.linkType),
+                           @"turnAngle": @(linkInfo.nextTurnAngle),
+                           @"isNextDestination": @(linkInfo.isNextDestination),
+                           @"sourceHeight": @(linkInfo.link.sourceHeight),
+                           @"targetHeight": @(linkInfo.link.targetHeight),
+                           @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                           }];
+                    }
+                }
+                count++;
+            }
+            if (linkInfo.isNextDestination) {
+                break;
+            }
+        }
+    }
+    return nil;
+}
+
+
 
 
 #pragma mark - Private utilities
@@ -2084,5 +2143,7 @@ static NavNavigatorConstants *_instance;
     }
     return total;
 }
+
+
 
 @end

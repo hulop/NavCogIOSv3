@@ -341,3 +341,5 @@ Head to the correct orientation
 /* */
 "NoBrailleBlockPOIStringShort" = "Braille blocks not available";
 
+/* */
+"SummaryHeader" = "Upcoming Navigations";

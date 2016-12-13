@@ -355,3 +355,5 @@
 /* */
 "NoBrailleBlockPOIStringShort" = "点字ブロックなし";
 
+/* */
+"SummaryHeader" = "この後の概要";

@@ -21,7 +21,8 @@
  *******************************************************************************/
 
 #import <UIKit/UIKit.h>
+#import "NavNavigator.h"
 
 @interface NavCoverView : UIView
-
+@property id<NavFutureSummarySource> fsSource;
 @end

@@ -22,6 +22,7 @@
 
 #import "NavCoverView.h"
 #import "LocationEvent.h"
+#import "NavDeviceTTS.h"
 
 @interface NavAnnounceItem: UIAccessibilityElement
 @end
@@ -52,7 +53,7 @@
     
     first = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
     first.accessibilityLabel = NSLocalizedString(@"Navigation", @"");
-    
+    first.accessibilityTraits = UIAccessibilityTraitStaticText | UIAccessibilityTraitHeader;
     return self;
 }
 
@@ -103,6 +104,29 @@
             }
             [temp addObject:e];
         }
+        if (_fsSource) {
+            UIAccessibilityElement *group = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            
+            group.isAccessibilityElement = NO;
+            NSMutableArray *items = [@[] mutableCopy];
+            UIAccessibilityElement *header = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:group];
+            header.accessibilityTraits = UIAccessibilityTraitHeader | UIAccessibilityTraitStaticText;
+            header.accessibilityLabel = NSLocalizedStringFromTable(@"SummaryHeader",@"BlindView",@"");
+            [items addObject:header];
+            
+            for(int i = 0 ; i < [_fsSource numberOfSummary]; i++) {
+                NSString *str = [_fsSource summaryAtIndex:i];
+                UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:group];
+                e.accessibilityLabel = [NavDeviceTTS removeDots:str];
+
+                [items addObject:e];
+            }
+            group.accessibilityElements = items;
+            group.shouldGroupAccessibilityChildren = YES;
+            
+            [temp addObject:group];
+        }
+        
         elements = temp;
     }
     if (flag) {

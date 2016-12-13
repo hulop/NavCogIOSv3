@@ -769,5 +769,60 @@
     NSLog(@"%@", NSStringFromSelector(_cmd));
 }
 
+- (NSString *)summaryString:(NSDictionary *)properties
+{
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    
+    double distance = [properties[@"distance"] doubleValue];
+    HLPLinkType linkType = [properties[@"linkType"] intValue];
+    BOOL isNextDestination = [properties[@"isNextDestination"] boolValue];
+    
+    NSString *action = [self actionString:properties];
+    NSMutableString *string = [@"" mutableCopy];
+    
+    NSArray *pois = properties[@"pois"];
+    [string appendString:[self startPOIString:pois]];
+
+    NSString *floorInfo = [self floorPOIString:pois];
+    NSString *cornerInfo = [self cornerPOIString:pois];
+    BOOL isCornerEnd = [self isCornerEnd:pois];
+    
+    NSString *dist = [self distanceString:distance];
+    
+    if (linkType == LINK_TYPE_ELEVATOR || linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
+        [string appendString:action];
+    }
+    else if (isNextDestination) {
+        NSString *destTitle = [NavDataStore sharedDataStore].to.namePron;
+        
+        [string appendString: [NSString stringWithFormat:NSLocalizedStringFromTable(@"destination is in distance",@"BlindView",@"remaining distance to the destination"), destTitle, dist]];
+    }
+    else if (action) {
+        NSString *proceedString = @"proceed distance";
+        NSString *nextActionString = @"and action";
+        
+        if (floorInfo) {
+            proceedString = [proceedString stringByAppendingString:@" on floor"];
+        }
+        proceedString = [proceedString stringByAppendingString:@" ..."];
+
+        if (cornerInfo && !isCornerEnd) {
+            nextActionString = [nextActionString stringByAppendingString:@" at near object"];
+        }
+        if (isCornerEnd) {
+            nextActionString = [nextActionString stringByAppendingString:@" at end object"];
+        }
+        
+        proceedString = NSLocalizedStringFromTable(proceedString, @"BlindView", @"");
+        proceedString = [NSString stringWithFormat:proceedString, dist, floorInfo];
+        nextActionString = NSLocalizedStringFromTable(nextActionString, @"BlindView", @"");
+        nextActionString = [NSString stringWithFormat:nextActionString, action, cornerInfo];
+        
+        [string appendString:proceedString];
+        [string appendString:nextActionString];
+    }
+    
+    return string;
+}
 
 @end

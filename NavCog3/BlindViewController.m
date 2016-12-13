@@ -29,6 +29,8 @@
 #import "NavDataStore.h"
 #import "NavUtil.h"
 
+#import "NavDebugHelper.h"
+
 @import JavaScriptCore;
 @import CoreMotion;
 
@@ -52,6 +54,8 @@
     BOOL forwardAction;
     
     BOOL initFlag;
+    
+    UIColor *defaultColor;
 }
 
 @end
@@ -68,8 +72,7 @@
     navigator.delegate = nil;
     navigator = nil;
     
-    _settingButton = nil;
-}
+    _settingButton = nil;}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -85,6 +88,8 @@
     previewer.delegate = self;
     _cover.fsSource = navigator;
     
+    defaultColor = self.navigationController.navigationBar.barTintColor;
+    
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
     
@@ -92,6 +97,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debugPeerStateChanged:) name:DEBUG_PEER_STATE_CHANGE object:nil];
+    
     
     UILongPressGestureRecognizer* longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
     longPressGesture.minimumPressDuration = 1.0;
@@ -139,6 +146,10 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_ACCELEARATION object:nil];
 }
 
+- (void)debugPeerStateChanged:(NSNotification*)note
+{
+    [self updateView];
+}
 
 - (void) updateView
 {
@@ -150,6 +161,7 @@
         BOOL debugFollower = [[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"];
         BOOL previewMode = [NavDataStore sharedDataStore].previewMode;
         BOOL isActive = [navigator isActive];
+        BOOL peerExists = [[[NavDebugHelper sharedHelper] peers] count] > 0;
 
         self.devGo.hidden = !devMode || previewMode;
         self.devLeft.hidden = !devMode || previewMode;
@@ -179,6 +191,13 @@
             self.navigationItem.rightBarButtonItem = nil;
         } else {
             self.navigationItem.rightBarButtonItem = _searchButton;
+        }
+        
+        if (peerExists) {
+            self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.9 alpha:1.0];
+        } else {
+            //self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.9 alpha:1.0];
+            self.navigationController.navigationBar.barTintColor = defaultColor;
         }
     });
 

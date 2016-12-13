@@ -51,7 +51,10 @@ static NavDebugHelper* instance;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processData:) name:SPEAK_TEXT_QUEUEING object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processData:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processData2:) name:REQUEST_LOCATION_HEADING_RESET object:nil];
 
+    
     
     return self;
 }
@@ -65,7 +68,7 @@ static NavDebugHelper* instance;
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     
     if ([name isEqualToString:NAV_LOCATION_CHANGED_NOTIFICATION] && _lastSent[name]) {
-        if (now - [_lastSent[name] doubleValue] < 0.1) {
+        if (now - [_lastSent[name] doubleValue] < 0.2) {
             return;
         }
     }
@@ -73,6 +76,34 @@ static NavDebugHelper* instance;
 
     NSObject *object = [note object];
 
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:
+                    @{
+                      @"name": name,
+                      @"timestamp": @([[NSDate date] timeIntervalSince1970]),
+                      @"object": object?object:[NSNull null]
+                      }];
+    if (data) {
+        [self sendData:data];
+    }
+}
+
+- (void) processData2:(NSNotification*)note
+{
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"]) {
+        return;
+    }
+    NSString *name = [note name];
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    
+    if ([name isEqualToString:NAV_LOCATION_CHANGED_NOTIFICATION] && _lastSent[name]) {
+        if (now - [_lastSent[name] doubleValue] < 0.1) {
+            return;
+        }
+    }
+    _lastSent[name] = @([[NSDate date] timeIntervalSince1970]);
+    
+    NSObject *object = [note object];
+    
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:
                     @{
                       @"name": name,
@@ -124,13 +155,11 @@ static NavDebugHelper* instance;
             [_peers removeObject:peerID];
         }
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:DEBUG_PEER_STATE_CHANGE object:_peers];
 }
 
 - (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID
 {
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"]) {
-        return;
-    }
     [self processReceivedData:data];
 }
 

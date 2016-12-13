@@ -830,6 +830,8 @@ static NavNavigatorConstants *_instance;
     int firstLinkIndex;
     
     NSTimer *timeoutTimer;
+    
+    NSTimeInterval lastElevatorResetTime;
 }
 
 - (instancetype)init
@@ -855,6 +857,7 @@ static NavNavigatorConstants *_instance;
 - (void) reset
 {
     isFirst = YES;
+    lastElevatorResetTime = NAN;
 }
 
 - (void) stop
@@ -1634,6 +1637,21 @@ static NavNavigatorConstants *_instance;
                 return;
             }
             
+            HLPLocation*(^elevatorLocation)(HLPLink*) = ^(HLPLink *link) {
+                if ([link isKindOfClass:HLPCombinedLink.class]) {
+                    HLPCombinedLink *clink = ((HLPCombinedLink*)link);
+                    for(HLPLink *l in clink.links) {
+                        if (l.linkType == LINK_TYPE_ELEVATOR) {
+                            return l.targetLocation;
+                        }
+                    }
+                }
+                if ([link isKindOfClass:HLPLink.class]) {
+                    return link.targetLocation;
+                }
+                return (HLPLocation*)nil;
+            };
+            
             if (linkInfo.link.linkType == LINK_TYPE_ELEVATOR) {
                 if (fabs(linkInfo.link.targetHeight - location.floor) < C.FLOOR_DIFF_THRESHOLD) {
                     if (linkInfo.isNextDestination) { // elevator is the destination
@@ -1660,20 +1678,6 @@ static NavNavigatorConstants *_instance;
                                @"distance": @(linkInfo.link.length)
                                }];
                         }
-                        HLPLocation*(^elevatorLocation)(HLPLink*) = ^(HLPLink *link) {
-                            if ([link isKindOfClass:HLPCombinedLink.class]) {
-                                HLPCombinedLink *clink = ((HLPCombinedLink*)link);
-                                for(HLPLink *l in clink.links) {
-                                    if (l.linkType == LINK_TYPE_ELEVATOR) {
-                                        return l.targetLocation;
-                                    }
-                                }
-                            }
-                            if ([link isKindOfClass:HLPLink.class]) {
-                                return link.targetLocation;
-                            }
-                            return (HLPLocation*)nil;
-                        };
                         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
                             HLPLocation *loc = elevatorLocation(linkInfo.link);
                             [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
@@ -1682,6 +1686,7 @@ static NavNavigatorConstants *_instance;
                                 [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET
                                                                                     object:@{@"location":loc}];
                             });
+                            lastElevatorResetTime = now;
                         }
                     }
                 } else {
@@ -1785,6 +1790,19 @@ static NavNavigatorConstants *_instance;
                                @"nextSourceHeight": @(linkInfo.link.sourceHeight),
                                @"nextTargetHeight": @(linkInfo.link.targetHeight)
                                }];
+                        }
+                    }
+                    
+                    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
+                        if (!isnan(lastElevatorResetTime) && now - lastElevatorResetTime > 1.0) {
+                            HLPLocation *loc = elevatorLocation(linkInfo.link);
+                            [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
+                            
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET
+                                                                                    object:@{@"location":loc}];
+                            });
+                            lastElevatorResetTime = now;
                         }
                     }
                 }

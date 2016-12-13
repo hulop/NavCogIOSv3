@@ -707,6 +707,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->mixProba = [ud doubleForKey:@"mixProba"];
     localizer->rejectDistance = [ud doubleForKey:@"rejectDistance"];
     localizer->rejectFloorDifference = [ud doubleForKey:@"rejectFloorDifference"];
+    localizer->nBeaconsMinimum = [ud doubleForKey:@"nBeaconsMinimum"];
     
     // for WeakPoseRandomWalker
     localizer->probabilityOrientationBiasJump =0.0;

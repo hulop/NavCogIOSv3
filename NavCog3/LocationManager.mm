@@ -557,7 +557,7 @@ void functionCalledToLog(void *inUserData, string text)
         localizer->resetStatus(newPose, stdevPose);
     }];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
+    //[[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
 }
 
 - (void)requestBackgroundLocation:(NSNotification*)note
@@ -1250,7 +1250,7 @@ int dcount = 0;
         
         //if (flag) {
         if(wasFloorUpdated || isnan(currentFloor)){
-            currentFloor = refPose.floor();
+            currentFloor = std::round(refPose.floor());
         }
         
         NSMutableDictionary *data =

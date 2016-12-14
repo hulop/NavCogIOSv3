@@ -1682,10 +1682,7 @@ static NavNavigatorConstants *_instance;
                             HLPLocation *loc = elevatorLocation(linkInfo.link);
                             [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
                             
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET
-                                                                                    object:@{@"location":loc}];
-                            });
+                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:@{@"location":loc}];
                             lastElevatorResetTime = NAN;
                         }
                     }
@@ -1795,14 +1792,11 @@ static NavNavigatorConstants *_instance;
                     }
                     
                     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
-                        if (!isnan(lastElevatorResetTime) && now - lastElevatorResetTime > 1.0) {
+                        if (!isnan(lastElevatorResetTime) && now - lastElevatorResetTime > 1.9) {
                             HLPLocation *loc = elevatorLocation(linkInfo.link);
                             [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
                             
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET
-                                                                                    object:@{@"location":loc}];
-                            });
+                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:@{@"location":loc}];
                             lastElevatorResetTime = now;
                         }
                     }

@@ -366,6 +366,21 @@ void functionCalledToLog(void *inUserData, string text)
                         timestamp = att.timestamp();
                         localizer->putAttitude(att);
                     }
+                    else if (logString.compare(0, 6, "Heading") == 0){
+                        // pass
+                    }
+                    else if (logString.compare(0, 9, "Altimeter") == 0){
+                        std::vector<std::string> values;
+                        boost::split(values, logString, boost::is_any_of(","));
+                        long timestamp = stol(values.at(3));
+                        double relAlt = stod(values.at(1));
+                        double pressure = stod(values.at(2));
+                        Altimeter alt(timestamp,relAlt,pressure);
+                        localizer->putAltimeter(alt);
+                        if (bShowSensorLog) {
+                            std::cout << "LogReplay:" << timestamp << ",Altimeter," << relAlt << "," << pressure << std::endl;
+                        }
+                    }
                     // Parsing reset
                     else if (logString.compare(0, 5, "Reset") == 0) {
                         if (bResetInLog){
@@ -722,7 +737,7 @@ void functionCalledToLog(void *inUserData, string text)
 
     //localizer->normalFunction(TDIST, 3);
     
-    localizer->usesAltimeterForFloorTransCheck = true;
+    localizer->usesAltimeterForFloorTransCheck = [ud boolForKey:@"use_altimeter"];
     localizer->coeffDiffFloorStdev = [ud doubleForKey:@"coeffDiffFloorStdev"];
 }
 

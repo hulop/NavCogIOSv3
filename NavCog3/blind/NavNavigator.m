@@ -1686,7 +1686,7 @@ static NavNavigatorConstants *_instance;
                                 [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET
                                                                                     object:@{@"location":loc}];
                             });
-                            lastElevatorResetTime = now;
+                            lastElevatorResetTime = NAN;
                         }
                     }
                 } else {
@@ -1744,6 +1744,7 @@ static NavNavigatorConstants *_instance;
                                 }
                             }
                             linkInfo.hasBeenApproaching = YES;
+                            lastElevatorResetTime = now;
                             
                         } else if (!linkInfo.hasBeenActivated) {
                             // only for preview

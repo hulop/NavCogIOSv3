@@ -988,6 +988,11 @@ static NavNavigatorConstants *_instance;
     [linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
         [obj updateWithNodesMap:nodesMap];
     }];
+    [route enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:HLPLink.class]) {
+            [obj updateWithNodesMap:nodesMap];
+        }
+    }];
     
     
     navIndex = 0;
@@ -1197,7 +1202,11 @@ static NavNavigatorConstants *_instance;
                 HLPLink* link1 = (HLPLink*) obj1;
                 HLPLink* link2 = (HLPLink*) obj2;
                 
-                if ([nodesMap[link1.sourceNodeID] isLeaf] && link1.length < C.IGNORE_FIRST_LINK_LENGTH_THRESHOLD) {
+                if (link1.isLeaf && link1.length < C.IGNORE_FIRST_LINK_LENGTH_THRESHOLD) {
+                    continue;
+                }
+                
+                if (link2.isLeaf && link2.length < C.IGNORE_LAST_LINK_LENGTH_THRESHOLD) {
                     continue;
                 }
                 

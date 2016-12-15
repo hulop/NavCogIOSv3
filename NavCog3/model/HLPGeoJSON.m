@@ -609,13 +609,13 @@
 
 - (void)updateWithNodesMap:(NSDictionary *)nodesMap
 {
-    _sourceNodeID = self.properties[PROPKEY_SOURCE_NODE_ID];
+    _sourceNodeID = self.properties[_backward?PROPKEY_TARGET_NODE_ID:PROPKEY_SOURCE_NODE_ID];
     HLPNode *snode = nodesMap[_sourceNodeID];
     if (snode) {
         _sourceHeight = snode.height;
     }
     
-    _targetNodeID = self.properties[PROPKEY_TARGET_NODE_ID];
+    _targetNodeID = self.properties[!_backward?PROPKEY_TARGET_NODE_ID:PROPKEY_SOURCE_NODE_ID];
     HLPNode *tnode = nodesMap[_targetNodeID];
     if (tnode) {
         _targetHeight = tnode.height;

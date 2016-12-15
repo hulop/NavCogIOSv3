@@ -1423,10 +1423,21 @@ static NavNavigatorConstants *_instance;
             
             NavLinkInfo *firstLinkInfo = linkInfos[firstLinkIndex];
             // TODO improve length from current location not from existing node
-            double totalLength = [self lengthOfRoute:route offset:0 size:[route count]];
+            
+            double (^lengthOfRoute)() = ^(){
+                double total = 0;
+                for(NSInteger i=firstLinkIndex; i < [linkInfos count]; i++) {
+                    NavLinkInfo *info = [linkInfos objectAtIndex:i];
+                    total += info.link.length;
+                    if (info.isNextDestination) {
+                        break;
+                    }
+                }
+                return total;
+            };
+            
+            double totalLength = lengthOfRoute();
             if ([self.delegate respondsToSelector:@selector(didNavigationStarted:)]) {
-                
-                
                 [self.delegate didNavigationStarted:
                  @{
                    @"pois":firstLinkInfo.pois,
@@ -2163,28 +2174,5 @@ static NavNavigatorConstants *_instance;
     }
     return nil;
 }
-
-
-
-
-#pragma mark - Private utilities
-
-- (double) lengthOfRoute:(NSArray<HLPObject*>*)array offset:(NSInteger)offset size:(NSInteger)size
-{
-    double total = 0;
-    for(NSInteger i=offset; i < offset+size; i++) {
-        if (i < 0 || [array count] <= i) {
-            break;
-        }
-        HLPObject *obj = [array objectAtIndex:i];
-        if ([obj isKindOfClass:HLPLink.class]) {
-            HLPLink *link = (HLPLink*)obj;
-            total += link.length;
-        }
-    }
-    return total;
-}
-
-
 
 @end

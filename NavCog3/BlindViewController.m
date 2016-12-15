@@ -117,7 +117,8 @@
 {
     if (sender.state == UIGestureRecognizerStateBegan &&
         ((UIAccessibilityIsVoiceOverRunning() == YES && sender.numberOfTouches == 1) ||
-        sender.numberOfTouches == 2)) {
+         sender.numberOfTouches == 2))
+    {
         initFlag = !initFlag;
         if (initFlag) {
             [[NSNotificationCenter defaultCenter] postNotificationName:START_ORIENTATION_INIT object:nil];
@@ -128,6 +129,7 @@
             AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
             [NavUtil hideWaitingForView:self.view];
         }
+        [self updateView];
     }
 }
 
@@ -179,7 +181,7 @@
         self.devAuto.selected = previewer.autoProceed;
         self.cover.hidden = devMode || !isActive;
         
-        if ((isActive && !devMode) || previewMode) {
+        if ((isActive && !devMode) || previewMode || initFlag) {
             self.navigationItem.leftBarButtonItem = nil;
         } else {
             self.navigationItem.leftBarButtonItem = _settingButton;
@@ -189,6 +191,9 @@
         
         if (debugFollower) {
             self.navigationItem.title = NSLocalizedStringFromTable(@"Follow", @"BlindView", @"");
+        }
+        
+        if (debugFollower || initFlag) {
             self.navigationItem.rightBarButtonItem = nil;
         } else {
             self.navigationItem.rightBarButtonItem = _searchButton;

@@ -851,5 +851,63 @@ static NavDataStore* instance_ = nil;
     _buildingInfo = dict;
 }
 
+- (void) startExercise
+{
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"exercise-data" ofType:@"json"];
+    
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    if (!data) {
+        return;
+    }
+    NSError *error;
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    if (error) {
+        NSLog(@"%@", error);
+        return;
+    }
+    if (!json) {
+        NSLog(@"not valid exercise data");
+        return;
+    }
+    if (json[@"landmark"] && json[@"route"] && json[@"features"]) {
+        HLPLandmark *landmark = [MTLJSONAdapter modelOfClass:HLPLandmark.class fromJSONDictionary:json[@"landmark"] error:&error];
+        
+        NSMutableArray *route = [@[] mutableCopy];
+        for(NSDictionary* dic in json[@"route"]) {
+            NSError *error;
+            HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
+            if (error) {
+                NSLog(@"%@", error);
+                NSLog(@"%@", dic);
+            } else {
+                [route addObject:obj];
+            }
+        }
+        routeCache = route;
+        
+        NSMutableArray *features = [@[] mutableCopy];
+        for(NSDictionary* dic in json[@"features"]) {
+            NSError *error;
+            HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
+            if (error) {
+                NSLog(@"%@", error);
+                NSLog(@"%@", dic);
+            } else {
+                [features addObject:obj];
+            }
+        }
+        featuresCache = features;
+        
+        for(HLPObject* f in featuresCache) {
+            [f updateWithLang:userLanguage];
+        }
+        
+        self.to = [[NavDestination alloc] initWithLandmark:landmark];
+        _previewMode = YES;
+        _exerciseMode = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:route];
+    }
+}
+
 @end
 

@@ -175,7 +175,7 @@ static NavNavigatorConstants *_instance;
     _nextLink = nextLink;
     _options = options;
     _allPOIs = options[@"allPOIs"];
-    _isFirst = options[@"isFirst"];
+    _isFirst = [options[@"isFirst"] boolValue];
     [self reset];
     return self;
 }
@@ -228,9 +228,9 @@ static NavNavigatorConstants *_instance;
             HLPEntrance *ent = (HLPEntrance*)obj;
             
             if ([_nextLink.targetNodeID isEqualToString:ent.node._id]) {
-                noMidInRoot = YES;
                 if (_nextLink.length < 3) {
                     // destination with a leaf node, make second last link as last link
+                    noMidInRoot = YES;
                     _isNextDestination = YES;
                 }
             } else if([_link.targetNodeID isEqualToString:ent.node._id]) {

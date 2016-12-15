@@ -37,16 +37,19 @@
 - (void)setAutoProceed:(BOOL)autoProceed
 {
     _autoProceed = autoProceed;
+    NavDataStore *nds = [NavDataStore sharedDataStore];
     if (_autoProceed) {
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        BOOL needAction = [ud boolForKey:@"preview_with_action"];
+        BOOL needAction = [ud boolForKey:@"preview_with_action"] || nds.exerciseMode;
         if (needAction) {
             [self.delegate startAction];
         }
-        BOOL pm = [NavDataStore sharedDataStore].previewMode;
+
         double ps = 1.0 / [ud doubleForKey:@"preview_speed"];
+        ps = nds.previewMode?ps:0.1;
+        ps = nds.exerciseMode?0.1:ps;
         
-        _autoTimer = [NSTimer timerWithTimeInterval:pm?ps:0.1 target:self selector:@selector(processPreview:) userInfo:nil repeats:YES];
+        _autoTimer = [NSTimer timerWithTimeInterval:ps target:self selector:@selector(processPreview:) userInfo:nil repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:_autoTimer forMode:NSDefaultRunLoopMode];
     } else {
         @autoreleasepool {
@@ -60,13 +63,14 @@
 - (void) processPreview:(NSTimer*)timer
 {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    BOOL needAction = [ud boolForKey:@"preview_with_action"];
+    BOOL exerciseMode = [NavDataStore sharedDataStore].exerciseMode;
+    BOOL previewWithAction = [ud boolForKey:@"preview_with_action"] && !exerciseMode;
 
     double turnAction = _delegate.turnAction;
     BOOL forwardAction = _delegate.forwardAction;
     //NSLog(@"angle=%f, dist=%f, floor=%f, f=%d, t=%f", _targetAngle, _targetDistance, _targetFloor, forwardAction, turnAction);
     
-    if (needAction) {
+    if (previewWithAction) {
         if (fabs(_targetAngle) > 5 && turnAction != 0) {
             if (_targetAngle < 0 && turnAction < 0) {
                 [[NavDataStore sharedDataStore] manualTurn:_targetAngle];
@@ -88,7 +92,23 @@
             _targetFloor = NAN;
             return;
         }
-    } else {        
+    } else if (exerciseMode) {
+        if (fabs(_targetAngle) > 5 && turnAction != 0) {
+            [[NavDataStore sharedDataStore] manualTurn:turnAction];
+        }
+        
+        if (!isnan(_targetDistance) && _targetDistance > 0 && forwardAction) {
+            [self manualGoForward:0.1];
+            _targetDistance -= 0.1;
+            return;
+        }
+        
+        if (!isnan(_targetFloor) && turnAction) {
+            [self manualGoFloor:_targetFloor];
+            _targetFloor = NAN;
+            return;
+        }
+    } else {
         if (fabs(_targetAngle) > 5) {
             if (isnan(_targetDistance) || _targetDistance < 0) {
                 if (fabs(_targetAngle) > 1) {
@@ -148,6 +168,7 @@
 
     [self setAutoProceed:NO];
     [NavDataStore sharedDataStore].previewMode = NO;
+    [NavDataStore sharedDataStore].exerciseMode = NO;
 }
 
 // basic functions

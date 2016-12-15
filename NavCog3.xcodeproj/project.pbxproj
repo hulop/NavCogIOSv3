@@ -38,6 +38,7 @@
 		7E1F9F571DF01FA9003E1B23 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F541DF01FA9003E1B23 /* Starscream.framework */; };
 		7E1F9F581DF01FA9003E1B23 /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F541DF01FA9003E1B23 /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7E1F9F5F1DF14E6F003E1B23 /* DialogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */; };
+		7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E28479E1E024112006B1FB8 /* exercise-data.json */; };
 		7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */; };
 		7E308BDB1DAF147600E525F6 /* BlindView.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
 		7E433DCF1D6E846300C6C993 /* NavDeviceTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E433DCA1D6E846300C6C993 /* NavDeviceTTS.m */; };
@@ -164,6 +165,7 @@
 		7E1F9F531DF01FA9003E1B23 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/iOS/Freddy.framework; sourceTree = "<group>"; };
 		7E1F9F541DF01FA9003E1B23 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = "<group>"; };
 		7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogManager.swift; path = dialog/DialogManager.swift; sourceTree = "<group>"; };
+		7E28479E1E024112006B1FB8 /* exercise-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "exercise-data.json"; path = "model/exercise-data.json"; sourceTree = "<group>"; };
 		7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		7E308BDC1DAF147600E525F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/BlindView.stringsdict; sourceTree = "<group>"; };
@@ -331,6 +333,14 @@
 			path = dialog/stthelper;
 			sourceTree = "<group>";
 		};
+		7E28479B1E02409F006B1FB8 /* exercise */ = {
+			isa = PBXGroup;
+			children = (
+				7E28479E1E024112006B1FB8 /* exercise-data.json */,
+			);
+			name = exercise;
+			sourceTree = "<group>";
+		};
 		7E5078BE1D4A45B000F5A0F7 /* view */ = {
 			isa = PBXGroup;
 			children = (
@@ -421,6 +431,7 @@
 		7E5150EC1D8D75D100ED25FB /* model */ = {
 			isa = PBXGroup;
 			children = (
+				7E28479B1E02409F006B1FB8 /* exercise */,
 				7E6E42DC1D90C77C006B6899 /* HLPGeoJSON.h */,
 				7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */,
 				7E8A33BB1D917D5200D20CD5 /* HLPDataUtil.h */,
@@ -601,6 +612,7 @@
 				7E9238EA1D5189F100875766 /* HLPSettingViewPickerCell.xib in Resources */,
 				7E17F19E1D9A225A00DB1F34 /* InfoPlist.strings in Resources */,
 				7EDEDC2F1D1E0C6800AC111A /* LaunchScreen.storyboard in Resources */,
+				7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */,
 				7E9238EB1D5189F100875766 /* HLPSettingViewSliderCell.xib in Resources */,
 				7E9238EC1D5189F100875766 /* HLPSettingViewSubtitleCell.xib in Resources */,
 				7E308BDB1DAF147600E525F6 /* BlindView.stringsdict in Resources */,

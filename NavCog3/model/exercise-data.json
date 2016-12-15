@@ -1,0 +1,2041 @@
+{
+  "landmark": {
+    "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+    "node": "EDITOR_node_1481770628208", 
+    "name": "\u30b4\u30fc\u30eb", 
+    "exit_pron": "", 
+    "geometry": {
+      "type": "Point", 
+      "coordinates": [
+        -0.9299652676213555, 
+        0.6736125584369097
+      ]
+    }, 
+    "node_coordinates": [
+      -0.9299652676213555, 
+      0.6736125584369097
+    ], 
+    "node_height": 2.0, 
+    "exit": "", 
+    "name_pron": "\u30b4\u30fc\u30eb", 
+    "properties": {
+      "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+      "\u540d\u79f0:ja": "\u30b4\u30fc\u30eb", 
+      "\u540d\u79f0:en": "Goal", 
+      "\u7def\u5ea6": "0.40.25.041", 
+      "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+      "\u540d\u79f0": "", 
+      "file": "EDITOR", 
+      "\u7d4c\u5ea6": "-0.55.47.934", 
+      "\u65bd\u8a2dID": "EDITOR_poi_1481770661239"
+    }
+  }, 
+  "route": [
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298236645282714, 
+          0.6734650471339201
+        ]
+      }, 
+      "_rev": "4-a334461443ab68feb85fa40c1e075aa8", 
+      "_id": "EDITOR_node_1481770574787", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.365", 
+        "\u7def\u5ea6": "0.40.24.474", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481797580486", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481794623701", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770574787", 
+        "\u9ad8\u3055": "1"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298240554987842, 
+            0.6734930380586234
+          ], 
+          [
+            -0.9298236645282714, 
+            0.6734650471339201
+          ]
+        ]
+      }, 
+      "_rev": "2-3cbb697d3e5050d85c2b6ebb25c7f20e", 
+      "_id": "EDITOR_link_1481797580486", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770574787", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770574787", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.1", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481797580441", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481797580486", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481797580441"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298239764909795, 
+            0.6735488603747275
+          ], 
+          [
+            -0.9298240554987842, 
+            0.6734930380586234
+          ]
+        ]
+      }, 
+      "_rev": "3-23209c9a2da887c96ef13ad26c39dc17", 
+      "_id": "EDITOR_link_1481770586080", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481797580441", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481797580441", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "6.2", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770581943", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770586080", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770581943"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297649795494181, 
+            0.6735491956276966
+          ], 
+          [
+            -0.9298239764909795, 
+            0.6735488603747275
+          ]
+        ]
+      }, 
+      "_rev": "1-c9f4825d996774d21e87bbc5156ce006", 
+      "_id": "EDITOR_link_1481770632493", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770581943", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770581943", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "6.6", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770609255", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770632493", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770609255"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297649795494181, 
+            0.6735491956276966
+          ], 
+          [
+            -0.9297646559300574, 
+            0.6735820504176947
+          ]
+        ]
+      }, 
+      "_rev": "1-d43a7c4447b043340198a0f36519ef2f", 
+      "_id": "EDITOR_link_1481770634397", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770609255", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770620423", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.7", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770620423", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770634397", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770609255"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297646559300574, 
+            0.6735820504176947
+          ], 
+          [
+            -0.9297810961170399, 
+            0.6736021655951877
+          ]
+        ]
+      }, 
+      "_rev": "2-6ac42d8f4e118c7901a4ce5daa04eb56", 
+      "_id": "EDITOR_link_1481770635819", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770620423", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770626356", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "2.9", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770626356", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770635819", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770620423"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297817550124137, 
+            0.6736725687155419
+          ], 
+          [
+            -0.9297810961170399, 
+            0.6736021655951877
+          ]
+        ]
+      }, 
+      "_rev": "3-d0503ab20f7a05e9f5bc74a520a617ea", 
+      "_id": "EDITOR_link_1481783588481", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770626356", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770626356", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "7.8", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481783581509", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481783588481", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783581509"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297817550124137, 
+          0.6736725687155419
+        ]
+      }, 
+      "_rev": "2-c8ebac6d9625f7d01060eb9557c17dfe", 
+      "_id": "EDITOR_link_1481783614222", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481783581509", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783581509", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "0", 
+        "\u30a8\u30ec\u30d9\u30fc\u30bf\u30fc\u7a2e\u5225": "0", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481783595021", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "10", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481783614222", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783595021"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297817550124137, 
+            0.6736725687155419
+          ], 
+          [
+            -0.9297817783258324, 
+            0.6736541298031866
+          ]
+        ]
+      }, 
+      "_rev": "2-00d7995b20c0cd70a7b20291c3ebb855", 
+      "_id": "EDITOR_link_1481783702271", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 2.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481783595021", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783680617", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "2.1", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481783680617", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481783702271", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783595021"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298474341630936, 
+            0.6736541298031612
+          ], 
+          [
+            -0.9297817783258324, 
+            0.6736541298031866
+          ]
+        ]
+      }, 
+      "_rev": "4-17d86041d0654ea618b55ca193421502", 
+      "_id": "EDITOR_link_1481787036621", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 2.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481783680617", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783680617", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "7.3", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481787007667", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481787036621", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787007667"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298755973577499, 
+            0.6736537945502176
+          ], 
+          [
+            -0.9298474341630936, 
+            0.6736541298031612
+          ]
+        ]
+      }, 
+      "_rev": "4-0830f9b999db1bc7175783425e7e1aab", 
+      "_id": "EDITOR_link_1481787033518", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 2.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481787007667", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787007667", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.1", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481787008691", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481787033518", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787008691"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9299654513597488, 
+            0.6736527887913359
+          ], 
+          [
+            -0.9298755973577499, 
+            0.6736537945502176
+          ]
+        ]
+      }, 
+      "_rev": "5-a4b250e5af625f468b4bbe5478624621", 
+      "_id": "EDITOR_link_1481786956866", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 2.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481787008691", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787008691", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "10", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481786937960", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481786956866", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481786937960"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9299654513597488, 
+            0.6736527887913359
+          ], 
+          [
+            -0.9299652676213555, 
+            0.6736125584369097
+          ]
+        ]
+      }, 
+      "_rev": "5-9d04b6fb29970d717bbf102708ea7903", 
+      "_id": "EDITOR_link_1481770637170", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 2.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481786937960", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770628208", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "4.5", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770628208", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770637170", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481786937960"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9299652676213555, 
+          0.6736125584369097
+        ]
+      }, 
+      "_rev": "5-d1615f4844593fd16426fb162195390a", 
+      "_id": "EDITOR_node_1481770628208", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.875", 
+        "\u7def\u5ea6": "0.40.25.005", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481770637170", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770628208", 
+        "\u9ad8\u3055": "2"
+      }
+    }
+  ], 
+  "features": [
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297810961170399, 
+          0.6736021655951877
+        ]
+      }, 
+      "_rev": "2-8e0a63b4a2e54525d025747d49e445fe", 
+      "_id": "EDITOR_node_1481770626356", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.212", 
+        "\u7def\u5ea6": "0.40.24.968", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481770635819", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481783588481", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770626356", 
+        "\u9ad8\u3055": "1"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298474341630936, 
+          0.6736541298031612
+        ]
+      }, 
+      "_rev": "4-e88b0e86e3dbdd883f43c5d9aa23e054", 
+      "_id": "EDITOR_node_1481787007667", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.451", 
+        "\u7def\u5ea6": "0.40.25.155", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481787033518", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481787034793", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID3": "EDITOR_link_1481787036621", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787007667", 
+        "\u9ad8\u3055": "2"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298749268054962, 
+          0.6736417254438668
+        ]
+      }, 
+      "_rev": "5-e3eba283b3acc46f997e1e86112fb7af", 
+      "_id": "EDITOR_node_1481786999659", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.550", 
+        "\u7def\u5ea6": "0.40.25.110", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481787031845", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481786999659", 
+        "\u9ad8\u3055": "2"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298474341630936, 
+          0.6736658636564921
+        ]
+      }, 
+      "_rev": "5-c7ecfd90f2c655896f0d23d5b2b34784", 
+      "_id": "EDITOR_node_1481787001993", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.451", 
+        "\u7def\u5ea6": "0.40.25.197", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481787034793", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787001993", 
+        "\u9ad8\u3055": "2"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297817550124137, 
+          0.6736725687155419
+        ]
+      }, 
+      "_rev": "2-aaeea8e09b36f332f92e4447e83f4ce8", 
+      "_id": "EDITOR_node_1481783595021", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.214", 
+        "\u7def\u5ea6": "0.40.25.221", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481783614222", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481783702271", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783595021", 
+        "\u9ad8\u3055": "2"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9299652676213555, 
+          0.6736125584369097
+        ]
+      }, 
+      "_rev": "5-d1615f4844593fd16426fb162195390a", 
+      "_id": "EDITOR_node_1481770628208", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.875", 
+        "\u7def\u5ea6": "0.40.25.005", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481770637170", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770628208", 
+        "\u9ad8\u3055": "2"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298236645282714, 
+          0.6734650471339201
+        ]
+      }, 
+      "_rev": "4-a334461443ab68feb85fa40c1e075aa8", 
+      "_id": "EDITOR_node_1481770574787", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.365", 
+        "\u7def\u5ea6": "0.40.24.474", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481797580486", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481794623701", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770574787", 
+        "\u9ad8\u3055": "1"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298240554987842, 
+          0.6734930380586234
+        ]
+      }, 
+      "_rev": "2-1141f9eb1942750b67f26beeb037a058", 
+      "_id": "EDITOR_node_1481797580441", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.367", 
+        "\u7def\u5ea6": "0.40.24.575", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481770586080", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481797580486", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481797580441", 
+        "\u9ad8\u3055": "1"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297817783258324, 
+          0.6736541298031866
+        ]
+      }, 
+      "_rev": "2-2ff19fa30d09abb80f087976f455da46", 
+      "_id": "EDITOR_node_1481783680617", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.214", 
+        "\u7def\u5ea6": "0.40.25.155", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481787036621", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481783702271", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783680617", 
+        "\u9ad8\u3055": "2"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298239764909795, 
+          0.6735488603747275
+        ]
+      }, 
+      "_rev": "2-de2265b754172ee92c0e4b914cf3378b", 
+      "_id": "EDITOR_node_1481770581943", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.366", 
+        "\u7def\u5ea6": "0.40.24.776", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481770586080", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481770632493", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770581943", 
+        "\u9ad8\u3055": "1"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298038482666016, 
+          0.6734653823868891
+        ]
+      }, 
+      "_rev": "2-3b59d2c78b10008dd92326314b21ec68", 
+      "_id": "EDITOR_node_1481794621540", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.294", 
+        "\u7def\u5ea6": "0.40.24.475", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481794623701", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481794621540", 
+        "\u9ad8\u3055": "1"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297646559300574, 
+          0.6735820504176947
+        ]
+      }, 
+      "_rev": "1-d6133f07ace772f5de196186d5222c0b", 
+      "_id": "EDITOR_node_1481770620423", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.153", 
+        "\u7def\u5ea6": "0.40.24.895", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481770634397", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481770635819", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770620423", 
+        "\u9ad8\u3055": "1"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297817550124137, 
+          0.6736725687155419
+        ]
+      }, 
+      "_rev": "2-0be6db3da9d9f27d748cb130e7ccbe20", 
+      "_id": "EDITOR_node_1481783581509", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.214", 
+        "\u7def\u5ea6": "0.40.25.221", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481783588481", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID3": "EDITOR_link_1481783614222", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783581509", 
+        "\u9ad8\u3055": "1"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9299654513597488, 
+          0.6736527887913359
+        ]
+      }, 
+      "_rev": "4-064c9e35b7237dcd1a0dc5d5e373225d", 
+      "_id": "EDITOR_node_1481786937960", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.876", 
+        "\u7def\u5ea6": "0.40.25.150", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481770637170", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481786956866", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481786937960", 
+        "\u9ad8\u3055": "2"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298755973577499, 
+          0.6736537945502176
+        ]
+      }, 
+      "_rev": "4-48a8d3e873a4880606358844fa53dd52", 
+      "_id": "EDITOR_node_1481787008691", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.552", 
+        "\u7def\u5ea6": "0.40.25.154", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481786956866", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481787031845", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID3": "EDITOR_link_1481787033518", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787008691", 
+        "\u9ad8\u3055": "2"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297649795494181, 
+          0.6735491956276966
+        ]
+      }, 
+      "_rev": "1-c53ae3fb70d9b3e533d48202c58fc7e4", 
+      "_id": "EDITOR_node_1481770609255", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.154", 
+        "\u7def\u5ea6": "0.40.24.777", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481770632493", 
+        "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481770634397", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "file": "EDITOR", 
+        "\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770609255", 
+        "\u9ad8\u3055": "1"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297817550124137, 
+            0.6736725687155419
+          ], 
+          [
+            -0.9297810961170399, 
+            0.6736021655951877
+          ]
+        ]
+      }, 
+      "_rev": "3-d0503ab20f7a05e9f5bc74a520a617ea", 
+      "_id": "EDITOR_link_1481783588481", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770626356", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770626356", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "7.8", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481783581509", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481783588481", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783581509"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297817433557611, 
+          0.673649101008842
+        ]
+      }, 
+      "_rev": "7-0a934ce4206d3d14276d3b7e61fa780a", 
+      "_id": "EDITOR_poi_1481784383587", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u30a8\u30ec\u30d9\u30fc\u30bf\u30fc\u306b\u4e57\u3063\u305f\u3089\u3001\u51fa\u53e3\u306e\u65b9\u5411\u306b\u5411\u3044\u3066\u304f\u3060\u3055\u3044\u3002\u3002\u3002\u3053\u3053\u3067\u306f\u4e57\u3063\u305f\u3064\u3082\u308a\u3067\u5f8c\u308d\u3092\u5411\u3044\u3066\u304f\u3060\u3055\u3044\u3002", 
+        "\u540d\u79f0:en": "When you get on elevator, please head to the exit.... Let's face around by way of on the elevator in this practice.", 
+        "angle": "45", 
+        "sub_category": "_nav_info_", 
+        "\u7def\u5ea6": "0.40.25.137", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "1", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.214", 
+        "major_category": "_nav_poi_", 
+        "heading": "180", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481784383587"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297803789377213, 
+          0.6736008245833498
+        ]
+      }, 
+      "_rev": "5-98fcb696928cbceb2b5d6f274a47764d", 
+      "_id": "EDITOR_poi_1481789512411", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u632f\u52d5\u304c\u3042\u308b\u307e\u3067\u53f3\u306b\u5411\u304d\u307e\u3059\u3002", 
+        "\u540d\u79f0:en": "turn to right until you feel vibration.", 
+        "angle": "45", 
+        "sub_category": "_nav_info_", 
+        "\u7def\u5ea6": "0.40.24.963", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "1", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.209", 
+        "major_category": "_nav_poi_", 
+        "heading": "135", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481789512411"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298474341630936, 
+            0.6736541298031612
+          ], 
+          [
+            -0.9297817783258324, 
+            0.6736541298031866
+          ]
+        ]
+      }, 
+      "_rev": "4-17d86041d0654ea618b55ca193421502", 
+      "_id": "EDITOR_link_1481787036621", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 2.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481783680617", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783680617", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "7.3", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481787007667", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481787036621", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787007667"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297817550124137, 
+            0.6736725687155419
+          ], 
+          [
+            -0.9297817783258324, 
+            0.6736541298031866
+          ]
+        ]
+      }, 
+      "_rev": "2-00d7995b20c0cd70a7b20291c3ebb855", 
+      "_id": "EDITOR_link_1481783702271", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 2.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481783595021", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783680617", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "2.1", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481783680617", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481783702271", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783595021"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.929822635386472, 
+          0.6736537945502049
+        ]
+      }, 
+      "_rev": "7-b9af1a8061459c614525cc2ebb6fa963", 
+      "_id": "EDITOR_poi_1481784694283", 
+      "type": "Feature", 
+      "properties": {
+        "building": "", 
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:en": "Let's check shops around your way.", 
+        "angle": "45", 
+        "sub_category": "_nav_info_", 
+        "\u540d\u79f0:ja": "\u9014\u4e2d\u306b\u304a\u5e97\u304c\u3042\u308b\u3068\u3001\u304a\u77e5\u3089\u305b\u3057\u307e\u3059", 
+        "\u7def\u5ea6": "0.40.25.154", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "2", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.361", 
+        "major_category": "_nav_poi_", 
+        "heading": "90", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481784694283"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297646559300574, 
+            0.6735820504176947
+          ], 
+          [
+            -0.9297810961170399, 
+            0.6736021655951877
+          ]
+        ]
+      }, 
+      "_rev": "2-6ac42d8f4e118c7901a4ce5daa04eb56", 
+      "_id": "EDITOR_link_1481770635819", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770620423", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770626356", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "2.9", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770626356", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770635819", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770620423"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297817550124137, 
+          0.6736725687155419
+        ]
+      }, 
+      "_rev": "2-c8ebac6d9625f7d01060eb9557c17dfe", 
+      "_id": "EDITOR_link_1481783614222", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481783581509", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783581509", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "0", 
+        "\u30a8\u30ec\u30d9\u30fc\u30bf\u30fc\u7a2e\u5225": "0", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481783595021", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "10", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481783614222", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783595021"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297649562358856, 
+          0.6735817151647384
+        ]
+      }, 
+      "_rev": "6-52b9d572e4201857b575789ead42ef0e", 
+      "_id": "EDITOR_poi_1481789495856", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u632f\u52d5\u304c\u3042\u308b\u307e\u3067\u5de6\u306b\u5411\u304d\u307e\u3059\u3002", 
+        "\u540d\u79f0:en": "turn to left until you feel vibration.", 
+        "angle": "10", 
+        "sub_category": "_nav_info_", 
+        "\u7def\u5ea6": "0.40.24.894", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "1", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.154", 
+        "major_category": "_nav_poi_", 
+        "heading": "180", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481789495856"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298474341630936, 
+            0.6736541298031612
+          ], 
+          [
+            -0.9298474341630936, 
+            0.6736658636564921
+          ]
+        ]
+      }, 
+      "_rev": "5-4b0ce912a289f998320e448673675c03", 
+      "_id": "EDITOR_link_1481787034793", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787001993", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481787034793", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "1.3", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787007667"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298474341630936, 
+          0.6736658636564921
+        ]
+      }, 
+      "_rev": "5-19dd7eab43bc010974b28c94011c0cb8", 
+      "_id": "EDITOR_exit_1481787044806", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u51fa\u5165\u53e3\u60c5\u5831", 
+        "\u51fa\u5165\u53e3\u306e\u540d\u79f0": "", 
+        "\u51fa\u5165\u53e3ID": "EDITOR_exit_1481787044806", 
+        "\u5bfe\u5fdc\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787001993", 
+        "file": "EDITOR", 
+        "\u5bfe\u5fdc\u65bd\u8a2dID": "EDITOR_poi_1481784578875"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297649795494181, 
+            0.6735491956276966
+          ], 
+          [
+            -0.9297646559300574, 
+            0.6735820504176947
+          ]
+        ]
+      }, 
+      "_rev": "1-d43a7c4447b043340198a0f36519ef2f", 
+      "_id": "EDITOR_link_1481770634397", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770609255", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770620423", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.7", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770620423", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770634397", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770609255"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298655623874765, 
+          0.6736216102665901
+        ]
+      }, 
+      "_rev": "4-cb25ff07fa5151624d2698e8feccfb4f", 
+      "_id": "EDITOR_poi_1481784599241", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u30ec\u30b9\u30c8\u30e9\u30f3", 
+        "\u540d\u79f0:en": "Restaurant", 
+        "\u7def\u5ea6": "0.40.25.038", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.516", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481784599241"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298755973577499, 
+            0.6736537945502176
+          ], 
+          [
+            -0.9298474341630936, 
+            0.6736541298031612
+          ]
+        ]
+      }, 
+      "_rev": "4-0830f9b999db1bc7175783425e7e1aab", 
+      "_id": "EDITOR_link_1481787033518", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 2.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481787007667", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787007667", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.1", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481787008691", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481787033518", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787008691"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298484749616591, 
+          0.6736762564980359
+        ]
+      }, 
+      "_rev": "5-2b927ea1c56d7968e86cb7851b111c25", 
+      "_id": "EDITOR_poi_1481784578875", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u55ab\u8336\u5e97", 
+        "\u540d\u79f0:en": "Cafe", 
+        "\u7def\u5ea6": "0.40.25.235", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.455", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481784578875"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297649795494181, 
+            0.6735491956276966
+          ], 
+          [
+            -0.9298239764909795, 
+            0.6735488603747275
+          ]
+        ]
+      }, 
+      "_rev": "1-c9f4825d996774d21e87bbc5156ce006", 
+      "_id": "EDITOR_link_1481770632493", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770581943", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770581943", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "6.6", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770609255", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770632493", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770609255"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298749268054962, 
+          0.6736417254438668
+        ]
+      }, 
+      "_rev": "5-20121691580840a750e405b73ff16115", 
+      "_id": "EDITOR_exit_1481787046753", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u51fa\u5165\u53e3\u60c5\u5831", 
+        "\u51fa\u5165\u53e3\u306e\u540d\u79f0": "", 
+        "\u51fa\u5165\u53e3ID": "EDITOR_exit_1481787046753", 
+        "\u5bfe\u5fdc\u30ce\u30fc\u30c9ID": "EDITOR_node_1481786999659", 
+        "file": "EDITOR", 
+        "\u5bfe\u5fdc\u65bd\u8a2dID": "EDITOR_poi_1481784599241"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298755973577499, 
+            0.6736537945502176
+          ], 
+          [
+            -0.9298749268054962, 
+            0.6736417254438668
+          ]
+        ]
+      }, 
+      "_rev": "5-ba2c1b385ef13400642b9e3187f968f2", 
+      "_id": "EDITOR_link_1481787031845", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481786999659", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481787031845", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "1.3", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787008691"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297656267881393, 
+          0.6735481898688276
+        ]
+      }, 
+      "_rev": "5-9f3b16500c4e08b13e90f8b73632bc22", 
+      "_id": "EDITOR_poi_1481789476468", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u632f\u52d5\u304c\u3042\u308b\u307e\u3067\u5de6\u306b\u5411\u304d\u307e\u3059\u3002", 
+        "\u540d\u79f0:en": "turn to left until you feel vibration.", 
+        "angle": "45", 
+        "sub_category": "_nav_info_", 
+        "\u7def\u5ea6": "0.40.24.773", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "1", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.156", 
+        "major_category": "_nav_poi_", 
+        "heading": "-90", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481789476468"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298243234238726, 
+          0.6735458430981207
+        ]
+      }, 
+      "_rev": "7-739717364ff96e08b56103bd2605f78a", 
+      "_id": "EDITOR_poi_1481784231186", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u66f2\u304c\u308b\u6642\u306f\u3001\u632f\u52d5\u304c\u3042\u308b\u307e\u3067\u53f3\u306b\u5411\u304d\u307e\u3059\u3002", 
+        "\u540d\u79f0:en": "turn to right until you feel vibration.", 
+        "angle": "45", 
+        "sub_category": "_nav_info_", 
+        "\u7def\u5ea6": "0.40.24.765", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "1", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.368", 
+        "major_category": "_nav_poi_", 
+        "heading": "180", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481784231186"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298239764909795, 
+            0.6735488603747275
+          ], 
+          [
+            -0.9298240554987842, 
+            0.6734930380586234
+          ]
+        ]
+      }, 
+      "_rev": "3-23209c9a2da887c96ef13ad26c39dc17", 
+      "_id": "EDITOR_link_1481770586080", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481797580441", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481797580441", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "6.2", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770581943", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770586080", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770581943"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298239998043982, 
+          0.6735113120430484
+        ]
+      }, 
+      "_rev": "5-c201ebb2d045129c23af9d4ecb774c3c", 
+      "_id": "EDITOR_poi_1481784025326", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u305d\u306e\u8abf\u5b50\u3067\u3059\uff01", 
+        "\u540d\u79f0:en": "Right on!", 
+        "angle": "45", 
+        "sub_category": "_nav_info_", 
+        "\u7def\u5ea6": "0.40.24.641", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "1", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.366", 
+        "major_category": "_nav_poi_", 
+        "heading": "180", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481784025326"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9299178421497345, 
+          0.6736527887913359
+        ]
+      }, 
+      "_rev": "2-3023b84e5b028b2ef8bfcc46b8558bc7", 
+      "_id": "EDITOR_poi_1481796561337", 
+      "type": "Feature", 
+      "properties": {
+        "building": "", 
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:en": "Please stop here. You can check the last navigation by tapping the center of the display.", 
+        "angle": "45", 
+        "sub_category": "_nav_info_", 
+        "\u540d\u79f0:ja": "\u4e00\u5ea6\u6b62\u307e\u3063\u3066\u304f\u3060\u3055\u3044\u3002\u753b\u9762\u4e2d\u592e\u3092\u30bf\u30c3\u30d7\u3059\u308b\u3068\u3001\u6700\u5f8c\u306e\u6848\u5185\u3092\u7e70\u308a\u8fd4\u3057\u307e\u3059\u3002", 
+        "\u7def\u5ea6": "0.40.25.150", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "2", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.704", 
+        "major_category": "_nav_poi_", 
+        "heading": "90", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481796561337"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9299191832542419, 
+          0.6736527887913359
+        ]
+      }, 
+      "_rev": "2-61ad4b85a434c9549caa5d2e2098c26c", 
+      "_id": "EDITOR_poi_1481796886807", 
+      "type": "Feature", 
+      "properties": {
+        "building": "", 
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:en": "Right on! You can also check previous navigation by left flick. If you satisfy with practice, let's walk to get to the goal.", 
+        "angle": "45", 
+        "sub_category": "_nav_info_", 
+        "\u540d\u79f0:ja": "\u305d\u306e\u8abf\u5b50\u3067\u3059\uff01\u5de6\u306b\u30d5\u30ea\u30c3\u30af\u3059\u308b\u3068\u524d\u306e\u6848\u5185\u306b\u623b\u308c\u307e\u3059\u3002\u4e00\u901a\u308a\u7df4\u7fd2\u3057\u305f\u3089\u3001\u307e\u305f\u8db3\u8e0f\u307f\u3057\u3066\u30b4\u30fc\u30eb\u307e\u3067\u884c\u304d\u307e\u3057\u3087\u3046\u3002", 
+        "\u7def\u5ea6": "0.40.25.150", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "2", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.709", 
+        "major_category": "_nav_poi_", 
+        "heading": "90", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481796886807"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9299654513597488, 
+            0.6736527887913359
+          ], 
+          [
+            -0.9298755973577499, 
+            0.6736537945502176
+          ]
+        ]
+      }, 
+      "_rev": "5-a4b250e5af625f468b4bbe5478624621", 
+      "_id": "EDITOR_link_1481786956866", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 2.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481787008691", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787008691", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "10", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481786937960", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481786956866", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481786937960"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298239648342133, 
+          0.6734962256596837
+        ]
+      }, 
+      "_rev": "2-858cafb0790b69a0b33d400c80587064", 
+      "_id": "EDITOR_poi_1481797520650", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u305d\u306e\u5834\u3067\u8db3\u8e0f\u307f\u3059\u308b\u3068\u524d\u9032\u3067\u304d\u307e\u3059\u3002", 
+        "\u540d\u79f0:en": "Let's walk on the spot to proceed.", 
+        "angle": "45", 
+        "sub_category": "_nav_info_", 
+        "\u7def\u5ea6": "0.40.24.586", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "1", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.366", 
+        "major_category": "_nav_poi_", 
+        "heading": "180", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481797520650"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298240554987842, 
+            0.6734930380586234
+          ], 
+          [
+            -0.9298236645282714, 
+            0.6734650471339201
+          ]
+        ]
+      }, 
+      "_rev": "2-3cbb697d3e5050d85c2b6ebb25c7f20e", 
+      "_id": "EDITOR_link_1481797580486", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770574787", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770574787", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.1", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481797580441", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481797580486", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481797580441"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298239764909795, 
+          0.6734704111813864
+        ]
+      }, 
+      "_rev": "8-63e1c8206e5470d956be24163e87ff66", 
+      "_id": "EDITOR_poi_1481783763183", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u30ca\u30d6\u30b3\u30b0\u306e\u4f7f\u3044\u65b9\u3092\u7df4\u7fd2\u3057\u307e\u3057\u3087\u3046\uff01", 
+        "\u540d\u79f0:en": "You can learn about usage of NavCog. ", 
+        "angle": "45", 
+        "sub_category": "_nav_info_", 
+        "\u7def\u5ea6": "0.40.24.493", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "1", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.366", 
+        "major_category": "_nav_poi_", 
+        "heading": "180", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481783763183"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298236645282714, 
+            0.6734650471339201
+          ], 
+          [
+            -0.9298038482666016, 
+            0.6734653823868891
+          ]
+        ]
+      }, 
+      "_rev": "2-bdb9325fcbbab74a429a8cd4add1d592", 
+      "_id": "EDITOR_link_1481794623701", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481794621540", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481794623701", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "2.2", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770574787"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298236645282714, 
+          0.6734650471339201
+        ]
+      }, 
+      "_rev": "2-1d61b0922e624741a38d57c3987ad002", 
+      "_id": "EDITOR_exit_1481770667644", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u51fa\u5165\u53e3\u60c5\u5831", 
+        "\u51fa\u5165\u53e3\u306e\u540d\u79f0": "", 
+        "\u51fa\u5165\u53e3ID": "EDITOR_exit_1481770667644", 
+        "\u5bfe\u5fdc\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770574787", 
+        "file": "EDITOR", 
+        "\u5bfe\u5fdc\u65bd\u8a2dID": "EDITOR_poi_1481770658898"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9299654513597488, 
+            0.6736527887913359
+          ], 
+          [
+            -0.9299652676213555, 
+            0.6736125584369097
+          ]
+        ]
+      }, 
+      "_rev": "5-9d04b6fb29970d717bbf102708ea7903", 
+      "_id": "EDITOR_link_1481770637170", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 2.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481786937960", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770628208", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "4.5", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770628208", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770637170", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481786937960"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9299652676213555, 
+          0.6736125584369097
+        ]
+      }, 
+      "_rev": "5-2f5a275532ac4fc5f0ad2625bb09563e", 
+      "_id": "EDITOR_exit_1481770665491", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u51fa\u5165\u53e3\u60c5\u5831", 
+        "\u51fa\u5165\u53e3\u306e\u540d\u79f0": "", 
+        "\u51fa\u5165\u53e3ID": "EDITOR_exit_1481770665491", 
+        "\u5bfe\u5fdc\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770628208", 
+        "file": "EDITOR", 
+        "\u5bfe\u5fdc\u65bd\u8a2dID": "EDITOR_poi_1481770661239"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9299815912406757, 
+          0.6736226160254717
+        ]
+      }, 
+      "_rev": "5-c8db8b4e0fd56c3890053467f708ad91", 
+      "_id": "EDITOR_poi_1481770661239", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u30b4\u30fc\u30eb", 
+        "\u540d\u79f0:en": "Goal", 
+        "\u7def\u5ea6": "0.40.25.041", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.934", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481770661239"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9298421047152488, 
+          0.6734107361531279
+        ]
+      }, 
+      "_rev": "1-302fd6c68e30f727ec6e2eae925955a6", 
+      "_id": "EDITOR_poi_1481770658898", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.432", 
+        "\u7def\u5ea6": "0.40.24.279", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481770658898"
+      }
+    }
+  ]
+}

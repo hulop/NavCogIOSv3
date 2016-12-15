@@ -29,6 +29,7 @@
 #import "NavDebugHelper.h"
 #import "NavCog3-Swift.h"
 #import "NavDeviceTTS.h"
+#import "NavDataStore.h"
 
 @interface SettingViewController ()
 
@@ -214,6 +215,9 @@ static HLPSetting *speechSpeedSetting;
 
             [self presentViewController:viewController animated:YES completion:nil];
         });
+    } else if ([setting.name isEqualToString:@"launch_exercise"]) {
+        [[NavDataStore sharedDataStore] startExercise];
+        [self.navigationController popToRootViewControllerAnimated:YES];
     } else {
         [self performSegueWithIdentifier:setting.name sender:self];
     }
@@ -262,12 +266,15 @@ static HLPSetting *speechSpeedSetting;
         return;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
-    
+
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech", @"label for tts options")];
     speechSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
                                      Name:@"speech_speed" DefaultValue:@(0.6) Min:0.1 Max:1 Interval:0.05];
     [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
     [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
+    
+    [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];
     
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Map", @"label for map")];
     [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Initial zoom level for navigation", @"") Name:@"zoom_for_navigation" DefaultValue:@(17) Min:15 Max:22 Interval:1];

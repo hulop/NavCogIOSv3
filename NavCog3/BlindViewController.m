@@ -160,6 +160,7 @@
         BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
         BOOL debugFollower = [[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"];
         BOOL previewMode = [NavDataStore sharedDataStore].previewMode;
+        BOOL exerciseMode = [NavDataStore sharedDataStore].exerciseMode;
         BOOL isActive = [navigator isActive];
         BOOL peerExists = [[[NavDebugHelper sharedHelper] peers] count] > 0;
 
@@ -184,7 +185,7 @@
             self.navigationItem.leftBarButtonItem = _settingButton;
         }
         
-        self.navigationItem.title = NSLocalizedStringFromTable(previewMode?@"Preview":@"NavCog", @"BlindView", @"");
+        self.navigationItem.title = NSLocalizedStringFromTable(exerciseMode?@"Exercise":(previewMode?@"Preview":@"NavCog"), @"BlindView", @"");
         
         if (debugFollower) {
             self.navigationItem.title = NSLocalizedStringFromTable(@"Follow", @"BlindView", @"");
@@ -382,15 +383,16 @@
 
 - (void)startAction
 {
-    BOOL needAction = [[NSUserDefaults standardUserDefaults] boolForKey:@"preview_with_action"];
-    if (!motionManager && needAction) {
+    BOOL exerciseMode = [NavDataStore sharedDataStore].exerciseMode;
+    BOOL previewWithAction = [[NSUserDefaults standardUserDefaults] boolForKey:@"preview_with_action"] && !exerciseMode;
+    if (!motionManager && (previewWithAction || exerciseMode)) {
         motionManager = [[CMMotionManager alloc] init];
         motionManager.deviceMotionUpdateInterval = 0.1;
         motionQueue = [[NSOperationQueue alloc] init];
         motionQueue.maxConcurrentOperationCount = 1;
         motionQueue.qualityOfService = NSQualityOfServiceBackground;
     }
-    if (needAction) {
+    if (previewWithAction) {
         [motionManager startDeviceMotionUpdatesToQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
             yaws[yawsIndex] = motion.attitude.yaw;
             yawsIndex = (yawsIndex+1)%10;
@@ -417,8 +419,30 @@
             forwardAction = ave > 0.3;
             
         }];
+    }
+    if (exerciseMode) {
+        [motionManager startDeviceMotionUpdatesToQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
+            if (yawsIndex > 0) {
+                turnAction = [HLPLocation normalizeDegree:-(motion.attitude.yaw - yaws[0])/M_PI*180];
+            } else {
+                turnAction = 0;
+            }
+            yaws[0] = motion.attitude.yaw;
+            yawsIndex = 1;
+            
+            CMAcceleration acc =  motion.userAcceleration;
+            double d = sqrt(pow(acc.x, 2)+pow(acc.y, 2)+pow(acc.z, 2));
+            accs[accsIndex] = d;
+            accsIndex = (accsIndex+1)%10;
+            double ave = 0;
+            for(int i = 0; i < 10; i++) {
+                ave += accs[i]*0.1;
+            }
+            forwardAction = ave > 0.05;
+        }];
         
     }
+
 }
 
 #pragma mark - DialogViewControllerDelegate
@@ -712,6 +736,7 @@
     if ([identifier isEqualToString:@"show_search"] && [navigator isActive]) {
         [[NavDataStore sharedDataStore] clearRoute];
         [NavDataStore sharedDataStore].previewMode = NO;
+        [NavDataStore sharedDataStore].exerciseMode = NO;
         [previewer setAutoProceed:NO];
 
         return NO;

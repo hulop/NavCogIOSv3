@@ -567,7 +567,12 @@ void functionCalledToLog(void *inUserData, string text)
 
         loc::Pose stdevPose;
         stdevPose.x(1).y(1).orientation(currentOrientationAccuracy/180*M_PI);
-        localizer->resetStatus(newPose, stdevPose);
+        try {
+            localizer->resetStatus(newPose, stdevPose);
+        } catch(const std::exception& ex) {
+            std::cout << ex.what() << std::endl;
+            [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
+        }
     }];
     
     //[[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];

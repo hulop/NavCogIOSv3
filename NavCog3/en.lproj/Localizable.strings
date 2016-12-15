@@ -86,3 +86,7 @@
 "DialogStartHint" = "Double tap to start voice recognition";
 
 "SPEECH_SPEED_CHECK" = "Speech speed is %.2f";
+
+"Exercise" = "Exercise";
+
+"Launch Exercise" = "Launch Exercise";

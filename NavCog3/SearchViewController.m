@@ -219,6 +219,7 @@
 - (IBAction)previewNavigation:(id)sender {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     nds.previewMode = YES;
+    nds.exerciseMode = NO;
     
     [self _startNavigation];
 }
@@ -226,6 +227,7 @@
 - (IBAction)startNavigation:(id)sender {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     nds.previewMode = NO;
+    nds.exerciseMode = NO;
     [self _startNavigation];
 }
 

@@ -95,3 +95,7 @@
 "DialogStartHint" = "音声認識を再開するにはダブルタップします";
 
 "SPEECH_SPEED_CHECK" = "読み上げ速度:%.2f";
+
+"Exercise" = "練習";
+
+"Launch Exercise" = "練習を始める";

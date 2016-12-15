@@ -291,7 +291,11 @@ void functionCalledToLog(void *inUserData, string text)
                 location = projection->globalToLocal(global);
                 
                 loc::Pose newPose(location);
-                newPose.floor(round(loc.floor));
+                if(isnan(loc.floor)){
+                    newPose.floor(currentFloor);
+                }else{
+                    newPose.floor(round(loc.floor));
+                }
                 newPose.orientation(heading);
                 
                 loc::Pose stdevPose;
@@ -370,15 +374,21 @@ void functionCalledToLog(void *inUserData, string text)
                         // pass
                     }
                     else if (logString.compare(0, 9, "Altimeter") == 0){
-                        std::vector<std::string> values;
-                        boost::split(values, logString, boost::is_any_of(","));
-                        long timestamp = stol(values.at(3));
-                        double relAlt = stod(values.at(1));
-                        double pressure = stod(values.at(2));
-                        Altimeter alt(timestamp,relAlt,pressure);
+                        
+                        std::function<Altimeter(std::string)> parseAltimeter = [](std::string logString){
+                            std::vector<std::string> values;
+                            boost::split(values, logString, boost::is_any_of(","));
+                            long timestamp = stol(values.at(3));
+                            double relAlt = stod(values.at(1));
+                            double pressure = stod(values.at(2));
+                            Altimeter alt(timestamp,relAlt,pressure);
+                            return alt;
+                        };
+                        
+                        auto alt = parseAltimeter(logString);
                         localizer->putAltimeter(alt);
                         if (bShowSensorLog) {
-                            std::cout << "LogReplay:" << timestamp << ",Altimeter," << relAlt << "," << pressure << std::endl;
+                            std::cout << "LogReplay:" << alt.timestamp() << ",Altimeter," << alt.relativeAltitude() << "," << alt.pressure() << std::endl;
                         }
                     }
                     // Parsing reset
@@ -543,13 +553,16 @@ void functionCalledToLog(void *inUserData, string text)
         location = projection->globalToLocal(global);
         
         loc::Pose newPose(location);
-        newPose.floor(round(loc.floor));
+        if(isnan(loc.floor)){
+            newPose.floor(currentFloor);
+        }else{
+            newPose.floor(round(loc.floor));
+        }
         newPose.orientation(heading);
         
         long timestamp = [[NSDate date] timeIntervalSince1970]*1000;
         
-        
-        NSLog(@"Reset,%f,%f,%f,%f,%ld",loc.lat,loc.lng,loc.floor,loc.orientation,timestamp);
+        NSLog(@"Reset,%f,%f,%f,%f,%ld",loc.lat,loc.lng,newPose.floor(),loc.orientation,timestamp);
         //localizer->resetStatus(newPose);
 
         loc::Pose stdevPose;

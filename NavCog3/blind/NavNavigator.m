@@ -1680,7 +1680,7 @@ static NavNavigatorConstants *_instance;
                         }
                         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
                             HLPLocation *loc = elevatorLocation(linkInfo.link);
-                            [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
+                            [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:NAN];
                             
                             [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:@{@"location":loc}];
                             lastElevatorResetTime = NAN;
@@ -1794,7 +1794,7 @@ static NavNavigatorConstants *_instance;
                     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
                         if (!isnan(lastElevatorResetTime) && now - lastElevatorResetTime > 1.9) {
                             HLPLocation *loc = elevatorLocation(linkInfo.link);
-                            [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:location.floor];
+                            [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:NAN];
                             
                             [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:@{@"location":loc}];
                             lastElevatorResetTime = now;

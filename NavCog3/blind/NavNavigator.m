@@ -219,8 +219,6 @@ static NavNavigatorConstants *_instance;
     
     _isNextDestination = (_nextLink == nil);
     
-    BOOL __block noMidInRoot = NO;
-    
     // check destination POI before adding POI actually to enable isNextDestination
     NavNavigatorConstants *C = [NavNavigatorConstants constants];
     [_allPOIs enumerateObjectsUsingBlock:^(HLPObject *obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -230,11 +228,9 @@ static NavNavigatorConstants *_instance;
             if ([_nextLink.targetNodeID isEqualToString:ent.node._id]) {
                 if (_nextLink.length < 3) {
                     // destination with a leaf node, make second last link as last link
-                    noMidInRoot = YES;
                     _isNextDestination = YES;
                 }
             } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
-                noMidInRoot = YES;
                 _isNextDestination = YES;
             }
         }
@@ -463,24 +459,28 @@ static NavNavigatorConstants *_instance;
                                                          @"origin": ent,
                                                          @"forAfterEnd": @(YES)
                                                          }];
-            } else if (!noMidInRoot && !_isNextDestination){
+            } else {
                 // mid in route
                 HLPLocation *nearest = [_link nearestLocationTo:ent.node.location];
-                if ([nearest distanceTo:ent.node.location] < 1e-3) {
-                    navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
-                              @{
-                                @"origin": ent
-                                }];
-                } else {
-                    double angle = [HLPLocation normalizeDegree:[nearest bearingTo:ent.node.location] - _link.initialBearingFromSource];
-                    if (45 < fabs(angle) && fabs(angle) < 135) {
+                if ((!_isFirst && !_isNextDestination) ||
+                    (_isFirst && [_link.sourceLocation distanceTo:nearest] > C.POI_ANNOUNCE_DISTANCE) ||
+                    (_isNextDestination && [_link.targetLocation distanceTo:nearest] > C.POI_ANNOUNCE_DISTANCE)) {
+                    if ([nearest distanceTo:ent.node.location] < 1e-3) {
                         navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
                                   @{
-                                    @"origin": ent,
-                                    //@"longDescription": [ent getLongDescriptionPron],
-                                    @"angleFromLocation": @([nearest bearingTo:ent.node.location]),
-                                    @"flagOnomastic":@(YES)
+                                    @"origin": ent
                                     }];
+                    } else {
+                        double angle = [HLPLocation normalizeDegree:[nearest bearingTo:ent.node.location] - _link.initialBearingFromSource];
+                        if (45 < fabs(angle) && fabs(angle) < 135) {
+                            navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
+                                      @{
+                                        @"origin": ent,
+                                        //@"longDescription": [ent getLongDescriptionPron],
+                                        @"angleFromLocation": @([nearest bearingTo:ent.node.location]),
+                                        @"flagOnomastic":@(YES)
+                                        }];
+                        }
                     }
                 }
             }
@@ -2023,7 +2023,7 @@ static NavNavigatorConstants *_instance;
                     continue;
                 }
                 
-                if (!poi.hasBeenApproached && now - poi.lastApproached > C.POI_ANNOUNCE_MIN_INTERVAL) {
+                if (!poi.hasBeenApproached && (now - poi.lastApproached > C.POI_ANNOUNCE_MIN_INTERVAL)) {
                     if (poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
                         poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE) {
                         if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
@@ -2040,7 +2040,8 @@ static NavNavigatorConstants *_instance;
                     }
                 } else {
                     if (!poi.hasBeenLeft) {
-                        if (poi.distanceFromSnappedLocation > C.POI_ANNOUNCE_DISTANCE) {
+                        if (poi.distanceFromSnappedLocation > C.POI_ANNOUNCE_DISTANCE &&
+                            poi.distanceFromUserLocation > C.POI_ANNOUNCE_DISTANCE) {
                             if ([self.delegate respondsToSelector:@selector(userIsLeavingFromPOI:)]) {
                                 [self.delegate userIsLeavingFromPOI:
                                  @{

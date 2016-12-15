@@ -206,7 +206,22 @@
 "and action at end object" = "突き当たりを%1$@";
 
 /* (No Commment) */
-"and action at near object" = "%2$@の近くで%1$@";
+"and action at near object" = "%2$@のところで%1$@";
+
+/* (No Commment) */
+"and action at warning block" = "警告ブロックのところで%1$@";
+
+/* (No Commment) */
+"action" = "%1$@";
+
+/* (No Commment) */
+"action at end object" = "突き当たりを%1$@";
+
+/* (No Commment) */
+"action at near object" = "%2$@のところで%1$@";
+
+/* (No Commment) */
+"action at warning block" = "警告ブロックのところで%1$@";
 
 /* approaching */
 "approaching" = "そろそろです";
@@ -353,7 +368,7 @@
 "BrailleBlockPOIStringShort" = "点字ブロックあり";
 
 /* */
-"NoBrailleBlockPOIStringShort" = "点字ブロックなし";
+"NoBrailleBlockPOIStringShort" = "点字ブロック終了";
 
 /* */
 "SummaryHeader" = "この後の案内";

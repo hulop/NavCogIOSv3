@@ -166,6 +166,7 @@
             string = NSLocalizedStringFromTable(@"go straight", @"BlindView", @"");
         }
         
+        
         if (linkType == LINK_TYPE_ELEVATOR) {
             string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"After getting off the elevator, %@", @"BlindView", @""), string];
         }
@@ -339,18 +340,14 @@
 
 - (BOOL) isCornerEnd:(NSArray*)pois
 {
-    BOOL ret = NO;
-    pois = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forCorner == YES && forBeforeStart == NO"]];
-    if ([pois count] > 1) {
-        // TODO: multiple floor info
-    }
-    if ([pois count] > 0) {
-        NavPOI *poi = pois[0];
-        if (poi.flagEnd) {
-            ret = YES;
-        }
-    }
-    return ret;
+    pois = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forCorner == YES && forBeforeStart == NO && forCornerEnd == YES"]];
+    return [pois count] > 0;
+}
+
+- (BOOL) isCornerWarningBlock:(NSArray*)pois
+{
+    pois = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forCorner == YES && forBeforeStart == NO && forCornerWarningBlock == YES"]];
+    return [pois count] > 0;
 }
 
 - (NSString*) cornerPOIString:(NSArray*)pois
@@ -538,10 +535,28 @@
 - (void)userNeedsToTakeAction:(NSDictionary*)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
-    NSString *string = [self actionString:properties];
+    NSString *action = [self actionString:properties];
+    
+    NSArray *pois = properties[@"pois"];
+    NSString *cornerInfo = [self cornerPOIString:pois];
+    BOOL isCornerEnd = [self isCornerEnd:pois];
+    BOOL isCornerWarningBlock = [self isCornerWarningBlock:pois];
+    
+    NSString *formatString = @"action";
+    if (cornerInfo && !isCornerEnd) {
+        formatString = [formatString stringByAppendingString:@" at near object"];
+    }
+    if (isCornerWarningBlock) {
+        formatString = [formatString stringByAppendingString:@" at warning block"];
+    }
+    if (isCornerEnd) {
+        formatString = [formatString stringByAppendingString:@" at end object"];
+    }
+    formatString = NSLocalizedStringFromTable(formatString, @"BlindView", @"");
+    formatString = [NSString stringWithFormat:formatString, action, cornerInfo];
     
     [_delegate vibrate];
-    [_delegate speak:string force:YES completionHandler:^{
+    [_delegate speak:formatString force:YES completionHandler:^{
         
     }];
 }
@@ -565,6 +580,7 @@
     NSString *floorInfo = [self floorPOIString:pois];
     NSString *cornerInfo = [self cornerPOIString:pois];
     BOOL isCornerEnd = [self isCornerEnd:pois];
+    BOOL isCornerWarningBlock = [self isCornerWarningBlock:pois];
     
     NSString *dist = [self distanceString:distance];
     
@@ -588,6 +604,9 @@
         }
         if (cornerInfo && !isCornerEnd) {
             nextActionString = [nextActionString stringByAppendingString:@" at near object"];
+        }
+        if (isCornerWarningBlock) {
+            nextActionString = [nextActionString stringByAppendingString:@" at warning block"];
         }
         if (isCornerEnd) {
             nextActionString = [nextActionString stringByAppendingString:@" at end object"];
@@ -786,6 +805,7 @@
     NSString *floorInfo = [self floorPOIString:pois];
     NSString *cornerInfo = [self cornerPOIString:pois];
     BOOL isCornerEnd = [self isCornerEnd:pois];
+    BOOL isCornerWarningBlock = [self isCornerWarningBlock:pois];
     
     NSString *dist = [self distanceString:distance];
     
@@ -809,9 +829,13 @@
         if (cornerInfo && !isCornerEnd) {
             nextActionString = [nextActionString stringByAppendingString:@" at near object"];
         }
+        if (isCornerWarningBlock) {
+            nextActionString = [nextActionString stringByAppendingString:@" at warning block"];
+        }
         if (isCornerEnd) {
             nextActionString = [nextActionString stringByAppendingString:@" at end object"];
         }
+
         
         proceedString = NSLocalizedStringFromTable(proceedString, @"BlindView", @"");
         proceedString = [NSString stringWithFormat:proceedString, dist, floorInfo];

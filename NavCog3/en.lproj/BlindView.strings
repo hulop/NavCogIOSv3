@@ -197,6 +197,21 @@ Head to the correct orientation
 /* (No Commment) */
 "and action at near object" = "and %1$@ at the %2$@";
 
+/* (No Commment) */
+"and action at warning block" = "and %1$@ at a warning tactile";
+
+/* (No Commment) */
+"action" = "%1$@";
+
+/* (No Commment) */
+"action at end object" = "%1$@ at the end of corridor";
+
+/* (No Commment) */
+"action at near object" = "%1$@ at the %2$@";
+
+/* (No Commment) */
+"action at warning block" = "%1$@ at a warning tactile";
+
 /* approaching */
 "approaching" = "approaching";
 
@@ -324,22 +339,22 @@ Head to the correct orientation
 "RampPOIString" = "There is a ramp";
 
 /* */
-"BrailleBlockPOIString" = "Braille blocks are going to be available";
+"BrailleBlockPOIString" = "Tactile paving will be available";
 
 /* */
-"NoBrailleBlockPOIString" = "Braille blocks are going to be not available";
+"NoBrailleBlockPOIString" = "Tactile paving will not be available";
 
 /* */
-"BrailleBlock" = "on Braille blocks";
+"BrailleBlock" = "on Tactile paving";
 
 /* */
 "RampPOIStringShort" = "a ramp";
 
 /* */
-"BrailleBlockPOIStringShort" = "Braille blocks available";
+"BrailleBlockPOIStringShort" = "Tactile paving available";
 
 /* */
-"NoBrailleBlockPOIStringShort" = "Braille blocks not available";
+"NoBrailleBlockPOIStringShort" = "Tactile paving not available";
 
 /* */
 "SummaryHeader" = "Upcoming Navigations";

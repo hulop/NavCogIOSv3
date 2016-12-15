@@ -415,13 +415,15 @@ static NavNavigatorConstants *_instance;
 //                    break;
                 case HLPPOICategoryCornerEnd:
                 case HLPPOICategoryCornerLandmark:
+                case HLPPOICategoryCornerWarningBlock:
                         if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
                             navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                       @{
                                         @"origin": poi,
                                         @"forCorner": @(YES),
+                                        @"forCornerEnd": @(poi.poiCategory == HLPPOICategoryCornerEnd),
+                                        @"forCornerWarningBlock": @(poi.poiCategory == HLPPOICategoryCornerWarningBlock),
                                         @"flagPlural": @(poi.flags.flagPlural),
-                                        @"flagEnd": @(poi.poiCategory == HLPPOICategoryCornerEnd),
                                         @"longDescription": poi.longDescription?poi.longDescription:@""
                                         }];
                         }
@@ -1985,6 +1987,7 @@ static NavNavigatorConstants *_instance;
                         if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
                             [self.delegate userNeedsToTakeAction:
                              @{
+                               @"pois": (linkInfo.link.length>C.NO_APPROACHING_DISTANCE_THRESHOLD)?linkInfo.pois:@[],
                                @"turnAngle": @(linkInfo.nextTurnAngle),
                                @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
                                @"nextLinkType": @(linkInfo.nextLink.linkType),

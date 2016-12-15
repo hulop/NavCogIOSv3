@@ -193,7 +193,7 @@
             self.navigationItem.title = NSLocalizedStringFromTable(@"Follow", @"BlindView", @"");
         }
         
-        if (debugFollower || initFlag) {
+        if (debugFollower || initFlag) {    
             self.navigationItem.rightBarButtonItem = nil;
         } else {
             self.navigationItem.rightBarButtonItem = _searchButton;

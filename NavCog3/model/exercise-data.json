@@ -143,8 +143,8 @@
         "type": "LineString", 
         "coordinates": [
           [
-            -0.9297649795494181, 
-            0.6735491956276966
+            -0.9297596151313883, 
+            0.6735485251217712
           ], 
           [
             -0.9298239764909795, 
@@ -152,7 +152,7 @@
           ]
         ]
       }, 
-      "_rev": "1-c9f4825d996774d21e87bbc5156ce006", 
+      "_rev": "2-c4fb68a2f5c090682ac704a884ca21b7", 
       "_id": "EDITOR_link_1481770632493", 
       "type": "Feature", 
       "properties": {
@@ -169,7 +169,7 @@
         "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770581943", 
         "\u6bb5\u5dee": "0", 
         "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "6.6", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "7.2", 
         "\u901a\u884c\u5236\u9650": "0", 
         "\u65b9\u5411\u6027": "0", 
         "targetNode": "EDITOR_node_1481770609255", 
@@ -185,16 +185,16 @@
         "type": "LineString", 
         "coordinates": [
           [
-            -0.9297649795494181, 
-            0.6735491956276966
+            -0.9297596151313883, 
+            0.6735485251217712
           ], 
           [
-            -0.9297646559300574, 
-            0.6735820504176947
+            -0.9297599620642814, 
+            0.6735827209236074
           ]
         ]
       }, 
-      "_rev": "1-d43a7c4447b043340198a0f36519ef2f", 
+      "_rev": "2-ac256e6771c9d436d232b4c84495891a", 
       "_id": "EDITOR_link_1481770634397", 
       "type": "Feature", 
       "properties": {
@@ -211,7 +211,7 @@
         "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770620423", 
         "\u6bb5\u5dee": "0", 
         "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.7", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.8", 
         "\u901a\u884c\u5236\u9650": "0", 
         "\u65b9\u5411\u6027": "0", 
         "targetNode": "EDITOR_node_1481770620423", 
@@ -227,16 +227,16 @@
         "type": "LineString", 
         "coordinates": [
           [
-            -0.9297646559300574, 
-            0.6735820504176947
+            -0.9297599620642814, 
+            0.6735827209236074
           ], 
           [
-            -0.9297810961170399, 
-            0.6736021655951877
+            -0.929785454706689, 
+            0.6736068591366016
           ]
         ]
       }, 
-      "_rev": "2-6ac42d8f4e118c7901a4ce5daa04eb56", 
+      "_rev": "3-78aff496078555f90482bd1fe8b15668", 
       "_id": "EDITOR_link_1481770635819", 
       "type": "Feature", 
       "properties": {
@@ -253,7 +253,7 @@
         "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770626356", 
         "\u6bb5\u5dee": "0", 
         "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "2.9", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.9", 
         "\u901a\u884c\u5236\u9650": "0", 
         "\u65b9\u5411\u6027": "0", 
         "targetNode": "EDITOR_node_1481770626356", 
@@ -269,16 +269,16 @@
         "type": "LineString", 
         "coordinates": [
           [
-            -0.9297817550124137, 
-            0.6736725687155419
+            -0.9297847724975554, 
+            0.6736651931506303
           ], 
           [
-            -0.9297810961170399, 
-            0.6736021655951877
+            -0.929785454706689, 
+            0.6736068591366016
           ]
         ]
       }, 
-      "_rev": "3-d0503ab20f7a05e9f5bc74a520a617ea", 
+      "_rev": "4-5643e0e25498a479c9b5876f4d7fecaa", 
       "_id": "EDITOR_link_1481783588481", 
       "type": "Feature", 
       "properties": {
@@ -295,7 +295,7 @@
         "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770626356", 
         "\u6bb5\u5dee": "0", 
         "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "7.8", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "6.5", 
         "\u901a\u884c\u5236\u9650": "0", 
         "\u65b9\u5411\u6027": "0", 
         "targetNode": "EDITOR_node_1481783581509", 
@@ -310,11 +310,11 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297817550124137, 
-          0.6736725687155419
+          -0.9297847724975554, 
+          0.6736651931506303
         ]
       }, 
-      "_rev": "2-c8ebac6d9625f7d01060eb9557c17dfe", 
+      "_rev": "3-4e1668113872bda05a05c67c40c971ec", 
       "_id": "EDITOR_link_1481783614222", 
       "type": "Feature", 
       "properties": {
@@ -348,16 +348,16 @@
         "type": "LineString", 
         "coordinates": [
           [
-            -0.9297817550124137, 
-            0.6736725687155419
+            -0.9297847724975554, 
+            0.6736651931506303
           ], 
           [
-            -0.9297817783258324, 
+            -0.9297847958109742, 
             0.6736541298031866
           ]
         ]
       }, 
-      "_rev": "2-00d7995b20c0cd70a7b20291c3ebb855", 
+      "_rev": "3-1f5d7ed6a2d4082320df8e8d4de603f8", 
       "_id": "EDITOR_link_1481783702271", 
       "type": "Feature", 
       "properties": {
@@ -374,7 +374,7 @@
         "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783680617", 
         "\u6bb5\u5dee": "0", 
         "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "2.1", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "1.2", 
         "\u901a\u884c\u5236\u9650": "0", 
         "\u65b9\u5411\u6027": "0", 
         "targetNode": "EDITOR_node_1481783680617", 
@@ -394,12 +394,12 @@
             0.6736541298031612
           ], 
           [
-            -0.9297817783258324, 
+            -0.9297847958109742, 
             0.6736541298031866
           ]
         ]
       }, 
-      "_rev": "4-17d86041d0654ea618b55ca193421502", 
+      "_rev": "5-b32560880e0a694e969b8bd2759d2ceb", 
       "_id": "EDITOR_link_1481787036621", 
       "type": "Feature", 
       "properties": {
@@ -416,7 +416,7 @@
         "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783680617", 
         "\u6bb5\u5dee": "0", 
         "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "7.3", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "7", 
         "\u901a\u884c\u5236\u9650": "0", 
         "\u65b9\u5411\u6027": "0", 
         "targetNode": "EDITOR_node_1481787007667", 
@@ -581,17 +581,17 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297810961170399, 
-          0.6736021655951877
+          -0.929785454706689, 
+          0.6736068591366016
         ]
       }, 
-      "_rev": "2-8e0a63b4a2e54525d025747d49e445fe", 
+      "_rev": "3-9816925d1b40dd6c17581b212b71e366", 
       "_id": "EDITOR_node_1481770626356", 
       "type": "Feature", 
       "properties": {
         "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
-        "\u7d4c\u5ea6": "-0.55.47.212", 
-        "\u7def\u5ea6": "0.40.24.968", 
+        "\u7d4c\u5ea6": "-0.55.47.228", 
+        "\u7def\u5ea6": "0.40.24.985", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481770635819", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481783588481", 
         "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
@@ -672,17 +672,17 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297817550124137, 
-          0.6736725687155419
+          -0.9297847724975554, 
+          0.6736651931506303
         ]
       }, 
-      "_rev": "2-aaeea8e09b36f332f92e4447e83f4ce8", 
+      "_rev": "3-7f79cd33291e655004eb76d118e5da4b", 
       "_id": "EDITOR_node_1481783595021", 
       "type": "Feature", 
       "properties": {
         "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
-        "\u7d4c\u5ea6": "-0.55.47.214", 
-        "\u7def\u5ea6": "0.40.25.221", 
+        "\u7d4c\u5ea6": "-0.55.47.225", 
+        "\u7def\u5ea6": "0.40.25.195", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481783614222", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481783702271", 
         "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
@@ -763,16 +763,16 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297817783258324, 
+          -0.9297847958109742, 
           0.6736541298031866
         ]
       }, 
-      "_rev": "2-2ff19fa30d09abb80f087976f455da46", 
+      "_rev": "3-a080ae9045240b10e092c0ca6306c573", 
       "_id": "EDITOR_node_1481783680617", 
       "type": "Feature", 
       "properties": {
         "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
-        "\u7d4c\u5ea6": "-0.55.47.214", 
+        "\u7d4c\u5ea6": "-0.55.47.225", 
         "\u7def\u5ea6": "0.40.25.155", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481787036621", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481783702271", 
@@ -831,17 +831,17 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297646559300574, 
-          0.6735820504176947
+          -0.9297599620642814, 
+          0.6735827209236074
         ]
       }, 
-      "_rev": "1-d6133f07ace772f5de196186d5222c0b", 
+      "_rev": "2-84d535a168ae605cb2dfb59ef3037343", 
       "_id": "EDITOR_node_1481770620423", 
       "type": "Feature", 
       "properties": {
         "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
-        "\u7d4c\u5ea6": "-0.55.47.153", 
-        "\u7def\u5ea6": "0.40.24.895", 
+        "\u7d4c\u5ea6": "-0.55.47.136", 
+        "\u7def\u5ea6": "0.40.24.898", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481770634397", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481770635819", 
         "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
@@ -854,17 +854,17 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297817550124137, 
-          0.6736725687155419
+          -0.9297847724975554, 
+          0.6736651931506303
         ]
       }, 
-      "_rev": "2-0be6db3da9d9f27d748cb130e7ccbe20", 
+      "_rev": "3-e6ad03e884e24e3700b2b24d75ab3ab9", 
       "_id": "EDITOR_node_1481783581509", 
       "type": "Feature", 
       "properties": {
         "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
-        "\u7d4c\u5ea6": "-0.55.47.214", 
-        "\u7def\u5ea6": "0.40.25.221", 
+        "\u7d4c\u5ea6": "-0.55.47.225", 
+        "\u7def\u5ea6": "0.40.25.195", 
         "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481783588481", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID3": "EDITOR_link_1481783614222", 
@@ -924,17 +924,17 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297649795494181, 
-          0.6735491956276966
+          -0.9297596151313883, 
+          0.6735485251217712
         ]
       }, 
-      "_rev": "1-c53ae3fb70d9b3e533d48202c58fc7e4", 
+      "_rev": "2-4248e60142a17e5bcc2ba4b7eaf355c9", 
       "_id": "EDITOR_node_1481770609255", 
       "type": "Feature", 
       "properties": {
         "category": "\u30ce\u30fc\u30c9\u60c5\u5831", 
-        "\u7d4c\u5ea6": "-0.55.47.154", 
-        "\u7def\u5ea6": "0.40.24.777", 
+        "\u7d4c\u5ea6": "-0.55.47.135", 
+        "\u7def\u5ea6": "0.40.24.775", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID1": "EDITOR_link_1481770632493", 
         "\u63a5\u7d9a\u30ea\u30f3\u30afID2": "EDITOR_link_1481770634397", 
         "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
@@ -948,16 +948,16 @@
         "type": "LineString", 
         "coordinates": [
           [
-            -0.9297817550124137, 
-            0.6736725687155419
+            -0.9297847724975554, 
+            0.6736651931506303
           ], 
           [
-            -0.9297810961170399, 
-            0.6736021655951877
+            -0.929785454706689, 
+            0.6736068591366016
           ]
         ]
       }, 
-      "_rev": "3-d0503ab20f7a05e9f5bc74a520a617ea", 
+      "_rev": "4-5643e0e25498a479c9b5876f4d7fecaa", 
       "_id": "EDITOR_link_1481783588481", 
       "type": "Feature", 
       "properties": {
@@ -974,7 +974,7 @@
         "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770626356", 
         "\u6bb5\u5dee": "0", 
         "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "7.8", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "6.5", 
         "\u901a\u884c\u5236\u9650": "0", 
         "\u65b9\u5411\u6027": "0", 
         "targetNode": "EDITOR_node_1481783581509", 
@@ -989,11 +989,11 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297817433557611, 
-          0.673649101008842
+          -0.9297850961170298, 
+          0.6736511125265672
         ]
       }, 
-      "_rev": "7-0a934ce4206d3d14276d3b7e61fa780a", 
+      "_rev": "8-c6644112207a02a7969d8bb184453199", 
       "_id": "EDITOR_poi_1481784383587", 
       "type": "Feature", 
       "properties": {
@@ -1002,12 +1002,12 @@
         "\u540d\u79f0:en": "When you get on elevator, please head to the exit.... Let's face around by way of on the elevator in this practice.", 
         "angle": "45", 
         "sub_category": "_nav_info_", 
-        "\u7def\u5ea6": "0.40.25.137", 
+        "\u7def\u5ea6": "0.40.25.144", 
         "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
         "height": "1", 
         "\u540d\u79f0": "", 
         "file": "EDITOR", 
-        "\u7d4c\u5ea6": "-0.55.47.214", 
+        "\u7d4c\u5ea6": "-0.55.47.226", 
         "major_category": "_nav_poi_", 
         "heading": "180", 
         "\u65bd\u8a2dID": "EDITOR_poi_1481784383587"
@@ -1017,25 +1017,25 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297803789377213, 
-          0.6736008245833498
+          -0.9297817200422287, 
+          0.6736031713540694
         ]
       }, 
-      "_rev": "5-98fcb696928cbceb2b5d6f274a47764d", 
+      "_rev": "7-d966808ebfbb2f062a5810fb40619998", 
       "_id": "EDITOR_poi_1481789512411", 
       "type": "Feature", 
       "properties": {
         "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
         "\u540d\u79f0:ja": "\u632f\u52d5\u304c\u3042\u308b\u307e\u3067\u53f3\u306b\u5411\u304d\u307e\u3059\u3002", 
         "\u540d\u79f0:en": "turn to right until you feel vibration.", 
-        "angle": "45", 
+        "angle": "15", 
         "sub_category": "_nav_info_", 
-        "\u7def\u5ea6": "0.40.24.963", 
+        "\u7def\u5ea6": "0.40.24.971", 
         "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
         "height": "1", 
         "\u540d\u79f0": "", 
         "file": "EDITOR", 
-        "\u7d4c\u5ea6": "-0.55.47.209", 
+        "\u7d4c\u5ea6": "-0.55.47.214", 
         "major_category": "_nav_poi_", 
         "heading": "135", 
         "\u65bd\u8a2dID": "EDITOR_poi_1481789512411"
@@ -1043,44 +1043,31 @@
     }, 
     {
       "geometry": {
-        "type": "LineString", 
+        "type": "Point", 
         "coordinates": [
-          [
-            -0.9298474341630936, 
-            0.6736541298031612
-          ], 
-          [
-            -0.9297817783258324, 
-            0.6736541298031866
-          ]
+          -0.9297847375273705, 
+          0.6736594938503858
         ]
       }, 
-      "_rev": "4-17d86041d0654ea618b55ca193421502", 
-      "_id": "EDITOR_link_1481787036621", 
+      "_rev": "1-2bd6ee1509580309c201ca595c20ecf1", 
+      "_id": "EDITOR_poi_1481800033266", 
       "type": "Feature", 
       "properties": {
-        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
-        "targetHeight": 2.0, 
-        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "", 
+        "\u540d\u79f0:en": "", 
+        "angle": "45", 
+        "sub_category": "_nav_elevator_", 
+        "\u7def\u5ea6": "0.40.25.174", 
+        "\u7d4c\u5ea6": "-0.55.47.225", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "1", 
+        "\u540d\u79f0": "", 
         "file": "EDITOR", 
-        "\u7e26\u65ad\u52fe\u914d1": "0", 
-        "sourceHeight": 2.0, 
-        "\u7e26\u65ad\u52fe\u914d2": "0", 
-        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
-        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
-        "sourceNode": "EDITOR_node_1481783680617", 
-        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783680617", 
-        "\u6bb5\u5dee": "0", 
-        "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "7.3", 
-        "\u901a\u884c\u5236\u9650": "0", 
-        "\u65b9\u5411\u6027": "0", 
-        "targetNode": "EDITOR_node_1481787007667", 
-        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
-        "\u6a2a\u65ad\u52fe\u914d": "0", 
-        "\u624b\u3059\u308a": "0", 
-        "\u30ea\u30f3\u30afID": "EDITOR_link_1481787036621", 
-        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787007667"
+        "minor_category": "_button_right_braille_", 
+        "major_category": "_nav_poi_", 
+        "heading": "180", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481800033266"
       }
     }, 
     {
@@ -1088,16 +1075,16 @@
         "type": "LineString", 
         "coordinates": [
           [
-            -0.9297817550124137, 
-            0.6736725687155419
+            -0.9297847724975554, 
+            0.6736651931506303
           ], 
           [
-            -0.9297817783258324, 
+            -0.9297847958109742, 
             0.6736541298031866
           ]
         ]
       }, 
-      "_rev": "2-00d7995b20c0cd70a7b20291c3ebb855", 
+      "_rev": "3-1f5d7ed6a2d4082320df8e8d4de603f8", 
       "_id": "EDITOR_link_1481783702271", 
       "type": "Feature", 
       "properties": {
@@ -1114,7 +1101,7 @@
         "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783680617", 
         "\u6bb5\u5dee": "0", 
         "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "2.1", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "1.2", 
         "\u901a\u884c\u5236\u9650": "0", 
         "\u65b9\u5411\u6027": "0", 
         "targetNode": "EDITOR_node_1481783680617", 
@@ -1123,6 +1110,48 @@
         "\u624b\u3059\u308a": "0", 
         "\u30ea\u30f3\u30afID": "EDITOR_link_1481783702271", 
         "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783595021"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9298474341630936, 
+            0.6736541298031612
+          ], 
+          [
+            -0.9297847958109742, 
+            0.6736541298031866
+          ]
+        ]
+      }, 
+      "_rev": "5-b32560880e0a694e969b8bd2759d2ceb", 
+      "_id": "EDITOR_link_1481787036621", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 2.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 2.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481783680617", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481783680617", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "7", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481787007667", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481787036621", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787007667"
       }
     }, 
     {
@@ -1156,55 +1185,13 @@
     }, 
     {
       "geometry": {
-        "type": "LineString", 
-        "coordinates": [
-          [
-            -0.9297646559300574, 
-            0.6735820504176947
-          ], 
-          [
-            -0.9297810961170399, 
-            0.6736021655951877
-          ]
-        ]
-      }, 
-      "_rev": "2-6ac42d8f4e118c7901a4ce5daa04eb56", 
-      "_id": "EDITOR_link_1481770635819", 
-      "type": "Feature", 
-      "properties": {
-        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
-        "targetHeight": 1.0, 
-        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
-        "file": "EDITOR", 
-        "\u7e26\u65ad\u52fe\u914d1": "0", 
-        "sourceHeight": 1.0, 
-        "\u7e26\u65ad\u52fe\u914d2": "0", 
-        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
-        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
-        "sourceNode": "EDITOR_node_1481770620423", 
-        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770626356", 
-        "\u6bb5\u5dee": "0", 
-        "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "2.9", 
-        "\u901a\u884c\u5236\u9650": "0", 
-        "\u65b9\u5411\u6027": "0", 
-        "targetNode": "EDITOR_node_1481770626356", 
-        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
-        "\u6a2a\u65ad\u52fe\u914d": "0", 
-        "\u624b\u3059\u308a": "0", 
-        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770635819", 
-        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770620423"
-      }
-    }, 
-    {
-      "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297817550124137, 
-          0.6736725687155419
+          -0.9297847724975554, 
+          0.6736651931506303
         ]
       }, 
-      "_rev": "2-c8ebac6d9625f7d01060eb9557c17dfe", 
+      "_rev": "3-4e1668113872bda05a05c67c40c971ec", 
       "_id": "EDITOR_link_1481783614222", 
       "type": "Feature", 
       "properties": {
@@ -1237,25 +1224,91 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297649562358856, 
-          0.6735817151647384
+          -0.9297763556241989, 
+          0.6736645226446796
         ]
       }, 
-      "_rev": "6-52b9d572e4201857b575789ead42ef0e", 
+      "_rev": "2-4706c4b488a5f9c840eade7c31aec215", 
+      "_id": "EDITOR_poi_1481800064287", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u7d4c\u5ea6": "-0.55.47.195", 
+        "sub_category": "_nav_elevator_equipments_", 
+        "\u7def\u5ea6": "0.40.25.192", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "minor_category": "_button_right_braille_ _button_left_braille_", 
+        "major_category": "_nav_poi_", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481800064287"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297599620642814, 
+            0.6735827209236074
+          ], 
+          [
+            -0.929785454706689, 
+            0.6736068591366016
+          ]
+        ]
+      }, 
+      "_rev": "3-78aff496078555f90482bd1fe8b15668", 
+      "_id": "EDITOR_link_1481770635819", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770620423", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770626356", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.9", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770626356", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770635819", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770620423"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9297595918178558, 
+          0.6735793683940315
+        ]
+      }, 
+      "_rev": "8-fca7d9c0195c27c14a874cabaa26dd28", 
       "_id": "EDITOR_poi_1481789495856", 
       "type": "Feature", 
       "properties": {
         "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
         "\u540d\u79f0:ja": "\u632f\u52d5\u304c\u3042\u308b\u307e\u3067\u5de6\u306b\u5411\u304d\u307e\u3059\u3002", 
         "\u540d\u79f0:en": "turn to left until you feel vibration.", 
-        "angle": "10", 
+        "angle": "15", 
         "sub_category": "_nav_info_", 
-        "\u7def\u5ea6": "0.40.24.894", 
+        "\u7def\u5ea6": "0.40.24.886", 
         "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
         "height": "1", 
         "\u540d\u79f0": "", 
         "file": "EDITOR", 
-        "\u7d4c\u5ea6": "-0.55.47.154", 
+        "\u7d4c\u5ea6": "-0.55.47.135", 
         "major_category": "_nav_poi_", 
         "heading": "180", 
         "\u65bd\u8a2dID": "EDITOR_poi_1481789495856"
@@ -1317,48 +1370,6 @@
         "\u5bfe\u5fdc\u30ce\u30fc\u30c9ID": "EDITOR_node_1481787001993", 
         "file": "EDITOR", 
         "\u5bfe\u5fdc\u65bd\u8a2dID": "EDITOR_poi_1481784578875"
-      }
-    }, 
-    {
-      "geometry": {
-        "type": "LineString", 
-        "coordinates": [
-          [
-            -0.9297649795494181, 
-            0.6735491956276966
-          ], 
-          [
-            -0.9297646559300574, 
-            0.6735820504176947
-          ]
-        ]
-      }, 
-      "_rev": "1-d43a7c4447b043340198a0f36519ef2f", 
-      "_id": "EDITOR_link_1481770634397", 
-      "type": "Feature", 
-      "properties": {
-        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
-        "targetHeight": 1.0, 
-        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
-        "file": "EDITOR", 
-        "\u7e26\u65ad\u52fe\u914d1": "0", 
-        "sourceHeight": 1.0, 
-        "\u7e26\u65ad\u52fe\u914d2": "0", 
-        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
-        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
-        "sourceNode": "EDITOR_node_1481770609255", 
-        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770620423", 
-        "\u6bb5\u5dee": "0", 
-        "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.7", 
-        "\u901a\u884c\u5236\u9650": "0", 
-        "\u65b9\u5411\u6027": "0", 
-        "targetNode": "EDITOR_node_1481770620423", 
-        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
-        "\u6a2a\u65ad\u52fe\u914d": "0", 
-        "\u624b\u3059\u308a": "0", 
-        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770634397", 
-        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770609255"
       }
     }, 
     {
@@ -1454,8 +1465,50 @@
         "type": "LineString", 
         "coordinates": [
           [
-            -0.9297649795494181, 
-            0.6735491956276966
+            -0.9297596151313883, 
+            0.6735485251217712
+          ], 
+          [
+            -0.9297599620642814, 
+            0.6735827209236074
+          ]
+        ]
+      }, 
+      "_rev": "2-ac256e6771c9d436d232b4c84495891a", 
+      "_id": "EDITOR_link_1481770634397", 
+      "type": "Feature", 
+      "properties": {
+        "\u4e3b\u306a\u5229\u7528\u8005": "0", 
+        "targetHeight": 1.0, 
+        "\u5c4b\u6839\u306e\u6709\u7121": "0", 
+        "file": "EDITOR", 
+        "\u7e26\u65ad\u52fe\u914d1": "0", 
+        "sourceHeight": 1.0, 
+        "\u7e26\u65ad\u52fe\u914d2": "0", 
+        "category": "\u30ea\u30f3\u30af\u306e\u60c5\u5831", 
+        "\u84cb\u306e\u306a\u3044\u6e9d\u3084\u6c34\u8def\u306e\u6709\u7121": "0", 
+        "sourceNode": "EDITOR_node_1481770609255", 
+        "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770620423", 
+        "\u6bb5\u5dee": "0", 
+        "\u8def\u9762\u72b6\u6cc1": "0", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "3.8", 
+        "\u901a\u884c\u5236\u9650": "0", 
+        "\u65b9\u5411\u6027": "0", 
+        "targetNode": "EDITOR_node_1481770620423", 
+        "\u7d4c\u8def\u306e\u7a2e\u985e": "8", 
+        "\u6a2a\u65ad\u52fe\u914d": "0", 
+        "\u624b\u3059\u308a": "0", 
+        "\u30ea\u30f3\u30afID": "EDITOR_link_1481770634397", 
+        "\u8d77\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770609255"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "LineString", 
+        "coordinates": [
+          [
+            -0.9297596151313883, 
+            0.6735485251217712
           ], 
           [
             -0.9298239764909795, 
@@ -1463,7 +1516,7 @@
           ]
         ]
       }, 
-      "_rev": "1-c9f4825d996774d21e87bbc5156ce006", 
+      "_rev": "2-c4fb68a2f5c090682ac704a884ca21b7", 
       "_id": "EDITOR_link_1481770632493", 
       "type": "Feature", 
       "properties": {
@@ -1480,7 +1533,7 @@
         "\u7d42\u70b9\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770581943", 
         "\u6bb5\u5dee": "0", 
         "\u8def\u9762\u72b6\u6cc1": "0", 
-        "\u30ea\u30f3\u30af\u5ef6\u9577": "6.6", 
+        "\u30ea\u30f3\u30af\u5ef6\u9577": "7.2", 
         "\u901a\u884c\u5236\u9650": "0", 
         "\u65b9\u5411\u6027": "0", 
         "targetNode": "EDITOR_node_1481770609255", 
@@ -1553,11 +1606,11 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9297656267881393, 
-          0.6735481898688276
+          -0.9297669678926468, 
+          0.6735491956277093
         ]
       }, 
-      "_rev": "5-9f3b16500c4e08b13e90f8b73632bc22", 
+      "_rev": "6-3c89ea13a29db680aef1c5905f5bb4e4", 
       "_id": "EDITOR_poi_1481789476468", 
       "type": "Feature", 
       "properties": {
@@ -1566,12 +1619,12 @@
         "\u540d\u79f0:en": "turn to left until you feel vibration.", 
         "angle": "45", 
         "sub_category": "_nav_info_", 
-        "\u7def\u5ea6": "0.40.24.773", 
+        "\u7def\u5ea6": "0.40.24.777", 
         "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
         "height": "1", 
         "\u540d\u79f0": "", 
         "file": "EDITOR", 
-        "\u7d4c\u5ea6": "-0.55.47.156", 
+        "\u7d4c\u5ea6": "-0.55.47.161", 
         "major_category": "_nav_poi_", 
         "heading": "-90", 
         "\u65bd\u8a2dID": "EDITOR_poi_1481789476468"
@@ -1581,25 +1634,25 @@
       "geometry": {
         "type": "Point", 
         "coordinates": [
-          -0.9298243234238726, 
-          0.6735458430981207
+          -0.9298236528716188, 
+          0.6735448373392519
         ]
       }, 
-      "_rev": "7-739717364ff96e08b56103bd2605f78a", 
+      "_rev": "9-b9add16a5cf7e2fc2b201fccca6172bd", 
       "_id": "EDITOR_poi_1481784231186", 
       "type": "Feature", 
       "properties": {
         "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
-        "\u540d\u79f0:ja": "\u66f2\u304c\u308b\u6642\u306f\u3001\u632f\u52d5\u304c\u3042\u308b\u307e\u3067\u53f3\u306b\u5411\u304d\u307e\u3059\u3002", 
+        "\u540d\u79f0:ja": "\u632f\u52d5\u304c\u3042\u308b\u307e\u3067\u53f3\u306b\u5411\u304d\u307e\u3059\u3002", 
         "\u540d\u79f0:en": "turn to right until you feel vibration.", 
         "angle": "45", 
         "sub_category": "_nav_info_", 
-        "\u7def\u5ea6": "0.40.24.765", 
+        "\u7def\u5ea6": "0.40.24.761", 
         "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
         "height": "1", 
         "\u540d\u79f0": "", 
         "file": "EDITOR", 
-        "\u7d4c\u5ea6": "-0.55.47.368", 
+        "\u7d4c\u5ea6": "-0.55.47.365", 
         "major_category": "_nav_poi_", 
         "heading": "180", 
         "\u65bd\u8a2dID": "EDITOR_poi_1481784231186"
@@ -1683,16 +1736,16 @@
           0.6736527887913359
         ]
       }, 
-      "_rev": "2-3023b84e5b028b2ef8bfcc46b8558bc7", 
+      "_rev": "4-fadff154df7f4cb287cfd8c840b787f8", 
       "_id": "EDITOR_poi_1481796561337", 
       "type": "Feature", 
       "properties": {
         "building": "", 
         "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
-        "\u540d\u79f0:en": "Please stop here. You can check the last navigation by tapping the center of the display.", 
+        "\u540d\u79f0:en": "Please stop here. You can check the last navigation by tapping the center of the display..............................................................................Right on! You can also check previous navigation by left flick. If you satisfy with practice, let's walk to get to the goal.", 
         "angle": "45", 
         "sub_category": "_nav_info_", 
-        "\u540d\u79f0:ja": "\u4e00\u5ea6\u6b62\u307e\u3063\u3066\u304f\u3060\u3055\u3044\u3002\u753b\u9762\u4e2d\u592e\u3092\u30bf\u30c3\u30d7\u3059\u308b\u3068\u3001\u6700\u5f8c\u306e\u6848\u5185\u3092\u7e70\u308a\u8fd4\u3057\u307e\u3059\u3002", 
+        "\u540d\u79f0:ja": "\u4e00\u5ea6\u6b62\u307e\u3063\u3066\u304f\u3060\u3055\u3044\u3002\u753b\u9762\u4e2d\u592e\u3092\u30bf\u30c3\u30d7\u3059\u308b\u3068\u3001\u6700\u5f8c\u306e\u6848\u5185\u3092\u7e70\u308a\u8fd4\u3057\u307e\u3059\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u3002\u305d\u306e\u8abf\u5b50\u3067\u3059\uff01\u5de6\u306b\u30d5\u30ea\u30c3\u30af\u3059\u308b\u3068\u524d\u306e\u6848\u5185\u306b\u623b\u308c\u307e\u3059\u3002\u4e00\u901a\u308a\u7df4\u7fd2\u3057\u305f\u3089\u3001\u307e\u305f\u8db3\u8e0f\u307f\u3057\u3066\u30b4\u30fc\u30eb\u307e\u3067\u884c\u304d\u307e\u3057\u3087\u3046\u3002", 
         "\u7def\u5ea6": "0.40.25.150", 
         "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
         "height": "2", 
@@ -1702,35 +1755,6 @@
         "major_category": "_nav_poi_", 
         "heading": "90", 
         "\u65bd\u8a2dID": "EDITOR_poi_1481796561337"
-      }
-    }, 
-    {
-      "geometry": {
-        "type": "Point", 
-        "coordinates": [
-          -0.9299191832542419, 
-          0.6736527887913359
-        ]
-      }, 
-      "_rev": "2-61ad4b85a434c9549caa5d2e2098c26c", 
-      "_id": "EDITOR_poi_1481796886807", 
-      "type": "Feature", 
-      "properties": {
-        "building": "", 
-        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
-        "\u540d\u79f0:en": "Right on! You can also check previous navigation by left flick. If you satisfy with practice, let's walk to get to the goal.", 
-        "angle": "45", 
-        "sub_category": "_nav_info_", 
-        "\u540d\u79f0:ja": "\u305d\u306e\u8abf\u5b50\u3067\u3059\uff01\u5de6\u306b\u30d5\u30ea\u30c3\u30af\u3059\u308b\u3068\u524d\u306e\u6848\u5185\u306b\u623b\u308c\u307e\u3059\u3002\u4e00\u901a\u308a\u7df4\u7fd2\u3057\u305f\u3089\u3001\u307e\u305f\u8db3\u8e0f\u307f\u3057\u3066\u30b4\u30fc\u30eb\u307e\u3067\u884c\u304d\u307e\u3057\u3087\u3046\u3002", 
-        "\u7def\u5ea6": "0.40.25.150", 
-        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
-        "height": "2", 
-        "\u540d\u79f0": "", 
-        "file": "EDITOR", 
-        "\u7d4c\u5ea6": "-0.55.47.709", 
-        "major_category": "_nav_poi_", 
-        "heading": "90", 
-        "\u65bd\u8a2dID": "EDITOR_poi_1481796886807"
       }
     }, 
     {
@@ -1929,6 +1953,34 @@
         "\u5bfe\u5fdc\u30ce\u30fc\u30c9ID": "EDITOR_node_1481770574787", 
         "file": "EDITOR", 
         "\u5bfe\u5fdc\u65bd\u8a2dID": "EDITOR_poi_1481770658898"
+      }
+    }, 
+    {
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [
+          -0.9299624338746071, 
+          0.6736524535383797
+        ]
+      }, 
+      "_rev": "1-5218ee38cae38fe831e039588433ece9", 
+      "_id": "EDITOR_poi_1481801577584", 
+      "type": "Feature", 
+      "properties": {
+        "category": "\u516c\u5171\u65bd\u8a2d\u306e\u60c5\u5831", 
+        "\u540d\u79f0:ja": "\u632f\u52d5\u304c\u3042\u308b\u307e\u3067\u5de6\u306b\u5411\u304d\u307e\u3059\u3002", 
+        "\u540d\u79f0:en": "turn to left until you feel vibration.", 
+        "angle": "45", 
+        "sub_category": "_nav_info_", 
+        "\u7def\u5ea6": "0.40.25.149", 
+        "\u7def\u5ea6\u7d4c\u5ea6\u6841\u6570\u30b3\u30fc\u30c9": "3", 
+        "height": "2", 
+        "\u540d\u79f0": "", 
+        "file": "EDITOR", 
+        "\u7d4c\u5ea6": "-0.55.47.865", 
+        "major_category": "_nav_poi_", 
+        "heading": "90", 
+        "\u65bd\u8a2dID": "EDITOR_poi_1481801577584"
       }
     }, 
     {

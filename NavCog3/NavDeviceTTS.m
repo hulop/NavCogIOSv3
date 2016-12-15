@@ -195,7 +195,7 @@ static NavDeviceTTS *instance = nil;
     
     NSLog(@"speak_queue,%@,%@", text, flag?@"Force":@"");
     HLPSpeechEntry *se = [[HLPSpeechEntry alloc] init];
-    se.ut = [AVSpeechUtterance speechUtteranceWithString:text];
+    se.ut = [AVSpeechUtterance speechUtteranceWithString:[NavDeviceTTS removeDots:text]];
     se.ut.volume = 1.0;
     se.ut.rate = speechRate;
     se.ut.voice = [NavDeviceTTS getVoice];
@@ -344,8 +344,6 @@ static NavDeviceTTS *instance = nil;
         return NO;
     }
     
-    str = [NavDeviceTTS removeDots:str];
-    
     UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, str);
     NSLog(@"speak,%@,voiceover", str);
     return YES;
@@ -357,8 +355,8 @@ static NavDeviceTTS *instance = nil;
     
     do {
         len = [str length];
-        str = [str stringByReplacingOccurrencesOfString:@"。。" withString:@"。 。"];
-        str = [str stringByReplacingOccurrencesOfString:@".." withString:@". ."];
+        str = [str stringByReplacingOccurrencesOfString:@"。。" withString:@"。"];
+        str = [str stringByReplacingOccurrencesOfString:@".." withString:@"."];
     } while(len != [str length]);
     
     return str;

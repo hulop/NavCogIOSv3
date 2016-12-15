@@ -240,6 +240,44 @@ static NavNavigatorConstants *_instance;
         }
     }];
     
+    // handle elevator poi
+    NSArray<HLPPOI*> *elevators = [_allPOIs filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+        if ([evaluatedObject isKindOfClass:HLPPOI.class]) {
+            return [((HLPPOI*)evaluatedObject) poiCategory] == HLPPOICategoryElevator;
+        }
+        return false;
+    }]];
+    
+    [elevators enumerateObjectsUsingBlock:^(HLPPOI * _Nonnull poi, NSUInteger idx, BOOL * _Nonnull stop) {
+        HLPLocation *loc = [poi location];
+        HLPLocation *nearest = [_link nearestLocationTo:loc];
+        
+        double dLocToNearest = [loc distanceTo:nearest];
+        if (dLocToNearest > C.POI_DISTANCE_MIN_THRESHOLD) {
+            return;
+        }
+        
+        double dLocToTarget = [loc distanceTo:_link.targetLocation];
+        
+        double hInitial = [HLPLocation normalizeDegree:_link.initialBearingFromSource - 180];
+        BOOL inAngleInitial = fabs([HLPLocation normalizeDegree:hInitial - poi.heading]) < poi.angle;
+        
+        NavPOI *navpoi = nil;
+        if (inAngleInitial &&
+            dLocToTarget < C.POI_END_INFO_DISTANCE_THRESHOLD) {
+            navpoi = [[NavPOI alloc] initWithText:poi.elevatorButtons.description
+                                         Location:_link.targetLocation
+                                          Options:
+                      @{
+                        @"origin": poi,
+                        @"forAfterEnd": @(YES)
+                        }];
+        }
+        if (navpoi != nil) {
+            [poisTemp addObject:navpoi];
+        }
+    }];
+    
     // check NavPOI
     [_allPOIs enumerateObjectsUsingBlock:^(HLPObject *obj, NSUInteger idx, BOOL * _Nonnull stop) {
     
@@ -319,18 +357,6 @@ static NavNavigatorConstants *_instance;
                                     @"flagPlural": @(poi.flags.flagPlural),
                                     @"longDescription": poi.longDescription?poi.longDescription:@""
                                     }];
-                    }
-                    break;
-                case HLPPOICategoryElevator:
-                    if (inAngleInitial &&
-                        dLocToTarget < C.POI_END_INFO_DISTANCE_THRESHOLD) {
-                        navpoi = [[NavPOI alloc] initWithText:poi.elevatorButtons.description
-                                                     Location:_link.targetLocation
-                                                      Options:
-                                  @{
-                                    @"origin": poi,
-                                    @"forAfterEnd": @(YES)
-                                }];
                     }
                     break;
                 case HLPPOICategoryElevatorEquipments:
@@ -415,18 +441,19 @@ static NavNavigatorConstants *_instance;
             HLPEntrance *ent = (HLPEntrance*)obj;
             NavPOI *navpoi = nil;
             
-            if ([_nextLink.targetNodeID isEqualToString:ent.node._id] && _nextLink.length < 3) {
+            if ([_nextLink.targetNodeID isEqualToString:ent.node._id]) {
                 // destination with a leaf node, make second last link as last link
                 //_isNextDestination = YES;
-                navpoi = [[NavPOI alloc] initWithText:nil Location:ent.facility.location Options:
-                          @{
-                            @"origin": ent,
-                            @"forAfterEnd": @(YES),
-                            @"isDestination": @(YES),
-                            @"angleFromLocation": @(_nextLink.lastBearingForTarget),
-                            @"longDescription":  ent.facility.longDescriptionPron
-                            }];
-                
+                if (_nextLink.length < 3) {
+                    navpoi = [[NavPOI alloc] initWithText:nil Location:ent.facility.location Options:
+                              @{
+                                @"origin": ent,
+                                @"forAfterEnd": @(YES),
+                                @"isDestination": @(YES),
+                                @"angleFromLocation": @(_nextLink.lastBearingForTarget),
+                                @"longDescription":  ent.facility.longDescriptionPron
+                                }];
+                }                
             } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
                 // destination with non-leaf node
                 //_isNextDestination = YES;

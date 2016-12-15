@@ -61,6 +61,7 @@ typedef enum {
 @property NavDestination *from;
 @property BOOL previewMode;
 @property BOOL exerciseMode;
+@property BOOL toolMode;
 @property NSString* userID;
 @property HLPLocation *mapCenter;
 @property (readonly) NSDictionary *buildingInfo;

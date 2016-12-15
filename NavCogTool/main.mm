@@ -295,6 +295,7 @@ Option parseArguments(int argc, char * argv[]){
         timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(handleTimeout:) userInfo:nil repeats:YES];
         
         dataStore.previewMode = YES;
+        dataStore.toolMode = YES;
         [self navigationFrom:processing[@"from"] To:processing[@"to"] File:processing[@"file"]];
         
         fromToList = [fromToList mtl_arrayByRemovingObject:processing];

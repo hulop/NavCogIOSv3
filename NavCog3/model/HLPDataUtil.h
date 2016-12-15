@@ -30,8 +30,8 @@
 + (void) loadLandmarksAtLat:(double) lat Lng:(double) lng inDist:(int) dist forUser:(NSString*) user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result))callback;
 
 // need to call loadLandmarksAtLat first before calling the following methods
-+ (void) loadNodeMapForUser:(NSString*)user WithCallback:(void(^)(NSArray<HLPObject*>* result))callback;
-+ (void) loadFeaturesForUser:(NSString*)user WithCallback:(void(^)(NSArray<HLPObject*>* result))callback;
++ (void) loadNodeMapForUser:(NSString*)user withLang:(NSString*)lang WithCallback:(void(^)(NSArray<HLPObject*>* result))callback;
++ (void) loadFeaturesForUser:(NSString*)user withLang:(NSString*)lang WithCallback:(void(^)(NSArray<HLPObject*>* result))callback;
 
 + (void) getJSON:(NSURL*)url withCallback:(void(^)(NSObject* result))callback;
 

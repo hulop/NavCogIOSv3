@@ -643,9 +643,9 @@ static NavDataStore* instance_ = nil;
 
     [HLPDataUtil loadRouteFromNode:fromID toNode:toID forUser:user withLang:lang withPrefs:prefs withCallback:^(NSArray<HLPObject *> *result) {
         routeCache = result;
-        [HLPDataUtil loadNodeMapForUser:user WithCallback:^(NSArray<HLPObject *> *result) {
+        [HLPDataUtil loadNodeMapForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {
             featuresCache = result;
-            [HLPDataUtil loadFeaturesForUser:user WithCallback:^(NSArray<HLPObject *> *result) {
+            [HLPDataUtil loadFeaturesForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {
                 featuresCache = [featuresCache arrayByAddingObjectsFromArray: result];
                 
                 for(HLPObject* f in featuresCache) {

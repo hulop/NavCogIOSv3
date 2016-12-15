@@ -127,12 +127,13 @@
     }];
 }
 
-+ (void)loadNodeMapForUser:(NSString*)user WithCallback:(void (^)(NSArray<HLPObject *> *))callback
++ (void)loadNodeMapForUser:(NSString*)user withLang:(NSString*)lang WithCallback:(void (^)(NSArray<HLPObject *> *))callback
 {
     NSDictionary *dic =
     @{
       @"action": @"nodemap",
-      @"user": user
+      @"user": user,
+      @"lang": lang
       };
     
     NSURL *url = [self urlForRouteSearchService];
@@ -166,12 +167,13 @@
     }];
 }
 
-+ (void)loadFeaturesForUser:(NSString*)user WithCallback:(void (^)(NSArray<HLPObject *> *))callback
++ (void)loadFeaturesForUser:(NSString*)user withLang:(NSString*)lang WithCallback:(void (^)(NSArray<HLPObject *> *))callback
 {
     NSDictionary *dic =
     @{
       @"action": @"features",
-      @"user": user
+      @"user": user,
+      @"lang": lang
       };
     
     NSURL *url = [self urlForRouteSearchService];

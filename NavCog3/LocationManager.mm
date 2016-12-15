@@ -819,7 +819,8 @@ void functionCalledToLog(void *inUserData, string text)
 {
     if (putBeaconsCount < localizer->nSmooth) {        
         if (status->step() != loc::Status::PREDICTION &&
-            status->step() != loc::Status::RESET
+            status->step() != loc::Status::RESET &&
+            status->step() != loc::Status::OTHER
             ) {
             self.currentStatus = NavLocationStatusLocating;
         }

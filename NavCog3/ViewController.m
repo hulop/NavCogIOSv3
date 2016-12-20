@@ -168,8 +168,8 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
 - (IBAction)doBack:(id)sender {
     if (state == ViewStateSearchDetail) {
-        state = ViewStateTransition;
-        [self updateView];
+        //state = ViewStateTransition;
+        //[self updateView];
         [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":BACK_TO_CONTROL}];
     }
 }
@@ -186,15 +186,15 @@ typedef NS_ENUM(NSInteger, ViewState) {
             self.navigationItem.leftBarButtonItems = @[self.settingButton];
             break;
         case ViewStateSearch:
-            self.navigationItem.rightBarButtonItems = @[self.cancelButton];
-            self.navigationItem.leftBarButtonItems = @[];
+            self.navigationItem.rightBarButtonItems = @[self.settingButton];
+            self.navigationItem.leftBarButtonItems = @[self.cancelButton];
             break;
         case ViewStateSearchDetail:
-            self.navigationItem.rightBarButtonItems = @[self.cancelButton];
-            self.navigationItem.leftBarButtonItems = @[self.backButton];
+            self.navigationItem.rightBarButtonItems = @[self.backButton];
+            self.navigationItem.leftBarButtonItems = @[self.cancelButton];
             break;
         case ViewStateSearchSetting:
-            self.navigationItem.rightBarButtonItems = @[self.cancelButton];
+            self.navigationItem.rightBarButtonItems = @[self.searchButton];
             self.navigationItem.leftBarButtonItems = @[];
             break;
         case ViewStateNavigation:
@@ -306,6 +306,21 @@ typedef NS_ENUM(NSInteger, ViewState) {
 - (NSString *)getCurrentFloor
 {
     return [helper evalScript:@"(function() {return $hulop.indoor.getCurrentFloor();})()"];
+}
+
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    if ([identifier isEqualToString:@"user_settings"] && state == ViewStateMap) {
+        return YES;
+    }
+    if ([identifier isEqualToString:@"user_settings"] && state == ViewStateSearch) {
+        state = ViewStateTransition;
+        [self updateView];
+        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL
+                                                            object:@{@"control":ROUTE_SEARCH_OPTION_BUTTON}];
+    }
+    
+    return NO;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

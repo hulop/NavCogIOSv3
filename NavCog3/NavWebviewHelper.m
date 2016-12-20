@@ -30,7 +30,7 @@
 
 #define LOADING_TIMEOUT 30
 
-#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader"
+#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader&noclose"
 //#define UI_PAGE @"%@://%@/%@mobile.html?noheader" // for backward compatibility
 // does not work with old server
 
@@ -149,6 +149,12 @@
                 NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:param];                
+            }
+            if ([text rangeOfString:@"stateChanged,"].location == 0) {
+                NSData *data = [[text substringFromIndex:[@"stateChanged," length]] dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:param];
             }
             if ([Logging isLogging]) {
                 NSLog(@"%@", text);
@@ -278,11 +284,15 @@
     if ([object[@"control"] isEqualToString: ROUTE_SEARCH_OPTION_BUTTON]) {
         [self evalScript:@"$('a[href=\"#settings\"]').click()"];
     }
-    if ([object[@"control"] isEqualToString: ROUTE_SEARCH_BUTTON]) {
+    else if ([object[@"control"] isEqualToString: ROUTE_SEARCH_BUTTON]) {
         [self evalScript:@"$('a[href=\"#control\"]').click()"];
     }
-    if ([object[@"control"] isEqualToString: END_NAVIGATION]) {
+    else if ([object[@"control"] isEqualToString: END_NAVIGATION]) {
         [self evalScript:@"$('#end_navi').click()"];
+    }
+    else {
+        [self evalScript:@"$hulop.map.resetState()"];
+        //[self evalScript:@"$('a[href=\"#map-page\"]:visible').click()"];
     }
 }
 
@@ -359,6 +369,11 @@
 }
 
 #pragma mark - UIWebViewDelegate
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    return YES;
+}
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {

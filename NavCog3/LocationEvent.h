@@ -73,6 +73,7 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 #define STOP_ORIENTATION_INIT @"stop_orientation_init"
 
 #define BUILDING_CHANGED_NOTIFICATION @"building_changed_notification"
+#define WCUI_STATE_CHANGED_NOTIFICATION @"WCUI_STATE_CHANGED_NOTIFICATION"
 
 #define ENABLE_ACCELEARATION @"enable_acceleration"
 #define DISABLE_ACCELEARATION @"disable_acceleration"
@@ -80,6 +81,8 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 #define SERVER_CONFIG_CHANGED_NOTIFICATION @"SERVER_CONFIG_CHANGED_NOTIFICATION"
 #define DIALOG_AVAILABILITY_CHANGED_NOTIFICATION @"DIALOG_AVAILABILITY_CHANGED_NOTIFICATION"
 
+
 #define DEBUG_PEER_STATE_CHANGE @"DEBUG_PEER_STATE_CHANGE"
+
 
 #endif /* LocationEvent_h */

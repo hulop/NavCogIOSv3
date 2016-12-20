@@ -26,11 +26,24 @@
 @interface ViewController () {
     NavWebviewHelper *helper;
     UISwipeGestureRecognizer *recognizer;
+    NSDictionary *uiState;
 }
 
 @end
 
-@implementation ViewController
+typedef NS_ENUM(NSInteger, ViewState) {
+    ViewStateMap,
+    ViewStateSearch,
+    ViewStateSearchSetting,
+    ViewStateRouteConfirm,
+    ViewStateNavigation,
+    ViewStateTransition,
+    ViewStateLoading
+};
+
+@implementation ViewController {
+    ViewState state;
+}
 
 - (void)dealloc
 {
@@ -43,6 +56,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    state = ViewStateLoading;
+    
     helper = [[NavWebviewHelper alloc] initWithWebview:self.webView];
     helper.delegate = self;
     
@@ -51,6 +66,93 @@
     [self.webView addGestureRecognizer:recognizer];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiStateChanged:) name:WCUI_STATE_CHANGED_NOTIFICATION object:nil];
+    [self updateView];
+}
+
+
+- (void)uiStateChanged:(NSNotification*)note
+{
+    uiState = [note object];
+
+    NSString *page = uiState[@"page"];
+    BOOL inNavigation = [uiState[@"navigation"] boolValue];
+
+    if (page) {
+        if ([page isEqualToString:@"control"]) {
+            state = ViewStateSearch;
+        }
+        else if ([page isEqualToString:@"settings"]) {
+            state = ViewStateSearchSetting;
+        }
+        else if ([page isEqualToString:@"confirm"]) {
+            state = ViewStateRouteConfirm;
+        }
+        else if ([page hasPrefix:@"map-page"]) {
+            if (inNavigation) {
+                state = ViewStateNavigation;
+            } else {
+                state = ViewStateMap;
+            }
+        }
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateView];
+    });
+}
+
+- (IBAction)doSearch:(id)sender {
+    state = ViewStateTransition;
+    [self updateView];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":ROUTE_SEARCH_BUTTON}];
+}
+
+- (IBAction)stopNavigation:(id)sender {
+    state = ViewStateTransition;
+    [self updateView];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":@""}];
+}
+
+- (IBAction)doCancel:(id)sender {
+    state = ViewStateTransition;
+    [self updateView];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":@""}];
+}
+
+
+- (void)updateView
+{
+    switch(state) {
+        case ViewStateMap:
+            self.navigationItem.rightBarButtonItems = @[self.searchButton];
+            self.navigationItem.leftBarButtonItems = @[self.settingButton];
+            break;
+        case ViewStateSearch:
+            self.navigationItem.rightBarButtonItems = @[self.cancelButton];
+            self.navigationItem.leftBarButtonItems = @[];
+            break;
+        case ViewStateSearchSetting:
+            self.navigationItem.rightBarButtonItems = @[self.cancelButton];
+            self.navigationItem.leftBarButtonItems = @[];
+            break;
+        case ViewStateNavigation:
+            self.navigationItem.rightBarButtonItems = @[];
+            self.navigationItem.leftBarButtonItems = @[self.stopButton];
+            break;
+        case ViewStateRouteConfirm:
+            self.navigationItem.rightBarButtonItems = @[self.cancelButton];
+            self.navigationItem.leftBarButtonItems = @[];
+            break;
+        case ViewStateTransition:
+            self.navigationItem.rightBarButtonItems = @[];
+            self.navigationItem.leftBarButtonItems = @[];
+            break;
+        case ViewStateLoading:
+            self.navigationItem.rightBarButtonItems = @[];
+            self.navigationItem.leftBarButtonItems = @[self.settingButton];
+            break;
+    }
 }
 
 - (void) startLoading {
@@ -96,7 +198,7 @@
 
 - (void)requestStartNavigation:(NSNotification*)note
 {
-    NSDictionary *options = [note object];    
+    NSDictionary *options = [note object];
     if (options[@"toID"] == nil) {
         return;
     }
@@ -118,6 +220,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    segue.destinationViewController.restorationIdentifier = segue.identifier;
 }
 
 - (IBAction)retry:(id)sender {

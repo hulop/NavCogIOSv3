@@ -25,6 +25,10 @@
 
 @interface ViewController : UIViewController <UIGestureRecognizerDelegate, NavWebviewHelperDelegate>
 
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *stopButton;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *micButton;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;

@@ -71,7 +71,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     double y = self.view.bounds.size.height - 70;
     dialogHelper.transparentBack = YES;
     dialogHelper.layerScale = 0.75;
-    [dialogHelper recognize];
+    [dialogHelper inactive];
     [dialogHelper setup:self.view position:CGPointMake(x, y)];
     dialogHelper.delegate = self;
     dialogHelper.helperView.hidden = YES;
@@ -79,12 +79,22 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiStateChanged:) name:WCUI_STATE_CHANGED_NOTIFICATION object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     [self updateView];
 }
 
+
 - (void)tapped
 {
+    [dialogHelper inactive];
+    dialogHelper.helperView.hidden = YES;
     [self performSegueWithIdentifier:@"show_dialog_wc" sender:self];
+}
+
+- (void)dialogStateChanged:(NSNotification*)note
+{
+    [self updateView];
 }
 
 - (void)uiStateChanged:(NSNotification*)note
@@ -170,7 +180,14 @@ typedef NS_ENUM(NSInteger, ViewState) {
     }
     
     if (state == ViewStateMap) {
-        dialogHelper.helperView.hidden = ![[DialogManager sharedManager] isDialogAvailable];
+        if ([[DialogManager sharedManager] isDialogAvailable]) {
+            if (dialogHelper.helperView.hidden) {
+                dialogHelper.helperView.hidden = NO;
+                [dialogHelper recognize];
+            }
+        } else {
+            dialogHelper.helperView.hidden = YES;
+        }
     } else {
         dialogHelper.helperView.hidden = YES;
     }

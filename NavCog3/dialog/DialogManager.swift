@@ -23,7 +23,13 @@
 import UIKit
 
 class DialogManager: NSObject {
-    var latitude:Double?, longitude:Double?, floor:Int?, building:String?, available:Bool = false
+    var latitude:Double?, longitude:Double?, floor:Int?, building:String?
+    
+    var available:Bool = false {
+        didSet {            
+            NSNotificationCenter.defaultCenter().postNotificationName(DIALOG_AVAILABILITY_CHANGED_NOTIFICATION, object: available)
+        }
+    }
     static var instance:DialogManager?
     static func sharedManager()->DialogManager {
         if instance == nil {
@@ -61,8 +67,6 @@ class DialogManager: NSObject {
                 }
             }
         }
-        NSNotificationCenter.defaultCenter().postNotificationName(DIALOG_AVAILABILITY_CHANGED_NOTIFICATION, object: available)
-
     }
     
     func locationChanged (note:NSNotification) {

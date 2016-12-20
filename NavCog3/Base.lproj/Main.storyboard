@@ -74,12 +74,24 @@
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" title="NavCog" id="xcm-nO-qOJ">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="44B-zx-RwE">
-                            <color key="tintColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="doCancel:" destination="BYZ-38-t0r" id="nHr-O6-y2U"/>
-                            </connections>
-                        </barButtonItem>
+                        <leftBarButtonItems>
+                            <barButtonItem systemItem="cancel" id="44B-zx-RwE">
+                                <color key="tintColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="doCancel:" destination="BYZ-38-t0r" id="nHr-O6-y2U"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="done" id="iMt-r5-1Ew">
+                                <connections>
+                                    <action selector="doDone:" destination="BYZ-38-t0r" id="Hzw-s4-D7t"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Back" id="BhE-tH-Cn7" userLabel="Back">
+                                <connections>
+                                    <action selector="doBack:" destination="BYZ-38-t0r" id="Wmz-Fl-YHL"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
                         <rightBarButtonItems>
                             <barButtonItem style="done" systemItem="search" id="hZO-hm-xZr">
                                 <color key="tintColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
@@ -101,7 +113,9 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="backButton" destination="BhE-tH-Cn7" id="GGF-jw-kPZ"/>
                         <outlet property="cancelButton" destination="44B-zx-RwE" id="TAn-1X-WFb"/>
+                        <outlet property="doneButton" destination="iMt-r5-1Ew" id="NvR-T4-4xD"/>
                         <outlet property="errorMessage" destination="NRG-DQ-bhb" id="FEc-rJ-g7v"/>
                         <outlet property="indicator" destination="aPe-k5-pXe" id="4I3-2V-3a2"/>
                         <outlet property="retryButton" destination="SE5-WT-I7E" id="CNf-Tp-CPV"/>
@@ -859,8 +873,8 @@
         <image name="Menu" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Goq-2Z-Z6n"/>
         <segue reference="jup-Rk-ibd"/>
+        <segue reference="Goq-2Z-Z6n"/>
         <segue reference="y9t-k8-dBv"/>
     </inferredMetricsTieBreakers>
 </document>

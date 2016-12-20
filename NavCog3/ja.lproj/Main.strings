@@ -1,9 +1,6 @@
 /* Class = "UIButton"; accessibilityHint = "Select to change"; ObjectID = "0AS-gk-VX3"; */
 "0AS-gk-VX3.accessibilityHint" = "変更するには選択します";
 
-/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "0AS-gk-VX3"; */
-"0AS-gk-VX3.normalTitle" = "";
-
 /* Class = "UILabel"; text = "To"; ObjectID = "0fd-8M-uXw"; */
 "0fd-8M-uXw.text" = "目的地";
 
@@ -13,7 +10,7 @@
 /* Class = "UIButton"; normalTitle = "⇅"; ObjectID = "0nG-H5-lqv"; */
 "0nG-H5-lqv.normalTitle" = "⇅";
 
-/* Class = "UITableViewSection"; headerTitle = "設定"; ObjectID = "2FQ-fL-pff"; */
+/* (No Commment) */
 "2FQ-fL-pff.headerTitle" = "設定";
 
 /* Class = "UIButton"; normalTitle = "Left"; ObjectID = "3qj-Dh-1lE"; */
@@ -28,14 +25,11 @@
 /* Class = "UIButton"; normalTitle = "Route Options"; ObjectID = "4th-C5-Y98"; */
 "4th-C5-Y98.normalTitle" = "検索設定";
 
-/* Class = "UILabel"; text = "No Internet Connection"; ObjectID = "5yL-Mp-iYF"; */
+/* Class = "UILabel"; text = "Network Error"; ObjectID = "5yL-Mp-iYF"; */
 "5yL-Mp-iYF.text" = "ネットワークに問題があります";
 
 /* Class = "UIButton"; normalTitle = "Right"; ObjectID = "7Cs-ZC-ieK"; */
 "7Cs-ZC-ieK.normalTitle" = "右";
-
-/* Class = "UILabel"; text = "Search with Dialog"; ObjectID = "7Zd-hq-Kgd"; */
-"7Zd-hq-Kgd.text" = "対話検索";
 
 /* Class = "UIButton"; normalTitle = "Down"; ObjectID = "8Qc-Ae-cih"; */
 "8Qc-Ae-cih.normalTitle" = "下の階";
@@ -46,10 +40,13 @@
 /* Class = "UIBarButtonItem"; title = "Setting"; ObjectID = "ATn-7d-y1j"; */
 "ATn-7d-y1j.title" = "設定";
 
-/* Class = "UILabel"; text = "ナビゲーション終了"; ObjectID = "EeT-mO-dhE"; */
+/* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "BhE-tH-Cn7"; */
+"BhE-tH-Cn7.title" = "戻る";
+
+/* (No Commment) */
 "EeT-mO-dhE.text" = "ナビゲーション終了";
 
-/* Class = "UITableViewSection"; headerTitle = "ナビゲーション"; ObjectID = "Fjv-at-SH9"; */
+/* (No Commment) */
 "Fjv-at-SH9.headerTitle" = "ナビゲーション";
 
 /* Class = "UIButton"; normalTitle = "Start"; ObjectID = "JF6-KQ-nx5"; */
@@ -58,10 +55,10 @@
 /* (No Commment) */
 "LBt-N2-zq5.title" = "検索";
 
-/* Class = "UILabel"; text = "No Internet Connection"; ObjectID = "NRG-DQ-bhb"; */
+/* Class = "UILabel"; text = "Network Error"; ObjectID = "NRG-DQ-bhb"; */
 "NRG-DQ-bhb.text" = "ネットワークに問題があります";
 
-/* Class = "UILabel"; text = "基本設定"; ObjectID = "QGQ-Xh-iSw"; */
+/* (No Commment) */
 "QGQ-Xh-iSw.text" = "基本設定";
 
 /* (No Commment) */
@@ -69,9 +66,6 @@
 
 /* Class = "UIButton"; accessibilityHint = "Select to change"; ObjectID = "SC1-aF-UyA"; */
 "SC1-aF-UyA.accessibilityHint" = "変更するには選択します";
-
-/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "SC1-aF-UyA"; */
-"SC1-aF-UyA.normalTitle" = "";
 
 /* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "SE5-WT-I7E"; */
 "SE5-WT-I7E.normalTitle" = "再接続";
@@ -94,7 +88,7 @@
 /* Class = "UIButton"; normalTitle = "Marker"; ObjectID = "cMN-Lw-Y8t"; */
 "cMN-Lw-Y8t.normalTitle" = "マーカー";
 
-/* Class = "UILabel"; text = "ルート検索"; ObjectID = "cPv-rD-5Zy"; */
+/* (No Commment) */
 "cPv-rD-5Zy.text" = "ルート検索";
 
 /* Class = "UIButton"; normalTitle = "Auto"; ObjectID = "ckT-Tm-n01"; */
@@ -106,7 +100,7 @@
 /* (No Commment) */
 "f33-5l-IQM.normalTitle" = "案内開始";
 
-/* Class = "UILabel"; text = "詳細設定"; ObjectID = "fF4-sj-EDd"; */
+/* (No Commment) */
 "fF4-sj-EDd.text" = "詳細設定";
 
 /* Class = "UILabel"; text = "From"; ObjectID = "g1h-0V-f7m"; */
@@ -136,7 +130,7 @@
 /* Class = "UIBarButtonItem"; title = "Search"; ObjectID = "yBn-Ni-tgc"; */
 "yBn-Ni-tgc.title" = "検索";
 
-/* Class = "UILabel"; text = "ルート検索条件設定"; ObjectID = "yPF-YL-WSv"; */
+/* (No Commment) */
 "yPF-YL-WSv.text" = "ルート検索条件設定";
 
 /* Class = "UIButton"; normalTitle = "Preview"; ObjectID = "zGZ-Nf-Jjr"; */

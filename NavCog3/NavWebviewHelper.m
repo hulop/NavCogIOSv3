@@ -287,8 +287,14 @@
     else if ([object[@"control"] isEqualToString: ROUTE_SEARCH_BUTTON]) {
         [self evalScript:@"$('a[href=\"#control\"]').click()"];
     }
+    else if ([object[@"control"] isEqualToString: DONE_BUTTON]) {
+        [self evalScript:@"$('div[role=banner]:visible a').click()"];
+    }
     else if ([object[@"control"] isEqualToString: END_NAVIGATION]) {
         [self evalScript:@"$('#end_navi').click()"];
+    }
+    else if ([object[@"control"] isEqualToString: BACK_TO_CONTROL]) {
+        [self evalScript:@"$('div[role=banner]:visible a').click()"];
     }
     else {
         [self evalScript:@"$hulop.map.resetState()"];

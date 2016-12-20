@@ -22,6 +22,7 @@
 
 #import "ViewController.h"
 #import "LocationEvent.h"
+#import "NavDebugHelper.h"
 
 @interface ViewController () {
     NavWebviewHelper *helper;
@@ -35,15 +36,18 @@
 typedef NS_ENUM(NSInteger, ViewState) {
     ViewStateMap,
     ViewStateSearch,
+    ViewStateSearchDetail,
     ViewStateSearchSetting,
     ViewStateRouteConfirm,
     ViewStateNavigation,
     ViewStateTransition,
+    ViewStateRouteCheck,
     ViewStateLoading
 };
 
 @implementation ViewController {
     ViewState state;
+    UIColor *defaultColor;
 }
 
 - (void)dealloc
@@ -56,6 +60,8 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    defaultColor = self.navigationController.navigationBar.barTintColor;
     
     state = ViewStateLoading;
     
@@ -121,6 +127,15 @@ typedef NS_ENUM(NSInteger, ViewState) {
                 state = ViewStateMap;
             }
         }
+        else if ([page hasPrefix:@"ui-id-"]) {
+            state = ViewStateSearchDetail;
+        }
+        else if ([page isEqualToString:@"confirm_floor"]) {
+            state = ViewStateRouteCheck;
+        }
+        else {
+            NSLog(@"unmanaged state: %@", page);
+        }
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateView];
@@ -145,17 +160,38 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":@""}];
 }
 
+- (IBAction)doDone:(id)sender {
+    state = ViewStateTransition;
+    [self updateView];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":DONE_BUTTON}];
+}
+
+- (IBAction)doBack:(id)sender {
+    if (state == ViewStateSearchDetail) {
+        state = ViewStateTransition;
+        [self updateView];
+        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":BACK_TO_CONTROL}];
+    }
+}
+
 
 - (void)updateView
 {
+    BOOL debugFollower = [[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"];
+    BOOL peerExists = [[[NavDebugHelper sharedHelper] peers] count] > 0;
+
     switch(state) {
         case ViewStateMap:
-            self.navigationItem.rightBarButtonItems = @[self.searchButton];
+            self.navigationItem.rightBarButtonItems = debugFollower ? @[] : @[self.searchButton];
             self.navigationItem.leftBarButtonItems = @[self.settingButton];
             break;
         case ViewStateSearch:
             self.navigationItem.rightBarButtonItems = @[self.cancelButton];
             self.navigationItem.leftBarButtonItems = @[];
+            break;
+        case ViewStateSearchDetail:
+            self.navigationItem.rightBarButtonItems = @[self.cancelButton];
+            self.navigationItem.leftBarButtonItems = @[self.backButton];
             break;
         case ViewStateSearchSetting:
             self.navigationItem.rightBarButtonItems = @[self.cancelButton];
@@ -167,6 +203,10 @@ typedef NS_ENUM(NSInteger, ViewState) {
             break;
         case ViewStateRouteConfirm:
             self.navigationItem.rightBarButtonItems = @[self.cancelButton];
+            self.navigationItem.leftBarButtonItems = @[];
+            break;
+        case ViewStateRouteCheck:
+            self.navigationItem.rightBarButtonItems = @[self.doneButton];
             self.navigationItem.leftBarButtonItems = @[];
             break;
         case ViewStateTransition:
@@ -190,6 +230,18 @@ typedef NS_ENUM(NSInteger, ViewState) {
         }
     } else {
         dialogHelper.helperView.hidden = YES;
+    }
+    
+    self.navigationItem.title = NSLocalizedStringFromTable(@"NavCog", @"BlindView", @"");
+    
+    if (debugFollower) {
+        self.navigationItem.title = NSLocalizedStringFromTable(@"Follow", @"BlindView", @"");
+    }
+    
+    if (peerExists) {
+        self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.9 alpha:1.0];
+    } else {
+        self.navigationController.navigationBar.barTintColor = defaultColor;
     }
 }
 

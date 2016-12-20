@@ -34,14 +34,77 @@
 /* No comment provided by engineer. */
 "After getting off the elevator, %@" = "エレベーターをおりたら、%@";
 
+/* (No Commment) */
+"AutoDoorPOIString1" = "この先、自動ドアあり。";
+
+/* (No Commment) */
+"AutoDoorPOIString1Short" = "自動ドアあり。";
+
+/* (No Commment) */
+"AutoDoorPOIString2" = "この先、自動ドアが%dつ。";
+
+/* (No Commment) */
+"AutoDoorPOIString2Short" = "自動ドアが%dつ。";
+
+/* No comment provided by engineer. */
+"BothSide" = "両側";
+
+/* No comment provided by engineer. */
+"BrailleBlock" = "点字ブロックあり";
+
+/* (No Commment) */
+"BrailleBlockPOIString" = "この先、点字ブロックがあります";
+
+/* (No Commment) */
+"BrailleBlockPOIStringShort" = "点字ブロックあり";
+
 /* No comment provided by engineer. */
 "Cancel" = "キャンセル";
 
 /* No comment provided by engineer. */
 "Caution, %@" = "注意、%@";
 
+/* No comment provided by engineer. */
+"DialogSearch" = "対話検索";
+
+/* No comment provided by engineer. */
+"Disabled" = "%@。無効の";
+
+/* (No Commment) */
+"DoorPOIString1" = "この先、ドアあり。";
+
+/* (No Commment) */
+"DoorPOIString1Short" = "ドアあり。";
+
+/* (No Commment) */
+"DoorPOIString2" = "この先、ドアが%dつ。";
+
+/* (No Commment) */
+"DoorPOIString2Short" = "ドアが%dつ。";
+
+/* (No Commment) */
+"Exercise" = "練習";
+
 /* basement floor */
 "FloorBasementD" = "地下%@階";
+
+/* (No Commment) */
+"FloorChangeActionString2Down" = "%1$@を使って%2$@におります";
+
+/* (No Commment) */
+"FloorChangeActionString2Up" = "%1$@を使って%2$@に上がります";
+
+/* (No Commment) */
+"FloorChangeActionString3Down" = "%1$@の%2$@を使って%3$@へおりる";
+
+/* (No Commment) */
+"FloorChangeActionString3DownFull" = "%1$@の%2$@を使って%3$@へおりる";
+
+/* (No Commment) */
+"FloorChangeActionString3Up" = "%1$@の%2$@を使って%3$@へ上がる";
+
+/* (No Commment) */
+"FloorChangeActionString3UpFull" = "%1$@の%2$@を使って%3$@へ上がる";
 
 /* floor */
 "FloorD" = "%@階";
@@ -50,29 +113,13 @@
 "FloorNumType" = "cardinal";
 
 /* No comment provided by engineer. */
+"Follow" = "-NavCog-";
+
+/* No comment provided by engineer. */
 "From_button" = "%@から";
 
 /* No comment provided by engineer. */
 "Go to %1$@" = "%1$@に行きます。";
-
-/* No comment provided by engineer. */
-"FloorChangeActionString2Down" = "%1$@を使って%2$@におります";
-
-/* No comment provided by engineer. */
-"FloorChangeActionString3Down" = "%1$@の%2$@を使って%3$@へおりる";
-
-/* No comment provided by engineer. */
-"FloorChangeActionString2Up" = "%1$@を使って%2$@に上がります";
-
-/* No comment provided by engineer. */
-"FloorChangeActionString3Up" = "%1$@の%2$@を使って%3$@へ上がる";
-
-/* No comment provided by engineer. */
-"FloorChangeActionString3DownFull" = "%1$@の%2$@を使って%3$@へおりる";
-
-/* No comment provided by engineer. */
-"FloorChangeActionString3UpFull" = "%1$@の%2$@を使って%3$@へ上がる";
-
 
 /* No comment provided by engineer. */
 "Init Orientation" = "方向の調整
@@ -80,10 +127,31 @@
 (\"NavCog\"を2本指ロングタップして終了)";
 
 /* No comment provided by engineer. */
+"LeftSide" = "左側";
+
+/* No comment provided by engineer. */
 "Locating..." = "現在地を取得中";
+
+/* (No Commment) */
+"NoBrailleBlockPOIString" = "この先、点字ブロックがなくなります";
+
+/* (No Commment) */
+"NoBrailleBlockPOIStringShort" = "点字ブロック終了";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
+
+/* (No Commment) */
+"ObstaclePOIString1" = "この先、%@に障害物あり";
+
+/* (No Commment) */
+"ObstaclePOIString1Short" = "%@に障害物あり";
+
+/* (No Commment) */
+"ObstaclePOIString2" = "この先、%@に障害物あり";
+
+/* (No Commment) */
+"ObstaclePOIString2Short" = "%@に障害物あり";
 
 /* No comment provided by engineer. */
 "Others" = "その他";
@@ -93,6 +161,15 @@
 
 /* (No Commment) */
 "Preview" = "プレビュー";
+
+/* (No Commment) */
+"RampPOIString" = "この先、スロープがあります";
+
+/* (No Commment) */
+"RampPOIStringShort" = "スロープあり";
+
+/* No comment provided by engineer. */
+"RightSide" = "右側";
 
 /* (No Commment) */
 "Search" = "検索";
@@ -107,55 +184,13 @@
 "Stop Navigation" = "案内終了";
 
 /* No comment provided by engineer. */
+"SummaryHeader" = "この後の案内";
+
+/* No comment provided by engineer. */
 "TTS_PAUSE_CHAR" = "。";
 
 /* No comment provided by engineer. */
-"AutoDoorPOIString2" = "この先、自動ドアが%dつ。";
-
-/* No comment provided by engineer. */
-"DoorPOIString2" = "この先、ドアが%dつ。";
-
-/* No comment provided by engineer. */
-"AutoDoorPOIString1" = "この先、自動ドアあり。";
-
-/* No comment provided by engineer. */
-"DoorPOIString1" = "この先、ドアあり。";
-
-/* No comment provided by engineer. */
-"AutoDoorPOIString2Short" = "自動ドアが%dつ。";
-
-/* No comment provided by engineer. */
-"DoorPOIString2Short" = "ドアが%dつ。";
-
-/* No comment provided by engineer. */
-"AutoDoorPOIString1Short" = "自動ドアあり。";
-
-/* No comment provided by engineer. */
-"DoorPOIString1Short" = "ドアあり。";
-
-/* No comment provided by engineer. */
 "There is a sign says %@" = "%@という看板があります";
-
-/* */
-"ObstaclePOIString1" = "この先、%@に障害物あり";
-
-/* */
-"ObstaclePOIString2" = "この先、%@に障害物あり";
-
-/* */
-"ObstaclePOIString1Short" = "%@に障害物あり";
-
-/* */
-"ObstaclePOIString2Short" = "%@に障害物あり";
-
-/* */
-"BothSide" = "両側";
-
-/* */
-"LeftSide" = "左側";
-
-/* */
-"RightSide" = "右側";
 
 /* No comment provided by engineer. */
 "To_button" = "%@まで";
@@ -200,18 +235,6 @@
 "_nav_toilet_multi" = "多目的トイレ";
 
 /* (No Commment) */
-"and action" = "%1$@";
-
-/* (No Commment) */
-"and action at end object" = "突き当たりを%1$@";
-
-/* (No Commment) */
-"and action at near object" = "%2$@のところで%1$@";
-
-/* (No Commment) */
-"and action at warning block" = "警告ブロックのところで%1$@";
-
-/* (No Commment) */
 "action" = "%1$@";
 
 /* (No Commment) */
@@ -222,6 +245,18 @@
 
 /* (No Commment) */
 "action at warning block" = "警告ブロックのところで%1$@";
+
+/* (No Commment) */
+"and action" = "%1$@";
+
+/* (No Commment) */
+"and action at end object" = "突き当たりを%1$@";
+
+/* (No Commment) */
+"and action at near object" = "%2$@のところで%1$@";
+
+/* (No Commment) */
+"and action at warning block" = "警告ブロックのところで%1$@";
 
 /* approaching */
 "approaching" = "そろそろです";
@@ -346,31 +381,3 @@
 /* head to the right direction */
 "turn to the right" = "右に向く";
 
-/* */
-"Disabled" = "%@。無効の";
-
-/* */
-"RampPOIString" = "この先、スロープがあります";
-
-/* */
-"BrailleBlockPOIString" = "この先、点字ブロックがあります";
-
-/* */
-"NoBrailleBlockPOIString" = "この先、点字ブロックがなくなります";
-
-/* */
-"BrailleBlock" = "点字ブロックあり";
-
-/* */
-"RampPOIStringShort" = "スロープあり";
-
-/* */
-"BrailleBlockPOIStringShort" = "点字ブロックあり";
-
-/* */
-"NoBrailleBlockPOIStringShort" = "点字ブロック終了";
-
-/* */
-"SummaryHeader" = "この後の案内";
-
-"Exercise" = "練習";

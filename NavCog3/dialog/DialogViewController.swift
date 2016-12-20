@@ -272,6 +272,11 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         stt.tts?.stop(false)
         stt.disconnect()
         //stt.endRecognize()
+        if !stt.paused {
+            if UIAccessibilityIsVoiceOverRunning() {
+                NavSound.sharedInstance().vibrate(nil)
+            }
+        }
         stt.paused = true
         stt.delegate?.showText(NSLocalizedString("PAUSING", comment:"Pausing"));
         stt.delegate?.inactive()
@@ -518,6 +523,9 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     internal func sendmessage(msg: String){
         if !msg.isEmpty{
             newmessage(msg)
+            if UIAccessibilityIsVoiceOverRunning() {
+                NavSound.sharedInstance().vibrate(nil)
+            }
         }
 
         let conversation = ConversationEx()

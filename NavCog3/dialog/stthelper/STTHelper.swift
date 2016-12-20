@@ -40,7 +40,7 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
     var delegate:DialogViewHelper?
     var speaking:Bool = false
     var recognizing:Bool = false
-    var paused:Bool = false
+    var paused:Bool = true
     var last_actions: [([String],(String, UInt64)->Void)]?
     var last_failure:(NSError)->Void = {arg in}
     var listeningStart:Double = 0

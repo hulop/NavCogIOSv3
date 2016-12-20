@@ -22,8 +22,9 @@
 
 #import <UIKit/UIKit.h>
 #import "NavWebviewHelper.h"
+#import "NavCog3-Swift.h"
 
-@interface ViewController : UIViewController <UIGestureRecognizerDelegate, NavWebviewHelperDelegate>
+@interface ViewController : UIViewController <UIGestureRecognizerDelegate, NavWebviewHelperDelegate, DialogViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;

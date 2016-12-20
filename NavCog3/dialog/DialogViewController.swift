@@ -390,7 +390,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         })
     }
     
-    func tapped(state: DialogViewState) {
+    func tapped() {
         // TODO handle mic button // print(t.view)
         let stt = self.getStt()
         if (stt.recognizing) {

@@ -27,6 +27,7 @@ class AnimLayer: CALayer {
     static let blue = UIColor(colorLiteralRed: 50.0/255.0, green: 92.0/255.0, blue: 128.0/255.0, alpha: 1.0).CGColor
     static let gray = UIColor(colorLiteralRed: 221.0/255.0, green: 222.0/255.0, blue: 223.0/255.0, alpha: 1.0).CGColor
     static let white = UIColor(colorLiteralRed: 244.0/255.0, green: 244.0/255.0, blue: 236.0/255.0, alpha: 1.0).CGColor
+    static let transparent = UIColor(colorLiteralRed: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 0.0).CGColor
     var color = blue
     var frames:[NSTimeInterval] = []
     override func drawInContext(ctx: CGContext) {

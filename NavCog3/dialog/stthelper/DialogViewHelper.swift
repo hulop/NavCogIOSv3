@@ -62,8 +62,8 @@ enum DialogViewState:String {
     }
 }
 
-protocol DialogViewDelegate {
-    func tapped(state:DialogViewState);
+@objc protocol DialogViewDelegate {
+    func tapped();
 }
 
 class HelperView: UIView {
@@ -76,7 +76,7 @@ class HelperView: UIView {
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         self.layer.opacity = 1.0
-        delegate?.tapped(DialogViewState.Unknown)
+        delegate?.tapped()
     }
 }
 
@@ -108,15 +108,29 @@ class DialogViewHelper: NSObject {
     
     private let Frequency:Float = 1.0/30.0
     private let MaxDB:Float = 110
-    private let IconOuterSize1:CGFloat = 139
-    private let IconOuterSize2:CGFloat = 113
-    private let IconSize:CGFloat = 90
-    private let IconSmallSize:CGFloat = 23
-    private let SmallIconPadding:CGFloat = 33
-    private let LabelHeight = 40
+    private var IconOuterSize1:CGFloat = 139
+    private var IconOuterSize2:CGFloat = 113
+    private var IconSize:CGFloat = 90
+    private var IconSmallSize:CGFloat = 23
+    private var SmallIconPadding:CGFloat = 33
+    private var LabelHeight:CGFloat = 40
+    private var ImageSize:CGFloat = 64
     
-    private let ViewSize:CGFloat = 142
+    private var ViewSize:CGFloat = 142
     var helperView:HelperView!
+    var transparentBack:Bool = false
+    var layerScale:CGFloat = 1.0 {
+        didSet {
+            IconOuterSize1 = 139 * layerScale
+            IconOuterSize2 = 113 * layerScale
+            IconSize = 90 * layerScale
+            IconSmallSize = 23 * layerScale
+            SmallIconPadding = 33 * layerScale
+            LabelHeight = 40 * layerScale
+            ViewSize = 142 * layerScale
+            ImageSize = 64 * layerScale
+        }
+    }
     
     private var viewState: DialogViewState {
         didSet {
@@ -169,8 +183,8 @@ class DialogViewHelper: NSObject {
         }
     }
     
-    func tapped(state:DialogViewState) {
-        delegate?.tapped(viewState)
+    func tapped() {
+        delegate?.tapped()
     }
     
     func setup(view:UIView, position:CGPoint) {
@@ -244,7 +258,7 @@ class DialogViewHelper: NSObject {
         
         
         back1 = make(IconOuterSize1, max: IconOuterSize1, x: cx, y: cy)
-        back1.color = AnimLayer.gray
+        back1.color = transparentBack ?AnimLayer.transparent:AnimLayer.gray
         back1.zPosition = 0
         back2 = make(IconOuterSize2, max: IconOuterSize2, x: cx, y: cy)
         back2.color = AnimLayer.white
@@ -269,7 +283,7 @@ class DialogViewHelper: NSObject {
         micimgw = UIImage(named: "Mic_White")?.CGImage
         micimgr = UIImage(named: "Mic_Blue")?.CGImage
         mic.contents = micimgw
-        mic.bounds = CGRect(x: 0, y: 0, width: 64, height: 64)
+        mic.bounds = CGRect(x: 0, y: 0, width: ImageSize, height: ImageSize)
         mic.edgeAntialiasingMask = CAEdgeAntialiasingMask.LayerLeftEdge.union(CAEdgeAntialiasingMask.LayerRightEdge).union(CAEdgeAntialiasingMask.LayerTopEdge).union(CAEdgeAntialiasingMask.LayerBottomEdge)
         mic.position = CGPoint(x: cx, y: cy)
         layerView.layer.addSublayer(mic)

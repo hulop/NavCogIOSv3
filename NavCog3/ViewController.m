@@ -27,6 +27,7 @@
     NavWebviewHelper *helper;
     UISwipeGestureRecognizer *recognizer;
     NSDictionary *uiState;
+    DialogViewHelper *dialogHelper;
 }
 
 @end
@@ -65,12 +66,26 @@ typedef NS_ENUM(NSInteger, ViewState) {
     recognizer.delegate = self;
     [self.webView addGestureRecognizer:recognizer];
     
+    dialogHelper = [[DialogViewHelper alloc] init];
+    double x = 70;
+    double y = self.view.bounds.size.height - 70;
+    dialogHelper.transparentBack = YES;
+    dialogHelper.layerScale = 0.75;
+    [dialogHelper recognize];
+    [dialogHelper setup:self.view position:CGPointMake(x, y)];
+    dialogHelper.delegate = self;
+    dialogHelper.helperView.hidden = YES;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiStateChanged:) name:WCUI_STATE_CHANGED_NOTIFICATION object:nil];
     [self updateView];
 }
 
+- (void)tapped
+{
+    [self performSegueWithIdentifier:@"show_dialog_wc" sender:self];
+}
 
 - (void)uiStateChanged:(NSNotification*)note
 {
@@ -152,6 +167,12 @@ typedef NS_ENUM(NSInteger, ViewState) {
             self.navigationItem.rightBarButtonItems = @[];
             self.navigationItem.leftBarButtonItems = @[self.settingButton];
             break;
+    }
+    
+    if (state == ViewStateMap) {
+        dialogHelper.helperView.hidden = ![[DialogManager sharedManager] isDialogAvailable];
+    } else {
+        dialogHelper.helperView.hidden = YES;
     }
 }
 

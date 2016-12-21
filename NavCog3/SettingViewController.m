@@ -485,6 +485,9 @@ static HLPSetting *speechSpeedSetting;
     }
     routeOptionsSettingHelper = [[HLPSettingHelper alloc] init];
     
+    
+    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Prefer Tactile Paving", @"")
+                                             Name:@"route_tactile_paving" DefaultValue:@(YES) Accept:nil];
     [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Elevator", @"")
                                              Name:@"route_use_elevator" DefaultValue:@(YES) Accept:nil];
     [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Escalator", @"")

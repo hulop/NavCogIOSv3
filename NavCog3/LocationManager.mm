@@ -669,8 +669,12 @@ void functionCalledToLog(void *inUserData, string text)
             long ts = ((uptime+altitudeData.timestamp))*1000;
             
             // putAltimeter
-            Altimeter alt(ts, [relAlt doubleValue], [pressure doubleValue]);
-            localizer->putAltimeter(alt);
+            try {
+                Altimeter alt(ts, [relAlt doubleValue], [pressure doubleValue]);
+                localizer->putAltimeter(alt);
+            }catch(const std::exception& ex) {
+                std::cout << ex.what() << std::endl;
+            }
             
             std::stringstream ss;
             // "Altimeter",relativeAltitude,pressure,timestamp
@@ -757,6 +761,11 @@ void functionCalledToLog(void *inUserData, string text)
     
     localizer->usesAltimeterForFloorTransCheck = [ud boolForKey:@"use_altimeter"];
     localizer->coeffDiffFloorStdev = [ud doubleForKey:@"coeffDiffFloorStdev"];
+    
+    // deactivate elevator transition in system model
+    localizer->prwBuildingProperty->probabilityUpElevator(0.0).probabilityDownElevator(0.0).probabilityStayElevator(1.0);
+    // set parameters for weighting and mixing in transition areas
+    localizer->pfFloorTransParams->weightTransitionArea(2.0).mixtureProbaTransArea(0.25);
 }
 
 - (void) dealloc

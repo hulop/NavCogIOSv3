@@ -377,7 +377,7 @@ static HLPSetting *speechSpeedSetting;
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev coefficient for different floor" Name:@"coeffDiffFloorStdev" DefaultValue:@(5)  Min:5 Max:1000 Interval:5];
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use wheelchair PDR threthold" Name:@"wheelchair_pdr" DefaultValue:@(NO) Accept:nil];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability from likelihood" Name:@"mixProba" DefaultValue:@(0) Min:0 Max:0.01 Interval:0.001];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix reject distance [m]" Name:@"rejectDistance" DefaultValue:@(5) Min:5 Max:100 Interval:5];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix reject distance [m]" Name:@"rejectDistance" DefaultValue:@(5) Min:0 Max:30 Interval:1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix reject floor difference" Name:@"rejectFloorDifference" DefaultValue:@(0.95) Min:0 Max:1 Interval:0.05];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix minimum number of beacons" Name:@"nBeaconsMinimum" DefaultValue:@(3) Min:0 Max:10 Interval:1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Orientation bias diffusion" Name:@"diffusionOrientationBias" DefaultValue:@(10) Min:0 Max:90 Interval:1];

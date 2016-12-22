@@ -387,7 +387,9 @@ static HLPSetting *speechSpeedSetting;
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Resampling lower bound 2D [m]" Name:@"locLB" DefaultValue:@(0.5) Min:0 Max:2 Interval:0.1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Resampling lower bound floor [floor]" Name:@"floorLB" DefaultValue:@(0.1) Min:0.0 Max:1 Interval:0.1];
 
+    [blelocppSettingHelper addSectionTitle:@"blelocpp params (floor transition)"];
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use altimeter for floor trans support" Name:@"use_altimeter" DefaultValue:@(YES) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability for floor trans area" Name:@"mixtureProbabilityFloorTransArea" DefaultValue:@(0.25) Min:0.0 Max:1.0 Interval:0.05];
     
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (prediction)"];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Sigma stop for random walker" Name:@"sigmaStopRW" DefaultValue:@(0.2) Min:0.0 Max:1.0 Interval:0.1];

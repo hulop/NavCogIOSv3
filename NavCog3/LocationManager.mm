@@ -765,7 +765,7 @@ void functionCalledToLog(void *inUserData, string text)
     // deactivate elevator transition in system model
     localizer->prwBuildingProperty->probabilityUpElevator(0.0).probabilityDownElevator(0.0).probabilityStayElevator(1.0);
     // set parameters for weighting and mixing in transition areas
-    localizer->pfFloorTransParams->weightTransitionArea(2.0).mixtureProbaTransArea(0.25);
+    localizer->pfFloorTransParams->weightTransitionArea(2.0).mixtureProbaTransArea([ud doubleForKey:@"mixtureProbabilityFloorTransArea"]);
 }
 
 - (void) dealloc

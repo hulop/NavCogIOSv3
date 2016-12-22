@@ -386,10 +386,22 @@ static HLPSetting *speechSpeedSetting;
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Half life of hitting wall" Name:@"weightDecayHalfLife" DefaultValue:@(5) Min:1 Max:10 Interval:1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Resampling lower bound 2D [m]" Name:@"locLB" DefaultValue:@(0.5) Min:0 Max:2 Interval:0.1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Resampling lower bound floor [floor]" Name:@"floorLB" DefaultValue:@(0.1) Min:0.0 Max:1 Interval:0.1];
-    
+
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use altimeter for floor trans support" Name:@"use_altimeter" DefaultValue:@(YES) Accept:nil];
-}
     
+    [blelocppSettingHelper addSectionTitle:@"blelocpp params (prediction)"];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Sigma stop for random walker" Name:@"sigmaStopRW" DefaultValue:@(0.2) Min:0.0 Max:1.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Sigma move for random walker" Name:@"sigmaMoveRW" DefaultValue:@(1.0) Min:0.0 Max:3.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Pose random walk rate for WPRW" Name:@"poseRandomWalkRate" DefaultValue:@(1.0) Min:0.0 Max:2.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Random walk rate for WPRW" Name:@"randomWalkRate" DefaultValue:@(0.2) Min:0.0 Max:2.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Probability orientation offset jump for WPRW" Name:@"probaOriBiasJump" DefaultValue:@(0.0) Min:0.0 Max:0.5 Interval:0.1];
+    
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev velocity" Name:@"stdVelocity" DefaultValue:@(0.3) Min:0.0 Max:1.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Diffusion velocity" Name:@"diffusionVelocity" DefaultValue:@(0.1) Min:0.0 Max:1.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Minimum velocity" Name:@"minVelocity" DefaultValue:@(0.1) Min:0.0 Max:1.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Maximum velocity" Name:@"maxVelocity" DefaultValue:@(1.5) Min:0.0 Max:3.0 Interval:0.1];    
+}
+
 
 + (void)setupBlindNaviSettings
 {

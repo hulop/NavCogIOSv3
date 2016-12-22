@@ -716,11 +716,11 @@ void functionCalledToLog(void *inUserData, string text)
     // localizer->smoothType
     
     localizer->walkDetectSigmaThreshold = [ud boolForKey:@"wheelchair_pdr"]?0.1:0.6;
-    localizer->meanVelocity = [ud doubleForKey:@"meanVelocity"];;
-    localizer->stdVelocity = 0.3;
-    localizer->diffusionVelocity = 0.1;
-    localizer->minVelocity = 0.1;
-    localizer->maxVelocity = 1.5;
+    localizer->meanVelocity = [ud doubleForKey:@"meanVelocity"];
+    localizer->stdVelocity = [ud doubleForKey:@"stdVelocity"];// 0.3;
+    localizer->diffusionVelocity = [ud doubleForKey:@"diffusionVelocity"];//0.1;
+    localizer->minVelocity = [ud doubleForKey:@"minVelocity"];//0.1;
+    localizer->maxVelocity = [ud doubleForKey:@"maxVelocity"];//1.5;
     
     localizer->stdRssiBias = 2.0;
     localizer->diffusionRssiBias = 0.2;
@@ -731,8 +731,8 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->maxIncidenceAngle = 45;
     localizer->weightDecayHalfLife = [ud doubleForKey:@"weightDecayHalfLife"];
     
-    localizer->sigmaStop = 0.1;
-    localizer->sigmaMove = 1.0;
+    localizer->sigmaStop = [ud doubleForKey:@"sigmaStopRW"]; //default 0.2
+    localizer->sigmaMove = [ud doubleForKey:@"sigmaMoveRW"]; //default 1.0
     
     localizer->velocityRateFloor = 1.0;
     localizer->velocityRateElevator = 1.0;
@@ -749,9 +749,9 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->nBeaconsMinimum = [ud doubleForKey:@"nBeaconsMinimum"];
     
     // for WeakPoseRandomWalker
-    localizer->probabilityOrientationBiasJump =0.0;
-    localizer->poseRandomWalkRate = 1.0;
-    localizer->randomWalkRate = 0.2;
+    localizer->probabilityOrientationBiasJump = [ud doubleForKey:@"probaOriBiasJump"]; //0.1;
+    localizer->poseRandomWalkRate = [ud doubleForKey:@"poseRandomWalkRate"]; // 1.0;
+    localizer->randomWalkRate = [ud doubleForKey:@"randomWalkRate"]; //0.2;
     
     double lb = [ud doubleForKey:@"locLB"];
     double lbFloor = [ud doubleForKey:@"floorLB"];

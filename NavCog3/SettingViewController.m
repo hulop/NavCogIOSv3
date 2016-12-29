@@ -386,6 +386,7 @@ static HLPSetting *speechSpeedSetting;
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Half life of hitting wall" Name:@"weightDecayHalfLife" DefaultValue:@(5) Min:1 Max:10 Interval:1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Resampling lower bound 2D [m]" Name:@"locLB" DefaultValue:@(0.5) Min:0 Max:2 Interval:0.1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Resampling lower bound floor [floor]" Name:@"floorLB" DefaultValue:@(0.1) Min:0.0 Max:1 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Confidence of heading for initialization" Name:@"headingConfidenceInit" DefaultValue:@(0.0) Min:0.0 Max:1.0 Interval:0.05];
 
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (floor transition)"];
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use altimeter for floor trans support" Name:@"use_altimeter" DefaultValue:@(YES) Accept:nil];

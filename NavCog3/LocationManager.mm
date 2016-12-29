@@ -370,22 +370,15 @@ void functionCalledToLog(void *inUserData, string text)
                         timestamp = att.timestamp();
                         localizer->putAttitude(att);
                     }
-                    else if (logString.compare(0, 6, "Heading") == 0){
-                        // pass
+                    else if (logString.compare(0, 7, "Heading") == 0){
+                        Heading head = LogUtil::toHeading(logString);
+                        localizer->putHeading(head);
+                        if (bShowSensorLog) {
+                            std::cout << "LogReplay:" << head.timestamp() << ",Heading," << head.trueHeading() << "," << head.magneticHeading() << "," << head.headingAccuracy() << std::endl;
+                        }
                     }
                     else if (logString.compare(0, 9, "Altimeter") == 0){
-                        
-                        std::function<Altimeter(std::string)> parseAltimeter = [](std::string logString){
-                            std::vector<std::string> values;
-                            boost::split(values, logString, boost::is_any_of(","));
-                            long timestamp = stol(values.at(3));
-                            double relAlt = stod(values.at(1));
-                            double pressure = stod(values.at(2));
-                            Altimeter alt(timestamp,relAlt,pressure);
-                            return alt;
-                        };
-                        
-                        auto alt = parseAltimeter(logString);
+                        Altimeter alt = LogUtil::toAltimeter(logString);
                         localizer->putAltimeter(alt);
                         if (bShowSensorLog) {
                             std::cout << "LogReplay:" << alt.timestamp() << ",Altimeter," << alt.relativeAltitude() << "," << alt.pressure() << std::endl;
@@ -668,19 +661,16 @@ void functionCalledToLog(void *inUserData, string text)
             NSNumber* pressure = altitudeData.pressure;
             long ts = ((uptime+altitudeData.timestamp))*1000;
             
+            Altimeter alt(ts, [relAlt doubleValue], [pressure doubleValue]);
             // putAltimeter
             try {
-                Altimeter alt(ts, [relAlt doubleValue], [pressure doubleValue]);
                 localizer->putAltimeter(alt);
             }catch(const std::exception& ex) {
                 std::cout << ex.what() << std::endl;
             }
             
-            std::stringstream ss;
             // "Altimeter",relativeAltitude,pressure,timestamp
-            ss << "Altimeter," << [relAlt doubleValue] << "," << [pressure doubleValue]<< "," << ts;
-            std::string logStr = ss.str();
-            [self logText: logStr];
+            [self logText: LogUtil::toString(alt)];
         }];
     }
     
@@ -766,6 +756,9 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->prwBuildingProperty->probabilityUpElevator(0.0).probabilityDownElevator(0.0).probabilityStayElevator(1.0);
     // set parameters for weighting and mixing in transition areas
     localizer->pfFloorTransParams->weightTransitionArea(2.0).mixtureProbaTransArea([ud doubleForKey:@"mixtureProbabilityFloorTransArea"]);
+    
+    // to activate orientation initialization using
+    localizer->headingConfidenceForOrientationInit([ud doubleForKey:@"headingConfidenceInit"]);
 }
 
 - (void) dealloc
@@ -876,9 +869,22 @@ void functionCalledToLog(void *inUserData, string text)
         if (!_isActive || isLogReplaying) {
             return;
         }
-        std::string logString = [self logStringFrom:newHeading];
-        [self logText: logString];
+        loc::Heading heading = [self convertCLHeading:newHeading] ;
+        // putHeading
+        try {
+            localizer->putHeading(heading);
+        }catch(const std::exception& ex) {
+            std::cout << ex.what() << std::endl;
+        }
+        [self logText: LogUtil::toString(heading)];
     }];
+}
+
+- (loc::Heading) convertCLHeading:(CLHeading*) clheading
+{
+    long timestamp = static_cast<long>([clheading.timestamp timeIntervalSince1970]*1000);
+    loc::Heading locheading(timestamp, clheading.magneticHeading, clheading.trueHeading, clheading.headingAccuracy);
+    return locheading;
 }
 
 - (std::string) logStringFrom:(CLHeading*)heading

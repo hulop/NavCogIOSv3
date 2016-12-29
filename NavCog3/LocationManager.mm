@@ -1260,15 +1260,11 @@ int dcount = 0;
         double y = sin(orientation);
         orientation = atan2(x, y) / M_PI * 180;
         
-        int orientationAccuracy = 999;
+        int orientationAccuracy = 999; // large value
         if (localizer->tracksOrientation()) {
-            
-            auto dirStats = loc::Pose::computeDirectionalStatistics(states);
-            double m = dirStats.circularMean();
-            double v = dirStats.circularVariance();
-
-            orientationAccuracy = v/M_PI*180;
-            
+            auto normParams = loc::Pose::computeWrappedNormalParameter(states);
+            double stdOri = normParams.stdev(); // radian
+            orientationAccuracy = static_cast<int>(stdOri/M_PI*180.0);
             if (orientationAccuracy < ORIENATION_ACCURACY_THRETHOLD) {
                 currentOrientation = orientation;
             }

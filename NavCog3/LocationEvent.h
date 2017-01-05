@@ -84,5 +84,6 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 
 #define DEBUG_PEER_STATE_CHANGE @"DEBUG_PEER_STATE_CHANGE"
 
+#define REMOTE_CONTROL_EVENT @"REMOTE_CONTROL_EVENT"
 
 #endif /* LocationEvent_h */

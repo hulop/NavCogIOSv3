@@ -35,8 +35,6 @@
 		7E1F9F521DF01C86003E1B23 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F501DF01C86003E1B23 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7E1F9F551DF01FA9003E1B23 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F531DF01FA9003E1B23 /* Freddy.framework */; };
 		7E1F9F561DF01FA9003E1B23 /* Freddy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F531DF01FA9003E1B23 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		7E1F9F571DF01FA9003E1B23 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F541DF01FA9003E1B23 /* Starscream.framework */; };
-		7E1F9F581DF01FA9003E1B23 /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F541DF01FA9003E1B23 /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7E1F9F5F1DF14E6F003E1B23 /* DialogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */; };
 		7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E28479E1E024112006B1FB8 /* exercise-data.json */; };
 		7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */; };
@@ -105,7 +103,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				7E1F9F561DF01FA9003E1B23 /* Freddy.framework in Embed Frameworks */,
-				7E1F9F581DF01FA9003E1B23 /* Starscream.framework in Embed Frameworks */,
 				7E1F9F4A1DF01BC2003E1B23 /* ConversationV1.framework in Embed Frameworks */,
 				7E1F9F4C1DF01BC2003E1B23 /* DialogV1.framework in Embed Frameworks */,
 				7E1F9F4E1DF01BC2003E1B23 /* RestKit.framework in Embed Frameworks */,
@@ -163,7 +160,6 @@
 		7E1F9F481DF01BC2003E1B23 /* RestKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RestKit.framework; path = Carthage/Build/iOS/RestKit.framework; sourceTree = "<group>"; };
 		7E1F9F501DF01C86003E1B23 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		7E1F9F531DF01FA9003E1B23 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/iOS/Freddy.framework; sourceTree = "<group>"; };
-		7E1F9F541DF01FA9003E1B23 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = "<group>"; };
 		7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogManager.swift; path = dialog/DialogManager.swift; sourceTree = "<group>"; };
 		7E28479E1E024112006B1FB8 /* exercise-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "exercise-data.json"; path = "model/exercise-data.json"; sourceTree = "<group>"; };
 		7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
@@ -184,7 +180,7 @@
 		7E6E42E81D90FD1B006B6899 /* BlindViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlindViewController.m; sourceTree = "<group>"; };
 		7E6E42EC1D911236006B6899 /* LocationEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationEvent.h; sourceTree = "<group>"; };
 		7E8A33BB1D917D5200D20CD5 /* HLPDataUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPDataUtil.h; path = model/HLPDataUtil.h; sourceTree = "<group>"; };
-		7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = HLPDataUtil.m; path = model/HLPDataUtil.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = HLPDataUtil.m; path = model/HLPDataUtil.m; sourceTree = "<group>"; };
 		7E8A33C41D92D13400D20CD5 /* HLPLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPLocation.h; path = model/HLPLocation.h; sourceTree = "<group>"; };
 		7E8A33C51D92D13400D20CD5 /* HLPLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HLPLocation.m; path = model/HLPLocation.m; sourceTree = "<group>"; };
 		7E9238D91D5189F100875766 /* HLPSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPSetting.h; path = SettingUtil/HLPSetting.h; sourceTree = "<group>"; };
@@ -261,7 +257,6 @@
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
 				7E1F9F551DF01FA9003E1B23 /* Freddy.framework in Frameworks */,
 				7E1F9F4B1DF01BC2003E1B23 /* DialogV1.framework in Frameworks */,
-				7E1F9F571DF01FA9003E1B23 /* Starscream.framework in Frameworks */,
 				7E1F9F491DF01BC2003E1B23 /* ConversationV1.framework in Frameworks */,
 				7E1F9F511DF01C86003E1B23 /* Alamofire.framework in Frameworks */,
 				12CE60FFF66333BF27326795 /* libPods-NavCog3.a in Frameworks */,
@@ -446,7 +441,6 @@
 			isa = PBXGroup;
 			children = (
 				7E1F9F531DF01FA9003E1B23 /* Freddy.framework */,
-				7E1F9F541DF01FA9003E1B23 /* Starscream.framework */,
 				7E1F9F501DF01C86003E1B23 /* Alamofire.framework */,
 				7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */,
 				7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */,

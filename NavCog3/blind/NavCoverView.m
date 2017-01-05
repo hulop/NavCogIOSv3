@@ -42,6 +42,7 @@
     NSArray *elements;
     NSArray *speaks;
     UIAccessibilityElement *first;
+    long currentIndex;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
@@ -50,6 +51,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(speak:) name:SPEAK_TEXT_QUEUEING object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:NAV_ROUTE_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteControl:) name:REMOTE_CONTROL_EVENT object:nil];
     
     first = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
     first.accessibilityLabel = NSLocalizedString(@"Navigation", @"");
@@ -60,6 +62,80 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)resetCurrentIndex
+{
+    currentIndex = (speaks==nil)?0:[speaks count];
+}
+
+- (void)incrementCurrentIndex
+{
+    currentIndex = MIN([elements count]-1, currentIndex+1);
+}
+
+- (void)decrementCurrentIndex
+{
+    currentIndex = MAX(0, currentIndex-1);
+}
+
+- (void)jumpToLast
+{
+    currentIndex = [elements count]-1;
+}
+
+- (void)jumpToFirst
+{
+    currentIndex = 0;
+}
+
+- (void)speakCurrentElement
+{
+    UIAccessibilityElement *element = elements[currentIndex];
+    
+    if (UIAccessibilityIsVoiceOverRunning()) {
+        UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, element.accessibilityLabel);
+    } else {
+        [[NavDeviceTTS sharedTTS] selfspeak:element.accessibilityLabel force:YES completionHandler:^{
+        }];
+    }
+    
+    NSString *text = element.accessibilityLabel;
+    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:
+     @{@"text":text,@"force":@(YES),@"debug":@(YES)}];
+}
+
+- (void)remoteControl:(NSNotification*)notification
+{
+    if (![notification object] || ![[notification object] isKindOfClass:UIEvent.class]) {
+        return;
+    }
+    
+    UIEvent *event = (UIEvent*)[notification object];
+    
+    switch (event.subtype) {
+        case UIEventSubtypeRemoteControlTogglePlayPause: // 103
+            [self resetCurrentIndex];
+            break;
+        case UIEventSubtypeRemoteControlNextTrack: // 104
+            [self incrementCurrentIndex];
+            break;
+        case UIEventSubtypeRemoteControlPreviousTrack: // 105
+            [self decrementCurrentIndex];
+            break;
+        case UIEventSubtypeRemoteControlBeginSeekingBackward: // 106
+            [self jumpToFirst];
+            break;
+        case UIEventSubtypeRemoteControlBeginSeekingForward: // 108
+            [self jumpToLast];
+            break;
+        case UIEventSubtypeRemoteControlEndSeekingBackward: // 107
+        case UIEventSubtypeRemoteControlEndSeekingForward: // 109
+            return;
+        default:
+            return;
+    }
+    [self speakCurrentElement];
 }
 
 - (void)clear:(NSNotification*)notification

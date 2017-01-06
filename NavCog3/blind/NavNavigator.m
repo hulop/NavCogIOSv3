@@ -1184,7 +1184,13 @@ static NavNavigatorConstants *_instance;
                     if (link2.length < (mw1 + mw3) / 2 * C.CRANK_REMOVE_SAFE_RATE) {
                         
                         // need to update links
+                        // TODO: tricky update
+                        [link2 offsetTarget:-link2.length];
+                        [link2 updateLastBearingForTarget:link1.lastBearingForTarget];
+                        HLPLink* link12 = [[HLPCombinedLink alloc] initWithLink1:link1 andLink2:link2];
+                        [temp setObject:link12 atIndexedSubscript:i];
                         [temp removeObjectAtIndex:i+1];
+                        
                         i--;
                     }
                 }

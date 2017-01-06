@@ -252,7 +252,16 @@ Option parseArguments(int argc, char * argv[]){
         }
     } else {
         NSString *fromID = [NSString stringWithCString:opt.fromID.c_str() encoding:NSUTF8StringEncoding];
+        NSRange range = [fromID rangeOfString:@"#"];
+        if (range.location != NSNotFound) {
+            fromID = [fromID substringWithRange:NSMakeRange(0, range.location)];
+        }
         NSString *toID = [NSString stringWithCString:opt.toID.c_str() encoding:NSUTF8StringEncoding];
+        range = [toID rangeOfString:@"#"];
+        if (range.location != NSNotFound) {
+            toID = [toID substringWithRange:NSMakeRange(0, range.location)];
+        }
+        
         if (opt.outputPath.length() > 0) {
             fromToList = @[@{@"from":fromID, @"to":toID, @"file":[NSString stringWithCString:opt.outputPath.c_str() encoding:NSUTF8StringEncoding]}];
         }

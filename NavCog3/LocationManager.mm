@@ -153,6 +153,7 @@ void functionCalledToLog(void *inUserData, string text)
     loggingQueue.qualityOfService = NSQualityOfServiceBackground;
     
     beaconManager = [[CLLocationManager alloc] init];
+    beaconManager.headingFilter = kCLHeadingFilterNone; // always update heading
     beaconManager.delegate = self;
     
     motionManager = [[CMMotionManager alloc] init];
@@ -866,7 +867,6 @@ void functionCalledToLog(void *inUserData, string text)
         }
     }
     [processQueue addOperationWithBlock:^{
-        // logging
         if (!_isActive || isLogReplaying) {
             return;
         }
@@ -877,6 +877,7 @@ void functionCalledToLog(void *inUserData, string text)
         }catch(const std::exception& ex) {
             std::cout << ex.what() << std::endl;
         }
+        // logging
         [self logText: LogUtil::toString(heading)];
     }];
 }

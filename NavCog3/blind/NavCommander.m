@@ -107,18 +107,18 @@
             angle = NSLocalizedStringFromTable(@"on your left side(almost back)",@"BlindView", @"something at your degree -150 ~ -180"); //@"左後ろ";
         } else if (turnAngle > 150) {
             angle = NSLocalizedStringFromTable(@"on your right side(almost back)",@"BlindView", @"something at your degree +150 ~ +180"); //@"右後ろ";
-        } else if (turnAngle < -120) {
+        } else if (turnAngle < -135) {
             angle = NSLocalizedStringFromTable(@"on your left side(back)",@"BlindView", @"something at your degree -120 ~ -150"); //@"左斜め後ろ";
-        } else if (turnAngle > 120) {
+        } else if (turnAngle > 135) {
             angle = NSLocalizedStringFromTable(@"on your right side(back)",@"BlindView", @"something at your degree +120 ~ +150"); //@"右斜め後ろ";
-        } else if (turnAngle < -60) {
+        } else if (turnAngle < -45) {
             angle = NSLocalizedStringFromTable(@"on your left side",@"BlindView", @"something at your degree -60 ~ -120"); //@"左";
-        } else if (turnAngle > 60) {
+        } else if (turnAngle > 45) {
             angle = NSLocalizedStringFromTable(@"on your right side",@"BlindView", @"something at your degree +60 ~ +120"); //@"右";
-        } else if (turnAngle < -22.5) {
-            angle = NSLocalizedStringFromTable(@"on your left side(front)",@"BlindView", @"something at your degree -22.5 ~ -60"); //@"左斜め前";
-        } else if (turnAngle > 22.5) {
-            angle = NSLocalizedStringFromTable(@"on your right side(front)",@"BlindView", @"something at your degree +22.5 ~ +60"); //@"右斜め前";
+        //} else if (turnAngle < -22.5) {
+        //    angle = NSLocalizedStringFromTable(@"on your left side(front)",@"BlindView", @"something at your degree -22.5 ~ -60"); //@"左斜め前";
+        //} else if (turnAngle > 22.5) {
+        //    angle = NSLocalizedStringFromTable(@"on your right side(front)",@"BlindView", @"something at your degree +22.5 ~ +60"); //@"右斜め前";
         } else {
             angle = NSLocalizedStringFromTable(@"in front of you",@"BlindView", @"something at your degree -22.5 ~ +22.5"); //@"正面";
         }

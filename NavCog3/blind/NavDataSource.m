@@ -61,6 +61,20 @@
     
     NSArray *shops = [all filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isFacility = NO"]];
     NSArray *facilities = [all filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isFacility = YES"]];
+    facilities = [facilities sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *l1, HLPLandmark *l2) {
+        NSString*(^sortName)(HLPLandmark*) = ^(HLPLandmark *l) {
+            if (l.isToilet) {
+                return @"AAA";
+            }
+            if (l.properties[@"sub_category"]) {
+                return (NSString*)l.properties[@"sub_category"];
+            }
+            return @"ZZZ";
+        };
+        NSString *n1 = sortName(l1);
+        NSString *n2 = sortName(l2);
+        return [n1 compare:n2];
+    }];
     
     NSMutableArray *tempSections = [@[] mutableCopy];
     

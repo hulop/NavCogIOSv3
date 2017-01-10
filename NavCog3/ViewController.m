@@ -310,7 +310,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
-    if ([identifier isEqualToString:@"user_settings"] && state == ViewStateMap) {
+    if ([identifier isEqualToString:@"user_settings"] && (state == ViewStateMap || state == ViewStateLoading)) {
         return YES;
     }
     if ([identifier isEqualToString:@"user_settings"] && state == ViewStateSearch) {

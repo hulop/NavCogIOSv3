@@ -1219,6 +1219,11 @@ static NavNavigatorConstants *_instance;
                 }
                 
                 if ([HLPCombinedLink link:link1 shouldBeCombinedWithLink:link2]) {
+                    if (i == 1 && link1.linkType != LINK_TYPE_ELEVATOR && link2.linkType == LINK_TYPE_ELEVATOR) {
+                        // avoid combining the first link with elevator
+                        continue;
+                    }
+                    
                     HLPLink* link12 = [[HLPCombinedLink alloc] initWithLink1:link1 andLink2:link2];
                     [temp setObject:link12 atIndexedSubscript:i];
                     [temp removeObjectAtIndex:i+1];
@@ -1835,6 +1840,7 @@ static NavNavigatorConstants *_instance;
                     }
                     if (navIndex == 1) {
                         // starts at elevator
+                        linkInfo.hasBeenWaitingAction = YES;
                         if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
                             [self.delegate userNeedsToTakeAction:
                              @{

@@ -204,7 +204,7 @@
         [temp appendString:properties[PROPKEY_NAME]];
     }
     else if(self.category == HLP_OBJECT_CATEGORY_ENTRANCE) {
-        [temp appendString:properties[PROPKEY_ENTRANCE_NAME]];
+        [temp appendFormat:@" %@", properties[PROPKEY_ENTRANCE_NAME]];
     }
     else if(self.category == HLP_OBJECT_CATEGORY_TOILET) {
         temp = [[NSMutableString alloc] init];

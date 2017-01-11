@@ -72,7 +72,7 @@
 "SPEECH_SPEED_CHECK" = "読み上げ速度:%.2f";
 
 /* label for tts options */
-"Speech" = "読み上げ";
+"Speech_Sound" = "読み上げ / 音";
 
 /* label for speech speed option */
 "Speech speed" = "読み上げ速度";
@@ -102,3 +102,11 @@
 "checkNetworkConnection" = "ネットワークの接続を確認してください";
 
 "Prefer Tactile Paving" = "点字ブロックを優先する";
+
+"DialogStart" = "再開";
+
+"DialogStartHint" = "対話を再開するにはダブルタップします";
+
+"vibrateSetting" = "振動で通知";
+
+"soundEffectSetting" = "効果音で通知";

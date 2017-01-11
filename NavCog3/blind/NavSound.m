@@ -26,6 +26,10 @@
 
 @implementation NavSound {
     SystemSoundID successSoundID;
+    SystemSoundID AnnounceNotificationSoundID;
+    SystemSoundID VoiceRecoStartSoundID;
+    SystemSoundID VoiceRecoEndSoundID;
+    NSURL *url1, *url2, *url3, *url4;
 }
 
 static NavSound *instance;
@@ -41,20 +45,54 @@ static NavSound *instance;
 - (instancetype)init
 {
     self = [super init];
-    NSURL *url = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/Modern/calendar_alert_chord.caf"];
-    AudioServicesCreateSystemSoundID((__bridge CFURLRef)url,&successSoundID);
+    
+    url1 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/Modern/calendar_alert_chord.caf"];
+    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url1,&successSoundID);
+    
+    url2 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Success_Haptic.caf"];
+    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url2,&AnnounceNotificationSoundID);
 
+    url3 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Start_Haptic.caf"];
+    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url3,&VoiceRecoStartSoundID);
+
+    url4 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Stop_Haptic.caf"];
+    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url4,&VoiceRecoEndSoundID);
+    
     return self;
+}
+
+-(void)_playSystemSound:(SystemSoundID)soundID
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound_effect"]) {
+        AudioServicesPlaySystemSound(soundID);
+    }
 }
 
 -(void)playSuccess
 {
-    AudioServicesPlaySystemSound(successSoundID);
+    [self _playSystemSound:successSoundID];
+}
+
+-(void)playAnnounceNotification
+{
+    [self _playSystemSound:AnnounceNotificationSoundID];
+}
+
+- (void)playVoiceRecoStart
+{
+    [self _playSystemSound:VoiceRecoStartSoundID];
+}
+
+- (void)playVoiceRecoEnd
+{
+    [self _playSystemSound:VoiceRecoEndSoundID];
 }
 
 -(void)vibrate:(NSDictionary*)param
 {
-    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"vibrate"]) {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+    }
 }
 
 @end

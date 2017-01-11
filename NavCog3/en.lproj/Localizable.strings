@@ -48,7 +48,7 @@
 "Preview speed" = "Preview speed";
 
 /* label for tts options */
-"Speech" = "Speech";
+"Speech_Sound" = "Speech / Sound";
 
 /* label for speech speed option */
 "Speech speed" = "Speech speed";
@@ -92,3 +92,7 @@
 "Launch Exercise" = "Launch Exercise";
 
 "Prefer Tactile Paving" = "Prefer Tactile Paving";
+
+"vibrateSetting" = "Use Vibration";
+
+"soundEffectSetting" = "Use Sound Effect";

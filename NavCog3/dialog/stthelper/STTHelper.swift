@@ -199,12 +199,17 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
                 if let code = error?.code {
                     if code == 203 {
                         self.endRecognize();
-                        if UIAccessibilityIsVoiceOverRunning() {
+                        var delay = 0.0
+                        //if UIAccessibilityIsVoiceOverRunning() {
                             NavSound.sharedInstance().vibrate(nil)
-                        }
-
-                        self.startPWCaptureSession()
-                        self.startRecognize(actions, failure:failure)
+                            NavSound.sharedInstance().playVoiceRecoStart()
+                            delay = 0.25
+                        //}
+                        
+                        self._setTimeout(delay, block: {
+                            self.startPWCaptureSession()
+                            self.startRecognize(actions, failure:failure)
+                        })
                     }
                 }
                 return;
@@ -270,6 +275,11 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
         }
     }
     
+    
+    internal func _setTimeout(delay:NSTimeInterval, block:()->Void) -> NSTimer {
+        return NSTimer.scheduledTimerWithTimeInterval(delay, target: NSBlockOperation(block: block), selector: #selector(NSOperation.main), userInfo: nil, repeats: false)
+    }
+    
     func listen(actions: [([String],(String, UInt64)->Void)], selfvoice: String?, speakendactions:[((String)->Void)]?,avrdelegate:AVAudioRecorderDelegate?, failure:(NSError)->Void) {
         
         if (speaking) {
@@ -293,15 +303,21 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
             }
             self.listeningStart = self.now()
 
-            if UIAccessibilityIsVoiceOverRunning() {
+            var delay = 0.0
+            //if UIAccessibilityIsVoiceOverRunning() {
                 NavSound.sharedInstance().vibrate(nil)
-            }
+                NavSound.sharedInstance().playVoiceRecoStart()
+                delay = 0.25
+            //}
             
-            self.startPWCaptureSession()//alternative
-            self.startRecognize(actions, failure: failure)
+            self._setTimeout(delay, block: {
+                self.startPWCaptureSession()//alternative
+                self.startRecognize(actions, failure: failure)
+                
+                self.delegate?.showText(NSLocalizedString("SPEAK_NOW", comment:"Speak Now!"))
+                self.delegate?.listen()
+            })
             
-            self.delegate?.showText(NSLocalizedString("SPEAK_NOW", comment:"Speak Now!"))
-            self.delegate?.listen()
         }
         speaking = true
     }
@@ -344,12 +360,17 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
     func restartRecognize() {
         if let actions = self.last_actions {
             if let failure:(NSError)->Void = self.last_failure {
-                if UIAccessibilityIsVoiceOverRunning() {
+                var delay = 0.0
+                //if UIAccessibilityIsVoiceOverRunning() {
                     NavSound.sharedInstance().vibrate(nil)
-                }
-
-                self.startPWCaptureSession()
-                self.startRecognize(actions, failure:failure)
+                    //NavSound.sharedInstance().playVoiceRecoStart()
+                    delay = 0.0
+                //}
+                
+                self._setTimeout(delay, block: {
+                    self.startPWCaptureSession()
+                    self.startRecognize(actions, failure:failure)
+                })
             }
         }
     }

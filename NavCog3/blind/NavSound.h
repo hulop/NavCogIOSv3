@@ -27,5 +27,8 @@
 
 + (instancetype) sharedInstance;
 - (void) playSuccess;
+- (void) playAnnounceNotification;
+- (void) playVoiceRecoStart;
+- (void) playVoiceRecoEnd;
 - (void) vibrate:(NSDictionary*)param;
 @end

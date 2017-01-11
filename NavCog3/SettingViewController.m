@@ -48,6 +48,8 @@ static HLPSettingHelper *logSettingHelper;
 static HLPSettingHelper *routeOptionsSettingHelper;
 
 static HLPSetting *speechSpeedSetting;
+static HLPSetting *vibrateSetting;
+static HLPSetting *soundEffectSetting;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -263,15 +265,25 @@ static HLPSetting *speechSpeedSetting;
         if (speechSpeedSetting) {
             speechSpeedSetting.visible = !UIAccessibilityIsVoiceOverRunning();
         }
+        BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_BLIND"];
+        if (vibrateSetting) {
+            vibrateSetting.visible = blindMode;
+        }
+        if (soundEffectSetting) {
+            soundEffectSetting.visible = blindMode;
+        }
         return;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
 
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech", @"label for tts options")];
+    [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech_Sound", @"label for tts options")];
     speechSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
                                      Name:@"speech_speed" DefaultValue:@(0.6) Min:0.1 Max:1 Interval:0.05];
     [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
     [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
+    vibrateSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"vibrateSetting", @"") Name:@"vibrate" DefaultValue:@(YES) Accept:nil];
+    soundEffectSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"soundEffectSetting", @"") Name:@"sound_effect" DefaultValue:@(NO) Accept:nil];
+
     
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
     [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];

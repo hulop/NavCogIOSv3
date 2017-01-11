@@ -53,6 +53,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var conversation_id:String? = nil
     var client_id:Int? = nil
     var root: UIViewController? = nil
+    var tintColor: UIColor? = nil
     
     private var _tts:TTSProtocol? = nil
     private var _stt:STTHelper? = nil
@@ -121,7 +122,13 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     override func viewWillAppear(animated: Bool) {
-        self.navigationController?.navigationBarHidden = true
+        tintColor = self.navigationController!.navigationBar.tintColor;
+        //self.navigationController?.navigationBarHidden = true
+        self.navigationController!.navigationBar.userInteractionEnabled = false;
+        self.navigationController!.interactivePopGestureRecognizer!.enabled = false;
+        self.navigationController!.navigationBar.tintColor = UIColor.lightGrayColor()
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.navigationItem.leftBarButtonItem)
+
     }
     override func viewDidAppear(animated: Bool) {
         NSNotificationCenter.defaultCenter().postNotificationName("RestartConversation", object: self)
@@ -273,9 +280,10 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         stt.disconnect()
         //stt.endRecognize()
         if !stt.paused {
-            if UIAccessibilityIsVoiceOverRunning() {
+            //if UIAccessibilityIsVoiceOverRunning() {
                 NavSound.sharedInstance().vibrate(nil)
-            }
+                NavSound.sharedInstance().playVoiceRecoEnd()
+            //}
         }
         stt.paused = true
         stt.delegate?.showText(NSLocalizedString("PAUSING", comment:"Pausing"));
@@ -444,7 +452,10 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     internal func newresponse(orgres: MessageResponse?){
         dispatch_async(dispatch_get_main_queue(), { [weak self] in
             if let weakself = self {
-                weakself.navigationController?.navigationBarHidden = false
+                //weakself.navigationController?.navigationBarHidden = false
+                weakself.navigationController!.navigationBar.userInteractionEnabled = true
+                weakself.navigationController!.interactivePopGestureRecognizer!.enabled = true
+                weakself.navigationController!.navigationBar.tintColor = weakself.tintColor
             }
         })
 
@@ -468,7 +479,12 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if let fin:Bool = resobj!.context["finish"] as? Bool{ 
             if fin {
                 postEndDialog = {
-                    self.navigationController?.navigationBarHidden = false
+                    //self.navigationController?.navigationBarHidden = false
+                    self.navigationController!.navigationBar.userInteractionEnabled = true
+                    self.navigationController!.interactivePopGestureRecognizer!.enabled = true
+
+                    self.navigationController!.navigationBar.tintColor = self.tintColor
+
                     if self.root != nil {
                         self.navigationController?.popToViewController(self.root!, animated: true)
                     } else {
@@ -484,13 +500,20 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 if let dest_info = resobj!.context["dest_info"] {
                     if let nodes:String = dest_info["nodes"] as? String {
                         postEndDialog = { [weak self] in
-                            self!.navigationController?.navigationBarHidden = false
-                            if self!.root != nil {
-                                self!.navigationController?.popToViewController(self!.root!, animated: true)
-                            } else {
-                                self!.navigationController?.popToRootViewControllerAnimated(true)
+                            //self!.navigationController?.navigationBarHidden = false
+                            if let weakself = self {
+                                weakself.navigationController!.navigationBar.userInteractionEnabled = true
+                                weakself.navigationController!.interactivePopGestureRecognizer!.enabled = true
+                                weakself.navigationController!.navigationBar.tintColor = weakself.tintColor
+
+                                
+                                if weakself.root != nil {
+                                    weakself.navigationController?.popToViewController(weakself.root!, animated: true)
+                                } else {
+                                    weakself.navigationController?.popToRootViewControllerAnimated(true)
+                                }
+                                UIApplication.sharedApplication().openURL(NSURL(string: weakself.conv_navigation_url + "?toID=" + nodes.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)!, options: [:], completionHandler: nil)
                             }
-                            UIApplication.sharedApplication().openURL(NSURL(string: self!.conv_navigation_url + "?toID=" + nodes.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)!, options: [:], completionHandler: nil)
                         }
                     }
                 }
@@ -523,9 +546,10 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     internal func sendmessage(msg: String){
         if !msg.isEmpty{
             newmessage(msg)
-            if UIAccessibilityIsVoiceOverRunning() {
+            //if UIAccessibilityIsVoiceOverRunning() {
                 NavSound.sharedInstance().vibrate(nil)
-            }
+                NavSound.sharedInstance().playVoiceRecoEnd()
+            //}
         }
 
         let conversation = ConversationEx()
@@ -623,6 +647,14 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.refreshTableView()
         dispatch_async(dispatch_get_main_queue(), {[weak self] in
             self!.startDialog(str)
+        })
+        dispatch_async(dispatch_get_main_queue(), { [weak self] in
+            if let weakself = self {
+                //weakself.navigationController?.navigationBarHidden = false
+                weakself.navigationController!.navigationBar.userInteractionEnabled = true
+                weakself.navigationController!.interactivePopGestureRecognizer!.enabled = true
+                weakself.navigationController!.navigationBar.tintColor = weakself.tintColor
+            }
         })
     }
     func justSpeech(response: String){

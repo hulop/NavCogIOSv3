@@ -642,6 +642,7 @@ static NavNavigatorConstants *_instance;
                                @"forFloor":@(range.location == 0)
                                }]];
         
+        // no block
         BOOL lastLinkHasBraille = (range.location+range.length == [links count]);
         
         if (!lastLinkHasBraille || _nextLink.brailleBlockType != HLPBrailleBlockTypeAvailable) {
@@ -654,7 +655,20 @@ static NavNavigatorConstants *_instance;
                                    }]];
         }
     });
-
+    
+    // braille block is avilable after turn
+    checkLinkFeatures(links, ^ BOOL (HLPLink *link) {
+        return link.brailleBlockType != HLPBrailleBlockTypeAvailable;
+    }, ^(NSRange range) {
+        BOOL lastLinkHasNoBraille = range.location+range.length == [links count];
+        if (lastLinkHasNoBraille && _nextLink.brailleBlockType == HLPBrailleBlockTypeAvailable) {
+            [poisTemp addObject:[[NavPOI alloc] initWithText:nil Location:_link.targetLocation Options:
+                                 @{
+                                   @"origin":_nextLink,
+                                   @"forBrailleBlock":@(YES)
+                                   }]];
+        }
+    });
     
     // convert NAVCOG1/2 acc info into NavPOI
     [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -2062,30 +2076,30 @@ static NavNavigatorConstants *_instance;
                     if (poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
                         poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE) {
                         if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
+                            poi.hasBeenApproached = YES;
+                            poi.hasBeenLeft = NO;
+                            poi.lastApproached = now;
+                            poi.countApproached++;
                             [self.delegate userIsApproachingToPOI:
                              @{
                                @"poi": poi,
                                @"heading": @(poi.diffAngleFromUserOrientation)
                                }];
-                            poi.hasBeenApproached = YES;
-                            poi.hasBeenLeft = NO;
-                            poi.lastApproached = now;
-                            poi.countApproached++;
                         }
                     }
                 } else {
                     if (!poi.hasBeenLeft) {
                         if (poi.distanceFromSnappedLocation > C.POI_ANNOUNCE_DISTANCE &&
                             poi.distanceFromUserLocation > C.POI_ANNOUNCE_DISTANCE) {
-                            if ([self.delegate respondsToSelector:@selector(userIsLeavingFromPOI:)]) {
+                            if ([self.delegate respondsToSelector:@selector(userIsLeavingFromPOI:)]) {                                
+                                poi.hasBeenLeft = YES;
+                                poi.hasBeenApproached = NO;
+                                poi.lastLeft = now;
                                 [self.delegate userIsLeavingFromPOI:
                                  @{
                                    @"poi": poi,
                                    @"heading": @(poi.diffAngleFromUserOrientation)
                                    }];
-                                poi.hasBeenLeft = YES;
-                                poi.hasBeenApproached = NO;
-                                poi.lastLeft = now;
                             }
                         }
                     }

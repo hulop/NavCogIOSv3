@@ -357,7 +357,7 @@ static NavDataStore* instance_ = nil;
                                                  Speed:[obj[@"speed"] doubleValue]
                                            Orientation:[obj[@"orientation"] doubleValue]
                                    OrientationAccuracy:[obj[@"orientationAccuracy"] doubleValue]];
-    
+        
     if (obj[@"debug_info"] || obj[@"debug_latlng"]) {
         [currentLocation updateParams:obj];
     }
@@ -381,7 +381,10 @@ static NavDataStore* instance_ = nil;
      @{
        @"current":loc?loc:[NSNull null],
        @"isManual":@(isManualLocation),
-       @"actual":(isnan(currentLocation.lat)||isnan(currentLocation.lng))?[NSNull null]:currentLocation
+       
+       // Removed nan check to publish unknown lat and lng
+       //@"actual":(isnan(currentLocation.lat)||isnan(currentLocation.lng))?[NSNull null]:currentLocation
+       @"actual":currentLocation
        }];
 }
 
@@ -435,9 +438,11 @@ static NavDataStore* instance_ = nil;
 
 - (HLPLocation*) currentLocation
 {
-    if (isnan(currentLocation.lat) && isnan(manualCurrentLocation.lat)) {
-        return nil;
-    }
+    
+    // Removed nan check
+    //if (isnan(currentLocation.lat) && isnan(manualCurrentLocation.lat)) {
+    //    return nil;
+    //}
     
     [location update:currentLocation];
     
@@ -456,17 +461,20 @@ static NavDataStore* instance_ = nil;
                                withAccuracy:magneticOrientationAccuracy];
             }
         }
-    } else {
-        if (magneticOrientationAccuracy < location.orientationAccuracy) {
-            [location updateOrientation:magneticOrientation
-                           withAccuracy:magneticOrientationAccuracy];
-        }
     }
     
-    if (isnan(location.lat) || isnan(location.lng)) {
-        return nil;
-    }
+    // Removed orientation check
+    //else {
+    //    if (magneticOrientationAccuracy < location.orientationAccuracy) {
+    //        [location updateOrientation:magneticOrientation
+    //                       withAccuracy:magneticOrientationAccuracy];
+    //    }
+    //}
     
+    // Removed nan check
+    //if (isnan(location.lat) || isnan(location.lng)) {
+    //    return nil;
+    //}
     
     HLPLocation *newLoc = [[HLPLocation alloc] init];
     [newLoc update:location];

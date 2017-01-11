@@ -250,9 +250,12 @@
     if (!location || [location isEqual:[NSNull null]]) {
         return;
     }
+    
+    /*
     if (isnan(location.lat) || isnan(location.lng)) {
         return;
     }
+    */
     
     if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
         if (!location.params) {
@@ -262,7 +265,7 @@
     }
     
     double floor = location.floor;
-    
+
     [self sendData:@{
                      @"lat":@(location.lat),
                      @"lng":@(location.lng),
@@ -455,10 +458,39 @@
         return;
     }
     
+    __block NSObject*(^removeNaNValue)(NSObject*) = ^(NSObject *obj) {
+        NSObject* newObj;
+        if ([obj isKindOfClass:NSArray.class]) {
+            NSArray* arr = (NSArray*) obj;
+            NSMutableArray* newArr = [arr mutableCopy];
+            for(int i=0; i<[arr count]; i++){
+                NSObject* tmp = arr[i];
+                newArr[i] = removeNaNValue(tmp);
+            }
+            newObj = (NSObject*) newArr;
+        }else if ([obj isKindOfClass:NSDictionary.class]) {
+            NSDictionary* dict = (NSDictionary*) obj;
+            NSMutableDictionary* newDict = [dict mutableCopy];
+            for(id key in [dict keyEnumerator]){
+                NSObject* val = dict[key];
+                if([val isKindOfClass:NSNumber.class]){
+                    double dVal = [(NSNumber*) val doubleValue];
+                    if(isnan(dVal)){
+                        [newDict removeObjectForKey:key];
+                    }
+                }
+            }
+            newObj = (NSObject*) newDict;
+        }
+        return newObj;
+    };
+    
+    data = removeNaNValue(data);
+    
     NSString *jsonstr = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:data options:0 error:nil]encoding:NSUTF8StringEncoding];
     
     NSString *script = [NSString stringWithFormat:@"%@.onData('%@',%@);", callback, name, jsonstr];
-    //NSLog(@"%@", script);
+    NSLog(@"%@", script);
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [webView stringByEvaluatingJavaScriptFromString:script];

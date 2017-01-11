@@ -29,6 +29,7 @@
 @property (nonatomic, readonly) NSArray *coordinates;
 
 - (void) updateCoordinates:(NSArray*)coordinates;
+- (instancetype)initWithLocations:(NSArray*) locations;
 @end
 
 
@@ -199,6 +200,8 @@ typedef enum: int {
 - (void) offsetSource:(double)distance;
 - (HLPPOIElevatorEquipments*) elevatorEquipments;
 - (BOOL) isSafeLinkType;
+
+- (instancetype) initWithSource:(HLPLocation*)source Target:(HLPLocation*)target;
 @end
 
 @interface HLPCombinedLink : HLPLink

@@ -361,3 +361,21 @@ Head to the correct orientation
 
 "Exercise" = "Exercise";
 
+"REROUTING" = "You might be off route, new route is loading.";
+
+
+"BACK_DIRECTION" = "Back";
+
+"LEFT_BACK_DIRECTION" = "Left Back";
+
+"RIGHT_BACK_DIRECTION" = "Right Back";
+
+"LEFT_DIRECTION" = "Left";
+
+"RIGHT_DIRECTION" = "Right";
+
+"LEFT_FRONT_DIRECTION" = "Left Front";
+
+"RIGHT_FRONT_DIRECTION" = "Right Front";
+
+"FRONT_DIRECTION" = "Front";

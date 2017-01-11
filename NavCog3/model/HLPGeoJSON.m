@@ -76,6 +76,30 @@
 {
     _coordinates = coordinates;
 }
+
+- (instancetype)initWithLocations:(NSArray *)locations
+{
+    self = [super init];
+    if (!locations || [locations count] == 0) {
+        return nil;
+    }
+    if ([locations count] == 1) {
+        _type = @"Point";
+        HLPLocation* loc = locations[0];
+        _coordinates = @[@(loc.lng), @(loc.lat)];
+    } else {
+        _type = @"LineString";
+        NSMutableArray *temp = [[NSMutableArray alloc] initWithCapacity:[locations count]];
+        [locations enumerateObjectsUsingBlock:^(HLPLocation *loc, NSUInteger idx, BOOL * _Nonnull stop) {
+            temp[idx] = @[@(loc.lng), @(loc.lat)];
+        }];
+        _coordinates = temp;
+    }
+    
+    return self;
+}
+
+
 @end
 
 @implementation HLPGeoJSON {
@@ -131,7 +155,7 @@
             }
         }
     }
-    
+    [minloc updateFloor:location.floor];
     return minloc;
 }
 
@@ -692,7 +716,7 @@
 - (void)setTargetNodeIfNeeded:(HLPNode *)node withNodesMap:(NSDictionary *)nodesMap
 {
     if (_sourceNodeID && _targetNodeID) {
-        return;
+        //return;
     }
     _targetNodeID = node._id;
     if ([self.properties[PROPKEY_TARGET_NODE_ID] isEqualToString:_targetNodeID]) {
@@ -767,6 +791,22 @@
     _linkType == LINK_TYPE_SIDEWALK ||
     _linkType == LINK_TYPE_GARDEN_WALK ||
     _linkType == LINK_TYPE_PEDESTRIAN_ROAD;
+}
+
+- (instancetype)initWithSource:(HLPLocation *)source Target:(HLPLocation *)target
+{
+    self = [super init];
+    
+    sourceLocation = source;
+    targetLocation = target;
+    _sourceHeight = source.floor;
+    _targetHeight = target.floor;
+    lastBearingForTarget = initialBearingFromSource = [source bearingTo:target];
+    _length = [source distanceTo:target];
+    _backward = NO;
+    _geometry = [[HLPGeometry alloc] initWithLocations:@[source, target]];
+    
+    return self;
 }
 
 @end

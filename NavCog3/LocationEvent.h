@@ -35,6 +35,8 @@
 #define NAV_ROUTE_INDEX_CHANGED_NOTIFICATION @"nav_route_index_changed_notification"
 #define NAV_LOCATION_STATUS_CHANGE @"nav_location_status_changed"
 
+#define REQUEST_NAVIGATION_STATUS @"REQUEST_NAVIGATION_STATUS"
+
 typedef NS_ENUM(NSUInteger, NavLocationStatus) {
     NavLocationStatusStable,
     NavLocationStatusLocating,

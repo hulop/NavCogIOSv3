@@ -381,3 +381,20 @@
 /* head to the right direction */
 "turn to the right" = "右に向く";
 
+"REROUTING" = "ルートからそれたようです。新しいルートを読み込んでいます。";
+
+"BACK_DIRECTION" = "後ろ方向";
+
+"LEFT_BACK_DIRECTION" = "左、ななめ、後ろ方向";
+
+"RIGHT_BACK_DIRECTION" = "右、ななめ、後ろ方向";
+
+"LEFT_DIRECTION" = "左方向";
+
+"RIGHT_DIRECTION" = "右方向";
+
+"LEFT_FRONT_DIRECTION" = "左、ななめ、前方向";
+
+"RIGHT_FRONT_DIRECTION" = "右、ななめ、前方向";
+
+"FRONT_DIRECTION" = "前方向";

@@ -115,6 +115,11 @@
 // Summary
 - (NSString*)summaryString:(NSDictionary*)properties;
 
+// current status
+- (void)currentStatus:(NSDictionary*)properties;
+
+- (void)reroute:(NSDictionary*)properties;
+
 @end
 
 @interface NavLinkInfo : NSObject
@@ -141,7 +146,7 @@
 @property (readonly) double diffBearingAtUserLocationToSnappedLocationOnLink;
 
 @property (readonly) double isComplex;
-@property (readonly) BOOL isFirst;
+@property BOOL isFirst;
 @property (readonly) BOOL isNextDestination;
 
 #pragma mark - flags for navigation
@@ -160,6 +165,7 @@
 @property NSTimeInterval lastBackNotified;
 @property NSTimeInterval lastOffRouteNotified;
 @property NSTimeInterval lastBearingDetected;
+@property NSTimeInterval lastRerouteDetected;
 
 @property BOOL mayBeOffRoute;
 @property NavLinkInfo* offRouteLinkInfo;

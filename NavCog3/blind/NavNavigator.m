@@ -887,6 +887,7 @@ static NavNavigatorConstants *_instance;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeChanged:) name:ROUTE_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeCleared:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStatus:) name:REQUEST_NAVIGATION_STATUS object:nil];
     
     return self;
 }
@@ -1344,6 +1345,17 @@ static NavNavigatorConstants *_instance;
     _isActive = YES;
     
     NavLinkInfo *info = linkInfos[firstLinkIndex];
+    
+    [info updateWithLocation:[nds currentLocation]];
+    if (info.distanceToUserLocationFromLink > C.OFF_ROUTE_THRESHOLD) {
+        HLPLink *dummyLink = [[HLPLink alloc] initWithSource:[nds currentLocation] Target:info.snappedLocationOnLink];
+        NavLinkInfo *dummy = [[NavLinkInfo alloc] initWithLink:dummyLink nextLink:info.link andOptions:
+                              @{@"isFirst": @(YES)}];
+        [linkInfos insertObject:dummy atIndex:firstLinkIndex];
+        info.isFirst = NO;
+        info = dummy;
+    }
+    
     [self.delegate didActiveStatusChanged:
      @{
        @"isActive": @(_isActive),
@@ -1443,20 +1455,6 @@ static NavNavigatorConstants *_instance;
         }
         
         if (isFirst) {
-            if (minDistance > C.NAVIGATION_START_DISTANCE_LIMIT &&
-                now - lastCouldNotStartNavigationTime > C.REPEAT_ACTION_TIME_INTERVAL
-                ) {// TODO far from link
-                if ([self.delegate respondsToSelector:@selector(couldNotStartNavigation:)]) {
-                    [self.delegate couldNotStartNavigation:
-                     @{
-                       @"reason": @"TOO_FAR",
-                       @"distance": @(minDistance)
-                       }];
-                    lastCouldNotStartNavigationTime = [[NSDate date] timeIntervalSince1970];
-                    return;
-                }
-            }
-            
             NavLinkInfo *firstLinkInfo = linkInfos[firstLinkIndex];
             // TODO improve length from current location not from existing node
             
@@ -1481,18 +1479,17 @@ static NavNavigatorConstants *_instance;
                    @"oneHopLinks":oneHopLinks
                    }];
             }
-            
-            if (minDistance > C.NAVIGATION_START_CAUTION_DISTANCE_LIMIT) {
-            }
+
             //TODO add fix protocol with lower accuracy
-            if (fabs(firstLinkInfo.diffBearingAtUserLocation) > C.ADJUST_HEADING_MARGIN) {
+            double diffHeading = firstLinkInfo.diffBearingAtSnappedLocationOnLink;
+            if (fabs(diffHeading) > C.ADJUST_HEADING_MARGIN) {
                 if (!firstLinkInfo.hasBeenBearing && !firstLinkInfo.hasBeenActivated) {
                     firstLinkInfo.hasBeenBearing = YES;
                     firstLinkInfo.bearingTargetThreshold = C.ADJUST_HEADING_MARGIN;
                     if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
                         [self.delegate userNeedsToChangeHeading:
                          @{
-                           @"diffHeading": @(firstLinkInfo.diffBearingAtSnappedLocationOnLink),
+                           @"diffHeading": @(diffHeading),
                            @"threshold": @(C.CHANGE_HEADING_THRESHOLD),
                            @"looseDirection": @(YES)
                            }];
@@ -1556,8 +1553,8 @@ static NavNavigatorConstants *_instance;
                     
                     // リンクターゲットで迷った, 曲がり角を行き過ぎた, 反対に曲がった
                     // 一度曲がる方向に向いた上で（リンクソース）, 違う方向に行った
-                    if (linkInfo.distanceToTargetFromSnappedLocationOnLink < C.OFF_ROUTE_EXT_LINK_THRETHOLD ||
-                        linkInfo.distanceToSourceFromSnappedLocationOnLink < C.OFF_ROUTE_EXT_LINK_THRETHOLD) {
+                    //if (linkInfo.distanceToTargetFromSnappedLocationOnLink < C.OFF_ROUTE_EXT_LINK_THRETHOLD ||
+                    //    linkInfo.distanceToSourceFromSnappedLocationOnLink < C.OFF_ROUTE_EXT_LINK_THRETHOLD) {
                         // 現在のリンクから一定以上離れて、one hopリンク上に居る -> 戻すことを試みる
                         if (exMinLinkInfo && exMinDistance < C.OFF_ROUTE_EXT_LINK_THRETHOLD &&
                             (!linkInfo.mayBeOffRoute || (now-linkInfo.lastOffRouteNotified) > C.OFF_ROUTE_ANNOUNCE_MIN_INTERVAL) &&
@@ -1580,15 +1577,26 @@ static NavNavigatorConstants *_instance;
                             linkInfo.lastOffRouteNotified = now;
                             
                         }
-                        else if (minIndex == navIndex && minDistance > C.REROUTE_DISTANCE_THRESHOLD) {
+                        //else if (minIndex == navIndex && minDistance >= C.OFF_ROUTE_THRESHOLD) {
+                            
+                            
                             // TODO: 不明な場所で、現在のリンクが一番近い -> 戻すことを試みる
                             // linkInfo.mayBeOffRoute = YES;
                             // リンクに近づける方角をアナウンス
-                        }
+                        //}
                         else if (minDistance > C.REROUTE_DISTANCE_THRESHOLD) {
-                            // TODO: 不明な場所で、現在のリンクではないところが一番近い -> リルート
+                            if (linkInfo.lastRerouteDetected && (now - linkInfo.lastRerouteDetected) > 10) {
+                                linkInfo.lastRerouteDetected = now + 10;
+                                if ([self.delegate respondsToSelector:@selector(reroute:)]) {
+                                    [self.delegate reroute:@{}];
+                                }
+                            } else if (!linkInfo.lastRerouteDetected) {
+                                linkInfo.lastRerouteDetected = now;
+                            }
+                        } else {
+                            linkInfo.lastRerouteDetected = 0;
                         }
-                    }
+                    //}
                     
                     if (linkInfo.mayBeOffRoute) {
                         [linkInfo.offRouteLinkInfo updateWithLocation:location];
@@ -1616,9 +1624,11 @@ static NavNavigatorConstants *_instance;
                         } else if (linkInfo.offRouteLinkInfo.distanceToTargetFromSnappedLocationOnLink < approachedDistance(linkInfo.offRouteLinkInfo) &&
                                    !linkInfo.hasBeenWaitingAction) {
                             linkInfo.mayBeOffRoute = NO;
+
                             
                             if (linkInfo.distanceToTargetFromUserLocation < C.OFF_ROUTE_EXT_LINK_THRETHOLD) {
                                 linkInfo.hasBeenWaitingAction = YES;
+                                linkInfo.offRouteLinkInfo = nil;
                                 if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
                                     [self.delegate userNeedsToTakeAction:
                                      @{
@@ -1631,7 +1641,18 @@ static NavNavigatorConstants *_instance;
                                 }
                             } else {
                                 linkInfo.hasBeenBearing = YES;
+                                linkInfo.bearingTargetThreshold = C.ADJUST_HEADING_MARGIN;
                                 linkInfo.hasBeenActivated = NO;
+                                
+                                if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
+                                    [self.delegate userNeedsToChangeHeading:
+                                     @{
+                                       @"diffHeading": @(linkInfo.diffBearingAtSnappedLocationOnLink),
+                                       @"threshold": @(0)
+                                       }];
+                                }
+
+                                /*
                                 if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
                                     [self.delegate userNeedsToTakeAction:
                                      @{
@@ -1641,7 +1662,7 @@ static NavNavigatorConstants *_instance;
                                        @"nextSourceHeight": @(linkInfo.link.sourceHeight),
                                        @"nextTargetHeight": @(linkInfo.link.targetHeight)
                                        }];
-                                }
+                                }*/
                                 
                             }
                             
@@ -1891,7 +1912,7 @@ static NavNavigatorConstants *_instance;
                     }
                 }
                 // TODO if skip this turn
-                // return;
+                return;
             }
             if (linkInfo.hasBeenFixBackward) {
                 if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
@@ -1929,14 +1950,18 @@ static NavNavigatorConstants *_instance;
             }
             
             //if (!linkInfo.hasBeenActivated && !linkInfo.hasBeenBearing) {
-            if (!linkInfo.hasBeenActivated) {
-                
+            if (!linkInfo.hasBeenActivated && linkInfo.distanceToUserLocationFromLink < C.OFF_ROUTE_THRESHOLD) {
+
                 linkInfo.hasBeenActivated = YES;
                 if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {
                     
                     double distance = linkInfo.link.length;
                     if (linkInfo.distanceToUserLocationFromLink - distance > 2) {
                         distance = linkInfo.distanceToTargetFromUserLocation;
+                    }
+                    if (linkInfo.offRouteLinkInfo) {
+                        linkInfo.offRouteLinkInfo = nil;
+                        distance = linkInfo.distanceToTargetFromSnappedLocationOnLink;
                     }
                     
                     [self.delegate userNeedsToWalk:
@@ -2211,6 +2236,68 @@ static NavNavigatorConstants *_instance;
         }
     }
     return nil;
+}
+
+- (void) requestStatus:(NSNotification*)note
+{
+    if (!_isActive) {
+        return;
+    }
+    NavNavigatorConstants *C = [NavNavigatorConstants constants];
+
+    id obj = linkInfos[navIndex];
+    if (obj && [obj isKindOfClass:NavLinkInfo.class]) {
+        NavLinkInfo *linkInfo = (NavLinkInfo*)obj;
+        HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];
+        [linkInfo updateWithLocation:location];
+        double distance = linkInfo.distanceToTargetFromUserLocation;
+
+        if ([self.delegate respondsToSelector:@selector(currentStatus:)]) {
+            
+            if (linkInfo.distanceToUserLocationFromLink > 3) {
+                [self.delegate currentStatus:
+                 @{
+                   @"offRoute": @(YES),
+                   @"diffHeading": @(linkInfo.diffBearingAtUserLocationToSnappedLocationOnLink),
+                   @"distance": @(linkInfo.distanceToUserLocationFromLink)
+                   }];
+                
+            } else {
+                if (linkInfo.hasBeenWaitingAction) {
+                    [self.delegate currentStatus:
+                     @{
+                       @"turnAngle": @(linkInfo.nextTurnAngle)
+                       }];
+                }
+                else if (fabs(linkInfo.diffBearingAtUserLocation) > 22.5) {
+                    linkInfo.bearingTargetThreshold = 22.5;
+                    linkInfo.hasBeenBearing = YES;
+                    if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
+                        [self.delegate userNeedsToChangeHeading:
+                         @{
+                           @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
+                           @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
+                           }];
+                    }
+                }
+                else {
+                    [self.delegate currentStatus:
+                     @{
+                       @"pois": linkInfo.pois,
+                       @"distance": @(distance),
+                       @"linkType": @(linkInfo.link.linkType),
+                       @"nextLinkType": @(linkInfo.nextLink.linkType),
+                       @"turnAngle": @(linkInfo.nextTurnAngle),
+                       @"isNextDestination": @(linkInfo.isNextDestination),
+                       @"sourceHeight": @(linkInfo.link.sourceHeight),
+                       @"targetHeight": @(linkInfo.link.targetHeight),
+                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                       }];
+                }
+            }
+        }
+    }
 }
 
 @end

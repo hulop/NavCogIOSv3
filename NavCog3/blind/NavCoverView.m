@@ -93,6 +93,11 @@
 {
     UIAccessibilityElement *element = elements[currentIndex];
     
+    if (speaks && [speaks count] == currentIndex) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:nil];
+        return;
+    }
+    
     if (UIAccessibilityIsVoiceOverRunning()) {
         UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, element.accessibilityLabel);
     } else {

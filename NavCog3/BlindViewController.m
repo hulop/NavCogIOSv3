@@ -660,6 +660,38 @@
     return [commander summaryString:properties];
 }
 
+- (void)currentStatus:(NSDictionary *)properties
+{
+    [commander currentStatus:properties];
+}
+
+- (void)reroute:(NSDictionary *)properties
+{
+    [commander reroute:properties];
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    [nds clearRoute];
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSDictionary *prefs = @{
+                            @"dist":@"500",
+                            @"preset":@"9",
+                            @"min_width":@"8",
+                            @"slope":@"9",
+                            @"road_condition":@"9",
+                            @"deff_LV":@"9",
+                            @"stairs":[ud boolForKey:@"route_use_stairs"]?@"9":@"1",
+                            @"esc":[ud boolForKey:@"route_use_escalator"]?@"9":@"1",
+                            @"elv":[ud boolForKey:@"route_use_elevator"]?@"9":@"1",
+                            @"tactile_paving":[ud boolForKey:@"route_tactile_paving"]?@"1":@"",
+                            };
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait",@"")];
+    });
+    [nds requestRouteFrom:[NavDataStore destinationForCurrentLocation]._id To:nds.to._id withPreferences:prefs complete:^{
+    }];
+}
+
 #pragma mark - NavCommanderDelegate
 
 - (void)speak:(NSString *)text completionHandler:(void (^)())handler

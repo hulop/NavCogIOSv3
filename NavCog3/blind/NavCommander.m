@@ -71,6 +71,9 @@
 
 - (NSString*)distanceString:(double)distance
 {
+    if (round(distance) == 0) {
+        return nil;
+    }
     NSString *distance_unit = [[NSUserDefaults standardUserDefaults] stringForKey:@"distance_unit"];
     
     BOOL isFeet = [distance_unit isEqualToString:@"unit_feet"];
@@ -404,6 +407,31 @@
         }
     }
     
+    return string;
+}
+
+- (NSString*) directionString:(NSDictionary*)properties
+{
+    double diffHeading = [properties[@"diffHeading"] doubleValue];
+    NSString *string = nil;
+    
+    if (diffHeading < -157.5 || 157.5 < diffHeading) {
+        string = NSLocalizedStringFromTable(@"BACK_DIRECTION",@"BlindView", @"");
+    } else if (diffHeading < -112.5) {
+        string = NSLocalizedStringFromTable(@"LEFT_BACK_DIRECTION",@"BlindView", @"");
+    } else if (diffHeading > 112.5) {
+        string = NSLocalizedStringFromTable(@"RIGHT_BACK_DIRECTION",@"BlindView", @"");
+    } else if (diffHeading < -67.5) {
+        string = NSLocalizedStringFromTable(@"LEFT_DIRECTION",@"BlindView", @"");
+    } else if (diffHeading > 67.5) {
+        string = NSLocalizedStringFromTable(@"RIGHT_DIRECTION",@"BlindView", @"");
+    } else if (diffHeading < -22.5) {
+        string = NSLocalizedStringFromTable(@"LEFT_FRONT_DIRECTION",@"BlindView", @"");
+    } else if (diffHeading > 22.5) {
+        string = NSLocalizedStringFromTable(@"RIGHT_FRONT_DIRECTION",@"BlindView", @"");
+    } else {
+        string = NSLocalizedStringFromTable(@"FRONT_DIRECTION",@"BlindView", @"");
+    }
     return string;
 }
 
@@ -852,5 +880,93 @@
     
     return string;
 }
+
+- (void)currentStatus:(NSDictionary *)properties
+{
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    double distance = [properties[@"distance"] doubleValue];
+
+    BOOL offRoute = [properties[@"offRoute"] boolValue];
+    if (offRoute) {
+        NSString *directionString = [self directionString:properties];
+        NSString *distanceString = [self distanceString:distance];
+        
+        NSString *string = [directionString stringByAppendingString:distanceString];
+        
+        [self.delegate vibrate];
+        [self.delegate speak:string force:YES completionHandler:^{
+        }];
+        return;
+    }
+    
+    HLPLinkType linkType = [properties[@"linkType"] intValue];
+    BOOL isNextDestination = [properties[@"isNextDestination"] boolValue];
+    
+    NSString *action = [self actionString:properties];
+    NSMutableString *string = [@"" mutableCopy];
+    
+    NSArray *pois = properties[@"pois"];
+    //[string appendString:[self startPOIString:pois]];
+    
+    NSString *floorInfo = [self floorPOIString:pois];
+    NSString *cornerInfo = [self cornerPOIString:pois];
+    BOOL isCornerEnd = [self isCornerEnd:pois];
+    BOOL isCornerWarningBlock = [self isCornerWarningBlock:pois];
+    
+    NSString *dist = [self distanceString:distance];
+    
+    if (linkType == LINK_TYPE_ELEVATOR || linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
+        [string appendString:action];
+    }
+    else if (isNextDestination) {
+        NSString *destTitle = [NavDataStore sharedDataStore].to.namePron;
+        
+        [string appendString: [NSString stringWithFormat:NSLocalizedStringFromTable(@"destination is in distance",@"BlindView",@"remaining distance to the destination"), destTitle, dist]];
+    }
+    else if (action) {
+        NSString *proceedString = @"proceed distance";
+        NSString *nextActionString = @"and action";
+        
+        if (floorInfo) {
+            proceedString = [proceedString stringByAppendingString:@" on floor"];
+        }
+        proceedString = [proceedString stringByAppendingString:@" ..."];
+        
+        if (cornerInfo && !isCornerEnd) {
+            nextActionString = [nextActionString stringByAppendingString:@" at near object"];
+        }
+        if (isCornerWarningBlock) {
+            nextActionString = [nextActionString stringByAppendingString:@" at warning block"];
+        }
+        if (isCornerEnd) {
+            nextActionString = [nextActionString stringByAppendingString:@" at end object"];
+        }
+        
+        if (dist) {
+            proceedString = NSLocalizedStringFromTable(proceedString, @"BlindView", @"");
+            proceedString = [NSString stringWithFormat:proceedString, dist, floorInfo];
+            [string appendString:proceedString];
+        }
+        
+        if (action) {
+            nextActionString = NSLocalizedStringFromTable(nextActionString, @"BlindView", @"");
+            nextActionString = [NSString stringWithFormat:nextActionString, action, cornerInfo];
+            [string appendString:nextActionString];
+        }
+    }
+    
+
+    [self.delegate vibrate];
+    [self.delegate speak:string force:YES completionHandler:^{
+    }];
+    
+}
+
+-(void)reroute:(NSDictionary *)properties
+{
+    [self.delegate vibrate];
+    [self.delegate speak:NSLocalizedStringFromTable(@"REROUTING", @"BlindView", @"") force:YES completionHandler:^{}];
+}
+
 
 @end

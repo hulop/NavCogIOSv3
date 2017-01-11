@@ -315,5 +315,8 @@
     return nil;
 }
 
+- (void)currentStatus:(NSDictionary *)properties
+{    
+}
 
 @end

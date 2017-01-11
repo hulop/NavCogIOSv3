@@ -209,8 +209,11 @@ static NavDeviceTTS *instance = nil;
     if (flag) {
         [voice stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
         @synchronized(speaking) {
-            [speaking removeAllObjects];
-            [speaking insertObject:se atIndex:0];
+            speaking = [[speaking objectsAtIndexes:[speaking indexesOfObjectsPassingTest:^BOOL(HLPSpeechEntry *se, NSUInteger idx, BOOL * _Nonnull stop) {
+                return idx == 0 && se.pauseDuration > 0;
+            }]] mutableCopy];
+            //[speaking removeAllObjects];
+            [speaking addObject:se];
         }
         isSpeaking = NO;
         isProcessing = NO;

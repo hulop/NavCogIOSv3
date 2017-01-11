@@ -674,13 +674,21 @@
 
 - (void)playSuccess
 {
-    [[NavSound sharedInstance] vibrate:nil];
-    [[NavSound sharedInstance] playSuccess];
+    BOOL result = [[NavSound sharedInstance] vibrate:nil];
+    //result = [[NavSound sharedInstance] playSuccess] || result;
+    result = [[NavSound sharedInstance] playAnnounceNotification] || result;
+    if (result) {
+        [[NavDeviceTTS sharedTTS] pause:NAV_SOUND_DELAY];
+    }
 }
 
 - (void)vibrate
 {
-    [[NavSound sharedInstance] vibrate:nil];
+    BOOL result = [[NavSound sharedInstance] vibrate:nil];
+    result = [[NavSound sharedInstance] playAnnounceNotification] || result;
+    if (result) {
+        [[NavDeviceTTS sharedTTS] pause:NAV_SOUND_DELAY];
+    }
 }
 
 - (void)executeCommand:(NSString *)command

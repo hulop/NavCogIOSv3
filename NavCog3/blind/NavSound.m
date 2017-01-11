@@ -61,38 +61,42 @@ static NavSound *instance;
     return self;
 }
 
--(void)_playSystemSound:(SystemSoundID)soundID
+-(BOOL)_playSystemSound:(SystemSoundID)soundID
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound_effect"]) {
         AudioServicesPlaySystemSound(soundID);
+        return YES;
     }
+    return NO;
 }
 
--(void)playSuccess
+-(BOOL)playSuccess
 {
-    [self _playSystemSound:successSoundID];
+    return [self _playSystemSound:successSoundID];
 }
 
--(void)playAnnounceNotification
+-(BOOL)playAnnounceNotification
 {
-    [self _playSystemSound:AnnounceNotificationSoundID];
+    return [self _playSystemSound:AnnounceNotificationSoundID];
 }
 
-- (void)playVoiceRecoStart
+- (BOOL)playVoiceRecoStart
 {
-    [self _playSystemSound:VoiceRecoStartSoundID];
+    return [self _playSystemSound:VoiceRecoStartSoundID];
 }
 
-- (void)playVoiceRecoEnd
+- (BOOL)playVoiceRecoEnd
 {
-    [self _playSystemSound:VoiceRecoEndSoundID];
+    return [self _playSystemSound:VoiceRecoEndSoundID];
 }
 
--(void)vibrate:(NSDictionary*)param
+-(BOOL)vibrate:(NSDictionary*)param
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"vibrate"]) {
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+        return YES;
     }
+    return NO;
 }
 
 @end

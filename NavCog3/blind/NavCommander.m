@@ -463,6 +463,7 @@
     NSArray *destPois = [properties[@"pois"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"forAfterEnd == YES AND isDestination == YES"]];
     BOOL hasDestinationPOI = [destPois count] > 0;
     
+    [_delegate vibrate];
     [_delegate speak:string completionHandler:^{
         if (hasDestinationPOI == NO) {
             [[NavDataStore sharedDataStore] clearRoute];
@@ -591,6 +592,9 @@
         NSString *destTitle = [NavDataStore sharedDataStore].to.namePron;
         
         [string appendString: [NSString stringWithFormat:NSLocalizedStringFromTable(@"destination is in distance",@"BlindView",@"remaining distance to the destination"), destTitle, dist]];
+        
+        // TODO braille block is not handled
+        // TODO no destTitle
     }
     else if (action) {
         NSString *proceedString = @"proceed distance";

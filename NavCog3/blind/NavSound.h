@@ -23,12 +23,14 @@
 
 #import <Foundation/Foundation.h>
 
+#define NAV_SOUND_DELAY 0.4
+
 @interface NavSound : NSObject
 
 + (instancetype) sharedInstance;
-- (void) playSuccess;
-- (void) playAnnounceNotification;
-- (void) playVoiceRecoStart;
-- (void) playVoiceRecoEnd;
-- (void) vibrate:(NSDictionary*)param;
+- (BOOL) playSuccess;
+- (BOOL) playAnnounceNotification;
+- (BOOL) playVoiceRecoStart;
+- (BOOL) playVoiceRecoEnd;
+- (BOOL) vibrate:(NSDictionary*)param;
 @end

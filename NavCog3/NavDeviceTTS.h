@@ -68,6 +68,7 @@ typedef enum {
 - (AVSpeechUtterance*) speak:(NSString*)text force:(BOOL)flag completionHandler:(void(^)())handler;
 - (AVSpeechUtterance*) selfspeak:(NSString*)text completionHandler:(void(^)())handler;
 - (AVSpeechUtterance*) selfspeak:(NSString*)text force:(BOOL)flag completionHandler:(void(^)())handler;
+- (void) pause:(double)duration;
 - (void) reset;
 - (void) stop:(BOOL)immediate;
 - (BOOL) isSpeaking;

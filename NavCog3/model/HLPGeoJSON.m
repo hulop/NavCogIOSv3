@@ -821,6 +821,9 @@
     else if (link1.linkType == LINK_TYPE_ELEVATOR) {
         return isnan(link1.lastBearingForTarget) && (link2.length < 5);
     }
+    //if (link2.linkType == LINK_TYPE_ESCALATOR) {
+    //    return link1.length < 5;
+    //}
 
     return [HLPCombinedLink link:link1 canBeCombinedWithLink:link2] &&
     link1.linkType == link2.linkType;
@@ -905,6 +908,9 @@
     if (link1.linkType == LINK_TYPE_ELEVATOR || link2.linkType == LINK_TYPE_ELEVATOR) {
         _linkType = LINK_TYPE_ELEVATOR;
         elevatorEquipments = link1.elevatorEquipments?link1.elevatorEquipments:link2.elevatorEquipments;
+    }
+    if (link2.linkType == LINK_TYPE_ESCALATOR) {
+        _linkType = LINK_TYPE_ESCALATOR;
     }
     
     _backward = NO;

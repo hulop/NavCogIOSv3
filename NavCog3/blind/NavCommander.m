@@ -637,7 +637,7 @@
         if (floorInfo) {
             proceedString = [proceedString stringByAppendingString:@" on floor"];
         }
-        if (noAndTurnMinDistance < distance && distance < 50) {
+        if ((noAndTurnMinDistance < distance && distance < 50) || isnan(noAndTurnMinDistance)) {
             proceedString = [proceedString stringByAppendingString:@" ..."];
         }
         if (cornerInfo && !isCornerEnd) {
@@ -656,7 +656,7 @@
         nextActionString = [NSString stringWithFormat:nextActionString, action, cornerInfo];
         
         [string appendString:proceedString];
-        if (noAndTurnMinDistance < distance && distance < 50) {
+        if ((noAndTurnMinDistance < distance && distance < 50) || isnan(noAndTurnMinDistance)) {
             [string appendString:nextActionString];
         }
     }

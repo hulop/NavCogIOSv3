@@ -1633,7 +1633,7 @@ static NavNavigatorConstants *_instance;
                                    //@"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
                                    @"isFirst": @(NO),
                                    @"distance": @(distance),
-                                   @"noAndTurnMinDistance": @(DBL_MAX),
+                                   @"noAndTurnMinDistance": @(NAN),
                                    @"linkType": @(linkInfo.link.linkType),
                                    }];
                             }
@@ -1808,6 +1808,18 @@ static NavNavigatorConstants *_instance;
                     };
                     
                     NavPOI *elevatorPOI = findElevatorPOI(linkInfo.pois, HLPPOICategoryElevator);
+                    // if elevator poi is assigned to elevator link
+                    if (elevatorPOI && !elevatorPOI.hasBeenApproached) {
+                        if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
+                            [self.delegate userIsApproachingToPOI:
+                             @{
+                               @"poi": elevatorPOI,
+                               @"heading": @(elevatorPOI.diffAngleFromUserOrientation)
+                               }];
+                            elevatorPOI.hasBeenApproached = YES;
+                        }
+                    }
+                    
                     NavPOI *equipmentPOI = findElevatorPOI(linkInfo.pois, HLPPOICategoryElevatorEquipments);
                     
                     if (isnan(linkInfo.link.lastBearingForTarget)) { // elevator is the destination
@@ -1980,13 +1992,20 @@ static NavNavigatorConstants *_instance;
                         distance = linkInfo.distanceToTargetFromSnappedLocationOnLink;
                     }
                     
+                    double noAndTurnMinDistance = C.NO_ANDTURN_DISTANCE_THRESHOLD;
+                    if (linkInfo.nextLink.linkType == LINK_TYPE_ESCALATOR ||
+                        linkInfo.nextLink.linkType == LINK_TYPE_ELEVATOR ||
+                        linkInfo.nextLink.linkType == LINK_TYPE_STAIRWAY) {
+                        noAndTurnMinDistance = NAN;
+                    }
+
                     [self.delegate userNeedsToWalk:
                      @{
                     //@"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
                        @"pois": linkInfo.pois,
                        @"isFirst": @(navIndex == firstLinkIndex),
                        @"distance": @(distance),
-                       @"noAndTurnMinDistance": @(C.NO_ANDTURN_DISTANCE_THRESHOLD),
+                       @"noAndTurnMinDistance": @(noAndTurnMinDistance),
                        @"linkType": @(linkInfo.link.linkType),
                        @"nextLinkType": @(linkInfo.nextLink.linkType),
                        @"turnAngle": @(linkInfo.nextTurnAngle),
@@ -2226,13 +2245,19 @@ static NavNavigatorConstants *_instance;
                 if (index == count) {
                     if ([self.delegate respondsToSelector:@selector(summaryString:)]) {
                         double distance = linkInfo.link.length;
+                        double noAndTurnMinDistance = C.NO_ANDTURN_DISTANCE_THRESHOLD;
+                        if (linkInfo.nextLink.linkType == LINK_TYPE_ESCALATOR ||
+                            linkInfo.nextLink.linkType == LINK_TYPE_ELEVATOR ||
+                            linkInfo.nextLink.linkType == LINK_TYPE_STAIRWAY) {
+                            noAndTurnMinDistance = NAN;
+                        }
 
                         return [self.delegate summaryString:
                          @{
                            @"pois": linkInfo.pois,
                            @"isFirst": @(navIndex == firstLinkIndex),
                            @"distance": @(distance),
-                           @"noAndTurnMinDistance": @(C.NO_ANDTURN_DISTANCE_THRESHOLD),
+                           @"noAndTurnMinDistance": @(noAndTurnMinDistance),
                            @"linkType": @(linkInfo.link.linkType),
                            @"nextLinkType": @(linkInfo.nextLink.linkType),
                            @"turnAngle": @(linkInfo.nextTurnAngle),

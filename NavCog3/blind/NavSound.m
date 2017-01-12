@@ -49,13 +49,16 @@ static NavSound *instance;
     url1 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/Modern/calendar_alert_chord.caf"];
     AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url1,&successSoundID);
     
-    url2 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Success_Haptic.caf"];
+    //url2 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Success_Haptic.caf"];
+    url2 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/RingerChanged.caf"]; // for bone condaction head set
     AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url2,&AnnounceNotificationSoundID);
 
-    url3 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Start_Haptic.caf"];
+    //url3 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Start_Haptic.caf"];
+    url3 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/Tink.caf"]; // for bone condaction head set
     AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url3,&VoiceRecoStartSoundID);
 
-    url4 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Stop_Haptic.caf"];
+    //url4 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Stop_Haptic.caf"];
+    url4 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/RingerChanged.caf"]; // for bone condaction head set
     AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url4,&VoiceRecoEndSoundID);
     
     return self;

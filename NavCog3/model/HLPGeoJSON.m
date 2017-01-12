@@ -717,9 +717,6 @@
 
 - (void)setTargetNodeIfNeeded:(HLPNode *)node withNodesMap:(NSDictionary *)nodesMap
 {
-    if (_sourceNodeID && _targetNodeID) {
-        //return;
-    }
     _targetNodeID = node._id;
     if ([self.properties[PROPKEY_TARGET_NODE_ID] isEqualToString:_targetNodeID]) {
         _sourceNodeID = self.properties[PROPKEY_SOURCE_NODE_ID];
@@ -733,8 +730,6 @@
     if (nodesMap[_targetNodeID]) {
         _targetHeight = [nodesMap[_targetNodeID] height];
     }
-    _sourceHeight = (_sourceHeight >= 1)?_sourceHeight-1:_sourceHeight;
-    _targetHeight = (_targetHeight >= 1)?_targetHeight-1:_targetHeight;
 
     [self update];
     

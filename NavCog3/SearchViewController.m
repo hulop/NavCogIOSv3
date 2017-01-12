@@ -323,6 +323,18 @@
             dView.voTarget = _fromButton;
         }
     
+        double delayInSeconds = 0.5;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            if ([sender isKindOfClass:NSArray.class]) {
+                NSArray *temp = [sender copy];
+                if ([temp count] > 0) {
+                    NSString *name = temp[0];
+                    temp = [temp subarrayWithRange:NSMakeRange(1, [temp count]-1)];
+                    [[segue destinationViewController] performSegueWithIdentifier:name sender:temp];
+                }
+            }
+        });
     } else {
         segue.destinationViewController.restorationIdentifier = segue.identifier;
     }

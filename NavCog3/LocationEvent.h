@@ -36,6 +36,8 @@
 #define NAV_LOCATION_STATUS_CHANGE @"nav_location_status_changed"
 
 #define REQUEST_NAVIGATION_STATUS @"REQUEST_NAVIGATION_STATUS"
+#define REQUEST_DIALOG_START @"REQUEST_DIALOG_START"
+#define REQUEST_DIALOG_END @"REQUEST_DIALOG_END"
 
 typedef NS_ENUM(NSUInteger, NavLocationStatus) {
     NavLocationStatusStable,

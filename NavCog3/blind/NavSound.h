@@ -29,6 +29,7 @@
 
 + (instancetype) sharedInstance;
 - (BOOL) playSuccess;
+- (BOOL) playFail;
 - (BOOL) playAnnounceNotification;
 - (BOOL) playVoiceRecoStart;
 - (BOOL) playVoiceRecoEnd;

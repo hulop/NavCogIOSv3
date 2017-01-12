@@ -51,6 +51,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(speak:) name:SPEAK_TEXT_QUEUEING object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:NAV_ROUTE_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteControl:) name:REMOTE_CONTROL_EVENT object:nil];
     
     first = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
@@ -140,10 +141,10 @@
             [self decrementCurrentIndex];
             break;
         case UIEventSubtypeRemoteControlBeginSeekingBackward: // 106
-            [self jumpToFirst];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_END object:nil];
             break;
         case UIEventSubtypeRemoteControlBeginSeekingForward: // 108
-            [self jumpToLast];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:nil];
             break;
         case UIEventSubtypeRemoteControlEndSeekingBackward: // 107
         case UIEventSubtypeRemoteControlEndSeekingForward: // 109
@@ -158,7 +159,7 @@
 {
     @synchronized (self) {
         speaks = nil;
-        elements = @[first];
+        elements = @[];
     }
 }
 

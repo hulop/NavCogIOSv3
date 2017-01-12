@@ -29,7 +29,8 @@
     SystemSoundID AnnounceNotificationSoundID;
     SystemSoundID VoiceRecoStartSoundID;
     SystemSoundID VoiceRecoEndSoundID;
-    NSURL *url1, *url2, *url3, *url4;
+    SystemSoundID failSoundID;
+    NSURL *url1, *url2, *url3, *url4, *url5;
 }
 
 static NavSound *instance;
@@ -61,6 +62,10 @@ static NavSound *instance;
     url4 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/RingerChanged.caf"]; // for bone condaction head set
     AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url4,&VoiceRecoEndSoundID);
     
+    url5 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/SIMToolkitNegativeACK.caf"];
+    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url5,&failSoundID);
+    
+    
     return self;
 }
 
@@ -76,6 +81,11 @@ static NavSound *instance;
 -(BOOL)playSuccess
 {
     return [self _playSystemSound:successSoundID];
+}
+
+- (BOOL)playFail
+{
+    return [self _playSystemSound:failSoundID];
 }
 
 -(BOOL)playAnnounceNotification

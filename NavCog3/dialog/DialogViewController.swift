@@ -119,6 +119,8 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(resetConversation), name: "ResetConversation", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(restartConversation), name: "RestartConversation", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(requestDialogEnd), name: REQUEST_DIALOG_END, object: nil)
+        
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -126,9 +128,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         //self.navigationController?.navigationBarHidden = true
         self.navigationController!.navigationBar.userInteractionEnabled = false;
         self.navigationController!.interactivePopGestureRecognizer!.enabled = false;
-        self.navigationController!.navigationBar.tintColor = UIColor.lightGrayColor()
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.navigationItem.leftBarButtonItem)
-
+        self.navigationController!.navigationBar.tintColor = UIColor.lightGrayColor()        
     }
     override func viewDidAppear(animated: Bool) {
         NSNotificationCenter.defaultCenter().postNotificationName("RestartConversation", object: self)
@@ -141,6 +141,14 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         })
         self.conv_context_local.verify_security()
     }
+    internal func requestDialogEnd() {
+        self.navigationController!.navigationBar.userInteractionEnabled = true
+        self.navigationController!.interactivePopGestureRecognizer!.enabled = true
+        self.navigationController!.navigationBar.tintColor = self.tintColor
+        
+        self.navigationController?.popToRootViewControllerAnimated(true)
+    }
+    
     internal func resetConversation(){
         DialogManager.sharedManager().available = false
         self.getStt().disconnect()

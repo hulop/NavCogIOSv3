@@ -777,12 +777,14 @@
 
 - (void) requestDialogStart:(NSNotification*)note
 {
-    if ([navigator isActive]) {
+    if ([navigator isActive] ||
+        self.navigationController.topViewController != self ||
+        !self.searchButton.enabled) {
+        
+        [[NavSound sharedInstance] playFail];
         return;
     }
-    if (self.navigationController.topViewController != self) {
-        return;
-    }
+    [[NavSound sharedInstance] playVoiceRecoEnd];
     [self performSegueWithIdentifier:@"show_search" sender:@[@"toDestinations", @"show_dialog"]];
 }
 

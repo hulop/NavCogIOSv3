@@ -373,62 +373,35 @@ static NavNavigatorConstants *_instance;
                                     @"longDescription": poi.longDescription?poi.longDescription:@"",
                                     @"flagCaution": @(poi.flags.flagCaution)
                                     }];
-                    break;
-//                case HLP_POI_CATEGORY_SCENE:
-//                case HLP_POI_CATEGORY_SHOP:
-//                case HLP_POI_CATEGORY_LIVE:
-//                    if (inAngleAtNearest && dLocToNearest < C.POI_DISTANCE_MIN_THRESHOLD) {
-//                        // add poi info at location
-//                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
-//                                  @{
-//                                    @"origin": poi,
-//                                    @"angleFromLocation": @([nearest bearingTo:poi.location]),
-//                                    @"flagPlural": @(poi.flagPlural),
-//                                    @"longDescription": poi.longDescription?poi.longDescription:@""
-//                                    }];
-//                    }
-//                    break;
-//                case HLP_POI_CATEGORY_SIGN:
-//                    if (inAngleAtSource && dLocToSource < C.POI_TARGET_DISTANCE_THRESHOLD) {
-//                        // add corner info
-//                        navpoi = [[NavPOI alloc] initWithText:poi.longDescription Location:nearest Options:
-//                                  @{
-//                                    @"origin": poi,
-//                                    @"forBeforeStart": @(YES),
-//                                    @"forSign": @(YES),
-//                                    @"longDescription": poi.longDescription?poi.longDescription:@""
-//                                    }];
-//                    }
-//                    break;
-//                case HLP_POI_CATEGORY_OBJECT:
-//                    if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
-//                        // add corner info
-//                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
-//                                  @{
-//                                    @"origin": poi,
-//                                    @"forCorner": @(YES),
-//                                    @"flagPlural": @(poi.flagPlural),
-//                                    @"flagEnd": @(poi.flagEnd),
-//                                    @"longDescription": poi.longDescription?poi.longDescription:@""
-//                                    }];
-//                    }
-//                    break;
-                case HLPPOICategoryCornerEnd:
-                case HLPPOICategoryCornerLandmark:
-                case HLPPOICategoryCornerWarningBlock:
-                        if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
-                            navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
-                                      @{
-                                        @"origin": poi,
-                                        @"forCorner": @(YES),
-                                        @"forCornerEnd": @(poi.poiCategory == HLPPOICategoryCornerEnd),
-                                        @"forCornerWarningBlock": @(poi.poiCategory == HLPPOICategoryCornerWarningBlock),
-                                        @"flagPlural": @(poi.flags.flagPlural),
-                                        @"longDescription": poi.longDescription?poi.longDescription:@""
-                                        }];
-                        }
                         break;
                     }
+                case HLPPOICategoryCornerEnd:
+                case HLPPOICategoryCornerLandmark:
+                    if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
+                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
+                                  @{
+                                    @"origin": poi,
+                                    @"forCorner": @(YES),
+                                    @"forCornerEnd": @(poi.poiCategory == HLPPOICategoryCornerEnd),
+                                    @"forCornerWarningBlock": @(poi.poiCategory == HLPPOICategoryCornerWarningBlock),
+                                    @"flagPlural": @(poi.flags.flagPlural),
+                                    @"longDescription": poi.longDescription?poi.longDescription:@""
+                                    }];
+                    }
+                    break;
+                case HLPPOICategoryCornerWarningBlock:
+                    if (inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
+                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
+                                  @{
+                                    @"origin": poi,
+                                    @"forCorner": @(YES),
+                                    @"forCornerEnd": @(poi.poiCategory == HLPPOICategoryCornerEnd),
+                                    @"forCornerWarningBlock": @(poi.poiCategory == HLPPOICategoryCornerWarningBlock),
+                                    @"flagPlural": @(poi.flags.flagPlural),
+                                    @"longDescription": poi.longDescription?poi.longDescription:@""
+                                    }];
+                    }
+                    break;
                 default:
                     break;
             }
@@ -2215,15 +2188,15 @@ static NavNavigatorConstants *_instance;
                     if (poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
                         poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE) {
                         if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
-                            poi.hasBeenApproached = YES;
-                            poi.hasBeenLeft = NO;
-                            poi.lastApproached = now;
-                            poi.countApproached++;
                             [self.delegate userIsApproachingToPOI:
                              @{
                                @"poi": poi,
                                @"heading": @(poi.diffAngleFromUserOrientation)
                                }];
+                            poi.hasBeenApproached = YES;
+                            poi.hasBeenLeft = NO;
+                            poi.lastApproached = now;
+                            poi.countApproached++;
                         }
                     }
                 } else {
@@ -2231,14 +2204,14 @@ static NavNavigatorConstants *_instance;
                         if (poi.distanceFromSnappedLocation > C.POI_ANNOUNCE_DISTANCE &&
                             poi.distanceFromUserLocation > C.POI_ANNOUNCE_DISTANCE) {
                             if ([self.delegate respondsToSelector:@selector(userIsLeavingFromPOI:)]) {                                
-                                poi.hasBeenLeft = YES;
-                                poi.hasBeenApproached = NO;
-                                poi.lastLeft = now;
                                 [self.delegate userIsLeavingFromPOI:
                                  @{
                                    @"poi": poi,
                                    @"heading": @(poi.diffAngleFromUserOrientation)
                                    }];
+                                poi.hasBeenLeft = YES;
+                                poi.hasBeenApproached = NO;
+                                poi.lastLeft = now;
                             }
                         }
                     }

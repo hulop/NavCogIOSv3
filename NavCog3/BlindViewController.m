@@ -53,6 +53,7 @@
     double turnAction;
     BOOL forwardAction;
     
+    BOOL audioInitFlag;
     BOOL initFlag;
     BOOL rerouteFlag;
     
@@ -99,6 +100,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debugPeerStateChanged:) name:DEBUG_PEER_STATE_CHANGE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogStart:) name:REQUEST_DIALOG_START object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogEnd:) name:REQUEST_DIALOG_END object:nil];
     
     
     UILongPressGestureRecognizer* longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
@@ -142,6 +145,12 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:nil];
+    
+    // need to play audio to enable remote control
+    if (!audioInitFlag) {
+        audioInitFlag = YES;
+        [[NavSound sharedInstance] playVoiceRecoStart];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -766,6 +775,23 @@
     [ctx evaluateScript:command];
 }
 
+- (void) requestDialogStart:(NSNotification*)note
+{
+    if ([navigator isActive]) {
+        return;
+    }
+    if (self.navigationController.topViewController != self) {
+        return;
+    }
+    [self performSegueWithIdentifier:@"show_search" sender:@[@"toDestinations", @"show_dialog"]];
+}
+
+- (void) requestDialogEnd:(NSNotification*)note
+{
+    // TODO
+}
+
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -775,6 +801,18 @@
     [segue destinationViewController].restorationIdentifier = segue.identifier;
     dispatch_async(dispatch_get_main_queue(), ^{
         [NavUtil hideWaitingForView:self.view];
+    });
+    double delayInSeconds = 0.5;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        if ([sender isKindOfClass:NSArray.class]) {
+            NSArray *temp = [sender copy];
+            if ([temp count] > 0) {
+                NSString *name = temp[0];
+                temp = [temp subarrayWithRange:NSMakeRange(1, [temp count]-1)];
+                [[segue destinationViewController] performSegueWithIdentifier:name sender:temp];
+            }
+        }
     });
 }
 

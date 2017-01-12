@@ -398,3 +398,14 @@
 "RIGHT_FRONT_DIRECTION" = "右、ななめ、前方向";
 
 "FRONT_DIRECTION" = "前方向";
+
+
+"EscalatorSideBothUp" = "真ん中がのぼり、左右のエスカレーターに注意";
+"EscalatorSideBothDown" = "真ん中がくだり、左右のエスカレーターに注意";
+"EscalatorSideLeftUp" = "左がのぼり、右のエスカレーターに注意";
+"EscalatorSideLeftDown" = "左がくだり、右のエスカレーターに注意";
+"EscalatorSideRightUp" = "右がのぼり、左のエスカレーターに注意";
+"EscalatorSideRightDown" = "右がくだり、左のエスカレーターに注意";
+
+"FloorChangeDoneActionString2Down" = "%@をおりたら、%@";
+"FloorChangeDoneActionString2Up" = "%@をのぼったら、%@";

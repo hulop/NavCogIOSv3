@@ -727,6 +727,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->velocityRateFloor = 1.0;
     localizer->velocityRateElevator = 1.0;
     localizer->velocityRateStair = 0.5;
+    localizer->relativeVelocityEscalator = [ud doubleForKey:@"relativeVelocityEscalator"]; 
     
     localizer->nBurnIn = [ud doubleForKey:@"nStates"];
     localizer->burnInRadius2D = 5; // default 10

@@ -100,6 +100,27 @@
     }
     NSString *string = nil;
     
+    if (turnAngle < -150 ) {
+        string = NSLocalizedStringFromTable(@"make a u-turn to the left",@"BlindView", @"make turn to -180 ~ -180");
+    } else if (turnAngle > 150) {
+        string = NSLocalizedStringFromTable(@"make a u-turn to the right",@"BlindView", @"make turn to +150 ~ +180");
+    } else if (turnAngle < -120) {
+        string = NSLocalizedStringFromTable(@"make a big left turn",@"BlindView", @"make turn to -120 ~ -150");
+    } else if (turnAngle > 120) {
+        string = NSLocalizedStringFromTable(@"make a big right turn",@"BlindView", @"make turn to +120 ~ +150");
+    } else if (turnAngle < -60) {
+        string = NSLocalizedStringFromTable(@"turn left",@"BlindView", @"make turn to -60 ~ -120");
+    } else if (turnAngle > 60) {
+        string = NSLocalizedStringFromTable(@"turn right",@"BlindView", @"make turn to +60 ~ +120");
+    } else if (turnAngle < -22.5) {
+        string = NSLocalizedStringFromTable(@"make a slight left turn",@"BlindView", @"make turn to -22.5 ~ -60");
+    } else if (turnAngle > 22.5) {
+        string = NSLocalizedStringFromTable(@"make a slight right turn",@"BlindView", @"make turn to +22.5 ~ +60");
+    } else {
+        string = NSLocalizedStringFromTable(@"go straight", @"BlindView", @"");
+    }
+    
+
     if (nextLinkType == LINK_TYPE_ELEVATOR || nextLinkType == LINK_TYPE_ESCALATOR || nextLinkType == LINK_TYPE_STAIRWAY) {
         int sourceHeight = [properties[@"nextSourceHeight"] intValue];
         int targetHeight = [properties[@"nextTargetHeight"] intValue];
@@ -127,14 +148,29 @@
         }
         
         BOOL full = [properties[@"fullAction"] boolValue];
-        BOOL up = targetHeight > sourceHeight;
-        
-        NSString *tfloor = [self floorString:targetHeight];
-        NSString *format = @"FloorChangeActionString3";
-        format = [format stringByAppendingString:up?@"Up":@"Down"];
-        format = [format stringByAppendingString:full?@"Full":@""];
-
-        string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , angle, mean, tfloor];//@""
+        int escalatorSide = [properties[@"escalatorSide"] intValue];
+        if (full && nextLinkType == LINK_TYPE_ESCALATOR && escalatorSide != HLPEscalatorSideNone) {
+            NSString *format;
+            BOOL up = targetHeight > sourceHeight;
+            if (escalatorSide == HLPEscalatorSideBoth) {
+                format = @"EscalatorSideBoth";
+            } else if (escalatorSide == HLPEscalatorSideLeft) {
+                format = @"EscalatorSideLeft";
+            } else if (escalatorSide == HLPEscalatorSideRight) {
+                format = @"EscalatorSideRight";
+            }
+            format = [format stringByAppendingString:up?@"Up":@"Down"];
+            string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"")];
+        } else {
+            BOOL up = targetHeight > sourceHeight;
+            
+            NSString *tfloor = [self floorString:targetHeight];
+            NSString *format = @"FloorChangeActionString3";
+            format = [format stringByAppendingString:up?@"Up":@"Down"];
+            format = [format stringByAppendingString:full?@"Full":@""];
+            
+            string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , angle, mean, tfloor];//@""
+        }
     }
     else if (linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
         int sourceHeight = [properties[@"sourceHeight"] intValue];
@@ -144,32 +180,18 @@
         NSString *tfloor = [self floorString:targetHeight];
         //string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %2$@ by %1$@, now you are in %3$@",@"BlindView",@"") , mean, tfloor, sfloor];
         BOOL up = targetHeight > sourceHeight;
-        NSString *format = @"FloorChangeActionString2";
-        format = [format stringByAppendingString:up?@"Up":@"Down"];
-        string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , mean, tfloor];
+        BOOL full = [properties[@"fullAction"] boolValue];
+        if (full) {
+            NSString *format = @"FloorChangeDoneActionString2";
+            format = [format stringByAppendingString:up?@"Up":@"Down"];
+            string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , mean, string];
+        } else {
+            NSString *format = @"FloorChangeActionString2";
+            format = [format stringByAppendingString:up?@"Up":@"Down"];
+            string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , mean, tfloor];
+        }
     }
     else {
-        if (turnAngle < -150 ) {
-            string = NSLocalizedStringFromTable(@"make a u-turn to the left",@"BlindView", @"make turn to -180 ~ -180");
-        } else if (turnAngle > 150) {
-            string = NSLocalizedStringFromTable(@"make a u-turn to the right",@"BlindView", @"make turn to +150 ~ +180");
-        } else if (turnAngle < -120) {
-            string = NSLocalizedStringFromTable(@"make a big left turn",@"BlindView", @"make turn to -120 ~ -150");
-        } else if (turnAngle > 120) {
-            string = NSLocalizedStringFromTable(@"make a big right turn",@"BlindView", @"make turn to +120 ~ +150");
-        } else if (turnAngle < -60) {
-            string = NSLocalizedStringFromTable(@"turn left",@"BlindView", @"make turn to -60 ~ -120");
-        } else if (turnAngle > 60) {
-            string = NSLocalizedStringFromTable(@"turn right",@"BlindView", @"make turn to +60 ~ +120");
-        } else if (turnAngle < -22.5) {
-            string = NSLocalizedStringFromTable(@"make a slight left turn",@"BlindView", @"make turn to -22.5 ~ -60");
-        } else if (turnAngle > 22.5) {
-            string = NSLocalizedStringFromTable(@"make a slight right turn",@"BlindView", @"make turn to +22.5 ~ +60");
-        } else {
-            string = NSLocalizedStringFromTable(@"go straight", @"BlindView", @"");
-        }
-        
-        
         if (linkType == LINK_TYPE_ELEVATOR) {
             string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"After getting off the elevator, %@", @"BlindView", @""), string];
         }

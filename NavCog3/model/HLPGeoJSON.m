@@ -637,12 +637,14 @@
     HLPNode *snode = nodesMap[_sourceNodeID];
     if (snode) {
         _sourceHeight = snode.height;
+        [sourceLocation updateFloor:_sourceHeight];
     }
     
     _targetNodeID = self.properties[!_backward?PROPKEY_TARGET_NODE_ID:PROPKEY_SOURCE_NODE_ID];
     HLPNode *tnode = nodesMap[_targetNodeID];
     if (tnode) {
         _targetHeight = tnode.height;
+        [targetLocation updateFloor:_targetHeight];
     }
     
     if ([snode.connectedLinkIDs count] == 1 ||

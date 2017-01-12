@@ -410,6 +410,8 @@ static HLPSetting *soundEffectSetting;
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Pose random walk rate for WPRW" Name:@"poseRandomWalkRate" DefaultValue:@(1.0) Min:0.0 Max:2.0 Interval:0.1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Random walk rate for WPRW" Name:@"randomWalkRate" DefaultValue:@(0.2) Min:0.0 Max:2.0 Interval:0.1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Probability orientation offset jump for WPRW" Name:@"probaOriBiasJump" DefaultValue:@(0.0) Min:0.0 Max:0.5 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"relativeVelocityEscalator" Name:@"relativeVelocityEscalator" DefaultValue:@(0.5) Min:0.1 Max:1.0 Interval:0.1];
+    
     
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev velocity" Name:@"stdVelocity" DefaultValue:@(0.3) Min:0.0 Max:1.0 Interval:0.1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Diffusion velocity" Name:@"diffusionVelocity" DefaultValue:@(0.1) Min:0.0 Max:1.0 Interval:0.1];

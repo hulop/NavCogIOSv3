@@ -158,6 +158,13 @@ typedef enum: int {
 @property (nonatomic, readonly) BOOL flagLower;
 @end
 
+typedef NS_ENUM(NSInteger, HLPEscalatorSide) {
+    HLPEscalatorSideNone = 0,
+    HLPEscalatorSideLeft,
+    HLPEscalatorSideRight,
+    HLPEscalatorSideBoth
+};
+
 @interface HLPLink : HLPObject {
 @protected
     double _length;
@@ -186,6 +193,7 @@ typedef enum: int {
 @property (nonatomic, readonly) double minimumWidth;
 @property (nonatomic, readonly) HLPBrailleBlockType brailleBlockType;
 @property (nonatomic, readonly) BOOL isLeaf;
+@property HLPEscalatorSide escalatorSide;
 
 + (NSString*) nameOfLinkType:(HLPLinkType)type;
 - (double) initialBearingFromSource;

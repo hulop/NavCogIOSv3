@@ -860,6 +860,7 @@ static NavNavigatorConstants *_instance;
     NSDictionary *nodeLinksMap;
     NSArray *pois;
     NSArray *oneHopLinks;
+    NSArray *escalatorLinks;
     
     //NSString *destination;
     //NSString *startPoint;
@@ -951,6 +952,7 @@ static NavNavigatorConstants *_instance;
     NSMutableDictionary *nodesMapTemp = [@{} mutableCopy];
     NSMutableDictionary *linksMapTemp = [@{} mutableCopy];
     NSMutableDictionary *nodeLinksMapTemp = [@{} mutableCopy];
+    NSMutableArray *escalatorLinksTemp = [@[] mutableCopy];
 
     for(HLPObject *obj in features) {
         @try {
@@ -972,6 +974,9 @@ static NavNavigatorConstants *_instance;
                         nodeLinksMapTemp[obj.properties[TARGET_NODE_ID]] = array;
                     }
                     [array addObject:obj];
+                    if (((HLPLink*)obj).linkType == LINK_TYPE_ESCALATOR) {
+                        [escalatorLinksTemp addObject:obj];
+                    }
 
                     break;
                 case HLP_OBJECT_CATEGORY_NODE:
@@ -1007,6 +1012,7 @@ static NavNavigatorConstants *_instance;
     nodesMap = nodesMapTemp;
     linksMap = linksMapTemp;
     nodeLinksMap = nodeLinksMapTemp;
+    escalatorLinks = escalatorLinksTemp;
     
     [linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
         [obj updateWithNodesMap:nodesMap];
@@ -1014,6 +1020,77 @@ static NavNavigatorConstants *_instance;
     [route enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj isKindOfClass:HLPLink.class]) {
             [obj updateWithNodesMap:nodesMap];
+        }
+    }];
+    
+    
+    // determine escalator side from links
+    for(int i = 0; i < [escalatorLinks count]; i++) {
+        HLPLink* link1 = escalatorLinks[i];
+        BOOL left = NO;
+        BOOL right = NO;
+        
+        for(int j = 0; j < [escalatorLinks count]; j++) {
+            HLPLink* link2 = escalatorLinks[j];
+            if (link1 == link2) {
+                continue;
+            }
+            
+            HLPLocation *loc1, *loc2;
+            double dir1 = 0, dir2 = 0;
+            double side = 0;
+            if (link1.direction == DIRECTION_TYPE_SOURCE_TO_TARGET) {
+                dir1 = [link1.sourceLocation bearingTo:link1.targetLocation];
+                if (fabs(link1.sourceHeight - link2.sourceHeight) < 1e-5) {
+                    loc1 = link1.sourceLocation;
+                    loc2 = link2.sourceLocation;
+                }
+                else if (fabs(link1.sourceHeight - link2.targetHeight) < 1e-5) {
+                    loc1 = link1.sourceLocation;
+                    loc2 = link2.targetLocation;
+                }
+            } else if (link1.direction == DIRECTION_TYPE_TARGET_TO_SOURCE) {
+                dir1 = [link1.targetLocation bearingTo:link1.sourceLocation];
+                if (fabs(link1.targetHeight - link2.sourceHeight) < 1e-5) {
+                    loc1 = link1.targetLocation;
+                    loc2 = link2.sourceLocation;
+                }
+                else if (fabs(link1.targetHeight - link2.targetHeight) < 1e-5) {
+                    loc1 = link1.targetLocation;
+                    loc2 = link2.targetLocation;
+                }
+                
+            } else {
+                continue;
+            }
+            if (!loc1 || !loc2 || [loc1 distanceTo:loc2] > 2.5) {
+                continue;
+            }
+            dir2 = [loc1 bearingTo:loc2];
+            side = [HLPLocation normalizeDegree:dir1 - dir2];
+            if (side < 0) {
+                left = YES;
+            }
+            if (side > 0) {
+                right = YES;
+            }
+        }
+        if (left && right) {
+            link1.escalatorSide = HLPEscalatorSideBoth;
+        } else if (left) {
+            link1.escalatorSide = HLPEscalatorSideLeft;
+        } else if(right) {
+            link1.escalatorSide = HLPEscalatorSideRight;
+        } else {
+            link1.escalatorSide = HLPEscalatorSideNone;
+        }
+        //NSLog(@"%@, %f->%f, %d, %d", link1._id, link1.sourceHeight, link1.targetHeight, left, right);
+    }
+    
+    [route enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:HLPLink.class]) {
+            HLPLink *link = (HLPLink*)obj;
+            link.escalatorSide = [linksMap[link._id] escalatorSide];
         }
     }];
     
@@ -1535,7 +1612,7 @@ static NavNavigatorConstants *_instance;
             };
             double(^approachedDistance)(NavLinkInfo*) = ^(NavLinkInfo* linkInfo_){
                 if (linkInfo_.link.linkType == LINK_TYPE_ESCALATOR || linkInfo_.link.linkType == LINK_TYPE_STAIRWAY) {
-                    return 0.5;
+                    return C.APPROACHED_DISTANCE_THRESHOLD;
                 } else {
                     return MAX(MIN(C.APPROACHED_DISTANCE_THRESHOLD, linkInfo_.link.length/4), 1.0);
                 }
@@ -2076,10 +2153,12 @@ static NavNavigatorConstants *_instance;
                                @"pois": (linkInfo.link.length>C.NO_APPROACHING_DISTANCE_THRESHOLD)?linkInfo.pois:@[],
                                @"turnAngle": @(linkInfo.nextTurnAngle),
                                @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
+                               @"linkType": @(linkInfo.link.linkType),
                                @"nextLinkType": @(linkInfo.nextLink.linkType),
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                                @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
-                               @"fullAction": @(YES)
+                               @"fullAction": @(YES),
+                               @"escalatorSide": @(linkInfo.nextLink.escalatorSide)
                                }];
                         }
                         linkInfo.hasBeenWaitingAction = YES;

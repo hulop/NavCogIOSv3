@@ -693,7 +693,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->updateHandler(functionCalledAfterUpdate, (void*) &userData);
     localizer->logHandler(functionCalledToLog, (void*) &userData);
     
-    localizer->isVerboseLocalizer = true;
+    //localizer->isVerboseLocalizer = true;
     
     NSString *location_tracking = [[NSUserDefaults standardUserDefaults] stringForKey:@"location_tracking"];
     
@@ -849,33 +849,6 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void) updateStatus:(Status*) status
 {
-    /*
-    bool debugInit = false;
-    if (putBeaconsCount < localizer->nSmooth) {
-        if(debugInit){
-            if (status->step() != loc::Status::PREDICTION &&
-                status->step() != loc::Status::RESET &&
-                status->step() != loc::Status::OTHER
-                ) {
-                self.currentStatus = NavLocationStatusLocating;
-            }
-        }else{
-            self.currentStatus = NavLocationStatusLocating;
-        }
-        
-        //if(status->step() == Status::PREDICTION){
-        //    return;
-        //}
-        //if(status->step() == Status::OTHER){
-            return;
-        //}
-    }
-    if (putBeaconsCount == localizer->nSmooth) {
-        self.currentStatus = NavLocationStatusStable;
-        //return;
-    }
-    */
-    
     switch (status->locationStatus()){
         case Status::UNKNOWN:
             self.currentStatus = NavLocationStatusUnknown;
@@ -887,7 +860,7 @@ void functionCalledToLog(void *inUserData, string text)
             self.currentStatus = NavLocationStatusStable;
             break;
         case Status::UNSTABLE:
-            self.currentStatus = NavLocationStatusLost; // to be changed to different status name
+            // self.currentStatus is not updated
             break;
         case Status::NIL:
             // do nothing for nil status
@@ -1342,7 +1315,7 @@ int dcount = 0;
         
         bool showsDebugPose = false;
         if(!showsDebugPose){
-            if(status->locationStatus()==Status::UNKNOWN || status->locationStatus()==Status::UNSTABLE){
+            if(status->locationStatus()==Status::UNKNOWN){
                 lat = NAN;
                 lng = NAN;
                 globalHeading = NAN;

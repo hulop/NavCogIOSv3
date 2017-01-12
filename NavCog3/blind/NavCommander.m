@@ -512,11 +512,17 @@
     NSLog(@"%@", NSStringFromSelector(_cmd));
     
     NSString *string = [self headingActionString:properties];
+    BOOL selfspeak = [properties[@"selfspeak"] boolValue];
     
     if (string) {
-        [_delegate speak:string completionHandler:^{
-            
-        }];
+        [self.delegate vibrate];
+        if (selfspeak) {
+            [_delegate selfspeak:string force:YES completionHandler:^{
+            }];
+        } else {
+            [_delegate speak:string completionHandler:^{
+            }];
+        }
     }
 }
 
@@ -894,7 +900,7 @@
         NSString *string = [directionString stringByAppendingString:distanceString];
         
         [self.delegate vibrate];
-        [self.delegate speak:string force:YES completionHandler:^{
+        [self.delegate selfspeak:string force:YES completionHandler:^{
         }];
         return;
     }
@@ -957,7 +963,8 @@
     
 
     [self.delegate vibrate];
-    [self.delegate speak:string force:YES completionHandler:^{
+    
+    [self.delegate selfspeak:string force:YES completionHandler:^{
     }];
     
 }

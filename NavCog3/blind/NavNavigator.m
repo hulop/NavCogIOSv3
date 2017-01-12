@@ -1346,6 +1346,14 @@ static NavNavigatorConstants *_instance;
     
     NavLinkInfo *info = linkInfos[firstLinkIndex];
     
+    [self.delegate didActiveStatusChanged:
+     @{
+       @"isActive": @(_isActive),
+       @"location":info.link.sourceLocation,
+       @"heading":@(info.link.initialBearingFromSource)
+       }];
+    //[self locationChanged:nil];
+    
     [info updateWithLocation:[nds currentLocation]];
     if (info.distanceToUserLocationFromLink > C.OFF_ROUTE_THRESHOLD) {
         HLPLink *dummyLink = [[HLPLink alloc] initWithSource:[nds currentLocation] Target:info.snappedLocationOnLink];
@@ -1355,14 +1363,6 @@ static NavNavigatorConstants *_instance;
         info.isFirst = NO;
         info = dummy;
     }
-    
-    [self.delegate didActiveStatusChanged:
-     @{
-       @"isActive": @(_isActive),
-       @"location":info.link.sourceLocation,
-       @"heading":@(info.link.initialBearingFromSource)
-       }];
-    //[self locationChanged:nil];
     
     [self setTimeout:1 withBlock:^{
         [[NavDataStore sharedDataStore] manualLocation:nil];
@@ -2135,7 +2135,7 @@ static NavNavigatorConstants *_instance;
             
             if (!linkInfo.hasBeenBearing && !linkInfo.noBearing) {
                 double BEARING_TARGET_DISTANCE = 20;
-                double BEARING_DIFF_THRETHOLD = 3.0;
+                double BEARING_DIFF_THRETHOLD = 5.0;
                 double BEARING_DURATION_FACTOR = 0.1;
                 double BEARING_NOTIFY_WAIT = 3.0;
                 
@@ -2259,14 +2259,16 @@ static NavNavigatorConstants *_instance;
                  @{
                    @"offRoute": @(YES),
                    @"diffHeading": @(linkInfo.diffBearingAtUserLocationToSnappedLocationOnLink),
-                   @"distance": @(linkInfo.distanceToUserLocationFromLink)
+                   @"distance": @(linkInfo.distanceToUserLocationFromLink),
+                   @"selfspeak": @(YES)
                    }];
                 
             } else {
                 if (linkInfo.hasBeenWaitingAction) {
                     [self.delegate currentStatus:
                      @{
-                       @"turnAngle": @(linkInfo.nextTurnAngle)
+                       @"turnAngle": @(linkInfo.nextTurnAngle),
+                       @"selfspeak": @(YES)
                        }];
                 }
                 else if (fabs(linkInfo.diffBearingAtUserLocation) > 22.5) {
@@ -2276,7 +2278,8 @@ static NavNavigatorConstants *_instance;
                         [self.delegate userNeedsToChangeHeading:
                          @{
                            @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
-                           @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
+                           @"threshold": @(linkInfo.bearingTargetThreshold),
+                           @"selfspeak": @(YES)
                            }];
                     }
                 }
@@ -2293,6 +2296,7 @@ static NavNavigatorConstants *_instance;
                        @"targetHeight": @(linkInfo.link.targetHeight),
                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                        @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                       @"selfspeak": @(YES)
                        }];
                 }
             }

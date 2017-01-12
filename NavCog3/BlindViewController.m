@@ -512,15 +512,20 @@
             if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
                 [helper evalScript:@"$hulop.map.setSync(true);"];
             }
+        });
             
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_point"]) {
+                HLPLocation *loc = properties[@"location"];
+                double heading = loc.orientation;
+                NSDictionary *data = @{
+                                       @"lat": @(loc.lat),
+                                       @"lng": @(loc.lng),
+                                       @"floor": @(loc.floor),
+                                       @"orientation": @(isnan(heading)?0:heading),
+                                       @"orientationAccuracy": @(10)
+                                       };
+                [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
                 [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:properties];
-//                
-//                // if there is no location manager response
-//                timerForSimulator = [NSTimer scheduledTimerWithTimeInterval:2 repeats:YES block:^(NSTimer * _Nonnull timer) {
-//                    [previewer manualGoFloor: [properties[@"location"] floor]];
-//                    [previewer manualGoForward:0];
-//                }];
             }                        
             
             if ([NavDataStore sharedDataStore].previewMode) {
@@ -532,7 +537,7 @@
                     [previewer setAutoProceed:YES];
                 });
             }
-        });
+
     } else {
         [previewer setAutoProceed:NO];
     }
@@ -562,6 +567,9 @@
         [helper evalScript:[NSString stringWithFormat:@"$hulop.map.getMap().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
     });
     
+    [commander didNavigationStarted:properties];
+    [previewer didNavigationStarted:properties];
+    
     double delayInSeconds = 0.5;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -572,9 +580,6 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_SHOW_ROUTE object:temp];
         //[helper showRoute:temp];
     });
-    
-    [commander didNavigationStarted:properties];
-    [previewer didNavigationStarted:properties];
 }
 
 - (void)didNavigationFinished:(NSDictionary *)properties
@@ -702,6 +707,10 @@
 - (void)speak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)())handler
 {
     [[NavDeviceTTS sharedTTS] speak:text force:flag completionHandler:handler];
+}
+- (void)selfspeak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)())handler;
+{
+    [[NavDeviceTTS sharedTTS] selfspeak:text force:flag completionHandler:handler];
 }
 
 - (void)playSuccess

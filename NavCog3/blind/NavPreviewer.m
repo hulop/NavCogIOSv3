@@ -224,6 +224,11 @@
         double distance = [properties[@"distance"] doubleValue];
         _targetDistance = distance;
     }
+    if (properties[@"targetHeight"]) {
+        double targetHeight = [properties[@"targetHeight"] doubleValue];
+        _targetFloor = targetHeight;
+        
+    }
 }
 - (void)userGetsOnElevator:(NSDictionary *)properties
 {

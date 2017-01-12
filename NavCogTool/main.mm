@@ -30,6 +30,7 @@ typedef struct {
     BOOL useStairs = NO;
     BOOL useEscalator = NO;
     BOOL useElevator = YES;
+    BOOL tactilePaving = YES;
     BOOL listDestinations = NO;
     std::string filter = "";
     BOOL combinations = NO;
@@ -52,6 +53,7 @@ void printHelp() {
     std::cout << "--useStairs [1|0]      set useStairs" << std::endl;
     std::cout << "--useEscalator [1|0]   set useEscalator" << std::endl;
     std::cout << "--useElevator [1|0]    set useElevator" << std::endl;
+    std::cout << "--tactilePaving [1|0]  set tactilePaving" << std::endl;
 }
 
 Option parseArguments(int argc, char * argv[]){
@@ -67,6 +69,7 @@ Option parseArguments(int argc, char * argv[]){
         {"useStairs",     required_argument, NULL,  0 },
         {"useEscalator",  required_argument, NULL,  0 },
         {"useElevator",   required_argument, NULL,  0 },
+        {"tactilePaving",   required_argument, NULL,  0 },
         {0,         0,                 0,  0 }
     };
     
@@ -85,6 +88,10 @@ Option parseArguments(int argc, char * argv[]){
             if (strcmp(long_options[option_index].name, "useElevator") == 0){
                 sscanf(optarg, "%d", &boolean);
                 opt.useElevator = boolean;
+            }
+            if (strcmp(long_options[option_index].name, "tactilePaving") == 0){
+                sscanf(optarg, "%d", &boolean);
+                opt.tactilePaving = boolean;
             }
             if (strcmp(long_options[option_index].name, "list") == 0){
                 opt.listDestinations = YES;
@@ -371,7 +378,8 @@ Option parseArguments(int argc, char * argv[]){
                             @"deff_LV":@"9",
                             @"stairs":opt.useStairs?@"9":@"1",
                             @"esc":opt.useEscalator?@"9":@"1",
-                            @"elv":opt.useElevator?@"9":@"1"
+                            @"elv":opt.useElevator?@"9":@"1",
+                            @"tactile_paving":opt.tactilePaving?@"1":@""
                             };
 
     if (!fromID || !toID || [fromID length] == 0 || [toID length] == 0) {

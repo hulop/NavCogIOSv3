@@ -54,6 +54,7 @@
     BOOL forwardAction;
     
     BOOL initFlag;
+    BOOL rerouteFlag;
     
     UIColor *defaultColor;
 }
@@ -514,34 +515,25 @@
             }
         });
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_point"]) {
-                HLPLocation *loc = properties[@"location"];
-                double heading = loc.orientation;
-                NSDictionary *data = @{
-                                       @"lat": @(loc.lat),
-                                       @"lng": @(loc.lng),
-                                       @"floor": @(loc.floor),
-                                       @"orientation": @(isnan(heading)?0:heading),
-                                       @"orientationAccuracy": @(10)
-                                       };
-                [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
-                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:properties];
-            }                        
-            
-            if ([NavDataStore sharedDataStore].previewMode) {
-                [[NavDataStore sharedDataStore] manualLocationReset:properties];
-                
-                double delayInSeconds = 2.0;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [previewer setAutoProceed:YES];
-                });
-            }
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_point"] && !rerouteFlag) {
+            [[NavDataStore sharedDataStore] manualLocationReset:properties];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:properties];
+        }
+        
+        if ([NavDataStore sharedDataStore].previewMode) {
+            [[NavDataStore sharedDataStore] manualLocationReset:properties];
+            double delayInSeconds = 2.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [previewer setAutoProceed:YES];
+            });
+        }
 
     } else {
         [previewer setAutoProceed:NO];
     }
     [self updateView];
+    rerouteFlag = NO;
 }
 
 - (void)couldNotStartNavigation:(NSDictionary *)properties
@@ -672,6 +664,7 @@
 
 - (void)reroute:(NSDictionary *)properties
 {
+    rerouteFlag = YES;
     [commander reroute:properties];
     NavDataStore *nds = [NavDataStore sharedDataStore];
     [nds clearRoute];
@@ -693,7 +686,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait",@"")];
     });
-    [nds requestRouteFrom:[NavDataStore destinationForCurrentLocation]._id To:nds.to._id withPreferences:prefs complete:^{
+    [nds requestRerouteFrom:[NavDataStore destinationForCurrentLocation]._id To:nds.to._id withPreferences:prefs complete:^{
     }];
 }
 

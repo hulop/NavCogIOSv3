@@ -515,7 +515,7 @@ static NavDataStore* instance_ = nil;
     NSString *user = param[@"user"];
     NSString *lang = param[@"user_lang"];
     NSDictionary *prefs = param[@"prefs"];
-    [self requestRouteFrom:fromID To:toID forUser:user withLang:lang withPreferences:prefs complete:nil];
+    [self requestRouteFrom:fromID To:toID forUser:user withLang:lang useCache:NO withPreferences:prefs complete:nil];
 }
 
 
@@ -633,16 +633,28 @@ static NavDataStore* instance_ = nil;
 - (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
 {
     [self saveHistory];
-    [self requestRouteFrom:fromID To:toID forUser:self.userID withLang:self.userLanguage withPreferences:prefs complete:complete];
+    [self requestRouteFrom:fromID To:toID forUser:self.userID withLang:self.userLanguage useCache:NO withPreferences:prefs complete:complete];
 }
 
-- (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID forUser:(NSString*)user withLang:(NSString*)lang withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
+- (void)requestRerouteFrom:(NSString *)fromID To:(NSString *)toID withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
+{
+    [self requestRouteFrom:fromID To:toID forUser:self.userID withLang:self.userLanguage useCache:YES withPreferences:prefs complete:complete];
+}
+
+- (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID forUser:(NSString*)user withLang:(NSString*)lang useCache:(BOOL)useCache withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
 {
     NSDictionary *param = @{@"fromID":fromID, @"toID":toID, @"user":user, @"user_lang":lang, @"prefs":prefs};
     [Logging logType:@"showRoute" withParam:param];
 
     [HLPDataUtil loadRouteFromNode:fromID toNode:toID forUser:user withLang:lang withPrefs:prefs withCallback:^(NSArray<HLPObject *> *result) {
         routeCache = result;
+        if (useCache && featuresCache) {
+            if (complete) {
+                complete();
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:routeCache];
+            return;
+        }
         [HLPDataUtil loadNodeMapForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {
             featuresCache = result;
             [HLPDataUtil loadFeaturesForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {

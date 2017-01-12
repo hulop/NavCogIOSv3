@@ -875,6 +875,8 @@ static NavNavigatorConstants *_instance;
     NSTimer *timeoutTimer;
     
     NSTimeInterval lastElevatorResetTime;
+    
+    NSOperationQueue *navigationQueue;
 }
 
 - (instancetype)init
@@ -886,8 +888,12 @@ static NavNavigatorConstants *_instance;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeChanged:) name:ROUTE_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeCleared:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStatus:) name:REQUEST_NAVIGATION_STATUS object:nil];
+    
+    navigationQueue = [[NSOperationQueue alloc] init];
+    navigationQueue.maxConcurrentOperationCount = 1;
+    navigationQueue.qualityOfService = NSQualityOfServiceUserInteractive;
     
     return self;
 }
@@ -1352,7 +1358,6 @@ static NavNavigatorConstants *_instance;
        @"location":info.link.sourceLocation,
        @"heading":@(info.link.initialBearingFromSource)
        }];
-    //[self locationChanged:nil];
     
     [info updateWithLocation:[nds currentLocation]];
     if (info.distanceToUserLocationFromLink > C.OFF_ROUTE_THRESHOLD) {
@@ -1375,7 +1380,7 @@ static NavNavigatorConstants *_instance;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             if (block) {
-                block();
+                [navigationQueue addOperationWithBlock:block];
             }
         });
     }
@@ -1384,6 +1389,13 @@ static NavNavigatorConstants *_instance;
 - (void)routeCleared:(NSNotification*)notification
 {
     [self stop];
+}
+
+- (void)_locationChanged:(NSNotification*)notification
+{
+    [navigationQueue addOperationWithBlock:^{
+        [self locationChanged:notification];
+    }];
 }
 
 - (void)locationChanged:(NSNotification*)notification
@@ -1433,12 +1445,16 @@ static NavNavigatorConstants *_instance;
             }
             [info updateWithLocation:location];
             if (info.distanceToUserLocationFromLink < minDistance &&
-                ((fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
-                fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) ||
-                 (i == 1 && (info.link.linkType == LINK_TYPE_ELEVATOR ||
-                             info.link.linkType == LINK_TYPE_ESCALATOR ||
-                             info.link.linkType == LINK_TYPE_STAIRWAY)))
-                 ) {
+                (
+                 (fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
+                  fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) ||
+                 ((info.link.linkType == LINK_TYPE_ELEVATOR ||
+                   info.link.linkType == LINK_TYPE_ESCALATOR ||
+                   info.link.linkType == LINK_TYPE_STAIRWAY) &&
+                  (fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD ||
+                   fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD))
+                 )
+                ) {
                 minDistance = info.distanceToUserLocationFromLink;
                 minIndex = i;
             }

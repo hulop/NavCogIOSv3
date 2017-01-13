@@ -189,9 +189,8 @@ static NavDeviceTTS *instance = nil;
         }
     }
 
-    if (!selfvoicing) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:@{@"text":text, @"force":@(flag)}];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:
+     @{@"text":text,@"force":@(flag),@"debug":@(selfvoicing)}];
     
     double speechRate = [[NSUserDefaults standardUserDefaults] doubleForKey:SPEECH_SPEED];
     

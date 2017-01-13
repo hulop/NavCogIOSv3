@@ -49,7 +49,7 @@
 {
     self = [super initWithCoder:aDecoder];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(speak:) name:SPEAK_TEXT_QUEUEING object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enqueueSpokenText:) name:SPEAK_TEXT_QUEUEING object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:NAV_ROUTE_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteControl:) name:REMOTE_CONTROL_EVENT object:nil];
@@ -116,10 +116,7 @@
     } else {
         [[NavDeviceTTS sharedTTS] selfspeak:text force:YES completionHandler:^{
         }];
-    }
-    
-    //[[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:
-    //@{@"text":text,@"force":@(YES),@"debug":@(YES)}];
+    }    
 }
 
 - (void)remoteControl:(NSNotification*)notification
@@ -163,11 +160,14 @@
     }
 }
 
-- (void)speak:(NSNotification*)notification
+// update spoken text list
+- (void)enqueueSpokenText:(NSNotification*)notification
 {
     BOOL flag = NO;
     @synchronized (self) {
         NSDictionary *dict = [notification object];
+        
+        // not record as history if debug == YES
         BOOL debug = [dict[@"debug"] boolValue];
         if (debug) {
             return;
@@ -190,37 +190,28 @@
             BOOL last = (i == [speaks count] - 1);
             UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
             
-            
             e.accessibilityLabel = s;
             if (last) {
                 e.accessibilityFrame = self.frame;
             }
             [temp addObject:e];
         }
+        
+        // future summary
         if (_fsSource) {
-            //UIAccessibilityElement *group = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            
-            //group.isAccessibilityElement = NO;
-            //NSMutableArray *items = [@[] mutableCopy];
-            //UIAccessibilityElement *header = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:group];
+            // use flat structure for non-voiceover usage
             UIAccessibilityElement *header = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             header.accessibilityTraits = UIAccessibilityTraitHeader | UIAccessibilityTraitStaticText;
             header.accessibilityLabel = NSLocalizedStringFromTable(@"SummaryHeader",@"BlindView",@"");
             [temp addObject:header];
-            //[items addObject:header];
-            
+
             for(int i = 0 ; i < [_fsSource numberOfSummary]; i++) {
                 NSString *str = [_fsSource summaryAtIndex:i];
-                //UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:group];
                 UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
                 e.accessibilityLabel = [NavDeviceTTS removeDots:str];
 
-                //[items addObject:e];
                 [temp addObject:e];
             }
-            //group.accessibilityElements = items;
-            //group.shouldGroupAccessibilityChildren = YES;
-            //[temp addObject:group];
         }
         
         elements = temp;

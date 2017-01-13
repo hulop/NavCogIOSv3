@@ -752,6 +752,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->probabilityOrientationBiasJump = [ud doubleForKey:@"probaOriBiasJump"]; //0.1;
     localizer->poseRandomWalkRate = [ud doubleForKey:@"poseRandomWalkRate"]; // 1.0;
     localizer->randomWalkRate = [ud doubleForKey:@"randomWalkRate"]; //0.2;
+    localizer->probabilityBackwardMove = [ud doubleForKey:@"probaBackwardMove"]; //0.1;
     
     double lb = [ud doubleForKey:@"locLB"];
     double lbFloor = [ud doubleForKey:@"floorLB"];
@@ -766,6 +767,25 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->prwBuildingProperty->probabilityUpElevator(0.0).probabilityDownElevator(0.0).probabilityStayElevator(1.0);
     // set parameters for weighting and mixing in transition areas
     localizer->pfFloorTransParams->weightTransitionArea(2.0).mixtureProbaTransArea([ud doubleForKey:@"mixtureProbabilityFloorTransArea"]);
+    
+    // set parameters for location status monitoring
+    bool activatesDynamicStatusMonitoring = true;
+    if(activatesDynamicStatusMonitoring){
+        LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
+        params->minimumWeightStable(1.0e-5);
+        params->stdev2DEnterStable(5.0);
+        params->stdev2DExitStable(10.0);
+        params->stdev2DEnterLocating(8.0);
+        params->stdev2DExitLocating(10.0);
+    }else{
+        LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
+        params->minimumWeightStable(0.0);
+        double largeStdev = 10000;
+        params->stdev2DEnterStable(largeStdev);
+        params->stdev2DExitStable(largeStdev);
+        params->stdev2DEnterLocating(largeStdev);
+        params->stdev2DExitLocating(largeStdev);
+    }
     
     // to activate orientation initialization using
     localizer->headingConfidenceForOrientationInit([ud doubleForKey:@"headingConfidenceInit"]);

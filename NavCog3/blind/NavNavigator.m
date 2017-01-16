@@ -2015,7 +2015,7 @@ static NavNavigatorConstants *_instance;
                         }
                     }
                     
-                    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator"]) {
+                    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_at_elevator_continuously"]) {
                         if (!isnan(lastElevatorResetTime) && now - lastElevatorResetTime > 1.9) {
                             HLPLocation *loc = elevatorLocation(linkInfo.link);
                             [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:NAN];

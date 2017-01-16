@@ -769,7 +769,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->pfFloorTransParams->weightTransitionArea(2.0).mixtureProbaTransArea([ud doubleForKey:@"mixtureProbabilityFloorTransArea"]);
     
     // set parameters for location status monitoring
-    bool activatesDynamicStatusMonitoring = true;
+    bool activatesDynamicStatusMonitoring = [ud boolForKey:@"activatesStatusMonitoring"];
     if(activatesDynamicStatusMonitoring){
         LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
         params->minimumWeightStable(1.0e-5);
@@ -777,6 +777,7 @@ void functionCalledToLog(void *inUserData, string text)
         params->stdev2DExitStable(10.0);
         params->stdev2DEnterLocating(8.0);
         params->stdev2DExitLocating(10.0);
+        params->monitorIntervalMS(3000);
     }else{
         LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
         params->minimumWeightStable(0.0);
@@ -785,6 +786,7 @@ void functionCalledToLog(void *inUserData, string text)
         params->stdev2DExitStable(largeStdev);
         params->stdev2DEnterLocating(largeStdev);
         params->stdev2DExitLocating(largeStdev);
+        params->monitorIntervalMS(3600*1000);
     }
     
     // to activate orientation initialization using
@@ -1337,11 +1339,7 @@ int dcount = 0;
                 lat = NAN;
                 lng = NAN;
                 globalHeading = NAN;
-            }else if(status->locationStatus()==Status::LOCATING){
-                // "LOCATING" status does not show orientation
-                globalHeading = NAN;
             }
-            
             double oriAccThreshold = [[NSUserDefaults standardUserDefaults] doubleForKey:@"oriAccThreshold"];
             if( oriAccThreshold < orientationAccuracy ){
                 globalHeading = NAN;

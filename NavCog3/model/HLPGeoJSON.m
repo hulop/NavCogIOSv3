@@ -532,6 +532,20 @@
 }
 @end
 
+@implementation HLPPOIEscalatorFlags : HLPPOIFlags
+- (NSString*)description
+{
+    NSString *str = @"HLPPOIEscalatorFlags:";
+    if (_left) str = [str stringByAppendingString:@"left "];
+    if (_right) str = [str stringByAppendingString:@"right "];
+    if (_upward) str = [str stringByAppendingString:@"upward "];
+    if (_downward) str = [str stringByAppendingString:@"downward "];
+    if (_forward) str = [str stringByAppendingString:@"forward "];
+    if (_backward) str = [str stringByAppendingString:@"backward "];
+    return str;
+}
+@end
+
 @implementation HLPLink {
 @protected
     double initialBearingFromSource;
@@ -821,6 +835,9 @@
     //if (link2.linkType == LINK_TYPE_ESCALATOR) {
     //    return link1.length < 5;
     //}
+    if (link1.linkType == LINK_TYPE_ESCALATOR) {
+        return link2.length < 3;
+    }
 
     return [HLPCombinedLink link:link1 canBeCombinedWithLink:link2] &&
     link1.linkType == link2.linkType;
@@ -917,6 +934,7 @@
     targetLocation = [link2 targetLocation];
     
     _brailleBlockType = link1.brailleBlockType;
+    _escalatorFlags = link1.escalatorFlags;
     
     return self;
 }
@@ -1061,7 +1079,7 @@
     NSString *ret = nil;
     if (_facility) {
         if (_name) {
-            ret = [_facility.name stringByAppendingString:_name];
+            ret = [_facility.name stringByAppendingFormat:@" %@", _name];
         } else {
             ret = _facility.name;
         }
@@ -1080,7 +1098,7 @@
     NSString *ret = nil;
     if (_facility) {
         if (_name) {
-            ret = [_facility.namePron stringByAppendingString:_namePron];
+            ret = [_facility.namePron stringByAppendingFormat:@" %@", _namePron];
         } else {
             ret = _facility.namePron;
         }

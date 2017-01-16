@@ -231,7 +231,7 @@ static NavNavigatorConstants *_instance;
                     _isNextDestination = YES;
                 }
             } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
-                _isNextDestination = YES;
+                _isNextDestination = ent.node.isLeaf;
             }
         }
     }];
@@ -1000,70 +1000,69 @@ static NavNavigatorConstants *_instance;
     // determine escalator side from links
     for(int i = 0; i < [escalatorLinks count]; i++) {
         HLPLink* link1 = escalatorLinks[i];
-        BOOL left = NO;
-        BOOL right = NO;
+        if (link1.direction == DIRECTION_TYPE_BOTH) {
+            continue;
+        }
+        BOOL dir1 = (link1.direction == DIRECTION_TYPE_SOURCE_TO_TARGET);
+        HLPLocation *source1 = dir1?link1.sourceLocation:link1.targetLocation;
+        double bearing1 = [source1 bearingTo:dir1?link1.targetLocation:link1.sourceLocation];
+        
+        HLPPOIEscalatorFlags*(^isSideBySideEscalator)(HLPLink*) = ^(HLPLink* link2) {
+            BOOL dir2 = (link2.direction == DIRECTION_TYPE_SOURCE_TO_TARGET);
+            HLPLocation *source2 = nil, *target2 = nil;
+            if (source1.floor == link2.sourceHeight) {
+                source2 = link2.sourceLocation;
+                target2 = link2.targetLocation;
+            }
+            else if (source1.floor == link2.targetHeight) {
+                source2 = link2.targetLocation;
+                target2 = link2.sourceLocation;
+            }
+            if (!source2) {
+                return (HLPPOIEscalatorFlags*)nil;
+            }
+            if ([source1 distanceTo:source2] > 2.5) {
+                return (HLPPOIEscalatorFlags*)nil;
+            }
+            double bearing = [HLPLocation normalizeDegree:[source1 bearingTo:source2] - bearing1];
+            if (fabs(bearing) < 80 || 100 < fabs(bearing)) {
+                //NSLog(@"bearing-%f", bearing);
+                //return (HLPPOIEscalatorFlags*)nil;
+            }
+            NSMutableString* temp = [@"" mutableCopy];
+            [temp appendString:bearing<0?@"_left_ ":@"_right_ "];
+            [temp appendString:((source2==link2.sourceLocation) && dir2) ? @"_forward_ ":@"_backward_ "];
+            [temp appendString:source2.floor > target2.floor ? @"_downward_ ":@"_upward_ "];
+            
+            return [[HLPPOIEscalatorFlags alloc] initWithString:temp];
+        };
+
+        NSMutableArray *flags = [@[] mutableCopy];
         
         for(int j = 0; j < [escalatorLinks count]; j++) {
             HLPLink* link2 = escalatorLinks[j];
-            if (link1 == link2) {
+            if (link1 == link2 ||
+                (source1.floor != link2.sourceHeight && source1.floor != link2.targetHeight) ||
+                link2.direction == DIRECTION_TYPE_BOTH
+                ) {
                 continue;
             }
-            
-            HLPLocation *loc1, *loc2;
-            double dir1 = 0, dir2 = 0;
-            double side = 0;
-            if (link1.direction == DIRECTION_TYPE_SOURCE_TO_TARGET) {
-                dir1 = [link1.sourceLocation bearingTo:link1.targetLocation];
-                if (fabs(link1.sourceHeight - link2.sourceHeight) < 1e-5) {
-                    loc1 = link1.sourceLocation;
-                    loc2 = link2.sourceLocation;
-                }
-                else if (fabs(link1.sourceHeight - link2.targetHeight) < 1e-5) {
-                    loc1 = link1.sourceLocation;
-                    loc2 = link2.targetLocation;
-                }
-            } else if (link1.direction == DIRECTION_TYPE_TARGET_TO_SOURCE) {
-                dir1 = [link1.targetLocation bearingTo:link1.sourceLocation];
-                if (fabs(link1.targetHeight - link2.sourceHeight) < 1e-5) {
-                    loc1 = link1.targetLocation;
-                    loc2 = link2.sourceLocation;
-                }
-                else if (fabs(link1.targetHeight - link2.targetHeight) < 1e-5) {
-                    loc1 = link1.targetLocation;
-                    loc2 = link2.targetLocation;
-                }
-                
-            } else {
+
+            HLPPOIEscalatorFlags *flag = isSideBySideEscalator(link2);
+            if (flag == nil) {
                 continue;
             }
-            if (!loc1 || !loc2 || [loc1 distanceTo:loc2] > 2.5) {
-                continue;
-            }
-            dir2 = [loc1 bearingTo:loc2];
-            side = [HLPLocation normalizeDegree:dir1 - dir2];
-            if (side < 0) {
-                left = YES;
-            }
-            if (side > 0) {
-                right = YES;
-            }
+            [flags addObject:flag];
         }
-        if (left && right) {
-            link1.escalatorSide = HLPEscalatorSideBoth;
-        } else if (left) {
-            link1.escalatorSide = HLPEscalatorSideLeft;
-        } else if(right) {
-            link1.escalatorSide = HLPEscalatorSideRight;
-        } else {
-            link1.escalatorSide = HLPEscalatorSideNone;
-        }
-        //NSLog(@"%@, %f->%f, %d, %d", link1._id, link1.sourceHeight, link1.targetHeight, left, right);
+        NSLog(@"%@, %f->%f, %@", link1._id, link1.sourceHeight, link1.targetHeight, flags);
+        
+        link1.escalatorFlags = flags;
     }
     
     [route enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj isKindOfClass:HLPLink.class]) {
             HLPLink *link = (HLPLink*)obj;
-            link.escalatorSide = [linksMap[link._id] escalatorSide];
+            link.escalatorFlags = [linksMap[link._id] escalatorFlags];
         }
     }];
     
@@ -1223,6 +1222,7 @@ static NavNavigatorConstants *_instance;
                     linkPoiMap[nearestLink._id] = linkPois;
                 }
                 [linkPois addObject:ent];
+                break;
             }
         }
     }
@@ -2063,7 +2063,8 @@ static NavNavigatorConstants *_instance;
                        @"sourceHeight": @(linkInfo.link.sourceHeight),
                        @"targetHeight": @(linkInfo.link.targetHeight),
                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                       @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[]
 
                        }];
                 }
@@ -2130,8 +2131,7 @@ static NavNavigatorConstants *_instance;
                                @"nextLinkType": @(linkInfo.nextLink.linkType),
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                                @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
-                               @"fullAction": @(YES),
-                               @"escalatorSide": @(linkInfo.nextLink.escalatorSide)
+                               @"fullAction": @(YES)
                                }];
                         }
                         linkInfo.hasBeenWaitingAction = YES;
@@ -2186,7 +2186,9 @@ static NavNavigatorConstants *_instance;
                 
                 if (!poi.hasBeenApproached && (now - poi.lastApproached > C.POI_ANNOUNCE_MIN_INTERVAL)) {
                     if (poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
-                        poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE) {
+                        poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE &&
+                        [linkInfo.link.targetLocation distanceTo:poi.poiLocation] > C.POI_ANNOUNCE_DISTANCE
+                        ) {
                         if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
                             [self.delegate userIsApproachingToPOI:
                              @{
@@ -2389,6 +2391,7 @@ static NavNavigatorConstants *_instance;
                        @"targetHeight": @(linkInfo.link.targetHeight),
                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                        @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                       @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
                        @"selfspeak": @(YES)
                        }];
                 }

@@ -49,23 +49,12 @@
 /* No comment provided by engineer. */
 "Go to %1$@" = "Go to the %1$@.";
 
-/* No comment provided by engineer. */
-"FloorChangeActionString2Down" = "Go down to the %2$@ by %1$@.";
 
 /* No comment provided by engineer. */
-"FloorChangeActionString3Down" = "Go down to the %3$@ by %2$@ %1$@.";
+"FloorChangeActionString4Down" = "go down to the %4$@ by %2$@ %3$@ %1$@";
 
 /* No comment provided by engineer. */
-"FloorChangeActionString2Up" = "Go up to the %2$@ by %1$@.";
-
-/* No comment provided by engineer. */
-"FloorChangeActionString3Up" = "Go up to the %3$@ by %2$@ %1$@.";
-
-/* No comment provided by engineer. */
-"FloorChangeActionString3DownFull" = "%2$@ is %1$@, Go down to the %3$@.";
-
-/* No comment provided by engineer. */
-"FloorChangeActionString3UpFull" = "%2$@ is %1$@, Go up to the %3$@.";
+"FloorChangeActionString4Up" = "go up to the %4$@ by %2$@ %3$@ %1$@";
 
 
 /* No comment provided by engineer. */
@@ -141,10 +130,10 @@ Head to the correct orientation
 "BothSide" = "both side";
 
 /* */
-"LeftSide" = "left";
+"LeftSide" = "left side";
 
 /* */
-"RightSide" = "right";
+"RightSide" = "right side";
 
 /* No comment provided by engineer. */
 "To_button" = "To %@";
@@ -190,15 +179,6 @@ Head to the correct orientation
 
 /* (No Commment) */
 "and action" = "and %1$@";
-
-/* (No Commment) */
-"and action at end object" = "and %1$@ at the end of corridor";
-
-/* (No Commment) */
-"and action at near object" = "and %1$@ at the %2$@";
-
-/* (No Commment) */
-"and action at warning block" = "and %1$@ at a warning tactile";
 
 /* (No Commment) */
 "action" = "%1$@";
@@ -379,3 +359,13 @@ Head to the correct orientation
 "RIGHT_FRONT_DIRECTION" = "Right Front";
 
 "FRONT_DIRECTION" = "Front";
+
+"InMiddle" = "Middle";
+
+"EscalatorSideLeftForward" = "Do not take left side";
+"EscalatorSideLeftBackward" = "Left side is backward";
+"EscalatorSideRightForward" = "Do not take right side";
+"EscalatorSideRightBackward" = "Right side is backward";
+
+"FloorChangeDoneActionString2Down" = "%2$@, after %1$@";
+"FloorChangeDoneActionString2Up" = "%2$@, after %1$@";

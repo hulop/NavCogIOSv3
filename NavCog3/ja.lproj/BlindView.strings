@@ -88,23 +88,12 @@
 /* basement floor */
 "FloorBasementD" = "地下%@階";
 
-/* (No Commment) */
-"FloorChangeActionString2Down" = "%1$@を使って%2$@におります";
 
 /* (No Commment) */
-"FloorChangeActionString2Up" = "%1$@を使って%2$@に上がります";
+"FloorChangeActionString4Down" = "%1$@、%2$@の%3$@を使って%4$@へおりる";
 
 /* (No Commment) */
-"FloorChangeActionString3Down" = "%1$@の%2$@を使って%3$@へおりる";
-
-/* (No Commment) */
-"FloorChangeActionString3DownFull" = "%1$@の%2$@を使って%3$@へおりる";
-
-/* (No Commment) */
-"FloorChangeActionString3Up" = "%1$@の%2$@を使って%3$@へ上がる";
-
-/* (No Commment) */
-"FloorChangeActionString3UpFull" = "%1$@の%2$@を使って%3$@へ上がる";
+"FloorChangeActionString4Up" = "%1$@、%2$@の%3$@を使って%4$@へ上がる";
 
 /* floor */
 "FloorD" = "%@階";
@@ -249,15 +238,6 @@
 /* (No Commment) */
 "and action" = "%1$@";
 
-/* (No Commment) */
-"and action at end object" = "突き当たりを%1$@";
-
-/* (No Commment) */
-"and action at near object" = "%2$@のところで%1$@";
-
-/* (No Commment) */
-"and action at warning block" = "警告ブロックのところで%1$@";
-
 /* approaching */
 "approaching" = "そろそろです";
 
@@ -399,13 +379,12 @@
 
 "FRONT_DIRECTION" = "前に";
 
+"InMiddle" = "真ん中";
 
-"EscalatorSideBothUp" = "真ん中がのぼり、左右のエスカレーターに注意";
-"EscalatorSideBothDown" = "真ん中がくだり、左右のエスカレーターに注意";
-"EscalatorSideLeftUp" = "左がのぼり、右のエスカレーターに注意";
-"EscalatorSideLeftDown" = "左がくだり、右のエスカレーターに注意";
-"EscalatorSideRightUp" = "右がのぼり、左のエスカレーターに注意";
-"EscalatorSideRightDown" = "右がくだり、左のエスカレーターに注意";
+"EscalatorSideLeftForward" = "左側には乗らないでください";
+"EscalatorSideLeftBackward" = "左側は逆向き、注意してください";
+"EscalatorSideRightForward" = "右側には乗らないでください";
+"EscalatorSideRightBackward" = "右側は逆向き、注意してください";
 
 "FloorChangeDoneActionString2Down" = "%@をおりたら、%@";
 "FloorChangeDoneActionString2Up" = "%@をのぼったら、%@";

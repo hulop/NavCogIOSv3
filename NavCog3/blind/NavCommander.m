@@ -120,6 +120,24 @@
         string = NSLocalizedStringFromTable(@"go straight", @"BlindView", @"");
     }
     
+    NSArray *pois = properties[@"pois"];
+    NSString *cornerInfo = [self cornerPOIString:pois];
+    BOOL isCornerEnd = [self isCornerEnd:pois];
+    BOOL isCornerWarningBlock = [self isCornerWarningBlock:pois];
+    
+    NSString *formatString = @"action";
+    if (cornerInfo && !isCornerEnd) {
+        formatString = [formatString stringByAppendingString:@" at near object"];
+    }
+    if (isCornerWarningBlock) {
+        formatString = [formatString stringByAppendingString:@" at warning block"];
+    }
+    if (isCornerEnd) {
+        formatString = [formatString stringByAppendingString:@" at end object"];
+    }
+    formatString = NSLocalizedStringFromTable(formatString, @"BlindView", @"");
+    string = [NSString stringWithFormat:formatString, string, cornerInfo];
+    
 
     if (nextLinkType == LINK_TYPE_ELEVATOR || nextLinkType == LINK_TYPE_ESCALATOR || nextLinkType == LINK_TYPE_STAIRWAY) {
         int sourceHeight = [properties[@"nextSourceHeight"] intValue];
@@ -148,28 +166,56 @@
         }
         
         BOOL full = [properties[@"fullAction"] boolValue];
-        int escalatorSide = [properties[@"escalatorSide"] intValue];
-        if (full && nextLinkType == LINK_TYPE_ESCALATOR && escalatorSide != HLPEscalatorSideNone) {
-            NSString *format;
+        NSArray<HLPPOIEscalatorFlags*> *flags = properties[@"escalatorFlags"];
+        
+        if (full && nextLinkType == LINK_TYPE_ESCALATOR) {
+            return nil;
+        }
+        else {
             BOOL up = targetHeight > sourceHeight;
-            if (escalatorSide == HLPEscalatorSideBoth) {
-                format = @"EscalatorSideBoth";
-            } else if (escalatorSide == HLPEscalatorSideLeft) {
-                format = @"EscalatorSideLeft";
-            } else if (escalatorSide == HLPEscalatorSideRight) {
-                format = @"EscalatorSideRight";
+            BOOL __block left = NO, right = NO;
+            [flags enumerateObjectsUsingBlock:^(HLPPOIEscalatorFlags * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                left = left || obj.left;
+                right = right || obj.right;
+            }];
+            
+            NSString *side;
+            if (left && right) {
+                side = @"InMiddle";
+            } else if (left) {
+                side = @"RightSide";
+            } else if (right) {
+                side = @"LeftSide";
             }
-            format = [format stringByAppendingString:up?@"Up":@"Down"];
-            string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"")];
-        } else {
-            BOOL up = targetHeight > sourceHeight;
-            
+            side = NSLocalizedStringFromTable(side, @"BlindView", @"");
+
             NSString *tfloor = [self floorString:targetHeight];
-            NSString *format = @"FloorChangeActionString3";
+            NSString *format = @"FloorChangeActionString4";
             format = [format stringByAppendingString:up?@"Up":@"Down"];
-            format = [format stringByAppendingString:full?@"Full":@""];
             
-            string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , angle, mean, tfloor];//@""
+            string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , angle, side, mean, tfloor];//@""
+            string = [string stringByAppendingString:NSLocalizedStringFromTable(@"PERIOD", @"BlindView", @"")];
+            
+            if (nextLinkType == LINK_TYPE_ESCALATOR && [flags count] > 0) {
+                NSString *format;
+                for(int i = 0; i < [flags count]; i++) {
+                    HLPPOIEscalatorFlags *flag = flags[i];
+                    if (flag.left) {
+                        format = @"EscalatorSideLeft";
+                    }
+                    if (flag.right) {
+                        format = @"EscalatorSideRight";
+                    }
+                    if (flag.forward) {
+                        format = [format stringByAppendingString:@"Forward"];
+                    }
+                    if (flag.backward) {
+                        format = [format stringByAppendingString:@"Backward"];
+                    }
+                    string = [string stringByAppendingString:NSLocalizedStringFromTable(format, @"BlindView", @"")];
+                    string = [string stringByAppendingString:NSLocalizedStringFromTable(@"PERIOD", @"BlindView", @"")];
+                }
+            }
         }
     }
     else if (linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
@@ -593,27 +639,12 @@
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
     NSString *action = [self actionString:properties];
-    
-    NSArray *pois = properties[@"pois"];
-    NSString *cornerInfo = [self cornerPOIString:pois];
-    BOOL isCornerEnd = [self isCornerEnd:pois];
-    BOOL isCornerWarningBlock = [self isCornerWarningBlock:pois];
-    
-    NSString *formatString = @"action";
-    if (cornerInfo && !isCornerEnd) {
-        formatString = [formatString stringByAppendingString:@" at near object"];
+    if (!action) {
+        return;
     }
-    if (isCornerWarningBlock) {
-        formatString = [formatString stringByAppendingString:@" at warning block"];
-    }
-    if (isCornerEnd) {
-        formatString = [formatString stringByAppendingString:@" at end object"];
-    }
-    formatString = NSLocalizedStringFromTable(formatString, @"BlindView", @"");
-    formatString = [NSString stringWithFormat:formatString, action, cornerInfo];
     
     [_delegate vibrate];
-    [_delegate speak:formatString force:YES completionHandler:^{
+    [_delegate speak:action force:YES completionHandler:^{
         
     }];
 }
@@ -635,10 +666,6 @@
 
     
     NSString *floorInfo = [self floorPOIString:pois];
-    NSString *cornerInfo = [self cornerPOIString:pois];
-    BOOL isCornerEnd = [self isCornerEnd:pois];
-    BOOL isCornerWarningBlock = [self isCornerWarningBlock:pois];
-    
     NSString *dist = [self distanceString:distance];
     
     if (linkType == LINK_TYPE_ELEVATOR || linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
@@ -662,20 +689,11 @@
         if ((noAndTurnMinDistance < distance && distance < 50) || isnan(noAndTurnMinDistance)) {
             proceedString = [proceedString stringByAppendingString:@" ..."];
         }
-        if (cornerInfo && !isCornerEnd) {
-            nextActionString = [nextActionString stringByAppendingString:@" at near object"];
-        }
-        if (isCornerWarningBlock) {
-            nextActionString = [nextActionString stringByAppendingString:@" at warning block"];
-        }
-        if (isCornerEnd) {
-            nextActionString = [nextActionString stringByAppendingString:@" at end object"];
-        }
         
         proceedString = NSLocalizedStringFromTable(proceedString, @"BlindView", @"");
         proceedString = [NSString stringWithFormat:proceedString, dist, floorInfo];
         nextActionString = NSLocalizedStringFromTable(nextActionString, @"BlindView", @"");
-        nextActionString = [NSString stringWithFormat:nextActionString, action, cornerInfo];
+        nextActionString = [NSString stringWithFormat:nextActionString, action];
         
         [string appendString:proceedString];
         if ((noAndTurnMinDistance < distance && distance < 50) || isnan(noAndTurnMinDistance)) {
@@ -863,9 +881,6 @@
     [string appendString:[self startPOIString:pois]];
 
     NSString *floorInfo = [self floorPOIString:pois];
-    NSString *cornerInfo = [self cornerPOIString:pois];
-    BOOL isCornerEnd = [self isCornerEnd:pois];
-    BOOL isCornerWarningBlock = [self isCornerWarningBlock:pois];
     
     NSString *dist = [self distanceString:distance];
     
@@ -885,22 +900,11 @@
             proceedString = [proceedString stringByAppendingString:@" on floor"];
         }
         proceedString = [proceedString stringByAppendingString:@" ..."];
-
-        if (cornerInfo && !isCornerEnd) {
-            nextActionString = [nextActionString stringByAppendingString:@" at near object"];
-        }
-        if (isCornerWarningBlock) {
-            nextActionString = [nextActionString stringByAppendingString:@" at warning block"];
-        }
-        if (isCornerEnd) {
-            nextActionString = [nextActionString stringByAppendingString:@" at end object"];
-        }
-
         
         proceedString = NSLocalizedStringFromTable(proceedString, @"BlindView", @"");
         proceedString = [NSString stringWithFormat:proceedString, dist, floorInfo];
         nextActionString = NSLocalizedStringFromTable(nextActionString, @"BlindView", @"");
-        nextActionString = [NSString stringWithFormat:nextActionString, action, cornerInfo];
+        nextActionString = [NSString stringWithFormat:nextActionString, action];
         
         [string appendString:proceedString];
         [string appendString:nextActionString];
@@ -937,9 +941,6 @@
     //[string appendString:[self startPOIString:pois]];
     
     NSString *floorInfo = [self floorPOIString:pois];
-    NSString *cornerInfo = [self cornerPOIString:pois];
-    BOOL isCornerEnd = [self isCornerEnd:pois];
-    BOOL isCornerWarningBlock = [self isCornerWarningBlock:pois];
     
     NSString *dist = [self distanceString:distance];
     
@@ -960,16 +961,6 @@
         }
         proceedString = [proceedString stringByAppendingString:@" ..."];
         
-        if (cornerInfo && !isCornerEnd) {
-            nextActionString = [nextActionString stringByAppendingString:@" at near object"];
-        }
-        if (isCornerWarningBlock) {
-            nextActionString = [nextActionString stringByAppendingString:@" at warning block"];
-        }
-        if (isCornerEnd) {
-            nextActionString = [nextActionString stringByAppendingString:@" at end object"];
-        }
-        
         if (dist) {
             proceedString = NSLocalizedStringFromTable(proceedString, @"BlindView", @"");
             proceedString = [NSString stringWithFormat:proceedString, dist, floorInfo];
@@ -978,7 +969,7 @@
         
         if (action) {
             nextActionString = NSLocalizedStringFromTable(nextActionString, @"BlindView", @"");
-            nextActionString = [NSString stringWithFormat:nextActionString, action, cornerInfo];
+            nextActionString = [NSString stringWithFormat:nextActionString, action];
             [string appendString:nextActionString];
         }
     }

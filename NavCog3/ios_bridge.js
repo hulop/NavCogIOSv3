@@ -114,7 +114,9 @@
   }
 
   if (window.$hulop && window.$hulop.mobile_ready) {
-    window.$hulop.mobile_ready(ios_mobile_bridge);
+    setTimeout(function() {
+      window.$hulop.mobile_ready(ios_mobile_bridge);
+               }, 100);
   }
     return "SUCCESS";
 })();

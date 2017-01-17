@@ -32,6 +32,7 @@ typedef struct {
     BOOL useElevator = YES;
     BOOL tactilePaving = YES;
     BOOL listDestinations = NO;
+    BOOL checkRemote = NO;
     std::string filter = "";
     BOOL combinations = NO;
 }Option;
@@ -54,6 +55,7 @@ void printHelp() {
     std::cout << "--useEscalator [1|0]   set useEscalator" << std::endl;
     std::cout << "--useElevator [1|0]    set useElevator" << std::endl;
     std::cout << "--tactilePaving [1|0]  set tactilePaving" << std::endl;
+    std::cout << "--checkRemote [1|0]    setcheckRemote" << std::endl;
 }
 
 Option parseArguments(int argc, char * argv[]){
@@ -70,6 +72,8 @@ Option parseArguments(int argc, char * argv[]){
         {"useEscalator",  required_argument, NULL,  0 },
         {"useElevator",   required_argument, NULL,  0 },
         {"tactilePaving",   required_argument, NULL,  0 },
+        {"checkRemote",   required_argument, NULL,  0 },
+        
         {0,         0,                 0,  0 }
     };
     
@@ -92,6 +96,10 @@ Option parseArguments(int argc, char * argv[]){
             if (strcmp(long_options[option_index].name, "tactilePaving") == 0){
                 sscanf(optarg, "%d", &boolean);
                 opt.tactilePaving = boolean;
+            }
+            if (strcmp(long_options[option_index].name, "checkRemote") == 0){
+                sscanf(optarg, "%d", &boolean);
+                opt.checkRemote = boolean;
             }
             if (strcmp(long_options[option_index].name, "list") == 0){
                 opt.listDestinations = YES;
@@ -400,6 +408,10 @@ Option parseArguments(int argc, char * argv[]){
     HLPLocation *current = dict[@"current"];
     if (![current isEqual:[NSNull null]]) {
         NSLog(@"Pose,%f,%f,%f,%f", current.lat, current.lng, current.floor, current.orientation);
+        
+        if (opt.checkRemote) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:nil];
+        }
     }
 }
 
@@ -423,14 +435,10 @@ Option parseArguments(int argc, char * argv[]){
 
 #pragma mark - NavCommanderDelegate
 
-- (void)speak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)())handler
+- (void)speak:(NSString *)text withOptions:(NSDictionary *)options completionHandler:(void (^)())handler
 {
+    BOOL flag = [options[@"force"] boolValue];
     NSLog(@"speak_queue,%@,%@", text, flag?@"Force":@"");
-}
-
-- (void)speak:(NSString *)text completionHandler:(void (^)())handler
-{
-    [self speak:text force:NO completionHandler:handler];
 }
 
 - (void)playSuccess
@@ -566,6 +574,12 @@ Option parseArguments(int argc, char * argv[]){
 {
     [commander userIsLeavingFromPOI:properties];
     [previewer userIsLeavingFromPOI:properties];
+}
+
+- (void)currentStatus:(NSDictionary *)properties
+{
+    [commander currentStatus:properties];
+    [previewer currentStatus:properties];
 }
 
 @end

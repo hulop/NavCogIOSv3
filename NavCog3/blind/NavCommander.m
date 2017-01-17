@@ -535,9 +535,7 @@
         [string appendFormat:NSLocalizedStringFromTable(@"distance to the destination", @"BlindView", @"distance to the destination"), totalDist];
     }
     
-    [_delegate speak:string completionHandler:^{
-    }];
-    
+    [_delegate speak:string withOptions:properties completionHandler:^{}];
 }
 
 - (void)didNavigationFinished:(NSDictionary *)properties
@@ -560,12 +558,12 @@
     BOOL hasDestinationPOI = [destPois count] > 0;
     
     [_delegate vibrate];
-    [_delegate speak:string completionHandler:^{
+    [_delegate speak:string withOptions:properties completionHandler:^{
         if (hasDestinationPOI == NO) {
             [[NavDataStore sharedDataStore] clearRoute];
         }
     }];
-    
+
     for(NavPOI *poi in destPois) {
         [self userIsApproachingToPOI:
          @{
@@ -580,17 +578,10 @@
     NSLog(@"%@", NSStringFromSelector(_cmd));
     
     NSString *string = [self headingActionString:properties];
-    BOOL selfspeak = [properties[@"selfspeak"] boolValue];
     
     if (string) {
         [self.delegate vibrate];
-        if (selfspeak) {
-            [_delegate selfspeak:string force:YES completionHandler:^{
-            }];
-        } else {
-            [_delegate speak:string completionHandler:^{
-            }];
-        }
+        [_delegate speak:string withOptions:properties completionHandler:^{}];
     }
 }
 
@@ -612,9 +603,7 @@
         NSLog(@"%@", NSStringFromSelector(_cmd));
         NSString *dist = [self distanceString:distance];
         NSString *string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"remaining distance",@"BlindView", @""),  dist];
-        [_delegate speak:string completionHandler:^{
-            
-        }];
+        [_delegate speak:string withOptions:properties completionHandler:^{}];
     }
 }
 
@@ -629,10 +618,8 @@
     } else {
         string = NSLocalizedStringFromTable(@"approaching",@"BlindView",@"approaching");
     }
-    
-    [_delegate speak:string force:YES completionHandler:^{
-        
-    }];
+    properties = [properties mtl_dictionaryByAddingEntriesFromDictionary:@{@"force":@(YES)}];
+    [_delegate speak:string withOptions:properties completionHandler:^{}];
 }
 
 - (void)userNeedsToTakeAction:(NSDictionary*)properties
@@ -644,9 +631,8 @@
     }
     
     [_delegate vibrate];
-    [_delegate speak:action force:YES completionHandler:^{
-        
-    }];
+    properties = [properties mtl_dictionaryByAddingEntriesFromDictionary:@{@"force":@(YES)}];
+    [_delegate speak:action withOptions:properties completionHandler:^{}];
 }
 
 - (void)userNeedsToWalk:(NSDictionary*)properties
@@ -701,9 +687,7 @@
         }
     }
     
-    [_delegate speak:string completionHandler:^{
-        
-    }];
+    [_delegate speak:string withOptions:properties completionHandler:^{}];
 }
 - (void)userGetsOnElevator:(NSDictionary *)properties
 {
@@ -715,8 +699,7 @@
         string = [string stringByAppendingString:poi.text];
     }
 
-    [_delegate speak:string completionHandler:^{
-    }];
+    [_delegate speak:string withOptions:properties completionHandler:^{}];
 }
 
 // advanced functions
@@ -729,9 +712,7 @@
     if (hAction) {
         NSString *string = NSLocalizedStringFromTable(@"%@, you might be going backward.", @"BlindView", @"");
         string = [NSString stringWithFormat:string, hAction];
-        [_delegate speak:string completionHandler:^{
-            
-        }];
+        [_delegate speak:string withOptions:properties completionHandler:^{}];
     }
     
 }
@@ -745,9 +726,7 @@
     if (hAction) {
         NSString *string = NSLocalizedStringFromTable(@"%@, you might be going wrong direction.", @"BlindView", @"");
         string = [NSString stringWithFormat:string, hAction];
-        [_delegate speak:string completionHandler:^{
-            
-        }];
+        [_delegate speak:string withOptions:properties completionHandler:^{}];
     }
 }
 
@@ -764,7 +743,7 @@
 - (void)userIsApproachingToPOI:(NSDictionary*)properties
 {
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-    
+
     NSLog(@"%@", NSStringFromSelector(_cmd));
     NavPOI *poi = properties[@"poi"];
     double heading = [properties[@"heading"] doubleValue];
@@ -777,8 +756,8 @@
     }
     if (poi.forDoor || poi.forObstacle || poi.forRamp || poi.forBrailleBlock) {
         if (poi.countApproached == 0) { // only for first time
-            [_delegate speak:[self poiString:poi withOption:@{@"short":@(shortSentence)}] completionHandler:^{
-            }];
+            NSString *string = [self poiString:poi withOption:@{@"short":@(shortSentence)}];
+            [_delegate speak:string withOptions:properties completionHandler:^{}];
             lastPOIAnnounceTime = now;
         }
     } else if (poi.requiresUserAction) {
@@ -831,7 +810,7 @@
         
         NSArray *result = [self checkCommand:string];
         
-        [_delegate speak:result[0] completionHandler:^{
+        [_delegate speak:result[0] withOptions:properties completionHandler:^{
             if (isDestinationPOI) {
                 [[NavDataStore sharedDataStore] clearRoute];
             }
@@ -926,8 +905,7 @@
         NSString *string = [directionString stringByAppendingString:distanceString];
         
         [self.delegate vibrate];
-        [self.delegate selfspeak:string force:YES completionHandler:^{
-        }];
+        [self.delegate speak:string withOptions:properties completionHandler:^{}];
         return;
     }
     
@@ -974,18 +952,16 @@
         }
     }
     
-
     [self.delegate vibrate];
-    
-    [self.delegate selfspeak:string force:YES completionHandler:^{
-    }];
+    [self.delegate speak:string withOptions:properties completionHandler:^{}];
     
 }
 
 -(void)reroute:(NSDictionary *)properties
 {
+    NSString *string = NSLocalizedStringFromTable(@"REROUTING", @"BlindView", @"");
     [self.delegate vibrate];
-    [self.delegate speak:NSLocalizedStringFromTable(@"REROUTING", @"BlindView", @"") force:YES completionHandler:^{}];
+    [self.delegate speak:string withOptions:properties completionHandler:^{}];
 }
 
 

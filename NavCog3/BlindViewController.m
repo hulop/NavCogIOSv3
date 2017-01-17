@@ -701,18 +701,16 @@
 
 #pragma mark - NavCommanderDelegate
 
-- (void)speak:(NSString *)text completionHandler:(void (^)())handler
+- (void)speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void (^)())handler
 {
-    [[NavDeviceTTS sharedTTS] speak:text completionHandler:handler];
-}
+    BOOL selfspeak = [options[@"selfspeak"] boolValue];
+    BOOL force = [options[@"force"] boolValue];
 
-- (void)speak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)())handler
-{
-    [[NavDeviceTTS sharedTTS] speak:text force:flag completionHandler:handler];
-}
-- (void)selfspeak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)())handler;
-{
-    [[NavDeviceTTS sharedTTS] selfspeak:text force:flag completionHandler:handler];
+    if (selfspeak) {
+        [[NavDeviceTTS sharedTTS] selfspeak:text force:force completionHandler:handler];
+    } else {
+        [[NavDeviceTTS sharedTTS] speak:text force:force completionHandler:handler];
+    }
 }
 
 - (void)playSuccess
@@ -738,7 +736,7 @@
 {    
     JSContext *ctx = [[JSContext alloc] init];
     ctx[@"speak"] = ^(NSString *message) {
-        [self speak:message completionHandler:^{
+        [self speak:message withOptions:@{} completionHandler:^{
         }];
     };
     ctx[@"openURL"] = ^(NSString *url, NSString *title, NSString *message) {

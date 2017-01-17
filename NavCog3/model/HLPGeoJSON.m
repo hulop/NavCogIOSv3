@@ -463,6 +463,15 @@
     
     return array;
 }
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    return self;
+}
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+}
+
 @end
 
 @implementation HLPPOIElevatorEquipments: HLPPOIFlags

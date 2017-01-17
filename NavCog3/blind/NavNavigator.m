@@ -355,6 +355,14 @@ static NavNavigatorConstants *_instance;
                                     }];
                     }
                     break;
+                case HLPPOICategoryElevator:
+                    navpoi = [[NavPOI alloc] initWithText:poi.elevatorButtons.description
+                                                 Location:poi.location
+                                                  Options:
+                              @{
+                                @"origin": poi
+                                }];
+                    break;
                 case HLPPOICategoryElevatorEquipments:
                     navpoi = [[NavPOI alloc] initWithText:poi.elevatorEquipments.description
                                                  Location:poi.location
@@ -1182,11 +1190,15 @@ static NavNavigatorConstants *_instance;
             continue;
         }
         HLPPOI *poi = pois[j];
+        HLPLocation *poiLoc = poi.location;
         HLPLinkType linkType = 0;
-        if (poi.poiCategory == HLPPOICategoryElevatorEquipments) {
+        if (poi.poiCategory == HLPPOICategoryElevatorEquipments ||
+            poi.poiCategory == HLPPOICategoryElevator
+            ) {
             linkType = LINK_TYPE_ELEVATOR;
+            [poiLoc updateFloor:NAN];
         }
-        NSArray *links = nearestLinks(poi.location, @{@"linkType":@(linkType)});
+        NSArray *links = nearestLinks(poiLoc, @{@"linkType":@(linkType)});
         
         for(HLPLink* nearestLink in links) {
             NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
@@ -2187,7 +2199,9 @@ static NavNavigatorConstants *_instance;
                 if (!poi.hasBeenApproached && (now - poi.lastApproached > C.POI_ANNOUNCE_MIN_INTERVAL)) {
                     if (poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
                         poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE &&
-                        [linkInfo.link.targetLocation distanceTo:poi.poiLocation] > C.POI_ANNOUNCE_DISTANCE
+                        ([linkInfo.link.targetLocation distanceTo:poi.poiLocation] > C.POI_ANNOUNCE_DISTANCE ||
+                         poi.forDoor || poi.forRamp || poi.forObstacle || poi.forBrailleBlock
+                         )
                         ) {
                         if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
                             [self.delegate userIsApproachingToPOI:
@@ -2349,51 +2363,125 @@ static NavNavigatorConstants *_instance;
 
         if ([self.delegate respondsToSelector:@selector(currentStatus:)]) {
             
-            if (linkInfo.distanceToUserLocationFromLink > 3) {
-                [self.delegate currentStatus:
-                 @{
-                   @"offRoute": @(YES),
-                   @"diffHeading": @(linkInfo.diffBearingAtUserLocationToSnappedLocationOnLink),
-                   @"distance": @(linkInfo.distanceToUserLocationFromLink),
-                   @"selfspeak": @(YES)
-                   }];
+            if (linkInfo.link.linkType == LINK_TYPE_ELEVATOR) {
                 
-            } else {
-                if (linkInfo.hasBeenWaitingAction) {
+                NavPOI*(^findElevatorPOI)(NSArray*, HLPPOICategory) = ^(NSArray *array, HLPPOICategory category) {
+                    for(NavPOI *poi in array) {
+                        if ([poi.origin isKindOfClass:HLPPOI.class] && [poi.origin poiCategory] == category) {
+                            return poi;
+                        }
+                    }
+                    return (NavPOI*)nil;
+                };
+                
+                NavPOI *elevatorPOI = findElevatorPOI(linkInfo.pois, HLPPOICategoryElevator);
+                NavPOI *equipmentPOI = findElevatorPOI(linkInfo.pois, HLPPOICategoryElevatorEquipments);
+                
+                if (linkInfo.hasBeenWaitingAction) { // getting off elevator
                     [self.delegate currentStatus:
                      @{
                        @"turnAngle": @(linkInfo.nextTurnAngle),
-                       @"selfspeak": @(YES)
+                       @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
+                       @"linkType": @(linkInfo.link.linkType),
+                       @"distance": @(linkInfo.link.length),
+                       @"selfspeak": @(YES),
+                       @"force": @(YES)
+                       
                        }];
-                }
-                else if (fabs(linkInfo.diffBearingAtUserLocation) > 22.5) {
-                    linkInfo.bearingTargetThreshold = 22.5;
-                    linkInfo.hasBeenBearing = YES;
-                    if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
-                        [self.delegate userNeedsToChangeHeading:
-                         @{
-                           @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
-                           @"threshold": @(linkInfo.bearingTargetThreshold),
-                           @"selfspeak": @(YES)
-                           }];
+                } else if (linkInfo.hasBeenApproaching) { // on elevator
+                    if (equipmentPOI) {
+                        if ([self.delegate respondsToSelector:@selector(userGetsOnElevator:)]) {
+                            [self.delegate userGetsOnElevator:
+                             @{
+                               @"poi": equipmentPOI,
+                               @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                               @"selfspeak": @(YES),
+                               @"force": @(YES)
+                               
+                               }];
+                        }
+                    } else {
+                        if ([self.delegate respondsToSelector:@selector(userGetsOnElevator:)]) {
+                            [self.delegate userGetsOnElevator:
+                             @{
+                               @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                               @"selfspeak": @(YES),
+                               @"force": @(YES)
+                               
+                               }];
+                        }
+                    }
+                    
+                } else if (linkInfo.hasBeenActivated) { // waiting
+                    if (elevatorPOI) {
+                        if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
+                            [self.delegate userIsApproachingToPOI:
+                             @{
+                               @"poi": elevatorPOI,
+                               @"heading": @(elevatorPOI.diffAngleFromUserOrientation),
+                               @"selfspeak": @(YES),
+                               @"force": @(YES)
+                               
+                               }];
+                            elevatorPOI.hasBeenApproached = YES;
+                        }
                     }
                 }
-                else {
+                
+            } else { // non elevator link
+                
+                if (linkInfo.distanceToUserLocationFromLink > 3) {
                     [self.delegate currentStatus:
                      @{
-                       @"pois": linkInfo.pois,
-                       @"distance": @(distance),
-                       @"linkType": @(linkInfo.link.linkType),
-                       @"nextLinkType": @(linkInfo.nextLink.linkType),
-                       @"turnAngle": @(linkInfo.nextTurnAngle),
-                       @"isNextDestination": @(linkInfo.isNextDestination),
-                       @"sourceHeight": @(linkInfo.link.sourceHeight),
-                       @"targetHeight": @(linkInfo.link.targetHeight),
-                       @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
-                       @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
-                       @"selfspeak": @(YES)
+                       @"offRoute": @(YES),
+                       @"diffHeading": @(linkInfo.diffBearingAtUserLocationToSnappedLocationOnLink),
+                       @"distance": @(linkInfo.distanceToUserLocationFromLink),
+                       @"selfspeak": @(YES),
+                       @"force": @(YES)
                        }];
+                    
+                } else {
+                    if (linkInfo.hasBeenWaitingAction) {
+                        [self.delegate currentStatus:
+                         @{
+                           @"turnAngle": @(linkInfo.nextTurnAngle),
+                           @"selfspeak": @(YES),
+                           @"force": @(YES)
+                           
+                           }];
+                    }
+                    else if (fabs(linkInfo.diffBearingAtUserLocation) > 22.5) {
+                        linkInfo.bearingTargetThreshold = 22.5;
+                        linkInfo.hasBeenBearing = YES;
+                        if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
+                            [self.delegate userNeedsToChangeHeading:
+                             @{
+                               @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
+                               @"threshold": @(linkInfo.bearingTargetThreshold),
+                               @"selfspeak": @(YES),
+                               @"force": @(YES)
+                               
+                               }];
+                        }
+                    }
+                    else {
+                        [self.delegate currentStatus:
+                         @{
+                           @"pois": linkInfo.pois,
+                           @"distance": @(distance),
+                           @"linkType": @(linkInfo.link.linkType),
+                           @"nextLinkType": @(linkInfo.nextLink.linkType),
+                           @"turnAngle": @(linkInfo.nextTurnAngle),
+                           @"isNextDestination": @(linkInfo.isNextDestination),
+                           @"sourceHeight": @(linkInfo.link.sourceHeight),
+                           @"targetHeight": @(linkInfo.link.targetHeight),
+                           @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                           @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
+                           @"selfspeak": @(YES),
+                           @"force": @(YES)
+                           }];
+                    }
                 }
             }
         }

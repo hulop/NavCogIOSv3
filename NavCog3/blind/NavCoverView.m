@@ -126,6 +126,7 @@
     }
     
     UIEvent *event = (UIEvent*)[notification object];
+    NSLog(@"remote,%d",event.subtype);
     
     switch (event.subtype) {
         case UIEventSubtypeRemoteControlTogglePlayPause: // 103

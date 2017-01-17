@@ -240,13 +240,14 @@
             NSDictionary *marker = [note object][@"marker"];
             double floor = [[note object][@"floor"] doubleValue];
             double difft = [[note object][@"difft"] doubleValue]/1000;
+            const char* msg = [[note object][@"message"] UTF8String];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (marker) {
-                    mv.message.text = [NSString stringWithFormat:@"Log %03.0f%%:%03.1fs (%d:%.2f)",
-                                       (progress /(double)total)*100, difft, [marker[@"floor"] intValue], floor];
+                    mv.message.text = [NSString stringWithFormat:@"Log %03.0f%%:%03.1fs (%d:%.2f) %s",
+                                       (progress /(double)total)*100, difft, [marker[@"floor"] intValue], floor, msg];
                 } else {
-                    mv.message.text = [NSString stringWithFormat:@"Log %03.0f%%", (progress /(double)total)*100];
+                    mv.message.text = [NSString stringWithFormat:@"Log %03.0f%% %s", (progress /(double)total)*100, msg];
                 }
                 NSLog(@"%@", mv.message.text);
             });

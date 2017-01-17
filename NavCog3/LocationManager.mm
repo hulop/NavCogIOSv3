@@ -38,7 +38,7 @@
 
 #define CALIBRATION_BEACON_UUID @"00000000-30A4-1001-B000-001C4D1E8637"
 #define CALIBRATION_BEACON_MAJOR 9999
-#define ORIENATION_ACCURACY_THRETHOLD 25
+//#define ORIENTATION_ACCURACY_THRESHOLD 25
 
 using namespace std;
 using namespace loc;
@@ -153,6 +153,7 @@ void functionCalledToLog(void *inUserData, string text)
     loggingQueue.qualityOfService = NSQualityOfServiceBackground;
     
     beaconManager = [[CLLocationManager alloc] init];
+    beaconManager.headingFilter = kCLHeadingFilterNone; // always update heading
     beaconManager.delegate = self;
     
     motionManager = [[CMMotionManager alloc] init];
@@ -313,13 +314,18 @@ void functionCalledToLog(void *inUserData, string text)
 
             progress += str.length()+1;
             if (count*500 < difft) {
+                
+                auto currentLocationStatus = localizer->getStatus()->locationStatus();
+                std::string locStatusStr = Status::locationStatusToString(currentLocationStatus);
+                
                 [[NSNotificationCenter defaultCenter] postNotificationName:LOG_REPLAY_PROGRESS object:
                  @{
                    @"progress":@(progress),
                    @"total":@(total),
                    @"marker":marker,
                    @"floor":@(currentFloor),
-                   @"difft":@(difft)
+                   @"difft":@(difft),
+                   @"message":@(locStatusStr.c_str())
                    }];
                 count++;
             }
@@ -615,8 +621,10 @@ void functionCalledToLog(void *inUserData, string text)
                 }
             }
 
-            if (!localizer->tracksOrientation() ||
-                currentOrientationAccuracy >= ORIENATION_ACCURACY_THRETHOLD) {
+            //if (!localizer->tracksOrientation() ||
+            //    currentOrientationAccuracy >= ORIENTATION_ACCURACY_THRESHOLD) {
+            
+            if (!localizer->tracksOrientation()){
                 double orientation = motion.attitude.yaw + offsetYaw;
                 if (isOrientationInit) {
                     orientation = initStartYaw;
@@ -624,7 +632,8 @@ void functionCalledToLog(void *inUserData, string text)
                 double x = sin(orientation);
                 double y = cos(orientation);
                 currentOrientation = orientation = atan2(y, x) / M_PI * 180;
-                [self directionUpdated:orientation withAccuracy:ORIENATION_ACCURACY_THRETHOLD];            
+                double nonlargeOrientationAccuracy = 10; // degree
+                [self directionUpdated:orientation withAccuracy: nonlargeOrientationAccuracy];
             }
             
             if (!isOrientationInit) {
@@ -743,6 +752,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->probabilityOrientationBiasJump = [ud doubleForKey:@"probaOriBiasJump"]; //0.1;
     localizer->poseRandomWalkRate = [ud doubleForKey:@"poseRandomWalkRate"]; // 1.0;
     localizer->randomWalkRate = [ud doubleForKey:@"randomWalkRate"]; //0.2;
+    localizer->probabilityBackwardMove = [ud doubleForKey:@"probaBackwardMove"]; //0.1;
     
     double lb = [ud doubleForKey:@"locLB"];
     double lbFloor = [ud doubleForKey:@"floorLB"];
@@ -757,6 +767,27 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->prwBuildingProperty->probabilityUpElevator(0.0).probabilityDownElevator(0.0).probabilityStayElevator(1.0);
     // set parameters for weighting and mixing in transition areas
     localizer->pfFloorTransParams->weightTransitionArea(2.0).mixtureProbaTransArea([ud doubleForKey:@"mixtureProbabilityFloorTransArea"]);
+    
+    // set parameters for location status monitoring
+    bool activatesDynamicStatusMonitoring = [ud boolForKey:@"activatesStatusMonitoring"];
+    if(activatesDynamicStatusMonitoring){
+        LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
+        params->minimumWeightStable(1.0e-5);
+        params->stdev2DEnterStable(5.0);
+        params->stdev2DExitStable(10.0);
+        params->stdev2DEnterLocating(8.0);
+        params->stdev2DExitLocating(10.0);
+        params->monitorIntervalMS(3000);
+    }else{
+        LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
+        params->minimumWeightStable(0.0);
+        double largeStdev = 10000;
+        params->stdev2DEnterStable(largeStdev);
+        params->stdev2DExitStable(largeStdev);
+        params->stdev2DEnterLocating(largeStdev);
+        params->stdev2DExitLocating(largeStdev);
+        params->monitorIntervalMS(3600*1000);
+    }
     
     // to activate orientation initialization using
     localizer->headingConfidenceForOrientationInit([ud doubleForKey:@"headingConfidenceInit"]);
@@ -838,19 +869,26 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void) updateStatus:(Status*) status
 {
-    if (putBeaconsCount < localizer->nSmooth) {        
-        if (status->step() != loc::Status::PREDICTION &&
-            status->step() != loc::Status::RESET &&
-            status->step() != loc::Status::OTHER
-            ) {
+    switch (status->locationStatus()){
+        case Status::UNKNOWN:
+            self.currentStatus = NavLocationStatusUnknown;
+            break;
+        case Status::LOCATING:
             self.currentStatus = NavLocationStatusLocating;
-        }
-        return;
+            break;
+        case Status::STABLE:
+            self.currentStatus = NavLocationStatusStable;
+            break;
+        case Status::UNSTABLE:
+            // self.currentStatus is not updated
+            break;
+        case Status::NIL:
+            // do nothing for nil status
+            break;
+        default:
+            break;
     }
-    if (putBeaconsCount == localizer->nSmooth) {
-        self.currentStatus = NavLocationStatusStable;
-        //return;
-    }
+
     // TODO flagPutBeacon is not useful
     [self locationUpdated:status withResampledFlag:flagPutBeacon];
 }
@@ -861,12 +899,14 @@ void functionCalledToLog(void *inUserData, string text)
     if (newHeading.headingAccuracy >= 0) {
         if (!localizer->tracksOrientation()) {
             [processQueue addOperationWithBlock:^{
+                if (!_isActive || isLogReplaying) {
+                    return;
+                }
                 [self directionUpdated:newHeading.magneticHeading withAccuracy:newHeading.headingAccuracy];
             }];
         }
     }
     [processQueue addOperationWithBlock:^{
-        // logging
         if (!_isActive || isLogReplaying) {
             return;
         }
@@ -877,6 +917,7 @@ void functionCalledToLog(void *inUserData, string text)
         }catch(const std::exception& ex) {
             std::cout << ex.what() << std::endl;
         }
+        // logging
         [self logText: LogUtil::toString(heading)];
     }];
 }
@@ -992,7 +1033,6 @@ void functionCalledToLog(void *inUserData, string text)
     if (cbeacons.size() > 0) {
         if (rssiBiasCount > 0) {
             rssiBiasCount -= 1;
-            
             try {
                 loc::LatLngConverter::Ptr projection = [self getProjection];
                 Location loc;
@@ -1052,7 +1092,12 @@ void functionCalledToLog(void *inUserData, string text)
         try {
             localizer->setModel([path cStringUsingEncoding:NSUTF8StringEncoding], [dir cStringUsingEncoding:NSUTF8StringEncoding]);
             double e = [[NSDate date] timeIntervalSince1970];
-            std::cout << (e-s)*1000 << " ms for setModel" << std::endl;            
+            std::cout << (e-s)*1000 << " ms for setModel" << std::endl;
+        } catch(LocException& ex) {
+            std::cout << ex.what() << std::endl;
+            std::cout << boost::diagnostic_information(ex) << std::endl;
+            NSLog(@"Error in setModelAtPath");
+            return;
         } catch(const std::exception& ex) {
             std::cout << ex.what() << std::endl;
             NSLog(@"Error in setModelAtPath");
@@ -1256,19 +1301,19 @@ int dcount = 0;
         
         dcount++;
         
-        double orientation = refPose.orientation() - [anchor[@"rotate"] doubleValue] / 180 * M_PI;
-        double x = cos(orientation);
-        double y = sin(orientation);
-        orientation = atan2(x, y) / M_PI * 180;
+        double globalOrientation = refPose.orientation() - [anchor[@"rotate"] doubleValue] / 180 * M_PI;
+        double x = cos(globalOrientation);
+        double y = sin(globalOrientation);
+        double globalHeading = atan2(x, y) / M_PI * 180;
         
         int orientationAccuracy = 999; // large value
         if (localizer->tracksOrientation()) {
             auto normParams = loc::Pose::computeWrappedNormalParameter(states);
             double stdOri = normParams.stdev(); // radian
             orientationAccuracy = static_cast<int>(stdOri/M_PI*180.0);
-            if (orientationAccuracy < ORIENATION_ACCURACY_THRETHOLD) {
-                currentOrientation = orientation;
-            }
+            //if (orientationAccuracy < ORIENTATION_ACCURACY_THRESHOLD) { // Removed thresholding
+            currentOrientation = globalHeading;
+            //}
         }
         currentOrientationAccuracy = orientationAccuracy;
         
@@ -1282,6 +1327,23 @@ int dcount = 0;
         //if (flag) {
         if(wasFloorUpdated || isnan(currentFloor)){
             currentFloor = std::round(refPose.floor());
+            std::cout << "refPose=" << refPose << std::endl;
+        }
+        
+        double lat = global.lat();
+        double lng = global.lng();
+        
+        bool showsDebugPose = false;
+        if(!showsDebugPose){
+            if(status->locationStatus()==Status::UNKNOWN){
+                lat = NAN;
+                lng = NAN;
+                globalHeading = NAN;
+            }
+            double oriAccThreshold = [[NSUserDefaults standardUserDefaults] doubleForKey:@"oriAccThreshold"];
+            if( oriAccThreshold < orientationAccuracy ){
+                globalHeading = NAN;
+            }
         }
         
         NSMutableDictionary *data =
@@ -1290,10 +1352,10 @@ int dcount = 0;
            @"y": @(refPose.y()),
            @"z": @(refPose.z()),
            @"floor":@(currentFloor),
-           @"lat": @(global.lat()),
-           @"lng": @(global.lng()),
+           @"lat": @(lat),
+           @"lng": @(lng),
            @"speed":@(refPose.velocity()),
-           @"orientation":@(orientation),
+           @"orientation":@(globalHeading),
            @"accuracy":@(acc),
            @"orientationAccuracy":@(orientationAccuracy), // TODO
            @"anchor":@{

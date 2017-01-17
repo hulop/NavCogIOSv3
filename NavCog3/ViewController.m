@@ -23,6 +23,7 @@
 #import "ViewController.h"
 #import "LocationEvent.h"
 #import "NavDebugHelper.h"
+#import "NavUtil.h"
 
 @interface ViewController () {
     NavWebviewHelper *helper;
@@ -87,6 +88,9 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiStateChanged:) name:WCUI_STATE_CHANGED_NOTIFICATION object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
+    
     [self updateView];
 }
 
@@ -332,6 +336,21 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [helper retry];
     _errorMessage.hidden = YES;
     _retryButton.hidden = YES;
+}
+
+- (void)locationStatusChanged:(NSNotification*)note
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NavLocationStatus status = [[note object][@"status"] unsignedIntegerValue];
+        
+        switch(status) {
+            case NavLocationStatusLocating:
+                [NavUtil showWaitingForView:self.view withMessage:NSLocalizedStringFromTable(@"Locating...", @"BlindView", @"")];
+                break;
+            default:
+                [NavUtil hideWaitingForView:self.view];
+        }
+    });
 }
 
 @end

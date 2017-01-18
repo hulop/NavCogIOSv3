@@ -51,15 +51,17 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    if ([segue.identifier isEqualToString:@"segue_blind"]) {
+    if ([segue.identifier isEqualToString:@"user_blind"]) {
         [ConfigManager loadConfig:@"presets/blind.plist"];
     }
-    else if ([segue.identifier isEqualToString:@"segue_wheelchair"]) {
+    else if ([segue.identifier isEqualToString:@"user_wheelchair"]) {
         [ConfigManager loadConfig:@"presets/wheelchair.plist"];
     }
-    else if ([segue.identifier isEqualToString:@"segue_general"]) {
+    else if ([segue.identifier isEqualToString:@"user_general"]) {
         [ConfigManager loadConfig:@"presets/general.plist"];
     }
+    
+    [[NSUserDefaults standardUserDefaults] setObject:segue.identifier forKey:@"user_mode"];
     
     LocationManager *manager = [LocationManager sharedManager];
     manager.isReadyToStart = YES;

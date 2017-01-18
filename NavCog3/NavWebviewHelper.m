@@ -528,7 +528,7 @@
         return;
     }
     
-    NSArray *keys = @[@"developer_mode"];
+    NSArray *keys = @[@"developer_mode", @"user_mode"];
     NSMutableDictionary *data = [@{} mutableCopy];
     for(NSString *key in keys) {
         data[key] = [[NSUserDefaults standardUserDefaults] objectForKey:key];

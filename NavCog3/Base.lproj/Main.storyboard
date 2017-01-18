@@ -150,7 +150,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <state key="normal" title="Visually Impaired User"/>
                                 <connections>
-                                    <segue destination="QOE-vl-QfO" kind="showDetail" identifier="segue_blind" id="O97-lc-17f"/>
+                                    <segue destination="QOE-vl-QfO" kind="showDetail" identifier="user_blind" id="O97-lc-17f"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mode Selection" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BEl-Il-x1b">
@@ -164,7 +164,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <state key="normal" title="Wheelchair User"/>
                                 <connections>
-                                    <segue destination="S1z-Er-If2" kind="showDetail" identifier="segue_wheelchair" id="YCo-yK-57s"/>
+                                    <segue destination="S1z-Er-If2" kind="showDetail" identifier="user_wheelchair" id="YCo-yK-57s"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qjw-Mo-WPx">
@@ -172,7 +172,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <state key="normal" title="General Pedestrian"/>
                                 <connections>
-                                    <segue destination="S1z-Er-If2" kind="showDetail" identifier="segue_general" id="x9Q-EB-G1d"/>
+                                    <segue destination="S1z-Er-If2" kind="showDetail" identifier="user_general" id="x9Q-EB-G1d"/>
                                 </connections>
                             </button>
                         </subviews>

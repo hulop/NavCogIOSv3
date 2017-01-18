@@ -53,7 +53,6 @@
     double turnAction;
     BOOL forwardAction;
     
-    BOOL audioInitFlag;
     BOOL initFlag;
     BOOL rerouteFlag;
     
@@ -145,12 +144,6 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:nil];
-    
-    // need to play audio to enable remote control
-    if (!audioInitFlag) {
-        audioInitFlag = YES;
-        [[NavSound sharedInstance] playVoiceRecoStart];
-    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated

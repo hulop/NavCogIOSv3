@@ -20,29 +20,52 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+#import "InitViewController.h"
+#import "ConfigManager.h"
+#import "LocationManager.h"
 
-#import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
-#import <CoreMotion/CoreMotion.h>
-#import <bleloc/Status.hpp>
-#import <bleloc/BLEBeacon.hpp>
-#import <bleloc/LatLngConverter.hpp>
-#import "LocationEvent.h"
+@interface InitViewController ()
 
-@interface LocationManager : NSObject < CLLocationManagerDelegate >
+@end
 
-@property BOOL isReadyToStart;
-@property BOOL isActive;
-@property NavLocationStatus currentStatus;
+@implementation InitViewController
 
-- (instancetype) init NS_UNAVAILABLE;
-+ (instancetype) sharedManager;
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+}
 
-- (void) start;
-- (void) stop;
-- (void) setModelAtPath:(NSString*) path withWorkingDir:(NSString*) dir;
-- (void) getRssiBias:(NSDictionary*)param withCompletion:(void (^)(float rssiBias)) completion;
-- (loc::LatLngConverter::Ptr) getProjection;
+- (void)viewDidAppear:(BOOL)animated
+{
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+    if ([segue.identifier isEqualToString:@"segue_blind"]) {
+        [ConfigManager loadConfig:@"presets/blind.plist"];
+    }
+    else if ([segue.identifier isEqualToString:@"segue_wheelchair"]) {
+        [ConfigManager loadConfig:@"presets/wheelchair.plist"];
+    }
+    else if ([segue.identifier isEqualToString:@"segue_general"]) {
+        [ConfigManager loadConfig:@"presets/general.plist"];
+    }
+    
+    LocationManager *manager = [LocationManager sharedManager];
+    manager.isReadyToStart = YES;
+    [manager start];
+
+}
 
 
 @end

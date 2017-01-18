@@ -62,6 +62,8 @@
 		7E96D9331DACD0C700D57C8C /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E96D9321DACD0C700D57C8C /* SearchViewController.m */; };
 		7E96D9361DAD185800D57C8C /* DestinationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E96D9351DAD185800D57C8C /* DestinationTableViewController.m */; };
 		7E9866CE1D5174780073CB49 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
+		7EA018FE1E2F54A3005E65ED /* nosound.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7EA018FD1E2F54A3005E65ED /* nosound.aiff */; };
+		7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EA019001E2F54E7005E65ED /* InitViewController.mm */; };
 		7EAE6F0D1D2642D600614C35 /* NavWebviewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavWebviewHelper.m */; };
 		7EAE6F0F1D264AC200614C35 /* ios_bridge.js in Resources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0E1D264AC200614C35 /* ios_bridge.js */; };
 		7EAE6F121D264C5700614C35 /* NavJSNativeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F111D264C5700614C35 /* NavJSNativeHandler.m */; };
@@ -92,7 +94,6 @@
 		7EF7F7B41DD1BC2B000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
 		7EF7F7B51DD1BC2B000A625A /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7EF7F7B71DD1C138000A625A /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
-		FB81E7311DF0228D00CAD286 /* NavDebugHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FB81E7301DF0228D00CAD286 /* NavDebugHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -210,6 +211,9 @@
 		7E9866CC1D5174780073CB49 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		7E9866CD1D5174780073CB49 /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
 		7E9EF44D1DE3D06300F694FB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		7EA018FD1E2F54A3005E65ED /* nosound.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; name = nosound.aiff; path = ../../../../../Desktop/nosound.aiff; sourceTree = "<group>"; };
+		7EA018FF1E2F54E7005E65ED /* InitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitViewController.h; sourceTree = "<group>"; };
+		7EA019001E2F54E7005E65ED /* InitViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InitViewController.mm; sourceTree = "<group>"; };
 		7EAE6F0B1D2642D600614C35 /* NavWebviewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavWebviewHelper.h; sourceTree = "<group>"; };
 		7EAE6F0C1D2642D600614C35 /* NavWebviewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavWebviewHelper.m; sourceTree = "<group>"; };
 		7EAE6F0E1D264AC200614C35 /* ios_bridge.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ios_bridge.js; sourceTree = "<group>"; };
@@ -308,9 +312,9 @@
 				7E1F9F311DF01AA5003E1B23 /* CustomTableViewCell.swift */,
 				7E1F9F321DF01AA5003E1B23 /* LocalContext.swift */,
 				7E1F9F331DF01AA5003E1B23 /* stthelper */,
-				7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */,
 				7E1F9F2E1DF01AA4003E1B23 /* NavCog3-Bridging-Header.h */,
 				7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */,
+				7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */,
 			);
 			name = dialog;
 			sourceTree = "<group>";
@@ -352,6 +356,8 @@
 				7E96D9321DACD0C700D57C8C /* SearchViewController.m */,
 				7E96D9341DAD185800D57C8C /* DestinationTableViewController.h */,
 				7E96D9351DAD185800D57C8C /* DestinationTableViewController.m */,
+				7EA018FF1E2F54E7005E65ED /* InitViewController.h */,
+				7EA019001E2F54E7005E65ED /* InitViewController.mm */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -479,6 +485,7 @@
 		7EDEDC1F1D1E0C6800AC111A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				7EA018FD1E2F54A3005E65ED /* nosound.aiff */,
 				7E96D92F1DACC56200D57C8C /* HLPGeoJSON.strings */,
 				7E96D9291DAC916C00D57C8C /* BlindView.strings */,
 				7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */,
@@ -603,6 +610,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EA018FE1E2F54A3005E65ED /* nosound.aiff in Resources */,
 				7E9238EA1D5189F100875766 /* HLPSettingViewPickerCell.xib in Resources */,
 				7E17F19E1D9A225A00DB1F34 /* InfoPlist.strings in Resources */,
 				7EDEDC2F1D1E0C6800AC111A /* LaunchScreen.storyboard in Resources */,
@@ -711,6 +719,7 @@
 			files = (
 				7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */,
 				7E1F9F3B1DF01AA5003E1B23 /* ConversationEx.swift in Sources */,
+				7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */,
 				7E1F9F3F1DF01AA5003E1B23 /* AnimLayer.swift in Sources */,
 				7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,

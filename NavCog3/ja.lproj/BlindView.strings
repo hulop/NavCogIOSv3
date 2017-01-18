@@ -47,6 +47,9 @@
 "AutoDoorPOIString2Short" = "自動ドアが%dつ。";
 
 /* No comment provided by engineer. */
+"BACK_DIRECTION" = "後ろ方向";
+
+/* No comment provided by engineer. */
 "BothSide" = "両側";
 
 /* No comment provided by engineer. */
@@ -83,17 +86,37 @@
 "DoorPOIString2Short" = "ドアが%dつ。";
 
 /* (No Commment) */
+"EscalatorSideLeftBackward" = "左側は逆向き、注意してください";
+
+/* (No Commment) */
+"EscalatorSideLeftForward" = "左側には乗らないでください";
+
+/* (No Commment) */
+"EscalatorSideRightBackward" = "右側は逆向き、注意してください";
+
+/* (No Commment) */
+"EscalatorSideRightForward" = "右側には乗らないでください";
+
+/* (No Commment) */
 "Exercise" = "練習";
+
+/* No comment provided by engineer. */
+"FRONT_DIRECTION" = "前に";
 
 /* basement floor */
 "FloorBasementD" = "地下%@階";
-
 
 /* (No Commment) */
 "FloorChangeActionString4Down" = "%1$@、%2$@の%3$@を使って%4$@へおりる";
 
 /* (No Commment) */
 "FloorChangeActionString4Up" = "%1$@、%2$@の%3$@を使って%4$@へ上がる";
+
+/* (No Commment) */
+"FloorChangeDoneActionString2Down" = "%@をおりたら、%@";
+
+/* (No Commment) */
+"FloorChangeDoneActionString2Up" = "%@をのぼったら、%@";
 
 /* floor */
 "FloorD" = "%@階";
@@ -110,10 +133,22 @@
 /* No comment provided by engineer. */
 "Go to %1$@" = "%1$@に行きます。";
 
+/* (No Commment) */
+"InMiddle" = "真ん中";
+
 /* No comment provided by engineer. */
 "Init Orientation" = "方向の調整
 正しい方向を向きます
 (\"NavCog\"を2本指ロングタップして終了)";
+
+/* No comment provided by engineer. */
+"LEFT_BACK_DIRECTION" = "左、ななめ、後ろ方向";
+
+/* No comment provided by engineer. */
+"LEFT_DIRECTION" = "左方向";
+
+/* No comment provided by engineer. */
+"LEFT_FRONT_DIRECTION" = "左、ななめ、前方向";
 
 /* No comment provided by engineer. */
 "LeftSide" = "左側";
@@ -150,6 +185,18 @@
 
 /* (No Commment) */
 "Preview" = "プレビュー";
+
+/* No comment provided by engineer. */
+"REROUTING" = "ルートからそれたようです。新しいルートを読み込んでいます。";
+
+/* No comment provided by engineer. */
+"RIGHT_BACK_DIRECTION" = "右、ななめ、後ろ方向";
+
+/* No comment provided by engineer. */
+"RIGHT_DIRECTION" = "右方向";
+
+/* No comment provided by engineer. */
+"RIGHT_FRONT_DIRECTION" = "右、ななめ、前方向";
 
 /* (No Commment) */
 "RampPOIString" = "この先、スロープがあります";
@@ -361,30 +408,4 @@
 /* head to the right direction */
 "turn to the right" = "右に向く";
 
-"REROUTING" = "ルートからそれたようです。新しいルートを読み込んでいます。";
-
-"BACK_DIRECTION" = "後ろ方向";
-
-"LEFT_BACK_DIRECTION" = "左、ななめ、後ろ方向";
-
-"RIGHT_BACK_DIRECTION" = "右、ななめ、後ろ方向";
-
-"LEFT_DIRECTION" = "左方向";
-
-"RIGHT_DIRECTION" = "右方向";
-
-"LEFT_FRONT_DIRECTION" = "左、ななめ、前方向";
-
-"RIGHT_FRONT_DIRECTION" = "右、ななめ、前方向";
-
-"FRONT_DIRECTION" = "前に";
-
-"InMiddle" = "真ん中";
-
-"EscalatorSideLeftForward" = "左側には乗らないでください";
-"EscalatorSideLeftBackward" = "左側は逆向き、注意してください";
-"EscalatorSideRightForward" = "右側には乗らないでください";
-"EscalatorSideRightBackward" = "右側は逆向き、注意してください";
-
-"FloorChangeDoneActionString2Down" = "%@をおりたら、%@";
-"FloorChangeDoneActionString2Up" = "%@をのぼったら、%@";
+"Always_Background" = "常にバックグラウンドで動作";

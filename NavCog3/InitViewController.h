@@ -20,29 +20,8 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+#import <UIKit/UIKit.h>
 
-#import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
-#import <CoreMotion/CoreMotion.h>
-#import <bleloc/Status.hpp>
-#import <bleloc/BLEBeacon.hpp>
-#import <bleloc/LatLngConverter.hpp>
-#import "LocationEvent.h"
-
-@interface LocationManager : NSObject < CLLocationManagerDelegate >
-
-@property BOOL isReadyToStart;
-@property BOOL isActive;
-@property NavLocationStatus currentStatus;
-
-- (instancetype) init NS_UNAVAILABLE;
-+ (instancetype) sharedManager;
-
-- (void) start;
-- (void) stop;
-- (void) setModelAtPath:(NSString*) path withWorkingDir:(NSString*) dir;
-- (void) getRssiBias:(NSDictionary*)param withCompletion:(void (^)(float rssiBias)) completion;
-- (loc::LatLngConverter::Ptr) getProjection;
-
+@interface InitViewController : UIViewController
 
 @end

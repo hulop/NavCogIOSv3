@@ -29,19 +29,16 @@
 #import "NavDeviceTTS.h"
 #import <Speech/Speech.h> // for Swift header
 #import "NavCog3-Swift.h"
+#import <AVFoundation/AVFoundation.h>
 
 @interface AppDelegate ()
 
 @end
 
-@implementation AppDelegate {
-    LocationManager *manager;
-    NSString *currentUIMode;
-}
+@implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    //[self checkUIMode];
     return YES;
 }
 
@@ -51,10 +48,8 @@
     
     // need to call once after install
     [SettingViewController setup];
-    
-    //manager = [[LocationManager alloc] init];
-    //manager.delegate = self;
-    
+
+    // TODO need to move
     NavDataStore *nds = [NavDataStore sharedDataStore];
     nds.userID = [UIDevice currentDevice].identifierForVendor.UUIDString;
     [nds requestServerConfigWithComplete:^{
@@ -65,10 +60,6 @@
 
     [NavDeviceTTS sharedTTS];
     
-    // check location privilege
-    manager = [LocationManager sharedManager];
-    [manager start];
-        
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
     // prevent automatic sleep
@@ -77,7 +68,6 @@
     _backgroundID = UIBackgroundTaskInvalid;
     
     return YES;
-    
 }
 
 void uncaughtExceptionHandler(NSException *exception)
@@ -87,45 +77,15 @@ void uncaughtExceptionHandler(NSException *exception)
     NSLog(@"%@", exception.callStackSymbols);
 }
 
-- (void) checkUIMode
-{
-    NSString *ui_mode = [[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"];
- 
-    if ([ui_mode isEqualToString:currentUIMode]) {
-        return;
-    }
-    currentUIMode = ui_mode;
-    
-    self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];;
-    UIViewController *viewController = nil;
-    
-    if ([ui_mode isEqualToString:@"UI_BLIND"]) {
-        viewController = [storyboard instantiateViewControllerWithIdentifier:@"blind_ui_navigation"];
-    } else if ([ui_mode isEqualToString:@"UI_WHEELCHAIR"]) {
-        viewController = [storyboard instantiateViewControllerWithIdentifier:@"wheelchair_ui_navigation"];
-    } else if (ui_mode == nil) {
-        // TODO show a view for UI mode select
-        viewController = [storyboard instantiateViewControllerWithIdentifier:@"wheelchair_ui_navigation"];
-    }
-    
-    self.window.rootViewController = viewController;
-    [self.window makeKeyAndVisible];
-    
-
-}
-
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-    //[manager stop];
+
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_SAVE object:nil];
-    //[[NavDataStore sharedDataStore] reset];
-    //manager = nil;
+
     UIApplication *app = [UIApplication sharedApplication];
     _backgroundID = [app beginBackgroundTaskWithExpirationHandler:^{
-        [manager stop];
+        [[LocationManager sharedManager] stop];
         [app endBackgroundTask:_backgroundID];
         _backgroundID = UIBackgroundTaskInvalid;
     }];
@@ -143,15 +103,19 @@ void uncaughtExceptionHandler(NSException *exception)
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     [UIApplication.sharedApplication endBackgroundTask:_backgroundID];
+    LocationManager *manager = [LocationManager sharedManager];
     if (!manager.isActive) {
         [manager start];
     }
     [Logging stopLog];    
     [Logging startLog];
     
-    // check ui mode
-    [self checkUIMode];
     [self beginReceivingRemoteControlEvents];
+    
+    // play nosound audio to activate remote control
+    NSURL *url = [[NSBundle mainBundle] URLForResource:@"nosound" withExtension:@"aiff"];
+    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
+    [player play];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

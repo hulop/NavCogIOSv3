@@ -37,8 +37,14 @@
 /* Class = "UINavigationItem"; title = "Route"; ObjectID = "37Y-U9-0xf"; */
 "37Y-U9-0xf.title" = "ルート検索";
 
+/* Class = "UIButton"; normalTitle = "Blind user"; ObjectID = "581-28-Nvd"; */
+"581-28-Nvd.normalTitle" = "視覚障がい者";
+
 /* Class = "UIBarButtonItem"; title = "Setting"; ObjectID = "ATn-7d-y1j"; */
 "ATn-7d-y1j.title" = "設定";
+
+/* Class = "UILabel"; text = "Mode Selection"; ObjectID = "BEl-Il-x1b"; */
+"BEl-Il-x1b.text" = "モード選択";
 
 /* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "BhE-tH-Cn7"; */
 "BhE-tH-Cn7.title" = "戻る";
@@ -55,6 +61,9 @@
 /* (No Commment) */
 "LBt-N2-zq5.title" = "検索";
 
+/* Class = "UIButton"; normalTitle = "Wheel chair user"; ObjectID = "NIc-nT-BkE"; */
+"NIc-nT-BkE.normalTitle" = "車いす利用者";
+
 /* Class = "UILabel"; text = "Network Error"; ObjectID = "NRG-DQ-bhb"; */
 "NRG-DQ-bhb.text" = "ネットワークに問題があります";
 
@@ -63,6 +72,9 @@
 
 /* (No Commment) */
 "QT7-QX-lRu.accessibilityLabel" = "音声認識ボタン";
+
+/* Class = "UIButton"; normalTitle = "General user"; ObjectID = "Qjw-Mo-WPx"; */
+"Qjw-Mo-WPx.normalTitle" = "一般歩行者";
 
 /* Class = "UIButton"; accessibilityHint = "Select to change"; ObjectID = "SC1-aF-UyA"; */
 "SC1-aF-UyA.accessibilityHint" = "変更するには選択します";

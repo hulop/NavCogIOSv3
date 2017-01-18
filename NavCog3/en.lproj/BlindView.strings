@@ -369,3 +369,5 @@ Head to the correct orientation
 
 "FloorChangeDoneActionString2Down" = "%2$@, after %1$@";
 "FloorChangeDoneActionString2Up" = "%2$@, after %1$@";
+
+"Always_Background" = "Always run in background";

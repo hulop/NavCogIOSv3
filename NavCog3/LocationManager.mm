@@ -773,10 +773,10 @@ void functionCalledToLog(void *inUserData, string text)
     if(activatesDynamicStatusMonitoring){
         LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
         params->minimumWeightStable(1.0e-5);
-        params->stdev2DEnterStable(5.0);
-        params->stdev2DExitStable(10.0);
-        params->stdev2DEnterLocating(8.0);
-        params->stdev2DExitLocating(10.0);
+        params->stdev2DEnterStable(10.0);
+        params->stdev2DExitStable(12.0);
+        params->stdev2DEnterLocating(10.0);
+        params->stdev2DExitLocating(12.0);
         params->monitorIntervalMS(3000);
     }else{
         LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
@@ -800,7 +800,6 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void) start
 {
-
     if (!authorized) {
         [beaconManager requestWhenInUseAuthorization];
     } else {
@@ -810,6 +809,11 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void)didChangeAuthorizationStatus:(BOOL)authorized_
 {
+    authorized = authorized_;
+    if (!_isReadyToStart) {
+        return;
+    }
+    
     if (_isActive == YES) {
         if (valid == NO) {
             [self stop];
@@ -818,7 +822,6 @@ void functionCalledToLog(void *inUserData, string text)
         }
     }
     
-    authorized = authorized_;
     if (authorized) {
         _isActive = YES;
         [self buildLocalizer];

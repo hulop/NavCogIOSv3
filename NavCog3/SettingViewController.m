@@ -337,9 +337,11 @@ static HLPSetting *soundEffectSetting;
     [detailSettingHelper addSettingWithType:HOST_PORT Label:@"Server" Name:@"hokoukukan_server" DefaultValue:@[@"hokoukukan.mybluemix.net"] Accept:nil];
     [detailSettingHelper addSettingWithType:TEXTINPUT Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil];
 
+    /*
     [detailSettingHelper addSectionTitle:NSLocalizedString(@"UI_Mode", @"")];
     [detailSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"UI_WHEELCHAIR", @"") Name:@"UI_WHEELCHAIR" Group:@"ui_mode" DefaultValue:@(YES) Accept:nil];
     [detailSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"UI_BLIND", @"") Name:@"UI_BLIND" Group:@"ui_mode" DefaultValue:@(NO) Accept:nil];
+     */
 
     [detailSettingHelper addSectionTitle:@"For Demo"];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use compass" Name:@"use_compass" DefaultValue:@(NO) Accept:nil];

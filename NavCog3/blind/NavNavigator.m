@@ -2396,7 +2396,7 @@ static NavNavigatorConstants *_instance;
                        @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
                        @"linkType": @(linkInfo.link.linkType),
                        @"distance": @(linkInfo.link.length),
-                       @"selfspeak": @(YES),
+                       @"nohistory": @(YES),
                        @"force": @(YES)
                        
                        }];
@@ -2407,7 +2407,7 @@ static NavNavigatorConstants *_instance;
                              @{
                                @"poi": equipmentPOI,
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                               @"selfspeak": @(YES),
+                               @"nohistory": @(YES),
                                @"force": @(YES)
                                
                                }];
@@ -2417,7 +2417,7 @@ static NavNavigatorConstants *_instance;
                             [self.delegate userGetsOnElevator:
                              @{
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                               @"selfspeak": @(YES),
+                               @"nohistory": @(YES),
                                @"force": @(YES)
                                
                                }];
@@ -2432,7 +2432,7 @@ static NavNavigatorConstants *_instance;
                            @"nextSourceHeight": @(linkInfo.link.sourceHeight),
                            @"nextTargetHeight": @(linkInfo.link.targetHeight),
                            @"fullAction": @(YES),
-                           @"selfspeak": @(YES),
+                           @"nohistory": @(YES),
                            @"force": @(YES)
 
                            }];
@@ -2444,7 +2444,7 @@ static NavNavigatorConstants *_instance;
                              @{
                                @"poi": elevatorPOI,
                                @"heading": @(elevatorPOI.diffAngleFromUserOrientation),
-                               @"selfspeak": @(YES),
+                               @"nohistory": @(YES),
                                @"force": @(NO)
                                
                                }];
@@ -2461,7 +2461,7 @@ static NavNavigatorConstants *_instance;
                        @"offRoute": @(YES),
                        @"diffHeading": @(linkInfo.diffBearingAtUserLocationToSnappedLocationOnLink),
                        @"distance": @(linkInfo.distanceToUserLocationFromLink),
-                       @"selfspeak": @(YES),
+                       @"nohistory": @(YES),
                        @"force": @(YES)
                        }];
                     
@@ -2470,7 +2470,7 @@ static NavNavigatorConstants *_instance;
                         [self.delegate currentStatus:
                          @{
                            @"turnAngle": @(linkInfo.nextTurnAngle),
-                           @"selfspeak": @(YES),
+                           @"nohistory": @(YES),
                            @"force": @(YES)
                            
                            }];
@@ -2483,7 +2483,7 @@ static NavNavigatorConstants *_instance;
                              @{
                                @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
                                @"threshold": @(linkInfo.bearingTargetThreshold),
-                               @"selfspeak": @(YES),
+                               @"nohistory": @(YES),
                                @"force": @(YES)
                                
                                }];
@@ -2503,7 +2503,7 @@ static NavNavigatorConstants *_instance;
                            @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                            @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
                            @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
-                           @"selfspeak": @(YES),
+                           @"nohistory": @(YES),
                            @"force": @(YES)
                            }];
                     }

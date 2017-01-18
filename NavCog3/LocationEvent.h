@@ -70,6 +70,7 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 #define REQUEST_PROCESS_SHOW_ROUTE @"request_process_show_route"
 
 #define SPEAK_TEXT_QUEUEING @"speak_text_queueing"
+#define SPEAK_TEXT_HISTORY @"SPEAK_TEXT_HISTORY"
 
 #define MANUAL_LOCATION @"manual_location"
 

@@ -64,10 +64,14 @@ typedef enum {
 
 + (instancetype) sharedTTS;
 + (NSString *)removeDots:(NSString *)str;
-- (AVSpeechUtterance*) speak:(NSString*)text completionHandler:(void(^)())handler;
-- (AVSpeechUtterance*) speak:(NSString*)text force:(BOOL)flag completionHandler:(void(^)())handler;
-- (AVSpeechUtterance*) selfspeak:(NSString*)text completionHandler:(void(^)())handler;
-- (AVSpeechUtterance*) selfspeak:(NSString*)text force:(BOOL)flag completionHandler:(void(^)())handler;
+
+- (AVSpeechUtterance*) speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void(^)())handler;
+
+- (AVSpeechUtterance*) speak:(NSString*)text completionHandler:(void(^)())handler __attribute__ ((deprecated));
+- (AVSpeechUtterance*) speak:(NSString*)text force:(BOOL)flag completionHandler:(void(^)())handler __attribute__ ((deprecated));
+- (AVSpeechUtterance*) selfspeak:(NSString*)text completionHandler:(void(^)())handler __attribute__ ((deprecated));
+- (AVSpeechUtterance*) selfspeak:(NSString*)text force:(BOOL)flag completionHandler:(void(^)())handler __attribute__ ((deprecated));
+
 - (void) pause:(double)duration;
 - (void) reset;
 - (void) stop:(BOOL)immediate;

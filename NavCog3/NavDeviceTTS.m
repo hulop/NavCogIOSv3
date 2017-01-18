@@ -142,6 +142,15 @@ static NavDeviceTTS *instance = nil;
     }
 }
 
+- (AVSpeechUtterance *)speak:(NSString *)text withOptions:(NSDictionary *)options completionHandler:(void (^)())handler
+{
+    BOOL force = [options[@"force"] boolValue];
+    BOOL selfspeak = [options[@"selfspeak"] boolValue];
+    BOOL nohistory = [options[@"nohistory"] boolValue];
+    
+    return [self _speak:text force:force selfvoicing:selfspeak nohistory:nohistory completionHandler:handler];
+}
+
 - (AVSpeechUtterance *)selfspeak:(NSString *)text completionHandler:(void (^)())handler
 {
     return [self selfspeak:text force:NO completionHandler:handler];
@@ -149,7 +158,7 @@ static NavDeviceTTS *instance = nil;
 
 - (AVSpeechUtterance *)selfspeak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)())handler
 {
-    return [self _speak:text force:flag selfvoicing:YES completionHandler:handler];
+    return [self _speak:text force:flag selfvoicing:YES nohistory:YES completionHandler:handler];
 }
 
 - (AVSpeechUtterance*) speak: (NSString*) text completionHandler:(void (^)())handler
@@ -159,10 +168,10 @@ static NavDeviceTTS *instance = nil;
 
 - (AVSpeechUtterance*) speak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)())handler
 {
-    return [self _speak:text force:flag selfvoicing:NO completionHandler:handler];
+    return [self _speak:text force:flag selfvoicing:NO nohistory:NO completionHandler:handler];
 }
 
-- (AVSpeechUtterance*) _speak:(NSString*)text force:(BOOL)flag selfvoicing:(BOOL)selfvoicing completionHandler:(void (^)())handler
+- (AVSpeechUtterance*) _speak:(NSString*)text force:(BOOL)flag selfvoicing:(BOOL)selfvoicing nohistory:(BOOL)nohistory completionHandler:(void (^)())handler
 {
     if (text == nil) {
         handler();
@@ -179,7 +188,7 @@ static NavDeviceTTS *instance = nil;
             keep++;
         } else {
             if (keep >= 3) {
-                [self speak:[text substringWithRange:NSMakeRange(start, i-keep)] force:flag && isFirst completionHandler:nil];
+                [self _speak:[text substringWithRange:NSMakeRange(start, i-keep)] force:flag && isFirst selfvoicing:selfvoicing nohistory:nohistory completionHandler:nil];
                 [self pause:0.1*keep];
                 text = [text substringFromIndex:i];
                 flag = NO;
@@ -190,7 +199,12 @@ static NavDeviceTTS *instance = nil;
     }
 
     [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:
-     @{@"text":text,@"force":@(flag),@"debug":@(selfvoicing)}];
+     @{@"text":text,@"force":@(flag)}];
+
+    if (!nohistory) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_HISTORY object:
+         @{@"text":text,@"force":@(flag)}];
+    }
     
     double speechRate = [[NSUserDefaults standardUserDefaults] doubleForKey:SPEECH_SPEED];
     
@@ -343,8 +357,11 @@ static NavDeviceTTS *instance = nil;
 
 - (BOOL) speakWithVoiceOver:(NSString*)str
 {
+    UIApplicationState applicationState = [[UIApplication sharedApplication] applicationState];
+
     
-    if ([str length] == 0 || !UIAccessibilityIsVoiceOverRunning()) {
+    if ([str length] == 0 || !UIAccessibilityIsVoiceOverRunning() ||
+        applicationState == UIApplicationStateBackground) {
         return NO;
     }
     

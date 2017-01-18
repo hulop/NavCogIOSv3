@@ -704,14 +704,7 @@
 
 - (void)speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void (^)())handler
 {
-    BOOL selfspeak = [options[@"selfspeak"] boolValue];
-    BOOL force = [options[@"force"] boolValue];
-
-    if (selfspeak) {
-        [[NavDeviceTTS sharedTTS] selfspeak:text force:force completionHandler:handler];
-    } else {
-        [[NavDeviceTTS sharedTTS] speak:text force:force completionHandler:handler];
-    }
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:handler];
 }
 
 - (void)playSuccess

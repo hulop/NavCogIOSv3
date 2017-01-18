@@ -32,8 +32,36 @@
 - (void)accessibilityElementDidBecomeFocused
 {
     NSString *text = self.accessibilityLabel;
+    NSLog(@"accessibilityElementDidBecomeFocused:%@", text);
     [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:
      @{@"text":text,@"force":@(YES),@"debug":@(YES)}];
+}
+
+@end
+
+@interface NavCurrentStatusItem: NavAnnounceItem
+@end
+
+@implementation NavCurrentStatusItem {
+    NSTimeInterval lastCall;
+}
+
+- (void)accessibilityElementDidBecomeFocused
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:nil];
+}
+
+- (NSString*)accessibilityLabel
+{
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    if (self.accessibilityElementIsFocused && now - lastCall > 0.5) {
+        // hack code
+        // speak request navigation status if the user tap screen
+        // accessibilityLabel is called twice for each tap
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:nil];
+    }
+    lastCall = now;
+    return @"";
 }
 
 @end
@@ -49,7 +77,7 @@
 {
     self = [super initWithCoder:aDecoder];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enqueueSpokenText:) name:SPEAK_TEXT_QUEUEING object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enqueueSpokenText:) name:SPEAK_TEXT_HISTORY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:NAV_ROUTE_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteControl:) name:REMOTE_CONTROL_EVENT object:nil];
@@ -126,7 +154,7 @@
     }
     
     UIEvent *event = (UIEvent*)[notification object];
-    NSLog(@"remote,%d",event.subtype);
+    NSLog(@"remote,%ld",event.subtype);
     
     switch (event.subtype) {
         case UIEventSubtypeRemoteControlTogglePlayPause: // 103
@@ -192,11 +220,13 @@
             UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
             
             e.accessibilityLabel = s;
-            if (last) {
-                e.accessibilityFrame = self.frame;
-            }
             [temp addObject:e];
         }
+        
+        UIAccessibilityElement *e = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];
+        e.accessibilityFrame = self.frame;
+        [temp addObject:e];
+
         
         // future summary
         if (_fsSource) {

@@ -1578,7 +1578,16 @@ static NavNavigatorConstants *_instance;
             isFirst = NO;
         }
         
-        // TODO: check user skip some states
+        // check user skip some states
+        if (navIndex < minIndex) {
+            NavLinkInfo *current = linkInfos[navIndex];
+            if (current && ![current isEqual:[NSNull null]] &&
+                current.distanceToUserLocationFromLink / MAX(1.0, minDistance) > 3) {
+                navIndex = minIndex;
+                return;
+            }
+        }
+        
         
         // user should on the expected link
         if (navIndex < [linkInfos count]) {
@@ -1695,8 +1704,8 @@ static NavNavigatorConstants *_instance;
                                    //@"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
                                    @"isFirst": @(NO),
                                    @"distance": @(distance),
-                                   @"noAndTurnMinDistance": @(NAN),
-                                   @"linkType": @(linkInfo.link.linkType),
+                                   @"noAndTurnMinDistance": @(DBL_MAX),
+                                   @"linkType": @(linkInfo.link.linkType)
                                    }];
                             }
                         } else if (linkInfo.offRouteLinkInfo.distanceToTargetFromSnappedLocationOnLink < approachedDistance(linkInfo.offRouteLinkInfo) &&
@@ -1744,6 +1753,9 @@ static NavNavigatorConstants *_instance;
                                 
                             }
                             
+                        } else if (linkInfo.offRouteLinkInfo.distanceToUserLocationFromLink / MAX(1,linkInfo.distanceToUserLocationFromLink) > 3) {
+                            // back to route
+                            linkInfo.mayBeOffRoute = NO;
                         }
                         return;
                     }
@@ -2039,14 +2051,13 @@ static NavNavigatorConstants *_instance;
                 // return;
             }
             
-            //if (!linkInfo.hasBeenActivated && !linkInfo.hasBeenBearing) {
             if (!linkInfo.hasBeenActivated && linkInfo.distanceToUserLocationFromLink < C.OFF_ROUTE_THRESHOLD) {
                 
                 linkInfo.hasBeenActivated = YES;
                 if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {
                     
                     double distance = linkInfo.link.length;
-                    if (linkInfo.distanceToUserLocationFromLink - distance > 2) {
+                    if (fabs(linkInfo.distanceToTargetFromUserLocation - distance) > 2) {
                         distance = linkInfo.distanceToTargetFromUserLocation;
                     }
                     if (linkInfo.offRouteLinkInfo) {
@@ -2063,7 +2074,6 @@ static NavNavigatorConstants *_instance;
                     
                     [self.delegate userNeedsToWalk:
                      @{
-                       //@"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
                        @"pois": linkInfo.pois,
                        @"isFirst": @(navIndex == firstLinkIndex),
                        @"distance": @(distance),
@@ -2085,12 +2095,14 @@ static NavNavigatorConstants *_instance;
                 return;
             }
             
-            if (linkInfo.distanceToTargetFromSnappedLocationOnLink < linkInfo.nextTargetRemainingDistance) {
+            if (linkInfo.nextTargetRemainingDistance > C.APPROACHED_DISTANCE_THRESHOLD &&
+                linkInfo.distanceToTargetFromSnappedLocationOnLink <
+                linkInfo.nextTargetRemainingDistance + C.APPROACHED_DISTANCE_THRESHOLD) {
                 if ([self.delegate respondsToSelector:@selector(remainingDistanceToTarget:)]) {
                     [self.delegate remainingDistanceToTarget:
                      @{
                        @"target": @(YES),
-                       @"distance": @(linkInfo.distanceToTargetFromSnappedLocationOnLink),
+                       @"distance": @(linkInfo.nextTargetRemainingDistance),
                        @"diffHeading": @((linkInfo.distanceToTargetFromSnappedLocationOnLink>5)?
                            linkInfo.diffBearingAtUserLocation:linkInfo.diffBearingAtSnappedLocationOnLink)
                        }];
@@ -2413,6 +2425,19 @@ static NavNavigatorConstants *_instance;
                     }
                     
                 } else if (linkInfo.hasBeenActivated) { // waiting
+                    if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                        [self.delegate userNeedsToTakeAction:
+                         @{
+                           @"nextLinkType": @(linkInfo.link.linkType),
+                           @"nextSourceHeight": @(linkInfo.link.sourceHeight),
+                           @"nextTargetHeight": @(linkInfo.link.targetHeight),
+                           @"fullAction": @(YES),
+                           @"selfspeak": @(YES),
+                           @"force": @(YES)
+
+                           }];
+                    }
+
                     if (elevatorPOI) {
                         if ([self.delegate respondsToSelector:@selector(userIsApproachingToPOI:)]) {
                             [self.delegate userIsApproachingToPOI:
@@ -2420,7 +2445,7 @@ static NavNavigatorConstants *_instance;
                                @"poi": elevatorPOI,
                                @"heading": @(elevatorPOI.diffAngleFromUserOrientation),
                                @"selfspeak": @(YES),
-                               @"force": @(YES)
+                               @"force": @(NO)
                                
                                }];
                             elevatorPOI.hasBeenApproached = YES;

@@ -72,9 +72,15 @@ class DialogManager: NSObject {
     func locationChanged (note:NSNotification) {
         if let object = note.object {
             if let current = object["current"] as? HLPLocation {
-                self.latitude = current.lat
-                self.longitude = current.lng
-                self.floor = Int(round(current.floor))
+                if (!isnan(current.lat)) {
+                    self.latitude = current.lat
+                }
+                if (!isnan(current.lng)) {
+                    self.longitude = current.lng
+                }
+                if (!isnan(current.floor)) {
+                    self.floor = Int(round(current.floor))
+                }
             }
         }
     }

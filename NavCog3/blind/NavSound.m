@@ -30,7 +30,6 @@
     SystemSoundID VoiceRecoStartSoundID;
     SystemSoundID VoiceRecoEndSoundID;
     SystemSoundID failSoundID;
-    NSURL *url1, *url2, *url3, *url4, *url5;
 }
 
 static NavSound *instance;
@@ -47,26 +46,44 @@ static NavSound *instance;
 {
     self = [super init];
     
-    url1 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/Modern/calendar_alert_chord.caf"];
-    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url1,&successSoundID);
-    
-    //url2 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Success_Haptic.caf"];
-    url2 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/RingerChanged.caf"]; // for bone condaction head set
-    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url2,&AnnounceNotificationSoundID);
-
-    //url3 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Start_Haptic.caf"];
-    url3 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/Tink.caf"]; // for bone condaction head set
-    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url3,&VoiceRecoStartSoundID);
-
-    //url4 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/3rdParty_Stop_Haptic.caf"];
-    url4 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/RingerChanged.caf"]; // for bone condaction head set
-    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url4,&VoiceRecoEndSoundID);
-    
-    url5 = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/SIMToolkitNegativeACK.caf"];
-    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url5,&failSoundID);
-    
+    [self loadAudio];
+    [[NSUserDefaults standardUserDefaults] addObserver:self
+                                            forKeyPath:@"for_bone_conduction_headset"
+                                               options:NSKeyValueObservingOptionNew context:nil];
     
     return self;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"for_bone_conduction_headset"]) {
+        [self loadAudio];
+    }
+}
+
+
+- (void) loadAudio
+{
+    BOOL for_bone_conduction_headset = [[NSUserDefaults standardUserDefaults] boolForKey:@"for_bone_conduction_headset"];
+    
+    void(^loadSound)(NSString*,SystemSoundID*) = ^(NSString *name, SystemSoundID *soundIDRef) {
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"file:///System/Library/Audio/UISounds/%@", name]];
+        AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url,soundIDRef);
+    };
+    
+    if (for_bone_conduction_headset) {
+        loadSound(@"Modern/calendar_alert_chord.caf", &successSoundID);
+        loadSound(@"RingerChanged.caf", &AnnounceNotificationSoundID);
+        loadSound(@"Tink.caf", &VoiceRecoStartSoundID);
+        loadSound(@"RingerChanged.caf", &VoiceRecoEndSoundID);
+        loadSound(@"SIMToolkitNegativeACK.caf", &failSoundID);
+    } else {
+        loadSound(@"Modern/calendar_alert_chord.caf", &successSoundID);
+        loadSound(@"nano/3rdParty_Success_Haptic.caf", &AnnounceNotificationSoundID);
+        loadSound(@"nano/3rdParty_Start_Haptic.caf", &VoiceRecoStartSoundID);
+        loadSound(@"nano/3rdParty_Stop_Haptic.caf", &VoiceRecoEndSoundID);
+        loadSound(@"SIMToolkitNegativeACK.caf", &failSoundID);
+    }
 }
 
 -(BOOL)_playSystemSound:(SystemSoundID)soundID

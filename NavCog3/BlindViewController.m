@@ -102,41 +102,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogStart:) name:REQUEST_DIALOG_START object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogEnd:) name:REQUEST_DIALOG_END object:nil];
     
-    
-    UILongPressGestureRecognizer* longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
-    longPressGesture.minimumPressDuration = 1.0;
-    longPressGesture.numberOfTouchesRequired = 1;
-    [self.navigationController.navigationBar setUserInteractionEnabled:YES];
-    [self.navigationController.navigationBar addGestureRecognizer:longPressGesture];
-    
-    UILongPressGestureRecognizer* longPressGesture2 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
-    longPressGesture2.minimumPressDuration = 1.0;
-    longPressGesture2.numberOfTouchesRequired = 2;
-    [self.navigationController.navigationBar addGestureRecognizer:longPressGesture2];
-    
     [self locationChanged:nil];
 }
 
-- (void)handleLongPressGesture:(UILongPressGestureRecognizer*)sender
-{
-    if (sender.state == UIGestureRecognizerStateBegan &&
-        ((UIAccessibilityIsVoiceOverRunning() == YES && sender.numberOfTouches == 1) ||
-         sender.numberOfTouches == 2))
-    {
-        initFlag = !initFlag;
-        if (initFlag) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:START_ORIENTATION_INIT object:self];
-            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-            [NavUtil showWaitingForView:self.view withMessage:NSLocalizedStringFromTable(@"Init Orientation", @"BlindView", @"")];
-        } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:STOP_ORIENTATION_INIT object:self];
-            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-            [NavUtil hideWaitingForView:self.view];
-        }
-        [self updateView];
-    }
-}
 
+// show p2p debug
 - (void)handleSettingLongPressGesture:(UILongPressGestureRecognizer*)sender
 {
     if (sender.state == UIGestureRecognizerStateBegan && sender.numberOfTouches == 1) {

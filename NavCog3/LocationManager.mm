@@ -84,10 +84,7 @@ typedef struct {
     double currentOrientationAccuracy;
     CLHeading *currentMagneticHeading;
     
-    BOOL isOrientationInit;
-    double initStartYaw;
     double offsetYaw;
-    
     BOOL disableAcceleration;
     
     NavLocationStatus _currentStatus;
@@ -170,9 +167,6 @@ void functionCalledToLog(void *inUserData, string text)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplayStop:) name:REQUEST_LOG_REPLAY_STOP object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestBackgroundLocation:) name:REQUEST_BACKGROUND_LOCATION object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startOrientationInit:) name:START_ORIENTATION_INIT object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopOrientationInit:) name:STOP_ORIENTATION_INIT object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableAcceleration:) name:DISABLE_ACCELEARATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableAcceleration:) name:ENABLE_ACCELEARATION object:nil];
     
@@ -201,18 +195,6 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (NavLocationStatus) currentStatus {
     return _currentStatus;
-}
-
-- (void) startOrientationInit:(NSNotification*) note
-{
-    isOrientationInit = YES;
-    initStartYaw = NAN;
-}
-- (void) stopOrientationInit:(NSNotification*) note
-{
-    isOrientationInit = NO;
-    initStartYaw = NAN;
-    NSLog(@"OrientationInit,%f",offsetYaw);
 }
 
 - (void)disableAcceleration:(NSNotification*) note
@@ -612,36 +594,10 @@ void functionCalledToLog(void *inUserData, string text)
             return;
         }
         try {
-            if (isOrientationInit) {
-                if (isnan(initStartYaw)) {
-                    initStartYaw = motion.attitude.yaw + offsetYaw;
-                } else {
-                    offsetYaw = initStartYaw - motion.attitude.yaw;
-                }
-            }
-
-            //if (!localizer->tracksOrientation() ||
-            //    currentOrientationAccuracy >= ORIENTATION_ACCURACY_THRESHOLD) {
+            Attitude attitude((uptime+motion.timestamp)*1000,
+                              motion.attitude.pitch, motion.attitude.roll, motion.attitude.yaw + offsetYaw);
             
-            if (!localizer->tracksOrientation()){
-                double orientation = motion.attitude.yaw + offsetYaw;
-                if (isOrientationInit) {
-                    orientation = initStartYaw;
-                }
-                double x = sin(orientation);
-                double y = cos(orientation);
-                currentOrientation = orientation = atan2(y, x) / M_PI * 180;
-                double nonlargeOrientationAccuracy = 10; // degree
-                [self directionUpdated:orientation withAccuracy: nonlargeOrientationAccuracy];
-            }
-            
-            if (!isOrientationInit) {
-                Attitude attitude((uptime+motion.timestamp)*1000,
-                                  motion.attitude.pitch, motion.attitude.roll, motion.attitude.yaw + offsetYaw);
-                
-            
-                localizer->putAttitude(attitude);
-            }
+            localizer->putAttitude(attitude);
         } catch(const std::exception& ex) {
             std::cout << ex.what() << std::endl;
         }
@@ -1357,7 +1313,7 @@ int dcount = 0;
            @"lat": @(lat),
            @"lng": @(lng),
            @"speed":@(refPose.velocity()),
-           @"orientation":@(globalHeading),
+           @"orientation":@(currentOrientation),
            @"accuracy":@(acc),
            @"orientationAccuracy":@(orientationAccuracy), // TODO
            @"anchor":@{
@@ -1387,7 +1343,8 @@ int dcount = 0;
         
         currentLocation = data;
         
-        if (!validHeading && [[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"]) {
+        if (!validHeading && !localizer->tracksOrientation() &&
+            [[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"]) {
             double delayInSeconds = 0.1;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){

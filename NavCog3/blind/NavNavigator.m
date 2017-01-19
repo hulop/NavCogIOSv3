@@ -1158,16 +1158,20 @@ static NavNavigatorConstants *_instance;
                 
                 for(HLPLink *lid in sn.connectedLinkIDs) {
                     HLPLink *link = linksMap[lid];
-                    [link setTargetNodeIfNeeded:sn withNodesMap:nodesMap];
-                    if (![temp containsObject:link]) {
-                        [temp addObject:link];
+                    if (link) {
+                        [link setTargetNodeIfNeeded:sn withNodesMap:nodesMap];
+                        if (![temp containsObject:link]) {
+                            [temp addObject:link];
+                        }
                     }
                 }
                 for(HLPLink *lid in tn.connectedLinkIDs) {
                     HLPLink *link = linksMap[lid];
-                    [link setTargetNodeIfNeeded:tn withNodesMap:nodesMap];
-                    if (![temp containsObject:link]) {
-                        [temp addObject:link];
+                    if (link) {
+                        [link setTargetNodeIfNeeded:tn withNodesMap:nodesMap];
+                        if (![temp containsObject:link]) {
+                            [temp addObject:link];
+                        }
                     }
                 }
             }
@@ -1540,6 +1544,9 @@ static NavNavigatorConstants *_instance;
                 double total = 0;
                 for(NSInteger i=firstLinkIndex; i < [linkInfos count]; i++) {
                     NavLinkInfo *info = [linkInfos objectAtIndex:i];
+                    if ([info isEqual:[NSNull null]]) {
+                        continue;
+                    }
                     total += info.link.length;
                     if (info.isNextDestination) {
                         break;

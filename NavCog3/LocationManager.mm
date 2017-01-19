@@ -520,10 +520,10 @@ void functionCalledToLog(void *inUserData, string text)
     }
     
     [processQueue addOperationWithBlock:^{
-        double heading = (loc.orientation - [anchor[@"rotate"] doubleValue])/180*M_PI;
-        double x = sin(heading);
-        double y = cos(heading);
-        heading = atan2(y,x);
+        double h = ((isnan(heading)?0:heading) - [anchor[@"rotate"] doubleValue])/180*M_PI;
+        double x = sin(h);
+        double y = cos(h);
+        h = atan2(y,x);
         
         loc::LatLngConverter::Ptr projection = [self getProjection];
         
@@ -540,11 +540,11 @@ void functionCalledToLog(void *inUserData, string text)
         }else{
             newPose.floor(round(loc.floor));
         }
-        newPose.orientation(heading);
+        newPose.orientation(h);
         
         long timestamp = [[NSDate date] timeIntervalSince1970]*1000;
         
-        NSLog(@"Reset,%f,%f,%f,%f,%ld",loc.lat,loc.lng,newPose.floor(),loc.orientation,timestamp);
+        NSLog(@"Reset,%f,%f,%f,%f,%ld",loc.lat,loc.lng,newPose.floor(),h,timestamp);
         //localizer->resetStatus(newPose);
 
         loc::Pose stdevPose;
@@ -1298,11 +1298,11 @@ int dcount = 0;
             if(status->locationStatus()==Status::UNKNOWN){
                 lat = NAN;
                 lng = NAN;
-                globalHeading = NAN;
+                currentOrientation = NAN;
             }
             double oriAccThreshold = [[NSUserDefaults standardUserDefaults] doubleForKey:@"oriAccThreshold"];
             if( oriAccThreshold < orientationAccuracy ){
-                globalHeading = NAN;
+                currentOrientation = NAN;
             }
         }
         

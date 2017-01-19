@@ -108,6 +108,7 @@
     longPressGesture.numberOfTouchesRequired = 1;
     [self.navigationController.navigationBar setUserInteractionEnabled:YES];
     [self.navigationController.navigationBar addGestureRecognizer:longPressGesture];
+    
     UILongPressGestureRecognizer* longPressGesture2 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
     longPressGesture2.minimumPressDuration = 1.0;
     longPressGesture2.numberOfTouchesRequired = 2;
@@ -124,17 +125,51 @@
     {
         initFlag = !initFlag;
         if (initFlag) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:START_ORIENTATION_INIT object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:START_ORIENTATION_INIT object:self];
             AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
             [NavUtil showWaitingForView:self.view withMessage:NSLocalizedStringFromTable(@"Init Orientation", @"BlindView", @"")];
         } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:STOP_ORIENTATION_INIT object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:STOP_ORIENTATION_INIT object:self];
             AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
             [NavUtil hideWaitingForView:self.view];
         }
         [self updateView];
     }
 }
+
+- (void)handleSettingLongPressGesture:(UILongPressGestureRecognizer*)sender
+{
+    if (sender.state == UIGestureRecognizerStateBegan && sender.numberOfTouches == 1) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NavDebugHelper *dhelper = [NavDebugHelper sharedHelper];
+            [dhelper start];
+            
+            MCBrowserViewController *viewController = [[MCBrowserViewController alloc] initWithServiceType:NAVCOG3_DEBUG_SERVICE_TYPE
+                                                                                                   session:dhelper.session];
+            viewController.delegate = self;
+            
+            [self presentViewController:viewController animated:YES completion:nil];
+        });
+    }
+}
+
+- (BOOL)browserViewController:(MCBrowserViewController *)browserViewController
+      shouldPresentNearbyPeer:(MCPeerID *)peerID
+            withDiscoveryInfo:(NSDictionary *)info
+{
+    return YES;
+}
+
+- (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController
+{
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController
+{
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -143,12 +178,12 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:self];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_ACCELEARATION object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_ACCELEARATION object:self];
 }
 
 - (void)debugPeerStateChanged:(NSNotification*)note
@@ -184,10 +219,14 @@
         self.devAuto.selected = previewer.autoProceed;
         self.cover.hidden = devMode || !isActive;
         
+        self.navigationItem.leftBarButtonItem = nil;
         if ((isActive && !devMode) || previewMode || initFlag) {
-            self.navigationItem.leftBarButtonItem = nil;
         } else {
             self.navigationItem.leftBarButtonItem = _settingButton;
+            UILongPressGestureRecognizer* longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleSettingLongPressGesture:)];
+            longPressGesture.minimumPressDuration = 1.0;
+            longPressGesture.numberOfTouchesRequired = 1;
+            [[_settingButton valueForKey:@"view"] addGestureRecognizer:longPressGesture];
         }
         
         self.navigationItem.title = NSLocalizedStringFromTable(exerciseMode?@"Exercise":(previewMode?@"Preview":@"NavCog"), @"BlindView", @"");
@@ -212,7 +251,7 @@
 
 }
 
-- (void)locationChanged:(NSNotification*)notification
+- (void)locationChanged:(NSNotification*)note
 {
     if ([[NavDataStore sharedDataStore] mapCenter]) {
         if (self.searchButton.enabled == NO) {
@@ -228,12 +267,12 @@
         UIMessageView *mv = [NavUtil showMessageView:self.view];
         
         id observer = [[NSNotificationCenter defaultCenter] addObserverForName:LOG_REPLAY_PROGRESS object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-            long progress = [[note object][@"progress"] longValue];
-            long total = [[note object][@"total"] longValue];
-            NSDictionary *marker = [note object][@"marker"];
-            double floor = [[note object][@"floor"] doubleValue];
-            double difft = [[note object][@"difft"] doubleValue]/1000;
-            const char* msg = [[note object][@"message"] UTF8String];
+            long progress = [[note userInfo][@"progress"] longValue];
+            long total = [[note userInfo][@"total"] longValue];
+            NSDictionary *marker = [note userInfo][@"marker"];
+            double floor = [[note userInfo][@"floor"] doubleValue];
+            double difft = [[note userInfo][@"difft"] doubleValue]/1000;
+            const char* msg = [[note userInfo][@"message"] UTF8String];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (marker) {
@@ -260,7 +299,7 @@
 - (void)locationStatusChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NavLocationStatus status = [[note object][@"status"] unsignedIntegerValue];
+        NavLocationStatus status = [[note userInfo][@"status"] unsignedIntegerValue];
         
         switch(status) {
             case NavLocationStatusLocating:
@@ -274,7 +313,7 @@
 
 - (void) actionPerformed
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY_STOP object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY_STOP object:self];
 }
 
 
@@ -346,7 +385,7 @@
 - (IBAction)resetLocation:(id)sender {
     HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_HEADING_RESET object:
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_HEADING_RESET object:self userInfo:
      @{
        @"location":loc,
        @"heading":@(loc.orientation)
@@ -360,7 +399,7 @@
 }
 
 - (IBAction)restartLocalization:(id)sender {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESTART object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESTART object:self];
 }
 
 - (IBAction)retry:(id)sender {
@@ -510,7 +549,7 @@
         [[AVAudioSession sharedInstance] setActive:YES error:nil];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_BACKGROUND_LOCATION object:@(requestBackground)];
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_BACKGROUND_LOCATION object:self userInfo:@{@"value":@(requestBackground)}];
     if ([properties[@"isActive"] boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
@@ -520,7 +559,7 @@
             
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_point"] && !rerouteFlag) {
             [[NavDataStore sharedDataStore] manualLocationReset:properties];
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:properties];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:self userInfo:properties];
         }
         
         if ([NavDataStore sharedDataStore].previewMode) {
@@ -559,7 +598,7 @@
         timerForSimulator = nil;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:[NSString stringWithFormat:@"$hulop.map.getMap().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
+        [helper evalScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
     });
     
     [commander didNavigationStarted:properties];
@@ -571,8 +610,9 @@
         [NavUtil hideModalWaiting];
         NSArray *temp = [[NavDataStore sharedDataStore] route];
         //temp = [temp arrayByAddingObjectsFromArray:properties[@"oneHopLinks"]];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_SHOW_ROUTE object:temp];
+        if (temp) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_SHOW_ROUTE object:self userInfo:@{@"route":temp}];
+        }
         //[helper showRoute:temp];
     });
 }

@@ -203,7 +203,7 @@ static HLPSetting *soundEffectSetting;
     } else if ([setting.name hasSuffix:@".log"]) {
         NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSString* path = [documentsPath stringByAppendingPathComponent:setting.name];
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY object:path];
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY object:self userInfo:@{@"path":path}];
         
         [self.navigationController popToRootViewControllerAnimated:YES];
     } else if ([setting.name isEqualToString:@"p2p_debug"]) {
@@ -542,15 +542,15 @@ static HLPSetting *soundEffectSetting;
 {
     NSString *id = [[tableView cellForRowAtIndexPath:indexPath] reuseIdentifier];
     if ([id isEqualToString:@"search_option"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":ROUTE_SEARCH_OPTION_BUTTON}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:self userInfo:@{@"control":ROUTE_SEARCH_OPTION_BUTTON}];
         [self.navigationController popViewControllerAnimated:YES];
     }
     if ([id isEqualToString:@"search_route"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":ROUTE_SEARCH_BUTTON}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:self userInfo:@{@"control":ROUTE_SEARCH_BUTTON}];
         [self.navigationController popViewControllerAnimated:YES];
     }
     if ([id isEqualToString:@"end_navigation"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":END_NAVIGATION}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:self userInfo:@{@"control":END_NAVIGATION}];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }

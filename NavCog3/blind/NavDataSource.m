@@ -44,7 +44,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void) update:(NSNotification*)notification {
+- (void) update:(NSNotification*)note {
     NSArray *all = [[[NavDataStore sharedDataStore] destinations] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLandmark *landmark, NSDictionary<NSString *,id> * _Nullable bindings) {
         BOOL flag = YES;
         if (_filter) {

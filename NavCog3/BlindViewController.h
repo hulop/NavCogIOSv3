@@ -26,8 +26,9 @@
 #import "NavNavigator.h"
 #import "NavCommander.h"
 #import "NavPreviewer.h"
+#import <MultipeerConnectivity/MultipeerConnectivity.h>
 
-@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, NavNavigatorDelegate, NavCommanderDelegate, NavPreviewerDelegate>
+@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, NavNavigatorDelegate, NavCommanderDelegate, NavPreviewerDelegate, MCBrowserViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;

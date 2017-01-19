@@ -27,7 +27,7 @@ class DialogManager: NSObject {
     
     var available:Bool = false {
         didSet {            
-            NSNotificationCenter.defaultCenter().postNotificationName(DIALOG_AVAILABILITY_CHANGED_NOTIFICATION, object: available)
+            NSNotificationCenter.defaultCenter().postNotificationName(DIALOG_AVAILABILITY_CHANGED_NOTIFICATION, object:self, userInfo:["available":available])
         }
     }
     static var instance:DialogManager?
@@ -52,8 +52,8 @@ class DialogManager: NSObject {
     func serverConfigChanged(note:NSNotification) {
         available = false
         // check serverconfig
-        if let _ = note.object {
-            let config:NSDictionary = note.object as! NSDictionary // config json == NavDataStore.sharedDataStore().serverConfig()
+        if let config = note.userInfo {
+            //let config:NSDictionary = note.userInfo! // config json == NavDataStore.sharedDataStore().serverConfig()
 
             let server = config["conv_server"]
             if let _server = server as? String {
@@ -70,7 +70,7 @@ class DialogManager: NSObject {
     }
     
     func locationChanged (note:NSNotification) {
-        if let object = note.object {
+        if let object = note.userInfo {
             if let current = object["current"] as? HLPLocation {
                 if (!isnan(current.lat)) {
                     self.latitude = current.lat
@@ -86,7 +86,8 @@ class DialogManager: NSObject {
     }
     
     func buildingChanged (note:NSNotification) {
-        if let object:NSDictionary = (note.object as! NSDictionary) {
+        //if let object:NSDictionary = (note.object as! NSDictionary) {
+        if let object:NSDictionary = note.userInfo {
             if let building:String = object["building"] as? String {
                 self.building = building
             }

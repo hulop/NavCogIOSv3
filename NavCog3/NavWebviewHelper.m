@@ -124,7 +124,7 @@
         }
     } withName:@"callback" inComponent:@"Property"];
     [handler registerFunc:^(NSDictionary *param, UIWebView *wv) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:param];
+        [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:param];
     } withName:@"mapCenter" inComponent:@"Property"];
     
     [handler registerFunc:^(NSDictionary *param, UIWebView *wv) {
@@ -142,19 +142,19 @@
             NSData *data = [[text substringFromIndex:[@"getRssiBias," length]] dataUsingEncoding:NSUTF8StringEncoding];
             NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RSSI_BIAS object:param];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RSSI_BIAS object:self userInfo:param];
         } else {
             if ([text rangeOfString:@"buildingChanged,"].location == 0) {
                 NSData *data = [[text substringFromIndex:[@"buildingChanged," length]] dataUsingEncoding:NSUTF8StringEncoding];
                 NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:param];                
+                [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:param];
             }
             if ([text rangeOfString:@"stateChanged,"].location == 0) {
                 NSData *data = [[text substringFromIndex:[@"stateChanged," length]] dataUsingEncoding:NSUTF8StringEncoding];
                 NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:param];
+                [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:param];
             }
             if ([Logging isLogging]) {
                 NSLog(@"%@", text);
@@ -191,22 +191,22 @@
 
 #pragma mark - notification handlers
 
-- (void) manualLocation: (NSNotification*) notification
+- (void) manualLocation: (NSNotification*) note
 {
-    HLPLocation* loc = [notification object];
+    HLPLocation* loc = [note userInfo][@"location"];
+    BOOL sync = [[note userInfo][@"sync"] boolValue];
     
     NSMutableString* script = [[NSMutableString alloc] init];
     if (loc && !isnan(loc.floor) ) {
         int ifloor = round(loc.floor<0?loc.floor:loc.floor+1);
         [script appendFormat:@"$hulop.indoor.showFloor(%d);", ifloor];
     }
-    [script appendFormat:@"$hulop.map.setSync(false);"];
+    [script appendFormat:@"$hulop.map.setSync(%@);", sync?@"true":@"false"];
     if (loc) {
-        [script appendFormat:@"var map = $hulop.map.getMap();"];
-        [script appendFormat:@"var c = new google.maps.LatLng(%f, %f);", loc.lat, loc.lng];
-        [script appendFormat:@"map.setCenter(c);"];
+        [script appendFormat:@"var map = $hulop.map;"];
+        [script appendFormat:@"map.setCenter([%f,%f]);",loc.lng,loc.lat];
     } else {
-        [script appendFormat:@"var map = $hulop.map.getMap();"];
+        [script appendFormat:@"var map = $hulop.map"];
         [script appendFormat:@"var c = map.getCenter();"];
         [script appendFormat:@"map.setCenter(c);"];        
     }
@@ -216,14 +216,14 @@
     });
 }
 
-- (void) locationChanged: (NSNotification*) notification
+- (void) locationChanged: (NSNotification*) note
 {
     UIApplicationState state = [[UIApplication sharedApplication] applicationState];
     if (state == UIApplicationStateBackground || state == UIApplicationStateInactive) {
         return;
     }
 
-    NSDictionary *locations = [notification object];
+    NSDictionary *locations = [note userInfo];
     if (!locations) {
         return;
     }
@@ -281,9 +281,9 @@
     lastLocationSent = now;
 }
 
-- (void)triggerWebviewControl:(NSNotification*) notification
+- (void)triggerWebviewControl:(NSNotification*) note
 {
-    NSDictionary *object = [notification object];
+    NSDictionary *object = [note userInfo];
     if ([object[@"control"] isEqualToString: ROUTE_SEARCH_OPTION_BUTTON]) {
         [self evalScript:@"$('a[href=\"#settings\"]').click()"];
     }
@@ -305,9 +305,9 @@
     }
 }
 
-- (void) destinationChanged: (NSNotification*) notification
+- (void) destinationChanged: (NSNotification*) note
 {
-    [self initTarget:[notification object]];
+    [self initTarget:[note userInfo][@"destinations"]];
 }
 
 - (void)initTarget:(NSArray *)landmarks
@@ -334,12 +334,12 @@
 }
 
 
-- (void) routeChanged: (NSNotification*) notification
+- (void) routeChanged: (NSNotification*) note
 {
     //[self showRoute:[notification object]];
 }
 
-- (void) routeCleared: (NSNotification*) notification
+- (void) routeCleared: (NSNotification*) note
 {
     [self clearRoute];
 }
@@ -581,9 +581,9 @@
     }
 }
 
-- (void)requestShowRoute:(NSNotification*)notification
+- (void)requestShowRoute:(NSNotification*)note
 {
-    NSArray *route = [notification object];
+    NSArray *route = [note userInfo][@"route"];
     [self showRoute:route];
 }
 

@@ -91,4 +91,6 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 
 #define REMOTE_CONTROL_EVENT @"REMOTE_CONTROL_EVENT"
 
+#define PLAY_SYSTEM_SOUND @"PLAY_SYSTEM_SOUND"
+
 #endif /* LocationEvent_h */

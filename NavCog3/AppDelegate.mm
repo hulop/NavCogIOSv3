@@ -27,6 +27,7 @@
 #import "LocationEvent.h"
 #import "NavDataStore.h"
 #import "NavDeviceTTS.h"
+#import "NavSound.h"
 #import <Speech/Speech.h> // for Swift header
 #import "NavCog3-Swift.h"
 #import <AVFoundation/AVFoundation.h>
@@ -53,12 +54,13 @@
     NavDataStore *nds = [NavDataStore sharedDataStore];
     nds.userID = [UIDevice currentDevice].identifierForVendor.UUIDString;
     [nds requestServerConfigWithComplete:^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:SERVER_CONFIG_CHANGED_NOTIFICATION object:nds.serverConfig];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SERVER_CONFIG_CHANGED_NOTIFICATION object:self userInfo:nds.serverConfig];
     }];
 
     [DialogManager sharedManager];
 
     [NavDeviceTTS sharedTTS];
+    [NavSound sharedInstance];
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
@@ -81,7 +83,7 @@ void uncaughtExceptionHandler(NSException *exception)
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_SAVE object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_SAVE object:self];
 
     UIApplication *app = [UIApplication sharedApplication];
     _backgroundID = [app beginBackgroundTaskWithExpirationHandler:^{
@@ -135,7 +137,7 @@ void uncaughtExceptionHandler(NSException *exception)
 - (void)remoteControlReceivedWithEvent:(UIEvent *)event {
     if (event.type == UIEventTypeRemoteControl) {
         NSLog(@"remoteControlReceivedWithEvent,%ld,%ld", event.type, event.subtype);
-        [[NSNotificationCenter defaultCenter] postNotificationName:REMOTE_CONTROL_EVENT object:event];
+        [[NSNotificationCenter defaultCenter] postNotificationName:REMOTE_CONTROL_EVENT object:self userInfo:@{@"event":event}];
     }
 }
 
@@ -150,7 +152,7 @@ void uncaughtExceptionHandler(NSException *exception)
                 opt[item.name] = item.value;
             }
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_START_NAVIGATION object:opt];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_START_NAVIGATION object:self userInfo:opt];
             return YES;
         }
     }

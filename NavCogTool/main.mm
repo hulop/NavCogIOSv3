@@ -404,13 +404,13 @@ Option parseArguments(int argc, char * argv[]){
 
 - (void)locationChanged:(NSNotification*)note
 {
-    NSDictionary *dict = [note object];
+    NSDictionary *dict = [note userInfo];
     HLPLocation *current = dict[@"current"];
     if (![current isEqual:[NSNull null]]) {
         NSLog(@"Pose,%f,%f,%f,%f", current.lat, current.lng, current.floor, current.orientation);
         
         if (opt.checkRemote) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
         }
     }
 }

@@ -297,7 +297,7 @@
         [[NavDataStore sharedDataStore] manualLocation:loc];
     } else {
         [loc updateFloor:NAN];
-        [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:loc];
+        [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:self userInfo:@{@"location":loc}];
     }
 }
 
@@ -311,7 +311,7 @@
     } else {
         HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
         [loc updateLat:loc.lat Lng:loc.lng Accuracy:loc.accuracy Floor:round(floor)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:loc];
+        [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:self userInfo:@{@"location":loc}];
     }
 }
 

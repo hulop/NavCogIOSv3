@@ -33,7 +33,7 @@
 {
     NSString *text = self.accessibilityLabel;
     NSLog(@"accessibilityElementDidBecomeFocused:%@", text);
-    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:
+    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:self userInfo:
      @{@"text":text,@"force":@(YES),@"debug":@(YES)}];
 }
 
@@ -48,7 +48,7 @@
 
 - (void)accessibilityElementDidBecomeFocused
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
 }
 
 - (NSString*)accessibilityLabel
@@ -58,7 +58,7 @@
         // hack code
         // speak request navigation status if the user tap screen
         // accessibilityLabel is called twice for each tap
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
     }
     lastCall = now;
     return @"";
@@ -130,7 +130,7 @@
     UIAccessibilityElement *element = elements[currentIndex];
     
     if (speaks && [speaks count] == currentIndex) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
         return;
     }
     
@@ -147,13 +147,13 @@
     }    
 }
 
-- (void)remoteControl:(NSNotification*)notification
+- (void)remoteControl:(NSNotification*)note
 {
-    if (![notification object] || ![[notification object] isKindOfClass:UIEvent.class]) {
+    if (![note userInfo]) {
         return;
     }
     
-    UIEvent *event = (UIEvent*)[notification object];
+    UIEvent *event = [note userInfo][@"event"];
     NSLog(@"remote,%ld",event.subtype);
     
     switch (event.subtype) {
@@ -167,10 +167,10 @@
             [self decrementCurrentIndex];
             break;
         case UIEventSubtypeRemoteControlBeginSeekingBackward: // 106
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_END object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_END object:self];
             break;
         case UIEventSubtypeRemoteControlBeginSeekingForward: // 108
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:self];
             break;
         case UIEventSubtypeRemoteControlEndSeekingBackward: // 107
         case UIEventSubtypeRemoteControlEndSeekingForward: // 109
@@ -181,7 +181,7 @@
     [self speakCurrentElement];
 }
 
-- (void)clear:(NSNotification*)notification
+- (void)clear:(NSNotification*)note
 {
     @synchronized (self) {
         speaks = nil;
@@ -190,11 +190,11 @@
 }
 
 // update spoken text list
-- (void)enqueueSpokenText:(NSNotification*)notification
+- (void)enqueueSpokenText:(NSNotification*)note
 {
     BOOL flag = NO;
     @synchronized (self) {
-        NSDictionary *dict = [notification object];
+        NSDictionary *dict = [note userInfo];
         
         // not record as history if debug == YES
         BOOL debug = [dict[@"debug"] boolValue];

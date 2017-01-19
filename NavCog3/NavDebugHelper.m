@@ -51,7 +51,9 @@ static NavDebugHelper* instance;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processData:) name:SPEAK_TEXT_QUEUEING object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processData:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
-    
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processData:) name:PLAY_SYSTEM_SOUND object:nil];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processData2:) name:REQUEST_LOCATION_HEADING_RESET object:nil];
 
     
@@ -74,13 +76,13 @@ static NavDebugHelper* instance;
     }
     _lastSent[name] = @([[NSDate date] timeIntervalSince1970]);
 
-    NSObject *object = [note object];
+    NSDictionary *userInfo = [note userInfo];
 
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:
                     @{
                       @"name": name,
                       @"timestamp": @([[NSDate date] timeIntervalSince1970]),
-                      @"object": object?object:[NSNull null]
+                      @"userInfo": userInfo?userInfo:[NSNull null]
                       }];
     if (data) {
         [self sendData:data];
@@ -102,13 +104,13 @@ static NavDebugHelper* instance;
     }
     _lastSent[name] = @([[NSDate date] timeIntervalSince1970]);
     
-    NSObject *object = [note object];
+    NSDictionary *userInfo = [note userInfo];
     
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:
                     @{
                       @"name": name,
                       @"timestamp": @([[NSDate date] timeIntervalSince1970]),
-                      @"object": object?object:[NSNull null]
+                      @"userInfo": userInfo?userInfo:[NSNull null]
                       }];
     if (data) {
         [self sendData:data];
@@ -134,7 +136,6 @@ static NavDebugHelper* instance;
     NSError *error;
     
     if ([_peers count] > 0) {
-        NSLog(@"sendData,%ld", data.length);
         [_session sendData:data
                    toPeers:_peers
                   withMode:MCSessionSendDataUnreliable
@@ -155,7 +156,7 @@ static NavDebugHelper* instance;
             [_peers removeObject:peerID];
         }
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:DEBUG_PEER_STATE_CHANGE object:_peers];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DEBUG_PEER_STATE_CHANGE object:self  userInfo:@{@"peers":_peers}];
 }
 
 - (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID
@@ -192,15 +193,10 @@ didReceiveStream:(NSInputStream *)stream
         if (json) {
             NSString *name = json[@"name"];
             double timestamp = [json[@"timestamp"] doubleValue];
-            NSObject *object = json[@"object"];
+            NSDictionary *userInfo = json[@"userInfo"];
         
-            NSLog(@"receiveData,%ld,%f", [data length], [[NSDate date] timeIntervalSince1970] - timestamp);
-            if ([SPEAK_TEXT_QUEUEING isEqualToString:name]) {
-                NSDictionary *param = (NSDictionary*)object;
-                [[NavDeviceTTS sharedTTS] speak:param[@"text"] force:[param[@"force"] boolValue] completionHandler:nil];
-            } else {
-                [[NSNotificationCenter defaultCenter] postNotificationName:name object:object];
-            }
+            NSLog(@"receiveData,%ld,%@,%f", [data length], name, [[NSDate date] timeIntervalSince1970] - timestamp);
+            [[NSNotificationCenter defaultCenter] postNotificationName:name object:self userInfo:userInfo];
         }
     });
 }

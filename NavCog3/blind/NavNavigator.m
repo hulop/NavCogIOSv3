@@ -901,7 +901,7 @@ static NavNavigatorConstants *_instance;
        }];
 }
 
-- (void)routeChanged:(NSNotification*)notification
+- (void)routeChanged:(NSNotification*)note
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     NavNavigatorConstants *C = [NavNavigatorConstants constants];
@@ -1448,19 +1448,19 @@ static NavNavigatorConstants *_instance;
     }
 }
 
-- (void)routeCleared:(NSNotification*)notification
+- (void)routeCleared:(NSNotification*)note
 {
     [self stop];
 }
 
-- (void)_locationChanged:(NSNotification*)notification
+- (void)_locationChanged:(NSNotification*)note
 {
     [navigationQueue addOperationWithBlock:^{
-        [self locationChanged:notification];
+        [self locationChanged:note];
     }];
 }
 
-- (void)locationChanged:(NSNotification*)notification
+- (void)locationChanged:(NSNotification*)note
 {
     if (!_isActive) {
         return;
@@ -1474,7 +1474,7 @@ static NavNavigatorConstants *_instance;
     }
     
     if (lastNavIndex != navIndex) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:NAV_ROUTE_INDEX_CHANGED_NOTIFICATION object:@{@"index":@(navIndex)}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NAV_ROUTE_INDEX_CHANGED_NOTIFICATION object:self userInfo:@{@"index":@(navIndex)}];
     }
     lastNavIndex = navIndex;
     
@@ -1867,7 +1867,7 @@ static NavNavigatorConstants *_instance;
                             HLPLocation *loc = elevatorLocation(linkInfo.link);
                             [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:NAN];
                             
-                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:@{@"location":loc}];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:self userInfo:@{@"location":loc}];
                             lastElevatorResetTime = NAN;
                         }
                     }
@@ -1994,7 +1994,7 @@ static NavNavigatorConstants *_instance;
                             HLPLocation *loc = elevatorLocation(linkInfo.link);
                             [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:NAN];
                             
-                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:@{@"location":loc}];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:self userInfo:@{@"location":loc}];
                             lastElevatorResetTime = now;
                         }
                     }

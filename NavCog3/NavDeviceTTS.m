@@ -23,6 +23,7 @@
 #import "NavDeviceTTS.h"
 #import <UIKit/UIKit.h>
 #import "LocationEvent.h"
+#import "NavDebugHelper.h"
 
 @implementation HLPSpeechEntry
 
@@ -62,6 +63,11 @@ static NavDeviceTTS *instance = nil;
                                              selector:@selector(voiceOverDidFinishAnnouncing:)
                                                  name:UIAccessibilityAnnouncementDidFinishNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(speakFromNotification:)
+                                                 name:SPEAK_TEXT_QUEUEING
+                                               object:[NavDebugHelper sharedHelper]];
     
     [self reset];
     return self;
@@ -137,8 +143,25 @@ static NavDeviceTTS *instance = nil;
     HLPSpeechEntry *se = [[HLPSpeechEntry alloc] init];
     se.pauseDuration = duration;
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:self userInfo:
+     @{@"pause":@(YES),@"duration":@(duration)}];
+    
     @synchronized(speaking) {
         [speaking addObject:se];
+    }
+}
+
+- (void)speakFromNotification:(NSNotification*)note
+{
+    NSDictionary *param = note.userInfo;
+    BOOL pause = [param[@"pause"] boolValue];
+    if (pause) {
+        double duration = [param[@"duration"] doubleValue];
+        [self pause:duration];
+    } else {
+        NSString *text = param[@"text"];
+        BOOL force = [param[@"force"] boolValue];
+        [self speak:text withOptions:@{@"force":@(force), @"nohistory":@(YES)} completionHandler:nil];
     }
 }
 
@@ -198,11 +221,11 @@ static NavDeviceTTS *instance = nil;
         }
     }
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:
+    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:self userInfo:
      @{@"text":text,@"force":@(flag)}];
 
     if (!nohistory) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_HISTORY object:
+        [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_HISTORY object:self userInfo:
          @{@"text":text,@"force":@(flag)}];
     }
     
@@ -335,9 +358,9 @@ static NavDeviceTTS *instance = nil;
     }
 }
 
-- (void)voiceOverDidFinishAnnouncing:(NSNotification*)notification
+- (void)voiceOverDidFinishAnnouncing:(NSNotification*)note
 {
-    NSDictionary *userInfo = [notification userInfo];
+    NSDictionary *userInfo = [note userInfo];
     NSString *speechString = userInfo[UIAccessibilityAnnouncementKeyStringValue];
     
     HLPSpeechEntry *se = [processing objectForKey:speechString];

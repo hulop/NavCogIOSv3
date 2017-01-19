@@ -23,6 +23,8 @@
 
 #import "NavSound.h"
 #import <AVFoundation/AVFoundation.h>
+#import "LocationEvent.h"
+#import "NavDebugHelper.h"
 
 @implementation NavSound {
     SystemSoundID successSoundID;
@@ -50,6 +52,11 @@ static NavSound *instance;
     [[NSUserDefaults standardUserDefaults] addObserver:self
                                             forKeyPath:@"for_bone_conduction_headset"
                                                options:NSKeyValueObservingOptionNew context:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playSystemSoundFromNote:)
+                                                 name:PLAY_SYSTEM_SOUND
+                                               object:[NavDebugHelper sharedHelper]];
     
     return self;
 }
@@ -86,6 +93,20 @@ static NavSound *instance;
     }
 }
 
+-(void)playSystemSoundFromNote:(NSNotification*)note
+{
+    NSDictionary *info = note.userInfo;
+    NSString *name = info[@"sound"];
+    if ([name isEqualToString:@"vibrate"]) {
+        [self vibrate:info[@"param"]];
+    } else {
+        SEL sel = NSSelectorFromString(name);
+        if ([self respondsToSelector:sel]) {
+            [self performSelector:sel];
+        }
+    }
+}
+
 -(BOOL)_playSystemSound:(SystemSoundID)soundID
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound_effect"]) {
@@ -97,33 +118,65 @@ static NavSound *instance;
 
 -(BOOL)playSuccess
 {
-    return [self _playSystemSound:successSoundID];
+    if ([self _playSystemSound:successSoundID]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
+                                                            object:self userInfo:@{@"sound":@"playSuccess"}];
+        return YES;
+    }
+    return NO;
 }
 
 - (BOOL)playFail
 {
-    return [self _playSystemSound:failSoundID];
+    if ([self _playSystemSound:failSoundID]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
+                                                            object:self userInfo:@{@"sound":@"playFail"}];
+        return YES;
+    }
+    return NO;
 }
 
 -(BOOL)playAnnounceNotification
 {
-    return [self _playSystemSound:AnnounceNotificationSoundID];
+    if ([self _playSystemSound:AnnounceNotificationSoundID]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
+                                                            object:self userInfo:@{@"sound":@"playAnnounceNotification"}];
+        return YES;
+    }
+    return NO;
 }
 
 - (BOOL)playVoiceRecoStart
 {
-    return [self _playSystemSound:VoiceRecoStartSoundID];
+    if ([self _playSystemSound:VoiceRecoStartSoundID]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
+                                                            object:self userInfo:@{@"sound":@"playVoiceRecoStart"}];
+        return YES;
+    }
+    return NO;
 }
 
 - (BOOL)playVoiceRecoEnd
 {
-    return [self _playSystemSound:VoiceRecoEndSoundID];
+    if ([self _playSystemSound:VoiceRecoEndSoundID]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
+                                                            object:self userInfo:@{@"sound":@"playVoiceRecoEnd"}];
+        return YES;
+    }
+    return NO;
 }
 
 -(BOOL)vibrate:(NSDictionary*)param
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"vibrate"]) {
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+        if (param) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
+                                                                object:self userInfo:@{@"sound":@"vibrate", @"param":param}];
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
+                                                                object:self userInfo:@{@"sound":@"vibrate"}];            
+        }
         return YES;
     }
     return NO;

@@ -193,7 +193,8 @@ void functionCalledToLog(void *inUserData, string text)
 {
     if (_currentStatus != status) {
         [[NSNotificationCenter defaultCenter] postNotificationName:NAV_LOCATION_STATUS_CHANGE
-                                                            object:@{@"status":@(status)}];
+                                                            object:self
+                                                          userInfo:@{@"status":@(status)}];
     }
     _currentStatus = status;
 }
@@ -202,33 +203,33 @@ void functionCalledToLog(void *inUserData, string text)
     return _currentStatus;
 }
 
-- (void) startOrientationInit:(NSNotification*) notification
+- (void) startOrientationInit:(NSNotification*) note
 {
     isOrientationInit = YES;
     initStartYaw = NAN;
 }
-- (void) stopOrientationInit:(NSNotification*) notification
+- (void) stopOrientationInit:(NSNotification*) note
 {
     isOrientationInit = NO;
     initStartYaw = NAN;
     NSLog(@"OrientationInit,%f",offsetYaw);
 }
 
-- (void)disableAcceleration:(NSNotification*) notification
+- (void)disableAcceleration:(NSNotification*) note
 {
     disableAcceleration = YES;
 }
 
-- (void)enableAcceleration:(NSNotification*) notification
+- (void)enableAcceleration:(NSNotification*) note
 {
     disableAcceleration = NO;
 }
 
-- (void) requestLogReplayStop:(NSNotification*) notification
+- (void) requestLogReplayStop:(NSNotification*) note
 {
     isLogReplaying = NO;
 }
-- (void) requestLogReplay:(NSNotification*) notification
+- (void) requestLogReplay:(NSNotification*) note
 {
     isLogReplaying = YES;
     
@@ -247,7 +248,7 @@ void functionCalledToLog(void *inUserData, string text)
             [NSThread sleepForTimeInterval:0.1];
         }
 
-        NSString *path = [notification object];
+        NSString *path = [note userInfo][@"path"];
         
         std::ifstream ifs([path cStringUsingEncoding:NSUTF8StringEncoding]);
         std::string str;
@@ -318,7 +319,7 @@ void functionCalledToLog(void *inUserData, string text)
                 auto currentLocationStatus = localizer->getStatus()->locationStatus();
                 std::string locStatusStr = Status::locationStatusToString(currentLocationStatus);
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:LOG_REPLAY_PROGRESS object:
+                [[NSNotificationCenter defaultCenter] postNotificationName:LOG_REPLAY_PROGRESS object:self userInfo:
                  @{
                    @"progress":@(progress),
                    @"total":@(total),
@@ -412,7 +413,7 @@ void functionCalledToLog(void *inUserData, string text)
                             NSDictionary* properties = @{@"location" : loc,
                                                          @"heading": @(orientation)
                                                          };
-                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_HEADING_RESET object: properties];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_HEADING_RESET object:self userInfo:properties];
                         }
                     }
                     // Marker
@@ -448,7 +449,7 @@ void functionCalledToLog(void *inUserData, string text)
                         double orientation = stod(att_values.at(5));
                         double orientationAccuracy = stod(att_values.at(6));
                         
-                        [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:
+                        [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:self userInfo:
                          @{
                            @"lat": @(lat),
                            @"lng": @(lng),
@@ -464,11 +465,11 @@ void functionCalledToLog(void *inUserData, string text)
                 if (bNavigation) {
                     NSString *objcStr = [[NSString alloc] initWithCString:str.c_str() encoding:NSUTF8StringEncoding];
                     if (v.size() > 3 && v.at(3).compare(0, 10, "initTarget") == 0) {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_INIT_TARGET_LOG object:objcStr];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_INIT_TARGET_LOG object:self userInfo:@{@"text":objcStr}];
                     }
                     
                     if (v.size() > 3 && v.at(3).compare(0, 9, "showRoute") == 0) {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_SHOW_ROUTE_LOG object:objcStr];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_SHOW_ROUTE_LOG object:self userInfo:@{@"text":objcStr}];
                     }
                 }
 
@@ -481,7 +482,7 @@ void functionCalledToLog(void *inUserData, string text)
                 std::cerr << "error in parse log file" << std::endl;
             }
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:LOG_REPLAY_PROGRESS object:@{@"progress":@(total),@"total":@(total)}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:LOG_REPLAY_PROGRESS object:self userInfo:@{@"progress":@(total),@"total":@(total)}];
         isLogReplaying = NO;
         [self stop];
         [self start];
@@ -489,7 +490,7 @@ void functionCalledToLog(void *inUserData, string text)
 }
 
 
-- (void) requestLocationRestart:(NSNotification*) notification
+- (void) requestLocationRestart:(NSNotification*) note
 {
     [processQueue addOperationWithBlock:^{
         [self stop];
@@ -499,17 +500,17 @@ void functionCalledToLog(void *inUserData, string text)
     }];
 }
 
-- (void) requestLocationReset:(NSNotification*) notification
+- (void) requestLocationReset:(NSNotification*) note
 {
-    NSDictionary *properties = [notification object];
+    NSDictionary *properties = [note userInfo];
     HLPLocation *loc = properties[@"location"];
     [loc updateOrientation:currentOrientation withAccuracy:0];
     [self resetLocation:loc];
 }
 
-- (void) requestLocationHeadingReset:(NSNotification*) notification
+- (void) requestLocationHeadingReset:(NSNotification*) note
 {
-    NSDictionary *properties = [notification object];
+    NSDictionary *properties = [note userInfo];
     HLPLocation *loc = properties[@"location"];
     double heading = [properties[@"heading"] doubleValue];
     [loc updateOrientation:heading withAccuracy:0];
@@ -527,7 +528,7 @@ void functionCalledToLog(void *inUserData, string text)
                            @"orientationAccuracy": @(currentOrientationAccuracy)
                            };
     if (!_isActive || !isMapLoaded) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
+        [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:self userInfo:data];
         return;
     }
     
@@ -570,16 +571,14 @@ void functionCalledToLog(void *inUserData, string text)
             localizer->resetStatus(newPose, stdevPose);
         } catch(const std::exception& ex) {
             std::cout << ex.what() << std::endl;
-            [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
+            [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:self userInfo:data];
         }
     }];
-    
-    //[[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
 }
 
 - (void)requestBackgroundLocation:(NSNotification*)note
 {
-    beaconManager.allowsBackgroundLocationUpdates = [[note object] boolValue];
+    beaconManager.allowsBackgroundLocationUpdates = [[note userInfo][@"value"] boolValue];
     if (beaconManager.allowsBackgroundLocationUpdates) {
         [beaconManager startUpdatingLocation];
     } else {
@@ -854,9 +853,9 @@ void functionCalledToLog(void *inUserData, string text)
     localizer = nil;
 }
 
-- (void)requestRssiBias:(NSNotification*) notification
+- (void)requestRssiBias:(NSNotification*) note
 {
-    NSDictionary *param = [notification object];
+    NSDictionary *param = [note userInfo];
     if (param) {
         [self getRssiBias:param withCompletion:^(float rssiBias) {
             [[NSUserDefaults standardUserDefaults] setFloat:rssiBias forKey:@"rssi_bias"];
@@ -969,7 +968,7 @@ void functionCalledToLog(void *inUserData, string text)
     double y = cos(r);
     double orientation = atan2(y, x);
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:CALIBRATION_BEACON_FOUND object:@{@"degree":@(degree)}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:CALIBRATION_BEACON_FOUND object:self userInfo:@{@"degree":@(degree)}];
     
     [processQueue addOperationWithBlock:^{
         std::shared_ptr<loc::Pose> pose = localizer->getStatus()->meanPose();
@@ -1259,7 +1258,7 @@ int sendcount = 0;
                           @"orientationAccuracy": @(acc)
                           };
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:ORIENTATION_CHANGED_NOTIFICATION object:dic];
+        [[NSNotificationCenter defaultCenter] postNotificationName:ORIENTATION_CHANGED_NOTIFICATION object:self userInfo:dic];
     }
     @catch(NSException *e) {
         NSLog(@"%@", [e debugDescription]);
@@ -1432,7 +1431,7 @@ int dcount = 0;
             validHeading = YES;
         } else {
             validHeading = YES;
-            [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:data];
+            [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:self userInfo:data];
         }
     }
     @catch(NSException *e) {

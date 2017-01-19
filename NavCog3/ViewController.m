@@ -109,7 +109,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
 - (void)uiStateChanged:(NSNotification*)note
 {
-    uiState = [note object];
+    uiState = [note userInfo];
 
     NSString *page = uiState[@"page"];
     BOOL inNavigation = [uiState[@"navigation"] boolValue];
@@ -149,32 +149,32 @@ typedef NS_ENUM(NSInteger, ViewState) {
 - (IBAction)doSearch:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":ROUTE_SEARCH_BUTTON}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:self userInfo:@{@"control":ROUTE_SEARCH_BUTTON}];
 }
 
 - (IBAction)stopNavigation:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":@""}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:self userInfo:@{@"control":@""}];
 }
 
 - (IBAction)doCancel:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":@""}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:self userInfo:@{@"control":@""}];
 }
 
 - (IBAction)doDone:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":DONE_BUTTON}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:self userInfo:@{@"control":DONE_BUTTON}];
 }
 
 - (IBAction)doBack:(id)sender {
     if (state == ViewStateSearchDetail) {
         //state = ViewStateTransition;
         //[self updateView];
-        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:@{@"control":BACK_TO_CONTROL}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:self userInfo:@{@"control":BACK_TO_CONTROL}];
     }
 }
 
@@ -292,7 +292,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
 - (void)requestStartNavigation:(NSNotification*)note
 {
-    NSDictionary *options = [note object];
+    NSDictionary *options = [note userInfo];
     if (options[@"toID"] == nil) {
         return;
     }
@@ -321,7 +321,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
         state = ViewStateTransition;
         [self updateView];
         [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL
-                                                            object:@{@"control":ROUTE_SEARCH_OPTION_BUTTON}];
+                                                            object:self userInfo:@{@"control":ROUTE_SEARCH_OPTION_BUTTON}];
     }
     
     return NO;
@@ -341,7 +341,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 - (void)locationStatusChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NavLocationStatus status = [[note object][@"status"] unsignedIntegerValue];
+        NavLocationStatus status = [[note userInfo][@"status"] unsignedIntegerValue];
         
         switch(status) {
             case NavLocationStatusLocating:

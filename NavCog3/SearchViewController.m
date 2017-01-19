@@ -80,7 +80,7 @@
 
 - (void)requestStartNavigation:(NSNotification*)note
 {
-    NSDictionary *param = [note object];
+    NSDictionary *param = [note userInfo];
     NSString *toID = param[@"toID"];
     NSArray *toIDs = [toID componentsSeparatedByString:@"|"];
     
@@ -126,7 +126,7 @@
     [self updateViewWithFlag:NO];
 }
 
-- (void) destinationsChanged:(NSNotification*)notification
+- (void) destinationsChanged:(NSNotification*)note
 {
     [NavUtil hideModalWaiting];
 
@@ -154,7 +154,7 @@
     [self updateViewWithFlag:NO];
 }
 
-- (void) locationChanged:(NSNotification*)notification
+- (void) locationChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         NavDataStore *nds = [NavDataStore sharedDataStore];
@@ -174,6 +174,7 @@
         
         NavDataStore *nds = [NavDataStore sharedDataStore];
         HLPLocation *loc = [nds currentLocation];
+        BOOL isNotManual = ![nds isManualLocation] || [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
         BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
         
         self.fromButton.enabled = updated && actionEnabled;
@@ -183,7 +184,7 @@
         
         self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
         self.previewButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
-        self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation && actionEnabled);
+        self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation && actionEnabled && isNotManual);
         
         
         [self.fromButton setTitle:nds.from.name forState:UIControlStateNormal];

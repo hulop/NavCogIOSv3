@@ -37,7 +37,7 @@
     return self;
 }
 
-- (void) changed:(NSNotification*) notification
+- (void) changed:(NSNotification*) note
 {
     if (self.setting) {
         dispatch_async(dispatch_get_main_queue(), ^{

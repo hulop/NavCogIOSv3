@@ -648,6 +648,8 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->updateHandler(functionCalledAfterUpdate, (void*) &userData);
     localizer->logHandler(functionCalledToLog, (void*) &userData);
     
+    localizer->orientationMeterType = TRANSFORMED_AVERAGE;
+    
     NSString *location_tracking = [[NSUserDefaults standardUserDefaults] stringForKey:@"location_tracking"];
     
     if ([location_tracking isEqualToString:@"tracking"]) {

@@ -210,6 +210,17 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
                             self.startPWCaptureSession()
                             self.startRecognize(actions, failure:failure)
                         })
+                    } else if code == 216 {
+                        // noop (terminated by manual)
+                        return;
+                    } else if code == 4 {
+                        self.endRecognize(); // network error
+                        
+                        let newError = self.createError(NSLocalizedString("checkNetworkConnection", comment:""))
+                        failure(newError)
+                    } else {
+                        self.endRecognize()
+                        failure(error!)
                     }
                 }
                 return;
@@ -217,7 +228,7 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
             
             print(result)
             if result == nil {
-                return;
+                return;5
             }
             
             if self.resulttimer != nil{

@@ -49,10 +49,12 @@ static NavDeviceTTS *instance = nil;
     
     expire = NAN;
 
+    /*
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(routeChanged)
                                                  name:AVAudioSessionRouteChangeNotification
                                                object:nil];
+     */
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(voiceOverStatusChanged)
@@ -100,18 +102,20 @@ static NavDeviceTTS *instance = nil;
 
 - (void) routeChanged
 {
-    //NSLog(@"Routing Changed");
+    NSLog(@"Routing Changed");
     if (voice) {
         voice.delegate = nil;
     }
     voice = [[AVSpeechSynthesizer alloc] init];
-    voice.delegate = self;    
+    voice.delegate = self;
 }
 
 - (void) stop:(BOOL) immediate
 {
     if (isSpeaking) {
-        [voice stopSpeakingAtBoundary:immediate?AVSpeechBoundaryImmediate:AVSpeechBoundaryWord];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [voice stopSpeakingAtBoundary:immediate?AVSpeechBoundaryImmediate:AVSpeechBoundaryWord];
+        });
     }
 }
 

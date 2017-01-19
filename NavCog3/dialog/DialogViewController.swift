@@ -424,6 +424,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
             stt.delegate?.inactive()
         } else if(stt.paused){
             print("restart stt")
+            stt.tts?.stop(false)
             stt.restartRecognize()
             stt.delegate?.showText(NSLocalizedString("SPEAK_NOW", comment:"Speak Now!"));
             stt.delegate?.listen()
@@ -490,7 +491,6 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     //self.navigationController?.navigationBarHidden = false
                     self.navigationController!.navigationBar.userInteractionEnabled = true
                     self.navigationController!.interactivePopGestureRecognizer!.enabled = true
-
                     self.navigationController!.navigationBar.tintColor = self.tintColor
 
                     if self.root != nil {
@@ -642,20 +642,35 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
             self!.endspeak(str)
         })], avrdelegate: nil, failure:self.failureCustom)
     }
+    
     func endDialog(response:String){
         let stt:STTHelper = self.getStt()
         stt.endRecognize()
         stt.delegate = self.dialogViewHelper
         self._lastspeech = response
     }
+    
+    func failDialog() {
+        let stt:STTHelper = self.getStt()
+        stt.endRecognize()
+        stt.paused = true
+        stt.delegate?.showText(NSLocalizedString("PAUSING", comment:"Pausing"));
+        stt.delegate?.inactive()
+        stt.delegate = self.dialogViewHelper
+    }
+    
     func failureCustom(error: NSError){
         NSLog("%@",error)
         let str = error.localizedDescription
         self.tableData.append(["name": "Error", "type": 1,  "image": "conversation.png", "message": str])
         self.refreshTableView()
-        dispatch_async(dispatch_get_main_queue(), {[weak self] in
-            self!.startDialog(str)
-        })
+        dispatch_async(dispatch_get_main_queue(), { [weak self] in
+            if let weakself = self {
+                weakself.failDialog()
+                weakself._tts?.speak(str) {
+                }
+            }
+            })
         dispatch_async(dispatch_get_main_queue(), { [weak self] in
             if let weakself = self {
                 //weakself.navigationController?.navigationBarHidden = false

@@ -211,7 +211,7 @@
 		7E9866CC1D5174780073CB49 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		7E9866CD1D5174780073CB49 /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
 		7E9EF44D1DE3D06300F694FB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		7EA018FD1E2F54A3005E65ED /* nosound.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; name = nosound.aiff; path = ../../../../../Desktop/nosound.aiff; sourceTree = "<group>"; };
+		7EA018FD1E2F54A3005E65ED /* nosound.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = nosound.aiff; sourceTree = "<group>"; };
 		7EA018FF1E2F54E7005E65ED /* InitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitViewController.h; sourceTree = "<group>"; };
 		7EA019001E2F54E7005E65ED /* InitViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InitViewController.mm; sourceTree = "<group>"; };
 		7EAE6F0B1D2642D600614C35 /* NavWebviewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavWebviewHelper.h; sourceTree = "<group>"; };

@@ -32,6 +32,7 @@
     SystemSoundID VoiceRecoStartSoundID;
     SystemSoundID VoiceRecoEndSoundID;
     SystemSoundID failSoundID;
+    SystemSoundID headingAdjustedID;
 }
 
 static NavSound *instance;
@@ -99,6 +100,9 @@ static NavSound *instance;
     NSString *name = info[@"sound"];
     if ([name isEqualToString:@"vibrate"]) {
         [self vibrate:info[@"param"]];
+    } else if ([name isEqualToString:@"playHeadingAdjusted"]) {
+        int level = [info[@"level"] intValue];
+        [self playHeadingAdjusted:level];
     } else {
         SEL sel = NSSelectorFromString(name);
         if ([self respondsToSelector:sel]) {
@@ -164,6 +168,20 @@ static NavSound *instance;
         return YES;
     }
     return NO;
+}
+
+- (BOOL)playHeadingAdjusted:(int)level
+{
+    for(int i = 0; i < level; i++) {
+        double delayInSeconds = 0.1*i;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self _playSystemSound:VoiceRecoStartSoundID];
+        });
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
+                                                        object:self userInfo:@{@"sound":@"playHeadingAdjusted",@"level":@(level)}];
+    return YES;
 }
 
 -(BOOL)vibrate:(NSDictionary*)param

@@ -675,6 +675,15 @@
     [commander currentStatus:properties];
 }
 
+- (void)requiresHeadingCalibration:(NSDictionary *)properties
+{
+    [commander requiresHeadingCalibration:properties];
+}
+
+- (void)playHeadingAdjusted:(int)level
+{
+    [[NavSound sharedInstance] playHeadingAdjusted:level];
+}
 - (void)reroute:(NSDictionary *)properties
 {
     rerouteFlag = YES;

@@ -859,6 +859,9 @@ static NavNavigatorConstants *_instance;
     NSTimeInterval lastElevatorResetTime;
     
     NSOperationQueue *navigationQueue;
+    
+    BOOL alertForHeadingAccuracy;
+    HLPLocation *prevLocation;
 }
 
 - (instancetype)init
@@ -1467,6 +1470,35 @@ static NavNavigatorConstants *_instance;
 - (void)locationChanged:(NSNotification*)note
 {
     if (!_isActive) {
+        if (alertForHeadingAccuracy) {
+            HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];
+            if (!prevLocation) {
+                prevLocation = location;
+            } else {
+                if (location.orientationAccuracy < 22.5) {
+                    if ([self.delegate respondsToSelector:@selector(requiresHeadingCalibration:)]) {
+                        [self.delegate requiresHeadingCalibration:
+                         @{
+                           @"accuracy": @(location.orientationAccuracy),
+                           @"nohistory": @(YES),
+                           @"force": @(YES)
+                           }];
+                    }
+                    alertForHeadingAccuracy = NO;
+                    return;
+                }
+                int prev = prevLocation.orientationAccuracy / 20;
+                int now = location.orientationAccuracy / 20;
+                if (prev > now) {
+                    int level = MIN(3,4-now);
+                    // play 1 for 70-90
+                    // play 2 for 50-70
+                    // play 3 for 22.5-50
+                    [self.delegate playHeadingAdjusted:level];
+                    prevLocation = location;
+                }
+            }
+        }
         return;
     }
     
@@ -2369,6 +2401,18 @@ static NavNavigatorConstants *_instance;
 - (void) requestStatus:(NSNotification*)note
 {
     if (!_isActive) {
+        HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
+        if ([self.delegate respondsToSelector:@selector(requiresHeadingCalibration:)]) {
+            [self.delegate requiresHeadingCalibration:
+             @{
+               @"accuracy": @(loc.orientationAccuracy),
+               @"nohistory": @(YES),
+               @"force": @(YES)
+               }];
+        }
+        if (loc.orientationAccuracy > 22.5) {
+            alertForHeadingAccuracy = YES;
+        }
         return;
     }
     NavNavigatorConstants *C = [NavNavigatorConstants constants];

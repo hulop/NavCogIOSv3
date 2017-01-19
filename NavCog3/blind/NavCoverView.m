@@ -85,6 +85,10 @@
     first = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
     first.accessibilityLabel = NSLocalizedString(@"Navigation", @"");
     first.accessibilityTraits = UIAccessibilityTraitStaticText | UIAccessibilityTraitHeader;
+    
+    speaks = @[];
+    elements = @[];
+    
     return self;
 }
 
@@ -120,19 +124,18 @@
 
 - (void)speakCurrentElement
 {
+    if (speaks && [speaks count] == currentIndex) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
+        return;
+    }
+
     if (!elements) {
         return;
     }
     if (currentIndex < 0 || [elements count] <= currentIndex) {
         return;
     }
-    
     UIAccessibilityElement *element = elements[currentIndex];
-    
-    if (speaks && [speaks count] == currentIndex) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
-        return;
-    }
     
     NSString *text = element.accessibilityLabel;
     if (!text) {
@@ -184,7 +187,7 @@
 - (void)clear:(NSNotification*)note
 {
     @synchronized (self) {
-        speaks = nil;
+        speaks = @[];
         elements = @[];
     }
 }

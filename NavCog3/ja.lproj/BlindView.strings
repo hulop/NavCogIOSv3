@@ -409,3 +409,7 @@
 "turn to the right" = "右に向く";
 
 "Always_Background" = "常にバックグラウンドで動作";
+
+"HEADING_CALIBRATION" = "方角を調整するため、周りに注意して、5メートルほど歩いてください。";
+"HEADING_CALIBRATION2" = "方角をより正確にするにはもう少し歩きます。";
+"HEADING_CALIBRATION3" = "方角は調整されました。";

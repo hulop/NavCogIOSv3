@@ -964,6 +964,23 @@
     
 }
 
+- (void)requiresHeadingCalibration:(NSDictionary *)properties
+{
+    double acc = [properties[@"accuracy"] doubleValue];
+    NSString *string;
+    if (acc > 45) {
+        string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION", @"BlindView", @"");        
+    }
+    else if (acc > 22.5) {
+        string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION2", @"BlindView", @"");
+    }
+    else {
+        string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION3", @"BlindView", @"");
+    }
+    [self.delegate vibrate];
+    [self.delegate speak:string withOptions:properties completionHandler:^{}];
+}
+
 -(void)reroute:(NSDictionary *)properties
 {
     NSString *string = NSLocalizedStringFromTable(@"REROUTING", @"BlindView", @"");

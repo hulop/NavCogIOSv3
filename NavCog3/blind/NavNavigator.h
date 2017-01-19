@@ -117,6 +117,8 @@
 
 // current status
 - (void)currentStatus:(NSDictionary*)properties;
+- (void)requiresHeadingCalibration:(NSDictionary*)properties;
+- (void)playHeadingAdjusted:(int)level;
 
 - (void)reroute:(NSDictionary*)properties;
 

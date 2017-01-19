@@ -33,5 +33,6 @@
 - (BOOL) playAnnounceNotification;
 - (BOOL) playVoiceRecoStart;
 - (BOOL) playVoiceRecoEnd;
+- (BOOL) playHeadingAdjusted:(int)level;
 - (BOOL) vibrate:(NSDictionary*)param;
 @end

@@ -397,10 +397,10 @@
 "turn right" = "右に曲がる";
 
 /* head to the diagonally backward left direction */
-"turn to the backward left" = "斜め左後ろに向く";
+"turn to the backward left" = "左、ななめ、後ろに向く";
 
 /* head to the diagonally backward right direction */
-"turn to the backward right" = "斜め右後ろに向く";
+"turn to the backward right" = "右、ななめ、後ろに向く";
 
 /* head to the left direction */
 "turn to the left" = "左に向く";

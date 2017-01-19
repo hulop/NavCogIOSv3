@@ -1770,26 +1770,13 @@ static NavNavigatorConstants *_instance;
                                 linkInfo.bearingTargetThreshold = C.ADJUST_HEADING_MARGIN;
                                 linkInfo.hasBeenActivated = NO;
                                 
-                                if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
-                                    [self.delegate userNeedsToChangeHeading:
+                                if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
+                                    [self.delegate userNeedsToTakeAction:
                                      @{
-                                       @"diffHeading": @(linkInfo.diffBearingAtSnappedLocationOnLink),
+                                       @"turnAngle": @(linkInfo.diffBearingAtSnappedLocationOnLink),
                                        @"threshold": @(0)
                                        }];
                                 }
-                                
-                                /*
-                                 if ([self.delegate respondsToSelector:@selector(userNeedsToTakeAction:)]) {
-                                 [self.delegate userNeedsToTakeAction:
-                                 @{
-                                 @"turnAngle": @(linkInfo.diffBearingAtSnappedLocationOnLink),
-                                 @"diffHeading": @(linkInfo.diffBearingAtSnappedLocationOnLink),
-                                 @"nextLinkType": @(linkInfo.link.linkType),
-                                 @"nextSourceHeight": @(linkInfo.link.sourceHeight),
-                                 @"nextTargetHeight": @(linkInfo.link.targetHeight)
-                                 }];
-                                 }*/
-                                
                             }
                             
                         } else if (linkInfo.offRouteLinkInfo.distanceToUserLocationFromLink / MAX(1,linkInfo.distanceToUserLocationFromLink) > 3) {

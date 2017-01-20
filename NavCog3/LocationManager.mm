@@ -729,12 +729,13 @@ void functionCalledToLog(void *inUserData, string text)
     bool activatesDynamicStatusMonitoring = [ud boolForKey:@"activatesStatusMonitoring"];
     if(activatesDynamicStatusMonitoring){
         LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
-        params->minimumWeightStable(1.0e-5);
-        params->stdev2DEnterStable(10.0);
-        params->stdev2DExitStable(12.0);
-        params->stdev2DEnterLocating(10.0);
-        params->stdev2DExitLocating(12.0);
-        params->monitorIntervalMS(3000);
+        double minWeightStable = std::pow(10.0, [ud doubleForKey:@"exponentMinWeightStable"]);
+        params->minimumWeightStable(minWeightStable);
+        params->stdev2DEnterStable([ud doubleForKey:@"enterStable"]);
+        params->stdev2DExitStable([ud doubleForKey:@"exitStable"]);
+        params->stdev2DEnterLocating([ud doubleForKey:@"enterLocating"]);
+        params->stdev2DExitLocating([ud doubleForKey:@"exitLocating"]);
+        params->monitorIntervalMS([ud doubleForKey:@"statusMonitoringIntervalMS"]);
     }else{
         LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
         params->minimumWeightStable(0.0);

@@ -405,7 +405,15 @@ static HLPSetting *soundEffectSetting;
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Confidence of heading for initialization" Name:@"headingConfidenceInit" DefaultValue:@(0.0) Min:0.0 Max:1.0 Interval:0.05];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Orientation accuracy threshold for reliable orientation [degree]" Name:@"oriAccThreshold" DefaultValue:@(22.5) Min:0.0 Max:120 Interval:2.5];
     
+    // Parameters for status monitoring
+    [blelocppSettingHelper addSectionTitle:@"blelocpp params (location status monitoring)"];
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Activate location status monitoring" Name:@"activatesStatusMonitoring" DefaultValue:@(NO) Accept:nil];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Location status monitoring interval [ms]" Name:@"statusMonitoringIntervalMS" DefaultValue:@(3000) Min:0 Max:10000 Interval:1000] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter locating radius [m]" Name:@"enterLocating" DefaultValue:@(10) Min:0 Max:20 Interval:1] setVisible:NO];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit locating radius [m]" Name:@"exitLocating" DefaultValue:@(12) Min:0 Max:20 Interval:1] setVisible:NO];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter stable radius [m]" Name:@"enterStable" DefaultValue:@(10) Min:0 Max:20 Interval:1] setVisible:NO];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit stable radius [m]" Name:@"exitStable" DefaultValue:@(12) Min:0 Max:20 Interval:1] setVisible:NO];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exponent n of minimum weight stable (w=10^n)" Name:@"exponentMinWeightStable" DefaultValue:@(-5) Min:-9 Max:-1 Interval:1] setVisible:NO];
 
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (floor transition)"];
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use altimeter for floor trans support" Name:@"use_altimeter" DefaultValue:@(YES) Accept:nil];

@@ -210,8 +210,10 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
                             self.startPWCaptureSession()
                             self.startRecognize(actions, failure:failure)
                         })
-                    } else if code == 216 {
-                        // noop (terminated by manual)
+                    } else if code == 216 || code == 1700 {
+                        // noop 
+                        // 216 : terminated by manual
+                        // 1700: background
                         return;
                     } else if code == 4 {
                         self.endRecognize(); // network error

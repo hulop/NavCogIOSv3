@@ -54,7 +54,7 @@ static NavDeviceTTS *instance = nil;
                                              selector:@selector(routeChanged)
                                                  name:AVAudioSessionRouteChangeNotification
                                                object:nil];
-     */
+    */
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(voiceOverStatusChanged)
@@ -113,9 +113,8 @@ static NavDeviceTTS *instance = nil;
 - (void) stop:(BOOL) immediate
 {
     if (isSpeaking) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [voice stopSpeakingAtBoundary:immediate?AVSpeechBoundaryImmediate:AVSpeechBoundaryWord];
-        });
+        isSpeaking = NO;
+        [voice stopSpeakingAtBoundary:immediate?AVSpeechBoundaryImmediate:AVSpeechBoundaryWord];
     }
 }
 

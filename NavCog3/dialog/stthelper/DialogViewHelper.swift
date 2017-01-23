@@ -69,6 +69,16 @@ enum DialogViewState:String {
 class HelperView: UIView {
     var delegate: DialogViewDelegate?
     var bTabEnabled:Bool=false  // tap availability
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.accessibilityLabel = NSLocalizedString("DialogSearch", tableName:"BlindView", comment:"")
+        self.isAccessibilityElement = true
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }    
  
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         self.layer.opacity = 0.5

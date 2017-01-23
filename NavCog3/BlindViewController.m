@@ -57,6 +57,8 @@
     BOOL rerouteFlag;
     
     UIColor *defaultColor;
+    
+    DialogViewHelper *dialogHelper;
 }
 
 @end
@@ -94,6 +96,18 @@
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
     
+    dialogHelper = [[DialogViewHelper alloc] init];
+    double scale = 0.75;
+    double size = (113*scale)/2;
+    double x = size+8;
+    double y = self.view.bounds.size.height - (size+8);
+    dialogHelper.transparentBack = YES;
+    dialogHelper.layerScale = scale;
+    [dialogHelper inactive];
+    [dialogHelper setup:self.view position:CGPointMake(x, y)];
+    dialogHelper.delegate = self;
+    dialogHelper.helperView.hidden = YES;
+    
     self.searchButton.enabled = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];
@@ -101,10 +115,23 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debugPeerStateChanged:) name:DEBUG_PEER_STATE_CHANGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogStart:) name:REQUEST_DIALOG_START object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogEnd:) name:REQUEST_DIALOG_END object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+
     [self locationChanged:nil];
+    
 }
 
+- (void)tapped
+{
+    [dialogHelper inactive];
+    dialogHelper.helperView.hidden = YES;
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:nil];
+}
+
+- (void)dialogStateChanged:(NSNotification*)note
+{
+    [self updateView];
+}
 
 // show p2p debug
 - (void)handleSettingLongPressGesture:(UILongPressGestureRecognizer*)sender
@@ -183,6 +210,7 @@
         
         BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
         BOOL debugFollower = [[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"];
+        BOOL hasCenter = [[NavDataStore sharedDataStore] mapCenter] != nil;
         BOOL previewMode = [NavDataStore sharedDataStore].previewMode;
         BOOL exerciseMode = [NavDataStore sharedDataStore].exerciseMode;
         BOOL isActive = [navigator isActive];
@@ -231,6 +259,16 @@
             //self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.9 alpha:1.0];
             self.navigationController.navigationBar.barTintColor = defaultColor;
         }
+        
+        if ([[DialogManager sharedManager] isDialogAvailable] && !isActive && hasCenter) {
+            if (dialogHelper.helperView.hidden) {
+                dialogHelper.helperView.hidden = NO;
+                [dialogHelper recognize];
+            }
+        } else {
+            dialogHelper.helperView.hidden = YES;
+        }
+
     });
 
 }
@@ -240,7 +278,8 @@
     if ([[NavDataStore sharedDataStore] mapCenter]) {
         if (self.searchButton.enabled == NO) {
             self.searchButton.enabled = YES;
-            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.searchButton);
+            [self updateView];
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, dialogHelper.helperView);
         }
     }
 }

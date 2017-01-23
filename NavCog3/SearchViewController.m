@@ -314,6 +314,8 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     if ([segue.destinationViewController isKindOfClass:DestinationTableViewController.class]) {
+        [NavUtil hideModalWaiting];
+
         DestinationTableViewController *dView = (DestinationTableViewController*)segue.destinationViewController;
         lastIdentifier = dView.restorationIdentifier = segue.identifier;
         dView.root = self;

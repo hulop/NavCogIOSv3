@@ -99,6 +99,7 @@
     webView.delegate = self;
     webView.scrollView.bounces = NO;
     webView.suppressesIncrementalRendering = YES;
+    webView.scrollView.scrollEnabled = NO;
     
     [self loadUIPage];
     

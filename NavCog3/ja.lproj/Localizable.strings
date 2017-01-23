@@ -113,3 +113,7 @@
 "for_bone_conduction_headset" = "骨伝導ヘッドフォン用の効果音";
 
 "Error" = "エラー";
+
+"DialogStart" = "再開";
+
+"DialogStartHint" = "対話を再開するにはダブルタップします";

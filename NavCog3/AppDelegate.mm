@@ -64,9 +64,6 @@
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
-    // prevent automatic sleep
-    application.idleTimerDisabled = YES;
-    
     _backgroundID = UIBackgroundTaskInvalid;
     
     return YES;
@@ -118,6 +115,9 @@ void uncaughtExceptionHandler(NSException *exception)
     NSURL *url = [[NSBundle mainBundle] URLForResource:@"nosound" withExtension:@"aiff"];
     AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
     [player play];
+    
+    // prevent automatic sleep
+    application.idleTimerDisabled = YES;
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

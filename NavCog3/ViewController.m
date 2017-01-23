@@ -74,10 +74,12 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [self.webView addGestureRecognizer:recognizer];
     
     dialogHelper = [[DialogViewHelper alloc] init];
-    double x = 70;
-    double y = self.view.bounds.size.height - 70;
+    double scale = 0.75;
+    double size = (113*scale)/2;
+    double x = size+8;
+    double y = self.view.bounds.size.height - (size+8);
     dialogHelper.transparentBack = YES;
-    dialogHelper.layerScale = 0.75;
+    dialogHelper.layerScale = scale;
     [dialogHelper inactive];
     [dialogHelper setup:self.view position:CGPointMake(x, y)];
     dialogHelper.delegate = self;

@@ -114,10 +114,11 @@
   }
 
   if (window.$hulop && window.$hulop.mobile_ready) {
-    setTimeout(function() {
-      window.$hulop.mobile_ready(ios_mobile_bridge);
-               }, 100);
+    window.$hulop.mobile_ready(ios_mobile_bridge);
   }
-    return "SUCCESS";
+  document.body.style.webkitTouchCallout='none';
+  document.body.style.KhtmlUserSelect='none';
+  document.body.style.webkitUserSelect='none';
+  return "SUCCESS";
 })();
 

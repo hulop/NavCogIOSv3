@@ -398,7 +398,7 @@
     
     if ([ret isEqualToString:@"true"]) {
         [timer invalidate];
-        [self insertBridge];
+        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(insertBridge:) userInfo:nil repeats:YES];
         return;
     }
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
@@ -409,24 +409,17 @@
     }
 }
 
-- (void) insertBridge
+- (void) insertBridge:(NSTimer*)timer
 {
-    if (bridgeHasBeenInjected) {
-        return;
+    NSLog(@"insertBridge,%@", callback);
+    if (callback != nil) { // check if "callback" string is available
+        [timer invalidate];
     }
+
     NSString *path = [[NSBundle mainBundle] pathForResource:@"ios_bridge" ofType:@"js"];
     NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     
-    NSString *result = [webView stringByEvaluatingJavaScriptFromString:script];
-    NSLog(@"insertBridge %@", result);
-    if (![result isEqualToString:@"SUCCESS"]) {
-        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(insertBridge) userInfo:nil repeats:NO];
-        return;
-    }
-    
-    bridgeHasBeenInjected = YES;
-    
-    [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none'; document.body.style.KhtmlUserSelect='none';document.body.style.webkitUserSelect='none';"];
+    [webView stringByEvaluatingJavaScriptFromString:script];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView2

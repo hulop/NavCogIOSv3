@@ -163,6 +163,7 @@ void functionCalledToLog(void *inUserData, string text)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationRestart:) name:REQUEST_LOCATION_RESTART object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationHeadingReset:) name:REQUEST_LOCATION_HEADING_RESET object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationReset:) name:REQUEST_LOCATION_RESET object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationUnknown:) name:REQUEST_LOCATION_UNKNOWN object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplay:) name:REQUEST_LOG_REPLAY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplayStop:) name:REQUEST_LOG_REPLAY_STOP object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestBackgroundLocation:) name:REQUEST_BACKGROUND_LOCATION object:nil];
@@ -479,6 +480,13 @@ void functionCalledToLog(void *inUserData, string text)
         [NSThread sleepForTimeInterval:1.0];
         NSLog(@"Restart,%ld", (long)([[NSDate date] timeIntervalSince1970]*1000));
         [self start];
+    }];
+}
+
+- (void) requestLocationUnknown:(NSNotification*) note
+{
+    [processQueue addOperationWithBlock:^{
+        localizer->overwriteLocationStatus(Status::UNKNOWN);
     }];
 }
 

@@ -57,6 +57,7 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 #define REQUEST_LOCATION_HEADING_RESET @"request_location_heading_reset_notification"
 #define REQUEST_LOCATION_RESET @"request_location_reset_notification"
 #define REQUEST_LOCATION_RESTART @"request_location_restart"
+#define REQUEST_LOCATION_UNKNOWN @"REQUEST_LOCATION_UNKNOWN"
 #define REQUEST_LOCATION_SAVE @"request_location_save"
 #define REQUEST_LOG_REPLAY @"request_log_replay"
 #define REQUEST_LOG_REPLAY_STOP @"request_log_replay_stop"

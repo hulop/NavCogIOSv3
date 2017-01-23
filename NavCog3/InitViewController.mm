@@ -37,6 +37,9 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    if (UIAccessibilityIsVoiceOverRunning()) {
+        [self performSegueWithIdentifier:@"user_blind" sender:self];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

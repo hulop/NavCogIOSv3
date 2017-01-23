@@ -72,11 +72,12 @@ class DialogManager: NSObject {
     func locationChanged (note:NSNotification) {
         if let object = note.userInfo {
             if let current = object["current"] as? HLPLocation {
-                if (!isnan(current.lat)) {
+                if (!isnan(current.lat) && !isnan(current.lng)) {
                     self.latitude = current.lat
-                }
-                if (!isnan(current.lng)) {
                     self.longitude = current.lng
+                } else {
+                    self.latitude = Double.NaN
+                    self.longitude = Double.NaN
                 }
                 if (!isnan(current.floor)) {
                     self.floor = Int(round(current.floor))
@@ -96,16 +97,19 @@ class DialogManager: NSObject {
     
     func setLocationContext(context:NSMutableDictionary) {
         if let latitude = latitude {
+            if isnan(latitude) {
+                return
+            }
             context["latitude"] = latitude
-        }
-        if let longitude = longitude {
-            context["longitude"] = longitude
-        }
-        if let floor = floor {
-            context["floor"] = floor
-        }
-        if let building = building {
-            context["building"] = building
+            if let longitude = longitude {
+                context["longitude"] = longitude
+            }
+            if let floor = floor {
+                context["floor"] = floor
+            }
+            if let building = building {
+                context["building"] = building
+            }
         }
     }
 }

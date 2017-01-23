@@ -569,15 +569,18 @@
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         [helper evalScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
+
+        _cover.preventCurrentStatus = YES;
+        [NavUtil hideModalWaiting];
     });
     
-    [commander didNavigationStarted:properties];
-    [previewer didNavigationStarted:properties];
-    
-    double delayInSeconds = 0.5;
+    double delayInSeconds = 1.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [NavUtil hideModalWaiting];
+        _cover.preventCurrentStatus = NO;
+        [commander didNavigationStarted:properties];
+        [previewer didNavigationStarted:properties];
+
         NSArray *temp = [[NavDataStore sharedDataStore] route];
         //temp = [temp arrayByAddingObjectsFromArray:properties[@"oneHopLinks"]];
         if (temp) {

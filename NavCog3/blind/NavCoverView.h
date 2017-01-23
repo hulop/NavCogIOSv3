@@ -25,4 +25,5 @@
 
 @interface NavCoverView : UIView
 @property id<NavFutureSummarySource> fsSource;
+@property BOOL preventCurrentStatus;
 @end

@@ -40,6 +40,7 @@
 @end
 
 @interface NavCurrentStatusItem: NavAnnounceItem
+@property BOOL noSpeak;
 @end
 
 @implementation NavCurrentStatusItem {
@@ -48,7 +49,9 @@
 
 - (void)accessibilityElementDidBecomeFocused
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
+    if (!_noSpeak) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
+    }
 }
 
 - (NSString*)accessibilityLabel
@@ -70,8 +73,25 @@
     NSArray *elements;
     NSArray *speaks;
     UIAccessibilityElement *first;
+    NavCurrentStatusItem *currentStatusItem;
     long currentIndex;
+    BOOL preventCurrentStatus;
 }
+
+- (void) setPreventCurrentStatus:(BOOL)preventCurrentStatus_
+{
+    preventCurrentStatus = preventCurrentStatus_;
+    if (currentStatusItem) {
+        currentStatusItem.noSpeak = preventCurrentStatus;
+    }
+}
+
+- (BOOL) preventCurrentStatus
+{
+    return preventCurrentStatus;
+}
+
+
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
@@ -226,9 +246,9 @@
             [temp addObject:e];
         }
         
-        UIAccessibilityElement *e = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];
-        e.accessibilityFrame = self.frame;
-        [temp addObject:e];
+        currentStatusItem = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];
+        currentStatusItem.accessibilityFrame = self.frame;
+        [temp addObject:currentStatusItem];
 
         
         // future summary

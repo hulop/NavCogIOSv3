@@ -176,7 +176,8 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(manualLocation:) name:MANUAL_LOCATION object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveLocation:) name:REQUEST_LOCATION_SAVE object:nil];
+    // crash
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveLocation:) name:REQUEST_LOCATION_SAVE object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartDialog:) name:REQUEST_START_DIALOG object:nil];
     
@@ -490,7 +491,7 @@
     NSString *jsonstr = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:data options:0 error:nil]encoding:NSUTF8StringEncoding];
     
     NSString *script = [NSString stringWithFormat:@"%@.onData('%@',%@);", callback, name, jsonstr];
-    NSLog(@"%@", script);
+    //NSLog(@"%@", script);
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [webView stringByEvaluatingJavaScriptFromString:script];
@@ -554,14 +555,18 @@
     return [webView stringByEvaluatingJavaScriptFromString:script];
 }
 
+/* crash sometimes with EXC_BAD_ACCESS
 - (void)saveLocation:(NSNotificationCenter*)notification
 {
-    NSString *ret = [self evalScript:@"(function(){return JSON.stringify($hulop.map.getMap().getCenter().toJSON())})();"];
+    NSString *ret = [self evalScript:@"(function(){return JSON.stringify($hulop.map.getCenter())})();"];
     NSData *data = [ret dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    [[NSUserDefaults standardUserDefaults] setObject:dic forKey:@"lastLocation"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSArray *loc = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    if(loc) {
+        [[NSUserDefaults standardUserDefaults] setObject:loc forKey:@"lastLocation"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
+*/
 
 - (void)requestStartDialog:(NSNotificationCenter*)notification
 {

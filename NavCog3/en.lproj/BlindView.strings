@@ -375,3 +375,6 @@ Head to the correct orientation
 "HEADING_CALIBRATION" = "In order to adjust heading, please walk about 5 meters with attention";
 "HEADING_CALIBRATION2" = "If you want to improve heading, please walk more";
 "HEADING_CALIBRATION3" = "Heading is adjusted.";
+
+"NO_AVAILABLE_LOCATION" = "Location information is not available";
+

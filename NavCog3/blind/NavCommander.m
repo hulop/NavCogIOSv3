@@ -966,6 +966,13 @@
 
 - (void)requiresHeadingCalibration:(NSDictionary *)properties
 {
+    BOOL noLocation = [properties[@"noLocation"] boolValue];
+    if (noLocation) {
+        [self.delegate speak:NSLocalizedStringFromTable(@"NO_AVAILABLE_LOCATION",@"BlindView", @"") withOptions:properties completionHandler:^{}];
+
+        return;
+    }
+    
     double acc = [properties[@"accuracy"] doubleValue];
     NSString *string;
     if (acc > 45) {

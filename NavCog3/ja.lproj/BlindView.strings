@@ -413,3 +413,5 @@
 "HEADING_CALIBRATION" = "方角を調整するため、周りに注意して、5メートルほど歩いてください。";
 "HEADING_CALIBRATION2" = "方角をより正確にするにはもう少し歩きます。";
 "HEADING_CALIBRATION3" = "方角は調整されました。";
+
+"NO_AVAILABLE_LOCATION" = "位置情報が利用可能ではありません";

@@ -2392,6 +2392,7 @@ static NavNavigatorConstants *_instance;
         if ([self.delegate respondsToSelector:@selector(requiresHeadingCalibration:)]) {
             [self.delegate requiresHeadingCalibration:
              @{
+               @"noLocation": @(isnan(loc.lat) || isnan(loc.lng)),
                @"accuracy": @(loc.orientationAccuracy),
                @"nohistory": @(YES),
                @"force": @(YES)

@@ -951,7 +951,7 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
 {
-    NSLog(@"%@", locations);
+    //NSLog(@"%@", locations);
 }
 
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray<CLBeacon *> *)beacons inRegion:(CLBeaconRegion *)region

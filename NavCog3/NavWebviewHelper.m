@@ -399,7 +399,7 @@
     
     if ([ret isEqualToString:@"true"]) {
         [timer invalidate];
-        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(insertBridge:) userInfo:nil repeats:YES];
+        [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(insertBridge:) userInfo:nil repeats:YES];
         return;
     }
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];

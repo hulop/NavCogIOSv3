@@ -103,7 +103,7 @@
     double scale = 0.75;
     double size = (113*scale)/2;
     double x = size+8;
-    double y = self.view.bounds.size.height - (size+8);
+    double y = self.view.bounds.size.height - (size+8) - 63;
     dialogHelper.transparentBack = YES;
     dialogHelper.layerScale = scale;
     [dialogHelper inactive];

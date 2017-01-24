@@ -50,8 +50,8 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
         [waitingViewMap[address].subviews[1] setText:message];
         return;
     }
-    
-    UIView *overlay = [[UIView alloc]initWithFrame:view.frame];
+    CGRect frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
+    UIView *overlay = [[UIView alloc]initWithFrame:frame];
     
     CGFloat w = view.frame.size.width;
     CGFloat h = view.frame.size.height;
@@ -94,13 +94,10 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
 
 +(UIMessageView*)showMessageView:(UIView *)view
 {
-    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-    
     CGFloat w = view.frame.size.width;
-    CGFloat y = statusBarHeight + 44;
     CGFloat size = 60;
     
-    UIMessageView *overlay = [[UIMessageView alloc]initWithFrame:CGRectMake(0, y, w, size)];
+    UIMessageView *overlay = [[UIMessageView alloc]initWithFrame:CGRectMake(0, 0, w, size)];
     
     UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, w-size, size)];
     label.text = @"Log Replaying";

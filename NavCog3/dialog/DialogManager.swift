@@ -23,7 +23,7 @@
 import UIKit
 
 class DialogManager: NSObject {
-    var latitude:Double?, longitude:Double?, floor:Int?, building:String?
+    var latitude:Double?, longitude:Double?, floor:Int?, building:String?, isActive:Bool = false
     
     var available:Bool = false {
         didSet {            
@@ -40,9 +40,12 @@ class DialogManager: NSObject {
     
     override init() {
         super.init()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(serverConfigChanged(_:)), name: SERVER_CONFIG_CHANGED_NOTIFICATION, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(locationChanged(_:)), name: NAV_LOCATION_CHANGED_NOTIFICATION, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(buildingChanged(_:)), name: BUILDING_CHANGED_NOTIFICATION, object: nil)
+        let nc = NSNotificationCenter.defaultCenter()
+        nc.addObserver(self, selector: #selector(serverConfigChanged(_:)), name: SERVER_CONFIG_CHANGED_NOTIFICATION, object: nil)
+        nc.addObserver(self, selector: #selector(locationChanged(_:)), name: NAV_LOCATION_CHANGED_NOTIFICATION, object: nil)
+        nc.addObserver(self, selector: #selector(buildingChanged(_:)), name: BUILDING_CHANGED_NOTIFICATION, object: nil)
+        nc.addObserver(self, selector: #selector(RestartConversation(_:)), name:"RestartConversation", object: nil)
+        nc.addObserver(self, selector: #selector(ResetConversation(_:)), name:"ResetConversation", object: nil)
     }
     
     func isDialogAvailable()->Bool {
@@ -93,6 +96,13 @@ class DialogManager: NSObject {
                 self.building = building
             }
         }
+    }
+    
+    func RestartConversation (note:NSNotification) {
+        isActive = true
+    }
+    func ResetConversation (note:NSNotification) {
+        isActive = false
     }
     
     func setLocationContext(context:NSMutableDictionary) {

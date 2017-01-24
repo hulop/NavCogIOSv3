@@ -199,12 +199,9 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
                 if let code = error?.code {
                     if code == 203 {
                         self.endRecognize();
-                        var delay = 0.0
-                        //if UIAccessibilityIsVoiceOverRunning() {
-                            NavSound.sharedInstance().vibrate(nil)
-                            NavSound.sharedInstance().playVoiceRecoStart()
-                            delay = 0.25
-                        //}
+                        let delay = 0.4
+                        NavSound.sharedInstance().vibrate(nil)
+                        NavSound.sharedInstance().playVoiceRecoStart()
                         
                         self._setTimeout(delay, block: {
                             self.startPWCaptureSession()
@@ -316,12 +313,9 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
             }
             self.listeningStart = self.now()
 
-            var delay = 0.0
-            //if UIAccessibilityIsVoiceOverRunning() {
-                NavSound.sharedInstance().vibrate(nil)
-                NavSound.sharedInstance().playVoiceRecoStart()
-                delay = 0.25
-            //}
+            let delay = 0.4
+            NavSound.sharedInstance().vibrate(nil)
+            NavSound.sharedInstance().playVoiceRecoStart()
             
             self._setTimeout(delay, block: {
                 self.startPWCaptureSession()//alternative
@@ -373,12 +367,9 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
     func restartRecognize() {
         if let actions = self.last_actions {
             if let failure:(NSError)->Void = self.last_failure {
-                var delay = 0.0
-                //if UIAccessibilityIsVoiceOverRunning() {
-                    NavSound.sharedInstance().vibrate(nil)
-                    //NavSound.sharedInstance().playVoiceRecoStart()
-                    delay = 0.0
-                //}
+                let delay = 0.4
+                NavSound.sharedInstance().vibrate(nil)
+                NavSound.sharedInstance().playVoiceRecoStart()
                 
                 self._setTimeout(delay, block: {
                     self.startPWCaptureSession()

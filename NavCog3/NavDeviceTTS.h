@@ -51,6 +51,7 @@ typedef enum {
 @property NSTimeInterval speakStart;
 @property NSTimeInterval speakFinish;
 @property BOOL selfvoicing;
+@property BOOL quickAnswer;
 @end
 
 @interface NavDeviceTTS : NSObject <AVSpeechSynthesizerDelegate>{

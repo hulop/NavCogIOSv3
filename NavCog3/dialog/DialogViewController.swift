@@ -53,7 +53,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var conversation_id:String? = nil
     var client_id:Int? = nil
     var root: UIViewController? = nil
-    var tintColor: UIColor? = nil
+    let tintColor: UIColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
     
     private var _tts:TTSProtocol? = nil
     private var _stt:STTHelper? = nil
@@ -117,15 +117,15 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.conv_context = nil
         self.tableData = []
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(resetConversation), name: "ResetConversation", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(restartConversation), name: "RestartConversation", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(requestDialogEnd), name: REQUEST_DIALOG_END, object: nil)
+        let nc = NSNotificationCenter.defaultCenter()
+        nc.addObserver(self, selector: #selector(resetConversation), name: "ResetConversation", object: nil)
+        nc.addObserver(self, selector: #selector(restartConversation), name: "RestartConversation", object: nil)
+        nc.addObserver(self, selector: #selector(requestDialogEnd), name: REQUEST_DIALOG_END, object: nil)
+        nc.addObserver(self, selector: #selector(requestDialogAction), name: REQUEST_DIALOG_ACTION, object: nil)
         
     }
 
     override func viewWillAppear(animated: Bool) {
-        tintColor = self.navigationController!.navigationBar.tintColor;
-        //self.navigationController?.navigationBarHidden = true
         self.navigationController!.navigationBar.userInteractionEnabled = false;
         self.navigationController!.interactivePopGestureRecognizer!.enabled = false;
         self.navigationController!.navigationBar.tintColor = UIColor.lightGrayColor()        
@@ -135,6 +135,9 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     override func viewWillDisappear(animated: Bool) {
         NSNotificationCenter.defaultCenter().postNotificationName("ResetConversation", object: self)
+        self.navigationController!.navigationBar.userInteractionEnabled = true;
+        self.navigationController!.interactivePopGestureRecognizer!.enabled = true;
+        self.navigationController!.navigationBar.tintColor = self.tintColor;
     }
     private func validateSecurity(){
         AVCaptureDevice.requestAccessForMediaType(AVMediaTypeAudio, completionHandler: {(granted: Bool) in
@@ -145,8 +148,10 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.navigationController!.navigationBar.userInteractionEnabled = true
         self.navigationController!.interactivePopGestureRecognizer!.enabled = true
         self.navigationController!.navigationBar.tintColor = self.tintColor
-        
         self.navigationController?.popToRootViewControllerAnimated(true)
+    }
+    internal func requestDialogAction() {
+        self.tapped()
     }
     
     internal func resetConversation(){
@@ -286,12 +291,9 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
         stt.tts?.stop(false)
         stt.disconnect()
-        //stt.endRecognize()
         if !stt.paused {
-            //if UIAccessibilityIsVoiceOverRunning() {
-                NavSound.sharedInstance().vibrate(nil)
-                NavSound.sharedInstance().playVoiceRecoEnd()
-            //}
+            NavSound.sharedInstance().vibrate(nil)
+            NavSound.sharedInstance().playVoiceRecoEnd()
         }
         stt.paused = true
         stt.delegate?.showText(NSLocalizedString("PAUSING", comment:"Pausing"));
@@ -422,6 +424,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
             stt.paused = true
             stt.delegate?.showText(NSLocalizedString("PAUSING", comment:"Pausing"));
             stt.delegate?.inactive()
+            NavSound.sharedInstance().playVoiceRecoPause()
         } else if(stt.speaking) {
             print("stop tts")
             stt.tts?.stop() // do not use "true" flag beacus it causes no-speaking problem.
@@ -465,10 +468,11 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     internal func newresponse(orgres: MessageResponse?){
         dispatch_async(dispatch_get_main_queue(), { [weak self] in
             if let weakself = self {
-                //weakself.navigationController?.navigationBarHidden = false
-                weakself.navigationController!.navigationBar.userInteractionEnabled = true
-                weakself.navigationController!.interactivePopGestureRecognizer!.enabled = true
-                weakself.navigationController!.navigationBar.tintColor = weakself.tintColor
+                if let nc = weakself.navigationController {
+                    nc.navigationBar.userInteractionEnabled = true
+                    nc.interactivePopGestureRecognizer!.enabled = true
+                    nc.navigationBar.tintColor = weakself.tintColor
+                }
             }
         })
 
@@ -558,10 +562,9 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     internal func sendmessage(msg: String){
         if !msg.isEmpty{
             newmessage(msg)
-            //if UIAccessibilityIsVoiceOverRunning() {
-                NavSound.sharedInstance().vibrate(nil)
-                NavSound.sharedInstance().playVoiceRecoEnd()
-            //}
+
+            NavSound.sharedInstance().vibrate(nil)
+            NavSound.sharedInstance().playVoiceRecoEnd()
         }
 
         let conversation = ConversationEx()

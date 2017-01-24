@@ -32,7 +32,7 @@ protocol TTSProtocol {
 
 class DefaultTTS: TTSProtocol {
     func speak(text: String?, callback: (Void) -> Void) {
-        NavDeviceTTS.sharedTTS().selfspeak(text, completionHandler: callback)
+        NavDeviceTTS.sharedTTS().speak(text, withOptions:["selfspeak":true,"quickAnswer":false], completionHandler: callback)
     }
     func stop() {
         self.stop(false)

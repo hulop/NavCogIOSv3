@@ -173,8 +173,9 @@ static NavDeviceTTS *instance = nil;
     BOOL force = [options[@"force"] boolValue];
     BOOL selfspeak = [options[@"selfspeak"] boolValue];
     BOOL nohistory = [options[@"nohistory"] boolValue];
+    BOOL quickAnswer = [options[@"quickAnswer"] boolValue];
     
-    return [self _speak:text force:force selfvoicing:selfspeak nohistory:nohistory completionHandler:handler];
+    return [self _speak:text force:force selfvoicing:selfspeak nohistory:nohistory quickAnswer:quickAnswer completionHandler:handler];
 }
 
 - (AVSpeechUtterance *)selfspeak:(NSString *)text completionHandler:(void (^)())handler
@@ -184,7 +185,7 @@ static NavDeviceTTS *instance = nil;
 
 - (AVSpeechUtterance *)selfspeak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)())handler
 {
-    return [self _speak:text force:flag selfvoicing:YES nohistory:YES completionHandler:handler];
+    return [self _speak:text force:flag selfvoicing:YES nohistory:YES quickAnswer:NO completionHandler:handler];
 }
 
 - (AVSpeechUtterance*) speak: (NSString*) text completionHandler:(void (^)())handler
@@ -194,10 +195,15 @@ static NavDeviceTTS *instance = nil;
 
 - (AVSpeechUtterance*) speak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)())handler
 {
-    return [self _speak:text force:flag selfvoicing:NO nohistory:NO completionHandler:handler];
+    return [self _speak:text force:flag selfvoicing:NO nohistory:NO quickAnswer:NO completionHandler:handler];
 }
 
-- (AVSpeechUtterance*) _speak:(NSString*)text force:(BOOL)flag selfvoicing:(BOOL)selfvoicing nohistory:(BOOL)nohistory completionHandler:(void (^)())handler
+- (AVSpeechUtterance*) _speak:(NSString*)text
+                        force:(BOOL)flag
+                  selfvoicing:(BOOL)selfvoicing
+                    nohistory:(BOOL)nohistory
+                  quickAnswer:(BOOL)quickAnswer
+            completionHandler:(void (^)())handler
 {
     if (text == nil) {
         handler();
@@ -214,7 +220,7 @@ static NavDeviceTTS *instance = nil;
             keep++;
         } else {
             if (keep >= 3) {
-                [self _speak:[text substringWithRange:NSMakeRange(start, i-keep)] force:flag && isFirst selfvoicing:selfvoicing nohistory:nohistory completionHandler:nil];
+                [self _speak:[text substringWithRange:NSMakeRange(start, i-keep)] force:flag && isFirst selfvoicing:selfvoicing nohistory:nohistory quickAnswer:quickAnswer completionHandler:nil];
                 [self pause:0.1*keep];
                 text = [text substringFromIndex:i];
                 flag = NO;
@@ -242,6 +248,7 @@ static NavDeviceTTS *instance = nil;
     se.ut.voice = [NavDeviceTTS getVoice];
     se.selfvoicing = selfvoicing;
     se.issued = [[NSDate date] timeIntervalSince1970];
+    se.quickAnswer = quickAnswer;
     
     se.completionHandler = handler;
     
@@ -342,7 +349,23 @@ static NavDeviceTTS *instance = nil;
 
 -(void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance
 {
-    
+    HLPSpeechEntry *se = [processing objectForKey:utterance.speechString];
+    if (se && se.quickAnswer) {
+        long len = [se.ut.speechString length];
+        if (len - characterRange.location < 8) {
+            isSpeaking = NO;
+            isProcessing = NO;
+            expire = NAN;
+            
+            se.speakFinish = [[NSDate date] timeIntervalSince1970];
+            NSLog(@"speak_finish,%.2f,%.2f", se.speakStart - se.issued, se.speakFinish - se.speakStart);
+            [processing removeObjectForKey:utterance.speechString];
+            
+            if (se && se.completionHandler) {
+                se.completionHandler();
+            }
+        }
+    }
 }
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
@@ -352,12 +375,14 @@ static NavDeviceTTS *instance = nil;
     expire = NAN;
     
     HLPSpeechEntry *se = [processing objectForKey:utterance.speechString];
-    se.speakFinish = [[NSDate date] timeIntervalSince1970];
-    NSLog(@"speak_finish,%.2f,%.2f", se.speakStart - se.issued, se.speakFinish - se.speakStart);
-    [processing removeObjectForKey:utterance.speechString];
-    
-    if (se && se.completionHandler) {
-        se.completionHandler();
+    if (se) {
+        se.speakFinish = [[NSDate date] timeIntervalSince1970];
+        NSLog(@"speak_finish,%.2f,%.2f", se.speakStart - se.issued, se.speakFinish - se.speakStart);
+        [processing removeObjectForKey:utterance.speechString];
+        
+        if (se.completionHandler) {
+            se.completionHandler();
+        }
     }
 }
 

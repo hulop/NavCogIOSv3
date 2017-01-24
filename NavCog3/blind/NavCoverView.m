@@ -23,6 +23,7 @@
 #import "NavCoverView.h"
 #import "LocationEvent.h"
 #import "NavDeviceTTS.h"
+#import "NavCog3-swift.h"
 
 @interface NavAnnounceItem: UIAccessibilityElement
 @end
@@ -179,22 +180,25 @@
     UIEvent *event = [note userInfo][@"event"];
     NSLog(@"remote,%ld",event.subtype);
     
+    BOOL isDialogActive = [DialogManager sharedManager].isActive;
+    
     switch (event.subtype) {
         case UIEventSubtypeRemoteControlTogglePlayPause: // 103
-            [self resetCurrentIndex];
+            if (isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_ACTION object:self];
+            if (!isDialogActive) [self resetCurrentIndex];
             break;
         case UIEventSubtypeRemoteControlNextTrack: // 104
-            [self incrementCurrentIndex];
+            if (!isDialogActive) [self incrementCurrentIndex];
             break;
         case UIEventSubtypeRemoteControlPreviousTrack: // 105
-            [self decrementCurrentIndex];
+            if (!isDialogActive) [self decrementCurrentIndex];
             break;
         case UIEventSubtypeRemoteControlBeginSeekingBackward: // 106
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_END object:self];
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_HANDLE_LOCATION_UNKNOWN object:self];
+            if (isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_END object:self];
+            if (!isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_HANDLE_LOCATION_UNKNOWN object:self];
             return;
         case UIEventSubtypeRemoteControlBeginSeekingForward: // 108
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:self];
+            if (!isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:self];
             return;
         case UIEventSubtypeRemoteControlEndSeekingBackward: // 107
         case UIEventSubtypeRemoteControlEndSeekingForward: // 109
@@ -202,7 +206,7 @@
         default:
             return;
     }
-    [self speakCurrentElement];
+    if (!isDialogActive) [self speakCurrentElement];
 }
 
 - (void)clear:(NSNotification*)note

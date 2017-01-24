@@ -113,6 +113,14 @@
     return self;
 }
 
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    currentStatusItem = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];    
+    currentStatusItem.accessibilityFrame = self.window.frame;
+    elements = @[currentStatusItem];
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -251,8 +259,6 @@
             [temp addObject:e];
         }
         
-        currentStatusItem = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];
-        currentStatusItem.accessibilityFrame = self.frame;
         [temp addObject:currentStatusItem];
 
         

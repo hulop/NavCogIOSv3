@@ -239,7 +239,8 @@
         self.devRestart.hidden = !devMode || previewMode;
         
         self.devAuto.selected = previewer.autoProceed;
-        self.cover.hidden = devMode || !isActive;
+        //self.cover.hidden = devMode || !isActive;
+        self.cover.hidden = devMode;
         
         self.navigationItem.leftBarButtonItem = nil;
         if ((isActive && !devMode) || previewMode || initFlag) {

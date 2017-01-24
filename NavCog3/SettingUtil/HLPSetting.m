@@ -78,7 +78,7 @@
     return self;
 }
 
-- (void) userDefaultsDidChange:(NSNotification*)notification
+- (void) userDefaultsDidChange:(NSNotification*)note
 {
     if (!_name || _changing) {
         return;

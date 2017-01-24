@@ -60,7 +60,7 @@
             break;
         case NavDestinationTypeLocation:
             if (_location == nil) {
-                loc = [[NavDataStore sharedDataStore] currentLocation];
+                loc = [[NavDataStore sharedDataStore] mapCenter];
             } else {
                 loc = _location;
             }
@@ -137,6 +137,12 @@
     return ret;
 }
 
++ (instancetype)dialogSearch
+{
+    NavDestination *ret = [[NavDestination alloc] init];
+    ret->_type = NavDestinationTypeDialogSearch;
+    return ret;
+}
 
 - (NSString*)_id
 {
@@ -156,7 +162,7 @@
             return temp;
         case NavDestinationTypeLocation:
             if (_location == nil) {
-                loc = [[NavDataStore sharedDataStore] currentLocation];
+                loc = [[NavDataStore sharedDataStore] mapCenter];
             } else {
                 loc = _location;
             }
@@ -166,6 +172,17 @@
         default:
             return nil;
     }
+}
+
+
+- (NSString*)singleId
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    if (_type == NavDestinationTypeLandmarks) {
+        NavDestination *dest = [nds closestDestinationInLandmarks:_landmarks];
+        return dest._id;
+    }
+    return self._id;
 }
 
 - (NSString*)name
@@ -179,7 +196,7 @@
             return [_landmark getLandmarkName];
         case NavDestinationTypeLocation:
             if (_location == nil) {
-                loc = [[NavDataStore sharedDataStore] currentLocation];
+                loc = [[NavDataStore sharedDataStore] mapCenter];
                 floor = (int)round(loc.floor);
                 floor = (floor >= 0)?floor+1:floor;
                 return [NSString stringWithFormat:@"%@(%f,%f,%@%dF)",
@@ -197,6 +214,8 @@
             return NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
         case NavDestinationTypeFilter:
             return _label;
+        case NavDestinationTypeDialogSearch:
+            return NSLocalizedStringFromTable(@"DialogSearch", @"BlindView", @"");
     }
     return nil;
 }
@@ -226,6 +245,10 @@
     BOOL isManualLocation;
     HLPLocation *manualCurrentLocation;
     HLPLocation *currentLocation;
+    HLPLocation *savedLocation;
+    HLPLocation *savedCenterLocation;
+    BOOL savedIsManualLocation;
+    
     double magneticOrientation;
     double magneticOrientationAccuracy;
     BOOL _previewMode;
@@ -245,7 +268,7 @@
     NSArray* featuresCache;
     
     NSDictionary *destinationHash;
-    
+    NSDictionary *serverConfig;
 }
 
 static NavDataStore* instance_ = nil;
@@ -275,6 +298,8 @@ static NavDataStore* instance_ = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processShowRouteLog:) name:REQUEST_PROCESS_SHOW_ROUTE_LOG object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processInitTargetLog:) name:REQUEST_PROCESS_INIT_TARGET_LOG object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(buildingChanged:) name:BUILDING_CHANGED_NOTIFICATION object:nil];
+
     return self;
 }
 
@@ -299,7 +324,8 @@ static NavDataStore* instance_ = nil;
     [location updateOrientation:0 withAccuracy:999];
     currentLocation = [[HLPLocation alloc] init];
     [currentLocation updateOrientation:0 withAccuracy:999];
-    
+
+    /*
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 
     if ([ud dictionaryForKey:@"lastLocation"]) {
@@ -312,16 +338,20 @@ static NavDataStore* instance_ = nil;
 
         [currentLocation updateLat:lat Lng:lng Accuracy:0 Floor:0];
     }
+     */
 }
 
 
-- (void) locationChanged: (NSNotification*) notification
+- (void) locationChanged: (NSNotification*) note
 {
     if (_previewMode) {
         return;
     }
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"]) {
+        return;
+    }
     
-    NSDictionary *obj = [notification object];
+    NSDictionary *obj = [note userInfo];
     
     currentLocation = [[HLPLocation alloc] initWithLat:[obj[@"lat"] doubleValue]
                                                    Lng:[obj[@"lng"] doubleValue]
@@ -330,7 +360,7 @@ static NavDataStore* instance_ = nil;
                                                  Speed:[obj[@"speed"] doubleValue]
                                            Orientation:[obj[@"orientation"] doubleValue]
                                    OrientationAccuracy:[obj[@"orientationAccuracy"] doubleValue]];
-    
+        
     if (obj[@"debug_info"] || obj[@"debug_latlng"]) {
         [currentLocation updateParams:obj];
     }
@@ -350,20 +380,28 @@ static NavDataStore* instance_ = nil;
     }
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NAV_LOCATION_CHANGED_NOTIFICATION
-     object:
+     object: self
+     userInfo:
      @{
        @"current":loc?loc:[NSNull null],
        @"isManual":@(isManualLocation),
-       @"actual":(isnan(currentLocation.lat)||isnan(currentLocation.lng))?[NSNull null]:currentLocation
+       
+       // Removed nan check to publish unknown lat and lng
+       //@"actual":(isnan(currentLocation.lat)||isnan(currentLocation.lng))?[NSNull null]:currentLocation
+       @"actual":currentLocation
        }];
 }
 
-- (void) orientationChanged: (NSNotification*) notification
+- (void) orientationChanged: (NSNotification*) note
 {
     if (_previewMode) {
         return;
     }
-    NSDictionary *obj = [notification object];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"]) {
+        return;
+    }
+
+    NSDictionary *obj = [note userInfo];
     
     magneticOrientation = [obj[@"orientation"] doubleValue];
     magneticOrientationAccuracy = [obj[@"orientationAccuracy"] doubleValue];
@@ -371,38 +409,44 @@ static NavDataStore* instance_ = nil;
     [self postLocationNotification];
 }
 
-- (void) manualLocationChanged: (NSNotification*) notification
+- (void) manualLocationChanged: (NSNotification*) note
 {
-    NSDictionary *obj = [notification object];
+    NSDictionary *obj = [note userInfo];
     double floor = [obj[@"floor"] doubleValue];
     if (floor >= 1) {
         floor -= 1;
     }
-    if ([[notification object][@"sync"] boolValue]) {
+    BOOL firstMapCenter = (_mapCenter == nil);
+    _mapCenter = [[HLPLocation alloc] initWithLat:[obj[@"lat"] doubleValue]
+                                             Lng:[obj[@"lng"] doubleValue]
+                                        Accuracy:1
+                                           Floor:floor
+                                           Speed:1.0
+                                     Orientation:0
+                             OrientationAccuracy:999];
+    if ([[note userInfo][@"sync"] boolValue]) {
+        if (firstMapCenter) {
+            [self postLocationNotification];
+        }
         isManualLocation = NO;
         manualCurrentLocation = nil;
     } else {
         if (_previewMode) {
             return;
         }
-       isManualLocation = YES;
-        manualCurrentLocation = [[HLPLocation alloc] initWithLat:[obj[@"lat"] doubleValue]
-                                                             Lng:[obj[@"lng"] doubleValue]
-                                                        Accuracy:1
-                                                           Floor:floor
-                                                           Speed:0
-                                                     Orientation:0
-                                             OrientationAccuracy:999];
-
+        isManualLocation = YES;
+        manualCurrentLocation = _mapCenter;
         [self postLocationNotification];
     }
 }
 
 - (HLPLocation*) currentLocation
 {
-    if (isnan(currentLocation.lat) && isnan(manualCurrentLocation.lat)) {
-        return nil;
-    }
+    
+    // Removed nan check
+    //if (isnan(currentLocation.lat) && isnan(manualCurrentLocation.lat)) {
+    //    return nil;
+    //}
     
     [location update:currentLocation];
     
@@ -411,6 +455,7 @@ static NavDataStore* instance_ = nil;
                         Lng:manualCurrentLocation.lng
                    Accuracy:manualCurrentLocation.accuracy
                       Floor:manualCurrentLocation.floor];
+        [location updateSpeed:manualCurrentLocation.speed];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
             [location updateOrientation:manualOrientation
                            withAccuracy:0];
@@ -420,17 +465,20 @@ static NavDataStore* instance_ = nil;
                                withAccuracy:magneticOrientationAccuracy];
             }
         }
-    } else {
-        if (magneticOrientationAccuracy < location.orientationAccuracy) {
-            [location updateOrientation:magneticOrientation
-                           withAccuracy:magneticOrientationAccuracy];
-        }
     }
     
-    if (isnan(location.lat) || isnan(location.lng)) {
-        return nil;
-    }
+    // Removed orientation check
+    //else {
+    //    if (magneticOrientationAccuracy < location.orientationAccuracy) {
+    //        [location updateOrientation:magneticOrientation
+    //                       withAccuracy:magneticOrientationAccuracy];
+    //    }
+    //}
     
+    // Removed nan check
+    //if (isnan(location.lat) || isnan(location.lng)) {
+    //    return nil;
+    //}
     
     HLPLocation *newLoc = [[HLPLocation alloc] init];
     [newLoc update:location];
@@ -449,9 +497,9 @@ static NavDataStore* instance_ = nil;
     return featuresCache;
 }
 
-- (void)processInitTargetLog:(NSNotification*)notification
+- (void)processInitTargetLog:(NSNotification*)note
 {
-    NSString *logstr = [notification object];
+    NSString *logstr = [note userInfo][@"text"];
     NSRange r1 = [logstr rangeOfString:@","];
     NSString *s1 = [logstr substringFromIndex:r1.location+r1.length];
     NSRange r2 = [s1 rangeOfString:@","];
@@ -465,9 +513,9 @@ static NavDataStore* instance_ = nil;
     [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:lang];
 }
 
-- (void)processShowRouteLog:(NSNotification*)notification
+- (void)processShowRouteLog:(NSNotification*)note
 {
-    NSString *logstr = [notification object];
+    NSString *logstr = [note userInfo][@"text"];
     NSRange r1 = [logstr rangeOfString:@","];
     NSString *s1 = [logstr substringFromIndex:r1.location+r1.length];
     NSRange r2 = [s1 rangeOfString:@","];
@@ -479,23 +527,26 @@ static NavDataStore* instance_ = nil;
     NSString *user = param[@"user"];
     NSString *lang = param[@"user_lang"];
     NSDictionary *prefs = param[@"prefs"];
-    [self requestRouteFrom:fromID To:toID forUser:user withLang:lang withPreferences:prefs complete:nil];
+    [self requestRouteFrom:fromID To:toID forUser:user withLang:lang useCache:NO withPreferences:prefs complete:nil];
 }
 
 
-- (void)reloadDestinations
+- (BOOL)reloadDestinations:(BOOL)force;
 {
     if (destinationRequesting) {
-        return;
+        return NO;
+    }
+    if (force) {
+        destinationCacheLocation = nil;
     }
     destinationRequesting = YES;
-    double lat = [self currentLocation].lat;
-    double lng = [self currentLocation].lng;
+    double lat = [self mapCenter].lat;
+    double lng = [self mapCenter].lng;
     
     NSString *user = [self userID];
     NSString *user_lang = [self userLanguage];
     
-    [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang];
+    return [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang];
 }
 
 - (NSString*)normalizePron:(NSString*)str
@@ -505,23 +556,33 @@ static NavDataStore* instance_ = nil;
     return retStr;
 }
 
-- (void)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
+- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
 {
     int dist = 500;
     
     HLPLocation *requestLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
     if (destinationCacheLocation && [destinationCacheLocation distanceTo:requestLocation] < dist/2) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:destinationCache];
+            [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
         });
         destinationRequesting = NO;
-        return;
+        return NO;
     }
     
     NSDictionary *param = @{@"lat":@(lat), @"lng":@(lng), @"user":user, @"user_lang":user_lang};
     [Logging logType:@"initTarget" withParam:param];
     
     [HLPDataUtil loadLandmarksAtLat:lat Lng:lng inDist:dist forUser:user withLang:user_lang withCallback:^(NSArray<HLPObject *> *result) {
+        if (result == nil) {
+            destinationRequesting = NO;
+            destinationCache = nil;
+            destinationCacheLocation = nil;
+            destinationHash = nil;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
+            });
+            return;
+        }
         //NSLog(@"%ld landmarks are loaded", (unsigned long)[result count]);
         destinationCache = [result sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
             return [[self normalizePron:[obj1 getLandmarkNamePron]] compare:[self normalizePron:[obj2 getLandmarkNamePron]]];
@@ -535,11 +596,12 @@ static NavDataStore* instance_ = nil;
         destinationHash = temp;
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:destinationCache];
+            [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
         });
 
         destinationRequesting = NO;
     }];
+    return YES;
 }
 
 - (void) saveHistory
@@ -574,7 +636,7 @@ static NavDataStore* instance_ = nil;
     [temp insertObject:newHist
                atIndex:0];
     
-    while([temp count] > 100) {
+    while([temp count] > 5) {
         [temp removeLastObject];
     }
     [NSKeyedArchiver archiveRootObject:temp toFile:path];
@@ -583,19 +645,31 @@ static NavDataStore* instance_ = nil;
 - (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
 {
     [self saveHistory];
-    [self requestRouteFrom:fromID To:toID forUser:self.userID withLang:self.userLanguage withPreferences:prefs complete:complete];
+    [self requestRouteFrom:fromID To:toID forUser:self.userID withLang:self.userLanguage useCache:NO withPreferences:prefs complete:complete];
 }
 
-- (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID forUser:(NSString*)user withLang:(NSString*)lang withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
+- (void)requestRerouteFrom:(NSString *)fromID To:(NSString *)toID withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
+{
+    [self requestRouteFrom:fromID To:toID forUser:self.userID withLang:self.userLanguage useCache:YES withPreferences:prefs complete:complete];
+}
+
+- (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID forUser:(NSString*)user withLang:(NSString*)lang useCache:(BOOL)useCache withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
 {
     NSDictionary *param = @{@"fromID":fromID, @"toID":toID, @"user":user, @"user_lang":lang, @"prefs":prefs};
     [Logging logType:@"showRoute" withParam:param];
 
     [HLPDataUtil loadRouteFromNode:fromID toNode:toID forUser:user withLang:lang withPrefs:prefs withCallback:^(NSArray<HLPObject *> *result) {
         routeCache = result;
-        [HLPDataUtil loadNodeMapForUser:user WithCallback:^(NSArray<HLPObject *> *result) {
+        if (useCache && featuresCache) {
+            if (complete) {
+                complete();
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":routeCache?routeCache:@[]}];
+            return;
+        }
+        [HLPDataUtil loadNodeMapForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {
             featuresCache = result;
-            [HLPDataUtil loadFeaturesForUser:user WithCallback:^(NSArray<HLPObject *> *result) {
+            [HLPDataUtil loadFeaturesForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {
                 featuresCache = [featuresCache arrayByAddingObjectsFromArray: result];
                 
                 for(HLPObject* f in featuresCache) {
@@ -606,17 +680,44 @@ static NavDataStore* instance_ = nil;
                     complete();
                 }
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:routeCache];
+                [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":routeCache?routeCache:@[]}];
             }];
         }];
     }];
     
 }
 
+#define CONFIG_JSON @"%@://%@/%@config/dialog_config.json"
+
+- (void)requestServerConfigWithComplete:(void(^)())complete
+{
+    NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
+    NSString *context = [[NSUserDefaults standardUserDefaults] stringForKey:@"hokoukukan_server_context"];
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:CONFIG_JSON, https, server, context]];
+
+    [HLPDataUtil getJSON:url withCallback:^(NSObject* json){
+        if (json && [json isKindOfClass:NSDictionary.class]) {
+            serverConfig = (NSDictionary*)json;
+        }
+        complete();
+    }];
+}
+
+- (NSDictionary*)serverConfig
+{
+    return serverConfig;
+}
+
+- (BOOL) isManualLocation
+{
+    return isManualLocation;
+}
+
 - (void)clearRoute
 {
     routeCache = nil;
-    [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CLEARED_NOTIFICATION object:routeCache];
+    [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CLEARED_NOTIFICATION object:self];
 }
 
 - (NSArray*)destinations
@@ -653,6 +754,38 @@ static NavDataStore* instance_ = nil;
 {
     return [[NavDestination alloc] initWithLandmark: [destinationHash objectForKey:key]];
 }
+
+- (NavDestination *)destinationByIDs:(NSArray *)keys
+{
+    NavDestination *dest = nil;
+    for(NSString *key in keys) {
+        HLPLandmark *l = [destinationHash objectForKey:key];
+        if (dest == nil) {
+            dest = [[NavDestination alloc] initWithLandmark:l];
+        } else {
+            [dest addLandmark:l];
+        }
+    }
+    return dest;
+}
+
+- (NavDestination *)closestDestinationInLandmarks:(NSArray *)landmarks
+{
+    HLPLocation *loc = [self currentLocation];
+    double min = DBL_MAX;
+    HLPLandmark *minl = nil;
+    for(HLPLandmark *l in landmarks) {
+        if (l) {
+            double d = [[l nodeLocation] distanceTo:loc];
+            if (d < min) {
+                min = d;
+                minl = l;
+            }
+        }
+    }
+    return [[NavDestination alloc] initWithLandmark: minl];
+}
+
 
 - (void)manualTurn:(double)diffOrientation
 {
@@ -702,6 +835,19 @@ static NavDataStore* instance_ = nil;
     [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
 }
 
+- (BOOL)isKnownDestination:(NavDestination *)dest
+{
+    switch(dest.type) {
+        case NavDestinationTypeLocation:
+            return YES;
+        case NavDestinationTypeLandmark:
+        case NavDestinationTypeLandmarks:
+            return [destinationHash objectForKey:dest.landmark.nodeID] != nil;
+        default:
+            return NO;
+    }
+}
+
 + (NavDestination*) destinationForCurrentLocation;
 {
     return [[NavDestination alloc] initWithLocation:nil];
@@ -709,16 +855,98 @@ static NavDataStore* instance_ = nil;
 
 - (void)setPreviewMode:(BOOL)previewMode
 {
-    _previewMode = previewMode;
-    if (_previewMode) {
-    } else {
-        [currentLocation updateOrientation:currentLocation.orientation withAccuracy:999];
+    if (_previewMode != previewMode) {
+        if (previewMode) {
+            if (!savedLocation) {
+                savedLocation = [[HLPLocation alloc] init];
+                [savedLocation update:currentLocation];
+                savedCenterLocation = [[HLPLocation alloc] init];
+                [savedCenterLocation update:_mapCenter];
+                savedIsManualLocation = isManualLocation;
+            }
+        } else {
+            if (savedCenterLocation) {
+                [_mapCenter update:savedCenterLocation];
+                [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION
+                                                                    object:self
+                                                                  userInfo:@{@"location":_mapCenter,
+                                                                             @"sync":@(!savedIsManualLocation)}];
+            }
+            [currentLocation update:savedLocation];
+            savedLocation = nil;
+            [self postLocationNotification];
+        }
     }
+    _previewMode = previewMode;
 }
 
 - (BOOL)previewMode
 {
     return _previewMode;
+}
+
+- (void)buildingChanged:(NSNotification*)note
+{
+    NSDictionary *dict = [note userInfo];
+    _buildingInfo = dict;
+}
+
+- (void) startExercise
+{
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"exercise-data" ofType:@"json"];
+    
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    if (!data) {
+        return;
+    }
+    NSError *error;
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    if (error) {
+        NSLog(@"%@", error);
+        return;
+    }
+    if (!json) {
+        NSLog(@"not valid exercise data");
+        return;
+    }
+    if (json[@"landmark"] && json[@"route"] && json[@"features"]) {
+        HLPLandmark *landmark = [MTLJSONAdapter modelOfClass:HLPLandmark.class fromJSONDictionary:json[@"landmark"] error:&error];
+        
+        NSMutableArray *route = [@[] mutableCopy];
+        for(NSDictionary* dic in json[@"route"]) {
+            NSError *error;
+            HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
+            if (error) {
+                NSLog(@"%@", error);
+                NSLog(@"%@", dic);
+            } else {
+                [route addObject:obj];
+            }
+        }
+        routeCache = route;
+        
+        NSMutableArray *features = [@[] mutableCopy];
+        for(NSDictionary* dic in json[@"features"]) {
+            NSError *error;
+            HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
+            if (error) {
+                NSLog(@"%@", error);
+                NSLog(@"%@", dic);
+            } else {
+                [features addObject:obj];
+            }
+        }
+        featuresCache = features;
+        
+        for(HLPObject* f in featuresCache) {
+            [f updateWithLang:userLanguage];
+        }
+        
+        self.to = [[NavDestination alloc] initWithLandmark:landmark];
+        self.previewMode = YES;
+        self.exerciseMode = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":route}];
+    }
 }
 
 @end

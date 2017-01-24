@@ -31,6 +31,7 @@
 
 @interface LocationManager : NSObject < CLLocationManagerDelegate >
 
+@property BOOL isReadyToStart;
 @property BOOL isActive;
 @property NavLocationStatus currentStatus;
 

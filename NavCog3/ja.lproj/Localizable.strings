@@ -1,5 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2016  IBM Corporation, Carnegie Mellon University and others
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *******************************************************************************/
+
 /* label for distance unit option */
 "Distance unit" = "距離の単位";
+
+/* label for exercise options */
+"Exercise" = "練習";
 
 /* Toilet for people with disability */
 "FOR_DISABLED" = "多目的トイレ";
@@ -17,6 +42,9 @@
 "Initial zoom level for navigation" = "ナビゲーション開始時のズーム";
 
 /* No comment provided by engineer. */
+"Launch Exercise" = "練習を始める";
+
+/* No comment provided by engineer. */
 "Loading, please wait" = "読み込んでいます、少々お待ちください";
 
 /* label for map */
@@ -28,19 +56,31 @@
 /* No comment provided by engineer. */
 "Navigation" = "案内の履歴";
 
+/* Pausing */
+"PAUSING" = "<一時停止中>";
+
+/* No comment provided by engineer. */
+"Prefer Tactile Paving" = "点字ブロックを優先する";
+
 /* No comment provided by engineer. */
 "Preview speed" = "プレビュー速度";
 
 /* No comment provided by engineer. */
 "Preview with action" = "振ってプレビュー";
 
-/* label for tts options */
-"Speech" = "読み上げ";
+/* Speak Now! */
+"SPEAK_NOW" = "<話しかけてください>";
+
+/* No comment provided by engineer. */
+"SPEECH_SPEED_CHECK" = "読み上げ速度:%.2f";
 
 /* label for speech speed option */
 "Speech speed" = "読み上げ速度";
 
-/* Toilet */
+/* label for tts options */
+"Speech_Sound" = "読み上げ / 音";
+
+/* (No Commment) */
 "TOILET" = "トイレ";
 
 /* No comment provided by engineer. */
@@ -64,3 +104,16 @@
 /* (No Commment) */
 "checkNetworkConnection" = "ネットワークの接続を確認してください";
 
+/* No comment provided by engineer. */
+"soundEffectSetting" = "効果音で通知";
+
+/* No comment provided by engineer. */
+"vibrateSetting" = "振動で通知";
+
+"for_bone_conduction_headset" = "骨伝導ヘッドフォン用の効果音";
+
+"Error" = "エラー";
+
+"DialogStart" = "再開";
+
+"DialogStartHint" = "対話を再開するにはダブルタップします";

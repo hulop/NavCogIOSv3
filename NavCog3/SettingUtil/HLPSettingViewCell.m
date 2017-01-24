@@ -37,7 +37,7 @@
     return self;
 }
 
-- (void) changed:(NSNotification*) notification
+- (void) changed:(NSNotification*) note
 {
     if (self.setting) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -124,16 +124,24 @@
         [self.pickerView selectRow:[self.setting selectedRow] inComponent:0 animated:YES];
     }
     
+    NSString*(^removeLastZeros)(NSString*) = ^(NSString* str) {
+        NSString *temp = str;
+        while([temp characterAtIndex:[temp length]-1] == '0') {
+            temp = [temp substringToIndex:[temp length]-1];
+        }
+        return temp;
+    };
+    
     if (self.valueLabel) {
         if (self.setting.interval < 0.01) {
             self.valueLabel.text = [NSString stringWithFormat:@"%.3f", [self.setting floatValue]];
-            self.slider.accessibilityValue = self.valueLabel.text;
+            self.slider.accessibilityValue = removeLastZeros(self.valueLabel.text);
         } else if (self.setting.interval < 0.1) {
             self.valueLabel.text = [NSString stringWithFormat:@"%.2f", [self.setting floatValue]];
-            self.slider.accessibilityValue = self.valueLabel.text;
+            self.slider.accessibilityValue = removeLastZeros(self.valueLabel.text);
         } else if (self.setting.interval < 1) {
             self.valueLabel.text = [NSString stringWithFormat:@"%.1f", [self.setting floatValue]];
-            self.slider.accessibilityValue = self.valueLabel.text;
+            self.slider.accessibilityValue = removeLastZeros(self.valueLabel.text);
         } else {
             self.valueLabel.text = [NSString stringWithFormat:@"%.0f", [self.setting floatValue]];
             self.slider.accessibilityValue = self.valueLabel.text;

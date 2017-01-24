@@ -13,6 +13,30 @@
 		7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7E17F19E1D9A225A00DB1F34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A01D9A225A00DB1F34 /* InfoPlist.strings */; };
 		7E17F1A31D9A226100DB1F34 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A51D9A226100DB1F34 /* Localizable.strings */; };
+		7E1F9F2A1DEEB1D3003E1B23 /* NavDebugHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */; };
+		7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */; };
+		7E1F9F3B1DF01AA5003E1B23 /* ConversationEx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F2F1DF01AA5003E1B23 /* ConversationEx.swift */; };
+		7E1F9F3C1DF01AA5003E1B23 /* CustomArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F301DF01AA5003E1B23 /* CustomArrow.swift */; };
+		7E1F9F3D1DF01AA5003E1B23 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F311DF01AA5003E1B23 /* CustomTableViewCell.swift */; };
+		7E1F9F3E1DF01AA5003E1B23 /* LocalContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F321DF01AA5003E1B23 /* LocalContext.swift */; };
+		7E1F9F3F1DF01AA5003E1B23 /* AnimLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F341DF01AA5003E1B23 /* AnimLayer.swift */; };
+		7E1F9F401DF01AA5003E1B23 /* DialogViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F351DF01AA5003E1B23 /* DialogViewHelper.swift */; };
+		7E1F9F411DF01AA5003E1B23 /* icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E1F9F361DF01AA5003E1B23 /* icons.xcassets */; };
+		7E1F9F431DF01AA5003E1B23 /* STTHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F381DF01AA5003E1B23 /* STTHelper.swift */; };
+		7E1F9F441DF01AA5003E1B23 /* TextToSpeech.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F391DF01AA5003E1B23 /* TextToSpeech.swift */; };
+		7E1F9F451DF01AA5003E1B23 /* DialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */; };
+		7E1F9F491DF01BC2003E1B23 /* ConversationV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */; };
+		7E1F9F4A1DF01BC2003E1B23 /* ConversationV1.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7E1F9F4B1DF01BC2003E1B23 /* DialogV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */; };
+		7E1F9F4C1DF01BC2003E1B23 /* DialogV1.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7E1F9F4D1DF01BC2003E1B23 /* RestKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F481DF01BC2003E1B23 /* RestKit.framework */; };
+		7E1F9F4E1DF01BC2003E1B23 /* RestKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F481DF01BC2003E1B23 /* RestKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7E1F9F511DF01C86003E1B23 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F501DF01C86003E1B23 /* Alamofire.framework */; };
+		7E1F9F521DF01C86003E1B23 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F501DF01C86003E1B23 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7E1F9F551DF01FA9003E1B23 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F531DF01FA9003E1B23 /* Freddy.framework */; };
+		7E1F9F561DF01FA9003E1B23 /* Freddy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F531DF01FA9003E1B23 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7E1F9F5F1DF14E6F003E1B23 /* DialogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */; };
+		7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E28479E1E024112006B1FB8 /* exercise-data.json */; };
 		7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */; };
 		7E308BDB1DAF147600E525F6 /* BlindView.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
 		7E433DCF1D6E846300C6C993 /* NavDeviceTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E433DCA1D6E846300C6C993 /* NavDeviceTTS.m */; };
@@ -38,6 +62,8 @@
 		7E96D9331DACD0C700D57C8C /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E96D9321DACD0C700D57C8C /* SearchViewController.m */; };
 		7E96D9361DAD185800D57C8C /* DestinationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E96D9351DAD185800D57C8C /* DestinationTableViewController.m */; };
 		7E9866CE1D5174780073CB49 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
+		7EA018FE1E2F54A3005E65ED /* nosound.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7EA018FD1E2F54A3005E65ED /* nosound.aiff */; };
+		7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EA019001E2F54E7005E65ED /* InitViewController.mm */; };
 		7EAE6F0D1D2642D600614C35 /* NavWebviewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavWebviewHelper.m */; };
 		7EAE6F0F1D264AC200614C35 /* ios_bridge.js in Resources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0E1D264AC200614C35 /* ios_bridge.js */; };
 		7EAE6F121D264C5700614C35 /* NavJSNativeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F111D264C5700614C35 /* NavJSNativeHandler.m */; };
@@ -71,6 +97,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		7E1F9F4F1DF01BC2003E1B23 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				7E1F9F561DF01FA9003E1B23 /* Freddy.framework in Embed Frameworks */,
+				7E1F9F4A1DF01BC2003E1B23 /* ConversationV1.framework in Embed Frameworks */,
+				7E1F9F4C1DF01BC2003E1B23 /* DialogV1.framework in Embed Frameworks */,
+				7E1F9F4E1DF01BC2003E1B23 /* RestKit.framework in Embed Frameworks */,
+				7E1F9F521DF01C86003E1B23 /* Alamofire.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7EF7F79B1DD178F7000A625A /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
@@ -99,12 +140,29 @@
 		7E17F1951D9A211000DB1F34 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		7E17F1971D9A211300DB1F34 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		7E17F1981D9A213600DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = SettingUtil/ja.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
-		7E17F1991D9A21D000DB1F34 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/Main.strings"; sourceTree = "<group>"; };
-		7E17F19A1D9A21D000DB1F34 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
-		7E17F19B1D9A21D000DB1F34 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "SettingUtil/en-US.lproj/HLPSettingView.strings"; sourceTree = "<group>"; };
 		7E17F19F1D9A225A00DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7E17F1A41D9A226100DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
-		7E17F1A61D9A226B00DB1F34 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		7E1F9F281DEEB1D3003E1B23 /* NavDebugHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavDebugHelper.h; sourceTree = "<group>"; };
+		7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavDebugHelper.m; sourceTree = "<group>"; };
+		7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
+		7E1F9F2E1DF01AA4003E1B23 /* NavCog3-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NavCog3-Bridging-Header.h"; sourceTree = "<group>"; };
+		7E1F9F2F1DF01AA5003E1B23 /* ConversationEx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConversationEx.swift; path = dialog/ConversationEx.swift; sourceTree = "<group>"; };
+		7E1F9F301DF01AA5003E1B23 /* CustomArrow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomArrow.swift; path = dialog/CustomArrow.swift; sourceTree = "<group>"; };
+		7E1F9F311DF01AA5003E1B23 /* CustomTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomTableViewCell.swift; path = dialog/CustomTableViewCell.swift; sourceTree = "<group>"; };
+		7E1F9F321DF01AA5003E1B23 /* LocalContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalContext.swift; path = dialog/LocalContext.swift; sourceTree = "<group>"; };
+		7E1F9F341DF01AA5003E1B23 /* AnimLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimLayer.swift; sourceTree = "<group>"; };
+		7E1F9F351DF01AA5003E1B23 /* DialogViewHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogViewHelper.swift; sourceTree = "<group>"; };
+		7E1F9F361DF01AA5003E1B23 /* icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = icons.xcassets; sourceTree = "<group>"; };
+		7E1F9F381DF01AA5003E1B23 /* STTHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STTHelper.swift; sourceTree = "<group>"; };
+		7E1F9F391DF01AA5003E1B23 /* TextToSpeech.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextToSpeech.swift; sourceTree = "<group>"; };
+		7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogViewController.swift; path = dialog/DialogViewController.swift; sourceTree = "<group>"; };
+		7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ConversationV1.framework; path = Carthage/Build/iOS/ConversationV1.framework; sourceTree = "<group>"; };
+		7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DialogV1.framework; path = Carthage/Build/iOS/DialogV1.framework; sourceTree = "<group>"; };
+		7E1F9F481DF01BC2003E1B23 /* RestKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RestKit.framework; path = Carthage/Build/iOS/RestKit.framework; sourceTree = "<group>"; };
+		7E1F9F501DF01C86003E1B23 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		7E1F9F531DF01FA9003E1B23 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/iOS/Freddy.framework; sourceTree = "<group>"; };
+		7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogManager.swift; path = dialog/DialogManager.swift; sourceTree = "<group>"; };
+		7E28479E1E024112006B1FB8 /* exercise-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "exercise-data.json"; path = "model/exercise-data.json"; sourceTree = "<group>"; };
 		7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		7E308BDC1DAF147600E525F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/BlindView.stringsdict; sourceTree = "<group>"; };
@@ -123,7 +181,7 @@
 		7E6E42E81D90FD1B006B6899 /* BlindViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlindViewController.m; sourceTree = "<group>"; };
 		7E6E42EC1D911236006B6899 /* LocationEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationEvent.h; sourceTree = "<group>"; };
 		7E8A33BB1D917D5200D20CD5 /* HLPDataUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPDataUtil.h; path = model/HLPDataUtil.h; sourceTree = "<group>"; };
-		7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = HLPDataUtil.m; path = model/HLPDataUtil.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = HLPDataUtil.m; path = model/HLPDataUtil.m; sourceTree = "<group>"; };
 		7E8A33C41D92D13400D20CD5 /* HLPLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPLocation.h; path = model/HLPLocation.h; sourceTree = "<group>"; };
 		7E8A33C51D92D13400D20CD5 /* HLPLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HLPLocation.m; path = model/HLPLocation.m; sourceTree = "<group>"; };
 		7E9238D91D5189F100875766 /* HLPSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPSetting.h; path = SettingUtil/HLPSetting.h; sourceTree = "<group>"; };
@@ -152,6 +210,10 @@
 		7E96D9351DAD185800D57C8C /* DestinationTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DestinationTableViewController.m; sourceTree = "<group>"; };
 		7E9866CC1D5174780073CB49 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		7E9866CD1D5174780073CB49 /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
+		7E9EF44D1DE3D06300F694FB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		7EA018FD1E2F54A3005E65ED /* nosound.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = nosound.aiff; sourceTree = "<group>"; };
+		7EA018FF1E2F54E7005E65ED /* InitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitViewController.h; sourceTree = "<group>"; };
+		7EA019001E2F54E7005E65ED /* InitViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InitViewController.mm; sourceTree = "<group>"; };
 		7EAE6F0B1D2642D600614C35 /* NavWebviewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavWebviewHelper.h; sourceTree = "<group>"; };
 		7EAE6F0C1D2642D600614C35 /* NavWebviewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavWebviewHelper.m; sourceTree = "<group>"; };
 		7EAE6F0E1D264AC200614C35 /* ios_bridge.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ios_bridge.js; sourceTree = "<group>"; };
@@ -186,6 +248,8 @@
 		8DDC99F4D9772DC8C3D1284B /* Pods-NavCogTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.release.xcconfig"; sourceTree = "<group>"; };
 		A8BCABBA91517640CB17D3D9 /* libPods-NavCogTool.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogTool.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B457074B97BDC2155C8D1A0A /* Pods-NavCog3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.release.xcconfig"; sourceTree = "<group>"; };
+		FB81E72F1DF0228D00CAD286 /* NavDebugHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavDebugHelper.h; sourceTree = "<group>"; };
+		FB81E7301DF0228D00CAD286 /* NavDebugHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavDebugHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,8 +257,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
+				7E1F9F551DF01FA9003E1B23 /* Freddy.framework in Frameworks */,
+				7E1F9F4B1DF01BC2003E1B23 /* DialogV1.framework in Frameworks */,
+				7E1F9F491DF01BC2003E1B23 /* ConversationV1.framework in Frameworks */,
+				7E1F9F511DF01C86003E1B23 /* Alamofire.framework in Frameworks */,
 				12CE60FFF66333BF27326795 /* libPods-NavCog3.a in Frameworks */,
+				7E1F9F4D1DF01BC2003E1B23 /* RestKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +283,7 @@
 		0F5EA397BCF0C5EEF08F5111 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */,
 				7EF7F7A41DD17A8D000A625A /* Foundation.framework */,
 				7E5150EA1D8D75C400ED25FB /* Mantle.framework */,
 				7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */,
@@ -233,6 +304,42 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		7E1F9F2D1DF0190F003E1B23 /* dialog */ = {
+			isa = PBXGroup;
+			children = (
+				7E1F9F2F1DF01AA5003E1B23 /* ConversationEx.swift */,
+				7E1F9F301DF01AA5003E1B23 /* CustomArrow.swift */,
+				7E1F9F311DF01AA5003E1B23 /* CustomTableViewCell.swift */,
+				7E1F9F321DF01AA5003E1B23 /* LocalContext.swift */,
+				7E1F9F331DF01AA5003E1B23 /* stthelper */,
+				7E1F9F2E1DF01AA4003E1B23 /* NavCog3-Bridging-Header.h */,
+				7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */,
+				7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */,
+			);
+			name = dialog;
+			sourceTree = "<group>";
+		};
+		7E1F9F331DF01AA5003E1B23 /* stthelper */ = {
+			isa = PBXGroup;
+			children = (
+				7E1F9F341DF01AA5003E1B23 /* AnimLayer.swift */,
+				7E1F9F351DF01AA5003E1B23 /* DialogViewHelper.swift */,
+				7E1F9F361DF01AA5003E1B23 /* icons.xcassets */,
+				7E1F9F381DF01AA5003E1B23 /* STTHelper.swift */,
+				7E1F9F391DF01AA5003E1B23 /* TextToSpeech.swift */,
+			);
+			name = stthelper;
+			path = dialog/stthelper;
+			sourceTree = "<group>";
+		};
+		7E28479B1E02409F006B1FB8 /* exercise */ = {
+			isa = PBXGroup;
+			children = (
+				7E28479E1E024112006B1FB8 /* exercise-data.json */,
+			);
+			name = exercise;
+			sourceTree = "<group>";
+		};
 		7E5078BE1D4A45B000F5A0F7 /* view */ = {
 			isa = PBXGroup;
 			children = (
@@ -249,6 +356,8 @@
 				7E96D9321DACD0C700D57C8C /* SearchViewController.m */,
 				7E96D9341DAD185800D57C8C /* DestinationTableViewController.h */,
 				7E96D9351DAD185800D57C8C /* DestinationTableViewController.m */,
+				7EA018FF1E2F54E7005E65ED /* InitViewController.h */,
+				7EA019001E2F54E7005E65ED /* InitViewController.mm */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -277,12 +386,16 @@
 		7E5078C01D4A45C300F5A0F7 /* helper */ = {
 			isa = PBXGroup;
 			children = (
+				FB81E72F1DF0228D00CAD286 /* NavDebugHelper.h */,
+				FB81E7301DF0228D00CAD286 /* NavDebugHelper.m */,
 				7EDEDC361D1E0E5E00AC111A /* LocationManager.h */,
 				7EDEDC371D1E0E5E00AC111A /* LocationManager.mm */,
 				7E08DB561DB9F08E00E82161 /* ConfigManager.h */,
 				7E08DB571DB9F08E00E82161 /* ConfigManager.m */,
 				7E9866CC1D5174780073CB49 /* Logging.h */,
 				7E9866CD1D5174780073CB49 /* Logging.m */,
+				7E1F9F281DEEB1D3003E1B23 /* NavDebugHelper.h */,
+				7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */,
 			);
 			name = helper;
 			sourceTree = "<group>";
@@ -319,6 +432,7 @@
 		7E5150EC1D8D75D100ED25FB /* model */ = {
 			isa = PBXGroup;
 			children = (
+				7E28479B1E02409F006B1FB8 /* exercise */,
 				7E6E42DC1D90C77C006B6899 /* HLPGeoJSON.h */,
 				7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */,
 				7E8A33BB1D917D5200D20CD5 /* HLPDataUtil.h */,
@@ -332,6 +446,11 @@
 		7EDEDC131D1E0C6800AC111A = {
 			isa = PBXGroup;
 			children = (
+				7E1F9F531DF01FA9003E1B23 /* Freddy.framework */,
+				7E1F9F501DF01C86003E1B23 /* Alamofire.framework */,
+				7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */,
+				7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */,
+				7E1F9F481DF01BC2003E1B23 /* RestKit.framework */,
 				7EDEDC1E1D1E0C6800AC111A /* NavCog3 */,
 				7EF7F79E1DD178F7000A625A /* NavCogTool */,
 				7EDEDC1D1D1E0C6800AC111A /* Products */,
@@ -352,6 +471,7 @@
 		7EDEDC1E1D1E0C6800AC111A /* NavCog3 */ = {
 			isa = PBXGroup;
 			children = (
+				7E1F9F2D1DF0190F003E1B23 /* dialog */,
 				7E5150EC1D8D75D100ED25FB /* model */,
 				7E5150A11D8BF2C500ED25FB /* navigation */,
 				7E5078C01D4A45C300F5A0F7 /* helper */,
@@ -365,6 +485,7 @@
 		7EDEDC1F1D1E0C6800AC111A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				7EA018FD1E2F54A3005E65ED /* nosound.aiff */,
 				7E96D92F1DACC56200D57C8C /* HLPGeoJSON.strings */,
 				7E96D9291DAC916C00D57C8C /* BlindView.strings */,
 				7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */,
@@ -402,6 +523,7 @@
 				7EDEDC1A1D1E0C6800AC111A /* Resources */,
 				3AD4AA683ED6D64EDE1BF2E8 /* [CP] Embed Pods Frameworks */,
 				5F71D1C14A5EA1F4F8125B8B /* [CP] Copy Pods Resources */,
+				7E1F9F4F1DF01BC2003E1B23 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -421,6 +543,7 @@
 				7EF7F79A1DD178F7000A625A /* Frameworks */,
 				7EF7F79B1DD178F7000A625A /* CopyFiles */,
 				46C40777C2A019F41E953B02 /* [CP] Copy Pods Resources */,
+				7E9EF43A1DE3C61500F694FB /* Resources */,
 			);
 			buildRules = (
 			);
@@ -463,7 +586,6 @@
 				en,
 				Base,
 				ja,
-				"en-US",
 			);
 			mainGroup = 7EDEDC131D1E0C6800AC111A;
 			productRefGroup = 7EDEDC1D1D1E0C6800AC111A /* Products */;
@@ -477,16 +599,26 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		7E9EF43A1DE3C61500F694FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7EDEDC1A1D1E0C6800AC111A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EA018FE1E2F54A3005E65ED /* nosound.aiff in Resources */,
 				7E9238EA1D5189F100875766 /* HLPSettingViewPickerCell.xib in Resources */,
 				7E17F19E1D9A225A00DB1F34 /* InfoPlist.strings in Resources */,
 				7EDEDC2F1D1E0C6800AC111A /* LaunchScreen.storyboard in Resources */,
+				7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */,
 				7E9238EB1D5189F100875766 /* HLPSettingViewSliderCell.xib in Resources */,
 				7E9238EC1D5189F100875766 /* HLPSettingViewSubtitleCell.xib in Resources */,
 				7E308BDB1DAF147600E525F6 /* BlindView.stringsdict in Resources */,
+				7E1F9F411DF01AA5003E1B23 /* icons.xcassets in Resources */,
 				7E96D9271DAC916C00D57C8C /* BlindView.strings in Resources */,
 				7E9238ED1D5189F100875766 /* HLPSettingViewSwitchCell.xib in Resources */,
 				7EDEDC2C1D1E0C6800AC111A /* Assets.xcassets in Resources */,
@@ -586,6 +718,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */,
+				7E1F9F3B1DF01AA5003E1B23 /* ConversationEx.swift in Sources */,
+				7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */,
+				7E1F9F3F1DF01AA5003E1B23 /* AnimLayer.swift in Sources */,
 				7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,
 				7EAE6F0D1D2642D600614C35 /* NavWebviewHelper.m in Sources */,
@@ -596,17 +731,26 @@
 				7EDEDC271D1E0C6800AC111A /* ViewController.m in Sources */,
 				7E433DCF1D6E846300C6C993 /* NavDeviceTTS.m in Sources */,
 				7E6E42E91D90FD1B006B6899 /* BlindViewController.m in Sources */,
+				7E1F9F5F1DF14E6F003E1B23 /* DialogManager.swift in Sources */,
 				7EF7F7A81DD17D4A000A625A /* NavCommander.m in Sources */,
+				7E1F9F401DF01AA5003E1B23 /* DialogViewHelper.swift in Sources */,
 				7EDEDC241D1E0C6800AC111A /* AppDelegate.mm in Sources */,
+				7E1F9F3E1DF01AA5003E1B23 /* LocalContext.swift in Sources */,
 				7E5150A41D8BF32800ED25FB /* NavNavigator.m in Sources */,
 				7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */,
 				7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */,
+				7E1F9F451DF01AA5003E1B23 /* DialogViewController.swift in Sources */,
+				7E1F9F3C1DF01AA5003E1B23 /* CustomArrow.swift in Sources */,
+				7E1F9F431DF01AA5003E1B23 /* STTHelper.swift in Sources */,
+				7E1F9F3D1DF01AA5003E1B23 /* CustomTableViewCell.swift in Sources */,
 				7E9238E81D5189F100875766 /* HLPSettingTableView.m in Sources */,
 				7EAE6F121D264C5700614C35 /* NavJSNativeHandler.m in Sources */,
+				7E1F9F441DF01AA5003E1B23 /* TextToSpeech.swift in Sources */,
 				7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */,
 				7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */,
 				7E9238E61D5189F100875766 /* HLPSetting.m in Sources */,
 				7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */,
+				7E1F9F2A1DEEB1D3003E1B23 /* NavDebugHelper.m in Sources */,
 				7E96D9331DACD0C700D57C8C /* SearchViewController.m in Sources */,
 				7EDEDC211D1E0C6800AC111A /* main.mm in Sources */,
 				7E9238E91D5189F100875766 /* HLPSettingViewCell.m in Sources */,
@@ -639,7 +783,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				7E17F19F1D9A225A00DB1F34 /* ja */,
-				7E17F1A61D9A226B00DB1F34 /* en-US */,
+				7E9EF44D1DE3D06300F694FB /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -668,7 +812,6 @@
 				7E9238F01D5189FF00875766 /* Base */,
 				7E9238F21D518A1400875766 /* en */,
 				7E17F1981D9A213600DB1F34 /* ja */,
-				7E17F19B1D9A21D000DB1F34 /* en-US */,
 			);
 			name = HLPSettingView.strings;
 			sourceTree = "<group>";
@@ -697,7 +840,6 @@
 				7EDEDC291D1E0C6800AC111A /* Base */,
 				7E17F1921D9A20EB00DB1F34 /* ja */,
 				7E17F1951D9A211000DB1F34 /* en */,
-				7E17F1991D9A21D000DB1F34 /* en-US */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -708,7 +850,6 @@
 				7EDEDC2E1D1E0C6800AC111A /* Base */,
 				7E17F1931D9A20EB00DB1F34 /* ja */,
 				7E17F1971D9A211300DB1F34 /* en */,
-				7E17F19A1D9A21D000DB1F34 /* en-US */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -810,15 +951,22 @@
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = NavCog3/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCog3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -828,15 +976,21 @@
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = NavCog3/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCog3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};

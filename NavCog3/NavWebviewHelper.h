@@ -29,6 +29,8 @@
 #define ROUTE_SEARCH_OPTION_BUTTON @"route_search_option_button"
 #define ROUTE_SEARCH_BUTTON @"route_search_button"
 #define END_NAVIGATION @"end_navigation"
+#define BACK_TO_CONTROL @"BACK_TO_CONTROL"
+#define DONE_BUTTON @"DONE_BUTTON"
 
 @interface NavWebView : UIWebView
 

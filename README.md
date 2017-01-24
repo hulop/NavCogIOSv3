@@ -14,6 +14,7 @@ This mode is mainly for wheel chair users and also all sighted users.
 ## Pre-Requisites
 - [OpenCV 3.0](http://opencv.org/) (BSD License)
 - [Mantle 2.0.7](https://github.com/Mantle/Mantle) (MIT License)
+- [Alamofire 3.5.1](https://github.com/Alamofire/Alamofire) (MIT license)
 - [blelocpp (BLE localization library)](https://github.com/hulop/blelocpp)
 
 ## Setup

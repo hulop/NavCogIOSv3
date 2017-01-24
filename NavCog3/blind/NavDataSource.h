@@ -35,6 +35,7 @@
 @property BOOL showNearShops;
 @property BOOL showShopBuilding;
 @property BOOL showShopFloor;
+@property BOOL showDialog;
 
 @property NSDictionary *filter;
 
@@ -44,4 +45,5 @@
 
 @interface NavSearchHistoryDataSource : NSObject < UITableViewDataSource>
 - (NSDictionary*) historyAtIndexPath:(NSIndexPath*)indexPath;
+- (BOOL)isKnownHist:(NSDictionary*)hist;
 @end

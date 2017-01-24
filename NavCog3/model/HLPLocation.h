@@ -39,6 +39,7 @@
 - (void) update:(HLPLocation*)loc;
 - (void) updateLat:(double)lat Lng:(double)lng;
 - (void) updateLat:(double)lat Lng:(double)lng Accuracy:(double)accuracy Floor:(double)floor;
+- (void) updateFloor:(double)floor;
 - (void) updateSpeed:(double)speed;
 - (void) updateOrientation:(double)orientation withAccuracy:(double)accuracy;
 - (void) updateParams:(NSDictionary*)params;

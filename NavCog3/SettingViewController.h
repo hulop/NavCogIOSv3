@@ -22,10 +22,11 @@
 
 #import <UIKit/UIKit.h>
 #import "HLPSettingHelper.h"
+#import <MultipeerConnectivity/MultipeerConnectivity.h>
 
-
-@interface SettingViewController : UITableViewController <HLPSettingHelperDelegate>
+@interface SettingViewController : UITableViewController <HLPSettingHelperDelegate, MCBrowserViewControllerDelegate>
 
 +(void)setup;
+@property (weak, nonatomic) IBOutlet UITableViewCell *dialogSearchCell;
 
 @end

@@ -26,6 +26,11 @@
 
 @class NavPOI;
 
+@protocol NavFutureSummarySource
+- (NSInteger)numberOfSummary;
+- (NSString*)summaryAtIndex:(NSInteger)index;
+@end
+
 @interface NavNavigatorConstants : NSObject
     
 @property (readonly) double PREVENT_REMAINING_DISTANCE_EVENT_FOR_FIRST_N_METERS;
@@ -69,6 +74,7 @@
 
 @property (readonly) double CRANK_REMOVE_SAFE_RATE;
 
+@property (readonly) double MINIMUM_OBSTACLES_POI;
 
 + (instancetype) constants;
 + (NSArray*) propertyNames;
@@ -106,11 +112,22 @@
 - (void)userIsApproachingToPOI:(NSDictionary*)properties;
 - (void)userIsLeavingFromPOI:(NSDictionary*)properties;
 
+// Summary
+- (NSString*)summaryString:(NSDictionary*)properties;
+
+// current status
+- (void)currentStatus:(NSDictionary*)properties;
+- (void)requiresHeadingCalibration:(NSDictionary*)properties;
+- (void)playHeadingAdjusted:(int)level;
+
+- (void)reroute:(NSDictionary*)properties;
+
 @end
 
 @interface NavLinkInfo : NSObject
 @property (readonly) HLPLink* link;
 @property (readonly) HLPLink* nextLink;
+@property (readonly) NSDictionary* options;
 @property (readonly) NSArray* allPOIs;
 @property (readonly) NSArray<NavPOI*>* pois;
 @property (readonly) HLPLocation *userLocation;
@@ -131,10 +148,13 @@
 @property (readonly) double diffBearingAtUserLocationToSnappedLocationOnLink;
 
 @property (readonly) double isComplex;
+@property BOOL isFirst;
 @property (readonly) BOOL isNextDestination;
 
 #pragma mark - flags for navigation
 @property BOOL hasBeenBearing;
+@property BOOL noBearing;
+@property double bearingTargetThreshold;
 @property BOOL hasBeenActivated;
 @property BOOL hasBeenApproaching;
 @property BOOL hasBeenWaitingAction;
@@ -143,15 +163,17 @@
 @property double nextTargetRemainingDistance;
 @property NSTimeInterval expirationTimeOfPreventRemainingDistanceEvent;
 @property HLPLocation *backDetectedLocation;
-@property (readonly) double distanceFromBackDetectedLocationToSnappedLocationOnLink;
+@property (readonly) double distanceFromBackDetectedLocationToLocation;
 @property NSTimeInterval lastBackNotified;
 @property NSTimeInterval lastOffRouteNotified;
+@property NSTimeInterval lastBearingDetected;
+@property NSTimeInterval lastRerouteDetected;
 
 @property BOOL mayBeOffRoute;
 @property NavLinkInfo* offRouteLinkInfo;
 
 
-- (instancetype)initWithLink:(HLPLink*)link nextLink:(HLPLink*)nextLink andPOIs:(NSArray*)allPOIs;
+- (instancetype)initWithLink:(HLPLink*)link nextLink:(HLPLink*)nextLink andOptions:(NSDictionary*)options;
 - (void)reset;
 - (void)updateWithLocation:(HLPLocation*)location;
 
@@ -164,21 +186,29 @@
 @property (readonly) HLPLocation *poiLocation;
 @property (readonly) BOOL needsToPlaySound;
 @property (readonly) BOOL requiresUserAction;
+@property (readonly) BOOL forWelcome;
 @property (readonly) BOOL forBeforeStart;
 @property (readonly) BOOL forFloor;
 @property (readonly) BOOL forCorner;
+@property (readonly) BOOL forCornerEnd;
+@property (readonly) BOOL forCornerWarningBlock;
 @property (readonly) BOOL forSign;
 @property (readonly) BOOL forDoor;
+@property (readonly) BOOL forObstacle;
+@property (readonly) BOOL forRamp;
+@property (readonly) BOOL forBrailleBlock;
 @property (readonly) BOOL forBeforeEnd;
 @property (readonly) BOOL forAfterEnd;
 @property (readonly) BOOL flagCaution;
 @property (readonly) BOOL flagPlural;
-@property (readonly) BOOL flagEnd;
 @property (readonly) BOOL flagOnomastic;
+@property (readonly) BOOL flagEnd;
 @property (readonly) BOOL flagAuto;
-@property (readonly) int doorCount;
+@property (readonly) int count;
 @property (readonly) BOOL isDestination;
 @property (readonly) double angleFromLocation;
+@property (readonly) BOOL leftSide;
+@property (readonly) BOOL rightSide;
 
 @property (readonly) HLPLocation *snappedLocationOnLink;
 @property (readonly) HLPLocation *userLocation;
@@ -192,13 +222,13 @@
 @property NSTimeInterval lastApproached;
 @property BOOL hasBeenLeft;
 @property NSTimeInterval lastLeft;
-@property BOOL count;
+@property int countApproached;
 
 - (instancetype)initWithText:(NSString*)text Location:(HLPLocation*)location Options:(NSDictionary*)options;
 - (void)updateWithLocation:(HLPLocation*)location andUserLocation:(HLPLocation*)userLocation;
 @end
 
-@interface NavNavigator : NSObject
+@interface NavNavigator : NSObject <NavFutureSummarySource>
 @property (readonly) BOOL isActive;
 @property (weak) id<NavNavigatorDelegate> delegate;
 

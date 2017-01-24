@@ -22,22 +22,93 @@
 
 #import "NavCoverView.h"
 #import "LocationEvent.h"
+#import "NavDeviceTTS.h"
+#import "NavCog3-swift.h"
+
+@interface NavAnnounceItem: UIAccessibilityElement
+@end
+
+@implementation NavAnnounceItem
+
+- (void)accessibilityElementDidBecomeFocused
+{
+    NSString *text = self.accessibilityLabel;
+    NSLog(@"accessibilityElementDidBecomeFocused:%@", text);
+    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:self userInfo:
+     @{@"text":text,@"force":@(YES),@"debug":@(YES)}];
+}
+
+@end
+
+@interface NavCurrentStatusItem: NavAnnounceItem
+@property BOOL noSpeak;
+@end
+
+@implementation NavCurrentStatusItem {
+    NSTimeInterval lastCall;
+}
+
+- (void)accessibilityElementDidBecomeFocused
+{
+    if (!_noSpeak) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
+    }
+}
+
+- (NSString*)accessibilityLabel
+{
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    if (self.accessibilityElementIsFocused && now - lastCall > 0.5) {
+        // hack code
+        // speak request navigation status if the user tap screen
+        // accessibilityLabel is called twice for each tap
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
+    }
+    lastCall = now;
+    return @"";
+}
+
+@end
 
 @implementation NavCoverView {
     NSArray *elements;
     NSArray *speaks;
     UIAccessibilityElement *first;
+    NavCurrentStatusItem *currentStatusItem;
+    long currentIndex;
+    BOOL preventCurrentStatus;
 }
+
+- (void) setPreventCurrentStatus:(BOOL)preventCurrentStatus_
+{
+    preventCurrentStatus = preventCurrentStatus_;
+    if (currentStatusItem) {
+        currentStatusItem.noSpeak = preventCurrentStatus;
+    }
+}
+
+- (BOOL) preventCurrentStatus
+{
+    return preventCurrentStatus;
+}
+
+
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(speak:) name:SPEAK_TEXT_QUEUEING object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enqueueSpokenText:) name:SPEAK_TEXT_HISTORY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:NAV_ROUTE_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteControl:) name:REMOTE_CONTROL_EVENT object:nil];
     
     first = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
     first.accessibilityLabel = NSLocalizedString(@"Navigation", @"");
+    first.accessibilityTraits = UIAccessibilityTraitStaticText | UIAccessibilityTraitHeader;
+    
+    speaks = @[];
+    elements = @[];
     
     return self;
 }
@@ -47,19 +118,117 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)clear:(NSNotification*)notification
+- (void)resetCurrentIndex
+{
+    currentIndex = (speaks==nil)?0:[speaks count];
+}
+
+- (void)incrementCurrentIndex
+{
+    currentIndex = MIN([elements count]-1, currentIndex+1);
+}
+
+- (void)decrementCurrentIndex
+{
+    currentIndex = MAX(0, currentIndex-1);
+}
+
+- (void)jumpToLast
+{
+    currentIndex = [elements count]-1;
+}
+
+- (void)jumpToFirst
+{
+    currentIndex = 0;
+}
+
+- (void)speakCurrentElement
+{
+    if (speaks && [speaks count] == currentIndex) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
+        return;
+    }
+
+    if (!elements) {
+        return;
+    }
+    if (currentIndex < 0 || [elements count] <= currentIndex) {
+        return;
+    }
+    UIAccessibilityElement *element = elements[currentIndex];
+    
+    NSString *text = element.accessibilityLabel;
+    if (!text) {
+        return;
+    }
+    
+    if (UIAccessibilityIsVoiceOverRunning()) {
+        UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, text);
+    } else {
+        [[NavDeviceTTS sharedTTS] selfspeak:text force:YES completionHandler:^{
+        }];
+    }    
+}
+
+- (void)remoteControl:(NSNotification*)note
+{
+    if (![note userInfo]) {
+        return;
+    }
+    
+    UIEvent *event = [note userInfo][@"event"];
+    NSLog(@"remote,%ld",event.subtype);
+    
+    BOOL isDialogActive = [DialogManager sharedManager].isActive;
+    
+    switch (event.subtype) {
+        case UIEventSubtypeRemoteControlTogglePlayPause: // 103
+            if (isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_ACTION object:self];
+            if (!isDialogActive) [self resetCurrentIndex];
+            break;
+        case UIEventSubtypeRemoteControlNextTrack: // 104
+            if (!isDialogActive) [self incrementCurrentIndex];
+            break;
+        case UIEventSubtypeRemoteControlPreviousTrack: // 105
+            if (!isDialogActive) [self decrementCurrentIndex];
+            break;
+        case UIEventSubtypeRemoteControlBeginSeekingBackward: // 106
+            if (isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_END object:self];
+            if (!isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_HANDLE_LOCATION_UNKNOWN object:self];
+            return;
+        case UIEventSubtypeRemoteControlBeginSeekingForward: // 108
+            if (!isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:self];
+            return;
+        case UIEventSubtypeRemoteControlEndSeekingBackward: // 107
+        case UIEventSubtypeRemoteControlEndSeekingForward: // 109
+            return;
+        default:
+            return;
+    }
+    if (!isDialogActive) [self speakCurrentElement];
+}
+
+- (void)clear:(NSNotification*)note
 {
     @synchronized (self) {
-        speaks = nil;
-        elements = @[first];
+        speaks = @[];
+        elements = @[];
     }
 }
 
-- (void)speak:(NSNotification*)notification
+// update spoken text list
+- (void)enqueueSpokenText:(NSNotification*)note
 {
     BOOL flag = NO;
     @synchronized (self) {
-        NSDictionary *dict = [notification object];
+        NSDictionary *dict = [note userInfo];
+        
+        // not record as history if debug == YES
+        BOOL debug = [dict[@"debug"] boolValue];
+        if (debug) {
+            return;
+        }
         NSString *text = dict[@"text"];
         
         if (!speaks) {
@@ -76,14 +245,34 @@
         for(int i = 0 ; i < [speaks count]; i++) {
             NSString *s = speaks[i];
             BOOL last = (i == [speaks count] - 1);
-            UIAccessibilityElement *e = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
             
             e.accessibilityLabel = s;
-            if (last) {
-                e.accessibilityFrame = self.frame;
-            }
             [temp addObject:e];
         }
+        
+        currentStatusItem = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];
+        currentStatusItem.accessibilityFrame = self.frame;
+        [temp addObject:currentStatusItem];
+
+        
+        // future summary
+        if (_fsSource) {
+            // use flat structure for non-voiceover usage
+            UIAccessibilityElement *header = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            header.accessibilityTraits = UIAccessibilityTraitHeader | UIAccessibilityTraitStaticText;
+            header.accessibilityLabel = NSLocalizedStringFromTable(@"SummaryHeader",@"BlindView",@"");
+            [temp addObject:header];
+
+            for(int i = 0 ; i < [_fsSource numberOfSummary]; i++) {
+                NSString *str = [_fsSource summaryAtIndex:i];
+                UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
+                e.accessibilityLabel = [NavDeviceTTS removeDots:str];
+
+                [temp addObject:e];
+            }
+        }
+        
         elements = temp;
     }
     if (flag) {

@@ -30,6 +30,19 @@
 
 static NSMutableDictionary<NSString*, UIView*>* waitingViewMap;
 static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
+
++(void)showModalWaitingWithMessage:(NSString *)message
+{
+    UIView *view = [[[[UIApplication sharedApplication] delegate] window] subviews][0];
+    [NavUtil showWaitingForView:view withMessage:message];
+}
+
++(void)hideModalWaiting
+{
+    UIView *view = [[[[UIApplication sharedApplication] delegate] window] subviews][0];
+    [NavUtil hideWaitingForView:view];
+}
+
 +(void)showWaitingForView:(UIView*)view withMessage:(NSString *)message
 {
     NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
@@ -37,8 +50,8 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
         [waitingViewMap[address].subviews[1] setText:message];
         return;
     }
-    
-    UIView *overlay = [[UIView alloc]initWithFrame:view.frame];
+    CGRect frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
+    UIView *overlay = [[UIView alloc]initWithFrame:frame];
     
     CGFloat w = view.frame.size.width;
     CGFloat h = view.frame.size.height;
@@ -56,13 +69,12 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
     [overlay addSubview:label];
     [indicator startAnimating];
 
-    //TODO change view for purpose
-    //[[[[[UIApplication sharedApplication] delegate] window] subviews][0] addSubview:overlay];
-    
     [view addSubview:overlay];
     
     [overlay setIsAccessibilityElement:YES];
     [overlay setAccessibilityLabel:message];
+    
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, message);
     
     if (!waitingViewMap) {
         waitingViewMap = [@{} mutableCopy];
@@ -82,13 +94,10 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
 
 +(UIMessageView*)showMessageView:(UIView *)view
 {
-    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-    
     CGFloat w = view.frame.size.width;
-    CGFloat y = statusBarHeight + 44;
     CGFloat size = 60;
     
-    UIMessageView *overlay = [[UIMessageView alloc]initWithFrame:CGRectMake(0, y, w, size)];
+    UIMessageView *overlay = [[UIMessageView alloc]initWithFrame:CGRectMake(0, 0, w, size)];
     
     UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, w-size, size)];
     label.text = @"Log Replaying";

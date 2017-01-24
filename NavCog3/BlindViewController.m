@@ -29,6 +29,8 @@
 #import "NavDataStore.h"
 #import "NavUtil.h"
 
+#import "NavDebugHelper.h"
+
 @import JavaScriptCore;
 @import CoreMotion;
 
@@ -52,6 +54,13 @@
     BOOL forwardAction;
     
     BOOL initFlag;
+    BOOL rerouteFlag;
+    
+    UIColor *defaultColor;
+    
+    DialogViewHelper *dialogHelper;
+    
+    NSTimeInterval lastShake;
 }
 
 @end
@@ -67,6 +76,8 @@
     [navigator stop];
     navigator.delegate = nil;
     navigator = nil;
+    
+    _settingButton = nil;
 }
 
 - (void)viewDidLoad {
@@ -80,49 +91,123 @@
     previewer = [[NavPreviewer alloc] init];
     navigator.delegate = self;
     commander.delegate = self;
-    previewer.delegate = self;    
+    previewer.delegate = self;
+    _cover.fsSource = navigator;
+    
+    defaultColor = self.navigationController.navigationBar.barTintColor;
+    
+    _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
+    
+    dialogHelper = [[DialogViewHelper alloc] init];
+    double scale = 0.75;
+    double size = (113*scale)/2;
+    double x = size+8;
+    double y = self.view.bounds.size.height - (size+8) - 63;
+    dialogHelper.transparentBack = YES;
+    dialogHelper.layerScale = scale;
+    [dialogHelper inactive];
+    [dialogHelper setup:self.view position:CGPointMake(x, y)];
+    dialogHelper.delegate = self;
+    dialogHelper.helperView.hidden = YES;
     
     self.searchButton.enabled = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debugPeerStateChanged:) name:DEBUG_PEER_STATE_CHANGE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogStart:) name:REQUEST_DIALOG_START object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleLocaionUnknown:) name:REQUEST_HANDLE_LOCATION_UNKNOWN object:nil];
+     [self locationChanged:nil];
     
-    UILongPressGestureRecognizer* longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
-    longPressGesture.minimumPressDuration = 1.0;
-    longPressGesture.numberOfTouchesRequired = 1;
-    [self.navigationController.navigationBar setUserInteractionEnabled:YES];
-    [self.navigationController.navigationBar addGestureRecognizer:longPressGesture];
-    UILongPressGestureRecognizer* longPressGesture2 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
-    longPressGesture2.minimumPressDuration = 1.0;
-    longPressGesture2.numberOfTouchesRequired = 2;
-    [self.navigationController.navigationBar addGestureRecognizer:longPressGesture2];
-    
-    [self locationChanged:nil];
 }
 
-- (void)handleLongPressGesture:(UILongPressGestureRecognizer*)sender
+- (void)tapped
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"use_compass"]) {
-        return;
+    [dialogHelper inactive];
+    dialogHelper.helperView.hidden = YES;
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:nil];
+}
+
+- (void)dialogStateChanged:(NSNotification*)note
+{
+    [self updateView];
+}
+
+// show p2p debug
+- (void)handleSettingLongPressGesture:(UILongPressGestureRecognizer*)sender
+{
+    if (sender.state == UIGestureRecognizerStateBegan && sender.numberOfTouches == 1) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NavDebugHelper *dhelper = [NavDebugHelper sharedHelper];
+            [dhelper start];
+            
+            MCBrowserViewController *viewController = [[MCBrowserViewController alloc] initWithServiceType:NAVCOG3_DEBUG_SERVICE_TYPE
+                                                                                                   session:dhelper.session];
+            viewController.delegate = self;
+            
+            [self presentViewController:viewController animated:YES completion:nil];
+        });
     }
-        
-    if (sender.state == UIGestureRecognizerStateBegan &&
-        ((UIAccessibilityIsVoiceOverRunning() == YES && sender.numberOfTouches == 1) ||
-        sender.numberOfTouches == 2)) {
-        initFlag = !initFlag;
-        if (initFlag) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:START_ORIENTATION_INIT object:nil];
-            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-            [NavUtil showWaitingForView:self.view withMessage:NSLocalizedStringFromTable(@"Init Orientation", @"BlindView", @"")];
+}
+
+- (BOOL)browserViewController:(MCBrowserViewController *)browserViewController
+      shouldPresentNearbyPeer:(MCPeerID *)peerID
+            withDiscoveryInfo:(NSDictionary *)info
+{
+    return YES;
+}
+
+- (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController
+{
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController
+{
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self updateView];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:self];
+    [self becomeFirstResponder];
+}
+
+- (BOOL)canBecomeFirstResponder
+{
+    return YES;
+}
+
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event
+{
+    if(event.type == UIEventSubtypeMotionShake)
+    {
+        NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+        if (now - lastShake < 5) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
+            [[NavSound sharedInstance] vibrate:@{@"repeat":@(2)}];
+            lastShake = 0;
         } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:STOP_ORIENTATION_INIT object:nil];
-            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-            [NavUtil hideWaitingForView:self.view];
+            [[NavSound sharedInstance] vibrate:nil];
+            lastShake = now;
         }
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_ACCELEARATION object:self];
+}
+
+- (void)debugPeerStateChanged:(NSNotification*)note
 {
     [self updateView];
 }
@@ -134,8 +219,12 @@
         [self.searchButton setAccessibilityLabel:NSLocalizedStringFromTable([navigator isActive]?@"Stop Navigation":@"Search Route", @"BlindView", @"")];
         
         BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+        BOOL debugFollower = [[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"];
+        BOOL hasCenter = [[NavDataStore sharedDataStore] mapCenter] != nil;
         BOOL previewMode = [NavDataStore sharedDataStore].previewMode;
+        BOOL exerciseMode = [NavDataStore sharedDataStore].exerciseMode;
         BOOL isActive = [navigator isActive];
+        BOOL peerExists = [[[NavDebugHelper sharedHelper] peers] count] > 0;
 
         self.devGo.hidden = !devMode || previewMode;
         self.devLeft.hidden = !devMode || previewMode;
@@ -152,18 +241,55 @@
         self.devAuto.selected = previewer.autoProceed;
         self.cover.hidden = devMode || !isActive;
         
-        self.navigationItem.title = NSLocalizedStringFromTable(previewMode?@"Preview":@"NavCog", @"BlindView", @"");
+        self.navigationItem.leftBarButtonItem = nil;
+        if ((isActive && !devMode) || previewMode || initFlag) {
+        } else {
+            self.navigationItem.leftBarButtonItem = _settingButton;
+            UILongPressGestureRecognizer* longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleSettingLongPressGesture:)];
+            longPressGesture.minimumPressDuration = 1.0;
+            longPressGesture.numberOfTouchesRequired = 1;
+            [[_settingButton valueForKey:@"view"] addGestureRecognizer:longPressGesture];
+        }
+        
+        self.navigationItem.title = NSLocalizedStringFromTable(exerciseMode?@"Exercise":(previewMode?@"Preview":@"NavCog"), @"BlindView", @"");
+        
+        if (debugFollower) {
+            self.navigationItem.title = NSLocalizedStringFromTable(@"Follow", @"BlindView", @"");
+        }
+        
+        if (debugFollower || initFlag) {    
+            self.navigationItem.rightBarButtonItem = nil;
+        } else {
+            self.navigationItem.rightBarButtonItem = _searchButton;
+        }
+        
+        if (peerExists) {
+            self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.9 alpha:1.0];
+        } else {
+            //self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.9 alpha:1.0];
+            self.navigationController.navigationBar.barTintColor = defaultColor;
+        }
+        
+        if ([[DialogManager sharedManager] isDialogAvailable] && !isActive && hasCenter) {
+            if (dialogHelper.helperView.hidden) {
+                dialogHelper.helperView.hidden = NO;
+                [dialogHelper recognize];
+            }
+        } else {
+            dialogHelper.helperView.hidden = YES;
+        }
+
     });
 
 }
 
-- (void)locationChanged:(NSNotification*)notification
+- (void)locationChanged:(NSNotification*)note
 {
-    if (!self.searchButton.enabled) {
-        if ([[NavDataStore sharedDataStore] currentLocation]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.searchButton.enabled = YES;
-            });
+    if ([[NavDataStore sharedDataStore] mapCenter]) {
+        if (self.searchButton.enabled == NO) {
+            self.searchButton.enabled = YES;
+            [self updateView];
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, dialogHelper.helperView);
         }
     }
 }
@@ -174,18 +300,19 @@
         UIMessageView *mv = [NavUtil showMessageView:self.view];
         
         id observer = [[NSNotificationCenter defaultCenter] addObserverForName:LOG_REPLAY_PROGRESS object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-            long progress = [[note object][@"progress"] longValue];
-            long total = [[note object][@"total"] longValue];
-            NSDictionary *marker = [note object][@"marker"];
-            double floor = [[note object][@"floor"] doubleValue];
-            double difft = [[note object][@"difft"] doubleValue]/1000;
+            long progress = [[note userInfo][@"progress"] longValue];
+            long total = [[note userInfo][@"total"] longValue];
+            NSDictionary *marker = [note userInfo][@"marker"];
+            double floor = [[note userInfo][@"floor"] doubleValue];
+            double difft = [[note userInfo][@"difft"] doubleValue]/1000;
+            const char* msg = [[note userInfo][@"message"] UTF8String];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (marker) {
-                    mv.message.text = [NSString stringWithFormat:@"Log %03.0f%%:%03.1fs (%d:%.2f)",
-                                       (progress /(double)total)*100, difft, [marker[@"floor"] intValue], floor];
+                    mv.message.text = [NSString stringWithFormat:@"Log %03.0f%%:%03.1fs (%d:%.2f) %s",
+                                       (progress /(double)total)*100, difft, [marker[@"floor"] intValue], floor, msg];
                 } else {
-                    mv.message.text = [NSString stringWithFormat:@"Log %03.0f%%", (progress /(double)total)*100];
+                    mv.message.text = [NSString stringWithFormat:@"Log %03.0f%% %s", (progress /(double)total)*100, msg];
                 }
                 NSLog(@"%@", mv.message.text);
             });
@@ -205,7 +332,7 @@
 - (void)locationStatusChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NavLocationStatus status = [[note object][@"status"] unsignedIntegerValue];
+        NavLocationStatus status = [[note userInfo][@"status"] unsignedIntegerValue];
         
         switch(status) {
             case NavLocationStatusLocating:
@@ -219,7 +346,7 @@
 
 - (void) actionPerformed
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY_STOP object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY_STOP object:self];
 }
 
 
@@ -291,7 +418,7 @@
 - (IBAction)resetLocation:(id)sender {
     HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_HEADING_RESET object:
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_HEADING_RESET object:self userInfo:
      @{
        @"location":loc,
        @"heading":@(loc.orientation)
@@ -305,7 +432,7 @@
 }
 
 - (IBAction)restartLocalization:(id)sender {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESTART object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESTART object:self];
 }
 
 - (IBAction)retry:(id)sender {
@@ -337,15 +464,16 @@
 
 - (void)startAction
 {
-    BOOL needAction = [[NSUserDefaults standardUserDefaults] boolForKey:@"preview_with_action"];
-    if (!motionManager && needAction) {
+    BOOL exerciseMode = [NavDataStore sharedDataStore].exerciseMode;
+    BOOL previewWithAction = [[NSUserDefaults standardUserDefaults] boolForKey:@"preview_with_action"] && !exerciseMode;
+    if (!motionManager && (previewWithAction || exerciseMode)) {
         motionManager = [[CMMotionManager alloc] init];
         motionManager.deviceMotionUpdateInterval = 0.1;
         motionQueue = [[NSOperationQueue alloc] init];
         motionQueue.maxConcurrentOperationCount = 1;
         motionQueue.qualityOfService = NSQualityOfServiceBackground;
     }
-    if (needAction) {
+    if (previewWithAction) {
         [motionManager startDeviceMotionUpdatesToQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
             yaws[yawsIndex] = motion.attitude.yaw;
             yawsIndex = (yawsIndex+1)%10;
@@ -372,8 +500,30 @@
             forwardAction = ave > 0.3;
             
         }];
+    }
+    if (exerciseMode) {
+        [motionManager startDeviceMotionUpdatesToQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
+            if (yawsIndex > 0) {
+                turnAction = [HLPLocation normalizeDegree:-(motion.attitude.yaw - yaws[0])/M_PI*180];
+            } else {
+                turnAction = 0;
+            }
+            yaws[0] = motion.attitude.yaw;
+            yawsIndex = 1;
+            
+            CMAcceleration acc =  motion.userAcceleration;
+            double d = sqrt(pow(acc.x, 2)+pow(acc.y, 2)+pow(acc.z, 2));
+            accs[accsIndex] = d;
+            accsIndex = (accsIndex+1)%10;
+            double ave = 0;
+            for(int i = 0; i < 10; i++) {
+                ave += accs[i]*0.1;
+            }
+            forwardAction = ave > 0.05;
+        }];
         
     }
+
 }
 
 #pragma mark - DialogViewControllerDelegate
@@ -432,37 +582,33 @@
         [[AVAudioSession sharedInstance] setActive:YES error:nil];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_BACKGROUND_LOCATION object:@(requestBackground)];
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_BACKGROUND_LOCATION object:self userInfo:@{@"value":@(requestBackground)}];
     if ([properties[@"isActive"] boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [helper evalScript:@"$hulop.map.setSync(true);"];
-            
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_point"]) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:properties];
-//                
-//                // if there is no location manager response
-//                timerForSimulator = [NSTimer scheduledTimerWithTimeInterval:2 repeats:YES block:^(NSTimer * _Nonnull timer) {
-//                    [previewer manualGoFloor: [properties[@"location"] floor]];
-//                    [previewer manualGoForward:0];
-//                }];
-            }
-            
-            [NavUtil showWaitingForView:self.view withMessage:NSLocalizedString(@"Loading, please wait",@"")];
-            
-            if ([NavDataStore sharedDataStore].previewMode) {
-                [[NavDataStore sharedDataStore] manualLocationReset:properties];
-                
-                double delayInSeconds = 2.0;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [previewer setAutoProceed:YES];
-                });
+            if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
+                [helper evalScript:@"$hulop.map.setSync(true);"];
             }
         });
+            
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_point"] && !rerouteFlag) {
+            [[NavDataStore sharedDataStore] manualLocationReset:properties];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:self userInfo:properties];
+        }
+        
+        if ([NavDataStore sharedDataStore].previewMode) {
+            [[NavDataStore sharedDataStore] manualLocationReset:properties];
+            double delayInSeconds = 2.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [previewer setAutoProceed:YES];
+            });
+        }
+
     } else {
         [previewer setAutoProceed:NO];
     }
     [self updateView];
+    rerouteFlag = NO;
 }
 
 - (void)couldNotStartNavigation:(NSDictionary *)properties
@@ -472,6 +618,10 @@
     
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategorySoloAmbient error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil hideModalWaiting];
+    });
 }
 
 - (void)didNavigationStarted:(NSDictionary *)properties
@@ -481,18 +631,26 @@
         timerForSimulator = nil;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:[NSString stringWithFormat:@"$hulop.map.getMap().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
+        [helper evalScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
+
+        _cover.preventCurrentStatus = YES;
+        [NavUtil hideModalWaiting];
     });
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [NavUtil hideWaitingForView:self.view];
+    double delayInSeconds = 1.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        _cover.preventCurrentStatus = NO;
+        [commander didNavigationStarted:properties];
+        [previewer didNavigationStarted:properties];
+
         NSArray *temp = [[NavDataStore sharedDataStore] route];
         //temp = [temp arrayByAddingObjectsFromArray:properties[@"oneHopLinks"]];
-        [helper showRoute:temp];
+        if (temp) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_SHOW_ROUTE object:self userInfo:@{@"route":temp}];
+        }
+        //[helper showRoute:temp];
     });
-    
-    [commander didNavigationStarted:properties];
-    [previewer didNavigationStarted:properties];
 }
 
 - (void)didNavigationFinished:(NSDictionary *)properties
@@ -572,33 +730,85 @@
     [previewer userIsLeavingFromPOI:properties];
 }
 
-#pragma mark - NavCommanderDelegate
-
-- (void)speak:(NSString *)text completionHandler:(void (^)())handler
+// Summary
+- (NSString*)summaryString:(NSDictionary *)properties
 {
-    [[NavDeviceTTS sharedTTS] speak:text completionHandler:handler];
+    return [commander summaryString:properties];
 }
 
-- (void)speak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)())handler
+- (void)currentStatus:(NSDictionary *)properties
 {
-    [[NavDeviceTTS sharedTTS] speak:text force:flag completionHandler:handler];
+    [commander currentStatus:properties];
+}
+
+- (void)requiresHeadingCalibration:(NSDictionary *)properties
+{
+    [commander requiresHeadingCalibration:properties];
+}
+
+- (void)playHeadingAdjusted:(int)level
+{
+    [[NavSound sharedInstance] playHeadingAdjusted:level];
+}
+- (void)reroute:(NSDictionary *)properties
+{
+    rerouteFlag = YES;
+    [commander reroute:properties];
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    [nds clearRoute];
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSDictionary *prefs = @{
+                            @"dist":@"500",
+                            @"preset":@"9",
+                            @"min_width":@"8",
+                            @"slope":@"9",
+                            @"road_condition":@"9",
+                            @"deff_LV":@"9",
+                            @"stairs":[ud boolForKey:@"route_use_stairs"]?@"9":@"1",
+                            @"esc":[ud boolForKey:@"route_use_escalator"]?@"9":@"1",
+                            @"elv":[ud boolForKey:@"route_use_elevator"]?@"9":@"1",
+                            @"tactile_paving":[ud boolForKey:@"route_tactile_paving"]?@"1":@"",
+                            };
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait",@"")];
+    });
+    [nds requestRerouteFrom:[NavDataStore destinationForCurrentLocation]._id To:nds.to._id withPreferences:prefs complete:^{
+    }];
+}
+
+#pragma mark - NavCommanderDelegate
+
+- (void)speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void (^)())handler
+{
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:handler];
 }
 
 - (void)playSuccess
 {
-    [[NavSound sharedInstance] playSuccess];
+    BOOL result = [[NavSound sharedInstance] vibrate:nil];
+    //result = [[NavSound sharedInstance] playSuccess] || result;
+    result = [[NavSound sharedInstance] playAnnounceNotification] || result;
+    if (result) {
+        [[NavDeviceTTS sharedTTS] pause:NAV_SOUND_DELAY];
+    }
 }
 
 - (void)vibrate
 {
-    [[NavSound sharedInstance] vibrate];
+    BOOL result = [[NavSound sharedInstance] vibrate:nil];
+    result = [[NavSound sharedInstance] playAnnounceNotification] || result;
+    if (result) {
+        [[NavDeviceTTS sharedTTS] pause:NAV_SOUND_DELAY];
+    }
 }
 
 - (void)executeCommand:(NSString *)command
 {    
     JSContext *ctx = [[JSContext alloc] init];
     ctx[@"speak"] = ^(NSString *message) {
-        [self speak:message completionHandler:^{
+        [self speak:message withOptions:@{} completionHandler:^{
         }];
     };
     ctx[@"openURL"] = ^(NSString *url, NSString *title, NSString *message) {
@@ -635,6 +845,27 @@
     [ctx evaluateScript:command];
 }
 
+- (void) requestDialogStart:(NSNotification*)note
+{
+    if ([navigator isActive] ||
+        self.navigationController.topViewController != self ||
+        !self.searchButton.enabled) {
+        
+        [[NavSound sharedInstance] playFail];
+        return;
+    }
+    [[NavSound sharedInstance] playVoiceRecoEnd];
+    [self performSegueWithIdentifier:@"show_search" sender:@[@"toDestinations", @"show_dialog"]];
+}
+
+- (void)handleLocaionUnknown:(NSNotification*)note
+{
+    if (self.navigationController.topViewController == self) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
+    }
+}
+
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -642,6 +873,21 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     [segue destinationViewController].restorationIdentifier = segue.identifier;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil hideWaitingForView:self.view];
+    });
+    double delayInSeconds = 0.5;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        if ([sender isKindOfClass:NSArray.class]) {
+            NSArray *temp = [sender copy];
+            if ([temp count] > 0) {
+                NSString *name = temp[0];
+                temp = [temp subarrayWithRange:NSMakeRange(1, [temp count]-1)];
+                [[segue destinationViewController] performSegueWithIdentifier:name sender:temp];
+            }
+        }
+    });
 }
 
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
@@ -649,10 +895,8 @@
     if ([identifier isEqualToString:@"show_search"] && [navigator isActive]) {
         [[NavDataStore sharedDataStore] clearRoute];
         [NavDataStore sharedDataStore].previewMode = NO;
+        [NavDataStore sharedDataStore].exerciseMode = NO;
         [previewer setAutoProceed:NO];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [NavUtil hideWaitingForView:self.view];
-        });
 
         return NO;
     }

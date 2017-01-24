@@ -43,6 +43,7 @@
 #define PROPKEY_MULTI_PURPOSE_TOILET @"多目的トイレ"
 #define PROPKEY_EFFECTIVE_WIDTH @"有効幅員"
 #define PROPKEY_ELEVATOR_EQUIPMENTS @"elevator_equipments"
+#define PROPKEY_BRAILLE_BLOCK @"視覚障害者誘導用ブロック"
 
 // for extension
 #define PROPKEY_EXT_MAJOR_CATEGORY @"major_category"
@@ -61,26 +62,6 @@
 #define CATEGORY_TOILET @"公共用トイレの情報"
 
 #define NAV_POI @"_nav_poi_"
-#define POI_CATEGORY_INFO @"_nav_info_"
-#define POI_CATEGORY_CORNER @"_nav_corner_"
-#define POI_CATEGORY_FLOOR @"_nav_floor_"
-#define POI_CATEGORY_ELEVATOR @"_nav_elevator_"
-#define POI_CATEGORY_ELEVATOR_EQUIPMENTS @"_nav_elevator_equipments_"
-#define POI_CATEGORY_DOOR @"_nav_door_"
-
-#define POI_CATEGORY_SCENE @"_nav_scene_"
-
-#define POI_CATEGORY_OBJECT @"_nav_object_"
-#define POI_CATEGORY_SIGN @"_nav_sign_"
-
-#define POI_CATEGORY_SHOP @"_nav_shop_"
-#define POI_CATEGORY_LIVE @"_nav_live_"
-#define POI_FLAGS_CAUTION @"_nav_caution_"
-#define POI_FLAGS_PLURAL @"_nav_plural_"
-#define POI_FLAGS_END @"_nav_end_"
-#define POI_FLAGS_AUTO @"_nav_auto_"
-
-
 
 @implementation HLPGeometry
 + (NSDictionary *)JSONKeyPathsByPropertyKey
@@ -95,6 +76,30 @@
 {
     _coordinates = coordinates;
 }
+
+- (instancetype)initWithLocations:(NSArray *)locations
+{
+    self = [super init];
+    if (!locations || [locations count] == 0) {
+        return nil;
+    }
+    if ([locations count] == 1) {
+        _type = @"Point";
+        HLPLocation* loc = locations[0];
+        _coordinates = @[@(loc.lng), @(loc.lat)];
+    } else {
+        _type = @"LineString";
+        NSMutableArray *temp = [[NSMutableArray alloc] initWithCapacity:[locations count]];
+        [locations enumerateObjectsUsingBlock:^(HLPLocation *loc, NSUInteger idx, BOOL * _Nonnull stop) {
+            temp[idx] = @[@(loc.lng), @(loc.lat)];
+        }];
+        _coordinates = temp;
+    }
+    
+    return self;
+}
+
+
 @end
 
 @implementation HLPGeoJSON {
@@ -127,7 +132,8 @@
     if ([self.geometry.type isEqualToString:@"Point"]) {
         [loc2 updateLat:[self.geometry.coordinates[1] doubleValue]
                     Lng:[self.geometry.coordinates[0] doubleValue]];
-        minloc = loc2;
+        minloc = [[HLPLocation alloc] init];
+        [minloc update:loc2];
         dist = [loc1 distanceTo:loc2];
     } else if ([self.geometry.type isEqualToString:@"LineString"]) {
         for(int i = 0; i < [self.geometry.coordinates count]-1; i++) {
@@ -138,13 +144,18 @@
             
             HLPLocation *loc = [loc1 nearestLocationToLineFromLocation:loc2 ToLocation:loc3];
             double temp = [loc1 distanceToLineFromLocation:loc2 ToLocation:loc3];
+            if ([loc2 distanceTo:loc3] < 1e-5) {
+                loc = [[HLPLocation alloc] init];
+                [loc update:loc2];
+                temp = [loc2 distanceTo:loc1];
+            }
             if (temp < dist) {
                 dist = temp;
                 minloc = loc;
             }
         }
     }
-    
+    [minloc updateFloor:location.floor];
     return minloc;
 }
 
@@ -217,7 +228,7 @@
         [temp appendString:properties[PROPKEY_NAME]];
     }
     else if(self.category == HLP_OBJECT_CATEGORY_ENTRANCE) {
-        [temp appendString:properties[PROPKEY_ENTRANCE_NAME]];
+        [temp appendFormat:@" %@", properties[PROPKEY_ENTRANCE_NAME]];
     }
     else if(self.category == HLP_OBJECT_CATEGORY_TOILET) {
         temp = [[NSMutableString alloc] init];
@@ -286,7 +297,8 @@
               @"name": @"name",
               @"namePron": @"name_pron",
               @"nodeID": @"node",
-              @"nodeHeight": @"node_height"
+              @"nodeHeight": @"node_height",
+              @"nodeCoordinates": @"node_coordinates"
               }];
 }
 
@@ -294,6 +306,13 @@
 {
     self = [super initWithDictionary:dictionaryValue error:error];
     _nodeHeight = (_nodeHeight >= 1)?_nodeHeight-1:_nodeHeight;
+    
+    if(dictionaryValue[@"nodeCoordinates"]) {
+        double lat = [dictionaryValue[@"nodeCoordinates"][1] doubleValue];
+        double lng = [dictionaryValue[@"nodeCoordinates"][0] doubleValue];
+        _nodeLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng Floor:_nodeHeight];
+    }
+    
     return self;
 }
 
@@ -401,7 +420,10 @@
 
 @end
 
-@implementation HLPFlags
+@implementation HLPPOIFlags {
+    @protected
+    BOOL _flagPlural;
+}
 - (instancetype)initWithString:(NSString *)str
 {
     self = [super init];
@@ -441,9 +463,18 @@
     
     return array;
 }
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    return self;
+}
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+}
+
 @end
 
-@implementation HLPElevatorEquipments: HLPFlags
+@implementation HLPPOIElevatorEquipments: HLPPOIFlags
 - (NSString*) description
 {
     NSMutableString *string = [@"" mutableCopy];
@@ -472,6 +503,55 @@
     }
     NSString *elv = NSLocalizedStringFromTable(string, @"HLPGeoJSON", @"");    
     return elv;
+}
+@end
+
+@implementation HLPPOIElevatorButtons: HLPPOIFlags
+- (NSString*)description
+{
+    BOOL brail = NO;
+    NSString *pos = nil;
+    if (_buttonRight) {
+        pos = @"ElvButtonRight";
+        brail = brail || _buttonRightBraille;
+    }
+    else if (_buttonLeft) {
+        pos = @"ElvButtonLeft";
+        brail = brail || _buttonLeftBraille;
+    }
+    else if (_buttonMiddle) {
+        pos = @"ElvButtonMiddle";
+        brail = brail || _buttonMiddleBraille;
+    }
+    
+    if (_flagPlural) {
+        pos = [pos stringByAppendingString:@"Plural"];
+    }
+    
+    if (_flagLower) {
+        pos = [pos stringByAppendingString:@"Lower"];
+    }
+    
+    NSString *str = NSLocalizedStringFromTable(pos, @"HLPGeoJSON", @"");
+    if (brail) {
+        str = [NSString stringWithFormat:NSLocalizedStringFromTable(@"ElvButtonWithBraille", @"HLPGeoJSON", @""), str];
+    }
+    
+    return str;
+}
+@end
+
+@implementation HLPPOIEscalatorFlags : HLPPOIFlags
+- (NSString*)description
+{
+    NSString *str = @"HLPPOIEscalatorFlags:";
+    if (_left) str = [str stringByAppendingString:@"left "];
+    if (_right) str = [str stringByAppendingString:@"right "];
+    if (_upward) str = [str stringByAppendingString:@"upward "];
+    if (_downward) str = [str stringByAppendingString:@"downward "];
+    if (_forward) str = [str stringByAppendingString:@"forward "];
+    if (_backward) str = [str stringByAppendingString:@"backward "];
+    return str;
 }
 @end
 
@@ -505,7 +585,7 @@
     self = [super initWithDictionary:dictionaryValue error:error];
     if (self == nil) return nil;
     
-    elevatorEquipments = [[HLPElevatorEquipments alloc] initWithString:self.properties[PROPKEY_ELEVATOR_EQUIPMENTS]];
+    elevatorEquipments = [[HLPPOIElevatorEquipments alloc] initWithString:self.properties[PROPKEY_ELEVATOR_EQUIPMENTS]];
 
     _length = [self.properties[PROPKEY_LINK_LENGTH] doubleValue];
     
@@ -518,6 +598,11 @@
     _targetHeight = (_targetHeight >= 1)?_targetHeight-1:_targetHeight;
 
     _linkType = [self.properties[PROPKEY_LINK_TYPE] intValue];
+    if(_linkType == LINK_TYPE_ELEVATOR) {
+        _length = 0;
+    }
+    
+    _brailleBlockType = [self.properties[PROPKEY_BRAILLE_BLOCK] intValue];
     
     _minimumWidth = 3.0;
     if (self.properties[PROPKEY_EFFECTIVE_WIDTH]) {
@@ -571,16 +656,23 @@
 
 - (void)updateWithNodesMap:(NSDictionary *)nodesMap
 {
-    _sourceNodeID = self.properties[PROPKEY_SOURCE_NODE_ID];
+    _sourceNodeID = self.properties[_backward?PROPKEY_TARGET_NODE_ID:PROPKEY_SOURCE_NODE_ID];
     HLPNode *snode = nodesMap[_sourceNodeID];
     if (snode) {
         _sourceHeight = snode.height;
+        [sourceLocation updateFloor:_sourceHeight];
     }
     
-    _targetNodeID = self.properties[PROPKEY_TARGET_NODE_ID];
+    _targetNodeID = self.properties[!_backward?PROPKEY_TARGET_NODE_ID:PROPKEY_SOURCE_NODE_ID];
     HLPNode *tnode = nodesMap[_targetNodeID];
     if (tnode) {
         _targetHeight = tnode.height;
+        [targetLocation updateFloor:_targetHeight];
+    }
+    
+    if ([snode.connectedLinkIDs count] == 1 ||
+        [tnode.connectedLinkIDs count] == 1 ) {
+        _isLeaf = YES;
     }
 }
 
@@ -648,9 +740,6 @@
 
 - (void)setTargetNodeIfNeeded:(HLPNode *)node withNodesMap:(NSDictionary *)nodesMap
 {
-    if (_sourceNodeID && _targetNodeID) {
-        return;
-    }
     _targetNodeID = node._id;
     if ([self.properties[PROPKEY_TARGET_NODE_ID] isEqualToString:_targetNodeID]) {
         _sourceNodeID = self.properties[PROPKEY_SOURCE_NODE_ID];
@@ -664,8 +753,6 @@
     if (nodesMap[_targetNodeID]) {
         _targetHeight = [nodesMap[_targetNodeID] height];
     }
-    _sourceHeight = (_sourceHeight >= 1)?_sourceHeight-1:_sourceHeight;
-    _targetHeight = (_targetHeight >= 1)?_targetHeight-1:_targetHeight;
 
     [self update];
     
@@ -713,9 +800,33 @@
     [self update];
 }
 
-- (HLPElevatorEquipments *)elevatorEquipments
+- (HLPPOIElevatorEquipments *)elevatorEquipments
 {
     return elevatorEquipments;
+}
+
+- (BOOL)isSafeLinkType
+{
+    return _linkType == LINK_TYPE_FREE_WALKWAY ||
+    _linkType == LINK_TYPE_SIDEWALK ||
+    _linkType == LINK_TYPE_GARDEN_WALK ||
+    _linkType == LINK_TYPE_PEDESTRIAN_ROAD;
+}
+
+- (instancetype)initWithSource:(HLPLocation *)source Target:(HLPLocation *)target
+{
+    self = [super init];
+    
+    sourceLocation = source;
+    targetLocation = target;
+    _sourceHeight = source.floor;
+    _targetHeight = target.floor;
+    lastBearingForTarget = initialBearingFromSource = [source bearingTo:target];
+    _length = [source distanceTo:target];
+    _backward = NO;
+    _geometry = [[HLPGeometry alloc] initWithLocations:@[source, target]];
+    
+    return self;
 }
 
 @end
@@ -730,14 +841,25 @@
     else if (link1.linkType == LINK_TYPE_ELEVATOR) {
         return isnan(link1.lastBearingForTarget) && (link2.length < 5);
     }
+    //if (link2.linkType == LINK_TYPE_ESCALATOR) {
+    //    return link1.length < 5;
+    //}
+    if (link1.linkType == LINK_TYPE_ESCALATOR) {
+        return link2.length < 3;
+    }
 
+    return [HLPCombinedLink link:link1 canBeCombinedWithLink:link2] &&
+    link1.linkType == link2.linkType;
+}
+
++ (BOOL) link:(HLPLink *)link1 canBeCombinedWithLink:(HLPLink *)link2
+{
     return  fabs(link1.lastBearingForTarget - link2.initialBearingFromSource) < 15.0 &&
     [link1.type isEqualToString:link2.type] &&
     link1.direction == link2.direction &&
     link1.sourceHeight == link1.targetHeight &&
     link1.targetHeight == link2.sourceHeight &&
-    link2.sourceHeight == link2.targetHeight &&
-    link1.linkType == link2.linkType;
+    link2.sourceHeight == link2.targetHeight;
 }
 
 -(instancetype)initWithLink1:(HLPLink *)link1 andLink2:(HLPLink *)link2
@@ -795,8 +917,8 @@
     
     _geometry = [[HLPGeometry alloc] initWithDictionary:
                  @{
-                   @"type":@"LineString",
-                   @"coordinates":coords
+                   @"type":([coords count]==1)?@"Point":@"LineString",
+                   @"coordinates":([coords count]==1)?coords[0]:coords
                    } error:nil];
     
     _length = link1.length + link2.length;
@@ -810,6 +932,9 @@
         _linkType = LINK_TYPE_ELEVATOR;
         elevatorEquipments = link1.elevatorEquipments?link1.elevatorEquipments:link2.elevatorEquipments;
     }
+    if (link2.linkType == LINK_TYPE_ESCALATOR) {
+        _linkType = LINK_TYPE_ESCALATOR;
+    }
     
     _backward = NO;
     initialBearingFromSource = link1.initialBearingFromSource;
@@ -817,41 +942,15 @@
     sourceLocation = [link1 sourceLocation];
     targetLocation = [link2 targetLocation];
     
+    _brailleBlockType = link1.brailleBlockType;
+    _escalatorFlags = link1.escalatorFlags;
+    
     return self;
 }
 
 @end
 
-@implementation HLPElevatorButtons: HLPFlags
-- (NSString*)description
-{
-    BOOL brail = NO;
-    NSString *pos = nil;
-    if (_buttonRight) {
-        pos = @"ElvButtonRight";
-        brail = brail || _buttonRightBraille;
-    }
-    else if (_buttonLeft) {
-        pos = @"ElvButtonLeft";
-        brail = brail || _buttonLeftBraille;
-    }
-    else if (_buttonMiddle) {
-        pos = @"ElvButtonMiddle";
-        brail = brail || _buttonMiddleBraille;
-    }
-    
-    if (_flagPlural) {
-        pos = [pos stringByAppendingString:@"Plural"];
-    }
-    
-    NSString *str = NSLocalizedStringFromTable(pos, @"HLPGeoJSON", @"");
-    if (brail) {
-        str = [NSString stringWithFormat:NSLocalizedStringFromTable(@"ElvButtonWithBraille", @"HLPGeoJSON", @""), str];
-    }
-    
-    return str;
-}
-@end
+
 
 @implementation  HLPPOI
 
@@ -863,37 +962,23 @@
     _majorCategory = prop[PROPKEY_EXT_MAJOR_CATEGORY];
     _subCategory = prop[PROPKEY_EXT_SUB_CATEGORY];
     _minorCategory = prop[PROPKEY_EXT_MINOR_CATEGORY];
-    
-    if ([POI_CATEGORY_INFO isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_INFO;
-    } else if ([POI_CATEGORY_SCENE isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_SCENE;
-    } else if ([POI_CATEGORY_OBJECT isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_OBJECT;
-    } else if ([POI_CATEGORY_SIGN isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_SIGN;
-    } else if ([POI_CATEGORY_FLOOR isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_FLOOR;
-    } else if ([POI_CATEGORY_SHOP isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_SHOP;
-    } else if ([POI_CATEGORY_LIVE isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_LIVE;
-    } else if ([POI_CATEGORY_CORNER isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_CORNER;
-    } else if ([POI_CATEGORY_ELEVATOR isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_ELEVATOR;
-        _elevatorButtons = [[HLPElevatorButtons alloc] initWithString:_minorCategory];
-    } else if ([POI_CATEGORY_ELEVATOR_EQUIPMENTS isEqualToString:_subCategory]) {
-        _poiCategory = HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS;
-        _elevatorEquipments = [[HLPElevatorEquipments alloc] initWithString:_minorCategory];
-    } else if ([POI_CATEGORY_DOOR isEqualToString:_subCategory]) {
-      _poiCategory = HLP_POI_CATEGORY_DOOR;
-    }
-    _flagCaution = [_minorCategory containsString:POI_FLAGS_CAUTION];
-    _flagPlural = [_minorCategory containsString:POI_FLAGS_PLURAL];
-    _flagEnd = [_minorCategory containsString:POI_FLAGS_END];
-    _flagAuto = [_minorCategory containsString:POI_FLAGS_AUTO];
 
+    // check poi type
+    _poiCategory = HLPPOICategoryCOUNT;
+    for(int i = 0; i < HLPPOICategoryCOUNT; i++) {
+        if ([[NSString stringWithUTF8String:HLPPOICategoryStrings[i]] isEqualToString:_subCategory]) {
+            _poiCategory = i;
+            break;
+        }
+    }
+    if (_poiCategory == HLPPOICategoryCOUNT) { // error check
+        NSLog(@"error: unknown poi category %@", _subCategory);
+    }
+    // check flags
+    _flags = [[HLPPOIFlags alloc] initWithString:_minorCategory];
+    _elevatorButtons = [[HLPPOIElevatorButtons alloc] initWithString:_minorCategory];
+    _elevatorEquipments = [[HLPPOIElevatorEquipments alloc] initWithString:_minorCategory];
+    
     if (prop[PROPKEY_EXT_HEADING]) {
         _heading = [prop[PROPKEY_EXT_HEADING] doubleValue];
     } else {
@@ -910,7 +995,7 @@
 
 - (BOOL)allowsNoFloor
 {
-    return (_poiCategory == HLP_POI_CATEGORY_ELEVATOR) || (_poiCategory == HLP_POI_CATEGORY_ELEVATOR_EQUIPMENTS);
+    return (_poiCategory == HLPPOICategoryElevator) || (_poiCategory == HLPPOICategoryElevatorEquipments);
 }
 
 @end
@@ -992,7 +1077,7 @@
     _lang = lang;
     NSString *langPron = [_lang stringByAppendingString:@"-Pron"];
     _name = [self getI18nAttribute:PROPKEY_ENTRANCE_NAME Lang:_lang];
-    _namePron = [self getI18nAttribute:PROPKEY_ENTRANCE_NAME Lang:langPron];
+    _namePron = [self getI18nPronAttribute:PROPKEY_ENTRANCE_NAME Lang:_lang];
     if (_namePron == nil) {
         _namePron = _name;
     }
@@ -1003,7 +1088,7 @@
     NSString *ret = nil;
     if (_facility) {
         if (_name) {
-            ret = [_facility.name stringByAppendingString:_name];
+            ret = [_facility.name stringByAppendingFormat:@" %@", _name];
         } else {
             ret = _facility.name;
         }
@@ -1022,7 +1107,7 @@
     NSString *ret = nil;
     if (_facility) {
         if (_name) {
-            ret = [_facility.namePron stringByAppendingString:_namePron];
+            ret = [_facility.namePron stringByAppendingFormat:@" %@", _namePron];
         } else {
             ret = _facility.namePron;
         }

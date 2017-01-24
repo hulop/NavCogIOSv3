@@ -1,0 +1,2 @@
+github "watson-developer-cloud/ios-sdk" == 0.8.2
+github "Alamofire/Alamofire" == 3.5.1

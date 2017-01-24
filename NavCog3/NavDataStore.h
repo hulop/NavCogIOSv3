@@ -31,7 +31,8 @@ typedef enum {
     NavDestinationTypeSelectStart,
     NavDestinationTypeSelectDestination,
     NavDestinationTypeFilter,
-    NavDestinationTypeLandmarks
+    NavDestinationTypeLandmarks,
+    NavDestinationTypeDialogSearch
 } NavDestinationType;
 
 @interface NavDestination : NSObject <NSCoding>
@@ -39,6 +40,7 @@ typedef enum {
 @property (readonly) NSString* name;
 @property (readonly) NSString* namePron;
 @property (readonly) NSString* _id;
+@property (readonly) NSString* singleId;
 @property (readonly) NSDictionary* filter;
 @property (readonly) NSString* label;
 @property (readonly) HLPLandmark* landmark;
@@ -50,6 +52,7 @@ typedef enum {
 -(void)addLandmark:(HLPLandmark*)landmark;
 +(instancetype)selectStart;
 +(instancetype)selectDestination;
++(instancetype)dialogSearch;
 @end
 
 @interface NavDataStore : NSObject
@@ -57,14 +60,20 @@ typedef enum {
 @property NavDestination *to;
 @property NavDestination *from;
 @property BOOL previewMode;
+@property BOOL exerciseMode;
+@property BOOL toolMode;
 @property NSString* userID;
+@property HLPLocation *mapCenter;
+@property (readonly) NSDictionary *buildingInfo;
 
 + (instancetype) sharedDataStore;
 
 - (void) reset;
-- (void) reloadDestinations;
-- (void) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang;
+- (BOOL) reloadDestinations:(BOOL)force;
+- (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang;
 - (void) requestRouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)())complete;
+- (void) requestRerouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)())complete;
+- (void) requestServerConfigWithComplete:(void(^)())complete;
 - (void) clearRoute;
 - (NSArray*) destinations;
 - (HLPLocation*) currentLocation;
@@ -72,13 +81,19 @@ typedef enum {
 - (NSArray*) features;
 - (NSString*) userLanguage;
 - (NSArray*) searchHistory;
+- (NSDictionary*) serverConfig;
+- (BOOL) isManualLocation;
 
 - (void) switchFromTo;
 - (NavDestination*) destinationByID:(NSString*)key;
+- (NavDestination*) destinationByIDs:(NSArray*)keys;
+- (NavDestination*) closestDestinationInLandmarks:(NSArray*)landmarks;
 - (void) manualTurn:(double)diffOrientation;
 - (void) manualLocation:(HLPLocation*)location;
 - (void) manualLocationReset:(NSDictionary*)location;
 - (void) clearSearchHistory;
+- (BOOL) isKnownDestination:(NavDestination*)dest;
+- (void) startExercise;
 
 + (NavDestination*) destinationForCurrentLocation;
 

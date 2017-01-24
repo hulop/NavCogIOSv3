@@ -1,20 +1,65 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2016  IBM Corporation, Carnegie Mellon University and others
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *******************************************************************************/
+/* */
+"Follow" = "-NavCog-";
 
-"Init Orientation" = "方向の調整\n正しい方向を向きます\n(\"NavCog\"を2本指ロングタップして終了)";
-"Others" = "その他";
-
-"There is a auto door" = "この先、自動ドアあり。";
-"There are %d auto doors" = "この先、自動ドアが%dつ。";
-"There is a door" = "この先、ドアあり。";
-"There are %d doors" = "この先、ドアが%dつ。";
+/* */
+"DialogSearch" = "対話検索";
 
 /* No comment provided by engineer. */
-"%@, you might be going backward." = "%@, 逆戻りしているようです";
+"%@, you might be going backward." = "%@, 逆方向のようです。";
 
 /* No comment provided by engineer. */
 "%@, you might be going wrong direction." = "%@, 道を間違えたようです";
 
 /* No comment provided by engineer. */
-"After getting off the elevator, %@" = "エレベーターを降りたら、%@";
+"After getting off the elevator, %@" = "エレベーターをおりたら、%@";
+
+/* (No Commment) */
+"AutoDoorPOIString1" = "この先、自動ドアあり。";
+
+/* (No Commment) */
+"AutoDoorPOIString1Short" = "自動ドアあり。";
+
+/* (No Commment) */
+"AutoDoorPOIString2" = "この先、自動ドアが%dつ。";
+
+/* (No Commment) */
+"AutoDoorPOIString2Short" = "自動ドアが%dつ。";
+
+/* No comment provided by engineer. */
+"BACK_DIRECTION" = "後ろ方向";
+
+/* No comment provided by engineer. */
+"BothSide" = "両側";
+
+/* No comment provided by engineer. */
+"BrailleBlock" = "点字ブロックあり";
+
+/* (No Commment) */
+"BrailleBlockPOIString" = "この先、点字ブロックがあります";
+
+/* (No Commment) */
+"BrailleBlockPOIStringShort" = "点字ブロックあり";
 
 /* No comment provided by engineer. */
 "Cancel" = "キャンセル";
@@ -22,8 +67,56 @@
 /* No comment provided by engineer. */
 "Caution, %@" = "注意、%@";
 
+/* No comment provided by engineer. */
+"DialogSearch" = "対話検索";
+
+/* No comment provided by engineer. */
+"Disabled" = "%@。無効の";
+
+/* (No Commment) */
+"DoorPOIString1" = "この先、ドアあり。";
+
+/* (No Commment) */
+"DoorPOIString1Short" = "ドアあり。";
+
+/* (No Commment) */
+"DoorPOIString2" = "この先、ドアが%dつ。";
+
+/* (No Commment) */
+"DoorPOIString2Short" = "ドアが%dつ。";
+
+/* (No Commment) */
+"EscalatorSideLeftBackward" = "左側は逆向き、注意してください";
+
+/* (No Commment) */
+"EscalatorSideLeftForward" = "左側には乗らないでください";
+
+/* (No Commment) */
+"EscalatorSideRightBackward" = "右側は逆向き、注意してください";
+
+/* (No Commment) */
+"EscalatorSideRightForward" = "右側には乗らないでください";
+
+/* (No Commment) */
+"Exercise" = "練習";
+
+/* No comment provided by engineer. */
+"FRONT_DIRECTION" = "前に";
+
 /* basement floor */
 "FloorBasementD" = "地下%@階";
+
+/* (No Commment) */
+"FloorChangeActionString4Down" = "%1$@、%2$@の%3$@を使って%4$@へおりる";
+
+/* (No Commment) */
+"FloorChangeActionString4Up" = "%1$@、%2$@の%3$@を使って%4$@へ上がる";
+
+/* (No Commment) */
+"FloorChangeDoneActionString2Down" = "%@をおりたら、%@";
+
+/* (No Commment) */
+"FloorChangeDoneActionString2Up" = "%@をのぼったら、%@";
 
 /* floor */
 "FloorD" = "%@階";
@@ -32,33 +125,87 @@
 "FloorNumType" = "cardinal";
 
 /* No comment provided by engineer. */
+"Follow" = "-NavCog-";
+
+/* No comment provided by engineer. */
 "From_button" = "%@から";
 
 /* No comment provided by engineer. */
-"Go up to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ上がる";
-"Go up to %3$@ by %2$@ %1$@, now you are in %4$@" = "%1$@の%2$@を使って%3$@へ上がる。現在は%4$@にいます。";
-"Go down to %3$@ by %2$@ %1$@" = "%1$@の%2$@を使って%3$@へ降りる";
-"Go down to %3$@ by %2$@ %1$@, now you are in %4$@" = "%1$@の%2$@を使って%3$@へ降りる。現在は%4$@にいます。";
-
-/* No comment provided by engineer. */
-"Go up to %2$@ by %1$@" = "%1$@を使って%2$@に上がります";
-"Go down to %2$@ by %1$@" = "%1$@を使って%2$@に降ります";
-"Go up to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@に上がります。現在は%3$@にいます。";
-"Go down to %2$@ by %1$@, now you are in %3$@" = "%1$@を使って%2$@に降ります。現在は%3$@にいます。";
 "Go to %1$@" = "%1$@に行きます。";
 
+/* (No Commment) */
+"InMiddle" = "真ん中";
 
 /* No comment provided by engineer. */
-"Locating..." = "現在地を取得中...";
+"Init Orientation" = "方向の調整
+正しい方向を向きます
+(\"NavCog\"を2本指ロングタップして終了)";
+
+/* No comment provided by engineer. */
+"LEFT_BACK_DIRECTION" = "左、ななめ、後ろ方向";
+
+/* No comment provided by engineer. */
+"LEFT_DIRECTION" = "左方向";
+
+/* No comment provided by engineer. */
+"LEFT_FRONT_DIRECTION" = "左、ななめ、前方向";
+
+/* No comment provided by engineer. */
+"LeftSide" = "左側";
+
+/* No comment provided by engineer. */
+"Locating..." = "現在地を取得中";
+
+/* (No Commment) */
+"NoBrailleBlockPOIString" = "この先、点字ブロックがなくなります";
+
+/* (No Commment) */
+"NoBrailleBlockPOIStringShort" = "点字ブロック終了";
 
 /* No comment provided by engineer. */
 "OK" = "OK";
+
+/* (No Commment) */
+"ObstaclePOIString1" = "この先、%@に障害物あり";
+
+/* (No Commment) */
+"ObstaclePOIString1Short" = "%@に障害物あり";
+
+/* (No Commment) */
+"ObstaclePOIString2" = "この先、%@に障害物あり";
+
+/* (No Commment) */
+"ObstaclePOIString2Short" = "%@に障害物あり";
+
+/* No comment provided by engineer. */
+"Others" = "その他";
 
 /* No comment provided by engineer. */
 "PERIOD" = "。";
 
 /* (No Commment) */
 "Preview" = "プレビュー";
+
+/* No comment provided by engineer. */
+"REROUTING" = "ルートからそれたようです。新しいルートを読み込んでいます。";
+
+/* No comment provided by engineer. */
+"RIGHT_BACK_DIRECTION" = "右、ななめ、後ろ方向";
+
+/* No comment provided by engineer. */
+"RIGHT_DIRECTION" = "右方向";
+
+/* No comment provided by engineer. */
+"RIGHT_FRONT_DIRECTION" = "右、ななめ、前方向";
+
+/* (No Commment) */
+"RampPOIString" = "この先、スロープがあります";
+
+/* (No Commment) */
+"RampPOIStringShort" = "スロープあり";
+
+/* No comment provided by engineer. */
+"RightSide" = "右側";
 
 /* (No Commment) */
 "Search" = "検索";
@@ -71,6 +218,9 @@
 
 /* (No Commment) */
 "Stop Navigation" = "案内終了";
+
+/* No comment provided by engineer. */
+"SummaryHeader" = "この後の案内";
 
 /* No comment provided by engineer. */
 "TTS_PAUSE_CHAR" = "。";
@@ -103,6 +253,9 @@
 "_nav_latlng_fix" = "位置";
 
 /* No comment provided by engineer. */
+"_nav_near_shops" = "現在地周辺";
+
+/* No comment provided by engineer. */
 "_nav_select_destination" = "目的地を選択";
 
 /* No comment provided by engineer. */
@@ -117,14 +270,20 @@
 /* (No Commment) */
 "_nav_toilet_multi" = "多目的トイレ";
 
-"_nav_near_shops" = "現在地周辺";
+/* (No Commment) */
+"action" = "%1$@";
+
+/* (No Commment) */
+"action at end object" = "突き当たりを%1$@";
+
+/* (No Commment) */
+"action at near object" = "%2$@のところで%1$@";
+
+/* (No Commment) */
+"action at warning block" = "警告ブロックのところで%1$@";
 
 /* (No Commment) */
 "and action" = "%1$@";
-
-/* (No Commment) */
-"and action at near object" = "%2$@の近くで%1$@";
-"and action at end object" = "突き当たりを%1$@";
 
 /* approaching */
 "approaching" = "そろそろです";
@@ -177,8 +336,11 @@
 /* make turn to +150 ~ +180 */
 "make a u-turn to the right" = "右に折り返す";
 
+/* No comment provided by engineer. */
+"name is %@" = "%2$@に%1$@";
+
 /* (No Commment) */
-"on %@" = "";
+"on %@" = "%@";
 
 /* something at your degree -60 ~ -120 */
 "on your left side" = "左側";
@@ -205,16 +367,10 @@
 "on your right side(front)" = "右斜め前";
 
 /* No comment provided by engineer. */
-//"poi are %@" = "%1$@が%2$@にあります";
 "poi are %@" = "%2$@に%1$@";
 
 /* No comment provided by engineer. */
-//"poi is %@" = "%1$@が%2$@にあります";
 "poi is %@" = "%2$@に%1$@";
-
-/* No comment provided by engineer. */
-//"name is %@" = "%1$@が%2$@にあります";
-"name is %@" = "%2$@に%1$@";
 
 /* (No Commment) */
 "proceed distance" = "%1$@進む";
@@ -241,10 +397,10 @@
 "turn right" = "右に曲がる";
 
 /* head to the diagonally backward left direction */
-"turn to the backward left" = "斜め左後ろに向く";
+"turn to the backward left" = "左、ななめ、後ろに向く";
 
 /* head to the diagonally backward right direction */
-"turn to the backward right" = "斜め右後ろに向く";
+"turn to the backward right" = "右、ななめ、後ろに向く";
 
 /* head to the left direction */
 "turn to the left" = "左に向く";
@@ -252,3 +408,10 @@
 /* head to the right direction */
 "turn to the right" = "右に向く";
 
+"Always_Background" = "常にバックグラウンドで動作";
+
+"HEADING_CALIBRATION" = "方角を調整するため、周りに注意して、5メートルほど歩いてください。";
+"HEADING_CALIBRATION2" = "方角をより正確にするにはもう少し歩きます。";
+"HEADING_CALIBRATION3" = "方角は調整されました。";
+
+"NO_AVAILABLE_LOCATION" = "位置情報が利用可能ではありません";

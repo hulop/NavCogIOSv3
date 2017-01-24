@@ -30,7 +30,9 @@ typedef struct {
     BOOL useStairs = NO;
     BOOL useEscalator = NO;
     BOOL useElevator = YES;
+    BOOL tactilePaving = YES;
     BOOL listDestinations = NO;
+    BOOL checkRemote = NO;
     std::string filter = "";
     BOOL combinations = NO;
 }Option;
@@ -52,6 +54,8 @@ void printHelp() {
     std::cout << "--useStairs [1|0]      set useStairs" << std::endl;
     std::cout << "--useEscalator [1|0]   set useEscalator" << std::endl;
     std::cout << "--useElevator [1|0]    set useElevator" << std::endl;
+    std::cout << "--tactilePaving [1|0]  set tactilePaving" << std::endl;
+    std::cout << "--checkRemote [1|0]    setcheckRemote" << std::endl;
 }
 
 Option parseArguments(int argc, char * argv[]){
@@ -67,6 +71,9 @@ Option parseArguments(int argc, char * argv[]){
         {"useStairs",     required_argument, NULL,  0 },
         {"useEscalator",  required_argument, NULL,  0 },
         {"useElevator",   required_argument, NULL,  0 },
+        {"tactilePaving",   required_argument, NULL,  0 },
+        {"checkRemote",   required_argument, NULL,  0 },
+        
         {0,         0,                 0,  0 }
     };
     
@@ -85,6 +92,14 @@ Option parseArguments(int argc, char * argv[]){
             if (strcmp(long_options[option_index].name, "useElevator") == 0){
                 sscanf(optarg, "%d", &boolean);
                 opt.useElevator = boolean;
+            }
+            if (strcmp(long_options[option_index].name, "tactilePaving") == 0){
+                sscanf(optarg, "%d", &boolean);
+                opt.tactilePaving = boolean;
+            }
+            if (strcmp(long_options[option_index].name, "checkRemote") == 0){
+                sscanf(optarg, "%d", &boolean);
+                opt.checkRemote = boolean;
             }
             if (strcmp(long_options[option_index].name, "list") == 0){
                 opt.listDestinations = YES;
@@ -252,7 +267,16 @@ Option parseArguments(int argc, char * argv[]){
         }
     } else {
         NSString *fromID = [NSString stringWithCString:opt.fromID.c_str() encoding:NSUTF8StringEncoding];
+        NSRange range = [fromID rangeOfString:@"#"];
+        if (range.location != NSNotFound) {
+            fromID = [fromID substringWithRange:NSMakeRange(0, range.location)];
+        }
         NSString *toID = [NSString stringWithCString:opt.toID.c_str() encoding:NSUTF8StringEncoding];
+        range = [toID rangeOfString:@"#"];
+        if (range.location != NSNotFound) {
+            toID = [toID substringWithRange:NSMakeRange(0, range.location)];
+        }
+        
         if (opt.outputPath.length() > 0) {
             fromToList = @[@{@"from":fromID, @"to":toID, @"file":[NSString stringWithCString:opt.outputPath.c_str() encoding:NSUTF8StringEncoding]}];
         }
@@ -291,10 +315,11 @@ Option parseArguments(int argc, char * argv[]){
         std::cout << [processing[@"from"] UTF8String] << "-" << [processing[@"to"] UTF8String] << "-";
         fflush(stdout);
         
-        countDown = 20;
+        countDown = 60;
         timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(handleTimeout:) userInfo:nil repeats:YES];
         
         dataStore.previewMode = YES;
+        dataStore.toolMode = YES;
         [self navigationFrom:processing[@"from"] To:processing[@"to"] File:processing[@"file"]];
         
         fromToList = [fromToList mtl_arrayByRemovingObject:processing];
@@ -361,7 +386,8 @@ Option parseArguments(int argc, char * argv[]){
                             @"deff_LV":@"9",
                             @"stairs":opt.useStairs?@"9":@"1",
                             @"esc":opt.useEscalator?@"9":@"1",
-                            @"elv":opt.useElevator?@"9":@"1"
+                            @"elv":opt.useElevator?@"9":@"1",
+                            @"tactile_paving":opt.tactilePaving?@"1":@""
                             };
 
     if (!fromID || !toID || [fromID length] == 0 || [toID length] == 0) {
@@ -378,9 +404,15 @@ Option parseArguments(int argc, char * argv[]){
 
 - (void)locationChanged:(NSNotification*)note
 {
-    NSDictionary *dict = [note object];
+    NSDictionary *dict = [note userInfo];
     HLPLocation *current = dict[@"current"];
-    NSLog(@"Pose,%f,%f,%f,%f", current.lat, current.lng, current.floor, current.orientation);
+    if (![current isEqual:[NSNull null]]) {
+        NSLog(@"Pose,%f,%f,%f,%f", current.lat, current.lng, current.floor, current.orientation);
+        
+        if (opt.checkRemote) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
+        }
+    }
 }
 
 #pragma mark - NavPreviewerDelegate
@@ -403,14 +435,10 @@ Option parseArguments(int argc, char * argv[]){
 
 #pragma mark - NavCommanderDelegate
 
-- (void)speak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)())handler
+- (void)speak:(NSString *)text withOptions:(NSDictionary *)options completionHandler:(void (^)())handler
 {
+    BOOL flag = [options[@"force"] boolValue];
     NSLog(@"speak_queue,%@,%@", text, flag?@"Force":@"");
-}
-
-- (void)speak:(NSString *)text completionHandler:(void (^)())handler
-{
-    [self speak:text force:NO completionHandler:handler];
 }
 
 - (void)playSuccess
@@ -546,6 +574,12 @@ Option parseArguments(int argc, char * argv[]){
 {
     [commander userIsLeavingFromPOI:properties];
     [previewer userIsLeavingFromPOI:properties];
+}
+
+- (void)currentStatus:(NSDictionary *)properties
+{
+    [commander currentStatus:properties];
+    [previewer currentStatus:properties];
 }
 
 @end

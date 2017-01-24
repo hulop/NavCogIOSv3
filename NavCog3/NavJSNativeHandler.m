@@ -163,7 +163,10 @@
         
         return NO;
     }
-    return YES;
+    WebViewWrapper *wvw = [self findWrapper:webView];
+
+    return [wvw.chain webView:webView shouldStartLoadWithRequest:request navigationType:navigationType];
+;
 }
 
 -(void) _callback:(NSString *)name withScript: (NSString*)str

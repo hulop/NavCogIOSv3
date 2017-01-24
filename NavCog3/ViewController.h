@@ -22,9 +22,16 @@
 
 #import <UIKit/UIKit.h>
 #import "NavWebviewHelper.h"
+#import "NavCog3-Swift.h"
 
-@interface ViewController : UIViewController <UIGestureRecognizerDelegate, NavWebviewHelperDelegate>
+@interface ViewController : UIViewController <UIGestureRecognizerDelegate, NavWebviewHelperDelegate, DialogViewDelegate>
 
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *doneButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *stopButton;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *micButton;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;

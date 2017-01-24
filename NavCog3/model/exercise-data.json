@@ -1,0 +1,2064 @@
+{
+  "landmark": {
+    "category": "公共施設の情報",
+    "node": "EDITOR_node_1481770628208",
+    "name": "ゴール",
+    "exit_pron": "",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -0.9299652676213555,
+        0.6736125584369097
+      ]
+    },
+    "node_coordinates": [
+      -0.9299652676213555,
+      0.6736125584369097
+    ],
+    "node_height": 2,
+    "exit": "",
+    "name_pron": "ゴール",
+    "properties": {
+      "category": "公共施設の情報",
+      "名称:ja": "ゴール",
+      "名称:en": "Goal",
+      "緯度": "0.40.25.041",
+      "緯度経度桁数コード": "3",
+      "名称": "",
+      "file": "EDITOR",
+      "経度": "-0.55.47.934",
+      "施設ID": "EDITOR_poi_1481770661239"
+    }
+  },
+  "route": [
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298236645282714,
+          0.6734650471339201
+        ]
+      },
+      "_rev": "4-a334461443ab68feb85fa40c1e075aa8",
+      "_id": "EDITOR_node_1481770574787",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.365",
+        "緯度": "0.40.24.474",
+        "接続リンクID1": "EDITOR_link_1481797580486",
+        "接続リンクID2": "EDITOR_link_1481794623701",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481770574787",
+        "高さ": "1"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9298240554987842,
+            0.6734930380586234
+          ],
+          [
+            -0.9298236645282714,
+            0.6734650471339201
+          ]
+        ]
+      },
+      "_rev": "2-3cbb697d3e5050d85c2b6ebb25c7f20e",
+      "_id": "EDITOR_link_1481797580486",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481770574787",
+        "終点ノードID": "EDITOR_node_1481770574787",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "3.1",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481797580441",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481797580486",
+        "起点ノードID": "EDITOR_node_1481797580441"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9298239764909795,
+            0.6735488603747275
+          ],
+          [
+            -0.9298240554987842,
+            0.6734930380586234
+          ]
+        ]
+      },
+      "_rev": "3-23209c9a2da887c96ef13ad26c39dc17",
+      "_id": "EDITOR_link_1481770586080",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481797580441",
+        "終点ノードID": "EDITOR_node_1481797580441",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "6.2",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481770581943",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481770586080",
+        "起点ノードID": "EDITOR_node_1481770581943"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9297596151313883,
+            0.6735485251217712
+          ],
+          [
+            -0.9298239764909795,
+            0.6735488603747275
+          ]
+        ]
+      },
+      "_rev": "2-c4fb68a2f5c090682ac704a884ca21b7",
+      "_id": "EDITOR_link_1481770632493",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481770581943",
+        "終点ノードID": "EDITOR_node_1481770581943",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "7.2",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481770609255",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481770632493",
+        "起点ノードID": "EDITOR_node_1481770609255"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9297596151313883,
+            0.6735485251217712
+          ],
+          [
+            -0.9297599620642814,
+            0.6735827209236074
+          ]
+        ]
+      },
+      "_rev": "2-ac256e6771c9d436d232b4c84495891a",
+      "_id": "EDITOR_link_1481770634397",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481770609255",
+        "終点ノードID": "EDITOR_node_1481770620423",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "3.8",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481770620423",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481770634397",
+        "起点ノードID": "EDITOR_node_1481770609255"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9297599620642814,
+            0.6735827209236074
+          ],
+          [
+            -0.929785454706689,
+            0.6736068591366016
+          ]
+        ]
+      },
+      "_rev": "3-78aff496078555f90482bd1fe8b15668",
+      "_id": "EDITOR_link_1481770635819",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481770620423",
+        "終点ノードID": "EDITOR_node_1481770626356",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "3.9",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481770626356",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481770635819",
+        "起点ノードID": "EDITOR_node_1481770620423"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9297847724975554,
+            0.6736651931506303
+          ],
+          [
+            -0.929785454706689,
+            0.6736068591366016
+          ]
+        ]
+      },
+      "_rev": "4-5643e0e25498a479c9b5876f4d7fecaa",
+      "_id": "EDITOR_link_1481783588481",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481770626356",
+        "終点ノードID": "EDITOR_node_1481770626356",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "6.5",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481783581509",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481783588481",
+        "起点ノードID": "EDITOR_node_1481783581509"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297847724975554,
+          0.6736651931506303
+        ]
+      },
+      "_rev": "3-4e1668113872bda05a05c67c40c971ec",
+      "_id": "EDITOR_link_1481783614222",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481783581509",
+        "終点ノードID": "EDITOR_node_1481783581509",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "0",
+        "エレベーター種別": "0",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481783595021",
+        "経路の種類": "10",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481783614222",
+        "起点ノードID": "EDITOR_node_1481783595021"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9297847724975554,
+            0.6736651931506303
+          ],
+          [
+            -0.9297847958109742,
+            0.6736541298031866
+          ]
+        ]
+      },
+      "_rev": "3-1f5d7ed6a2d4082320df8e8d4de603f8",
+      "_id": "EDITOR_link_1481783702271",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 2,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481783595021",
+        "終点ノードID": "EDITOR_node_1481783680617",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "1.2",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481783680617",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481783702271",
+        "起点ノードID": "EDITOR_node_1481783595021"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9298474341630936,
+            0.6736541298031612
+          ],
+          [
+            -0.9297847958109742,
+            0.6736541298031866
+          ]
+        ]
+      },
+      "_rev": "5-b32560880e0a694e969b8bd2759d2ceb",
+      "_id": "EDITOR_link_1481787036621",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 2,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481783680617",
+        "終点ノードID": "EDITOR_node_1481783680617",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "7",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481787007667",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481787036621",
+        "起点ノードID": "EDITOR_node_1481787007667"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9298755973577499,
+            0.6736537945502176
+          ],
+          [
+            -0.9298474341630936,
+            0.6736541298031612
+          ]
+        ]
+      },
+      "_rev": "4-0830f9b999db1bc7175783425e7e1aab",
+      "_id": "EDITOR_link_1481787033518",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 2,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481787007667",
+        "終点ノードID": "EDITOR_node_1481787007667",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "3.1",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481787008691",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481787033518",
+        "起点ノードID": "EDITOR_node_1481787008691"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9299654513597488,
+            0.6736527887913359
+          ],
+          [
+            -0.9298755973577499,
+            0.6736537945502176
+          ]
+        ]
+      },
+      "_rev": "5-a4b250e5af625f468b4bbe5478624621",
+      "_id": "EDITOR_link_1481786956866",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 2,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481787008691",
+        "終点ノードID": "EDITOR_node_1481787008691",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "10",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481786937960",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481786956866",
+        "起点ノードID": "EDITOR_node_1481786937960"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9299654513597488,
+            0.6736527887913359
+          ],
+          [
+            -0.9299652676213555,
+            0.6736125584369097
+          ]
+        ]
+      },
+      "_rev": "5-9d04b6fb29970d717bbf102708ea7903",
+      "_id": "EDITOR_link_1481770637170",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 2,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481786937960",
+        "終点ノードID": "EDITOR_node_1481770628208",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "4.5",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481770628208",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481770637170",
+        "起点ノードID": "EDITOR_node_1481786937960"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9299652676213555,
+          0.6736125584369097
+        ]
+      },
+      "_rev": "5-d1615f4844593fd16426fb162195390a",
+      "_id": "EDITOR_node_1481770628208",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.875",
+        "緯度": "0.40.25.005",
+        "接続リンクID1": "EDITOR_link_1481770637170",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481770628208",
+        "高さ": "2"
+      }
+    }
+  ],
+  "features": [
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.929785454706689,
+          0.6736068591366016
+        ]
+      },
+      "_rev": "3-9816925d1b40dd6c17581b212b71e366",
+      "_id": "EDITOR_node_1481770626356",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.228",
+        "緯度": "0.40.24.985",
+        "接続リンクID1": "EDITOR_link_1481770635819",
+        "接続リンクID2": "EDITOR_link_1481783588481",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481770626356",
+        "高さ": "1"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298474341630936,
+          0.6736541298031612
+        ]
+      },
+      "_rev": "4-e88b0e86e3dbdd883f43c5d9aa23e054",
+      "_id": "EDITOR_node_1481787007667",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.451",
+        "緯度": "0.40.25.155",
+        "接続リンクID1": "EDITOR_link_1481787033518",
+        "接続リンクID2": "EDITOR_link_1481787034793",
+        "接続リンクID3": "EDITOR_link_1481787036621",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481787007667",
+        "高さ": "2"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298749268054962,
+          0.6736417254438668
+        ]
+      },
+      "_rev": "5-e3eba283b3acc46f997e1e86112fb7af",
+      "_id": "EDITOR_node_1481786999659",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.550",
+        "緯度": "0.40.25.110",
+        "接続リンクID1": "EDITOR_link_1481787031845",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481786999659",
+        "高さ": "2"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298474341630936,
+          0.6736658636564921
+        ]
+      },
+      "_rev": "5-c7ecfd90f2c655896f0d23d5b2b34784",
+      "_id": "EDITOR_node_1481787001993",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.451",
+        "緯度": "0.40.25.197",
+        "接続リンクID1": "EDITOR_link_1481787034793",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481787001993",
+        "高さ": "2"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297847724975554,
+          0.6736651931506303
+        ]
+      },
+      "_rev": "3-7f79cd33291e655004eb76d118e5da4b",
+      "_id": "EDITOR_node_1481783595021",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.225",
+        "緯度": "0.40.25.195",
+        "接続リンクID1": "EDITOR_link_1481783614222",
+        "接続リンクID2": "EDITOR_link_1481783702271",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481783595021",
+        "高さ": "2"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9299652676213555,
+          0.6736125584369097
+        ]
+      },
+      "_rev": "5-d1615f4844593fd16426fb162195390a",
+      "_id": "EDITOR_node_1481770628208",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.875",
+        "緯度": "0.40.25.005",
+        "接続リンクID1": "EDITOR_link_1481770637170",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481770628208",
+        "高さ": "2"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298236645282714,
+          0.6734650471339201
+        ]
+      },
+      "_rev": "4-a334461443ab68feb85fa40c1e075aa8",
+      "_id": "EDITOR_node_1481770574787",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.365",
+        "緯度": "0.40.24.474",
+        "接続リンクID1": "EDITOR_link_1481797580486",
+        "接続リンクID2": "EDITOR_link_1481794623701",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481770574787",
+        "高さ": "1"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298240554987842,
+          0.6734930380586234
+        ]
+      },
+      "_rev": "2-1141f9eb1942750b67f26beeb037a058",
+      "_id": "EDITOR_node_1481797580441",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.367",
+        "緯度": "0.40.24.575",
+        "接続リンクID1": "EDITOR_link_1481770586080",
+        "接続リンクID2": "EDITOR_link_1481797580486",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481797580441",
+        "高さ": "1"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297847958109742,
+          0.6736541298031866
+        ]
+      },
+      "_rev": "3-a080ae9045240b10e092c0ca6306c573",
+      "_id": "EDITOR_node_1481783680617",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.225",
+        "緯度": "0.40.25.155",
+        "接続リンクID1": "EDITOR_link_1481787036621",
+        "接続リンクID2": "EDITOR_link_1481783702271",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481783680617",
+        "高さ": "2"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298239764909795,
+          0.6735488603747275
+        ]
+      },
+      "_rev": "2-de2265b754172ee92c0e4b914cf3378b",
+      "_id": "EDITOR_node_1481770581943",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.366",
+        "緯度": "0.40.24.776",
+        "接続リンクID1": "EDITOR_link_1481770586080",
+        "接続リンクID2": "EDITOR_link_1481770632493",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481770581943",
+        "高さ": "1"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298038482666016,
+          0.6734653823868891
+        ]
+      },
+      "_rev": "2-3b59d2c78b10008dd92326314b21ec68",
+      "_id": "EDITOR_node_1481794621540",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.294",
+        "緯度": "0.40.24.475",
+        "接続リンクID1": "EDITOR_link_1481794623701",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481794621540",
+        "高さ": "1"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297599620642814,
+          0.6735827209236074
+        ]
+      },
+      "_rev": "2-84d535a168ae605cb2dfb59ef3037343",
+      "_id": "EDITOR_node_1481770620423",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.136",
+        "緯度": "0.40.24.898",
+        "接続リンクID1": "EDITOR_link_1481770634397",
+        "接続リンクID2": "EDITOR_link_1481770635819",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481770620423",
+        "高さ": "1"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297847724975554,
+          0.6736651931506303
+        ]
+      },
+      "_rev": "3-e6ad03e884e24e3700b2b24d75ab3ab9",
+      "_id": "EDITOR_node_1481783581509",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.225",
+        "緯度": "0.40.25.195",
+        "緯度経度桁数コード": "3",
+        "接続リンクID2": "EDITOR_link_1481783588481",
+        "接続リンクID3": "EDITOR_link_1481783614222",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481783581509",
+        "高さ": "1"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9299654513597488,
+          0.6736527887913359
+        ]
+      },
+      "_rev": "4-064c9e35b7237dcd1a0dc5d5e373225d",
+      "_id": "EDITOR_node_1481786937960",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.876",
+        "緯度": "0.40.25.150",
+        "接続リンクID1": "EDITOR_link_1481770637170",
+        "接続リンクID2": "EDITOR_link_1481786956866",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481786937960",
+        "高さ": "2"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298755973577499,
+          0.6736537945502176
+        ]
+      },
+      "_rev": "4-48a8d3e873a4880606358844fa53dd52",
+      "_id": "EDITOR_node_1481787008691",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.552",
+        "緯度": "0.40.25.154",
+        "接続リンクID1": "EDITOR_link_1481786956866",
+        "接続リンクID2": "EDITOR_link_1481787031845",
+        "接続リンクID3": "EDITOR_link_1481787033518",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481787008691",
+        "高さ": "2"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297596151313883,
+          0.6735485251217712
+        ]
+      },
+      "_rev": "2-4248e60142a17e5bcc2ba4b7eaf355c9",
+      "_id": "EDITOR_node_1481770609255",
+      "type": "Feature",
+      "properties": {
+        "category": "ノード情報",
+        "経度": "-0.55.47.135",
+        "緯度": "0.40.24.775",
+        "接続リンクID1": "EDITOR_link_1481770632493",
+        "接続リンクID2": "EDITOR_link_1481770634397",
+        "緯度経度桁数コード": "3",
+        "file": "EDITOR",
+        "ノードID": "EDITOR_node_1481770609255",
+        "高さ": "1"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9297847724975554,
+            0.6736651931506303
+          ],
+          [
+            -0.929785454706689,
+            0.6736068591366016
+          ]
+        ]
+      },
+      "_rev": "4-5643e0e25498a479c9b5876f4d7fecaa",
+      "_id": "EDITOR_link_1481783588481",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481770626356",
+        "終点ノードID": "EDITOR_node_1481770626356",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "6.5",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481783581509",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481783588481",
+        "起点ノードID": "EDITOR_node_1481783581509"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297850961170298,
+          0.6736511125265672
+        ]
+      },
+      "_rev": "8-c6644112207a02a7969d8bb184453199",
+      "_id": "EDITOR_poi_1481784383587",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "エレベーターに乗ったら、出口の方向に向いてください。。。ここでは乗ったつもりで後ろを向いてください。",
+        "名称:en": "When you get on elevator, please head to the exit.... Let's face around by way of on the elevator in this practice.",
+        "angle": "45",
+        "sub_category": "_nav_info_",
+        "緯度": "0.40.25.144",
+        "緯度経度桁数コード": "3",
+        "height": "1",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.226",
+        "major_category": "_nav_poi_",
+        "heading": "180",
+        "施設ID": "EDITOR_poi_1481784383587"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297817200422287,
+          0.6736031713540694
+        ]
+      },
+      "_rev": "7-d966808ebfbb2f062a5810fb40619998",
+      "_id": "EDITOR_poi_1481789512411",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "振動があるまで右に向きます。",
+        "名称:en": "turn to right until you feel vibration.",
+        "angle": "15",
+        "sub_category": "_nav_info_",
+        "緯度": "0.40.24.971",
+        "緯度経度桁数コード": "3",
+        "height": "1",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.214",
+        "major_category": "_nav_poi_",
+        "heading": "135",
+        "施設ID": "EDITOR_poi_1481789512411"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297847375273705,
+          0.6736594938503858
+        ]
+      },
+      "_rev": "1-2bd6ee1509580309c201ca595c20ecf1",
+      "_id": "EDITOR_poi_1481800033266",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "",
+        "名称:en": "",
+        "angle": "45",
+        "sub_category": "_nav_elevator_",
+        "緯度": "0.40.25.174",
+        "経度": "-0.55.47.225",
+        "緯度経度桁数コード": "3",
+        "height": "1",
+        "名称": "",
+        "file": "EDITOR",
+        "minor_category": "_button_right_braille_",
+        "major_category": "_nav_poi_",
+        "heading": "180",
+        "施設ID": "EDITOR_poi_1481800033266"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9297847724975554,
+            0.6736651931506303
+          ],
+          [
+            -0.9297847958109742,
+            0.6736541298031866
+          ]
+        ]
+      },
+      "_rev": "3-1f5d7ed6a2d4082320df8e8d4de603f8",
+      "_id": "EDITOR_link_1481783702271",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 2,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481783595021",
+        "終点ノードID": "EDITOR_node_1481783680617",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "1.2",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481783680617",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481783702271",
+        "起点ノードID": "EDITOR_node_1481783595021"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9298474341630936,
+            0.6736541298031612
+          ],
+          [
+            -0.9297847958109742,
+            0.6736541298031866
+          ]
+        ]
+      },
+      "_rev": "5-b32560880e0a694e969b8bd2759d2ceb",
+      "_id": "EDITOR_link_1481787036621",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 2,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481783680617",
+        "終点ノードID": "EDITOR_node_1481783680617",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "7",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481787007667",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481787036621",
+        "起点ノードID": "EDITOR_node_1481787007667"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.929822635386472,
+          0.6736537945502049
+        ]
+      },
+      "_rev": "7-b9af1a8061459c614525cc2ebb6fa963",
+      "_id": "EDITOR_poi_1481784694283",
+      "type": "Feature",
+      "properties": {
+        "building": "",
+        "category": "公共施設の情報",
+        "名称:en": "Let's check shops around your way.",
+        "angle": "45",
+        "sub_category": "_nav_info_",
+        "名称:ja": "途中にお店があると、お知らせします",
+        "緯度": "0.40.25.154",
+        "緯度経度桁数コード": "3",
+        "height": "2",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.361",
+        "major_category": "_nav_poi_",
+        "heading": "90",
+        "施設ID": "EDITOR_poi_1481784694283"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297847724975554,
+          0.6736651931506303
+        ]
+      },
+      "_rev": "3-4e1668113872bda05a05c67c40c971ec",
+      "_id": "EDITOR_link_1481783614222",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481783581509",
+        "終点ノードID": "EDITOR_node_1481783581509",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "0",
+        "エレベーター種別": "0",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481783595021",
+        "経路の種類": "10",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481783614222",
+        "起点ノードID": "EDITOR_node_1481783595021"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297763556241989,
+          0.6736645226446796
+        ]
+      },
+      "_rev": "2-4706c4b488a5f9c840eade7c31aec215",
+      "_id": "EDITOR_poi_1481800064287",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "経度": "-0.55.47.195",
+        "sub_category": "_nav_elevator_equipments_",
+        "緯度": "0.40.25.192",
+        "緯度経度桁数コード": "3",
+        "名称": "",
+        "file": "EDITOR",
+        "minor_category": "_button_right_braille_ _button_left_braille_",
+        "major_category": "_nav_poi_",
+        "施設ID": "EDITOR_poi_1481800064287"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9297599620642814,
+            0.6735827209236074
+          ],
+          [
+            -0.929785454706689,
+            0.6736068591366016
+          ]
+        ]
+      },
+      "_rev": "3-78aff496078555f90482bd1fe8b15668",
+      "_id": "EDITOR_link_1481770635819",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481770620423",
+        "終点ノードID": "EDITOR_node_1481770626356",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "3.9",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481770626356",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481770635819",
+        "起点ノードID": "EDITOR_node_1481770620423"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297595918178558,
+          0.6735793683940315
+        ]
+      },
+      "_rev": "8-fca7d9c0195c27c14a874cabaa26dd28",
+      "_id": "EDITOR_poi_1481789495856",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "振動があるまで左に向きます。",
+        "名称:en": "turn to left until you feel vibration.",
+        "angle": "15",
+        "sub_category": "_nav_info_",
+        "緯度": "0.40.24.886",
+        "緯度経度桁数コード": "3",
+        "height": "1",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.135",
+        "major_category": "_nav_poi_",
+        "heading": "180",
+        "施設ID": "EDITOR_poi_1481789495856"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9298474341630936,
+            0.6736541298031612
+          ],
+          [
+            -0.9298474341630936,
+            0.6736658636564921
+          ]
+        ]
+      },
+      "_rev": "5-4b0ce912a289f998320e448673675c03",
+      "_id": "EDITOR_link_1481787034793",
+      "type": "Feature",
+      "properties": {
+        "category": "リンクの情報",
+        "主な利用者": "0",
+        "蓋のない溝や水路の有無": "0",
+        "手すり": "0",
+        "方向性": "0",
+        "終点ノードID": "EDITOR_node_1481787001993",
+        "経路の種類": "8",
+        "縦断勾配1": "0",
+        "リンクID": "EDITOR_link_1481787034793",
+        "段差": "0",
+        "路面状況": "0",
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "リンク延長": "1.3",
+        "通行制限": "0",
+        "縦断勾配2": "0",
+        "横断勾配": "0",
+        "起点ノードID": "EDITOR_node_1481787007667"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298474341630936,
+          0.6736658636564921
+        ]
+      },
+      "_rev": "5-19dd7eab43bc010974b28c94011c0cb8",
+      "_id": "EDITOR_exit_1481787044806",
+      "type": "Feature",
+      "properties": {
+        "category": "出入口情報",
+        "出入口の名称": "",
+        "出入口ID": "EDITOR_exit_1481787044806",
+        "対応ノードID": "EDITOR_node_1481787001993",
+        "file": "EDITOR",
+        "対応施設ID": "EDITOR_poi_1481784578875"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298655623874765,
+          0.6736216102665901
+        ]
+      },
+      "_rev": "4-cb25ff07fa5151624d2698e8feccfb4f",
+      "_id": "EDITOR_poi_1481784599241",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "レストラン",
+        "名称:en": "Restaurant",
+        "緯度": "0.40.25.038",
+        "緯度経度桁数コード": "3",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.516",
+        "施設ID": "EDITOR_poi_1481784599241"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9298755973577499,
+            0.6736537945502176
+          ],
+          [
+            -0.9298474341630936,
+            0.6736541298031612
+          ]
+        ]
+      },
+      "_rev": "4-0830f9b999db1bc7175783425e7e1aab",
+      "_id": "EDITOR_link_1481787033518",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 2,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481787007667",
+        "終点ノードID": "EDITOR_node_1481787007667",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "3.1",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481787008691",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481787033518",
+        "起点ノードID": "EDITOR_node_1481787008691"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298484749616591,
+          0.6736762564980359
+        ]
+      },
+      "_rev": "5-2b927ea1c56d7968e86cb7851b111c25",
+      "_id": "EDITOR_poi_1481784578875",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "喫茶店",
+        "名称:en": "Cafe",
+        "緯度": "0.40.25.235",
+        "緯度経度桁数コード": "3",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.455",
+        "施設ID": "EDITOR_poi_1481784578875"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9297596151313883,
+            0.6735485251217712
+          ],
+          [
+            -0.9297599620642814,
+            0.6735827209236074
+          ]
+        ]
+      },
+      "_rev": "2-ac256e6771c9d436d232b4c84495891a",
+      "_id": "EDITOR_link_1481770634397",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481770609255",
+        "終点ノードID": "EDITOR_node_1481770620423",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "3.8",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481770620423",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481770634397",
+        "起点ノードID": "EDITOR_node_1481770609255"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9297596151313883,
+            0.6735485251217712
+          ],
+          [
+            -0.9298239764909795,
+            0.6735488603747275
+          ]
+        ]
+      },
+      "_rev": "2-c4fb68a2f5c090682ac704a884ca21b7",
+      "_id": "EDITOR_link_1481770632493",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481770581943",
+        "終点ノードID": "EDITOR_node_1481770581943",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "7.2",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481770609255",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481770632493",
+        "起点ノードID": "EDITOR_node_1481770609255"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298749268054962,
+          0.6736417254438668
+        ]
+      },
+      "_rev": "5-20121691580840a750e405b73ff16115",
+      "_id": "EDITOR_exit_1481787046753",
+      "type": "Feature",
+      "properties": {
+        "category": "出入口情報",
+        "出入口の名称": "",
+        "出入口ID": "EDITOR_exit_1481787046753",
+        "対応ノードID": "EDITOR_node_1481786999659",
+        "file": "EDITOR",
+        "対応施設ID": "EDITOR_poi_1481784599241"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9298755973577499,
+            0.6736537945502176
+          ],
+          [
+            -0.9298749268054962,
+            0.6736417254438668
+          ]
+        ]
+      },
+      "_rev": "5-ba2c1b385ef13400642b9e3187f968f2",
+      "_id": "EDITOR_link_1481787031845",
+      "type": "Feature",
+      "properties": {
+        "category": "リンクの情報",
+        "主な利用者": "0",
+        "蓋のない溝や水路の有無": "0",
+        "手すり": "0",
+        "方向性": "0",
+        "終点ノードID": "EDITOR_node_1481786999659",
+        "経路の種類": "8",
+        "縦断勾配1": "0",
+        "リンクID": "EDITOR_link_1481787031845",
+        "段差": "0",
+        "路面状況": "0",
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "リンク延長": "1.3",
+        "通行制限": "0",
+        "縦断勾配2": "0",
+        "横断勾配": "0",
+        "起点ノードID": "EDITOR_node_1481787008691"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9297669678926468,
+          0.6735491956277093
+        ]
+      },
+      "_rev": "6-3c89ea13a29db680aef1c5905f5bb4e4",
+      "_id": "EDITOR_poi_1481789476468",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "振動があるまで左に向きます。",
+        "名称:en": "turn to left until you feel vibration.",
+        "angle": "45",
+        "sub_category": "_nav_info_",
+        "緯度": "0.40.24.777",
+        "緯度経度桁数コード": "3",
+        "height": "1",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.161",
+        "major_category": "_nav_poi_",
+        "heading": "-90",
+        "施設ID": "EDITOR_poi_1481789476468"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298236528716188,
+          0.6735448373392519
+        ]
+      },
+      "_rev": "9-b9add16a5cf7e2fc2b201fccca6172bd",
+      "_id": "EDITOR_poi_1481784231186",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "振動があるまで右に向きます。",
+        "名称:en": "turn to right until you feel vibration.",
+        "angle": "45",
+        "sub_category": "_nav_info_",
+        "緯度": "0.40.24.761",
+        "緯度経度桁数コード": "3",
+        "height": "1",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.365",
+        "major_category": "_nav_poi_",
+        "heading": "180",
+        "施設ID": "EDITOR_poi_1481784231186"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9298239764909795,
+            0.6735488603747275
+          ],
+          [
+            -0.9298240554987842,
+            0.6734930380586234
+          ]
+        ]
+      },
+      "_rev": "3-23209c9a2da887c96ef13ad26c39dc17",
+      "_id": "EDITOR_link_1481770586080",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481797580441",
+        "終点ノードID": "EDITOR_node_1481797580441",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "6.2",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481770581943",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481770586080",
+        "起点ノードID": "EDITOR_node_1481770581943"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298239998043982,
+          0.6735113120430484
+        ]
+      },
+      "_rev": "5-c201ebb2d045129c23af9d4ecb774c3c",
+      "_id": "EDITOR_poi_1481784025326",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "その調子です！",
+        "名称:en": "Right on!",
+        "angle": "45",
+        "sub_category": "_nav_info_",
+        "緯度": "0.40.24.641",
+        "緯度経度桁数コード": "3",
+        "height": "1",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.366",
+        "major_category": "_nav_poi_",
+        "heading": "180",
+        "施設ID": "EDITOR_poi_1481784025326"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9299654513597488,
+            0.6736527887913359
+          ],
+          [
+            -0.9298755973577499,
+            0.6736537945502176
+          ]
+        ]
+      },
+      "_rev": "5-a4b250e5af625f468b4bbe5478624621",
+      "_id": "EDITOR_link_1481786956866",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 2,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481787008691",
+        "終点ノードID": "EDITOR_node_1481787008691",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "10",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481786937960",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481786956866",
+        "起点ノードID": "EDITOR_node_1481786937960"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298239648342133,
+          0.6734962256596837
+        ]
+      },
+      "_rev": "2-858cafb0790b69a0b33d400c80587064",
+      "_id": "EDITOR_poi_1481797520650",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "その場で足踏みすると前進できます。",
+        "名称:en": "Let's walk on the spot to proceed.",
+        "angle": "45",
+        "sub_category": "_nav_info_",
+        "緯度": "0.40.24.586",
+        "緯度経度桁数コード": "3",
+        "height": "1",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.366",
+        "major_category": "_nav_poi_",
+        "heading": "180",
+        "施設ID": "EDITOR_poi_1481797520650"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9298240554987842,
+            0.6734930380586234
+          ],
+          [
+            -0.9298236645282714,
+            0.6734650471339201
+          ]
+        ]
+      },
+      "_rev": "2-3cbb697d3e5050d85c2b6ebb25c7f20e",
+      "_id": "EDITOR_link_1481797580486",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 1,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 1,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481770574787",
+        "終点ノードID": "EDITOR_node_1481770574787",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "3.1",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481797580441",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481797580486",
+        "起点ノードID": "EDITOR_node_1481797580441"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298239764909795,
+          0.6734704111813864
+        ]
+      },
+      "_rev": "8-63e1c8206e5470d956be24163e87ff66",
+      "_id": "EDITOR_poi_1481783763183",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "ナブコグの使い方を練習しましょう！",
+        "名称:en": "You can learn about usage of NavCog. ",
+        "angle": "45",
+        "sub_category": "_nav_info_",
+        "緯度": "0.40.24.493",
+        "緯度経度桁数コード": "3",
+        "height": "1",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.366",
+        "major_category": "_nav_poi_",
+        "heading": "180",
+        "施設ID": "EDITOR_poi_1481783763183"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9298236645282714,
+            0.6734650471339201
+          ],
+          [
+            -0.9298038482666016,
+            0.6734653823868891
+          ]
+        ]
+      },
+      "_rev": "2-bdb9325fcbbab74a429a8cd4add1d592",
+      "_id": "EDITOR_link_1481794623701",
+      "type": "Feature",
+      "properties": {
+        "category": "リンクの情報",
+        "主な利用者": "0",
+        "蓋のない溝や水路の有無": "0",
+        "手すり": "0",
+        "方向性": "0",
+        "終点ノードID": "EDITOR_node_1481794621540",
+        "経路の種類": "8",
+        "縦断勾配1": "0",
+        "リンクID": "EDITOR_link_1481794623701",
+        "段差": "0",
+        "路面状況": "0",
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "リンク延長": "2.2",
+        "通行制限": "0",
+        "縦断勾配2": "0",
+        "横断勾配": "0",
+        "起点ノードID": "EDITOR_node_1481770574787"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298236645282714,
+          0.6734650471339201
+        ]
+      },
+      "_rev": "2-1d61b0922e624741a38d57c3987ad002",
+      "_id": "EDITOR_exit_1481770667644",
+      "type": "Feature",
+      "properties": {
+        "category": "出入口情報",
+        "出入口の名称": "",
+        "出入口ID": "EDITOR_exit_1481770667644",
+        "対応ノードID": "EDITOR_node_1481770574787",
+        "file": "EDITOR",
+        "対応施設ID": "EDITOR_poi_1481770658898"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9299624338746071,
+          0.6736524535383797
+        ]
+      },
+      "_rev": "1-5218ee38cae38fe831e039588433ece9",
+      "_id": "EDITOR_poi_1481801577584",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "振動があるまで左に向きます。",
+        "名称:en": "turn to left until you feel vibration.",
+        "angle": "45",
+        "sub_category": "_nav_info_",
+        "緯度": "0.40.25.149",
+        "緯度経度桁数コード": "3",
+        "height": "2",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.865",
+        "major_category": "_nav_poi_",
+        "heading": "90",
+        "施設ID": "EDITOR_poi_1481801577584"
+      }
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -0.9299654513597488,
+            0.6736527887913359
+          ],
+          [
+            -0.9299652676213555,
+            0.6736125584369097
+          ]
+        ]
+      },
+      "_rev": "5-9d04b6fb29970d717bbf102708ea7903",
+      "_id": "EDITOR_link_1481770637170",
+      "type": "Feature",
+      "properties": {
+        "主な利用者": "0",
+        "targetHeight": 2,
+        "屋根の有無": "0",
+        "file": "EDITOR",
+        "縦断勾配1": "0",
+        "sourceHeight": 2,
+        "縦断勾配2": "0",
+        "category": "リンクの情報",
+        "蓋のない溝や水路の有無": "0",
+        "sourceNode": "EDITOR_node_1481786937960",
+        "終点ノードID": "EDITOR_node_1481770628208",
+        "段差": "0",
+        "路面状況": "0",
+        "リンク延長": "4.5",
+        "通行制限": "0",
+        "方向性": "0",
+        "targetNode": "EDITOR_node_1481770628208",
+        "経路の種類": "8",
+        "横断勾配": "0",
+        "手すり": "0",
+        "リンクID": "EDITOR_link_1481770637170",
+        "起点ノードID": "EDITOR_node_1481786937960"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9299652676213555,
+          0.6736125584369097
+        ]
+      },
+      "_rev": "5-2f5a275532ac4fc5f0ad2625bb09563e",
+      "_id": "EDITOR_exit_1481770665491",
+      "type": "Feature",
+      "properties": {
+        "category": "出入口情報",
+        "出入口の名称": "",
+        "出入口ID": "EDITOR_exit_1481770665491",
+        "対応ノードID": "EDITOR_node_1481770628208",
+        "file": "EDITOR",
+        "対応施設ID": "EDITOR_poi_1481770661239"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9299815912406757,
+          0.6736226160254717
+        ]
+      },
+      "_rev": "5-c8db8b4e0fd56c3890053467f708ad91",
+      "_id": "EDITOR_poi_1481770661239",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "名称:ja": "ゴール",
+        "名称:en": "Goal",
+        "緯度": "0.40.25.041",
+        "緯度経度桁数コード": "3",
+        "名称": "",
+        "file": "EDITOR",
+        "経度": "-0.55.47.934",
+        "施設ID": "EDITOR_poi_1481770661239"
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9298421047152488,
+          0.6734107361531279
+        ]
+      },
+      "_rev": "1-302fd6c68e30f727ec6e2eae925955a6",
+      "_id": "EDITOR_poi_1481770658898",
+      "type": "Feature",
+      "properties": {
+        "category": "公共施設の情報",
+        "経度": "-0.55.47.432",
+        "緯度": "0.40.24.279",
+        "緯度経度桁数コード": "3",
+        "名称": "",
+        "file": "EDITOR",
+        "施設ID": "EDITOR_poi_1481770658898"
+      }
+    }
+  ]
+}

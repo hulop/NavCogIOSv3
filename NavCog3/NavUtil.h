@@ -32,6 +32,8 @@
 
 @interface NavUtil : NSObject
 
++(void)showModalWaitingWithMessage:(NSString *)message;
++(void)hideModalWaiting;
 +(void)showWaitingForView:(UIView*)view withMessage:(NSString*)message;
 +(void)hideWaitingForView:(UIView*)view;
 +(UIMessageView*)showMessageView:(UIView*)view;

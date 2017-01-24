@@ -25,22 +25,32 @@
 #import "NavJSNativeHandler.h"
 #import "Logging.h"
 #import "LocationEvent.h"
-#import <AVFoundation/AVFoundation.h>
+#import "NavDeviceTTS.h"
 #import <Mantle/Mantle.h>
 
-//#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader"
-#define UI_PAGE @"%@://%@/%@mobile.html?noheader" // for backward compatibility
+#define LOADING_TIMEOUT 30
 
+#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader&noclose"
+//#define UI_PAGE @"%@://%@/%@mobile.html?noheader" // for backward compatibility
+// does not work with old server
+
+
+// override UIWebView accessibility to prevent reading Map contents
 @implementation NavWebView
 
 - (BOOL)isAccessibilityElement
 {
-    return YES;
+    return NO;
 }
 
-- (NSString *)accessibilityLabel
+- (NSArray *)accessibilityElements
 {
-    return @"";
+    return nil;
+}
+
+- (NSInteger)accessibilityElementCount
+{
+    return 0;
 }
 
 @end
@@ -48,18 +58,18 @@
 @implementation NavWebviewHelper {
     UIWebView *webView;
     NavJSNativeHandler *handler;
-    AVSpeechSynthesizer *speech;
     NSString *callback;
     BOOL bridgeHasBeenInjected;
     NSTimeInterval lastLocationSent;
     NSTimeInterval lastOrientationSent;
     NSTimeInterval lastRequestTime;
+    
+    NSURLRequest *currentRequest;
 }
 
 - (void)dealloc {
     webView = nil;
     handler = nil;
-    speech = nil;
     callback = nil;
 }
 
@@ -89,30 +99,21 @@
     webView.delegate = self;
     webView.scrollView.bounces = NO;
     webView.suppressesIncrementalRendering = YES;
+    //webView.scrollView.scrollEnabled = NO;
     
     [self loadUIPage];
-    
-    speech = [[AVSpeechSynthesizer alloc] init];
     
     handler = [[NavJSNativeHandler alloc] init];
     [handler registerWebView:webView];
     
     [handler registerFunc:^(NSDictionary *param, UIWebView *webView) {
         NSString *text = [param objectForKey:@"text"];
-        
-        //NSLog(@"speak local %@", text);
-        if ([[param objectForKey:@"flush"] boolValue]) {
-            [speech stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-        }
-        AVSpeechUtterance *speechUtterance = [AVSpeechUtterance speechUtteranceWithString:text];
-        speechUtterance.rate = 0.5f;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [speech speakUtterance:speechUtterance];
-        });
+        BOOL flush = [[param objectForKey:@"flush"] boolValue];
+        [[NavDeviceTTS sharedTTS] speak:text force:flush completionHandler:nil];
     } withName:@"speak" inComponent:@"SpeechSynthesizer"];
     
     [handler registerFunc:^(NSDictionary *param, UIWebView *wv) {
-        NSString *result = [speech isSpeaking] ? @"true" : @"false";
+        NSString *result = [[NavDeviceTTS sharedTTS] isSpeaking]?@"true":@"flase";
         NSString *name = param[@"callbackname"];
         [wv stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@.%@(%@)", callback, name, result]];
     } withName:@"isSpeaking" inComponent:@"SpeechSynthesizer"];
@@ -124,7 +125,7 @@
         }
     } withName:@"callback" inComponent:@"Property"];
     [handler registerFunc:^(NSDictionary *param, UIWebView *wv) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:param];
+        [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:param];
     } withName:@"mapCenter" inComponent:@"Property"];
     
     [handler registerFunc:^(NSDictionary *param, UIWebView *wv) {
@@ -142,8 +143,20 @@
             NSData *data = [[text substringFromIndex:[@"getRssiBias," length]] dataUsingEncoding:NSUTF8StringEncoding];
             NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RSSI_BIAS object:param];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RSSI_BIAS object:self userInfo:param];
         } else {
+            if ([text rangeOfString:@"buildingChanged,"].location == 0) {
+                NSData *data = [[text substringFromIndex:[@"buildingChanged," length]] dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:param];
+            }
+            if ([text rangeOfString:@"stateChanged,"].location == 0) {
+                NSData *data = [[text substringFromIndex:[@"stateChanged," length]] dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:param];
+            }
             if ([Logging isLogging]) {
                 NSLog(@"%@", text);
             }
@@ -164,7 +177,12 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(manualLocation:) name:MANUAL_LOCATION object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveLocation:) name:REQUEST_LOCATION_SAVE object:nil];
+    // crash
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveLocation:) name:REQUEST_LOCATION_SAVE object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartDialog:) name:REQUEST_START_DIALOG object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestShowRoute:) name:REQUEST_PROCESS_SHOW_ROUTE object:nil];
     
     
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
@@ -175,30 +193,39 @@
 
 #pragma mark - notification handlers
 
-- (void) manualLocation: (NSNotification*) notification
+- (void) manualLocation: (NSNotification*) note
 {
-    HLPLocation* loc = [notification object];
-    int ifloor = round(loc.floor<0?loc.floor:loc.floor+1);
+    HLPLocation* loc = [note userInfo][@"location"];
+    BOOL sync = [[note userInfo][@"sync"] boolValue];
     
     NSMutableString* script = [[NSMutableString alloc] init];
-    [script appendFormat:@"$hulop.map.setSync(false);"];
-    [script appendFormat:@"var map = $hulop.map.getMap();"];
-    [script appendFormat:@"var c = new google.maps.LatLng(%f, %f);", loc.lat, loc.lng];
-    [script appendFormat:@"map.setCenter(c);"];
-    [script appendFormat:@"$hulop.indoor.showFloor(%d);", ifloor];
+    if (loc && !isnan(loc.floor) ) {
+        int ifloor = round(loc.floor<0?loc.floor:loc.floor+1);
+        [script appendFormat:@"$hulop.indoor.showFloor(%d);", ifloor];
+    }
+    [script appendFormat:@"$hulop.map.setSync(%@);", sync?@"true":@"false"];
+    if (loc) {
+        [script appendFormat:@"var map = $hulop.map;"];
+        [script appendFormat:@"map.setCenter([%f,%f]);",loc.lng,loc.lat];
+    } else {
+        [script appendFormat:@"var map = $hulop.map"];
+        [script appendFormat:@"var c = map.getCenter();"];
+        [script appendFormat:@"map.setCenter(c);"];        
+    }
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self evalScript:script];
     });
 }
 
-- (void) locationChanged: (NSNotification*) notification
+- (void) locationChanged: (NSNotification*) note
 {
     UIApplicationState state = [[UIApplication sharedApplication] applicationState];
     if (state == UIApplicationStateBackground || state == UIApplicationStateInactive) {
         return;
     }
 
-    NSDictionary *locations = [notification object];
+    NSDictionary *locations = [note userInfo];
     if (!locations) {
         return;
     }
@@ -225,9 +252,12 @@
     if (!location || [location isEqual:[NSNull null]]) {
         return;
     }
+    
+    /*
     if (isnan(location.lat) || isnan(location.lng)) {
         return;
     }
+    */
     
     if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
         if (!location.params) {
@@ -237,7 +267,7 @@
     }
     
     double floor = location.floor;
-    
+
     [self sendData:@{
                      @"lat":@(location.lat),
                      @"lng":@(location.lng),
@@ -253,23 +283,33 @@
     lastLocationSent = now;
 }
 
-- (void)triggerWebviewControl:(NSNotification*) notification
+- (void)triggerWebviewControl:(NSNotification*) note
 {
-    NSDictionary *object = [notification object];
+    NSDictionary *object = [note userInfo];
     if ([object[@"control"] isEqualToString: ROUTE_SEARCH_OPTION_BUTTON]) {
         [self evalScript:@"$('a[href=\"#settings\"]').click()"];
     }
-    if ([object[@"control"] isEqualToString: ROUTE_SEARCH_BUTTON]) {
+    else if ([object[@"control"] isEqualToString: ROUTE_SEARCH_BUTTON]) {
         [self evalScript:@"$('a[href=\"#control\"]').click()"];
     }
-    if ([object[@"control"] isEqualToString: END_NAVIGATION]) {
+    else if ([object[@"control"] isEqualToString: DONE_BUTTON]) {
+        [self evalScript:@"$('div[role=banner]:visible a').click()"];
+    }
+    else if ([object[@"control"] isEqualToString: END_NAVIGATION]) {
         [self evalScript:@"$('#end_navi').click()"];
+    }
+    else if ([object[@"control"] isEqualToString: BACK_TO_CONTROL]) {
+        [self evalScript:@"$('div[role=banner]:visible a').click()"];
+    }
+    else {
+        [self evalScript:@"$hulop.map.resetState()"];
+        //[self evalScript:@"$('a[href=\"#map-page\"]:visible').click()"];
     }
 }
 
-- (void) destinationChanged: (NSNotification*) notification
+- (void) destinationChanged: (NSNotification*) note
 {
-    [self initTarget:[notification object]];
+    [self initTarget:[note userInfo][@"destinations"]];
 }
 
 - (void)initTarget:(NSArray *)landmarks
@@ -296,12 +336,12 @@
 }
 
 
-- (void) routeChanged: (NSNotification*) notification
+- (void) routeChanged: (NSNotification*) note
 {
     //[self showRoute:[notification object]];
 }
 
-- (void) routeCleared: (NSNotification*) notification
+- (void) routeCleared: (NSNotification*) note
 {
     [self clearRoute];
 }
@@ -330,15 +370,21 @@
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:UI_PAGE, https, server, context]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [webView loadRequest: request];
+    currentRequest = request;
     lastRequestTime = [[NSDate date] timeIntervalSince1970];
 }
 
 - (void)loadUIPageWithHash:(NSString*)hash {
-    NSString *script = [NSString stringWithFormat:@"location.hash=%@", hash];
+    NSString *script = [NSString stringWithFormat:@"location.hash=\"%@\"", hash];
     [self evalScript:script];
 }
 
 #pragma mark - UIWebViewDelegate
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    return YES;
+}
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
@@ -353,34 +399,28 @@
     
     if ([ret isEqualToString:@"true"]) {
         [timer invalidate];
-        [self insertBridge];
+        [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(insertBridge:) userInfo:nil repeats:YES];
         return;
     }
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-    if (now - lastRequestTime > 15) {
+    if (now - lastRequestTime > LOADING_TIMEOUT) {
         [timer invalidate];
+        [webView stopLoading];
         [self.delegate checkConnection];
     }
 }
 
-- (void) insertBridge
+- (void) insertBridge:(NSTimer*)timer
 {
-    if (bridgeHasBeenInjected) {
-        return;
+    NSLog(@"insertBridge,%@", callback);
+    if (callback != nil) { // check if "callback" string is available
+        [timer invalidate];
     }
+
     NSString *path = [[NSBundle mainBundle] pathForResource:@"ios_bridge" ofType:@"js"];
     NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     
-    NSString *result = [webView stringByEvaluatingJavaScriptFromString:script];
-    NSLog(@"insertBridge %@", result);
-    if (![result isEqualToString:@"SUCCESS"]) {
-        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(insertBridge) userInfo:nil repeats:NO];
-        return;
-    }
-    
-    bridgeHasBeenInjected = YES;
-    
-    [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none'; document.body.style.KhtmlUserSelect='none';document.body.style.webkitUserSelect='none';"];
+    [webView stringByEvaluatingJavaScriptFromString:script];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView2
@@ -412,6 +452,35 @@
     if (callback == nil) {
         return;
     }
+    
+    __block NSObject*(^removeNaNValue)(NSObject*) = ^(NSObject *obj) {
+        NSObject* newObj;
+        if ([obj isKindOfClass:NSArray.class]) {
+            NSArray* arr = (NSArray*) obj;
+            NSMutableArray* newArr = [arr mutableCopy];
+            for(int i=0; i<[arr count]; i++){
+                NSObject* tmp = arr[i];
+                newArr[i] = removeNaNValue(tmp);
+            }
+            newObj = (NSObject*) newArr;
+        }else if ([obj isKindOfClass:NSDictionary.class]) {
+            NSDictionary* dict = (NSDictionary*) obj;
+            NSMutableDictionary* newDict = [dict mutableCopy];
+            for(id key in [dict keyEnumerator]){
+                NSObject* val = dict[key];
+                if([val isKindOfClass:NSNumber.class]){
+                    double dVal = [(NSNumber*) val doubleValue];
+                    if(isnan(dVal)){
+                        [newDict removeObjectForKey:key];
+                    }
+                }
+            }
+            newObj = (NSObject*) newDict;
+        }
+        return newObj;
+    };
+    
+    data = removeNaNValue(data);
     
     NSString *jsonstr = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:data options:0 error:nil]encoding:NSUTF8StringEncoding];
     
@@ -454,7 +523,7 @@
         return;
     }
     
-    NSArray *keys = @[@"developer_mode"];
+    NSArray *keys = @[@"developer_mode", @"user_mode"];
     NSMutableDictionary *data = [@{} mutableCopy];
     for(NSString *key in keys) {
         data[key] = [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -480,14 +549,43 @@
     return [webView stringByEvaluatingJavaScriptFromString:script];
 }
 
+/* crash sometimes with EXC_BAD_ACCESS
 - (void)saveLocation:(NSNotificationCenter*)notification
 {
-    NSString *ret = [self evalScript:@"(function(){return JSON.stringify($hulop.map.getMap().getCenter().toJSON())})();"];
+    NSString *ret = [self evalScript:@"(function(){return JSON.stringify($hulop.map.getCenter())})();"];
     NSData *data = [ret dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    [[NSUserDefaults standardUserDefaults] setObject:dic forKey:@"lastLocation"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSArray *loc = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    if(loc) {
+        [[NSUserDefaults standardUserDefaults] setObject:loc forKey:@"lastLocation"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
+*/
+
+- (void)requestStartDialog:(NSNotificationCenter*)notification
+{
+    BOOL result = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"navcogdialog://start_dialog/?"]];
+    if (!result) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"No Dialog App"
+                                                                       message:@"You need to install NavCog dialog app"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                                  style:UIAlertActionStyleDefault handler:nil]];
+        
+        UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (topController.presentedViewController) {
+            topController = topController.presentedViewController;
+        }
+        [topController presentViewController:alert animated:YES completion:nil];
+    }
+}
+
+- (void)requestShowRoute:(NSNotification*)note
+{
+    NSArray *route = [note userInfo][@"route"];
+    [self showRoute:route];
+}
+
 
 - (void)retry
 {

@@ -25,5 +25,6 @@
 @interface DestinationTableViewController : UITableViewController
 
 @property UIViewController *root;
+@property UIView *voTarget;
 
 @end

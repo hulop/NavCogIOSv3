@@ -78,6 +78,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var heightRightCell: CustomRightTableViewCell = CustomRightTableViewCell()
     
     private var dialogViewHelper: DialogViewHelper = DialogViewHelper()
+    var cancellable = false
     
     
     let ttslock:NSLock = NSLock()
@@ -122,33 +123,41 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         nc.addObserver(self, selector: #selector(restartConversation), name: "RestartConversation", object: nil)
         nc.addObserver(self, selector: #selector(requestDialogEnd), name: REQUEST_DIALOG_END, object: nil)
         nc.addObserver(self, selector: #selector(requestDialogAction), name: REQUEST_DIALOG_ACTION, object: nil)
-        
+    }
+    
+    internal func updateView() {
+        if let nc = self.navigationController {
+            nc.navigationBar.userInteractionEnabled = cancellable;
+            nc.interactivePopGestureRecognizer!.enabled = cancellable;
+            nc.navigationBar.tintColor = cancellable ? tintColor : UIColor.lightGrayColor()
+        }
     }
 
     override func viewWillAppear(animated: Bool) {
-        self.navigationController!.navigationBar.userInteractionEnabled = false;
-        self.navigationController!.interactivePopGestureRecognizer!.enabled = false;
-        self.navigationController!.navigationBar.tintColor = UIColor.lightGrayColor()        
+        self.updateView()
     }
+    
     override func viewDidAppear(animated: Bool) {
         NSNotificationCenter.defaultCenter().postNotificationName("RestartConversation", object: self)
     }
+    
     override func viewWillDisappear(animated: Bool) {
         NSNotificationCenter.defaultCenter().postNotificationName("ResetConversation", object: self)
-        self.navigationController!.navigationBar.userInteractionEnabled = true;
-        self.navigationController!.interactivePopGestureRecognizer!.enabled = true;
-        self.navigationController!.navigationBar.tintColor = self.tintColor;
+        self.updateView()
     }
+    
     private func validateSecurity(){
         AVCaptureDevice.requestAccessForMediaType(AVMediaTypeAudio, completionHandler: {(granted: Bool) in
         })
         self.conv_context_local.verify_security()
     }
+    
     internal func requestDialogEnd() {
-        self.navigationController!.navigationBar.userInteractionEnabled = true
-        self.navigationController!.interactivePopGestureRecognizer!.enabled = true
-        self.navigationController!.navigationBar.tintColor = self.tintColor
-        self.navigationController?.popToRootViewControllerAnimated(true)
+        if cancellable {
+            self.navigationController?.popToRootViewControllerAnimated(true)
+        } else {
+            NavSound.sharedInstance().playFail()
+        }
     }
     internal func requestDialogAction() {
         self.tapped()
@@ -180,7 +189,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.startConversation()
     }
     internal func onContextChange(context:LocalContext){
-        if let prof = context.get_profile() where !context.is_updating() && !self.conv_started{
+        if let _ = context.get_profile() where !context.is_updating() && !self.conv_started{
             self.conv_started = true
             self.sendmessage("")
         }
@@ -416,7 +425,6 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tapped() {
-        // TODO handle mic button // print(t.view)
         let stt = self.getStt()
         if (stt.recognizing) {
             print("pause stt")
@@ -458,6 +466,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         return ret
     }
+    
     internal func _setTimeout(delay:NSTimeInterval, block:()->Void) -> NSTimer {
         return NSTimer.scheduledTimerWithTimeInterval(delay, target: NSBlockOperation(block: block), selector: #selector(NSOperation.main), userInfo: nil, repeats: false)
     }
@@ -468,11 +477,8 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     internal func newresponse(orgres: MessageResponse?){
         dispatch_async(dispatch_get_main_queue(), { [weak self] in
             if let weakself = self {
-                if let nc = weakself.navigationController {
-                    nc.navigationBar.userInteractionEnabled = true
-                    nc.interactivePopGestureRecognizer!.enabled = true
-                    nc.navigationBar.tintColor = weakself.tintColor
-                }
+                weakself.cancellable = true
+                weakself.updateView()
             }
         })
 
@@ -496,10 +502,8 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if let fin:Bool = resobj!.context["finish"] as? Bool{ 
             if fin {
                 postEndDialog = {
-                    //self.navigationController?.navigationBarHidden = false
-                    self.navigationController!.navigationBar.userInteractionEnabled = true
-                    self.navigationController!.interactivePopGestureRecognizer!.enabled = true
-                    self.navigationController!.navigationBar.tintColor = self.tintColor
+                    self.cancellable = true
+                    self.updateView()
 
                     if self.root != nil {
                         self.navigationController?.popToViewController(self.root!, animated: true)
@@ -516,12 +520,9 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 if let dest_info = resobj!.context["dest_info"] {
                     if let nodes:String = dest_info["nodes"] as? String {
                         postEndDialog = { [weak self] in
-                            //self!.navigationController?.navigationBarHidden = false
                             if let weakself = self {
-                                weakself.navigationController!.navigationBar.userInteractionEnabled = true
-                                weakself.navigationController!.interactivePopGestureRecognizer!.enabled = true
-                                weakself.navigationController!.navigationBar.tintColor = weakself.tintColor
-
+                                weakself.cancellable = true
+                                weakself.updateView()
                                 
                                 if weakself.root != nil {
                                     weakself.navigationController?.popToViewController(weakself.root!, animated: true)
@@ -680,10 +681,8 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
             })
         dispatch_async(dispatch_get_main_queue(), { [weak self] in
             if let weakself = self {
-                //weakself.navigationController?.navigationBarHidden = false
-                weakself.navigationController!.navigationBar.userInteractionEnabled = true
-                weakself.navigationController!.interactivePopGestureRecognizer!.enabled = true
-                weakself.navigationController!.navigationBar.tintColor = weakself.tintColor
+                weakself.cancellable = true
+                weakself.updateView()
             }
         })
     }

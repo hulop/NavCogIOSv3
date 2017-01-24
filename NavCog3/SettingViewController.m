@@ -47,9 +47,11 @@ static HLPSettingHelper *configSettingHelper;
 static HLPSettingHelper *logSettingHelper;
 static HLPSettingHelper *routeOptionsSettingHelper;
 
-static HLPSetting *speechSpeedSetting;
-static HLPSetting *vibrateSetting;
-static HLPSetting *soundEffectSetting;
+static HLPSetting *speechLabel, *speechSpeedSetting, *vibrateSetting, *soundEffectSetting;
+static HLPSetting *previewSpeedSetting, *previewWithActionSetting;
+static HLPSetting *boneConductionSetting, *exerciseLabel, *exerciseAction;
+static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitFeet;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -220,6 +222,9 @@ static HLPSetting *soundEffectSetting;
     } else if ([setting.name isEqualToString:@"launch_exercise"]) {
         [[NavDataStore sharedDataStore] startExercise];
         [self.navigationController popToRootViewControllerAnimated:YES];
+    } else if ([setting.name isEqualToString:@"Reset_Location"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
+        [self.navigationController popToRootViewControllerAnimated:YES];
     } else {
         [self performSegueWithIdentifier:setting.name sender:self];
     }
@@ -262,41 +267,49 @@ static HLPSetting *soundEffectSetting;
 + (void)setupUserSettings
 {
     if (userSettingHelper) {
-        if (speechSpeedSetting) {
-            speechSpeedSetting.visible = !UIAccessibilityIsVoiceOverRunning();
-        }
         BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_BLIND"];
-        if (vibrateSetting) {
-            vibrateSetting.visible = blindMode;
-        }
-        if (soundEffectSetting) {
-            soundEffectSetting.visible = blindMode;
-        }
+        //[speechLabel setVisible:blindMode];
+        //[speechSpeedSetting setVisible:blindMode];
+        [previewSpeedSetting setVisible:blindMode];
+        [previewWithActionSetting setVisible:blindMode];
+        [vibrateSetting setVisible:blindMode];
+        [soundEffectSetting setVisible:blindMode];
+        [boneConductionSetting setVisible:blindMode];
+        [exerciseLabel setVisible:blindMode];
+        [exerciseAction setVisible:blindMode];
+        //[mapLabel setVisible:blindMode];
+        [initialZoomSetting setVisible:blindMode];
+        [unitLabel setVisible:blindMode];
+        [unitMeter setVisible:blindMode];
+        [unitFeet setVisible:blindMode];
+
         return;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
 
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech_Sound", @"label for tts options")];
+    
+    speechLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech_Sound", @"label for tts options")];
     speechSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
                                      Name:@"speech_speed" DefaultValue:@(0.6) Min:0.1 Max:1 Interval:0.05];
-    [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
+    previewSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
+    previewWithActionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
     vibrateSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"vibrateSetting", @"") Name:@"vibrate" DefaultValue:@(YES) Accept:nil];
     soundEffectSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"soundEffectSetting", @"") Name:@"sound_effect" DefaultValue:@(YES) Accept:nil];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"for_bone_conduction_headset",@"") Name:@"for_bone_conduction_headset" DefaultValue:@(NO) Accept:nil];
+    boneConductionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"for_bone_conduction_headset",@"") Name:@"for_bone_conduction_headset" DefaultValue:@(NO) Accept:nil];
 
     
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
-    [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];
+    exerciseLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
+    exerciseAction = [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];
     
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Map", @"label for map")];
-    [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Initial zoom level for navigation", @"") Name:@"zoom_for_navigation" DefaultValue:@(20) Min:15 Max:22 Interval:1];
+    mapLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Map", @"label for map")];
+    initialZoomSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Initial zoom level for navigation", @"") Name:@"zoom_for_navigation" DefaultValue:@(20) Min:15 Max:22 Interval:1];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"Reset_Location", @"") Name:@"Reset_Location"];
     
 
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];
-    [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Meter", @"meter distance unit label")
+    unitLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];
+    unitMeter = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Meter", @"meter distance unit label")
                                      Name:@"unit_meter" Group:@"distance_unit" DefaultValue:@(YES) Accept:nil];
-    [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
+    unitFeet = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
                                      Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
     
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Advanced", @"")];

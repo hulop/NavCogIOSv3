@@ -117,3 +117,5 @@
 "DialogStart" = "再開";
 
 "DialogStartHint" = "対話を再開するにはダブルタップします";
+
+"Reset_Location" = "位置推定をやり直す";

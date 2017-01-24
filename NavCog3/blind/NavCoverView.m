@@ -191,6 +191,7 @@
             break;
         case UIEventSubtypeRemoteControlBeginSeekingBackward: // 106
             [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_END object:self];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_HANDLE_LOCATION_UNKNOWN object:self];
             return;
         case UIEventSubtypeRemoteControlBeginSeekingForward: // 108
             [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:self];

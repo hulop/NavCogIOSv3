@@ -59,6 +59,8 @@
     UIColor *defaultColor;
     
     DialogViewHelper *dialogHelper;
+    
+    NSTimeInterval lastShake;
 }
 
 @end
@@ -75,7 +77,8 @@
     navigator.delegate = nil;
     navigator = nil;
     
-    _settingButton = nil;}
+    _settingButton = nil;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -114,10 +117,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debugPeerStateChanged:) name:DEBUG_PEER_STATE_CHANGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogStart:) name:REQUEST_DIALOG_START object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogEnd:) name:REQUEST_DIALOG_END object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
-
-    [self locationChanged:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleLocaionUnknown:) name:REQUEST_HANDLE_LOCATION_UNKNOWN object:nil];
+     [self locationChanged:nil];
     
 }
 
@@ -188,7 +190,15 @@
 {
     if(event.type == UIEventSubtypeMotionShake)
     {
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
+        NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+        if (now - lastShake < 5) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
+            [[NavSound sharedInstance] vibrate:@{@"repeat":@(2)}];
+            lastShake = 0;
+        } else {
+            [[NavSound sharedInstance] vibrate:nil];
+            lastShake = now;
+        }
     }
 }
 
@@ -848,9 +858,11 @@
     [self performSegueWithIdentifier:@"show_search" sender:@[@"toDestinations", @"show_dialog"]];
 }
 
-- (void) requestDialogEnd:(NSNotification*)note
+- (void)handleLocaionUnknown:(NSNotification*)note
 {
-    // TODO
+    if (self.navigationController.topViewController == self) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
+    }
 }
 
 

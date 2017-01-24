@@ -486,7 +486,9 @@ void functionCalledToLog(void *inUserData, string text)
 - (void) requestLocationUnknown:(NSNotification*) note
 {
     [processQueue addOperationWithBlock:^{
-        localizer->overwriteLocationStatus(Status::UNKNOWN);
+        if (localizer) {
+            localizer->overwriteLocationStatus(Status::UNKNOWN);
+        }
     }];
 }
 

@@ -292,7 +292,7 @@
 - (void)locationChanged:(NSNotification*)note
 {
     if ([[NavDataStore sharedDataStore] mapCenter]) {
-        if (self.searchButton.enabled == NO || dialogHelper.helperView.hidden) {
+        if (self.searchButton.enabled == NO) {
             self.searchButton.enabled = YES;
             [self updateView];
             UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, dialogHelper.helperView);
@@ -643,9 +643,9 @@
         [NavUtil hideModalWaiting];
     });
     
-    double delayInSeconds = 1.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+    //double delayInSeconds = 1.0;
+    //dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    //dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         _cover.preventCurrentStatus = NO;
         [commander didNavigationStarted:properties];
         [previewer didNavigationStarted:properties];
@@ -656,7 +656,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_SHOW_ROUTE object:self userInfo:@{@"route":temp}];
         }
         //[helper showRoute:temp];
-    });
+    //});
 }
 
 - (void)didNavigationFinished:(NSDictionary *)properties

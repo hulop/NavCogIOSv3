@@ -292,7 +292,7 @@
 - (void)locationChanged:(NSNotification*)note
 {
     if ([[NavDataStore sharedDataStore] mapCenter]) {
-        if (self.searchButton.enabled == NO) {
+        if (self.searchButton.enabled == NO || dialogHelper.helperView.hidden) {
             self.searchButton.enabled = YES;
             [self updateView];
             UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, dialogHelper.helperView);

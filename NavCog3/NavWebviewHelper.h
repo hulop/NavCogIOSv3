@@ -55,5 +55,6 @@
 - (void) setBrowserHash:(NSString*) hash;
 - (NSString*) evalScript:(NSString*) script;
 - (HLPLocation*) getCenter;
+- (NSDictionary*) getState;
 - (void) retry;
 @end

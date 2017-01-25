@@ -699,8 +699,15 @@ static NavDataStore* instance_ = nil;
     [HLPDataUtil getJSON:url withCallback:^(NSObject* json){
         if (json && [json isKindOfClass:NSDictionary.class]) {
             serverConfig = (NSDictionary*)json;
+            complete();
+        } else {
+            NSLog(@"error in loading dialog_config, retrying...");
+            double delayInSeconds = 3.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [self requestServerConfigWithComplete:complete];
+            });
         }
-        complete();
     }];
 }
 

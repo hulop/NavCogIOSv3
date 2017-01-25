@@ -272,14 +272,16 @@
                     callback(json);
                 } else {
                     NSLog(@"Error2: %@", [error2 localizedDescription]);
+                    callback(nil);
                 }
             } else {
                 NSLog(@"Error: %@", [error localizedDescription]);
+                callback(nil);
             }
-            callback(nil);
         }
         @catch(NSException *e) {
             NSLog(@"%@", [e debugDescription]);
+            callback(nil);
         }
     }] resume];
 }

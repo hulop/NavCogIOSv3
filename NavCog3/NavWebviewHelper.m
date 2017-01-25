@@ -600,4 +600,17 @@
     [self loadUIPage];
 }
 
+- (NSDictionary*) getState
+{
+    NSString *state = [self evalScript:@"(function(){return JSON.stringify($hulop.map.getState());})()"];
+    NSError *error = nil;
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[state dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+    if (json) {
+        return json;
+    } else {
+        NSLog(@"%@", error.localizedDescription);
+    }
+    return nil;
+}
+
 @end

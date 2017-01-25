@@ -96,6 +96,21 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURL:) name: REQUEST_OPEN_URL object:nil];
     
     [self updateView];
+    
+    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkState:) userInfo:nil repeats:YES];
+}
+
+- (void) checkState:(NSTimer*)timer
+{
+    if (state != ViewStateLoading) {
+        [timer invalidate];
+        return;
+    }
+    NSLog(@"checkState");
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *json = [helper getState];
+        [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:json];
+    });
 }
 
 - (void) openURL:(NSNotification*)note

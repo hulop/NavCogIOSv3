@@ -1599,10 +1599,10 @@ static NavNavigatorConstants *_instance;
             
             //TODO add fix protocol with lower accuracy
             double diffHeading = firstLinkInfo.diffBearingAtSnappedLocationOnLink;
-            if (fabs(diffHeading) > C.ADJUST_HEADING_MARGIN) {
+            if (fabs(diffHeading) > C.CHANGE_HEADING_THRESHOLD) {
                 if (!firstLinkInfo.hasBeenBearing && !firstLinkInfo.hasBeenActivated) {
                     firstLinkInfo.hasBeenBearing = YES;
-                    firstLinkInfo.bearingTargetThreshold = C.ADJUST_HEADING_MARGIN;
+                    firstLinkInfo.bearingTargetThreshold = C.CHANGE_HEADING_THRESHOLD;
                     if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
                         [self.delegate userNeedsToChangeHeading:
                          @{

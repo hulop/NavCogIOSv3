@@ -454,10 +454,14 @@
     if (looseDirection) {
         if (diffHeading < -135 || 135 < diffHeading) {
             string = NSLocalizedStringFromTable(@"turn around",@"BlindView", @"head to the back");
-        } else if (diffHeading < -45) {
+        } else if (diffHeading < -67.5) {
             string = NSLocalizedStringFromTable(@"turn to the left",@"BlindView", @"head to the left direction");
-        } else if (diffHeading > 45) {
+        } else if (diffHeading > 67.5) {
             string = NSLocalizedStringFromTable(@"turn to the right",@"BlindView", @"head to the right direction");
+        } else if (diffHeading < -threshold) {
+            string = NSLocalizedStringFromTable(@"bear left",@"BlindView", @"head to the diagonally forward left direction");
+        } else if (diffHeading > threshold) {
+            string = NSLocalizedStringFromTable(@"bear right",@"BlindView", @"head to the diagonally forward right direction");
         } else {
             return nil;
         }

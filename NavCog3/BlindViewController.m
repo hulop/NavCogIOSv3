@@ -119,8 +119,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogStart:) name:REQUEST_DIALOG_START object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleLocaionUnknown:) name:REQUEST_HANDLE_LOCATION_UNKNOWN object:nil];
-     [self locationChanged:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURL:) name: REQUEST_OPEN_URL object:nil];
+    [self locationChanged:nil];
+}
+
+- (void) openURL:(NSNotification*)note
+{
+    [NavUtil openURL:[note userInfo][@"url"] onViewController:self];
 }
 
 - (void)tapped

@@ -119,3 +119,6 @@
 "DialogStartHint" = "対話を再開するにはダブルタップします";
 
 "Reset_Location" = "位置推定をやり直す";
+
+"Open_with_Safari" = "Safariで開く";
+"Open_with_Safari_Message" = "このページをSafariで開きますが、よろしいですか？";

@@ -102,3 +102,6 @@
 "Error" = "Error";
 
 "Reset_Location" = "Re-init Localization";
+
+"Open_with_Safari" = "Open with Safari?";
+"Open_with_Safari_Message" = "Is it okay to open the page with Safari?";

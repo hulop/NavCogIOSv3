@@ -383,6 +383,14 @@
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
+    NSRange range = [request.URL.absoluteString rangeOfString:server];
+    if (range.location == NSNotFound) {
+        // TODO
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL
+                                                            object:self userInfo:@{@"url":request.URL}];
+        return NO;
+    }
     return YES;
 }
 

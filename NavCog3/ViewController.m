@@ -93,7 +93,14 @@ typedef NS_ENUM(NSInteger, ViewState) {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURL:) name: REQUEST_OPEN_URL object:nil];
+    
     [self updateView];
+}
+
+- (void) openURL:(NSNotification*)note
+{
+    [NavUtil openURL:[note userInfo][@"url"] onViewController:self];
 }
 
 

@@ -93,4 +93,6 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 
 #define PLAY_SYSTEM_SOUND @"PLAY_SYSTEM_SOUND"
 
+#define REQUEST_OPEN_URL @"REQUEST_OPEN_URL"
+
 #endif /* LocationEvent_h */

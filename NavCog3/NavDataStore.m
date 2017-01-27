@@ -692,6 +692,11 @@ static NavDataStore* instance_ = nil;
 - (void)requestServerConfigWithComplete:(void(^)())complete
 {
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
+    
+    if (!server || [server length] == 0) {
+        return;
+    }
+    
     NSString *context = [[NSUserDefaults standardUserDefaults] stringForKey:@"hokoukukan_server_context"];
     NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:CONFIG_JSON, https, server, context]];

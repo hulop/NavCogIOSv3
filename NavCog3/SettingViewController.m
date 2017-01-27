@@ -348,7 +348,7 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
 
     [detailSettingHelper addSectionTitle:@"Navigation server"];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil];
-    [detailSettingHelper addSettingWithType:HOST_PORT Label:@"Server" Name:@"hokoukukan_server" DefaultValue:@[@"hokoukukan.mybluemix.net"] Accept:nil];
+    [detailSettingHelper addSettingWithType:HOST_PORT Label:@"Server" Name:@"hokoukukan_server" DefaultValue:@[@""] Accept:nil];
     [detailSettingHelper addSettingWithType:TEXTINPUT Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil];
 
     /*

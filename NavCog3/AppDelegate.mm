@@ -84,7 +84,6 @@ void uncaughtExceptionHandler(NSException *exception)
 
     UIApplication *app = [UIApplication sharedApplication];
     _backgroundID = [app beginBackgroundTaskWithExpirationHandler:^{
-        [[LocationManager sharedManager] stop];
         [app endBackgroundTask:_backgroundID];
         _backgroundID = UIBackgroundTaskInvalid;
     }];

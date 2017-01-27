@@ -104,4 +104,8 @@
 "Reset_Location" = "Re-init Localization";
 
 "Open_with_Safari" = "Open with Safari?";
-"Open_with_Safari_Message" = "Is it okay to open the page with Safari?";
+"Open_with_Safari_Message" = "Is it okay to open a webpage with Safari?";
+
+"NOT_AVAILABLE" = "This app will be available soon.
+Feb. 8th, 2017";
+

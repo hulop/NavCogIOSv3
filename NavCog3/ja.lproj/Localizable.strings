@@ -121,4 +121,7 @@
 "Reset_Location" = "位置推定をやり直す";
 
 "Open_with_Safari" = "Safariで開く";
-"Open_with_Safari_Message" = "このページをSafariで開きますが、よろしいですか？";
+"Open_with_Safari_Message" = "ウェブページをSafariで開きますが、よろしいですか？";
+
+"NOT_AVAILABLE" = "このアプリは
+2017年02月08日以降に利用できます。";

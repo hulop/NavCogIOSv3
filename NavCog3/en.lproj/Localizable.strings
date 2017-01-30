@@ -106,6 +106,8 @@
 "Open_with_Safari" = "Open with Safari?";
 "Open_with_Safari_Message" = "Is it okay to open a webpage with Safari?";
 
-"NOT_AVAILABLE" = "This app will be available soon.
-Feb. 8th, 2017";
+"CheckServerList" = "Checking server list...";
+"CheckAgreement" = "Checking server setting...";
+"CheckServerConfig" = "Checking server setting...";
+"DOWNLOADING_DATA" = "Downloading data files...";
 

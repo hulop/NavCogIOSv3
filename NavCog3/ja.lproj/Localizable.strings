@@ -123,5 +123,7 @@
 "Open_with_Safari" = "Safariで開く";
 "Open_with_Safari_Message" = "ウェブページをSafariで開きますが、よろしいですか？";
 
-"NOT_AVAILABLE" = "このアプリは
-2017年02月08日以降に利用できます。";
+"CheckServerList" = "サーバーリストを確認中...";
+"CheckAgreement" = "サーバー設定を確認中...";
+"CheckServerConfig" = "サーバー設定を確認中...";
+"DOWNLOADING_DATA" = "データをダウンロード中...";

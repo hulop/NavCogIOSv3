@@ -53,9 +53,6 @@
     // TODO need to move
     NavDataStore *nds = [NavDataStore sharedDataStore];
     nds.userID = [UIDevice currentDevice].identifierForVendor.UUIDString;
-    [nds requestServerConfigWithComplete:^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:SERVER_CONFIG_CHANGED_NOTIFICATION object:self userInfo:nds.serverConfig];
-    }];
 
     [DialogManager sharedManager];
 

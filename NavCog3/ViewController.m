@@ -34,18 +34,6 @@
 
 @end
 
-typedef NS_ENUM(NSInteger, ViewState) {
-    ViewStateMap,
-    ViewStateSearch,
-    ViewStateSearchDetail,
-    ViewStateSearchSetting,
-    ViewStateRouteConfirm,
-    ViewStateNavigation,
-    ViewStateTransition,
-    ViewStateRouteCheck,
-    ViewStateLoading
-};
-
 @implementation ViewController {
     ViewState state;
     UIColor *defaultColor;

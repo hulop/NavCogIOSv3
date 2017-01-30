@@ -199,7 +199,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.conv_context_local.set_profile(profile)
     }
     private func initConversationConfig(){
-        let defs:NSDictionary = NavDataStore.sharedDataStore().serverConfig()
+        let defs:NSDictionary = ServerConfig.sharedConfig().selectedServerConfig;
 
         let server = defs["conv_server"]
         if let _server = server as? String {

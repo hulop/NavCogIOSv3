@@ -81,7 +81,6 @@ typedef enum {
 - (NSArray*) features;
 - (NSString*) userLanguage;
 - (NSArray*) searchHistory;
-- (NSDictionary*) serverConfig;
 - (BOOL) isManualLocation;
 
 - (void) switchFromTo;

@@ -24,6 +24,7 @@
 #import "WelcomViewController.h"
 #import "ServerConfig.h"
 #import "AuthManager.h"
+#import "LocationEvent.h"
 
 @interface WelcomViewController ()
 
@@ -126,6 +127,10 @@
                 [fm copyItemAtPath:config.downloadConfig[@"preset_for_wheelchair"]
                             toPath:[presetsDir stringByAppendingPathComponent:@"wheelchair.plist"] error:&error];                
                 
+                [[NSNotificationCenter defaultCenter] postNotificationName:SERVER_CONFIG_CHANGED_NOTIFICATION
+                                                                    object:self
+                                                                  userInfo:config.selectedServerConfig];
+
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *hostname = config.selected[@"hostname"];
                     [[NSUserDefaults standardUserDefaults] setObject:hostname forKey:@"selected_hokoukukan_server"];

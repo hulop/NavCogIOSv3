@@ -61,6 +61,7 @@
     DialogViewHelper *dialogHelper;
     
     NSTimeInterval lastShake;
+    ViewState state;
 }
 
 @end
@@ -83,6 +84,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    state = ViewStateLoading;
+
     helper = [[NavWebviewHelper alloc] initWithWebview:self.webView];
     helper.delegate = self;
     
@@ -112,7 +115,6 @@
     dialogHelper.helperView.hidden = YES;
     
     self.searchButton.enabled = NO;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debugPeerStateChanged:) name:DEBUG_PEER_STATE_CHANGE object:nil];
@@ -120,8 +122,22 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleLocaionUnknown:) name:REQUEST_HANDLE_LOCATION_UNKNOWN object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURL:) name: REQUEST_OPEN_URL object:nil];
-    [self locationChanged:nil];
+
+    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkMapCenter:) userInfo:nil repeats:YES];
 }
+
+- (void) checkMapCenter:(NSTimer*)timer
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        HLPLocation *loc = [helper getCenter];
+        if (loc != nil) {
+            [NavDataStore sharedDataStore].mapCenter = loc;
+            [self updateView];
+            [timer invalidate];
+        }
+    });
+}
+
 
 - (void) openURL:(NSNotification*)note
 {
@@ -247,6 +263,8 @@
         //self.cover.hidden = devMode || !isActive;
         self.cover.hidden = devMode;
         
+        self.searchButton.enabled = hasCenter;
+        
         self.navigationItem.leftBarButtonItem = nil;
         if ((isActive && !devMode) || previewMode || initFlag) {
         } else {
@@ -286,19 +304,8 @@
         }
 
     });
-
 }
 
-- (void)locationChanged:(NSNotification*)note
-{
-    if ([[NavDataStore sharedDataStore] mapCenter]) {
-        if (self.searchButton.enabled == NO) {
-            self.searchButton.enabled = YES;
-            [self updateView];
-            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, dialogHelper.helperView);
-        }
-    }
-}
 
 - (void) logReplay:(NSNotification*)note
 {

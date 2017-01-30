@@ -600,6 +600,20 @@
     [self loadUIPage];
 }
 
+- (HLPLocation *)getCenter
+{
+    NSString *state = [self evalScript:@"(function(){return JSON.stringify($hulop.map.getCenter());})()"];
+    NSError *error = nil;
+    NSArray *json = [NSJSONSerialization JSONObjectWithData:[state dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+    if (json) {
+        return [[HLPLocation alloc] initWithLat:[json[1] doubleValue] Lng:[json[0] doubleValue]];
+    } else {
+        NSLog(@"%@", error.localizedDescription);
+    }
+    return nil;
+    
+}
+
 - (NSDictionary*) getState
 {
     NSString *state = [self evalScript:@"(function(){return JSON.stringify($hulop.map.getState());})()"];

@@ -32,6 +32,18 @@
 #define BACK_TO_CONTROL @"BACK_TO_CONTROL"
 #define DONE_BUTTON @"DONE_BUTTON"
 
+typedef NS_ENUM(NSInteger, ViewState) {
+    ViewStateMap,
+    ViewStateSearch,
+    ViewStateSearchDetail,
+    ViewStateSearchSetting,
+    ViewStateRouteConfirm,
+    ViewStateNavigation,
+    ViewStateTransition,
+    ViewStateRouteCheck,
+    ViewStateLoading
+};
+
 @interface NavWebView : UIWebView
 
 @end

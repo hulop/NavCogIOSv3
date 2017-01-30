@@ -80,8 +80,15 @@ static ServerConfig *instance;
             return;
         }
     }
-
-    [HLPDataUtil getJSON:[NSURL URLWithString:SERVERLIST_URL] withCallback:^(NSObject *result) {
+    NSString *serverlist = SERVERLIST_URL;
+    NSString* serverListURLPath = [documentsPath stringByAppendingPathComponent:@"serverlist.txt"];
+    if ([fm fileExistsAtPath:serverListURLPath]) {
+        NSError *error;
+        serverlist = [NSString stringWithContentsOfFile:serverListURLPath encoding:NSUTF8StringEncoding error:&error];
+        serverlist = [serverlist stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    }
+    
+    [HLPDataUtil getJSON:[NSURL URLWithString:serverlist] withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
             _serverList = (NSDictionary*)result;
             complete(_serverList);

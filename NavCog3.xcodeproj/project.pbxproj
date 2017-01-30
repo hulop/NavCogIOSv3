@@ -79,6 +79,12 @@
 		7EDEDC2F1D1E0C6800AC111A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7EDEDC2D1D1E0C6800AC111A /* LaunchScreen.storyboard */; };
 		7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC371D1E0E5E00AC111A /* LocationManager.mm */; };
 		7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */; };
+		7EF45E321E3F1E3700208042 /* AgreementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2A1E3F1E3700208042 /* AgreementViewController.m */; };
+		7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */; };
+		7EF45E341E3F1E3700208042 /* ServerSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */; };
+		7EF45E351E3F1E3700208042 /* WelcomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */; };
+		7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E371E3F1E5600208042 /* ServerConfig.m */; };
+		7EF45E3B1E3F1E5600208042 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E391E3F1E5600208042 /* AuthManager.m */; };
 		7EF6FBB21DA4DD8200382F76 /* NavSound.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF6FBB11DA4DD8200382F76 /* NavSound.m */; };
 		7EF7F7721DCC1E08000A625A /* NavCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7711DCC1E08000A625A /* NavCoverView.m */; };
 		7EF7F7A01DD178F7000A625A /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F79F1DD178F7000A625A /* main.mm */; };
@@ -232,6 +238,18 @@
 		7EDEDC361D1E0E5E00AC111A /* LocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
 		7EDEDC371D1E0E5E00AC111A /* LocationManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LocationManager.mm; sourceTree = "<group>"; };
 		7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		7EF45E2A1E3F1E3700208042 /* AgreementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AgreementViewController.m; sourceTree = "<group>"; };
+		7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadViewController.m; sourceTree = "<group>"; };
+		7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerSelectionViewController.m; sourceTree = "<group>"; };
+		7EF45E2D1E3F1E3700208042 /* WelcomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomViewController.h; sourceTree = "<group>"; };
+		7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomViewController.m; sourceTree = "<group>"; };
+		7EF45E2F1E3F1E3700208042 /* AgreementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AgreementViewController.h; sourceTree = "<group>"; };
+		7EF45E301E3F1E3700208042 /* DownloadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadViewController.h; sourceTree = "<group>"; };
+		7EF45E311E3F1E3700208042 /* ServerSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerSelectionViewController.h; sourceTree = "<group>"; };
+		7EF45E361E3F1E5600208042 /* ServerConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerConfig.h; sourceTree = "<group>"; };
+		7EF45E371E3F1E5600208042 /* ServerConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerConfig.m; sourceTree = "<group>"; };
+		7EF45E381E3F1E5600208042 /* AuthManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthManager.h; sourceTree = "<group>"; };
+		7EF45E391E3F1E5600208042 /* AuthManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthManager.m; sourceTree = "<group>"; };
 		7EF6FBB01DA4DD8200382F76 /* NavSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavSound.h; path = blind/NavSound.h; sourceTree = "<group>"; };
 		7EF6FBB11DA4DD8200382F76 /* NavSound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavSound.m; path = blind/NavSound.m; sourceTree = "<group>"; };
 		7EF7F7701DCC1E08000A625A /* NavCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavCoverView.h; path = blind/NavCoverView.h; sourceTree = "<group>"; };
@@ -358,6 +376,14 @@
 				7E96D9351DAD185800D57C8C /* DestinationTableViewController.m */,
 				7EA018FF1E2F54E7005E65ED /* InitViewController.h */,
 				7EA019001E2F54E7005E65ED /* InitViewController.mm */,
+				7EF45E2A1E3F1E3700208042 /* AgreementViewController.m */,
+				7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */,
+				7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */,
+				7EF45E2D1E3F1E3700208042 /* WelcomViewController.h */,
+				7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */,
+				7EF45E2F1E3F1E3700208042 /* AgreementViewController.h */,
+				7EF45E301E3F1E3700208042 /* DownloadViewController.h */,
+				7EF45E311E3F1E3700208042 /* ServerSelectionViewController.h */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -386,6 +412,10 @@
 		7E5078C01D4A45C300F5A0F7 /* helper */ = {
 			isa = PBXGroup;
 			children = (
+				7EF45E361E3F1E5600208042 /* ServerConfig.h */,
+				7EF45E371E3F1E5600208042 /* ServerConfig.m */,
+				7EF45E381E3F1E5600208042 /* AuthManager.h */,
+				7EF45E391E3F1E5600208042 /* AuthManager.m */,
 				FB81E72F1DF0228D00CAD286 /* NavDebugHelper.h */,
 				FB81E7301DF0228D00CAD286 /* NavDebugHelper.m */,
 				7EDEDC361D1E0E5E00AC111A /* LocationManager.h */,
@@ -719,11 +749,15 @@
 			files = (
 				7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */,
 				7E1F9F3B1DF01AA5003E1B23 /* ConversationEx.swift in Sources */,
+				7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */,
+				7EF45E321E3F1E3700208042 /* AgreementViewController.m in Sources */,
 				7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */,
+				7EF45E341E3F1E3700208042 /* ServerSelectionViewController.m in Sources */,
 				7E1F9F3F1DF01AA5003E1B23 /* AnimLayer.swift in Sources */,
 				7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,
 				7EAE6F0D1D2642D600614C35 /* NavWebviewHelper.m in Sources */,
+				7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */,
 				7EF7F7721DCC1E08000A625A /* NavCoverView.m in Sources */,
 				7E96D9361DAD185800D57C8C /* DestinationTableViewController.m in Sources */,
 				7EF7F7AE1DD1949C000A625A /* NavDataSource.m in Sources */,
@@ -741,6 +775,7 @@
 				7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */,
 				7E1F9F451DF01AA5003E1B23 /* DialogViewController.swift in Sources */,
 				7E1F9F3C1DF01AA5003E1B23 /* CustomArrow.swift in Sources */,
+				7EF45E351E3F1E3700208042 /* WelcomViewController.m in Sources */,
 				7E1F9F431DF01AA5003E1B23 /* STTHelper.swift in Sources */,
 				7E1F9F3D1DF01AA5003E1B23 /* CustomTableViewCell.swift in Sources */,
 				7E9238E81D5189F100875766 /* HLPSettingTableView.m in Sources */,
@@ -757,6 +792,7 @@
 				7E8A33C61D92D13400D20CD5 /* HLPLocation.m in Sources */,
 				7E9866CE1D5174780073CB49 /* Logging.m in Sources */,
 				7EF6FBB21DA4DD8200382F76 /* NavSound.m in Sources */,
+				7EF45E3B1E3F1E5600208042 /* AuthManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

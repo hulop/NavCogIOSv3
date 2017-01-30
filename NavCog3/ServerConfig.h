@@ -30,6 +30,7 @@
 @property NSDictionary *selected;
 @property (readonly) NSDictionary *selectedServerConfig;
 @property (readonly) NSDictionary *agreementConfig;
+@property (readonly) NSDictionary *downloadConfig;
 
 + (instancetype) sharedConfig;
 

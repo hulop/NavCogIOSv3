@@ -65,11 +65,12 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary *server = [self serverAtIndexPath:indexPath];
-    [ServerConfig sharedConfig].selected = server;
-    // todo save
-    // save server id & server host
     
-    [self performSegueWithIdentifier:@"unwind_server_selection" sender:self];
+    if ([server[@"available"] boolValue]) {
+        [ServerConfig sharedConfig].selected = server;
+        [self performSegueWithIdentifier:@"unwind_server_selection" sender:self];
+    }
+    
 }
 
 #pragma mark - Table view data source
@@ -115,8 +116,22 @@
     NSDictionary *server = [self serverAtIndexPath:indexPath];
     
     if (server) {
-        cell.textLabel.text = server[@"name"];
-        cell.detailTextLabel.text = server[@"description"];
+        NSString *userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
+
+        BOOL available = [server[@"available"] boolValue];
+        
+        if (available) {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            cell.textLabel.textColor = [UIColor blackColor];
+            cell.detailTextLabel.textColor = [UIColor blackColor];
+        } else {
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            cell.textLabel.textColor = [UIColor grayColor];
+            cell.detailTextLabel.textColor = [UIColor grayColor];
+        }
+        
+        cell.textLabel.text = server[@"name"][userLanguage];
+        cell.detailTextLabel.text = server[@"description"][userLanguage];
     }
     
     return cell;

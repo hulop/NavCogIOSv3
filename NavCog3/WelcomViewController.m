@@ -62,12 +62,6 @@
         return;
     }
     
-    // check for develpment authoraization
-    if ([[AuthManager sharedManager] isAuthorizedForKey:@"development"]) {
-        [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
-        return;
-    }
-    
     ServerConfig *config = [ServerConfig sharedConfig];
 
     if (!config.selected) {
@@ -112,7 +106,29 @@
                     [self performSegueWithIdentifier:@"show_download" sender:self];
                 });
             } else {
+                NSArray *files = config.downloadConfig[@"map_files"];
+                NSFileManager *fm = [NSFileManager defaultManager];
+
+                NSError *error;
+                NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+                for(NSString *path in files) {
+                    NSString *toPath = [path lastPathComponent];
+                    toPath = [docPath stringByAppendingPathComponent:toPath];
+                    [fm copyItemAtPath:path toPath:toPath error:&error];
+                }
+                NSString *presetsDir = [docPath stringByAppendingPathComponent:@"presets"];
+                [fm createDirectoryAtPath:presetsDir withIntermediateDirectories:YES attributes:nil error:nil];
+
+                [fm copyItemAtPath:config.downloadConfig[@"preset_for_blind"]
+                            toPath:[presetsDir stringByAppendingPathComponent:@"blind.plist"] error:&error];
+                [fm copyItemAtPath:config.downloadConfig[@"preset_for_sighted"]
+                            toPath:[presetsDir stringByAppendingPathComponent:@"sighted.plist"] error:&error];
+                [fm copyItemAtPath:config.downloadConfig[@"preset_for_wheelchair"]
+                            toPath:[presetsDir stringByAppendingPathComponent:@"wheelchair.plist"] error:&error];                
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString *hostname = config.selected[@"hostname"];
+                    [[NSUserDefaults standardUserDefaults] setObject:hostname forKey:@"selected_hokoukukan_server"];
                     [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
                 });
             }

@@ -24,4 +24,8 @@
 
 @interface InitViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UIButton *blindButton;
+@property (weak, nonatomic) IBOutlet UIButton *wcButton;
+@property (weak, nonatomic) IBOutlet UIButton *gpButton;
+
 @end

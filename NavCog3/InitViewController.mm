@@ -24,88 +24,49 @@
 #import "ConfigManager.h"
 #import "LocationManager.h"
 #import "NavUtil.h"
+#import "ServerConfig.h"
+#import "AuthManager.h"
 
 @interface InitViewController ()
 
 @end
 
 @implementation InitViewController {
-    BOOL isAvailable;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
 }
 
-- (void) viewWillLayoutSubviews
+- (void)viewWillAppear:(BOOL)animated
 {
-    [self checkServerSettingFile];
+    [self updateView];
+}
+
+- (void) updateView
+{
+    self.blindButton.enabled = NO;
+    //self.wcButton.enabled = NO;
+    //self.gpButton.enabled = NO;
     
-    NSString *server = [[NSUserDefaults standardUserDefaults] valueForKey:@"selected_hokoukukan_server"];
-    if (server && [server length] > 0) {
-        isAvailable = YES;
+    NSDictionary *config = [ServerConfig sharedConfig].selectedServerConfig;
+    
+    if (config[@"key_for_blind"]) {
+        BOOL blind_authorized = [[AuthManager sharedManager] isAuthorizedForName:@"blind" withKey:config[@"key_for_blind"]];
+        self.blindButton.enabled = blind_authorized;
     } else {
-        isAvailable = NO;
-        CGRect wf = self.view.window.frame;
-        UIView *cover = [[UIView alloc] initWithFrame:wf];
-        cover.backgroundColor = UIColor.whiteColor;
-        CGRect frame = CGRectMake(0, wf.size.height/2-25, wf.size.width, 50);
-        UILabel *label = [[UILabel alloc] initWithFrame:frame];
-        label.numberOfLines = 2;
-        label.textAlignment = NSTextAlignmentCenter;
-        label.text = NSLocalizedString(@"NOT_AVAILABLE", @"");
-        [cover addSubview:label];
-        
-        frame = CGRectMake(wf.size.width/2-20, wf.size.height/2+25, 40, 40);
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoLight];
-        button.frame = frame;
-        [button addTarget:self action:@selector(infoButtonPushed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [cover addSubview:button];
-        [self.view addSubview:cover];
+        self.blindButton.enabled = YES;
     }
 }
 
-- (void)checkServerSettingFile
-{
-    NSFileManager *fm = [NSFileManager defaultManager];
-    
-    NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-
-    NSString* serverSetting = [documentsPath stringByAppendingPathComponent:@"server.txt"];
-
-    if ([fm fileExistsAtPath:serverSetting]) {
-        NSError *error;
-        NSString *server = [[NSString alloc] initWithContentsOfFile:serverSetting encoding:NSUTF8StringEncoding error:&error];
-        
-        server = [server stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        
-        [[NSUserDefaults standardUserDefaults] setObject:server forKey:@"selected_hokoukukan_server"];
-    }
-    
-}
 - (void)infoButtonPushed:(NSObject*)sender
 {
     NSURL *url = [NSURL URLWithString:@"https://hulop.github.io/"];
     [NavUtil openURL:url onViewController:self];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    if (isAvailable && UIAccessibilityIsVoiceOverRunning()) {
-        [self performSegueWithIdentifier:@"user_blind" sender:self];
-    }
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
-{
-    return isAvailable;
 }
 
 #pragma mark - Navigation

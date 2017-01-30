@@ -22,6 +22,7 @@
 
 
 #import "AuthManager.h"
+#import <CommonCrypto/CommonCrypto.h>
 
 @implementation AuthManager
 
@@ -35,10 +36,45 @@ static AuthManager *instance;
     return instance;
 }
 
-- (BOOL)isAuthorizedForKey:(NSString *)key
+- (BOOL)isAuthorizedForName:(NSString *)name withKey:(NSString *)key
 {
-    // TODO
-    return NO;
+    NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString* keyFile = [documentsPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.keyfile", name]];
+    
+    NSError *error;
+    NSString* localKey = [NSString stringWithContentsOfFile:keyFile encoding:NSUTF8StringEncoding error:&error];
+    localKey = [localKey stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    localKey = [AuthManager MD5Hash:localKey];
+    
+    return [key isEqualToString:localKey];
+}
+
+- (BOOL)isDeveloperAuthorized
+{
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"dev" ofType:@"hashfile"];
+    if (!path) {
+        return NO;
+    }
+    NSError *error;
+    NSString *hash = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+    hash = [hash stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    return [self isAuthorizedForName:@"dev" withKey:hash];
+}
+
++ (NSString *)MD5Hash:(NSString *)original
+{
+    if (original.length == 0) {
+        return nil;
+    }
+    const char *data = [original UTF8String];
+    CC_LONG len = (CC_LONG)strlen(data);
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(data, len, result);
+    NSMutableString *ms = [@"" mutableCopy];
+    for (int i = 0; i < 16; i++) {
+        [ms appendFormat:@"%02X",result[i]];
+    }
+    return ms;
 }
 
 @end

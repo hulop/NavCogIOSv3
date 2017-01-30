@@ -42,15 +42,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.statusLabel.text = @"データをダウンロード中";
+    self.statusLabel.text = NSLocalizedString(@"DOWNLOADING_DATA", @"");
     self.progressBar.progress = 0;
     self.progressLabel.text = @"0%";
     
-//    [self downloadFiles:@[@{
-//                              @"length": @(425900),
-//                              @"url": @"https://github.com/hulop/blelocpp/archive/v1.2.3.zip"
-//                              }]];
-
     downloadingFiles = [[ServerConfig sharedConfig] checkDownloadFiles];
 }
 

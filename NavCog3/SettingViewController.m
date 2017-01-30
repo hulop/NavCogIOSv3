@@ -30,6 +30,7 @@
 #import "NavCog3-Swift.h"
 #import "NavDeviceTTS.h"
 #import "NavDataStore.h"
+#import "AuthManager.h"
 
 @interface SettingViewController ()
 
@@ -312,8 +313,10 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
     unitFeet = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
                                      Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
     
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Advanced", @"")];
-    [userSettingHelper addActionTitle:NSLocalizedString(@"Advanced Setting", @"") Name:@"advanced_settings"];
+    if ([[AuthManager sharedManager] isDeveloperAuthorized]) {    
+        [userSettingHelper addSectionTitle:NSLocalizedString(@"Advanced", @"")];
+        [userSettingHelper addActionTitle:NSLocalizedString(@"Advanced Setting", @"") Name:@"advanced_settings"];
+    }
     
 }
 

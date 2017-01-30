@@ -26,6 +26,8 @@
 @interface AuthManager : NSObject
 
 + (instancetype) sharedManager;
-- (BOOL) isAuthorizedForKey:(NSString*)key;
++ (NSString *)MD5Hash:(NSString *)original;
+- (BOOL) isAuthorizedForName:(NSString*)name withKey:(NSString*)key;
+- (BOOL)isDeveloperAuthorized;
 
 @end

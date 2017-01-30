@@ -25,16 +25,6 @@
 		7E1F9F431DF01AA5003E1B23 /* STTHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F381DF01AA5003E1B23 /* STTHelper.swift */; };
 		7E1F9F441DF01AA5003E1B23 /* TextToSpeech.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F391DF01AA5003E1B23 /* TextToSpeech.swift */; };
 		7E1F9F451DF01AA5003E1B23 /* DialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */; };
-		7E1F9F491DF01BC2003E1B23 /* ConversationV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */; };
-		7E1F9F4A1DF01BC2003E1B23 /* ConversationV1.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		7E1F9F4B1DF01BC2003E1B23 /* DialogV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */; };
-		7E1F9F4C1DF01BC2003E1B23 /* DialogV1.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		7E1F9F4D1DF01BC2003E1B23 /* RestKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F481DF01BC2003E1B23 /* RestKit.framework */; };
-		7E1F9F4E1DF01BC2003E1B23 /* RestKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F481DF01BC2003E1B23 /* RestKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		7E1F9F511DF01C86003E1B23 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F501DF01C86003E1B23 /* Alamofire.framework */; };
-		7E1F9F521DF01C86003E1B23 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F501DF01C86003E1B23 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		7E1F9F551DF01FA9003E1B23 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F531DF01FA9003E1B23 /* Freddy.framework */; };
-		7E1F9F561DF01FA9003E1B23 /* Freddy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F531DF01FA9003E1B23 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7E1F9F5F1DF14E6F003E1B23 /* DialogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */; };
 		7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E28479E1E024112006B1FB8 /* exercise-data.json */; };
 		7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */; };
@@ -85,6 +75,15 @@
 		7EF45E351E3F1E3700208042 /* WelcomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */; };
 		7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E371E3F1E5600208042 /* ServerConfig.m */; };
 		7EF45E3B1E3F1E5600208042 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E391E3F1E5600208042 /* AuthManager.m */; };
+		7EF45E3D1E3F426F00208042 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E3C1E3F426F00208042 /* Security.framework */; };
+		7EF45E481E3F42AB00208042 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E431E3F42AB00208042 /* Alamofire.framework */; };
+		7EF45E491E3F42AB00208042 /* ConversationV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E441E3F42AB00208042 /* ConversationV1.framework */; };
+		7EF45E4A1E3F42AB00208042 /* DialogV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E451E3F42AB00208042 /* DialogV1.framework */; };
+		7EF45E4B1E3F42AB00208042 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E461E3F42AB00208042 /* Freddy.framework */; };
+		7EF45E4C1E3F42AB00208042 /* RestKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E471E3F42AB00208042 /* RestKit.framework */; };
+		7EF45E4F1E3F53FF00208042 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E4E1E3F53FF00208042 /* Security.framework */; };
+		7EF45E501E3F541C00208042 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E391E3F1E5600208042 /* AuthManager.m */; };
+		7EF45E541E3F58D200208042 /* dev.hashfile in Resources */ = {isa = PBXBuildFile; fileRef = 7EF45E531E3F58D200208042 /* dev.hashfile */; };
 		7EF6FBB21DA4DD8200382F76 /* NavSound.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF6FBB11DA4DD8200382F76 /* NavSound.m */; };
 		7EF7F7721DCC1E08000A625A /* NavCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7711DCC1E08000A625A /* NavCoverView.m */; };
 		7EF7F7A01DD178F7000A625A /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F79F1DD178F7000A625A /* main.mm */; };
@@ -103,21 +102,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		7E1F9F4F1DF01BC2003E1B23 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				7E1F9F561DF01FA9003E1B23 /* Freddy.framework in Embed Frameworks */,
-				7E1F9F4A1DF01BC2003E1B23 /* ConversationV1.framework in Embed Frameworks */,
-				7E1F9F4C1DF01BC2003E1B23 /* DialogV1.framework in Embed Frameworks */,
-				7E1F9F4E1DF01BC2003E1B23 /* RestKit.framework in Embed Frameworks */,
-				7E1F9F521DF01C86003E1B23 /* Alamofire.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7EF7F79B1DD178F7000A625A /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
@@ -162,11 +146,6 @@
 		7E1F9F381DF01AA5003E1B23 /* STTHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STTHelper.swift; sourceTree = "<group>"; };
 		7E1F9F391DF01AA5003E1B23 /* TextToSpeech.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextToSpeech.swift; sourceTree = "<group>"; };
 		7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogViewController.swift; path = dialog/DialogViewController.swift; sourceTree = "<group>"; };
-		7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ConversationV1.framework; path = Carthage/Build/iOS/ConversationV1.framework; sourceTree = "<group>"; };
-		7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DialogV1.framework; path = Carthage/Build/iOS/DialogV1.framework; sourceTree = "<group>"; };
-		7E1F9F481DF01BC2003E1B23 /* RestKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RestKit.framework; path = Carthage/Build/iOS/RestKit.framework; sourceTree = "<group>"; };
-		7E1F9F501DF01C86003E1B23 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
-		7E1F9F531DF01FA9003E1B23 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/iOS/Freddy.framework; sourceTree = "<group>"; };
 		7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogManager.swift; path = dialog/DialogManager.swift; sourceTree = "<group>"; };
 		7E28479E1E024112006B1FB8 /* exercise-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "exercise-data.json"; path = "model/exercise-data.json"; sourceTree = "<group>"; };
 		7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
@@ -250,6 +229,14 @@
 		7EF45E371E3F1E5600208042 /* ServerConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerConfig.m; sourceTree = "<group>"; };
 		7EF45E381E3F1E5600208042 /* AuthManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthManager.h; sourceTree = "<group>"; };
 		7EF45E391E3F1E5600208042 /* AuthManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthManager.m; sourceTree = "<group>"; };
+		7EF45E3C1E3F426F00208042 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		7EF45E431E3F42AB00208042 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		7EF45E441E3F42AB00208042 /* ConversationV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ConversationV1.framework; path = Carthage/Build/iOS/ConversationV1.framework; sourceTree = "<group>"; };
+		7EF45E451E3F42AB00208042 /* DialogV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DialogV1.framework; path = Carthage/Build/iOS/DialogV1.framework; sourceTree = "<group>"; };
+		7EF45E461E3F42AB00208042 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/iOS/Freddy.framework; sourceTree = "<group>"; };
+		7EF45E471E3F42AB00208042 /* RestKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RestKit.framework; path = Carthage/Build/iOS/RestKit.framework; sourceTree = "<group>"; };
+		7EF45E4E1E3F53FF00208042 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
+		7EF45E531E3F58D200208042 /* dev.hashfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dev.hashfile; sourceTree = "<group>"; };
 		7EF6FBB01DA4DD8200382F76 /* NavSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavSound.h; path = blind/NavSound.h; sourceTree = "<group>"; };
 		7EF6FBB11DA4DD8200382F76 /* NavSound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavSound.m; path = blind/NavSound.m; sourceTree = "<group>"; };
 		7EF7F7701DCC1E08000A625A /* NavCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavCoverView.h; path = blind/NavCoverView.h; sourceTree = "<group>"; };
@@ -275,14 +262,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EF45E481E3F42AB00208042 /* Alamofire.framework in Frameworks */,
+				7EF45E491E3F42AB00208042 /* ConversationV1.framework in Frameworks */,
+				7EF45E4A1E3F42AB00208042 /* DialogV1.framework in Frameworks */,
+				7EF45E4B1E3F42AB00208042 /* Freddy.framework in Frameworks */,
+				7EF45E4C1E3F42AB00208042 /* RestKit.framework in Frameworks */,
+				7EF45E3D1E3F426F00208042 /* Security.framework in Frameworks */,
 				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
-				7E1F9F551DF01FA9003E1B23 /* Freddy.framework in Frameworks */,
-				7E1F9F4B1DF01BC2003E1B23 /* DialogV1.framework in Frameworks */,
-				7E1F9F491DF01BC2003E1B23 /* ConversationV1.framework in Frameworks */,
-				7E1F9F511DF01C86003E1B23 /* Alamofire.framework in Frameworks */,
 				12CE60FFF66333BF27326795 /* libPods-NavCog3.a in Frameworks */,
-				7E1F9F4D1DF01BC2003E1B23 /* RestKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,6 +278,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EF45E4F1E3F53FF00208042 /* Security.framework in Frameworks */,
 				7EF7F7A51DD17A8D000A625A /* Foundation.framework in Frameworks */,
 				4D5913145F8F9F8919F39900 /* libPods-NavCogTool.a in Frameworks */,
 			);
@@ -301,6 +290,13 @@
 		0F5EA397BCF0C5EEF08F5111 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7EF45E4E1E3F53FF00208042 /* Security.framework */,
+				7EF45E431E3F42AB00208042 /* Alamofire.framework */,
+				7EF45E441E3F42AB00208042 /* ConversationV1.framework */,
+				7EF45E451E3F42AB00208042 /* DialogV1.framework */,
+				7EF45E461E3F42AB00208042 /* Freddy.framework */,
+				7EF45E471E3F42AB00208042 /* RestKit.framework */,
+				7EF45E3C1E3F426F00208042 /* Security.framework */,
 				7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */,
 				7EF7F7A41DD17A8D000A625A /* Foundation.framework */,
 				7E5150EA1D8D75C400ED25FB /* Mantle.framework */,
@@ -376,14 +372,14 @@
 				7E96D9351DAD185800D57C8C /* DestinationTableViewController.m */,
 				7EA018FF1E2F54E7005E65ED /* InitViewController.h */,
 				7EA019001E2F54E7005E65ED /* InitViewController.mm */,
+				7EF45E2F1E3F1E3700208042 /* AgreementViewController.h */,
 				7EF45E2A1E3F1E3700208042 /* AgreementViewController.m */,
+				7EF45E301E3F1E3700208042 /* DownloadViewController.h */,
 				7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */,
+				7EF45E311E3F1E3700208042 /* ServerSelectionViewController.h */,
 				7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */,
 				7EF45E2D1E3F1E3700208042 /* WelcomViewController.h */,
 				7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */,
-				7EF45E2F1E3F1E3700208042 /* AgreementViewController.h */,
-				7EF45E301E3F1E3700208042 /* DownloadViewController.h */,
-				7EF45E311E3F1E3700208042 /* ServerSelectionViewController.h */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -476,11 +472,6 @@
 		7EDEDC131D1E0C6800AC111A = {
 			isa = PBXGroup;
 			children = (
-				7E1F9F531DF01FA9003E1B23 /* Freddy.framework */,
-				7E1F9F501DF01C86003E1B23 /* Alamofire.framework */,
-				7E1F9F461DF01BC2003E1B23 /* ConversationV1.framework */,
-				7E1F9F471DF01BC2003E1B23 /* DialogV1.framework */,
-				7E1F9F481DF01BC2003E1B23 /* RestKit.framework */,
 				7EDEDC1E1D1E0C6800AC111A /* NavCog3 */,
 				7EF7F79E1DD178F7000A625A /* NavCogTool */,
 				7EDEDC1D1D1E0C6800AC111A /* Products */,
@@ -528,6 +519,7 @@
 				7EDEDC221D1E0C6800AC111A /* AppDelegate.h */,
 				7EDEDC231D1E0C6800AC111A /* AppDelegate.mm */,
 				7E6E42EC1D911236006B6899 /* LocationEvent.h */,
+				7EF45E531E3F58D200208042 /* dev.hashfile */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -553,7 +545,7 @@
 				7EDEDC1A1D1E0C6800AC111A /* Resources */,
 				3AD4AA683ED6D64EDE1BF2E8 /* [CP] Embed Pods Frameworks */,
 				5F71D1C14A5EA1F4F8125B8B /* [CP] Copy Pods Resources */,
-				7E1F9F4F1DF01BC2003E1B23 /* Embed Frameworks */,
+				7EF45E4D1E3F42BD00208042 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -657,6 +649,7 @@
 				7EAE6F0F1D264AC200614C35 /* ios_bridge.js in Resources */,
 				7E17F1A31D9A226100DB1F34 /* Localizable.strings in Resources */,
 				7E9238F11D5189FF00875766 /* HLPSettingView.strings in Resources */,
+				7EF45E541E3F58D200208042 /* dev.hashfile in Resources */,
 				7E6E42E01D90C7A3006B6899 /* Settings.bundle in Resources */,
 				7E9238EE1D5189F100875766 /* HLPSettingViewTextCell.xib in Resources */,
 			);
@@ -740,6 +733,24 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		7EF45E4D1E3F42BD00208042 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/ConversationV1.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/DialogV1.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Freddy.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RestKit.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -800,6 +811,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EF45E501E3F541C00208042 /* AuthManager.m in Sources */,
 				7EF7F7B71DD1C138000A625A /* Logging.m in Sources */,
 				7EF7F7AF1DD1BC2B000A625A /* HLPGeoJSON.m in Sources */,
 				7EF7F7B01DD1BC2B000A625A /* HLPDataUtil.m in Sources */,

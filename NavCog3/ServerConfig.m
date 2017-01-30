@@ -25,8 +25,11 @@
 #import "HLPDataUtil.h"
 #import <UIKit/UIKit.h>
 
+#define SERVERLIST_URL @"https://hulop.github.io/serverlist.json"
+
 @implementation ServerConfig {
-    NSString *targetDir;
+    NSURL *targetDir;
+    int requestCount;
 }
 
 static ServerConfig *instance;
@@ -62,37 +65,34 @@ static ServerConfig *instance;
 
 - (void)requestServerList:(NSString *)path withComplete:(void (^)(NSDictionary *))complete
 {
-    // TODO download from server
-    /*
-    [HLPDataUtil getJSON:[NSURL URLWithString:@"url"] withCallback:^(NSObject *result) {
-       // result == nil if error
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString* serverListPath = [documentsPath stringByAppendingPathComponent:@"serverlist.json"];
+    
+    if ([fm fileExistsAtPath:serverListPath]) {
+        NSError *error;
+        NSData *data = [NSData dataWithContentsOfFile:serverListPath];
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        if (json) {
+            _serverList = json;
+            complete(json);
+            return;
+        }
+    }
 
-     }];
-     */
-    
-    _serverList = @{
-                @"servers":@[
-                        @{
-                            @"server_id": @"coredo_muromachi",
-                            @"name": @"COREDO室町",
-                            @"description": @"2017年02月08日から利用開始",
-                            @"hostname": @"hokoukukan.au-syd.mybluemix.net"
-                            },
-                        @{
-                            @"server_id": @"coredo_test",
-                            @"name": @"COREDO室町",
-                            @"description": @"Test",
-                            @"hostname": @"hokoukukan.mybluemix.net"
-                            }
-                        ]
-                };
-    
-    complete(_serverList);
+    [HLPDataUtil getJSON:[NSURL URLWithString:SERVERLIST_URL] withCallback:^(NSObject *result) {
+        if (result && [result isKindOfClass:NSDictionary.class]) {
+            _serverList = (NSDictionary*)result;
+            complete(_serverList);
+        } else {
+            complete(nil);
+        }
+    }];
 }
 
 - (void)requestServerConfig:(void(^)(NSDictionary*))complete
 {
-
     NSString *server_host = [self.selected objectForKey:@"hostname"];
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/config/server_config.json",server_host]];
     
@@ -151,6 +151,7 @@ static ServerConfig *instance;
     }];
     NSString* location_config = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:config_json options:0 error:nil] encoding:NSUTF8StringEncoding];
     [location_config writeToURL:[self getDestLocation:@"location_config.json"] atomically:NO encoding:NSUTF8StringEncoding error:nil];
+    _downloadConfig = config_json;
     NSLog(@"files: %@", files);
 
     return files;

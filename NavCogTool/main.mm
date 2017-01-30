@@ -16,6 +16,7 @@
 #import "NavCommander.h"
 #import "NavPreviewer.h"
 #import "LocationEvent.h"
+#import "AuthManager.h"
 
 typedef struct {
     std::string fromID = "";
@@ -24,6 +25,7 @@ typedef struct {
     std::string outputPath = "";
     std::string userID = "NavCogTool";
     std::string userLang = "en";
+    std::string key = "";
     double lat;
     double lng;
     double dist = 500;
@@ -51,6 +53,7 @@ void printHelp() {
     std::cout << "-l <string>            set user language" << std::endl;
     std::cout << "-c <string>            config file name" << std::endl;
     std::cout << "-o <string>            set output file path" << std::endl;
+    std::cout << "-k <string>            key string" << std::endl;
     std::cout << "--useStairs [1|0]      set useStairs" << std::endl;
     std::cout << "--useEscalator [1|0]   set useEscalator" << std::endl;
     std::cout << "--useElevator [1|0]    set useElevator" << std::endl;
@@ -77,7 +80,7 @@ Option parseArguments(int argc, char * argv[]){
         {0,         0,                 0,  0 }
     };
     
-    while ((c = getopt_long(argc, argv, "hf:t:p:d:c:u:l:o:", long_options, &option_index )) != -1)
+    while ((c = getopt_long(argc, argv, "k:hf:t:p:d:c:u:l:o:", long_options, &option_index )) != -1)
         switch (c)
     {
         case 0:
@@ -112,6 +115,11 @@ Option parseArguments(int argc, char * argv[]){
                 opt.combinations = YES;
             }
             break;
+        case 'k':
+            opt.key.assign(optarg);
+            NSLog(@"%s", opt.key.c_str());
+            NSLog(@"key=%@", [AuthManager MD5Hash:[NSString stringWithCString:opt.key.c_str() encoding:NSUTF8StringEncoding]]);
+            abort();
         case 'h':
             printHelp();
             abort();

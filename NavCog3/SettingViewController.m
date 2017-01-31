@@ -50,7 +50,7 @@ static HLPSettingHelper *routeOptionsSettingHelper;
 
 static HLPSetting *speechLabel, *speechSpeedSetting, *vibrateSetting, *soundEffectSetting;
 static HLPSetting *previewSpeedSetting, *previewWithActionSetting;
-static HLPSetting *boneConductionSetting, *exerciseLabel, *exerciseAction;
+static HLPSetting *boneConductionSetting, *exerciseLabel, *exerciseAction, *resetLocation;
 static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitFeet;
 
 
@@ -279,7 +279,8 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
         [exerciseLabel setVisible:blindMode];
         [exerciseAction setVisible:blindMode];
         //[mapLabel setVisible:blindMode];
-        [initialZoomSetting setVisible:blindMode];
+        //[initialZoomSetting setVisible:blindMode];
+        [resetLocation setVisible:!blindMode];
         [unitLabel setVisible:blindMode];
         [unitMeter setVisible:blindMode];
         [unitFeet setVisible:blindMode];
@@ -303,8 +304,11 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
     exerciseAction = [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];
     
     mapLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Map", @"label for map")];
+    mapLabel.visible = NO;
     initialZoomSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Initial zoom level for navigation", @"") Name:@"zoom_for_navigation" DefaultValue:@(20) Min:15 Max:22 Interval:1];
-    [userSettingHelper addActionTitle:NSLocalizedString(@"Reset_Location", @"") Name:@"Reset_Location"];
+    initialZoomSetting.visible = NO;
+    
+    resetLocation = [userSettingHelper addActionTitle:NSLocalizedString(@"Reset_Location", @"") Name:@"Reset_Location"];
     
 
     unitLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];

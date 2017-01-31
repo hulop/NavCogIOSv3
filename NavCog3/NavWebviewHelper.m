@@ -30,7 +30,7 @@
 
 #define LOADING_TIMEOUT 30
 
-#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader&noclose"
+#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader&noclose&id=%@"
 //#define UI_PAGE @"%@://%@/%@mobile.html?noheader" // for backward compatibility
 // does not work with old server
 
@@ -367,7 +367,8 @@
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
     NSString *context = [[NSUserDefaults standardUserDefaults] stringForKey:@"hokoukukan_server_context"];
     NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:UI_PAGE, https, server, context]];
+    NSString *device_id = [[UIDevice currentDevice].identifierForVendor UUIDString];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:UI_PAGE, https, server, context, device_id]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [webView loadRequest: request];
     currentRequest = request;

@@ -603,11 +603,14 @@
 
 - (HLPLocation *)getCenter
 {
-    NSString *state = [self evalScript:@"(function(){return JSON.stringify($hulop.map.getCenter());})()"];
+    NSString *script = @"(function(){var a=$hulop.map.getCenter();var f=$hulop.indoor.getCurrentFloor();f=f>0?f-1:f;return JSON.stringify({lat:a[1],lng:a[0],floor:f});})()";
+    NSString *state = [self evalScript:script];
     NSError *error = nil;
-    NSArray *json = [NSJSONSerialization JSONObjectWithData:[state dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[state dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
     if (json) {
-        return [[HLPLocation alloc] initWithLat:[json[1] doubleValue] Lng:[json[0] doubleValue]];
+        return [[HLPLocation alloc] initWithLat:[json[@"lat"] doubleValue]
+                                            Lng:[json[@"lng"] doubleValue]
+                                          Floor:[json[@"floor"] doubleValue]];
     } else {
         NSLog(@"%@", error.localizedDescription);
     }

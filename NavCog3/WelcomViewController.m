@@ -123,7 +123,7 @@
                 [fm copyItemAtPath:config.downloadConfig[@"preset_for_blind"]
                             toPath:[presetsDir stringByAppendingPathComponent:@"blind.plist"] error:&error];
                 [fm copyItemAtPath:config.downloadConfig[@"preset_for_sighted"]
-                            toPath:[presetsDir stringByAppendingPathComponent:@"sighted.plist"] error:&error];
+                            toPath:[presetsDir stringByAppendingPathComponent:@"general.plist"] error:&error];
                 [fm copyItemAtPath:config.downloadConfig[@"preset_for_wheelchair"]
                             toPath:[presetsDir stringByAppendingPathComponent:@"wheelchair.plist"] error:&error];                
                 

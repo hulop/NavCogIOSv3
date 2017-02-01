@@ -127,3 +127,22 @@
 "CheckAgreement" = "サーバー設定を確認中...";
 "CheckServerConfig" = "サーバー設定を確認中...";
 "DOWNLOADING_DATA" = "データをダウンロード中...";
+
+"NoAltimeterAlertTitle" = "気圧計がありません";
+"NoAltimeterAlertMessage" = "NavCogはお使いのデバイスをサポートしていません。お使いのデバイスには気圧計が搭載されていないため、位置推定結果が不安定になる可能性があります。";
+"I_Understand" = "了解しました";
+
+"BluetoothOffAlertTitle" = "Bluetoothがオフです";
+"BluetoothOffAlertMessage" = "屋内での位置推定の機能を使うためにはBluetoothをオンにする必要があります。";
+"CANCEL" = "キャンセル";
+"SETTING" = "設定を開く";
+
+
+"LocationNotAllowedTitle" = "位置情報が許可されていません";
+"LocationNotAllowedMessage" = "屋内での位置推定の機能を使うためには位置情報サービスを許可する必要があります。
+プライバシー設定画面から
+位置情報サービス　→
+NavCog　→
+このAppの使用中のみ許可
+を選択します。";
+

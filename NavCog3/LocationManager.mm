@@ -88,6 +88,8 @@ typedef struct {
     BOOL disableAcceleration;
     
     NavLocationStatus _currentStatus;
+    
+    BOOL didAlertAboutAltimeter;
 }
 
 static LocationManager *instance;
@@ -1002,6 +1004,10 @@ void functionCalledToLog(void *inUserData, string text)
         return;
     }
     if (cbeacons.size() > 0) {
+        if (altimeter == nil && !didAlertAboutAltimeter) {
+            didAlertAboutAltimeter = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:NO_ALTIMETER_ALERT object:self];
+        }
         if (rssiBiasCount > 0) {
             rssiBiasCount -= 1;
             try {
@@ -1044,6 +1050,13 @@ void functionCalledToLog(void *inUserData, string text)
 {
     switch (status) {
         case kCLAuthorizationStatusDenied:
+            if ([CLLocationManager locationServicesEnabled]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_NOT_ALLOWED_ALERT object:self];
+            } else {
+                // OS automatically shows alert
+            }
+            [self didChangeAuthorizationStatus:NO];
+            break;
         case kCLAuthorizationStatusRestricted:
         case kCLAuthorizationStatusNotDetermined:
             [self didChangeAuthorizationStatus:NO];

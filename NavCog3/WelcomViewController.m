@@ -25,6 +25,7 @@
 #import "ServerConfig.h"
 #import "AuthManager.h"
 #import "LocationEvent.h"
+#import "Logging.h"
 
 @interface WelcomViewController ()
 
@@ -144,6 +145,9 @@
                                                                     object:self
                                                                   userInfo:config.selectedServerConfig];
 
+                [Logging stopLog];
+                [Logging startLog];
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *hostname = config.selected[@"hostname"];
                     [[NSUserDefaults standardUserDefaults] setObject:hostname forKey:@"selected_hokoukukan_server"];

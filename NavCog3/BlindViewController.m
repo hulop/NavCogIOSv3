@@ -132,6 +132,18 @@
         HLPLocation *loc = [helper getCenter];
         if (loc != nil) {
             [NavDataStore sharedDataStore].mapCenter = loc;
+            HLPLocation *cloc = [NavDataStore sharedDataStore].currentLocation;
+            if (isnan(cloc.lat) || isnan(cloc.lng)) {
+                NSDictionary *param =
+                @{
+                  @"floor": @(loc.floor),
+                  @"lat": @(loc.lat),
+                  @"lng": @(loc.lng),
+                  @"sync": @(NO)
+                  };
+                [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:param];
+
+            }
             [self updateView];
             [timer invalidate];
         }

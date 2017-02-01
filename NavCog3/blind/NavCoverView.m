@@ -25,8 +25,6 @@
 #import "NavDeviceTTS.h"
 #import "NavCog3-swift.h"
 
-@interface NavAnnounceItem: UIAccessibilityElement
-@end
 
 @implementation NavAnnounceItem
 
@@ -36,6 +34,7 @@
     NSLog(@"accessibilityElementDidBecomeFocused:%@", text);
     [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:self userInfo:
      @{@"text":text,@"force":@(YES),@"debug":@(YES)}];
+    [self.delegate didBecomeFocused:self];
 }
 
 @end
@@ -53,28 +52,33 @@
     if (!_noSpeak) {
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
     }
+    [self.delegate didBecomeFocused:self];
 }
 
-- (NSString*)accessibilityLabel
-{
-    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-    if (self.accessibilityElementIsFocused && now - lastCall > 0.5) {
-        // hack code
-        // speak request navigation status if the user tap screen
-        // accessibilityLabel is called twice for each tap
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
-    }
-    lastCall = now;
-    return @"";
-}
+// this hack code causes repeating announcement because voiceover might detect
+// screen change based on rendering on webview
+// this hack is no longer used and another hack code is implemented
+//- (NSString*)accessibilityLabel
+//{
+//    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+//    if (self.accessibilityElementIsFocused && now - lastCall > 0.5) {
+//        // first hack code
+//        // speak request navigation status if the user tap screen
+//        // accessibilityLabel is called twice for each tap
+//        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
+//    }
+//    lastCall = now;
+//    return @"";
+//}
 
 @end
 
 @implementation NavCoverView {
-    NSArray *elements;
+    NSMutableArray *elements;
     NSArray *speaks;
     UIAccessibilityElement *first;
     NavCurrentStatusItem *currentStatusItem;
+    NavCurrentStatusItem *currentStatusItem2; // for hack
     long currentIndex;
     BOOL preventCurrentStatus;
 }
@@ -85,14 +89,15 @@
     if (currentStatusItem) {
         currentStatusItem.noSpeak = preventCurrentStatus;
     }
+    if (currentStatusItem2) {
+        currentStatusItem2.noSpeak = preventCurrentStatus;
+    }
 }
 
 - (BOOL) preventCurrentStatus
 {
     return preventCurrentStatus;
 }
-
-
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
@@ -108,17 +113,29 @@
     first.accessibilityTraits = UIAccessibilityTraitStaticText | UIAccessibilityTraitHeader;
     
     speaks = @[];
-    elements = @[];
-    
+    elements = [@[] mutableCopy];
+
+    if (!currentStatusItem) {
+        currentStatusItem = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];
+        currentStatusItem.accessibilityFrame = self.window.frame;
+        currentStatusItem.delegate = self;
+        
+        currentStatusItem2 = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];
+        currentStatusItem2.accessibilityFrame = CGRectMake(0, 0, 1, 1);
+        currentStatusItem2.delegate = self;
+    }
+
     return self;
 }
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    currentStatusItem = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];    
+
     currentStatusItem.accessibilityFrame = self.window.frame;
-    elements = @[currentStatusItem];
+
+    [elements removeAllObjects];
+    [elements addObject:currentStatusItem];
 }
 
 - (void)dealloc
@@ -149,6 +166,33 @@
 - (void)jumpToFirst
 {
     currentIndex = 0;
+}
+
+// second hack code
+// switch between two accessibility element to detect tap on screen
+- (void)didBecomeFocused:(NavAnnounceItem *)item
+{
+    NSLog(@"focused:%@", item);
+    if (item == currentStatusItem) {
+        currentStatusItem.accessibilityFrame = CGRectMake(0,0,1,1);
+        currentStatusItem2.accessibilityFrame = self.window.frame;
+        [elements addObject: currentStatusItem2];
+    } else if (item == currentStatusItem2) {
+        elements[[speaks count]] = currentStatusItem2;
+        elements[[elements count] - 1] = currentStatusItem;
+        NavCurrentStatusItem *temp = currentStatusItem;
+        currentStatusItem = currentStatusItem2;
+        currentStatusItem2 = temp;
+        currentStatusItem.accessibilityFrame = CGRectMake(0,0,1,1);
+        currentStatusItem2.accessibilityFrame = self.window.frame;
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, item);
+    } else {
+        currentStatusItem.accessibilityFrame = self.window.frame;
+        if ([elements lastObject] == currentStatusItem2) {
+            [elements removeLastObject];
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, item);
+        }
+    }
 }
 
 - (void)speakCurrentElement
@@ -221,14 +265,14 @@
 {
     @synchronized (self) {
         speaks = @[];
-        elements = @[];
+        [elements removeAllObjects];
     }
 }
 
 // update spoken text list
 - (void)enqueueSpokenText:(NSNotification*)note
 {
-    BOOL flag = NO;
+    BOOL flag = YES;
     @synchronized (self) {
         NSDictionary *dict = [note userInfo];
         
@@ -253,12 +297,13 @@
         for(int i = 0 ; i < [speaks count]; i++) {
             NSString *s = speaks[i];
             BOOL last = (i == [speaks count] - 1);
-            UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
-            
+            NavAnnounceItem *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
+            e.delegate = self;
             e.accessibilityLabel = s;
             [temp addObject:e];
         }
         
+        currentStatusItem.accessibilityFrame = self.window.frame;
         [temp addObject:currentStatusItem];
 
         

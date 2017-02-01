@@ -63,6 +63,13 @@
         return;
     }
     
+    /*
+    if ([[AuthManager sharedManager] isDeveloperAuthorized]) {
+        [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
+        return;
+    }
+    */
+    
     ServerConfig *config = [ServerConfig sharedConfig];
 
     if (!config.selected) {
@@ -120,12 +127,18 @@
                 NSString *presetsDir = [docPath stringByAppendingPathComponent:@"presets"];
                 [fm createDirectoryAtPath:presetsDir withIntermediateDirectories:YES attributes:nil error:nil];
 
-                [fm copyItemAtPath:config.downloadConfig[@"preset_for_blind"]
-                            toPath:[presetsDir stringByAppendingPathComponent:@"blind.plist"] error:&error];
-                [fm copyItemAtPath:config.downloadConfig[@"preset_for_sighted"]
-                            toPath:[presetsDir stringByAppendingPathComponent:@"general.plist"] error:&error];
-                [fm copyItemAtPath:config.downloadConfig[@"preset_for_wheelchair"]
-                            toPath:[presetsDir stringByAppendingPathComponent:@"wheelchair.plist"] error:&error];                
+                if (config.downloadConfig[@"preset_for_blind"]) {
+                    [fm copyItemAtPath:config.downloadConfig[@"preset_for_blind"]
+                                toPath:[presetsDir stringByAppendingPathComponent:@"blind.plist"] error:&error];
+                }
+                if (config.downloadConfig[@"preset_for_sighted"]) {
+                    [fm copyItemAtPath:config.downloadConfig[@"preset_for_sighted"]
+                                toPath:[presetsDir stringByAppendingPathComponent:@"general.plist"] error:&error];
+                }
+                if (config.downloadConfig[@"preset_for_wheelchair"]) {
+                    [fm copyItemAtPath:config.downloadConfig[@"preset_for_wheelchair"]
+                                toPath:[presetsDir stringByAppendingPathComponent:@"wheelchair.plist"] error:&error];
+                }
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:SERVER_CONFIG_CHANGED_NOTIFICATION
                                                                     object:self

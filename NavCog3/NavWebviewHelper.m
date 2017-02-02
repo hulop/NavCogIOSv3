@@ -157,6 +157,12 @@
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:param];
             }
+            if ([text rangeOfString:@"navigationFinished,"].location == 0) {
+                NSData *data = [[text substringFromIndex:[@"stateChanged," length]] dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:param];
+            }
             if ([Logging isLogging]) {
                 NSLog(@"%@", text);
             }

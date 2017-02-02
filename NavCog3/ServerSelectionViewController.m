@@ -121,11 +121,11 @@
         BOOL available = [server[@"available"] boolValue];
         
         if (available) {
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            //cell.accessoryType = UITableViewCellAccessoryCheckmark;
             cell.textLabel.textColor = [UIColor blackColor];
             cell.detailTextLabel.textColor = [UIColor blackColor];
         } else {
-            cell.accessoryType = UITableViewCellAccessoryNone;
+            //cell.accessoryType = UITableViewCellAccessoryNone;
             cell.textLabel.textColor = [UIColor grayColor];
             cell.detailTextLabel.textColor = [UIColor grayColor];
         }

@@ -32,6 +32,8 @@
 		7E433DCF1D6E846300C6C993 /* NavDeviceTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E433DCA1D6E846300C6C993 /* NavDeviceTTS.m */; };
 		7E433DD41D6E84D300C6C993 /* NavUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E433DD31D6E84D300C6C993 /* NavUtil.m */; };
 		7E5150A41D8BF32800ED25FB /* NavNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5150A31D8BF32800ED25FB /* NavNavigator.m */; };
+		7E683DF51E42DE8100D04037 /* RatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E683DF21E42DE8100D04037 /* RatingViewController.m */; };
+		7E683DF61E42DE8100D04037 /* StarRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E683DF41E42DE8100D04037 /* StarRatingView.m */; };
 		7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */; };
 		7E6E42E01D90C7A3006B6899 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7E6E42DF1D90C7A3006B6899 /* Settings.bundle */; };
 		7E6E42E91D90FD1B006B6899 /* BlindViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42E81D90FD1B006B6899 /* BlindViewController.m */; };
@@ -126,7 +128,6 @@
 		7E08DB571DB9F08E00E82161 /* ConfigManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigManager.m; sourceTree = "<group>"; };
 		7E0E97141D98B80100CF2960 /* NavDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavDataStore.h; sourceTree = "<group>"; };
 		7E0E97151D98B80100CF2960 /* NavDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavDataStore.m; sourceTree = "<group>"; };
-		7E17F1921D9A20EB00DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
 		7E17F1931D9A20EB00DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		7E17F1951D9A211000DB1F34 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		7E17F1971D9A211300DB1F34 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -160,6 +161,11 @@
 		7E5150A21D8BF32800ED25FB /* NavNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavNavigator.h; path = blind/NavNavigator.h; sourceTree = "<group>"; };
 		7E5150A31D8BF32800ED25FB /* NavNavigator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavNavigator.m; path = blind/NavNavigator.m; sourceTree = "<group>"; };
 		7E5150EA1D8D75C400ED25FB /* Mantle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mantle.framework; path = Carthage/Build/iOS/Mantle.framework; sourceTree = "<group>"; };
+		7E683DF11E42DE8100D04037 /* RatingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RatingViewController.h; sourceTree = "<group>"; };
+		7E683DF21E42DE8100D04037 /* RatingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RatingViewController.m; sourceTree = "<group>"; };
+		7E683DF31E42DE8100D04037 /* StarRatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarRatingView.h; sourceTree = "<group>"; };
+		7E683DF41E42DE8100D04037 /* StarRatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarRatingView.m; sourceTree = "<group>"; };
+		7E683DF91E4425E200D04037 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
 		7E6E42DC1D90C77C006B6899 /* HLPGeoJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPGeoJSON.h; path = model/HLPGeoJSON.h; sourceTree = "<group>"; };
 		7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HLPGeoJSON.m; path = model/HLPGeoJSON.m; sourceTree = "<group>"; };
 		7E6E42DF1D90C7A3006B6899 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -363,6 +369,10 @@
 			children = (
 				7EDEDC281D1E0C6800AC111A /* Main.storyboard */,
 				7EDEDC2D1D1E0C6800AC111A /* LaunchScreen.storyboard */,
+				7E683DF11E42DE8100D04037 /* RatingViewController.h */,
+				7E683DF21E42DE8100D04037 /* RatingViewController.m */,
+				7E683DF31E42DE8100D04037 /* StarRatingView.h */,
+				7E683DF41E42DE8100D04037 /* StarRatingView.m */,
 				7EDEDC251D1E0C6800AC111A /* ViewController.h */,
 				7EDEDC261D1E0C6800AC111A /* ViewController.m */,
 				7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */,
@@ -767,6 +777,7 @@
 				7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */,
 				7EF45E321E3F1E3700208042 /* AgreementViewController.m in Sources */,
 				7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */,
+				7E683DF61E42DE8100D04037 /* StarRatingView.m in Sources */,
 				7EF45E341E3F1E3700208042 /* ServerSelectionViewController.m in Sources */,
 				7E1F9F3F1DF01AA5003E1B23 /* AnimLayer.swift in Sources */,
 				7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */,
@@ -799,6 +810,7 @@
 				7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */,
 				7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */,
 				7E9238E61D5189F100875766 /* HLPSetting.m in Sources */,
+				7E683DF51E42DE8100D04037 /* RatingViewController.m in Sources */,
 				7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */,
 				7E1F9F2A1DEEB1D3003E1B23 /* NavDebugHelper.m in Sources */,
 				7E96D9331DACD0C700D57C8C /* SearchViewController.m in Sources */,
@@ -890,8 +902,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				7EDEDC291D1E0C6800AC111A /* Base */,
-				7E17F1921D9A20EB00DB1F34 /* ja */,
 				7E17F1951D9A211000DB1F34 /* en */,
+				7E683DF91E4425E200D04037 /* ja */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

@@ -216,7 +216,12 @@
         
         NSMutableString *temp = [[NSMutableString alloc] init];
         for(NSString *key in [data allKeys]) {
-            [temp appendFormat:@"%@=%@&", key, data[key]];
+            if ([data[key] isKindOfClass:NSString.class]) {
+                NSString * escaped = [data[key] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+                [temp appendFormat:@"%@=%@&", key, escaped];
+            } else {
+                [temp appendFormat:@"%@=%@&", key, data[key]];
+            }
         }
         
         //NSLog(@"Requesting %@ \n%@", url, temp);

@@ -57,7 +57,7 @@
 - (void) checkConfig
 {
     if (self.presentedViewController) {
-        NSLog(@"Presenting: %@", self.presentedViewController);
+        //NSLog(@"Presenting: %@", self.presentedViewController);
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1f*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             [self checkConfig];
         });
@@ -124,19 +124,25 @@
                     NSString *toPath = [path lastPathComponent];
                     toPath = [docPath stringByAppendingPathComponent:toPath];
                     [fm copyItemAtPath:path toPath:toPath error:&error];
+                    
+                    NSString *filename = [toPath lastPathComponent];
+                    [[NSUserDefaults standardUserDefaults] setObject:filename forKey:@"bleloc_map_data"];
                 }
                 NSString *presetsDir = [docPath stringByAppendingPathComponent:@"presets"];
                 [fm createDirectoryAtPath:presetsDir withIntermediateDirectories:YES attributes:nil error:nil];
 
                 if (config.downloadConfig[@"preset_for_blind"]) {
+                    [fm removeItemAtPath:[presetsDir stringByAppendingPathComponent:@"blind.plist"] error:nil];
                     [fm copyItemAtPath:config.downloadConfig[@"preset_for_blind"]
                                 toPath:[presetsDir stringByAppendingPathComponent:@"blind.plist"] error:&error];
                 }
                 if (config.downloadConfig[@"preset_for_sighted"]) {
+                    [fm removeItemAtPath:[presetsDir stringByAppendingPathComponent:@"general.plist"] error:nil];
                     [fm copyItemAtPath:config.downloadConfig[@"preset_for_sighted"]
                                 toPath:[presetsDir stringByAppendingPathComponent:@"general.plist"] error:&error];
                 }
                 if (config.downloadConfig[@"preset_for_wheelchair"]) {
+                    [fm removeItemAtPath:[presetsDir stringByAppendingPathComponent:@"wheelchair.plist"] error:nil];
                     [fm copyItemAtPath:config.downloadConfig[@"preset_for_wheelchair"]
                                 toPath:[presetsDir stringByAppendingPathComponent:@"wheelchair.plist"] error:&error];
                 }

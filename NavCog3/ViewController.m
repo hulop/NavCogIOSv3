@@ -24,12 +24,16 @@
 #import "LocationEvent.h"
 #import "NavDebugHelper.h"
 #import "NavUtil.h"
+#import "NavDataStore.h"
+#import "RatingViewController.h"
+#import "ServerConfig.h"
 
 @interface ViewController () {
     NavWebviewHelper *helper;
     UISwipeGestureRecognizer *recognizer;
     NSDictionary *uiState;
     DialogViewHelper *dialogHelper;
+    NSDictionary *ratingInfo;
 }
 
 @end
@@ -86,6 +90,18 @@
     [self updateView];
     
     [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkState:) userInfo:nil repeats:YES];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestRating:) name:REQUEST_RATING object:nil];
+}
+
+- (void) requestRating:(NSNotification*)note
+{
+    if ([[ServerConfig sharedConfig] shouldAskRating]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            ratingInfo = [note userInfo];
+            [self performSegueWithIdentifier:@"show_rating" sender:self];
+        });
+    }
 }
 
 - (void) checkState:(NSTimer*)timer
@@ -342,6 +358,18 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     segue.destinationViewController.restorationIdentifier = segue.identifier;
+    
+    
+    if ([segue.identifier isEqualToString:@"show_rating"] && ratingInfo) {
+        RatingViewController *rv = (RatingViewController*)segue.destinationViewController;
+        rv.start = [ratingInfo[@"start"] longValue];;
+        rv.end = [ratingInfo[@"end"] longValue];
+        rv.from = ratingInfo[@"from"];
+        rv.to = ratingInfo[@"to"];
+        rv.device_id = [[NavDataStore sharedDataStore] userID];
+        
+        ratingInfo = nil;
+    }
 }
 
 - (IBAction)retry:(id)sender {

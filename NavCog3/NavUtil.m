@@ -33,13 +33,15 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
 
 +(void)showModalWaitingWithMessage:(NSString *)message
 {
-    UIView *view = [[[[UIApplication sharedApplication] delegate] window] subviews][1];
+    NSArray *subViews = [[[[UIApplication sharedApplication] delegate] window] subviews];    
+    UIView *view = [subViews lastObject];
     [NavUtil showWaitingForView:view withMessage:message];
 }
 
 +(void)hideModalWaiting
 {
-    UIView *view = [[[[UIApplication sharedApplication] delegate] window] subviews][1];
+    NSArray *subViews = [[[[UIApplication sharedApplication] delegate] window] subviews];    
+    UIView *view = [subViews lastObject];
     [NavUtil hideWaitingForView:view];
 }
 

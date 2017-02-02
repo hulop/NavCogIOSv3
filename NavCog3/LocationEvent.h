@@ -98,4 +98,6 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 #define NO_ALTIMETER_ALERT @"NO_ALTIMETER_ALERT"
 #define LOCATION_NOT_ALLOWED_ALERT @"LOCATION_NOT_ALLOWED_ALERT"
 
+#define REQUEST_RATING @"REQUEST_RATING"
+
 #endif /* LocationEvent_h */

@@ -272,7 +272,7 @@
 // update spoken text list
 - (void)enqueueSpokenText:(NSNotification*)note
 {
-    BOOL flag = YES;
+    BOOL flag = NO;
     @synchronized (self) {
         NSDictionary *dict = [note userInfo];
         
@@ -292,19 +292,22 @@
                 speaks = [speaks subarrayWithRange:NSMakeRange(1, [speaks count]-1)];
             }
         }
+        
+        BOOL contains2 = ([elements lastObject] == currentStatusItem2);
 
-        NSMutableArray *temp = [@[first] mutableCopy];
+        // keep array instance
+        [elements removeAllObjects];
+        [elements addObject:first];
         for(int i = 0 ; i < [speaks count]; i++) {
             NSString *s = speaks[i];
             BOOL last = (i == [speaks count] - 1);
             NavAnnounceItem *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
             e.delegate = self;
             e.accessibilityLabel = s;
-            [temp addObject:e];
+            [elements addObject:e];
         }
         
-        currentStatusItem.accessibilityFrame = self.window.frame;
-        [temp addObject:currentStatusItem];
+        [elements addObject:currentStatusItem];
 
         
         // future summary
@@ -313,18 +316,20 @@
             UIAccessibilityElement *header = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             header.accessibilityTraits = UIAccessibilityTraitHeader | UIAccessibilityTraitStaticText;
             header.accessibilityLabel = NSLocalizedStringFromTable(@"SummaryHeader",@"BlindView",@"");
-            [temp addObject:header];
+            [elements addObject:header];
 
             for(int i = 0 ; i < [_fsSource numberOfSummary]; i++) {
                 NSString *str = [_fsSource summaryAtIndex:i];
                 UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
                 e.accessibilityLabel = [NavDeviceTTS removeDots:str];
 
-                [temp addObject:e];
+                [elements addObject:e];
             }
         }
         
-        elements = temp;
+        if (contains2) {
+            [elements addObject:currentStatusItem2];
+        }
     }
     if (flag) {
         UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, elements[0]);

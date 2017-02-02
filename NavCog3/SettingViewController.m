@@ -317,6 +317,11 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
     unitFeet = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
                                      Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
     
+    NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    NSString *buildNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    
+    [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"version: %@ (%@)", versionNo, buildNo]];
+    
     if ([[AuthManager sharedManager] isDeveloperAuthorized]) {    
         [userSettingHelper addSectionTitle:NSLocalizedString(@"Advanced", @"")];
         [userSettingHelper addActionTitle:NSLocalizedString(@"Advanced Setting", @"") Name:@"advanced_settings"];

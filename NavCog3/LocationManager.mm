@@ -1432,33 +1432,22 @@ int dcount = 0;
     NSString __block *mapName = [ud stringForKey:@"bleloc_map_data"];
     
     NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    while(YES) {
-        NSString* path = [documentsPath stringByAppendingPathComponent:mapName];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path] == NO || mapName==nil) {
-            for(NSString *file in [ConfigManager filenamesWithSuffix:@"json"]) {
-                mapName = file;
-                [ud setValue:mapName forKey:@"bleloc_map_data"];
-                break;
-            }
-            if (mapName == nil) {
-                break;
-            }
-            continue;
-        }
-        
-        [[[NSOperationQueue alloc] init] addOperationWithBlock:^{
-            NSInputStream *stream = [NSInputStream inputStreamWithFileAtPath:path];
-            [stream open];
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithStream:stream options:0 error:nil];
-            anchor = json[@"anchor"];
-        
-            NSString *tempDir = NSTemporaryDirectory();
-            
-            [self setModelAtPath:path withWorkingDir:tempDir];
-        }];
-        break;
-    }
 
+    NSString* path = [documentsPath stringByAppendingPathComponent:mapName];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path] == NO || mapName==nil) {
+        return;
+    }
+    
+    [[[NSOperationQueue alloc] init] addOperationWithBlock:^{
+        NSInputStream *stream = [NSInputStream inputStreamWithFileAtPath:path];
+        [stream open];
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithStream:stream options:0 error:nil];
+        anchor = json[@"anchor"];
+        
+        NSString *tempDir = NSTemporaryDirectory();
+        
+        [self setModelAtPath:path withWorkingDir:tempDir];
+    }];
 }
 
 

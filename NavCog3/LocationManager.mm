@@ -28,6 +28,7 @@
 #import <bleloc/LogUtil.hpp>
 #import "Logging.h"
 #import <sys/sysctl.h>
+#import <sys/utsname.h>
 #import <UIKit/UIKit.h>
 #import "LocationEvent.h"
 #import "NavSound.h"
@@ -1085,8 +1086,40 @@ void functionCalledToLog(void *inUserData, string text)
             return;
         }
         
+        
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
         float rssiBias = [ud floatForKey:@"rssi_bias"];
+        
+        if([ud boolForKey:@"rssi_bias_model_used"]){
+            // check device and update rssi_bias
+            struct utsname sysinfo;
+            uname(&sysinfo);
+            NSString* deviceName = [NSString stringWithCString:sysinfo.machine encoding:NSUTF8StringEncoding];
+            std::string devName = [deviceName UTF8String];
+            std::cout << [deviceName UTF8String] << std::endl;
+            
+            NSString* models = [ud stringForKey:@"rssi_bias_models"];
+            NSArray* strs = [models componentsSeparatedByString:@"|"];
+            for(int i=0; i< [strs count] ; i++){
+                NSArray* strs2 = [strs[i] componentsSeparatedByString:@"="];
+                if([strs2 count] < 3){
+                    continue;
+                }
+                NSString* uid = strs2[0];
+                NSString* mids = strs2[2];
+                NSString* name = [@"rssi_bias_m_" stringByAppendingString:uid];
+                NSArray* midsArray = [mids componentsSeparatedByString:@"/"];
+                for(int j=0; j<[midsArray count]; j++){
+                    NSString* mid = midsArray[j];
+                    if([deviceName isEqualToString: mid]){
+                        rssiBias = [ud floatForKey:name];
+                    }
+                }
+            }
+            [ud setFloat:rssiBias forKey:@"rssi_bias"];
+        }
+
+        
         double minRssiBias = rssiBias-0.1;
         double maxRssiBias = rssiBias+0.1;
         

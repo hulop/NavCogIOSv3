@@ -409,8 +409,26 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
 
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"nStates" Name:@"nStates" DefaultValue:@(500) Min:100 Max:2000 Interval:100];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"nEffective (recommended gt or eq nStates/2)" Name:@"nEffective" DefaultValue:@(250) Min:50 Max:2000 Interval:50];
+    
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"alphaWeaken" Name:@"alphaWeaken" DefaultValue:@(0.3)  Min:0 Max:1.0 Interval:0.1];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"RSSI bias" Name:@"rssi_bias" DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5];
+    
+    // Generate rssi_bias for model view if rssi_bias_models has been set to user defaults.
+    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use RSSI bias for models" Name:@"rssi_bias_model_used" DefaultValue:@(YES) Accept:nil];
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSString* supMods = [ud stringForKey:@"rssi_bias_models"];
+    NSArray* strs = [supMods componentsSeparatedByString:@"|"];
+    for(int i=0; i< [strs count] ; i++){
+        NSArray* strs2 = [strs[i] componentsSeparatedByString:@"="];
+        if([strs2 count] < 3){
+            continue;
+        }
+        NSString* uid = strs2[0];
+        NSString* tname = strs2[1];
+        NSString* label = [@"RSSI bias for " stringByAppendingString:tname];
+        NSString* name = [@"rssi_bias_m_" stringByAppendingString:uid];
+        [[blelocppSettingHelper addSettingWithType:DOUBLE Label: label Name:name DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5] setVisible:YES];
+    }
     
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev coefficient for different floor" Name:@"coeffDiffFloorStdev" DefaultValue:@(5)  Min:1 Max:10000 Interval:1];
     

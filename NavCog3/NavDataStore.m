@@ -60,7 +60,7 @@
             break;
         case NavDestinationTypeLocation:
             if (_location == nil) {
-                loc = [[NavDataStore sharedDataStore] currentLocation];
+                loc = [[NavDataStore sharedDataStore] mapCenter];
             } else {
                 loc = _location;
             }
@@ -162,7 +162,7 @@
             return temp;
         case NavDestinationTypeLocation:
             if (_location == nil) {
-                loc = [[NavDataStore sharedDataStore] currentLocation];
+                loc = [[NavDataStore sharedDataStore] mapCenter];
             } else {
                 loc = _location;
             }
@@ -196,7 +196,7 @@
             return [_landmark getLandmarkName];
         case NavDestinationTypeLocation:
             if (_location == nil) {
-                loc = [[NavDataStore sharedDataStore] currentLocation];
+                loc = [[NavDataStore sharedDataStore] mapCenter];
                 floor = (int)round(loc.floor);
                 floor = (floor >= 0)?floor+1:floor;
                 return [NSString stringWithFormat:@"%@(%f,%f,%@%dF)",

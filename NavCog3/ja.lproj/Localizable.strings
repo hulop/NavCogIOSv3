@@ -123,9 +123,9 @@
 "Open_with_Safari" = "Safariで開く";
 "Open_with_Safari_Message" = "ウェブページをSafariで開きますが、よろしいですか？";
 
-"CheckServerList" = "サーバーリストを確認中...";
-"CheckAgreement" = "サーバー設定を確認中...";
-"CheckServerConfig" = "サーバー設定を確認中...";
+"CheckServerList" = "リストを確認中...";
+"CheckAgreement" = "設定を確認中...";
+"CheckServerConfig" = "設定を確認中...";
 "DOWNLOADING_DATA" = "データをダウンロード中...";
 
 "NoAltimeterAlertTitle" = "気圧計がありません";
@@ -151,3 +151,7 @@ NavCog　→
 
 "Help" = "ヘルプ";
 "OpenHelp" = "ヘルプページを開く";
+
+"NeedToUpdateAppTitle" = "アプリの更新";
+"NeedToUpdateAppMessage" = "アプリの更新が必要です";
+"OpenAppStore" = "App Storeを開く";

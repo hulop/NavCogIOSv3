@@ -67,7 +67,38 @@
     NSDictionary *server = [self serverAtIndexPath:indexPath];
     
     if ([server[@"available"] boolValue]) {
+        
+        NSString *minimum_app_version = server[@"minimum_app_version"];
+        if (minimum_app_version) {
+            NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+            
+            if ([minimum_app_version compare:versionNo options:NSNumericSearch] == NSOrderedDescending) {
+                NSString *title = NSLocalizedString(@"NeedToUpdateAppTitle", @"");
+                NSString *message = NSLocalizedString(@"NeedToUpdateAppMessage", @"");
+                NSString *ok = NSLocalizedString(@"OpenAppStore", @"");
+                NSString *cancel = NSLocalizedString(@"CANCEL", @"");
+                
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                               message:message
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:ok
+                                                          style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                              NSURL *appURL = [NSURL URLWithString:@"https://itunes.apple.com/jp/app/navcog/id1042163426?mt=8"];
+                                                              [[UIApplication sharedApplication] openURL:appURL options:@{} completionHandler:^(BOOL success) {
+                                                              }];
+                                                          }]];
+                [alert addAction:[UIAlertAction actionWithTitle:cancel
+                                                          style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                          }]];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self presentViewController:alert animated:YES completion:nil];
+                });
+                return;
+            }
+        }
         [ServerConfig sharedConfig].selected = server;
+
         [self performSegueWithIdentifier:@"unwind_server_selection" sender:self];
     }
     

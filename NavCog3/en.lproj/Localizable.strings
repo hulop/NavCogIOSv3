@@ -132,3 +132,7 @@ Feedback is sending...";
 
 "Help" = "Help";
 "OpenHelp" = "Open help page";
+
+"NeedToUpdateAppTitle" = "App Update";
+"NeedToUpdateAppMessage" = "App is required to be updated";
+"OpenAppStore" = "Open App Store";

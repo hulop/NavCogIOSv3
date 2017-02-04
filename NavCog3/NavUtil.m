@@ -21,6 +21,7 @@
  *******************************************************************************/
 
 #import "NavUtil.h"
+#import <sys/utsname.h>
 
 @implementation UIMessageView
 
@@ -150,7 +151,15 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
                                               }]];
     
     [controller presentViewController:alert animated:YES completion:nil];
+}
 
++(NSString*)deviceModel
+{
+    struct utsname sysinfo;
+    uname(&sysinfo);
+    NSString* deviceName = [NSString stringWithCString:sysinfo.machine encoding:NSUTF8StringEncoding];
+    
+    return deviceName;
 }
 
 @end

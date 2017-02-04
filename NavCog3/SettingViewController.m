@@ -423,9 +423,19 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
 
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"nStates" Name:@"nStates" DefaultValue:@(500) Min:100 Max:2000 Interval:100];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"nEffective (recommended gt or eq nStates/2)" Name:@"nEffective" DefaultValue:@(250) Min:50 Max:2000 Interval:50];
+    
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"alphaWeaken" Name:@"alphaWeaken" DefaultValue:@(0.3)  Min:0 Max:1.0 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"RSSI bias" Name:@"rssi_bias" DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev coefficient for different floor" Name:@"coeffDiffFloorStdev" DefaultValue:@(5)  Min:5 Max:1000 Interval:5];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"RSSI bias (old)" Name:@"rssi_bias" DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5];
+    
+    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use RSSI bias for models" Name:@"rssi_bias_model_used" DefaultValue:@(YES) Accept:nil];
+    NSString *deviceModel = [NavUtil deviceModel];
+    [blelocppSettingHelper addSettingWithType:DOUBLE
+                                        Label:[NSString stringWithFormat:@"RSSI bias (%@)", deviceModel]
+                                         Name:[@"rssi_bias_m_" stringByAppendingString:deviceModel]
+                                 DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5];
+    
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev coefficient for different floor" Name:@"coeffDiffFloorStdev" DefaultValue:@(5)  Min:1 Max:10000 Interval:1];
+    
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use wheelchair PDR threthold" Name:@"wheelchair_pdr" DefaultValue:@(NO) Accept:nil];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability from likelihood" Name:@"mixProba" DefaultValue:@(0) Min:0 Max:0.01 Interval:0.001];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix reject distance [m]" Name:@"rejectDistance" DefaultValue:@(5) Min:0 Max:30 Interval:1];
@@ -443,17 +453,18 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
     
     // Parameters for status monitoring
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (location status monitoring)"];
-    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Activate location status monitoring" Name:@"activatesStatusMonitoring" DefaultValue:@(NO) Accept:nil];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Location status monitoring interval [ms]" Name:@"statusMonitoringIntervalMS" DefaultValue:@(3000) Min:0 Max:10000 Interval:1000] setVisible:YES];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter locating radius [m]" Name:@"enterLocating" DefaultValue:@(10) Min:0 Max:20 Interval:1] setVisible:NO];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit locating radius [m]" Name:@"exitLocating" DefaultValue:@(12) Min:0 Max:20 Interval:1] setVisible:NO];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter stable radius [m]" Name:@"enterStable" DefaultValue:@(10) Min:0 Max:20 Interval:1] setVisible:NO];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit stable radius [m]" Name:@"exitStable" DefaultValue:@(12) Min:0 Max:20 Interval:1] setVisible:NO];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exponent n of minimum weight stable (w=10^n)" Name:@"exponentMinWeightStable" DefaultValue:@(-5) Min:-9 Max:-1 Interval:1] setVisible:NO];
+    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Activate location status monitoring" Name:@"activatesStatusMonitoring" DefaultValue:@(YES) Accept:nil];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Location status monitoring interval [ms]" Name:@"statusMonitoringIntervalMS" DefaultValue:@(0) Min:0 Max:10000 Interval:1000] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter locating radius [m]" Name:@"enterLocating" DefaultValue:@(3.5) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit locating radius [m]" Name:@"exitLocating" DefaultValue:@(5.0) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter stable radius [m]" Name:@"enterStable" DefaultValue:@(3.5) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit stable radius [m]" Name:@"exitStable" DefaultValue:@(5.0) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exponent n of minimum weight stable (w=10^n)" Name:@"exponentMinWeightStable" DefaultValue:@(-4) Min:-9 Max:-1 Interval:1] setVisible:YES];
 
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (floor transition)"];
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use altimeter for floor trans support" Name:@"use_altimeter" DefaultValue:@(YES) Accept:nil];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability for floor trans area" Name:@"mixtureProbabilityFloorTransArea" DefaultValue:@(0.25) Min:0.0 Max:1.0 Interval:0.05];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Weight multiplier for floor trans area" Name:@"weightFloorTransArea" DefaultValue:@(4) Min:1 Max:5 Interval:0.1] setVisible:YES];
     
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (prediction)"];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Sigma stop for random walker" Name:@"sigmaStopRW" DefaultValue:@(0.2) Min:0.0 Max:1.0 Interval:0.1];

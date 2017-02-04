@@ -89,6 +89,9 @@ typedef struct {
     
     NavLocationStatus _currentStatus;
     
+    double smoothedLocationAcc;
+    double smootingLocationRate;
+    
     BOOL didAlertAboutAltimeter;
 }
 
@@ -182,6 +185,10 @@ void functionCalledToLog(void *inUserData, string text)
     [ud addObserver:self forKeyPath:@"rejectDistance" options:NSKeyValueObservingOptionNew context:nil];
     [ud addObserver:self forKeyPath:@"diffusionOrientationBias" options:NSKeyValueObservingOptionNew context:nil];
     [ud addObserver:self forKeyPath:@"location_tracking" options:NSKeyValueObservingOptionNew context:nil];
+    
+    
+    smoothedLocationAcc = -1;
+    smootingLocationRate = 0.1;
     
     return self;
 }
@@ -729,13 +736,16 @@ void functionCalledToLog(void *inUserData, string text)
 
     //localizer->normalFunction(TDIST, 3);
     
-    localizer->usesAltimeterForFloorTransCheck = [ud boolForKey:@"use_altimeter"];
     localizer->coeffDiffFloorStdev = [ud doubleForKey:@"coeffDiffFloorStdev"];
+    
+    if(altimeter){
+        localizer->usesAltimeterForFloorTransCheck = [ud boolForKey:@"use_altimeter"];
+    }
     
     // deactivate elevator transition in system model
     localizer->prwBuildingProperty->probabilityUpElevator(0.0).probabilityDownElevator(0.0).probabilityStayElevator(1.0);
     // set parameters for weighting and mixing in transition areas
-    localizer->pfFloorTransParams->weightTransitionArea(2.0).mixtureProbaTransArea([ud doubleForKey:@"mixtureProbabilityFloorTransArea"]);
+    localizer->pfFloorTransParams->weightTransitionArea([ud doubleForKey:@"weightFloorTransArea"]).mixtureProbaTransArea([ud doubleForKey:@"mixtureProbabilityFloorTransArea"]);
     
     // set parameters for location status monitoring
     bool activatesDynamicStatusMonitoring = [ud boolForKey:@"activatesStatusMonitoring"];
@@ -1088,9 +1098,23 @@ void functionCalledToLog(void *inUserData, string text)
             return;
         }
         
-        float rssiBias = [[NSUserDefaults standardUserDefaults] floatForKey:@"rssi_bias"];
-        localizer->minRssiBias(rssiBias-0.1);
-        localizer->maxRssiBias(rssiBias+0.1);
+        
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        float rssiBias = [ud floatForKey:@"rssi_bias"];
+        
+        if([ud boolForKey:@"rssi_bias_model_used"]){
+            // check device and update rssi_bias
+            NSString *deviceName = [NavUtil deviceModel];
+            NSString *configKey = [@"rssi_bias_m_" stringByAppendingString:deviceName];
+            rssiBias = [ud floatForKey:configKey];
+        }
+
+        
+        double minRssiBias = rssiBias-0.1;
+        double maxRssiBias = rssiBias+0.1;
+        
+        localizer->minRssiBias(minRssiBias);
+        localizer->maxRssiBias(maxRssiBias);
         localizer->meanRssiBias(rssiBias);
         
         NSURL *url = [[NSBundle mainBundle] URLForResource:@"test" withExtension:@"csv"];
@@ -1307,6 +1331,13 @@ int dcount = 0;
             double sigma = [[NSUserDefaults standardUserDefaults] doubleForKey:@"blelocpp_accuracy_sigma"];
             acc = MAX(acc, (std.x()+std.y())/2.0*sigma);
         }
+        
+        // smooth acc for display
+        if(smoothedLocationAcc<=0){
+            smoothedLocationAcc = acc;
+        }
+        smoothedLocationAcc = (1.0-smootingLocationRate)*smoothedLocationAcc + smootingLocationRate*acc;
+        acc = smoothedLocationAcc;
         
         //if (flag) {
         if(wasFloorUpdated || isnan(currentFloor)){

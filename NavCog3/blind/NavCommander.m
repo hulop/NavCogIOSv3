@@ -23,6 +23,7 @@
 #import "NavCommander.h"
 #import "TTTOrdinalNumberFormatter.h"
 #import "NavDataStore.h"
+#import "LocationEvent.h"
 
 @implementation NavCommander {
     NSTimeInterval lastPOIAnnounceTime;
@@ -572,6 +573,7 @@
     [_delegate speak:string withOptions:properties completionHandler:^{
         if (hasDestinationPOI == NO) {
             [[NavDataStore sharedDataStore] clearRoute];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:nil];
         }
     }];
 
@@ -824,6 +826,7 @@
         [_delegate speak:result[0] withOptions:properties completionHandler:^{
             if (isDestinationPOI) {
                 [[NavDataStore sharedDataStore] clearRoute];
+                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:nil];
             }
             
             if ([result count] < 2) {

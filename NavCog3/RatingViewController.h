@@ -20,30 +20,24 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+#import <UIKit/UIKit.h>
+#import "StarRatingView.h"
 
-#import <Foundation/Foundation.h>
+@interface RatingViewController : UIViewController <UITextViewDelegate, UIScrollViewDelegate, StarRatingViewDelegate>
 
-@interface ServerConfig : NSObject
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *submitButton;
+@property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomConst;
 
-@property (readonly) NSDictionary *serverList;
+@property NSString *from, *to, *device_id;
+@property NSTimeInterval start, end;
 
-@property NSDictionary *selected;
-@property (readonly) NSDictionary *selectedServerConfig;
-@property (readonly) NSDictionary *agreementConfig;
-@property (readonly) NSDictionary *downloadConfig;
-
-+ (instancetype) sharedConfig;
-
-- (void) requestServerList:(NSString*)path withComplete:(void(^)(NSDictionary*))complete;
-- (void) requestServerConfig:(void(^)(NSDictionary* config))complete;
-- (NSArray*) checkDownloadFiles;
-- (void) checkAgreement:(void(^)(NSDictionary* config))complete;
-
-- (NSURL*) getDestLocation:(NSString*)path;
-
-- (void) clear;
-
-- (BOOL) shouldAskRating;
-- (void) completeRating;
+@property (weak, nonatomic) IBOutlet StarRatingView *overallStars;
+@property (weak, nonatomic) IBOutlet StarRatingView *q1Stars;
+@property (weak, nonatomic) IBOutlet StarRatingView *q2Stars;
+@property (weak, nonatomic) IBOutlet StarRatingView *q3Stars;
+@property (weak, nonatomic) IBOutlet StarRatingView *q4Stars;
+@property (weak, nonatomic) IBOutlet UITextView *freeComment;
 
 @end
+

@@ -36,7 +36,10 @@
 
 @end
 
-@implementation AppDelegate
+@implementation AppDelegate {
+    CBCentralManager *bluetoothManager;
+    BOOL secondOrLater;
+}
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -63,7 +66,67 @@
     
     _backgroundID = UIBackgroundTaskInvalid;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noAltimeterAlert:) name:NO_ALTIMETER_ALERT object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationNotAllowedAlert:) name:LOCATION_NOT_ALLOWED_ALERT object:nil];
+    
+    
+    [self detectBluetooth];
+    
     return YES;
+}
+
+- (void)noAltimeterAlert:(NSNotification*)note
+{
+    NSString *title = NSLocalizedString(@"NoAltimeterAlertTitle", @"");
+    NSString *message = NSLocalizedString(@"NoAltimeterAlertMessage", @"");
+    NSString *ok = NSLocalizedString(@"I_Understand", @"");
+
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:ok
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                              }]];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[self topMostController] presentViewController:alert animated:YES completion:nil];
+    });
+}
+
+- (void)locationNotAllowedAlert:(NSNotification*)note
+{
+    NSString *title = NSLocalizedString(@"LocationNotAllowedTitle", @"");
+    NSString *message = NSLocalizedString(@"LocationNotAllowedMessage", @"");
+    NSString *setting = NSLocalizedString(@"SETTING", @"");
+    NSString *cancel = NSLocalizedString(@"CANCEL", @"");
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:setting
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  NSURL *url = [NSURL URLWithString:@"App-Prefs:root=Privacy"];
+                                                  [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+                                              }]];
+    [alert addAction:[UIAlertAction actionWithTitle:cancel
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                              }]];
+    
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[self topMostController] presentViewController:alert animated:YES completion:nil];
+    });
+}
+
+
+- (UIViewController*) topMostController
+{
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
 }
 
 void uncaughtExceptionHandler(NSException *exception)
@@ -98,12 +161,16 @@ void uncaughtExceptionHandler(NSException *exception)
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     [UIApplication.sharedApplication endBackgroundTask:_backgroundID];
-    LocationManager *manager = [LocationManager sharedManager];
-    if (!manager.isActive) {
-        [manager start];
+    
+    if (secondOrLater) {
+        LocationManager *manager = [LocationManager sharedManager];
+        if (!manager.isActive) {
+            [manager start];
+        }
+        [Logging stopLog];
+        [Logging startLog];
     }
-    [Logging stopLog];    
-    [Logging startLog];
+    secondOrLater = YES;
     
     [self beginReceivingRemoteControlEvents];
     
@@ -154,5 +221,41 @@ void uncaughtExceptionHandler(NSException *exception)
     }
     return NO;
 }
+
+- (void)detectBluetooth
+{
+    if(!bluetoothManager)
+    {
+        bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue() options:@{CBCentralManagerOptionShowPowerAlertKey: @NO}];
+    }
+    [self centralManagerDidUpdateState:bluetoothManager];
+}
+
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central
+{
+    if (bluetoothManager.state == CBManagerStatePoweredOff) {
+        NSString *title = NSLocalizedString(@"BluetoothOffAlertTitle", @"");
+        NSString *message = NSLocalizedString(@"BluetoothOffAlertMessage", @"");
+        NSString *setting = NSLocalizedString(@"SETTING", @"");
+        NSString *cancel = NSLocalizedString(@"CANCEL", @"");
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:setting
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                      NSURL *url = [NSURL URLWithString:@"App-Prefs:root=Bluetooth"];
+                                                      [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+                                                  }]];
+        [alert addAction:[UIAlertAction actionWithTitle:cancel
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  }]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self topMostController] presentViewController:alert animated:YES completion:nil];
+        });
+        
+    }
+}
+
 
 @end

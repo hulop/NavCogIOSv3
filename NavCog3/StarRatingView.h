@@ -20,30 +20,18 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+#import <UIKit/UIKit.h>
 
-#import <Foundation/Foundation.h>
+@class StarRatingView;
 
-@interface ServerConfig : NSObject
+@protocol StarRatingViewDelegate
+- (void)didChangeStarRating:(StarRatingView*)sender;
+@end
 
-@property (readonly) NSDictionary *serverList;
+@interface StarRatingView : UIView
 
-@property NSDictionary *selected;
-@property (readonly) NSDictionary *selectedServerConfig;
-@property (readonly) NSDictionary *agreementConfig;
-@property (readonly) NSDictionary *downloadConfig;
-
-+ (instancetype) sharedConfig;
-
-- (void) requestServerList:(NSString*)path withComplete:(void(^)(NSDictionary*))complete;
-- (void) requestServerConfig:(void(^)(NSDictionary* config))complete;
-- (NSArray*) checkDownloadFiles;
-- (void) checkAgreement:(void(^)(NSDictionary* config))complete;
-
-- (NSURL*) getDestLocation:(NSString*)path;
-
-- (void) clear;
-
-- (BOOL) shouldAskRating;
-- (void) completeRating;
+@property (readonly) int stars;
+@property id<StarRatingViewDelegate> delegate;
+@property BOOL disabled;
 
 @end

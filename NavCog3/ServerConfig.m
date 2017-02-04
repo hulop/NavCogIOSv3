@@ -101,7 +101,9 @@ static ServerConfig *instance;
 - (void)requestServerConfig:(void(^)(NSDictionary*))complete
 {
     NSString *server_host = [self.selected objectForKey:@"hostname"];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/config/server_config.json",server_host]];
+    NSString *config_file_name = [self.selected objectForKey:@"config_file_name"];
+    config_file_name = config_file_name?config_file_name:@"server_config.json";
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/config/%@",server_host, config_file_name]];
     
     [[[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
@@ -199,5 +201,39 @@ static ServerConfig *instance;
                                  }] resume];
 }
 
+- (BOOL)shouldAskRating
+{
+    NSString *identifier = @"temp";
+    if (_selected) {
+        identifier = _selected[@"server_id"];
+    }
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    BOOL ask_enquete = NO;
+    BOOL isFirstTime = ![ud boolForKey:[NSString stringWithFormat:@"%@_enquete_answered", identifier]];
+    long count = [ud integerForKey:[NSString stringWithFormat:@"%@_enquete_ask_count", identifier]];
+    if (!isFirstTime) {
+        count++;
+        [ud setObject:@(count) forKey:[NSString stringWithFormat:@"%@_enquete_ask_count", identifier]];
+    }
+    
+    if (_selectedServerConfig) {
+        ask_enquete = [_selectedServerConfig[@"ask_enquete"] boolValue];
+    }
+
+    return ask_enquete && (isFirstTime || count % 5 == 0);
+}
+
+- (void)completeRating
+{
+    NSString *identifier = @"temp";
+    if (_selected) {
+        identifier = _selected[@"server_id"];
+    }
+
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    [ud setObject:@(YES) forKey:[NSString stringWithFormat:@"%@_enquete_answered", identifier]];
+    [ud setObject:@(0) forKey:[NSString stringWithFormat:@"%@_enquete_ask_count", identifier]];
+}
 
 @end

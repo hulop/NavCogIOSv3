@@ -123,7 +123,35 @@
 "Open_with_Safari" = "Safariで開く";
 "Open_with_Safari_Message" = "ウェブページをSafariで開きますが、よろしいですか？";
 
-"CheckServerList" = "サーバーリストを確認中...";
-"CheckAgreement" = "サーバー設定を確認中...";
-"CheckServerConfig" = "サーバー設定を確認中...";
+"CheckServerList" = "リストを確認中...";
+"CheckAgreement" = "設定を確認中...";
+"CheckServerConfig" = "設定を確認中...";
 "DOWNLOADING_DATA" = "データをダウンロード中...";
+
+"NoAltimeterAlertTitle" = "気圧計がありません";
+"NoAltimeterAlertMessage" = "NavCogはお使いのデバイスをサポートしていません。お使いのデバイスには気圧計が搭載されていないため、位置推定結果が不安定になる可能性があります。";
+"I_Understand" = "了解しました";
+
+"BluetoothOffAlertTitle" = "Bluetoothがオフです";
+"BluetoothOffAlertMessage" = "屋内での位置推定の機能を使うためにはBluetoothをオンにする必要があります。";
+"CANCEL" = "キャンセル";
+"SETTING" = "設定を開く";
+
+
+"LocationNotAllowedTitle" = "位置情報が許可されていません";
+"LocationNotAllowedMessage" = "屋内での位置推定の機能を使うためには位置情報サービスを許可する必要があります。
+プライバシー設定画面から
+位置情報サービス　→
+NavCog　→
+このAppの使用中のみ許可
+を選択します。";
+
+"THANKYOU_SENDING" = "アンケートにご協力ありがとうございます。
+データを送信中です...";
+
+"Help" = "ヘルプ";
+"OpenHelp" = "ヘルプページを開く";
+
+"NeedToUpdateAppTitle" = "アプリの更新";
+"NeedToUpdateAppMessage" = "アプリの更新が必要です";
+"OpenAppStore" = "App Storeを開く";

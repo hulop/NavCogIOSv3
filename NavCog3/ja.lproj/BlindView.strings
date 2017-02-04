@@ -107,6 +107,12 @@
 "FloorBasementD" = "地下%@階";
 
 /* (No Commment) */
+"FloorChangeActionString2Down" = "%1$@を使って%2$@におります";
+
+/* (No Commment) */
+"FloorChangeActionString2Up" = "%1$@を使って%2$@に上がります";
+
+/* (No Commment) */
 "FloorChangeActionString4Down" = "%1$@、%2$@の%3$@を使って%4$@へおりる";
 
 /* (No Commment) */

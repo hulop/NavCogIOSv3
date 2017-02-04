@@ -1,3 +1,37 @@
+
+/* Class = "UINavigationItem"; title = "Download"; ObjectID = "nc7-od-aTQ"; */
+"nc7-od-aTQ.title" = "ダウンロード";
+
+/* Class = "UILabel"; text = "Announce is understandable"; ObjectID = "0ng-RD-u8G"; */
+"0ng-RD-u8G.text" = "案内の言葉はわかりやすかった";
+
+/* Class = "UILabel"; text = "Optional"; ObjectID = "5dY-jL-v7n"; */
+"5dY-jL-v7n.text" = "任意の項目";
+
+/* Class = "UILabel"; text = "Free comment"; ObjectID = "AZZ-SF-owM"; */
+"AZZ-SF-owM.text" = "コメント";
+
+/* Class = "UILabel"; text = "Announce is much enough"; ObjectID = "IG6-Ac-J5o"; */
+"IG6-Ac-J5o.text" = "案内の分量はちょうどよかった";
+
+/* Class = "UILabel"; text = "Overall Rating"; ObjectID = "MS2-Hi-s8w"; */
+"MS2-Hi-s8w.text" = "総合評価";
+
+/* Class = "UIBarButtonItem"; title = "Submit"; ObjectID = "UoK-bu-TMM"; */
+"UoK-bu-TMM.title" = "送信する";
+
+/* Class = "UILabel"; text = "Location is accurate"; ObjectID = "ZRc-BH-IJT"; */
+"ZRc-BH-IJT.text" = "表示された位置情報は正確だった";
+
+/* Class = "UILabel"; text = "Announce timing is appropriate"; ObjectID = "iaC-38-VID"; */
+"iaC-38-VID.text" = "案内のタイミングは適切だった";
+
+/* Class = "UINavigationItem"; title = "Server Selection"; ObjectID = "tYX-Uz-Xz9"; */
+"tYX-Uz-Xz9.title" = "プロジェクトの選択";
+
+/* Class = "UILabel"; text = "Please give us your feedback"; ObjectID = "wiX-qL-za0"; */
+"wiX-qL-za0.text" = "アンケートにご協力ください";
+
 /* Class = "UIButton"; accessibilityHint = "Select to change"; ObjectID = "0AS-gk-VX3"; */
 "0AS-gk-VX3.accessibilityHint" = "変更するには選択します";
 
@@ -147,4 +181,7 @@
 
 /* Class = "UIButton"; normalTitle = "Preview"; ObjectID = "zGZ-Nf-Jjr"; */
 "zGZ-Nf-Jjr.normalTitle" = "プレビュー";
+
+
+
 

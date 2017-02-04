@@ -111,3 +111,28 @@
 "CheckServerConfig" = "Checking server setting...";
 "DOWNLOADING_DATA" = "Downloading data files...";
 
+"NoAltimeterAlertTitle" = "No Barometer Sensor";
+"NoAltimeterAlertMessage" = "NavCog does not support this device. Localization could be unstable because your device does not have barometer sensor.";
+"I_Understand" = "I understand";
+
+"BluetoothOffAlertTitle" = "Bluetooth is off";
+"BluetoothOffAlertMessage" = "You need to turn on bluetooth to enable indoor localization function.";
+"CANCEL" = "Cancel";
+"SETTING" = "Open Settings";
+
+"LocationNotAllowedTitle" = "Location not allowed";
+"LocationNotAllowedMessage" = "You need to allow access to location service to enable indoor localization function.
+From privacy settings, please select
+Location Services ->
+NavCog ->
+While Using the App";
+
+"THANKYOU_SENDING" = "Thank you for your feedback!
+Feedback is sending...";
+
+"Help" = "Help";
+"OpenHelp" = "Open help page";
+
+"NeedToUpdateAppTitle" = "App Update";
+"NeedToUpdateAppMessage" = "App is required to be updated";
+"OpenAppStore" = "Open App Store";

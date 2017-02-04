@@ -31,6 +31,10 @@
 
 #import "NavDebugHelper.h"
 
+#import "RatingViewController.h"
+
+#import "ServerConfig.h"
+
 @import JavaScriptCore;
 @import CoreMotion;
 
@@ -122,6 +126,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleLocaionUnknown:) name:REQUEST_HANDLE_LOCATION_UNKNOWN object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURL:) name: REQUEST_OPEN_URL object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestRating:) name:REQUEST_RATING object:nil];
+
 
     [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkMapCenter:) userInfo:nil repeats:YES];
 }
@@ -132,6 +138,18 @@
         HLPLocation *loc = [helper getCenter];
         if (loc != nil) {
             [NavDataStore sharedDataStore].mapCenter = loc;
+            HLPLocation *cloc = [NavDataStore sharedDataStore].currentLocation;
+            if (isnan(cloc.lat) || isnan(cloc.lng)) {
+                NSDictionary *param =
+                @{
+                  @"floor": @(loc.floor),
+                  @"lat": @(loc.lat),
+                  @"lng": @(loc.lng),
+                  @"sync": @(NO)
+                  };
+                [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:param];
+
+            }
             [self updateView];
             [timer invalidate];
         }
@@ -142,6 +160,16 @@
 - (void) openURL:(NSNotification*)note
 {
     [NavUtil openURL:[note userInfo][@"url"] onViewController:self];
+}
+
+- (void) requestRating:(NSNotification*)note
+{
+    if ([NavDataStore sharedDataStore].previewMode == NO &&
+        [[ServerConfig sharedConfig] shouldAskRating]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSegueWithIdentifier:@"show_rating" sender:self];
+        });
+    }
 }
 
 - (void)tapped
@@ -643,17 +671,18 @@
         [timerForSimulator invalidate];
         timerForSimulator = nil;
     }
+    [NavDataStore sharedDataStore].start = [[NSDate date] timeIntervalSince1970];
     dispatch_async(dispatch_get_main_queue(), ^{
         [helper evalScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
 
-        _cover.preventCurrentStatus = YES;
+        //_cover.preventCurrentStatus = YES;
         [NavUtil hideModalWaiting];
     });
     
     //double delayInSeconds = 1.0;
     //dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     //dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        _cover.preventCurrentStatus = NO;
+        //_cover.preventCurrentStatus = NO;
         [commander didNavigationStarted:properties];
         [previewer didNavigationStarted:properties];
 
@@ -901,6 +930,16 @@
             }
         }
     });
+    
+    if ([segue.identifier isEqualToString:@"show_rating"]) {
+        RatingViewController *rv = (RatingViewController*)segue.destinationViewController;
+        NavDataStore *nds = [NavDataStore sharedDataStore];
+        rv.start = nds.start;
+        rv.end = [[NSDate date] timeIntervalSince1970];
+        rv.from = nds.from._id;
+        rv.to = nds.to._id;
+        rv.device_id = [nds userID];
+    }
 }
 
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender

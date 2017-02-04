@@ -92,6 +92,8 @@ typedef struct {
     
     double smoothedLocationAcc;
     double smootingLocationRate;
+    
+    BOOL didAlertAboutAltimeter;
 }
 
 static LocationManager *instance;
@@ -1013,6 +1015,10 @@ void functionCalledToLog(void *inUserData, string text)
         return;
     }
     if (cbeacons.size() > 0) {
+        if (altimeter == nil && !didAlertAboutAltimeter) {
+            didAlertAboutAltimeter = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:NO_ALTIMETER_ALERT object:self];
+        }
         if (rssiBiasCount > 0) {
             rssiBiasCount -= 1;
             try {
@@ -1055,6 +1061,13 @@ void functionCalledToLog(void *inUserData, string text)
 {
     switch (status) {
         case kCLAuthorizationStatusDenied:
+            if ([CLLocationManager locationServicesEnabled]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_NOT_ALLOWED_ALERT object:self];
+            } else {
+                // OS automatically shows alert
+            }
+            [self didChangeAuthorizationStatus:NO];
+            break;
         case kCLAuthorizationStatusRestricted:
         case kCLAuthorizationStatusNotDetermined:
             [self didChangeAuthorizationStatus:NO];
@@ -1473,33 +1486,22 @@ int dcount = 0;
     NSString __block *mapName = [ud stringForKey:@"bleloc_map_data"];
     
     NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    while(YES) {
-        NSString* path = [documentsPath stringByAppendingPathComponent:mapName];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:path] == NO || mapName==nil) {
-            for(NSString *file in [ConfigManager filenamesWithSuffix:@"json"]) {
-                mapName = file;
-                [ud setValue:mapName forKey:@"bleloc_map_data"];
-                break;
-            }
-            if (mapName == nil) {
-                break;
-            }
-            continue;
-        }
-        
-        [[[NSOperationQueue alloc] init] addOperationWithBlock:^{
-            NSInputStream *stream = [NSInputStream inputStreamWithFileAtPath:path];
-            [stream open];
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithStream:stream options:0 error:nil];
-            anchor = json[@"anchor"];
-        
-            NSString *tempDir = NSTemporaryDirectory();
-            
-            [self setModelAtPath:path withWorkingDir:tempDir];
-        }];
-        break;
-    }
 
+    NSString* path = [documentsPath stringByAppendingPathComponent:mapName];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path] == NO || mapName==nil) {
+        return;
+    }
+    
+    [[[NSOperationQueue alloc] init] addOperationWithBlock:^{
+        NSInputStream *stream = [NSInputStream inputStreamWithFileAtPath:path];
+        [stream open];
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithStream:stream options:0 error:nil];
+        anchor = json[@"anchor"];
+        
+        NSString *tempDir = NSTemporaryDirectory();
+        
+        [self setModelAtPath:path withWorkingDir:tempDir];
+    }];
 }
 
 

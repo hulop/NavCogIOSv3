@@ -31,6 +31,7 @@
 #import "NavDeviceTTS.h"
 #import "NavDataStore.h"
 #import "AuthManager.h"
+#import "NavUtil.h"
 
 @interface SettingViewController ()
 
@@ -226,6 +227,11 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
     } else if ([setting.name isEqualToString:@"Reset_Location"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
         [self.navigationController popToRootViewControllerAnimated:YES];
+    } else if ([setting.name isEqualToString:@"OpenHelp"]) {
+        NSString *lang = [@"-" stringByAppendingString:[[NavDataStore sharedDataStore] userLanguage]];
+        if ([lang isEqualToString:@"-en"]) { lang = @""; }
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://hulop.github.io/help%@", lang]];
+        [NavUtil openURL:url onViewController:self];
     } else {
         [self performSegueWithIdentifier:setting.name sender:self];
     }
@@ -316,6 +322,14 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
                                      Name:@"unit_meter" Group:@"distance_unit" DefaultValue:@(YES) Accept:nil];
     unitFeet = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
                                      Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
+    
+    [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenHelp", @"") Name:@"OpenHelp"];
+
+    NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    NSString *buildNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    
+    [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"version: %@ (%@)", versionNo, buildNo]];
     
     if ([[AuthManager sharedManager] isDeveloperAuthorized]) {    
         [userSettingHelper addSectionTitle:NSLocalizedString(@"Advanced", @"")];

@@ -59,13 +59,23 @@
       if (!$IOS.readyForNext) {
         return;
       }
-      $IOS.readyForNext = false;
       var obj = $IOS.queue.shift();
- console.log(obj);
       if ($IOS.queue.length == 0) {
         clearInterval($IOS.interval);
         $IOS.interval = null;
       }
+      if (obj == null) {
+        return;
+      }
+      if ($IOS.timerID) {
+        clearTimeout($IOS.timerID);
+      }
+      $IOS.timerID = window.setTimeout(function(){
+                        $IOS.queue.unshift(obj);
+                        $IOS.readyForNext = true;
+                        }, 500);
+      console.log(obj);
+
       var component = obj.component;
       var func = obj.func;
       var params = obj.params;
@@ -83,6 +93,7 @@
         }
         url += '&_dummy_=' + new Date().getTime();
       }
+      $IOS.readyForNext = false;
       frame.src = url;
     }
   };

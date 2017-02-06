@@ -145,7 +145,7 @@
                   @"floor": @(loc.floor),
                   @"lat": @(loc.lat),
                   @"lng": @(loc.lng),
-                  @"sync": @(NO)
+                  @"sync": @(YES)
                   };
                 [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:param];
 

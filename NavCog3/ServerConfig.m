@@ -105,18 +105,14 @@ static ServerConfig *instance;
     config_file_name = config_file_name?config_file_name:@"server_config.json";
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/config/%@",server_host, config_file_name]];
     
-    [[[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (error) {
-            return;
+    [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
+        if (result && [result isKindOfClass:NSDictionary.class]) {
+            _selectedServerConfig = (NSDictionary*)result;
+            complete(_selectedServerConfig);
+        } else {
+            complete(nil);
         }
-        NSError *error2;
-        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error2];
-        if (error2) {
-            NSLog(@"%@", error2.localizedDescription);
-        }
-        _selectedServerConfig = json;
-        complete(_selectedServerConfig);
-    }] resume];
+    }];
 }
 
 - (NSArray*) checkDownloadFiles
@@ -191,14 +187,14 @@ static ServerConfig *instance;
     NSString *device_id = [[UIDevice currentDevice].identifierForVendor UUIDString];
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/api/check_agreement?id=%@",server_host, device_id]];
     
-    [[[NSURLSession sharedSession] dataTaskWithURL:url
-                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-                                     NSLog(@"check_agreement: %@", json);
-                                     
-                                     _agreementConfig = json;
-                                     complete(_agreementConfig);
-                                 }] resume];
+    [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
+        if (result && [result isKindOfClass:NSDictionary.class]) {
+            _agreementConfig = (NSDictionary*)result;
+            complete(_agreementConfig);
+        } else {
+            complete(nil);
+        }
+    }];
 }
 
 - (BOOL)shouldAskRating

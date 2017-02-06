@@ -24,6 +24,7 @@
 
 #import "ServerSelectionViewController.h"
 #import "ServerConfig.h"
+#import "AuthManager.h"
 
 @interface ServerSelectionViewController ()
 
@@ -66,7 +67,8 @@
 {
     NSDictionary *server = [self serverAtIndexPath:indexPath];
     
-    if ([server[@"available"] boolValue]) {
+    if ([server[@"available"] boolValue] ||
+        [[AuthManager sharedManager] isDeveloperAuthorized]) {
         
         NSString *minimum_app_version = server[@"minimum_app_version"];
         if (minimum_app_version) {
@@ -151,7 +153,8 @@
 
         BOOL available = [server[@"available"] boolValue];
         
-        if (available) {
+        if (available ||
+            [[AuthManager sharedManager] isDeveloperAuthorized]) {
             //cell.accessoryType = UITableViewCellAccessoryCheckmark;
             cell.textLabel.textColor = [UIColor blackColor];
             cell.detailTextLabel.textColor = [UIColor blackColor];

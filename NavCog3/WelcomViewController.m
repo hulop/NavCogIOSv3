@@ -34,6 +34,8 @@
 @implementation WelcomViewController {
     BOOL first;
     int agreementCount;
+    int retryCount;
+    BOOL networkError;
 }
 
 - (void)viewDidLoad {
@@ -41,6 +43,8 @@
  
     agreementCount = 0;
     first = YES;
+    
+    [self updateView];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -53,6 +57,31 @@
     self.navigationItem.hidesBackButton = YES;
 }
 
+- (void)updateView
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (networkError) {
+            self.statusLabel.text = NSLocalizedString(@"checkNetworkConnection",@"");
+        } else {
+            self.statusLabel.text = @"";
+        }
+        self.retryButton.hidden = !networkError;
+    });
+}
+
+- (void)didNetworkError
+{
+    networkError = YES;
+    [self updateView];
+}
+
+- (IBAction)retry:(id)sender {
+    networkError = NO;
+    retryCount = 0;
+    agreementCount = 0;
+    [self updateView];
+    [self checkConfig];
+}
 
 - (void) checkConfig
 {
@@ -69,7 +98,13 @@
         [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
         return;
     }
-    */
+     */
+    
+    if (retryCount > 3) {
+        [self didNetworkError];
+        return;
+    }
+    retryCount++;
     
     ServerConfig *config = [ServerConfig sharedConfig];
 
@@ -82,6 +117,7 @@
             self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
             [[ServerConfig sharedConfig] requestServerList:@"" withComplete:^(NSDictionary *config) {
                 [self checkConfig];
+                if (config) { retryCount = 0; }
             }];
         }
 
@@ -104,6 +140,7 @@
             self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
             [[ServerConfig sharedConfig] checkAgreement:^(NSDictionary* config) {
                 [self checkConfig];
+                if (config) { retryCount = 0; }
             }];
             return;
         }
@@ -164,6 +201,7 @@
             self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
             [[ServerConfig sharedConfig] requestServerConfig:^(NSDictionary *config) {
                 [self checkConfig];
+                if (config) { retryCount = 0; }
             }];
             return;
         }

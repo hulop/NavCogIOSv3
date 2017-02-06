@@ -100,6 +100,7 @@
 
 /* Class = "UILabel"; text = "Network Error"; ObjectID = "NRG-DQ-bhb"; */
 "NRG-DQ-bhb.text" = "ネットワークに問題があります";
+"IXp-1x-PzW.text" = "ネットワークに問題があります";
 
 /* (No Commment) */
 "QGQ-Xh-iSw.text" = "基本設定";
@@ -182,6 +183,6 @@
 /* Class = "UIButton"; normalTitle = "Preview"; ObjectID = "zGZ-Nf-Jjr"; */
 "zGZ-Nf-Jjr.normalTitle" = "プレビュー";
 
-
-
+"sVy-i3-VPD.normalTitle" = "やり直す";
+"Wpx-c4-w3p.normalTitle" = "やり直す";
 

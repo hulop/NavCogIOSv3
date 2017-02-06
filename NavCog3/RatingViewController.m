@@ -121,7 +121,7 @@
     submitting = YES;
     [self updateView];
     [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"THANKYOU_SENDING", @"")];
-    
+    NSString *user_mode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
     NSDictionary *answers =
     @{
       @"from": _from?_from:@"unknown", @"to": _to?_to:@"unknown",
@@ -133,7 +133,8 @@
       @"q2": @(_q2Stars.stars),
       @"q3": @(_q3Stars.stars),
       @"q4": @(_q4Stars.stars),
-      @"comment": _freeComment.text?_freeComment.text:@""
+      @"comment": _freeComment.text?_freeComment.text:@"",
+      @"user_mode": user_mode?user_mode:@"unknown"
       };
     NSData *answersData = [NSJSONSerialization dataWithJSONObject:answers options:0 error:nil];
     NSString *answersStr = [[NSString alloc] initWithData:answersData encoding:NSUTF8StringEncoding];

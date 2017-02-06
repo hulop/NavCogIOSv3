@@ -305,7 +305,8 @@ static NavDataStore* instance_ = nil;
 
 - (void) setUserID:(NSString *)userID
 {
-    _userID = [NSString stringWithFormat:@"%@:%@", userID, userLanguage];
+    //_userID = [NSString stringWithFormat:@"%@:%@", userID, userLanguage];
+    _userID = userID;
 }
 
 - (NSString*) userID

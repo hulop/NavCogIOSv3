@@ -362,8 +362,8 @@
     
     if ([segue.identifier isEqualToString:@"show_rating"] && ratingInfo) {
         RatingViewController *rv = (RatingViewController*)segue.destinationViewController;
-        rv.start = [ratingInfo[@"start"] longValue];;
-        rv.end = [ratingInfo[@"end"] longValue];
+        rv.start = [ratingInfo[@"start"] doubleValue]/1000.0;
+        rv.end = [ratingInfo[@"end"] doubleValue]/1000.0;
         rv.from = ratingInfo[@"from"];
         rv.to = ratingInfo[@"to"];
         rv.device_id = [[NavDataStore sharedDataStore] userID];

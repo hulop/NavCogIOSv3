@@ -75,10 +75,12 @@
 
 @implementation NavCoverView {
     NSMutableArray *elements;
-    NSArray *speaks;
-    UIAccessibilityElement *first;
+    NSMutableArray *speaks;
+    NSArray *summary;
+    NavAnnounceItem *first;
     NavCurrentStatusItem *currentStatusItem;
     NavCurrentStatusItem *currentStatusItem2; // for hack
+    NavAnnounceItem *header;
     long currentIndex;
     BOOL preventCurrentStatus;
 }
@@ -108,11 +110,20 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteControl:) name:REMOTE_CONTROL_EVENT object:nil];
     
-    first = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+    first = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
+    first.delegate = self;
     first.accessibilityLabel = NSLocalizedString(@"Navigation", @"");
     first.accessibilityTraits = UIAccessibilityTraitStaticText | UIAccessibilityTraitHeader;
+    first.accessibilityFrame = CGRectMake(0,0,1,1);
     
-    speaks = @[];
+    header = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
+    header.delegate = self;
+    header.accessibilityTraits = UIAccessibilityTraitHeader | UIAccessibilityTraitStaticText;
+    header.accessibilityLabel = NSLocalizedStringFromTable(@"SummaryHeader",@"BlindView",@"");
+    header.accessibilityFrame = CGRectMake(0,0,1,1);
+
+    
+    speaks = [@[] mutableCopy];
     elements = [@[] mutableCopy];
 
     if (!currentStatusItem) {
@@ -131,11 +142,11 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-
-    currentStatusItem.accessibilityFrame = self.window.frame;
-
     [elements removeAllObjects];
+    [elements addObject:first];
     [elements addObject:currentStatusItem];
+    currentStatusItem.accessibilityFrame = self.window.frame;
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, first);
 }
 
 - (void)dealloc
@@ -178,7 +189,8 @@
         currentStatusItem2.accessibilityFrame = self.window.frame;
         [elements addObject: currentStatusItem2];
     } else if (item == currentStatusItem2) {
-        elements[[speaks count]] = currentStatusItem2;
+        NSInteger index = [elements indexOfObject:currentStatusItem];
+        elements[index] = currentStatusItem2;
         elements[[elements count] - 1] = currentStatusItem;
         NavCurrentStatusItem *temp = currentStatusItem;
         currentStatusItem = currentStatusItem2;
@@ -193,6 +205,7 @@
             UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, item);
         }
     }
+    NSLog(@"%@", elements);
 }
 
 - (void)speakCurrentElement
@@ -264,8 +277,9 @@
 - (void)clear:(NSNotification*)note
 {
     @synchronized (self) {
-        speaks = @[];
+        [speaks removeAllObjects];
         [elements removeAllObjects];
+        summary = nil;
     }
 }
 
@@ -283,56 +297,71 @@
         }
         NSString *text = dict[@"text"];
         
-        if (!speaks) {
-            speaks = @[text];
+        if ([speaks count] == 0) {
             flag = YES;
-        } else {
-            speaks = [speaks arrayByAddingObject:text];
-            if ([speaks count] > 10) {
-                speaks = [speaks subarrayWithRange:NSMakeRange(1, [speaks count]-1)];
-            }
         }
+        NavAnnounceItem *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
+        e.delegate = self;
+        e.accessibilityLabel = text;
+        e.accessibilityFrame = CGRectMake(0,0,1,1);
+        [speaks addObject:e];
         
         BOOL contains2 = ([elements lastObject] == currentStatusItem2);
 
-        // keep array instance
         [elements removeAllObjects];
         [elements addObject:first];
         for(int i = 0 ; i < [speaks count]; i++) {
-            NSString *s = speaks[i];
-            BOOL last = (i == [speaks count] - 1);
-            NavAnnounceItem *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
-            e.delegate = self;
-            e.accessibilityLabel = s;
-            [elements addObject:e];
+            [elements addObject:speaks[i]];
         }
         
         [elements addObject:currentStatusItem];
-
+        if (!contains2) {
+            currentStatusItem.accessibilityFrame = self.window.frame;
+        }
         
         // future summary
         if (_fsSource) {
+            if (summary == nil) {
+                NSMutableArray *temp = [@[] mutableCopy];
+                
+                for(int i = 0 ; i < [_fsSource numberOfSummary]; i++) {
+                    NSString *str = [_fsSource summaryAtIndex:i];
+                    NavAnnounceItem *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
+                    e.delegate = self;
+                    e.accessibilityLabel = [NavDeviceTTS removeDots:str];
+                    e.accessibilityFrame = CGRectMake(0,0,1,1);
+                    [temp addObject:e];
+                }
+                summary = temp;
+            }
+
             // use flat structure for non-voiceover usage
-            UIAccessibilityElement *header = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            header.accessibilityTraits = UIAccessibilityTraitHeader | UIAccessibilityTraitStaticText;
-            header.accessibilityLabel = NSLocalizedStringFromTable(@"SummaryHeader",@"BlindView",@"");
             [elements addObject:header];
-
-            for(int i = 0 ; i < [_fsSource numberOfSummary]; i++) {
-                NSString *str = [_fsSource summaryAtIndex:i];
-                UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
-                e.accessibilityLabel = [NavDeviceTTS removeDots:str];
-
-                [elements addObject:e];
+            
+            for(long i = [_fsSource currentIndex]; i < [summary count]; i++) {
+                [elements addObject:summary[i]];
             }
         }
         
         if (contains2) {
             [elements addObject:currentStatusItem2];
+            //currentStatusItem2.accessibilityFrame = CGRectMake(0, 0, 1, 1);
         }
-    }
-    if (flag) {
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, elements[0]);
+        
+        
+        // check focused element
+        UIAccessibilityElement *focusedElement = nil;
+        for(int i = 0; i < [elements count]; i++) {
+            UIAccessibilityElement *e = elements[i];
+            if (e.accessibilityElementIsFocused) {
+                focusedElement = e;
+            }
+        }
+        if (focusedElement) {
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, focusedElement);
+        }
+        NSLog(@"focusedElement:%@", focusedElement);
+        NSLog(@"%@", elements);
     }
 }
 

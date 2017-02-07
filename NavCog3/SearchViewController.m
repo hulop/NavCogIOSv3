@@ -274,6 +274,7 @@
              */
             
             [self.navigationController popViewControllerAnimated:YES];
+            [NavUtil hideModalWaiting];
         });
     }];
 }

@@ -224,10 +224,30 @@
     [self updateView];
 }
 
+- (UILabel*)findLabel:(NSArray*)views
+{
+    for(UIView* view in views) {
+        if ([view isKindOfClass:UILabel.class]) {
+            return (UILabel*)view;
+        }
+        if (view.subviews) {
+            UILabel* result = [self findLabel:view.subviews];
+            if (result) {
+                return result;
+            }
+        }
+    }
+    return (UILabel*)nil;
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:self];
     [self becomeFirstResponder];
+    
+    UIView* target = [self findLabel:self.navigationController.navigationBar.subviews];
+    
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, target.superview);
 }
 
 - (BOOL)canBecomeFirstResponder
@@ -615,7 +635,6 @@
 {
     [commander didActiveStatusChanged:properties];
     [previewer didActiveStatusChanged:properties];
-    
     BOOL isActive = [properties[@"isActive"] boolValue];
     BOOL requestBackground = isActive && ![NavDataStore sharedDataStore].previewMode;
     if (!requestBackground) {

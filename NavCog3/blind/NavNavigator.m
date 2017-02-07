@@ -2328,16 +2328,37 @@ static NavNavigatorConstants *_instance;
         id obj = linkInfos[i];
         if ([obj isKindOfClass:NavLinkInfo.class]) {
             NavLinkInfo *info = (NavLinkInfo*)obj;
-            if (!info.hasBeenActivated) {
-                count++;
-            }
+            count++;
             if (info.isNextDestination) {
+                count++;
                 break;
             }
         }
     }
     return count;
 }
+
+- (NSInteger)currentIndex
+{
+    int count = 0;
+    for(int i = 0; i < [linkInfos count]; i++) {
+        id obj = linkInfos[i];
+        if ([obj isKindOfClass:NavLinkInfo.class]) {
+            NavLinkInfo *info = (NavLinkInfo*)obj;
+            if (info.hasBeenActivated) {
+                count++;
+            } else {
+                break;
+            }
+            if (info.isNextDestination) {
+                break;
+            }
+
+        }
+    }
+    return count;
+}
+
 
 - (NSString *)summaryAtIndex:(NSInteger)index
 {
@@ -2347,39 +2368,34 @@ static NavNavigatorConstants *_instance;
         id obj = linkInfos[i];
         if ([obj isKindOfClass:NavLinkInfo.class]) {
             NavLinkInfo *linkInfo = (NavLinkInfo*)obj;
-            if (!linkInfo.hasBeenActivated) {
-                if (index == count) {
-                    if ([self.delegate respondsToSelector:@selector(summaryString:)]) {
-                        double distance = linkInfo.link.length;
-                        double noAndTurnMinDistance = C.NO_ANDTURN_DISTANCE_THRESHOLD;
-                        if (linkInfo.nextLink.linkType == LINK_TYPE_ESCALATOR ||
-                            linkInfo.nextLink.linkType == LINK_TYPE_ELEVATOR ||
-                            linkInfo.nextLink.linkType == LINK_TYPE_STAIRWAY) {
-                            noAndTurnMinDistance = NAN;
-                        }
-                        
-                        return [self.delegate summaryString:
-                                @{
-                                  @"pois": linkInfo.pois,
-                                  @"isFirst": @(navIndex == firstLinkIndex),
-                                  @"distance": @(distance),
-                                  @"noAndTurnMinDistance": @(noAndTurnMinDistance),
-                                  @"linkType": @(linkInfo.link.linkType),
-                                  @"nextLinkType": @(linkInfo.nextLink.linkType),
-                                  @"turnAngle": @(linkInfo.nextTurnAngle),
-                                  @"isNextDestination": @(linkInfo.isNextDestination),
-                                  @"sourceHeight": @(linkInfo.link.sourceHeight),
-                                  @"targetHeight": @(linkInfo.link.targetHeight),
-                                  @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                                  @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
-                                  }];
+            if (index == count) {
+                if ([self.delegate respondsToSelector:@selector(summaryString:)]) {
+                    double distance = linkInfo.link.length;
+                    double noAndTurnMinDistance = C.NO_ANDTURN_DISTANCE_THRESHOLD;
+                    if (linkInfo.nextLink.linkType == LINK_TYPE_ESCALATOR ||
+                        linkInfo.nextLink.linkType == LINK_TYPE_ELEVATOR ||
+                        linkInfo.nextLink.linkType == LINK_TYPE_STAIRWAY) {
+                        noAndTurnMinDistance = NAN;
                     }
+                    
+                    return [self.delegate summaryString:
+                            @{
+                              @"pois": linkInfo.pois,
+                              @"isFirst": @(navIndex == firstLinkIndex),
+                              @"distance": @(distance),
+                              @"noAndTurnMinDistance": @(noAndTurnMinDistance),
+                              @"linkType": @(linkInfo.link.linkType),
+                              @"nextLinkType": @(linkInfo.nextLink.linkType),
+                              @"turnAngle": @(linkInfo.nextTurnAngle),
+                              @"isNextDestination": @(linkInfo.isNextDestination),
+                              @"sourceHeight": @(linkInfo.link.sourceHeight),
+                              @"targetHeight": @(linkInfo.link.targetHeight),
+                              @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                              @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                              }];
                 }
-                count++;
             }
-            if (linkInfo.isNextDestination) {
-                break;
-            }
+            count++;
         }
     }
     return nil;

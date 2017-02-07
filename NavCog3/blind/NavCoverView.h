@@ -36,4 +36,6 @@
 @interface NavCoverView : UIView <NavAnnounceItemDelegate>
 @property id<NavFutureSummarySource> fsSource;
 @property BOOL preventCurrentStatus;
+
+- (void)focusFirst;
 @end

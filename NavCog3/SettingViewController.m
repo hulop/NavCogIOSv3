@@ -52,7 +52,8 @@ static HLPSettingHelper *routeOptionsSettingHelper;
 static HLPSetting *speechLabel, *speechSpeedSetting, *vibrateSetting, *soundEffectSetting;
 static HLPSetting *previewSpeedSetting, *previewWithActionSetting;
 static HLPSetting *boneConductionSetting, *exerciseLabel, *exerciseAction, *resetLocation;
-static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitFeet;
+static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitFeet, *idLabel;
+static HLPSetting *advancedLabel, *advancedMenu;
 
 
 - (void)viewDidLoad {
@@ -290,7 +291,13 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
         [unitLabel setVisible:blindMode];
         [unitMeter setVisible:blindMode];
         [unitFeet setVisible:blindMode];
-
+        
+        idLabel.label = [NavDataStore sharedDataStore].userID;
+        BOOL isDeveloperAuthorized = [[AuthManager sharedManager] isDeveloperAuthorized];
+        [idLabel setVisible:isDeveloperAuthorized];
+        [advancedLabel setVisible:isDeveloperAuthorized];
+        [advancedMenu setVisible:isDeveloperAuthorized];
+        
         return;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
@@ -330,12 +337,10 @@ static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitF
     NSString *buildNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     
     [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"version: %@ (%@)", versionNo, buildNo]];
+    idLabel = [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"%@", [NavDataStore sharedDataStore].userID]];
     
-    if ([[AuthManager sharedManager] isDeveloperAuthorized]) {    
-        [userSettingHelper addSectionTitle:NSLocalizedString(@"Advanced", @"")];
-        [userSettingHelper addActionTitle:NSLocalizedString(@"Advanced Setting", @"") Name:@"advanced_settings"];
-    }
-    
+    advancedLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Advanced", @"")];
+    advancedMenu = [userSettingHelper addActionTitle:NSLocalizedString(@"Advanced Setting", @"") Name:@"advanced_settings"];
 }
 
 + (void)setupDeveloperSettings

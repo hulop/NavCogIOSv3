@@ -136,3 +136,15 @@ Feedback is sending...";
 "NeedToUpdateAppTitle" = "App Update";
 "NeedToUpdateAppMessage" = "App is required to be updated";
 "OpenAppStore" = "Open App Store";
+
+"WAIT_ACTION" = "Waiting your questions... Tap microphone button to restart.";
+
+"NoAudioAccessAlertTitle" = "Microphone not allowed";
+"NoAudioAccessAlertMessage" = "You need to allow access to microphone to enable conversation function.
+From privacy settigs, please turn on
+Microphone　→　NavCog";
+
+"NoSpeechRecoAccessAlertTitle" = "Speech Recognition not allowed";
+"NoSpeechRecoAccessAlertMessage" = "You need to allow access to speech recognition to enable conversation function.
+From privacy settigs, please turn on
+Speech Recognition　→　NavCog";

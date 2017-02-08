@@ -26,6 +26,8 @@ import Speech
 
 protocol LocalContextDelegate{
     func onContextChange(context:LocalContext)
+    func showNoAudioAccessAlert()
+    func showNoSpeechRecoAlert()
 }
 
 public class LocalContext: NSObject{
@@ -37,29 +39,36 @@ public class LocalContext: NSObject{
 
     override init(){
     }
-    public func verify_security() -> Bool{
+    
+    public func verifyPrivacy() {
+        self.verifyAudioAccess();
+    }
+    
+    private func verifyAudioAccess() {
+        AVCaptureDevice.requestAccessForMediaType(AVMediaTypeAudio, completionHandler: {(granted: Bool) in
+            if granted {
+                self.verifySpeechRecoAccess()
+            } else {
+                self.showNoAudioAccessAlert()
+            }
+        })
+
+    }
+    public func verifySpeechRecoAccess() -> Bool{
         SFSpeechRecognizer.requestAuthorization { authStatus in
             if authStatus == .Authorized {
-                    self.notify_delegate_as_needed()
+                self.notify_delegate_as_needed()
+            } else {
+                self.showNoSpeechRecoAlert()
             }
         }
         return true
     }
-    public func start_update_location(cnt:Int){
+
+    public func welcome_shown() {
+        LocalContext.no_welcome = true
     }
-    public func is_updating() -> Bool{
-        return SFSpeechRecognizer.authorizationStatus() != SFSpeechRecognizerAuthorizationStatus.Authorized
-    }
-    public func set_profile(prof:NSDictionary){
-        self.context["profile"] = prof
-        if !is_updating() {
-            self.notify_delegate_as_needed()
-            LocalContext.no_welcome = true
-        }
-    }
-    public func get_profile() -> NSDictionary?{
-        return self.context["profile"] as? NSDictionary
-    }
+    
     public func getContext() -> NSDictionary{
         self.context["local"] = self.localvariables
         if LocalContext.no_welcome {
@@ -68,9 +77,21 @@ public class LocalContext: NSObject{
         DialogManager.sharedManager().setLocationContext(self.context)
         return self.context
     }
+    
     private func notify_delegate_as_needed(){
         if let del = self.delegate{
             del.onContextChange(self);
+        }
+    }
+    
+    private func showNoAudioAccessAlert(){
+        if let del = self.delegate {
+            del.showNoAudioAccessAlert()
+        }
+    }
+    private func showNoSpeechRecoAlert(){
+        if let del = self.delegate {
+            del.showNoSpeechRecoAlert()
         }
     }
 }

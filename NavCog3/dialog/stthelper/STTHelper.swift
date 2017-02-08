@@ -41,8 +41,10 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
     var speaking:Bool = false
     var recognizing:Bool = false
     var paused:Bool = true
+    var restarting:Bool = true
     var last_actions: [([String],(String, UInt64)->Void)]?
     var last_failure:(NSError)->Void = {arg in}
+    var last_timeout:(Void)->Void = {arg in}
     var listeningStart:Double = 0
     var avePower:Double = 0
     var aveCount:Int64 = 0
@@ -52,9 +54,11 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
     var audioDataQueue:dispatch_queue_t? = nil
     
     var arecorder:AVAudioRecorder? = nil
+    var timeoutTimer:NSTimer? = nil
+    var timeoutDuration:NSTimeInterval = 10.0
     var ametertimer:NSTimer? = nil
     var resulttimer:NSTimer? = nil
-    var resulttimerDuration:NSTimeInterval = 2.0
+    var resulttimerDuration:NSTimeInterval = 1.0
     var confidenceFilter = 0.2
     var executeFilter = 0.3
     var hesitationPrefix = "D_"
@@ -183,32 +187,32 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
         self.stopAudioRecorder()
     }
     
-    func startRecognize(actions: [([String],(String, UInt64)->Void)], failure: (NSError)->Void){
-        let audioSession:AVAudioSession = AVAudioSession.sharedInstance()
-        try! audioSession.setCategory(AVAudioSessionCategoryRecord)
-        try! audioSession.setActive(true)
-
-        self.recognizing = true
+    func startRecognize(actions: [([String],(String, UInt64)->Void)], failure: (NSError)->Void,  timeout: (Void)->Void){
         self.paused = false
+        
+        let audioSession:AVAudioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(AVAudioSessionCategoryRecord)
+            try audioSession.setActive(true)
+        } catch {
+        }
+        
+        self.last_timeout = timeout
         self.last_failure = failure
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         recognitionRequest!.shouldReportPartialResults = true
         recognitionTask = speechRecognizer.recognitionTaskWithRequest(recognitionRequest!, resultHandler: { result, error in
             if error != nil {
                 print(error)
+                self.stoptimer()
                 if let code = error?.code {
-                    if code == 203 {
+                    if code == 203 { // Empty recognition
                         self.endRecognize();
-                        let delay = 0.4
-                        NavSound.sharedInstance().vibrate(nil)
-                        NavSound.sharedInstance().playVoiceRecoStart()
-                        
-                        self._setTimeout(delay, block: {
-                            self.startPWCaptureSession()
-                            self.startRecognize(actions, failure:failure)
-                        })
-                    } else if code == 216 || code == 1700 {
+                        self.delegate?.recognize()
+                        timeout()
+                    } else if code == 209 || code == 216 || code == 1700 {
                         // noop 
+                        // 209 : trying to stop while starting
                         // 216 : terminated by manual
                         // 1700: background
                         return;
@@ -227,13 +231,10 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
             
             print(result)
             if result == nil {
-                return;5
+                return;
             }
-            
-            if self.resulttimer != nil{
-                self.resulttimer?.invalidate()
-                self.resulttimer = nil;
-            }
+    
+            self.stoptimer();
             
             var millisecDuration:UInt64 = 0;
             for s in (result?.bestTranscription.segments)! {
@@ -281,16 +282,38 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
         })
         self.stopstt = {
             self.recognitionTask?.cancel()
+            if self.resulttimer != nil{
+                self.resulttimer?.invalidate()
+                self.resulttimer = nil;
+            }
             self.stopstt = {}
         }
+        
+        self.timeoutTimer = NSTimer.scheduledTimerWithTimeInterval(self.timeoutDuration, repeats: false, block: { (timer) in
+            self.endRecognize()
+            timeout()
+        })
+        
+        self.restarting = false
+        self.recognizing = true
     }
     
+    func stoptimer(){
+        if self.resulttimer != nil{
+            self.resulttimer?.invalidate()
+            self.resulttimer = nil
+        }
+        if self.timeoutTimer != nil {
+            self.timeoutTimer?.invalidate()
+            self.timeoutTimer = nil
+        }
+    }
     
     internal func _setTimeout(delay:NSTimeInterval, block:()->Void) -> NSTimer {
         return NSTimer.scheduledTimerWithTimeInterval(delay, target: NSBlockOperation(block: block), selector: #selector(NSOperation.main), userInfo: nil, repeats: false)
     }
     
-    func listen(actions: [([String],(String, UInt64)->Void)], selfvoice: String?, speakendactions:[((String)->Void)]?,avrdelegate:AVAudioRecorderDelegate?, failure:(NSError)->Void) {
+    func listen(actions: [([String],(String, UInt64)->Void)], selfvoice: String?, speakendactions:[((String)->Void)]?,avrdelegate:AVAudioRecorderDelegate?, failure:(NSError)->Void, timeout:(Void)->Void) {
         
         if (speaking) {
             NSLog("TTS is speaking so this listen is eliminated")
@@ -299,6 +322,7 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
         NSLog("Listen \(selfvoice) \(actions)")
         self.last_actions = actions
 
+        self.stoptimer()
         delegate?.speak()
         delegate?.showText(" ")
         tts?.speak(selfvoice) {
@@ -319,7 +343,7 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
             
             self._setTimeout(delay, block: {
                 self.startPWCaptureSession()//alternative
-                self.startRecognize(actions, failure: failure)
+                self.startRecognize(actions, failure: failure, timeout: timeout)
                 
                 self.delegate?.showText(NSLocalizedString("SPEAK_NOW", comment:"Speak Now!"))
                 self.delegate?.listen()
@@ -344,10 +368,14 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
         self.arecorder?.stop()
         self.stopPWCaptureSession()
         self.stopstt()
-        
+        self.stoptimer()
+
         let avs:AVAudioSession = AVAudioSession.sharedInstance()
-        try! avs.setCategory(AVAudioSessionCategorySoloAmbient)
-        try! avs.setActive(true)
+        do {
+            try avs.setCategory(AVAudioSessionCategorySoloAmbient)
+            try avs.setActive(true)
+        } catch {
+        }
     }
     
     func endRecognize() {
@@ -358,23 +386,31 @@ public class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, 
         self.arecorder?.stop()
         self.stopPWCaptureSession()
         self.stopstt()
-        
+        self.stoptimer()
+
         let avs:AVAudioSession = AVAudioSession.sharedInstance()
-        try! avs.setCategory(AVAudioSessionCategorySoloAmbient)
-        try! avs.setActive(true)
+        do {
+            try avs.setCategory(AVAudioSessionCategorySoloAmbient)
+            try avs.setActive(true)
+        } catch {
+        }
     }
     
     func restartRecognize() {
+        self.paused = false;
+        self.restarting = true;
         if let actions = self.last_actions {
             if let failure:(NSError)->Void = self.last_failure {
-                let delay = 0.4
-                NavSound.sharedInstance().vibrate(nil)
-                NavSound.sharedInstance().playVoiceRecoStart()
-                
-                self._setTimeout(delay, block: {
-                    self.startPWCaptureSession()
-                    self.startRecognize(actions, failure:failure)
-                })
+                if let timeout:(Void)->Void = self.last_timeout {
+                    let delay = 0.4
+                    NavSound.sharedInstance().vibrate(nil)
+                    NavSound.sharedInstance().playVoiceRecoStart()
+                    
+                    self._setTimeout(delay, block: {
+                        self.startPWCaptureSession()
+                        self.startRecognize(actions, failure:failure, timeout:timeout)
+                    })
+                }
             }
         }
     }

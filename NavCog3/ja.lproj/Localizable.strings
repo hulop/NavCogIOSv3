@@ -155,3 +155,17 @@ NavCog　→
 "NeedToUpdateAppTitle" = "アプリの更新";
 "NeedToUpdateAppMessage" = "アプリの更新が必要です";
 "OpenAppStore" = "App Storeを開く";
+
+"WAIT_ACTION" = "話しかけていただけるのを待っています。マイクボタンを押して再開してください。";
+
+"NoAudioAccessAlertTitle" = "マイクが許可されていません";
+"NoAudioAccessAlertMessage" = "対話検索の機能を使うためにはマイクを許可する必要があります。
+プライバシー設定画面から
+マイク　→　NavCog
+の設定をオンにします。";
+
+"NoSpeechRecoAccessAlertTitle" = "音声認識が許可されていません";
+"NoSpeechRecoAccessAlertMessage" = "対話検索の機能を使うためには音声認識を許可する必要があります。
+プライバシー設定画面から
+音声認識　→　NavCog
+の設定をオンにします。";

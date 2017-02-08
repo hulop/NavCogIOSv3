@@ -27,7 +27,7 @@ class DialogManager: NSObject {
     
     var available:Bool = false {
         didSet {            
-            NSNotificationCenter.defaultCenter().postNotificationName(DIALOG_AVAILABILITY_CHANGED_NOTIFICATION, object:self, userInfo:["available":available])
+            NotificationCenter.default.post(name: Notification.Name(rawValue: DIALOG_AVAILABILITY_CHANGED_NOTIFICATION), object:self, userInfo:["available":available])
         }
     }
     static var instance:DialogManager?
@@ -40,19 +40,19 @@ class DialogManager: NSObject {
     
     override init() {
         super.init()
-        let nc = NSNotificationCenter.defaultCenter()
-        nc.addObserver(self, selector: #selector(serverConfigChanged(_:)), name: SERVER_CONFIG_CHANGED_NOTIFICATION, object: nil)
-        nc.addObserver(self, selector: #selector(locationChanged(_:)), name: NAV_LOCATION_CHANGED_NOTIFICATION, object: nil)
-        nc.addObserver(self, selector: #selector(buildingChanged(_:)), name: BUILDING_CHANGED_NOTIFICATION, object: nil)
-        nc.addObserver(self, selector: #selector(RestartConversation(_:)), name:"RestartConversation", object: nil)
-        nc.addObserver(self, selector: #selector(ResetConversation(_:)), name:"ResetConversation", object: nil)
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(serverConfigChanged(_:)), name: NSNotification.Name(rawValue: SERVER_CONFIG_CHANGED_NOTIFICATION), object: nil)
+        nc.addObserver(self, selector: #selector(locationChanged(_:)), name: NSNotification.Name(rawValue: NAV_LOCATION_CHANGED_NOTIFICATION), object: nil)
+        nc.addObserver(self, selector: #selector(buildingChanged(_:)), name: NSNotification.Name(rawValue: BUILDING_CHANGED_NOTIFICATION), object: nil)
+        nc.addObserver(self, selector: #selector(RestartConversation(_:)), name:NSNotification.Name(rawValue: "RestartConversation"), object: nil)
+        nc.addObserver(self, selector: #selector(ResetConversation(_:)), name:NSNotification.Name(rawValue: "ResetConversation"), object: nil)
     }
     
     func isDialogAvailable()->Bool {
         return available
     }
     
-    func serverConfigChanged(note:NSNotification) {
+    func serverConfigChanged(_ note:Notification) {
         available = false
         // check serverconfig
         if let config = note.userInfo {
@@ -72,26 +72,26 @@ class DialogManager: NSObject {
         }
     }
     
-    func locationChanged (note:NSNotification) {
+    func locationChanged (_ note:Notification) {
         if let object = note.userInfo {
             if let current = object["current"] as? HLPLocation {
                 self.latitude = nil
                 self.longitude = nil
                 self.floor = nil
-                if (!isnan(current.lat) && !isnan(current.lng)) {
+                if (!current.lat.isNaN && !current.lng.isNaN) {
                     self.latitude = current.lat
                     self.longitude = current.lng
                 }
-                if (!isnan(current.floor)) {
+                if (!current.floor.isNaN) {
                     self.floor = Int(round(current.floor))
                 }
             }
         }
     }
     
-    func buildingChanged (note:NSNotification) {
+    func buildingChanged (_ note:Notification) {
         //if let object:NSDictionary = (note.object as! NSDictionary) {
-        if let object:NSDictionary = note.userInfo {
+        if let object:NSDictionary = note.userInfo as NSDictionary? {
             self.building = nil
             if let building:String = object["building"] as? String {
                 self.building = building
@@ -99,14 +99,14 @@ class DialogManager: NSObject {
         }
     }
     
-    func RestartConversation (note:NSNotification) {
+    func RestartConversation (_ note:Notification) {
         isActive = true
     }
-    func ResetConversation (note:NSNotification) {
+    func ResetConversation (_ note:Notification) {
         isActive = false
     }
     
-    func setLocationContext(context:NSMutableDictionary) {
+    func setLocationContext(_ context:inout [String: Any]) {
         if let latitude = latitude {
             context["latitude"] = latitude
             if let longitude = longitude {

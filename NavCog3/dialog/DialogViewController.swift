@@ -21,9 +21,9 @@
  *******************************************************************************/
 
 import UIKit
-import Alamofire
-import Freddy
+import RestKit
 import AVFoundation
+import ConversationV1
 
 class servicecred{
     internal let url:String
@@ -42,7 +42,7 @@ protocol ControlViewDelegate: class {
 
 class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalContextDelegate, ControlViewDelegate, DialogViewDelegate{
     deinit {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let notificationCenter = NotificationCenter.default
         notificationCenter.removeObserver(self)
         DialogManager.sharedManager().available = true
     }
@@ -55,12 +55,12 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var root: UIViewController? = nil
     let tintColor: UIColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
     
-    private var _tts:TTSProtocol? = nil
-    private var _stt:STTHelper? = nil
+    fileprivate var _tts:TTSProtocol? = nil
+    fileprivate var _stt:STTHelper? = nil
     
-    let conv_devicetype:String = UIDevice.currentDevice().systemName + "_" + UIDevice.currentDevice().systemVersion
-    let conv_deviceid:String = (UIDevice.currentDevice().identifierForVendor?.UUIDString)!
-    var conv_context:NSDictionary? = nil
+    let conv_devicetype:String = UIDevice.current.systemName + "_" + UIDevice.current.systemVersion
+    let conv_deviceid:String = (UIDevice.current.identifierForVendor?.uuidString)!
+    var conv_context:[String: Any]? = nil
     var conv_server:String? = nil
     var conv_api_key:String? = nil
     var conv_client_id:String? = nil
@@ -73,16 +73,16 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     let white:UIColor = UIColor(red: CGFloat(244/255.0), green: CGFloat(244/255.0), blue: CGFloat(236/255.0), alpha:1.0)
     let black:UIColor = UIColor(red: CGFloat(65/255.0), green: CGFloat(70/255.0), blue: CGFloat(76/255.0), alpha:1.0)
     
-    var tableData:[Dictionary<String,AnyObject>]!
+    var tableData:[Dictionary<String,Any>]!
     var heightLeftCell: CustomLeftTableViewCell = CustomLeftTableViewCell()
     var heightRightCell: CustomRightTableViewCell = CustomRightTableViewCell()
     
-    private var dialogViewHelper: DialogViewHelper = DialogViewHelper()
+    fileprivate var dialogViewHelper: DialogViewHelper = DialogViewHelper()
     var cancellable = false
     
     
     let ttslock:NSLock = NSLock()
-    private func getTts() -> TTSProtocol{
+    fileprivate func getTts() -> TTSProtocol{
         self.ttslock.lock()
         defer{self.ttslock.unlock()}
         if let tts = self._tts{
@@ -93,7 +93,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     let sttlock:NSLock = NSLock()
-    private func getStt() -> STTHelper{
+    fileprivate func getStt() -> STTHelper{
         self.sttlock.lock()
         defer{self.sttlock.unlock()}
         if let stt = self._stt{
@@ -112,30 +112,31 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
         self.conv_context_local.delegate = self
-        self.getStt()
+        _ = self.getStt()
         self.conv_context = nil
         self.tableData = []
 
-        let nc = NSNotificationCenter.defaultCenter()
-        nc.addObserver(self, selector: #selector(resetConversation), name: "ResetConversation", object: nil)
-        nc.addObserver(self, selector: #selector(restartConversation), name: "RestartConversation", object: nil)
-        nc.addObserver(self, selector: #selector(requestDialogEnd), name: REQUEST_DIALOG_END, object: nil)
-        nc.addObserver(self, selector: #selector(requestDialogAction), name: REQUEST_DIALOG_ACTION, object: nil)
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(resetConversation), name: NSNotification.Name(rawValue: "ResetConversation"), object: nil)
+        nc.addObserver(self, selector: #selector(restartConversation), name: NSNotification.Name(rawValue: "RestartConversation"), object: nil)
+        nc.addObserver(self, selector: #selector(pauseConversation), name: NSNotification.Name(rawValue: "PauseConversation"), object: nil)
+        nc.addObserver(self, selector: #selector(requestDialogEnd), name: NSNotification.Name(rawValue: REQUEST_DIALOG_END), object: nil)
+        nc.addObserver(self, selector: #selector(requestDialogAction), name: NSNotification.Name(rawValue: REQUEST_DIALOG_ACTION), object: nil)
     }
     
     internal func updateView() {
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.updateView()
     }
     
-    override func viewDidAppear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().postNotificationName("RestartConversation", object: self)
+    override func viewDidAppear(_ animated: Bool) {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "RestartConversation"), object: self)
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().postNotificationName("ResetConversation", object: self)
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "ResetConversation"), object: self)
         self.updateView()
     }
     
@@ -145,22 +146,22 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let setting = NSLocalizedString("SETTING", comment:"");
         let cancel = NSLocalizedString("CANCEL", comment:"");
         
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: setting, style: UIAlertActionStyle.Default, handler: { (action) in
-            let url = NSURL(string:"App-Prefs:root=Privacy")
-            UIApplication.sharedApplication().openURL(url!, options:[:], completionHandler: { (success) in
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: setting, style: UIAlertActionStyle.default, handler: { (action) in
+            let url = URL(string:"App-Prefs:root=Privacy")
+            UIApplication.shared.open(url!, options:[:], completionHandler: { (success) in
             })
         }))
-        alert.addAction(UIAlertAction(title: cancel, style: UIAlertActionStyle.Default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: cancel, style: UIAlertActionStyle.default, handler: { (action) in
         }))
-        dispatch_async(dispatch_get_main_queue(), {
-            self.presentViewController(alert, animated: true, completion: {
+        DispatchQueue.main.async(execute: {
+            self.present(alert, animated: true, completion: {
             })
         })
         cancellable = true
         self.updateView()
         
-        self.tableData.append(["name": NSLocalizedString("Error", comment:""), "type": 1,  "image": "conversation.png", "message": message])
+        self.tableData.append(["name": NSLocalizedString("Error", comment:"") as AnyObject, "type": 1 as AnyObject,  "image": "conversation.png" as AnyObject, "message": message as AnyObject])
         self.refreshTableView()
     }
     
@@ -170,28 +171,28 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let setting = NSLocalizedString("SETTING", comment:"");
         let cancel = NSLocalizedString("CANCEL", comment:"");
 
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: setting, style: UIAlertActionStyle.Default, handler: { (action) in
-            let url = NSURL(string:"App-Prefs:root=Privacy")
-            UIApplication.sharedApplication().openURL(url!, options:[:], completionHandler: { (success) in
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: setting, style: UIAlertActionStyle.default, handler: { (action) in
+            let url = URL(string:"App-Prefs:root=Privacy")
+            UIApplication.shared.open(url!, options:[:], completionHandler: { (success) in
             })
         }))
-        alert.addAction(UIAlertAction(title: cancel, style: UIAlertActionStyle.Default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: cancel, style: UIAlertActionStyle.default, handler: { (action) in
         }))
-        dispatch_async(dispatch_get_main_queue(), {
-            self.presentViewController(alert, animated: true, completion: { 
+        DispatchQueue.main.async(execute: {
+            self.present(alert, animated: true, completion: { 
             })
         })
         cancellable = true
         self.updateView()
         
-        self.tableData.append(["name": NSLocalizedString("Error", comment:""), "type": 1,  "image": "conversation.png", "message": message])
+        self.tableData.append(["name": NSLocalizedString("Error", comment:"") as AnyObject, "type": 1 as AnyObject,  "image": "conversation.png" as AnyObject, "message": message as AnyObject])
         self.refreshTableView()
     }
     
     internal func requestDialogEnd() {
         if cancellable {
-            self.navigationController?.popToRootViewControllerAnimated(true)
+            _ = self.navigationController?.popToRootViewController(animated: true)
         } else {
             NavSound.sharedInstance().playFail()
         }
@@ -219,24 +220,42 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.dialogViewHelper.removeFromSuperview()
         self.dialogViewHelper.delegate = nil
     }
+    
     internal func restartConversation(){
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.conv_context_local.delegate = self
             self.getStt().prepare()
             self.initDialogView()
             self.conv_started = false
             self.startConversation()
         }
-        
     }
-    internal func onContextChange(context:LocalContext){
+    
+    internal func pauseConversation() {
+        let stt = self.getStt()
+        if (stt.recognizing) {
+            print("pause stt")
+            stt.endRecognize()
+            stt.paused = true
+            stt.delegate?.showText(NSLocalizedString("PAUSING", comment:"Pausing"));
+            stt.delegate?.inactive()
+        } else if(stt.speaking) {
+            print("stop tts")
+            stt.speaking = false
+            stt.tts?.stop() // do not use "true" flag beacus it causes no-speaking problem.
+            stt.delegate?.showText(NSLocalizedString("PAUSING", comment:"Pausing"));
+            stt.delegate?.inactive()
+        }
+    }
+    
+    internal func onContextChange(_ context:LocalContext){
         if !self.conv_started{
             self.conv_started = true
             self.sendmessage("")
         }
     }
-    private func initConversationConfig(){
-        let defs:NSDictionary = ServerConfig.sharedConfig().selectedServerConfig;
+    fileprivate func initConversationConfig(){
+        let defs:NSDictionary = ServerConfig.shared().selectedServerConfig as NSDictionary;
 
         let server = defs["conv_server"]
         if let _server = server as? String {
@@ -250,7 +269,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 self.conv_api_key = _key
             }
         }
-        let str = NavDataStore.sharedDataStore().userID!
+        let str = NavDataStore.shared().userID!
         if  !str.isEmpty {
             self.conv_client_id = str
         }
@@ -299,17 +318,17 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
             return true
         }
     }
-    private func initDialogView(){
+    fileprivate func initDialogView(){
         self.view.backgroundColor = defbackgroundColor
        if(nil == self.tableView){
             // chat messages
             self.tableView = NoVoiceTableView()
-            self.tableView!.registerClass(CustomLeftTableViewCell.self, forCellReuseIdentifier: "CustomLeftTableViewCell")
-            self.tableView!.registerClass(CustomRightTableViewCell.self, forCellReuseIdentifier: "CustomRightTableViewCell")
-            self.tableView!.registerClass(CustomLeftTableViewCellSpeaking.self, forCellReuseIdentifier: "CustomLeftTableViewCellSpeaking")
+            self.tableView!.register(CustomLeftTableViewCell.self, forCellReuseIdentifier: "CustomLeftTableViewCell")
+            self.tableView!.register(CustomRightTableViewCell.self, forCellReuseIdentifier: "CustomRightTableViewCell")
+            self.tableView!.register(CustomLeftTableViewCellSpeaking.self, forCellReuseIdentifier: "CustomLeftTableViewCellSpeaking")
             self.tableView!.delegate = self
             self.tableView!.dataSource = self
-            self.tableView!.separatorColor = UIColor.clearColor()
+            self.tableView!.separatorColor = UIColor.clear
             self.tableView?.backgroundColor = defbackgroundColor
             //        self.tableView!.layer.zPosition = -1
             
@@ -353,19 +372,19 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
-    private func resizeTableView(){
+    fileprivate func resizeTableView(){
         if(nil == self.tableView){
             return
         }
 
-        let statusBarHeight: CGFloat = UIApplication.sharedApplication().statusBarFrame.height + 40
+        let statusBarHeight: CGFloat = UIApplication.shared.statusBarFrame.height + 40
         let txheight = self.dialogViewHelper.helperView.bounds.height + self.dialogViewHelper.label.bounds.height
         
         let displayWidth: CGFloat = self.view.frame.width
         let displayHeight: CGFloat = self.view.frame.height
         self.tableView!.frame = CGRect(x:0, y:statusBarHeight, width:displayWidth, height:displayHeight - statusBarHeight - txheight)
     }
-    private func initImageView(){
+    fileprivate func initImageView(){
         let image1:UIImage? = UIImage(named:"Dashboard.PNG")
         
         self.imageView = UIImageView(frame:self.view.bounds)
@@ -373,14 +392,14 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         self.view.addSubview(self.imageView!)
     }
-    private func removeImageView(){
+    fileprivate func removeImageView(){
         self.imageView?.removeFromSuperview()
     }
     override func viewDidLayoutSubviews() {
         self.resizeTableView()
 
     }
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         if self.tableData.count <= indexPath.row {
             return 0
@@ -396,70 +415,72 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
             return self.heightLeftCell.setData(tableView.frame.size.width - 20, data: self.tableData[indexPath.row])
         }
     }
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         var type:Int = 1
+        var data:[String:Any] = [:]
         if indexPath.row < self.tableData.count {
-            type = self.tableData[indexPath.row]["type"] as! Int
+            data = self.tableData[indexPath.row]
+            type = data["type"] as! Int
         }
         if 1 == type
         {
-            let cell = tableView.dequeueReusableCellWithIdentifier("CustomLeftTableViewCell", forIndexPath: indexPath) as! CustomLeftTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CustomLeftTableViewCell", for: indexPath) as! CustomLeftTableViewCell
             cell.backgroundColor = defbackgroundColor
             cell.fillColor = white
             cell.fontColor = black
             cell.strokeColor = blue
-            cell.setData(tableView.frame.size.width - 20, data: self.tableData[indexPath.row])
+            _ = cell.setData(tableView.frame.size.width - 20, data: data)
             return cell
         }
         else if 2 == type
         {
-            let cell = tableView.dequeueReusableCellWithIdentifier("CustomRightTableViewCell", forIndexPath: indexPath) as! CustomRightTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CustomRightTableViewCell", for: indexPath) as! CustomRightTableViewCell
             cell.backgroundColor = defbackgroundColor
             cell.fillColor = blue
             cell.fontColor = white
             cell.strokeColor = blue
-            cell.setData(tableView.frame.size.width - 20, data: self.tableData[indexPath.row])
+            _ = cell.setData(tableView.frame.size.width - 20, data: data)
             return cell
         }else{
-            let cell = tableView.dequeueReusableCellWithIdentifier("CustomLeftTableViewCellSpeaking", forIndexPath: indexPath) as! CustomLeftTableViewCellSpeaking
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CustomLeftTableViewCellSpeaking", for: indexPath) as! CustomLeftTableViewCellSpeaking
             cell.backgroundColor = defbackgroundColor
             cell.fillColor = white
             cell.fontColor = black
             cell.strokeColor = blue
-            cell.setData(tableView.frame.size.width - 20, data: self.tableData[indexPath.row])
+            _ = cell.setData(tableView.frame.size.width - 20, data: data)
             return cell
         }
     }
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tableData.count
     }
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    internal func refreshTableView(dontscroll:Bool? = false){
+    internal func refreshTableView(_ dontscroll:Bool? = false){
         if(nil == self.tableView){
             return
         }
-        dispatch_async(dispatch_get_main_queue(), { [weak self] in
+        DispatchQueue.main.async(execute: { [weak self] in
             if let weakself = self {
                 weakself.tableView?.reloadData()
                 if !dontscroll!{
-                    dispatch_async(dispatch_get_main_queue(),{
+                    DispatchQueue.main.async(execute: {
                         if(nil == weakself.tableView){
                             return
                         }
                         let nos = weakself.tableView!.numberOfSections
-                        let nor = weakself.tableView!.numberOfRowsInSection(nos-1)
+                        let nor = weakself.tableView!.numberOfRows(inSection: nos-1)
                         if nor > 0{
-                            let lastPath:NSIndexPath = NSIndexPath(forRow:nor-1, inSection:nos-1)
-                            weakself.tableView!.scrollToRowAtIndexPath( lastPath , atScrollPosition: .Bottom, animated: true)
+                            let lastPath:IndexPath = IndexPath(row:nor-1, section:nos-1)
+                            weakself.tableView!.scrollToRow( at: lastPath , at: .bottom, animated: true)
                         }
                     })
                 }
@@ -495,16 +516,16 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
-    internal func matches(txt: String, pattern:String)->[[String]]{
+    internal func matches(_ txt: String, pattern:String)->[[String]]{
         let nsstr = txt as NSString
         var ret:[[String]] = []
-        if let regex = try? NSRegularExpression(pattern: pattern, options:NSRegularExpressionOptions()){
-            let result = regex.matchesInString(nsstr as String, options: NSMatchingOptions(), range: NSMakeRange(0, nsstr.length)) 
+        if let regex = try? NSRegularExpression(pattern: pattern, options:NSRegularExpression.Options()){
+            let result = regex.matches(in: nsstr as String, options: NSRegularExpression.MatchingOptions(), range: NSMakeRange(0, nsstr.length)) 
             if 0 < result.count{
                 for i in 0 ..< result.count {
                     var temp: [String] = []
                     for j in 0 ..< result[i].numberOfRanges{
-                        temp.append(nsstr.substringWithRange(result[i].rangeAtIndex(j)))
+                        temp.append(nsstr.substring(with: result[i].rangeAt(j)))
                     }
                     ret.append(temp)
                 }
@@ -513,16 +534,16 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return ret
     }
     
-    internal func _setTimeout(delay:NSTimeInterval, block:()->Void) -> NSTimer {
-        return NSTimer.scheduledTimerWithTimeInterval(delay, target: NSBlockOperation(block: block), selector: #selector(NSOperation.main), userInfo: nil, repeats: false)
+    internal func _setTimeout(_ delay:TimeInterval, block:@escaping ()->Void) -> Timer {
+        return Timer.scheduledTimer(timeInterval: delay, target: BlockOperation(block: block), selector: #selector(Operation.main), userInfo: nil, repeats: false)
     }
 
-    var inflight:NSTimer? = nil
+    var inflight:Timer? = nil
     var agent_name = ""
     var lastresponse:MessageResponse? = nil
-    internal func newresponse(orgres: MessageResponse?){
+    internal func newresponse(_ orgres: MessageResponse?){
         conv_context_local.welcome_shown()
-        dispatch_async(dispatch_get_main_queue(), { [weak self] in
+        DispatchQueue.main.async(execute: { [weak self] in
             if let weakself = self {
                 weakself.cancellable = true
                 weakself.updateView()
@@ -536,18 +557,25 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }else{
             self.lastresponse = orgres
         }
-        let restxt = resobj!.output.text.joinWithSeparator("\n")
+        let restxt = resobj!.output.text.joined(separator: "\n")
         self.conv_context = resobj!.context
         
-        if let system = self.conv_context!["system"] {
-            if let dialog_request_counter = system["dialog_request_counter"] as? Int{
-                if dialog_request_counter > 1 {
-                    self.timeoutCount = 0
-                }
-            }
+        guard let cc = self.conv_context else {
+            return
         }
 
-        if let name:String = resobj!.context["agent_name"] as? String {
+        guard let system:[String:Any] = cc["system"] as? [String:Any] else {
+            return
+        }
+        
+        guard let dialog_request_counter:Int = system["dialog_request_counter"] as? Int else {
+            return
+        }
+        if dialog_request_counter > 1 {
+            self.timeoutCount = 0
+        }
+
+        if let name:String = cc["agent_name"] as? String {
             agent_name = name
         }
         
@@ -555,25 +583,25 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.tableData.append(["name": agent_name, "type": 1,  "image": "conversation.png", "message": restxt])
         self.refreshTableView()
         var postEndDialog:((Void)->Void)? = nil
-        if let fin:Bool = resobj!.context["finish"] as? Bool{ 
+        if let fin:Bool = cc["finish"] as? Bool{
             if fin {
                 postEndDialog = {
                     self.cancellable = true
                     self.updateView()
 
                     if self.root != nil {
-                        self.navigationController?.popToViewController(self.root!, animated: true)
+                        _ = self.navigationController?.popToViewController(self.root!, animated: true)
                     } else {
-                        self.navigationController?.popToRootViewControllerAnimated(true)
+                        _ = self.navigationController?.popToRootViewController(animated: true)
                     }
-                    UIApplication.sharedApplication().openURL(NSURL(string: self.conv_navigation_url + "")!, options: [:], completionHandler: nil)
+                    UIApplication.shared.open(URL(string: self.conv_navigation_url + "")!, options: [:], completionHandler: nil)
                     
                 }
             }
         }
-        if let navi:Bool = resobj!.context["navi"] as? Bool{
+        if let navi:Bool = cc["navi"] as? Bool{
             if navi{
-                if let dest_info = resobj!.context["dest_info"] {
+                if let dest_info:[String:Any] = cc["dest_info"] as! [String:Any]? {
                     if let nodes:String = dest_info["nodes"] as? String {
                         postEndDialog = { [weak self] in
                             if let weakself = self {
@@ -581,11 +609,11 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                                 weakself.updateView()
                                 
                                 if weakself.root != nil {
-                                    weakself.navigationController?.popToViewController(weakself.root!, animated: true)
+                                    _ = weakself.navigationController?.popToViewController(weakself.root!, animated: true)
                                 } else {
-                                    weakself.navigationController?.popToRootViewControllerAnimated(true)
+                                    _ = weakself.navigationController?.popToRootViewController(animated: true)
                                 }
-                                UIApplication.sharedApplication().openURL(NSURL(string: weakself.conv_navigation_url + "?toID=" + nodes.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)!, options: [:], completionHandler: nil)
+                                UIApplication.shared.open(URL(string: weakself.conv_navigation_url + "?toID=" + nodes.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!)!, options: [:], completionHandler: nil)
                             }
                         }
                     }
@@ -593,11 +621,11 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
         }
         var speech = restxt
-        if let pron:String = resobj!.context["output_pron"] as? String {
+        if let pron:String = cc["output_pron"] as? String {
             speech = pron
         }
 
-        dispatch_async(dispatch_get_main_queue(), { [weak self] in
+        DispatchQueue.main.async(execute: { [weak self] in
             if let weakself = self {
                 if let callback = postEndDialog {
                     weakself.endDialog(speech)
@@ -610,9 +638,9 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
         })
     }
-    internal func newmessage(msg:String){
-        self.tableData.append(["name":"myself", "type": 2,
-            "message":msg ])
+    internal func newmessage(_ msg:String){
+        self.tableData.append(["name":"myself" as AnyObject, "type": 2 as AnyObject,
+            "message":msg as AnyObject ])
         self.refreshTableView()
     }
     
@@ -633,23 +661,23 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func showWaiting() {
         sendTimeoutCount = 0
         let table = ["●○○○○","○●○○○","○○●○○","○○○●○","○○○○●","○○○●○","○○●○○","○●○○○","●○○○○"]
-        sendTimeout = NSTimer.scheduledTimerWithTimeInterval(0.3, repeats: true, block: { (timer) in
-            dispatch_async(dispatch_get_main_queue()) {
+        sendTimeout = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true, block: { (timer) in
+            DispatchQueue.main.async {
                 let str = table[self.sendTimeoutCount%table.count]
                 self.sendTimeoutCount = self.sendTimeoutCount + 1
                 if (self.sendTimeoutCount > 1) {
-                    self.tableData.popLast()
+                    _ = self.tableData.popLast()
                 }
-                self.tableData.append(["name": self.agent_name, "type": 1,  "waiting":true, "image": "conversation.png", "message": str])
+                self.tableData.append(["name": self.agent_name as AnyObject, "type": 1 as AnyObject,  "waiting":true as AnyObject, "image": "conversation.png" as AnyObject, "message": str as AnyObject])
                 self.refreshTableView()
             }
         })
     }
     
-    var sendTimeout:NSTimer? = nil
+    var sendTimeout:Timer? = nil
     var sendTimeoutCount = 0
     
-    internal func sendmessage(msg: String, notimeout: Bool = false){
+    internal func sendmessage(_ msg: String, notimeout: Bool = false){
         if !msg.isEmpty{
             newmessage(msg)
 
@@ -658,11 +686,12 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
 
         let conversation = ConversationEx()
-        if let context = self.conv_context {
-            let ctxdic:NSMutableDictionary = NSMutableDictionary(dictionary: context)
-            ctxdic.addEntriesFromDictionary(self.conv_context_local.getContext() as [NSObject : AnyObject])
+        if var context = self.conv_context {
+            self.conv_context_local.getContext().forEach({ (key: String, value: Any) in
+                context[key] = value
+            })
 
-            conversation.message(msg, server: self.conv_server!, api_key: self.conv_api_key!, client_id: self.conv_client_id, context: ctxdic, failure: { [weak self] (error:NSError) in
+            conversation.message(msg, server: self.conv_server!, api_key: self.conv_api_key!, client_id: self.conv_client_id, context: context, failure: { [weak self] (error:Error) in
                 if let weakself = self {
                     weakself.removeWaiting()
                     weakself.failureCustom(error)
@@ -679,7 +708,12 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 }
             }
         }else{
-            conversation.message(msg, server: self.conv_server!, api_key: self.conv_api_key!, client_id: self.conv_client_id, context: self.conv_context_local.getContext(), failure: self.failureCustom) {[weak self] response in
+            conversation.message(msg, server: self.conv_server!, api_key: self.conv_api_key!, client_id: self.conv_client_id, context: self.conv_context_local.getContext(), failure: { [weak self] (error:Error) in
+                if let weakself = self {
+                    weakself.removeWaiting()
+                    weakself.failureCustom(error)
+                }
+            }) {[weak self] response in
                 if let weakself = self {
                     weakself.removeWaiting()
                     weakself.newresponse(response)
@@ -687,12 +721,12 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
         }
         if notimeout == false {
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.showWaiting()
             }
         }
     }
-    internal func endspeak(rsp:String?){
+    internal func endspeak(_ rsp:String?){
         if self.inflight != nil{
             self.inflight?.invalidate()
             self.inflight = nil
@@ -703,11 +737,11 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         stt.endRecognize()
         stt.disconnect()
     }
-    func dummy(msg:String){
+    func dummy(_ msg:String){
         //nop
     }
 
-    func headupDialog(speech: String?) {
+    func headupDialog(_ speech: String?) {
         let stt:STTHelper = self.getStt()
         stt.endRecognize()
         stt.prepare()
@@ -738,7 +772,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     var _lastspeech:String? = nil
-    func startDialog(response:String) {
+    func startDialog(_ response:String) {
         let stt:STTHelper = self.getStt()
         stt.endRecognize()
         stt.delegate = self.dialogViewHelper
@@ -754,10 +788,10 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     if 3 == lastdata["type"] as! Int{
                         if weakself.tableView != nil{
                             let nos = weakself.tableView!.numberOfSections
-                            let nor = weakself.tableView!.numberOfRowsInSection(nos-1)
+                            let nor = weakself.tableView!.numberOfRows(inSection: nos-1)
                             if nor > 0{
-                                let lastPath:NSIndexPath = NSIndexPath(forRow:nor-1, inSection:nos-1)
-                                if let tablecell:CustomLeftTableViewCellSpeaking = weakself.tableView!.cellForRowAtIndexPath(lastPath) as? CustomLeftTableViewCellSpeaking{
+                                let lastPath:IndexPath = IndexPath(row:nor-1, section:nos-1)
+                                if let tablecell:CustomLeftTableViewCellSpeaking = weakself.tableView!.cellForRow(at: lastPath) as? CustomLeftTableViewCellSpeaking{
                                     tablecell.showAllText()
                                 }
                             }
@@ -765,7 +799,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                         let nm = lastdata["name"]
                         let img = lastdata["image"]
                         let msg = lastdata["message"]
-                        weakself.tableData.popLast()
+                        weakself.tableData.removeLast()
                         weakself.tableData.append(["name": nm!, "type": 1, "image": img!, "message": msg!])
                     }
                 }
@@ -783,7 +817,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
     }
     
-    func endDialog(response:String){
+    func endDialog(_ response:String){
         let stt:STTHelper = self.getStt()
         stt.endRecognize()
         stt.delegate = self.dialogViewHelper
@@ -799,20 +833,20 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         stt.delegate = self.dialogViewHelper
     }
     
-    func failureCustom(error: NSError){
-        NSLog("%@",error)
+    func failureCustom(_ error: Error){
+        print(error)
         let str = error.localizedDescription
         self.removeWaiting()
-        self.tableData.append(["name": NSLocalizedString("Error", comment:""), "type": 1,  "image": "conversation.png", "message": str])
+        self.tableData.append(["name": NSLocalizedString("Error", comment:"") as AnyObject, "type": 1 as AnyObject,  "image": "conversation.png" as AnyObject, "message": str as AnyObject])
         self.refreshTableView()
-        dispatch_async(dispatch_get_main_queue(), { [weak self] in
+        DispatchQueue.main.async(execute: { [weak self] in
             if let weakself = self {
                 weakself.failDialog()
                 weakself._tts?.speak(str) {
                 }
             }
             })
-        dispatch_async(dispatch_get_main_queue(), { [weak self] in
+        DispatchQueue.main.async(execute: { [weak self] in
             if let weakself = self {
                 weakself.cancellable = true
                 weakself.updateView()
@@ -825,7 +859,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func timeoutCustom(){
         if timeoutCount >= 1 {
             let str = NSLocalizedString("WAIT_ACTION", comment:"")
-            self.tableData.append(["name": self.agent_name, "type": 1,  "image": "conversation.png", "message": str])
+            self.tableData.append(["name": self.agent_name as AnyObject, "type": 1 as AnyObject,  "image": "conversation.png" as AnyObject, "message": str as AnyObject])
             self.refreshTableView()
             self.failDialog()
             self._tts?.speak(str) {
@@ -837,7 +871,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         timeoutCount = timeoutCount + 1
     }
     
-    func justSpeech(response: String){
+    func justSpeech(_ response: String){
         let stt:STTHelper = self.getStt()
         stt.endRecognize()
         stt.delegate = self.dialogViewHelper

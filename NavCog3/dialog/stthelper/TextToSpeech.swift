@@ -25,19 +25,19 @@ import AVFoundation
 import UIKit
 
 protocol TTSProtocol {
-    func speak(text:String?, callback:(Void)->Void)
+    func speak(_ text:String?, callback: @escaping (Void)->Void)
     func stop()
-    func stop(immediate: Bool)
+    func stop(_ immediate: Bool)
 }
 
 class DefaultTTS: TTSProtocol {
-    func speak(text: String?, callback: (Void) -> Void) {
-        NavDeviceTTS.sharedTTS().speak(text, withOptions:["selfspeak":true,"quickAnswer":false], completionHandler: callback)
+    func speak(_ text: String?, callback: @escaping (Void) -> Void) {
+        NavDeviceTTS.shared().speak(text, withOptions:["selfspeak":true,"quickAnswer":false], completionHandler: callback)
     }
     func stop() {
         self.stop(false)
     }
-    func stop(immediate: Bool) {
-        NavDeviceTTS.sharedTTS().stop(immediate)
+    func stop(_ immediate: Bool) {
+        NavDeviceTTS.shared().stop(immediate)
     }
 }

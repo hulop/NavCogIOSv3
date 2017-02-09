@@ -230,7 +230,7 @@
         int sourceHeight = [properties[@"sourceHeight"] intValue];
         int targetHeight = [properties[@"targetHeight"] intValue];
         NSString *mean = [HLPLink nameOfLinkType:linkType];
-        NSString *sfloor = [self floorString:sourceHeight];
+        //NSString *sfloor = [self floorString:sourceHeight];
         NSString *tfloor = [self floorString:targetHeight];
         //string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %2$@ by %1$@, now you are in %3$@",@"BlindView",@"") , mean, tfloor, sfloor];
         BOOL up = targetHeight > sourceHeight;

@@ -293,9 +293,9 @@ static NavNavigatorConstants *_instance;
             double hLocToNearest = [loc bearingTo:nearest];
             BOOL inAngleAtNearest = fabs([HLPLocation normalizeDegree:hLocToNearest - poi.heading]) < poi.angle;
             
-            double hLocToSource = [loc bearingTo:_link.sourceLocation];
+            //double hLocToSource = [loc bearingTo:_link.sourceLocation];
             double dLocToSource = [loc distanceTo:_link.sourceLocation];
-            BOOL inAngleAtSource = fabs([HLPLocation normalizeDegree:hLocToSource - poi.heading]) < poi.angle;
+            //BOOL inAngleAtSource = fabs([HLPLocation normalizeDegree:hLocToSource - poi.heading]) < poi.angle;
             
             double hLocToTarget = [loc bearingTo:_link.targetLocation];
             double dLocToTarget = [loc distanceTo:_link.targetLocation];
@@ -2419,7 +2419,7 @@ static NavNavigatorConstants *_instance;
         }
         return;
     }
-    NavNavigatorConstants *C = [NavNavigatorConstants constants];
+    //NavNavigatorConstants *C = [NavNavigatorConstants constants];
     
     id obj = linkInfos[navIndex];
     if (obj && [obj isKindOfClass:NavLinkInfo.class]) {

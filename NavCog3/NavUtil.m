@@ -136,6 +136,9 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
 
 +(void)openURL:(NSURL*) url onViewController:(UIViewController*)controller
 {
+    if (url == nil) {
+        return;
+    }
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Open_with_Safari",@"")
                                                                    message:NSLocalizedString(@"Open_with_Safari_Message", @"")
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -145,7 +148,7 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
                                               style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                                                   [[UIApplication sharedApplication] openURL:url
-                                                                                     options:nil
+                                                                                     options:@{}
                                                                            completionHandler:^(BOOL success) {
                                                                            }];
                                               }]];

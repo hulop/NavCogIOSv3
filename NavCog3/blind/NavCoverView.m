@@ -231,7 +231,7 @@
     if (UIAccessibilityIsVoiceOverRunning()) {
         UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, text);
     } else {
-        [[NavDeviceTTS sharedTTS] selfspeak:text force:YES completionHandler:^{
+        [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"selfspeak":@(YES), @"force":@(YES)} completionHandler:^{
         }];
     }    
 }

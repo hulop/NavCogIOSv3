@@ -876,7 +876,10 @@
         if (!title || !message || !url) {
             if (url) {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]
+                                                       options:@{}
+                                             completionHandler:^(BOOL success) {
+                    }];
                 });
             }
             return;
@@ -891,7 +894,9 @@
         [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
                                                   style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                                                       dispatch_async(dispatch_get_main_queue(), ^(void){
-                                                          [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+                                                          [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]
+                                                                                             options:@{}
+                                                                                   completionHandler:^(BOOL success) {}];
                                                       });
                                                   }]];
         

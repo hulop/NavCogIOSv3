@@ -109,7 +109,7 @@
     [handler registerFunc:^(NSDictionary *param, UIWebView *webView) {
         NSString *text = [param objectForKey:@"text"];
         BOOL flush = [[param objectForKey:@"flush"] boolValue];
-        [[NavDeviceTTS sharedTTS] speak:text force:flush completionHandler:nil];
+        [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force":@(flush)} completionHandler:nil];
     } withName:@"speak" inComponent:@"SpeechSynthesizer"];
     
     [handler registerFunc:^(NSDictionary *param, UIWebView *wv) {
@@ -462,40 +462,41 @@
 
 # pragma mark - public methods
 
+- (NSObject*) removeNaNValue:(NSObject*)obj
+{
+    NSObject* newObj;
+    if ([obj isKindOfClass:NSArray.class]) {
+        NSArray* arr = (NSArray*) obj;
+        NSMutableArray* newArr = [arr mutableCopy];
+        for(int i=0; i<[arr count]; i++){
+            NSObject* tmp = arr[i];
+            newArr[i] = [self removeNaNValue:tmp];
+        }
+        newObj = (NSObject*) newArr;
+    }else if ([obj isKindOfClass:NSDictionary.class]) {
+        NSDictionary* dict = (NSDictionary*) obj;
+        NSMutableDictionary* newDict = [dict mutableCopy];
+        for(id key in [dict keyEnumerator]){
+            NSObject* val = dict[key];
+            if([val isKindOfClass:NSNumber.class]){
+                double dVal = [(NSNumber*) val doubleValue];
+                if(isnan(dVal)){
+                    [newDict removeObjectForKey:key];
+                }
+            }
+        }
+        newObj = (NSObject*) newDict;
+    }
+    return newObj;
+}
+
 - (void) sendData:(NSObject*)data withName:(NSString*) name
 {
     if (callback == nil) {
         return;
     }
     
-    __block NSObject*(^removeNaNValue)(NSObject*) = ^(NSObject *obj) {
-        NSObject* newObj;
-        if ([obj isKindOfClass:NSArray.class]) {
-            NSArray* arr = (NSArray*) obj;
-            NSMutableArray* newArr = [arr mutableCopy];
-            for(int i=0; i<[arr count]; i++){
-                NSObject* tmp = arr[i];
-                newArr[i] = removeNaNValue(tmp);
-            }
-            newObj = (NSObject*) newArr;
-        }else if ([obj isKindOfClass:NSDictionary.class]) {
-            NSDictionary* dict = (NSDictionary*) obj;
-            NSMutableDictionary* newDict = [dict mutableCopy];
-            for(id key in [dict keyEnumerator]){
-                NSObject* val = dict[key];
-                if([val isKindOfClass:NSNumber.class]){
-                    double dVal = [(NSNumber*) val doubleValue];
-                    if(isnan(dVal)){
-                        [newDict removeObjectForKey:key];
-                    }
-                }
-            }
-            newObj = (NSObject*) newDict;
-        }
-        return newObj;
-    };
-    
-    data = removeNaNValue(data);
+    data = [self removeNaNValue:data];
     
     NSString *jsonstr = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:data options:0 error:nil]encoding:NSUTF8StringEncoding];
     
@@ -579,20 +580,23 @@
 
 - (void)requestStartDialog:(NSNotificationCenter*)notification
 {
-    BOOL result = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"navcogdialog://start_dialog/?"]];
-    if (!result) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"No Dialog App"
-                                                                       message:@"You need to install NavCog dialog app"
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
-                                                  style:UIAlertActionStyleDefault handler:nil]];
-        
-        UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while (topController.presentedViewController) {
-            topController = topController.presentedViewController;
-        }
-        [topController presentViewController:alert animated:YES completion:nil];
-    }
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"navcogdialog://start_dialog/?"]
+                                       options:@{}
+                             completionHandler:^(BOOL success) {
+                                 if (!success) {
+                                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"No Dialog App"
+                                                                                                    message:@"You need to install NavCog dialog app"
+                                                                                             preferredStyle:UIAlertControllerStyleAlert];
+                                     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                                                               style:UIAlertActionStyleDefault handler:nil]];
+                                     
+                                     UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+                                     while (topController.presentedViewController) {
+                                         topController = topController.presentedViewController;
+                                     }
+                                     [topController presentViewController:alert animated:YES completion:nil];
+                                 }
+                             }];
 }
 
 - (void)requestShowRoute:(NSNotification*)note

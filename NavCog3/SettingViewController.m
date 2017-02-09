@@ -138,7 +138,8 @@ static HLPSetting *advancedLabel, *advancedMenu;
                 double value = [change[@"new"] doubleValue];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *string = NSLocalizedString(@"SPEECH_SPEED_CHECK", "");
-                    [[NavDeviceTTS sharedTTS] speak:[NSString stringWithFormat:string, value] force:YES completionHandler:nil];
+                    [[NavDeviceTTS sharedTTS] speak:[NSString stringWithFormat:string, value]
+                                        withOptions:@{@"force":@(YES)} completionHandler:nil];
                 });
             }
         }

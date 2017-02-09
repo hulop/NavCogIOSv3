@@ -188,7 +188,6 @@
 - (NSString*)name
 {
     HLPLocation *loc;
-    NSMutableString *temp;
     int floor;
     switch(_type) {
         case NavDestinationTypeLandmark:

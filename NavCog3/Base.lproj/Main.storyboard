@@ -1330,6 +1330,18 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bad" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sKk-Gk-LQ6">
+                                        <rect key="frame" x="24" y="110" width="22" height="14.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Good" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2uI-Co-rNz">
+                                        <rect key="frame" x="320" y="110" width="31" height="14.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -1338,11 +1350,14 @@
                                     <constraint firstItem="yFo-ac-88E" firstAttribute="centerX" secondItem="Pvn-Ku-RZ3" secondAttribute="centerX" id="2RJ-fX-Xl3"/>
                                     <constraint firstItem="wiX-qL-za0" firstAttribute="centerX" secondItem="Pvn-Ku-RZ3" secondAttribute="centerX" id="3AM-q9-Qua"/>
                                     <constraint firstItem="ZRc-BH-IJT" firstAttribute="centerX" secondItem="Pvn-Ku-RZ3" secondAttribute="centerX" id="4Ms-DM-udJ"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="2uI-Co-rNz" secondAttribute="trailing" constant="16" id="57Z-Pn-iNh"/>
                                     <constraint firstItem="MS2-Hi-s8w" firstAttribute="top" secondItem="wiX-qL-za0" secondAttribute="bottom" constant="25" id="6KE-NX-T1i"/>
                                     <constraint firstItem="yt4-6Z-Cv8" firstAttribute="top" secondItem="IG6-Ac-J5o" secondAttribute="bottom" constant="8" id="8dg-W8-G4n"/>
                                     <constraint firstItem="4EI-u5-ZKT" firstAttribute="top" secondItem="ZRc-BH-IJT" secondAttribute="bottom" constant="8" id="AgK-QF-1DY"/>
                                     <constraint firstItem="AZZ-SF-owM" firstAttribute="top" secondItem="yt4-6Z-Cv8" secondAttribute="bottom" constant="8" id="Atq-Dg-RSV"/>
+                                    <constraint firstItem="sKk-Gk-LQ6" firstAttribute="centerY" secondItem="eTp-2Z-LZj" secondAttribute="centerY" id="GJd-x9-Ru6"/>
                                     <constraint firstItem="CHt-gJ-4vh" firstAttribute="centerX" secondItem="Pvn-Ku-RZ3" secondAttribute="centerX" id="GnY-TI-uit"/>
+                                    <constraint firstItem="2uI-Co-rNz" firstAttribute="centerY" secondItem="sKk-Gk-LQ6" secondAttribute="centerY" id="HbR-Ol-8mI"/>
                                     <constraint firstItem="vPu-cr-HAT" firstAttribute="centerX" secondItem="Pvn-Ku-RZ3" secondAttribute="centerX" id="Hf0-bv-nni"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="FlK-fU-MkR" secondAttribute="trailing" constant="16" id="I57-3T-lz9"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="vPu-cr-HAT" secondAttribute="trailing" constant="8" id="Ixu-7S-VWY"/>
@@ -1353,8 +1368,10 @@
                                     <constraint firstItem="ZRc-BH-IJT" firstAttribute="top" secondItem="vPu-cr-HAT" secondAttribute="bottom" constant="32" id="ShB-jw-8Tq"/>
                                     <constraint firstItem="iaC-38-VID" firstAttribute="top" secondItem="4EI-u5-ZKT" secondAttribute="bottom" constant="8" id="TA9-vU-tnW"/>
                                     <constraint firstItem="wiX-qL-za0" firstAttribute="top" secondItem="Pvn-Ku-RZ3" secondAttribute="top" constant="16" id="WNT-8s-nPJ"/>
+                                    <constraint firstItem="2uI-Co-rNz" firstAttribute="centerY" secondItem="eTp-2Z-LZj" secondAttribute="centerY" id="Xwv-J6-roF"/>
                                     <constraint firstItem="vPu-cr-HAT" firstAttribute="leading" secondItem="Pvn-Ku-RZ3" secondAttribute="leadingMargin" constant="8" id="Y7S-6Y-TMX"/>
                                     <constraint firstAttribute="height" constant="720" id="ZCw-z6-4nS"/>
+                                    <constraint firstItem="sKk-Gk-LQ6" firstAttribute="leading" secondItem="Pvn-Ku-RZ3" secondAttribute="leadingMargin" constant="16" id="ZHD-Yf-vbW"/>
                                     <constraint firstItem="0ng-RD-u8G" firstAttribute="top" secondItem="yFo-ac-88E" secondAttribute="bottom" constant="8" id="Zrm-5m-9lJ"/>
                                     <constraint firstItem="0ng-RD-u8G" firstAttribute="centerX" secondItem="Pvn-Ku-RZ3" secondAttribute="centerX" id="eWL-Pb-dqo"/>
                                     <constraint firstItem="FlK-fU-MkR" firstAttribute="top" secondItem="AZZ-SF-owM" secondAttribute="bottom" constant="8" id="ep7-tg-mmf"/>
@@ -1401,7 +1418,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sqJ-uq-n8b" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2242" y="-413"/>
+            <point key="canvasLocation" x="2240.8000000000002" y="-413.79310344827587"/>
         </scene>
     </scenes>
     <resources>

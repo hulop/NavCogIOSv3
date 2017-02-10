@@ -857,7 +857,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var timeoutCount = 0
     
     func timeoutCustom(){
-        if timeoutCount >= 1 {
+        if timeoutCount >= 0 { // temporary fix
             let str = NSLocalizedString("WAIT_ACTION", comment:"")
             self.tableData.append(["name": self.agent_name as AnyObject, "type": 1 as AnyObject,  "image": "conversation.png" as AnyObject, "message": str as AnyObject])
             self.refreshTableView()

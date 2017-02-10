@@ -56,7 +56,7 @@ open class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, SF
     
     var arecorder:AVAudioRecorder? = nil
     var timeoutTimer:Timer? = nil
-    var timeoutDuration:TimeInterval = 10.0
+    var timeoutDuration:TimeInterval = 20.0
     var ametertimer:Timer? = nil
     var resulttimer:Timer? = nil
     var resulttimerDuration:TimeInterval = 1.0

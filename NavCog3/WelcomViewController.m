@@ -160,6 +160,7 @@
                 for(NSString *path in files) {
                     NSString *toPath = [path lastPathComponent];
                     toPath = [docPath stringByAppendingPathComponent:toPath];
+                    [fm removeItemAtPath:toPath error:nil];
                     [fm copyItemAtPath:path toPath:toPath error:&error];
                     
                     NSString *filename = [toPath lastPathComponent];

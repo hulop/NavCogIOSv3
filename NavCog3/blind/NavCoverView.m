@@ -31,9 +31,11 @@
 - (void)accessibilityElementDidBecomeFocused
 {
     NSString *text = self.accessibilityLabel;
-    NSLog(@"accessibilityElementDidBecomeFocused:%@", text);
-    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:self userInfo:
-     @{@"text":text,@"force":@(YES),@"debug":@(YES)}];
+    if (text != nil) {
+        NSLog(@"accessibilityElementDidBecomeFocused:%@", text);
+        [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:self userInfo:
+         @{@"text":text,@"force":@(YES),@"debug":@(YES)}];
+    }
     [self.delegate didBecomeFocused:self];
 }
 

@@ -137,7 +137,7 @@ Feedback is sending...";
 "NeedToUpdateAppMessage" = "App is required to be updated";
 "OpenAppStore" = "Open App Store";
 
-"WAIT_ACTION" = "Waiting your questions... Tap microphone button to restart.";
+"WAIT_ACTION" = "Waiting for your question. Tap the microphone button to restart.";
 
 "NoAudioAccessAlertTitle" = "Microphone not allowed";
 "NoAudioAccessAlertMessage" = "You need to allow access to microphone to enable conversation function.

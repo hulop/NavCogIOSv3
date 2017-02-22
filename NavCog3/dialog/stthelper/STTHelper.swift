@@ -63,6 +63,8 @@ open class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, SF
     var confidenceFilter = 0.2
     var executeFilter = 0.3
     var hesitationPrefix = "D_"
+    var unknownErrorCount = 0
+    var useRawError = false
     
     override init() {
         self.stopstt = {}
@@ -249,7 +251,13 @@ open class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, SF
                     failure(newError)
                 } else {
                     weakself.endRecognize()
-                    failure(error) // unknown error
+                    if weakself.useRawError {
+                        failure(error) // unknown error
+                    } else {
+                        let newError = weakself.createError(NSLocalizedString("unknownError\(weakself.unknownErrorCount)", comment:""))
+                        failure(newError)
+                        weakself.unknownErrorCount = (weakself.unknownErrorCount + 1) % 2
+                    }
                 }
                 return;
             }

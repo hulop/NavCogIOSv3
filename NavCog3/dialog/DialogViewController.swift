@@ -25,6 +25,16 @@ import RestKit
 import AVFoundation
 import ConversationV1
 
+
+var standardError = FileHandle.standardError
+
+extension FileHandle : TextOutputStream {
+    public func write(_ string: String) {
+        guard let data = string.data(using: .utf8) else { return }
+        self.write(data)
+    }
+}
+
 class servicecred{
     internal let url:String
     internal let user:String
@@ -102,6 +112,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
             self._stt = STTHelper()
             self._stt!.tts = self.getTts()
             self._stt!.prepare()
+            self._stt!.useRawError = AuthManager.shared().isDeveloperAuthorized()
             return self._stt!
         }
     }
@@ -841,9 +852,8 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         stt.delegate?.inactive()
         stt.delegate = self.dialogViewHelper
     }
-    
     func failureCustom(_ error: Error){
-        print(error)
+        print(error, to:&standardError)
         let str = error.localizedDescription
         self.removeWaiting()
         self.tableData.append(["name": NSLocalizedString("Error", comment:"") as AnyObject, "type": 1 as AnyObject,  "image": "conversation.png" as AnyObject, "message": str as AnyObject])

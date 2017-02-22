@@ -148,3 +148,6 @@ Microphone　→　NavCog";
 "NoSpeechRecoAccessAlertMessage" = "You need to allow access to speech recognition to enable conversation function.
 From privacy settigs, please turn on
 Speech Recognition　→　NavCog";
+
+"unknownError0" = "Voice recognition could not be started. Please try again.";
+"unknownError1" = "Voice recognition is not available. Please try again later.";

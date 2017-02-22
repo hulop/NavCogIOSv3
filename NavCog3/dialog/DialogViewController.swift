@@ -594,8 +594,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     } else {
                         _ = self.navigationController?.popToRootViewController(animated: true)
                     }
-                    UIApplication.shared.open(URL(string: self.conv_navigation_url + "")!, options: [:], completionHandler: nil)
-                    
+                    //UIApplication.shared.open(URL(string: self.conv_navigation_url + "")!, options: [:], completionHandler: nil)                    
                 }
             }
         }
@@ -603,6 +602,14 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
             if navi{
                 if let dest_info:[String:Any] = cc["dest_info"] as! [String:Any]? {
                     if let nodes:String = dest_info["nodes"] as? String {
+                        var info:[String : Any] = ["toID": nodes]
+                        if cc["use_stair"] != nil {
+                            info["use_stair"] = cc["use_stair"] as! Bool;
+                        }
+                        if cc["use_elevator"] != nil {
+                            info["use_elevator"] = cc["use_elevator"] as! Bool;
+                        }
+                        
                         postEndDialog = { [weak self] in
                             if let weakself = self {
                                 weakself.cancellable = true
@@ -612,8 +619,10 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                                     _ = weakself.navigationController?.popToViewController(weakself.root!, animated: true)
                                 } else {
                                     _ = weakself.navigationController?.popToRootViewController(animated: true)
-                                }
-                                UIApplication.shared.open(URL(string: weakself.conv_navigation_url + "?toID=" + nodes.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!)!, options: [:], completionHandler: nil)
+                                }                                
+                                
+                                NotificationCenter.default.post(name: Notification.Name(rawValue:"request_start_navigation"),
+                                                                object: weakself, userInfo: info)
                             }
                         }
                     }

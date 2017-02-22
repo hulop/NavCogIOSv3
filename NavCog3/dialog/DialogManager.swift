@@ -119,5 +119,7 @@ class DialogManager: NSObject {
                 context["building"] = building
             }
         }
+        let ud = UserDefaults.standard
+        context["user_mode"] = ud.string(forKey: "user_mode")
     }
 }

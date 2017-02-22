@@ -324,7 +324,17 @@
     if (options[@"toID"] == nil) {
         return;
     }
-    NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f", options[@"toID"], [[NSDate date] timeIntervalSince1970]];
+    NSString *elv = @"";
+    if (options[@"use_elevator"]) {
+        elv = [options[@"use_elevator"] boolValue]?@"&elv=9":@"&elv=1";
+    }
+    NSString *stairs = @"";
+    if (options[@"use_stair"]) {
+        stairs = [options[@"use_stair"] boolValue]?@"&stairs=9":@"&stairs=1";
+    }
+    
+    NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f%@%@", options[@"toID"],
+                      [[NSDate date] timeIntervalSince1970], elv, stairs];
     [helper setBrowserHash: hash];
 }
 

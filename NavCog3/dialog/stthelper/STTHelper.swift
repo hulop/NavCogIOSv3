@@ -200,28 +200,7 @@ open class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, SF
         
         self.last_timeout = timeout
         self.last_failure = failure
-        
-        /*
-        let strs = ["おしゃれでお酒が飲めるイタリアン","テスト","中華料理","ファッション","はい","いいえ","バッグ","美味しいお店"]
-        let i = arc4random_uniform(UInt32(strs.count))
-        let str = strs[Int(i)]
-        
-        if str.characters.count > 0 {
-            for action in actions {
-                let patterns = action.0
-                for pattern in patterns {
-                    if self.checkPattern(pattern, str) {
-                        NSLog("Matched pattern = \(pattern)")
-                        self.endRecognize();
-                        self.delegate?.recognize()
-                        return (action.1)(str, 1000)
-                    }
-                }
-            }
-            return
-        }
- */
-        
+                        
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         recognitionRequest!.shouldReportPartialResults = true
         last_text = ""

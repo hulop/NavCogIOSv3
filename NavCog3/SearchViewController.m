@@ -103,6 +103,9 @@
                 if (param[@"use_elevator"]) {
                     override[@"elv"] = [param[@"use_elevator"] boolValue]?@"9":@"1";
                 }
+                if (param[@"use_escalator"]) {
+                    override[@"esc"] = [param[@"use_escalator"] boolValue]?@"9":@"1";
+                }
                 
                 [self _startNavigation:override];
             });

@@ -620,6 +620,9 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                         if cc["use_elevator"] != nil {
                             info["use_elevator"] = cc["use_elevator"] as! Bool;
                         }
+                        if cc["use_escalator"] != nil {
+                            info["use_escalator"] = cc["use_escalator"] as! Bool;
+                        }
                         
                         postEndDialog = { [weak self] in
                             if let weakself = self {

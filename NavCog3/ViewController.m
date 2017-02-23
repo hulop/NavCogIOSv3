@@ -332,9 +332,13 @@
     if (options[@"use_stair"]) {
         stairs = [options[@"use_stair"] boolValue]?@"&stairs=9":@"&stairs=1";
     }
+    NSString *esc = @"";
+    if (options[@"use_escalator"]) {
+        esc = [options[@"use_escalator"] boolValue]?@"&esc=9":@"&esc=1";
+    }
     
-    NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f%@%@", options[@"toID"],
-                      [[NSDate date] timeIntervalSince1970], elv, stairs];
+    NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f%@%@%@", options[@"toID"],
+                      [[NSDate date] timeIntervalSince1970], elv, stairs, esc];
     [helper setBrowserHash: hash];
 }
 

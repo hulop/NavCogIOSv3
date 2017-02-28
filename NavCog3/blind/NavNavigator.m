@@ -231,7 +231,7 @@ static NavNavigatorConstants *_instance;
                     _isNextDestination = YES;
                 }
             } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
-                _isNextDestination = ent.node.isLeaf;
+                _isNextDestination = _isNextDestination || ent.node.isLeaf;
             }
         }
     }];

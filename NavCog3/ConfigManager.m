@@ -21,6 +21,7 @@
  *******************************************************************************/
 
 #import "ConfigManager.h"
+#import "Mantle.h"
 
 @implementation ConfigManager
 
@@ -59,9 +60,26 @@
     if (!dic) {
         return NO;
     }
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if (dic[@"one_time_preset"]) { // onetime preset values
+        NSDictionary *preset = dic[@"one_time_preset"];
+        dic = [dic mtl_dictionaryByRemovingValuesForKeys:@[@"one_time_preset"]];
+        
+        if (preset[@"id"]) {
+            NSString *key = [NSString stringWithFormat:@"one_time_preset_%@", preset[@"id"]];
+            preset = [preset mtl_dictionaryByRemovingValuesForKeys:@[@"id"]];
+            
+            if (![ud boolForKey:key]) {
+                [ud setBool:YES forKey:key];
+                for(NSString *key in preset) {
+                    [ud setObject:preset[key] forKey:key];
+                }
+            }
+        }
+    }
     
     for(NSString *key in dic) {
-        [[NSUserDefaults standardUserDefaults] setObject:dic[key] forKey:key];
+        [ud setObject:dic[key] forKey:key];
     }
     [[NSUserDefaults standardUserDefaults] synchronize];
     return YES;

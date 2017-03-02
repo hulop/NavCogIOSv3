@@ -2178,6 +2178,8 @@ static NavNavigatorConstants *_instance;
                                @"turnAngle": @(linkInfo.nextTurnAngle),
                                @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
                                @"linkType": @(linkInfo.link.linkType),
+                               @"sourceHeight": @(linkInfo.link.sourceHeight),
+                               @"targetHeight": @(linkInfo.link.targetHeight),
                                @"nextLinkType": @(linkInfo.nextLink.linkType),
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                                @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),

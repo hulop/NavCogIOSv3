@@ -147,10 +147,10 @@ Head to the correct orientation
 "Watch your step, %@" = "Watch your step, it's %@";
 
 /* arrived message */
-"You arrived" = "You arrived";
+"You arrived" = "You have arrived";
 
 /* arrived message with destination name */
-"You arrived at %1$@" = "You arrived at %1$@";
+"You arrived at %1$@" = "You have arrived at %1$@";
 
 /* No comment provided by engineer. */
 "_nav_building" = "Building";

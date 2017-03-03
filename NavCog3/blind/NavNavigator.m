@@ -985,6 +985,10 @@ static NavNavigatorConstants *_instance;
     }
     for(HLPEntrance *ent in features) {
         if ([ent isKindOfClass:HLPEntrance.class]) {
+            if ([[ent getName] isEqualToString:@"#"]) {
+                // remove special door tag
+                continue;
+            }
             [ent updateNode:nodesMapTemp[ent.forNodeID]
                 andFacility:poiMapTemp[ent.forFacilityID]];
             
@@ -1228,6 +1232,9 @@ static NavNavigatorConstants *_instance;
             }
             if ([destinationNode.forFacilityID isEqualToString:ent.forFacilityID]) {
                 NSLog(@"%@", ent);
+            }
+            if (!ent.node) { // special door tag
+                continue;
             }
             
             BOOL isLeaf = ent.node.isLeaf;

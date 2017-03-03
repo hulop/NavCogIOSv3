@@ -1100,7 +1100,7 @@ static NavNavigatorConstants *_instance;
         [linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
             
             if (!isnan(loc.floor) &&
-                (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
+                (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
                 return;
             }
             if (link.isLeaf) {
@@ -1251,7 +1251,7 @@ static NavNavigatorConstants *_instance;
                     linkPoiMap[nearestLink._id] = linkPois;
                 }
                 [linkPois addObject:ent];
-                break;
+                //break;
             }
         }
     }

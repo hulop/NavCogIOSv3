@@ -80,7 +80,6 @@
 		7EF45E3B1E3F1E5600208042 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E391E3F1E5600208042 /* AuthManager.m */; };
 		7EF45E3D1E3F426F00208042 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E3C1E3F426F00208042 /* Security.framework */; };
 		7EF45E491E3F42AB00208042 /* ConversationV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E441E3F42AB00208042 /* ConversationV1.framework */; };
-		7EF45E4A1E3F42AB00208042 /* DialogV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E451E3F42AB00208042 /* DialogV1.framework */; };
 		7EF45E4C1E3F42AB00208042 /* RestKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E471E3F42AB00208042 /* RestKit.framework */; };
 		7EF45E4F1E3F53FF00208042 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E4E1E3F53FF00208042 /* Security.framework */; };
 		7EF45E501E3F541C00208042 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E391E3F1E5600208042 /* AuthManager.m */; };
@@ -270,7 +269,6 @@
 			files = (
 				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EF45E491E3F42AB00208042 /* ConversationV1.framework in Frameworks */,
-				7EF45E4A1E3F42AB00208042 /* DialogV1.framework in Frameworks */,
 				7EF45E4C1E3F42AB00208042 /* RestKit.framework in Frameworks */,
 				7EF45E3D1E3F426F00208042 /* Security.framework in Frameworks */,
 				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
@@ -750,7 +748,6 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/ConversationV1.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/DialogV1.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RestKit.framework",
 			);
 			outputPaths = (

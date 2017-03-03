@@ -456,13 +456,16 @@ static NavNavigatorConstants *_instance;
                     } else {
                         double angle = [HLPLocation normalizeDegree:[nearest bearingTo:ent.node.location] - _link.initialBearingFromSource];
                         if (45 < fabs(angle) && fabs(angle) < 135) {
-                            navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
-                                      @{
-                                        @"origin": ent,
-                                        //@"longDescription": [ent getLongDescriptionPron],
-                                        @"angleFromLocation": @([nearest bearingTo:ent.node.location]),
-                                        @"flagOnomastic":@(YES)
-                                        }];
+                            NSString *name = [ent getNamePron];
+                            if (name && [name length] > 0) {
+                                navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
+                                          @{
+                                            @"origin": ent,
+                                            //@"longDescription": [ent getLongDescriptionPron],
+                                            @"angleFromLocation": @([nearest bearingTo:ent.node.location]),
+                                            @"flagOnomastic":@(YES)
+                                            }];
+                            }
                         }
                     }
                 }
@@ -654,7 +657,7 @@ static NavNavigatorConstants *_instance;
     // convert NAVCOG1/2 acc info into NavPOI
     [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *surroundInfo = link.properties[link.backward?@"_NAVCOG_infoFromNode2":@"_NAVCOG_infoFromNode1"];
-        if (surroundInfo) {
+        if (surroundInfo && [surroundInfo length] > 0) {
             NSLog(@"surroundInfo=%@", surroundInfo);
             
             HLPLocation *poiloc = link.sourceLocation;
@@ -666,7 +669,7 @@ static NavNavigatorConstants *_instance;
         }
         
         NSString *nodeInfoJSON = link.properties[link.backward?@"_NAVCOG_infoAtNode1":@"_NAVCOG_infoAtNode2"];
-        if (nodeInfoJSON) {
+        if (nodeInfoJSON && [nodeInfoJSON length] > 0) {
             NSError *error;
             NSDictionary* nodeInfo = [NSJSONSerialization JSONObjectWithData:[nodeInfoJSON dataUsingEncoding:NSUTF8StringEncoding] options:NSUTF8StringEncoding error:&error];
             if (error) {
@@ -680,13 +683,13 @@ static NavNavigatorConstants *_instance;
                 HLPLocation *poiloc = link.targetLocation;
                 HLPLocation *trickloc = [link locationDistanceToTarget:15];
                 
-                if (info) {
+                if (info && [info length] > 0) {
                     NavPOI *poi = [[NavPOI alloc] initWithText:info Location:poiloc Options:
                                    @{@"origin":info}];
                     [poisTemp addObject:poi];
                 }
                 
-                if (destInfo) {
+                if (destInfo && [destInfo length] > 0) {
                     NavPOI *poi = [[NavPOI alloc] initWithText:destInfo Location:poiloc Options:
                                    @{
                                      @"origin":destInfo,
@@ -695,7 +698,7 @@ static NavNavigatorConstants *_instance;
                     [poisTemp addObject:poi];
                 }
                 
-                if (trickyInfo && beTricky) {
+                if (trickyInfo && [trickyInfo length] > 0 && beTricky) {
                     NavPOI *poi = [[NavPOI alloc] initWithText:trickyInfo Location:trickloc Options:
                                    @{
                                      @"origin":trickyInfo,

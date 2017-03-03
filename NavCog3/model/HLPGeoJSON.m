@@ -1105,7 +1105,7 @@
 {
     NSString *ret = nil;
     if (_facility) {
-        if (_name) {
+        if (_name && [_name length] > 0) {
             ret = [_facility.namePron stringByAppendingFormat:@" %@", _namePron];
         } else {
             ret = _facility.namePron;

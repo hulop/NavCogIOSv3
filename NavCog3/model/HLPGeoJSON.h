@@ -135,6 +135,7 @@ typedef enum: int {
 @property (nonatomic, readonly) BOOL flagSingular;
 @property (nonatomic, readonly) BOOL flagPlural;
 @property (nonatomic, readonly) BOOL flagAuto;
+@property (nonatomic, readonly) BOOL flagWelcome;
 @end
 
 @interface HLPPOIElevatorEquipments: HLPPOIFlags

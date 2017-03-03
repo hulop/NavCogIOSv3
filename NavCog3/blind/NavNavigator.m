@@ -319,7 +319,7 @@ static NavNavigatorConstants *_instance;
                                   @{
                                     @"origin": poi,
                                     @"forBeforeStart": @(!_isFirst),
-                                    @"forWelcome": @(_isFirst),
+                                    @"forWelcome": @(_isFirst && poi.flags.flagWelcome),
                                     @"longDescription": poi.longDescription?poi.longDescription:@"",
                                     @"flagCaution": @(poi.flags.flagCaution)
                                     }];

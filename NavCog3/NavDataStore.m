@@ -879,10 +879,12 @@ static NavDataStore* instance_ = nil;
         } else {
             if (savedCenterLocation) {
                 [_mapCenter update:savedCenterLocation];
-                [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION
-                                                                    object:self
-                                                                  userInfo:@{@"location":_mapCenter,
-                                                                             @"sync":@(!savedIsManualLocation)}];
+                if (_mapCenter) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION
+                                                                        object:self
+                                                                      userInfo:@{@"location":_mapCenter,
+                                                                                 @"sync":@(!savedIsManualLocation)}];
+                }
             }
             [currentLocation update:savedLocation];
             savedLocation = nil;

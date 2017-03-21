@@ -19,3 +19,8 @@ target 'NavCogTool' do
   pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
 end
 
+target 'NavCogFingerPrint' do
+  platform :ios, '8.4'
+  pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
+end
+

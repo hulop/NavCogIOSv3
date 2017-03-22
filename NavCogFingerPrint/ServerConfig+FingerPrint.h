@@ -26,5 +26,6 @@
 @interface ServerConfig (FingerPrint)
 
 - (BOOL) isFingerPrintingAvailable;
+- (NSString*) fingerPrintingServerHost;
 
 @end

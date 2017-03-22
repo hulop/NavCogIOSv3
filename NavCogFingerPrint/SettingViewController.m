@@ -29,6 +29,8 @@
 #import "ServerConfig.h"
 #import "NavUtil.h"
 #import "NavDataStore.h"
+#import "FingerprintManager.h"
+#import "HLPFingerprint.h"
 
 @interface SettingViewController ()
 
@@ -38,8 +40,9 @@
 }
 
 static HLPSettingHelper *userSettingHelper;
+static HLPSettingHelper *refpointSettingHelper;
 
-static HLPSetting *idLabel;
+static HLPSetting *idLabel, *refpointLabel;
 
 
 - (void)viewDidLoad {
@@ -55,7 +58,11 @@ static HLPSetting *idLabel;
         ) {
         [SettingViewController setupUserSettings];
         helper = userSettingHelper;
-        
+    }
+    
+    if ([self.restorationIdentifier isEqualToString:@"choose_config"]) {
+        [SettingViewController setupRefpointSettingHelper];
+        helper = refpointSettingHelper;
     }
 
     if (helper) {
@@ -63,8 +70,8 @@ static HLPSetting *idLabel;
         self.tableView.delegate = helper;
         self.tableView.dataSource = helper;
     }
-    [self updateView];
     
+    [self updateView];
 }
 
 - (void) configChanged:(NSNotification*)note
@@ -85,6 +92,19 @@ static HLPSetting *idLabel;
     
 }
 
+- (void)actionPerformed:(HLPSetting *)setting
+{
+    if ([setting.name isEqualToString:@"choose_config"]) {
+        [self performSegueWithIdentifier:setting.name sender:self];
+    } else {
+        HLPRefpoint *rp = [FingerprintManager sharedManager].refpoints[setting.name];
+        if (rp) {
+            [[FingerprintManager sharedManager] select:rp];
+        }
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
+}
+
 + (void)setup
 {
     [SettingViewController setupUserSettings];
@@ -94,10 +114,13 @@ static HLPSetting *idLabel;
 {
     if (userSettingHelper) {
         idLabel.label = [NavDataStore sharedDataStore].userID;
-        
+        refpointLabel.label = [NSString stringWithFormat:@"Refpoint: %@", [FingerprintManager sharedManager].selectedRefpoint.floor];
         return;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
+
+    refpointLabel = [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"Refpoint: %@", [FingerprintManager sharedManager].selectedRefpoint.floor]];
+    [userSettingHelper addActionTitle:@"Select Refpoint" Name:@"choose_config"];
 
     [userSettingHelper addSectionTitle:@"Finger Printing"];
     [userSettingHelper addSettingWithType:UUID_TYPE Label:@"Beacon UUID" Name:@"finger_printing_beacon_uuid" DefaultValue:@[] Accept:nil];
@@ -111,6 +134,32 @@ static HLPSetting *idLabel;
     
     [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"version: %@ (%@)", versionNo, buildNo]];
     idLabel = [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"%@", [NavDataStore sharedDataStore].userID]];
+}
+
++ (void)setupRefpointSettingHelper
+{
+    
+    if (!refpointSettingHelper) {
+        refpointSettingHelper = [[HLPSettingHelper alloc] init];
+    }
+    
+    [refpointSettingHelper removeAllSetting];
+    
+    [refpointSettingHelper addSectionTitle:@"Refpoints"];
+    
+    NSDictionary<NSString*, HLPRefpoint*> *refpoints = [FingerprintManager sharedManager].refpoints;
+    NSArray *keys = [refpoints allKeys];
+    keys = [keys sortedArrayUsingComparator:^NSComparisonResult(NSString*  _Nonnull obj1, NSString*  _Nonnull obj2) {
+        return [refpoints[obj1].floor compare:refpoints[obj2].floor];
+    }];
+
+    for(NSString *key in keys) {
+        HLPRefpoint *rp = [FingerprintManager sharedManager].refpoints[key];
+        
+        [refpointSettingHelper addActionTitle:rp.floor Name:key];
+    }
+    
+
 }
 
 - (void)didReceiveMemoryWarning {

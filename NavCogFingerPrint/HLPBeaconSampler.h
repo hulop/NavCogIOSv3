@@ -19,25 +19,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *******************************************************************************/
+#import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
+#import <CoreMotion/CoreMotion.h>
+#import "HLPPoint3D.h"
+#import "HLPBeaconSample.h"
 
-#import "ServerConfig+FingerPrint.h"
+#define IRTCF_DEBUG NO
+@protocol HLPBeaconSamplerDelegate <NSObject>
 
-@implementation ServerConfig (FingerPrint)
+@required
+- (void)updated;
+@optional
 
-- (BOOL) isFingerPrintingAvailable
-{
-    return [self fingerPrintingServerHost] != nil;
+@end
+
+@interface HLPBeaconSampler : NSObject <CLLocationManagerDelegate>{
+    CLLocationManager *locationManager;
+    
+    CLBeaconRegion *allBeacons;
+    NSString *collectionName;
+    
+    NSArray *visibleBeacons;
+    BOOL recording;
+    BOOL pauseing;
+    BOOL isStartRecording;
+    
+    NSMutableArray *sampledData;
+    NSMutableArray *sampledPoint;
+    
+    long lastProcessedIndex;
 }
 
-- (NSString*) fingerPrintingServerHost
-{
-    if (self.selectedServerConfig) {
-        NSString *host = self.selectedServerConfig[@"finger_printing_server_host"];
-        if (host && [host length] > 0) {
-            return host;
-        }
-    }
-    return nil;
-}
+@property (nonatomic, assign) id<HLPBeaconSamplerDelegate> delegate;
+
++ (HLPBeaconSampler *)sharedInstance;
+
+- (void) setSamplingBeaconUUID:(NSString*)uuid_str;
+- (void) setSamplingLocation:(HLPPoint3D *)point;
+
+- (void) reset;
+- (BOOL) startRecording;
+- (void) stopRecording;
+
+- (NSMutableDictionary*) toJSON;
+- (long) visibleBeaconCount;
+- (long) beaconSampleCount;
+- (BOOL) isRecording;
 
 @end

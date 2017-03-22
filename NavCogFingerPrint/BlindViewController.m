@@ -21,16 +21,11 @@
  *******************************************************************************/
 
 #import "BlindViewController.h"
-
 #import "NavSound.h"
-
 #import "LocationEvent.h"
 #import "NavUtil.h"
-
 #import "ServerConfig.h"
-
-@import JavaScriptCore;
-@import CoreMotion;
+#import "NavDataStore.h"
 
 
 @interface BlindViewController () {
@@ -41,7 +36,9 @@
 
 @end
 
-@implementation BlindViewController
+@implementation BlindViewController {
+    FingerprintManager *fpm;
+}
 
 - (void)dealloc
 {
@@ -63,6 +60,59 @@
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
+    
+    fpm = [FingerprintManager sharedManager];
+    fpm.delegate = self;
+    [fpm load];
+}
+
+- (void)manager:(FingerprintManager *)manager didStatusChanged:(BOOL)isReady
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        HLPRefpoint *rp = manager.selectedRefpoint;
+        NSDictionary *param = @{
+                                @"sync": @(false),
+                                @"location": [[HLPLocation alloc] initWithLat:rp.anchor_lat Lng:rp.anchor_lng Floor:rp.floor_num]
+                                };
+        [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:self userInfo:param];
+        [self updateView];
+    });
+}
+
+- (void)manager:(FingerprintManager *)manager didSendData:(NSString *)idString withError:(NSError *)error
+{
+    NSLog(@"sample id %@", idString);
+    [self updateView];
+}
+
+- (BOOL)manager:(FingerprintManager *)manager didObservedBeacons:(int)beaconCount atSample:(int)sampleCount
+{
+    [self updateView];
+    long count = [[NSUserDefaults standardUserDefaults] integerForKey:@"finger_printing_duration"];
+    if (sampleCount >= count) {
+        return NO;
+    }
+    return YES;
+}
+
+- (void)locationChanged:(NSNotification*)note
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    if (nds.isManualLocation) {
+        [self updateView];
+    }
+}
+
+- (void) startSampling
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    HLPLocation *center = nds.mapCenter;
+    [fpm startSamplingAtLat:center.lat Lng:center.lng];
+}
+- (void) cancelSampling
+{
+    [fpm cancel];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -81,14 +131,30 @@
 - (void) updateView
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        BOOL fpMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"finger_printing_mode"];
-
+        NavDataStore *nds = [NavDataStore sharedDataStore];
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        
+        BOOL existRefpoint = fpm.selectedRefpoint != nil;
+        BOOL existUUID = ([ud stringForKey:@"selected_finger_printing_beacon_uuid"] != nil);
+        
+        self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
+        self.settingButton.enabled = fpm.isReady;
+        
+        BOOL isSampling = fpm.isSampling;
+        self.searchButton.title = NSLocalizedStringFromTable(isSampling?@"Cancel":@"Start", @"Fingerprint", @"");
         self.devFingerprint.hidden = NO;
 
-        self.navigationItem.rightBarButtonItem = nil;
+        self.navigationItem.rightBarButtonItem = _searchButton;
         self.navigationItem.leftBarButtonItem = _settingButton;
         
-        self.navigationItem.title = @"Fingerprint";
+        if (isSampling) {
+            long count = [ud integerForKey:@"finger_printing_duration"];
+            self.navigationItem.title = [NSString stringWithFormat:@"%@ - %ld/%ld (%ld)",
+                                         fpm.selectedRefpoint.floor,
+                                         fpm.beaconsSampleCount, count, fpm.visibleBeaconCount];
+        } else {
+            self.navigationItem.title = existRefpoint?fpm.selectedRefpoint.floor:@"Fingerprint";
+        }
     });
 }
 
@@ -113,13 +179,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-#pragma mark - IBActions
-
-- (IBAction)doFingerprint:(id)sender {
-    NSLog(@"doFingerprint");
-}
-
 
 - (void)vibrate
 {
@@ -149,5 +208,20 @@
         }
     });
 }
+
+-(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    if ([identifier isEqualToString:@"show_search"]) {
+        if (fpm.isSampling) {
+            [self cancelSampling];
+        } else {
+            [self startSampling];
+        }
+        return NO;
+    }
+    
+    return YES;
+}
+
 
 @end

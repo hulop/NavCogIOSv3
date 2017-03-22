@@ -21,23 +21,39 @@
  *******************************************************************************/
 
 #import <Foundation/Foundation.h>
+#import "HLPFingerprint.h"
+#import "HLPBeaconSampler.h"
 
 @class FingerprintManager;
 
 @protocol FingerprintManagerDelegate
 
+@required
 // return if observe one more fingerprint sample
+-(void)manager:(FingerprintManager*)manager didStatusChanged:(BOOL)isReady;
 -(BOOL)manager:(FingerprintManager*)manager didObservedBeacons:(int)beaconCount atSample:(int)sampleCount;
 -(void)manager:(FingerprintManager*)manager didSendData:(NSString*)idString withError:(NSError*)error;
 @end
 
-@interface FingerprintManager : NSObject
+@interface FingerprintManager : NSObject <HLPBeaconSamplerDelegate>
 
 @property id<FingerprintManagerDelegate> delegate;
+@property (readonly) BOOL isReady;
+@property (readonly) BOOL isSampling;
+@property (readonly) long visibleBeaconCount;
+@property (readonly) long beaconsSampleCount;
+@property NSArray *floorplans;
+@property NSMutableDictionary *refpoints;
+@property NSMutableArray *samples;
+@property (readonly) HLPRefpoint *selectedRefpoint;
+
 
 +(instancetype)sharedManager;
 
--(void)samplingAtLat:(double)lat Lng:(double)lng;
+-(void)load;
+-(void)select:(HLPRefpoint*)rp;
+-(void)startSamplingAtLat:(double)lat Lng:(double)lng;
+-(void)cancel;
 -(void)sendData;
 -(void)deleteFingerprint:(NSString*)idString;
 

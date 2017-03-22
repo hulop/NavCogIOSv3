@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>NavCogFP</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -20,6 +22,12 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Only for including CoreBluetooth</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app use beacon location</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -32,11 +40,5 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Only for including CoreBluetooth</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app use beacon location</string>
-	<key>UIFileSharingEnabled</key>
-	<true/>
 </dict>
 </plist>

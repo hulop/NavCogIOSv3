@@ -20,24 +20,28 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import "ServerConfig+FingerPrint.h"
+#import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
+#import <CoreMotion/CoreMotion.h>
+#import "HLPPoint3D.h"
+#import <CoreGraphics/CoreGraphics.h>
 
-@implementation ServerConfig (FingerPrint)
-
-- (BOOL) isFingerPrintingAvailable
-{
-    return [self fingerPrintingServerHost] != nil;
+@interface HLPBeaconSample : NSObject {
+    HLPPoint3D *point;
+    NSArray *beacons;
+    NSString *uuid;
 }
 
-- (NSString*) fingerPrintingServerHost
-{
-    if (self.selectedServerConfig) {
-        NSString *host = self.selectedServerConfig[@"finger_printing_server_host"];
-        if (host && [host length] > 0) {
-            return host;
-        }
-    }
-    return nil;
-}
+- (id) initWithBeacons:(NSArray*)array;
+
+- (void) setPoint:(HLPPoint3D*)point;
+- (BOOL) needPoint;
+
+- (NSMutableDictionary*) toJSON:(BOOL)simple;
+- (NSString*) toString;
+
+- (NSString*) getUUID;
+
+@property (atomic, readonly) long long time;
 
 @end

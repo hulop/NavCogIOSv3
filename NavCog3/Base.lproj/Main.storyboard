@@ -195,9 +195,11 @@
                         <outlet property="blindButton" destination="581-28-Nvd" id="7up-l6-fyb"/>
                         <outlet property="gpButton" destination="Qjw-Mo-WPx" id="Pm7-Tb-WlZ"/>
                         <outlet property="wcButton" destination="NIc-nT-BkE" id="FOf-SL-Vxs"/>
+                        <segue destination="ddN-nI-UOD" kind="unwind" identifier="unwind_init" unwindAction="returnActionForSegue:" id="uhy-jf-pvc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bo2-Ho-pjQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="ddN-nI-UOD" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-1253.5999999999999" y="511.39430284857576"/>
         </scene>
@@ -926,7 +928,7 @@
         <!--Dialog View Controller-->
         <scene sceneID="7vw-Hj-Rkg">
             <objects>
-                <viewController id="YRz-sv-vaW" customClass="DialogViewController" customModule="NavCog3" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="YRz-sv-vaW" customClass="DialogViewController" customModule="NavCogFingerPrint" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ckh-WA-6CF"/>
                         <viewControllerLayoutGuide type="bottom" id="h1Z-UX-Seu"/>

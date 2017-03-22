@@ -43,7 +43,8 @@
         [self performSegueWithIdentifier:@"user_blind" sender:self];
     } else {        
         [[ServerConfig sharedConfig] clear];
-        [self dismissViewControllerAnimated:YES completion:nil];
+
+        [self performSegueWithIdentifier:@"unwind_init" sender:self];
     }
 }
 

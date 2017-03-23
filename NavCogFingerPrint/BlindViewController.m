@@ -83,6 +83,7 @@
 - (void)manager:(FingerprintManager *)manager didSendData:(NSString *)idString withError:(NSError *)error
 {
     NSLog(@"sample id %@", idString);
+    [self vibrate];
     [self updateView];
 }
 
@@ -173,6 +174,8 @@
                 self.navigationItem.title = @"Fingerprint";
             }
         }
+        
+        [helper evalScript:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();"];
     });
 }
 

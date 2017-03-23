@@ -43,6 +43,12 @@
     NavDataStore *nds = [NavDataStore sharedDataStore];
     nds.userID = [UIDevice currentDevice].identifierForVendor.UUIDString;
     
+    NSDictionary *def =
+    @{
+      @"vibrate": @(YES)
+      };
+    [[NSUserDefaults standardUserDefaults] registerDefaults:def];
+    
     [NavSound sharedInstance];
     
     [self detectBluetooth];

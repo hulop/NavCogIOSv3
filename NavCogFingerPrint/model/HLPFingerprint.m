@@ -75,7 +75,8 @@
 +(NSDictionary *)JSONKeyPathsByPropertyKey
 {
     return [[super JSONKeyPathsByPropertyKey] mtl_dictionaryByAddingEntriesFromDictionary:@{
-             @"information": @"information"
+             @"information": @"information",
+             @"beacons": @"beacons"
              }];
 }
 @end

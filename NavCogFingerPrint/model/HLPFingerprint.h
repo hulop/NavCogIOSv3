@@ -70,4 +70,7 @@
 
 @interface HLPSampling : HLPDBObject
 @property (nonatomic, readonly) HLPSamplingInfo *information;
+@property (nonatomic, readonly) NSArray *beacons;
+@property (nonatomic) double lat;
+@property (nonatomic) double lng;
 @end

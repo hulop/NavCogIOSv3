@@ -68,6 +68,9 @@ static FingerprintManager *instance;
 {
     _selectedRefpoint = rp;
     [_delegate manager:self didStatusChanged:_isReady];
+    [self loadSamplings:^{
+        [_delegate manager:self didSamplingsLoaded:_samplings];
+    }];
 }
 
 - (void) createRefpoints
@@ -134,6 +137,50 @@ static FingerprintManager *instance;
                 }
             }
             //NSLog(@"%@", refpoints);
+            complete();
+        }
+    }];
+}
+
+- (void) loadSamplings:(void(^)(void))complete
+{
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
+    NSString *server = [[ServerConfig sharedConfig] fingerPrintingServerHost];
+    NSString *query = [self stringify:
+                       @{
+                         @"information.refid" :
+                             @{
+                                 @"$in" : @[_selectedRefpoint._id]
+                                 }
+                         }];
+    
+    NSURLComponents *components = [NSURLComponents componentsWithString:[NSString stringWithFormat:SAMPLINGS_API_URL, https, server]];
+    NSURLQueryItem *search = [NSURLQueryItem queryItemWithName:@"query" value:query];
+    components.queryItems = @[ search ];
+    NSURL *url = components.URL;
+    NSLog(@"%@", url);
+    
+    [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
+        if ([result isKindOfClass:NSArray.class]) {
+            NSArray *rs = (NSArray*)result;
+            NSMutableArray *temp = [@[] mutableCopy];
+            for (NSDictionary *dic in rs) {
+                NSError *error;
+                HLPSampling *sp = [MTLJSONAdapter modelOfClass:HLPSampling.class fromJSONDictionary:dic error:&error];
+                
+                MKMapPoint local = MKMapPointMake(sp.information.absx, sp.information.absy);
+                CLLocationCoordinate2D global = [FingerprintManager convertFromLocal:local ToGlobalWithRefpoint:_selectedRefpoint];
+                sp.lat = global.latitude;
+                sp.lng = global.longitude;
+                
+                if (error) {
+                    NSLog(@"%@", error);
+                    NSLog(@"%@", dic);
+                } else {
+                    [temp addObject:sp];
+                }
+            }
+            _samplings = temp;
             complete();
         }
     }];
@@ -217,16 +264,10 @@ static FingerprintManager *instance;
     lng = lng_;
     
     CLLocationCoordinate2D g = CLLocationCoordinate2DMake(lat, lng);
-    MKMapPoint gm = MKMapPointForCoordinate(g);
     
-    CLLocationCoordinate2D a = CLLocationCoordinate2DMake(_selectedRefpoint.anchor_lat, _selectedRefpoint.anchor_lng);
-    MKMapPoint am = MKMapPointForCoordinate(a);
-    
-    CLLocationDistance distance = MKMetersBetweenMapPoints(gm, am);
-    double r = atan2(gm.y-am.y, gm.x-am.x) - _selectedRefpoint.anchor_rotate / 180 * M_PI;
-    
-    x = distance*cos(r);
-    y = -distance*sin(r);
+    MKMapPoint local = [FingerprintManager convertFromGlobal:g ToLocalWithRefpoint:_selectedRefpoint];
+    x = local.x;
+    y = local.y;
     
     NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_finger_printing_beacon_uuid"];
     if (!uuid) {
@@ -317,6 +358,10 @@ static FingerprintManager *instance;
                 NSString *oid = dic[@"_id"][@"$oid"];
                 NSLog(@"sent %ld", [response length]);
                 [_delegate manager:self didSendData:oid withError:nil];
+                
+                [self loadSamplings:^{
+                    [_delegate manager:self didSamplingsLoaded:_samplings];
+                }];
             }
         } else {
             [_delegate manager:self didSendData:nil withError:[NSError errorWithDomain:@"beacon.send" code:0 userInfo:nil]];
@@ -329,6 +374,29 @@ static FingerprintManager *instance;
 - (void)deleteFingerprint:(NSString *)idString
 {
     
+}
+
++ (MKMapPoint) convertFromGlobal:(CLLocationCoordinate2D)global ToLocalWithRefpoint:(HLPRefpoint*)rp
+{
+    MKMapPoint gm = MKMapPointForCoordinate(global);
+    
+    CLLocationCoordinate2D a = CLLocationCoordinate2DMake(rp.anchor_lat, rp.anchor_lng);
+    MKMapPoint am = MKMapPointForCoordinate(a);
+    
+    CLLocationDistance distance = MKMetersBetweenMapPoints(gm, am);
+    double r = atan2(gm.y-am.y, gm.x-am.x) - rp.anchor_rotate / 180 * M_PI;
+    
+    return MKMapPointMake(distance*cos(r), -distance*sin(r));
+}
+
++ (CLLocationCoordinate2D) convertFromLocal:(MKMapPoint)local ToGlobalWithRefpoint:(HLPRefpoint*)rp
+{
+    HLPLocation *loc = [[HLPLocation alloc] initWithLat:rp.anchor_lat Lng:rp.anchor_lng];
+    double r = atan2(local.x, local.y)/M_PI*180 + rp.anchor_rotate;
+    double d = sqrt(local.x*local.x+local.y*local.y);
+    
+    loc = [loc offsetLocationByDistance:d Bearing:r];
+    return CLLocationCoordinate2DMake(loc.lat, loc.lng);
 }
 
 @end

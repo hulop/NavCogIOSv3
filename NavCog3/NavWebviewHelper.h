@@ -51,6 +51,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 @protocol NavWebviewHelperDelegate <NSObject>
 - (void) startLoading;
 - (void) loaded;
+- (void) bridgeInserted;
 - (void) checkConnection;
 @end
 

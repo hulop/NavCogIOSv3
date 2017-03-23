@@ -110,6 +110,7 @@
 		7EBE397A1E8298C5002A7BF9 /* HLPBeaconSample.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE39791E8298C5002A7BF9 /* HLPBeaconSample.m */; };
 		7EBE397D1E8298D7002A7BF9 /* HLPPoint3D.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE397C1E8298D7002A7BF9 /* HLPPoint3D.m */; };
 		7EBE39801E829928002A7BF9 /* HLPBeaconSampler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE397F1E829928002A7BF9 /* HLPBeaconSampler.m */; };
+		7EBE39821E83FFD1002A7BF9 /* fingerprint.js in Resources */ = {isa = PBXBuildFile; fileRef = 7EBE39811E83FFD1002A7BF9 /* fingerprint.js */; };
 		7EC20B5A1DDAC9C900818E33 /* HLPGeoJSON.strings in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E96D92F1DACC56200D57C8C /* HLPGeoJSON.strings */; };
 		7EC20B5B1DDAC9C900818E33 /* BlindView.strings in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E96D9291DAC916C00D57C8C /* BlindView.strings */; };
 		7EC20B5C1DDAC9C900818E33 /* BlindView.stringsdict in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
@@ -346,6 +347,7 @@
 		7EBE397C1E8298D7002A7BF9 /* HLPPoint3D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPPoint3D.m; sourceTree = "<group>"; };
 		7EBE397E1E829928002A7BF9 /* HLPBeaconSampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPBeaconSampler.h; sourceTree = "<group>"; };
 		7EBE397F1E829928002A7BF9 /* HLPBeaconSampler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPBeaconSampler.m; sourceTree = "<group>"; };
+		7EBE39811E83FFD1002A7BF9 /* fingerprint.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = fingerprint.js; sourceTree = "<group>"; };
 		7EDEDC1C1D1E0C6800AC111A /* NavCog3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NavCog3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EDEDC201D1E0C6800AC111A /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		7EDEDC221D1E0C6800AC111A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -529,6 +531,7 @@
 				7E30F9BA1E813FFC00D542E5 /* LaunchScreen.storyboard */,
 				7E30F9BD1E813FFC00D542E5 /* Info.plist */,
 				7E30F9AC1E813FFC00D542E5 /* Supporting Files */,
+				7EBE39811E83FFD1002A7BF9 /* fingerprint.js */,
 			);
 			path = NavCogFingerPrint;
 			sourceTree = "<group>";
@@ -1003,6 +1006,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E30FA2F1E814D2900D542E5 /* HLPSettingViewSubtitleCell.xib in Resources */,
+				7EBE39821E83FFD1002A7BF9 /* fingerprint.js in Resources */,
 				7E30FA311E814D2900D542E5 /* HLPSettingViewTextCell.xib in Resources */,
 				7E30FA271E814D2900D542E5 /* HLPSettingView.strings in Resources */,
 				7E30FA371E8151A900D542E5 /* Localizable.strings in Resources */,

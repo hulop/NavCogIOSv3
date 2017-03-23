@@ -33,6 +33,7 @@
 -(void)manager:(FingerprintManager*)manager didStatusChanged:(BOOL)isReady;
 -(BOOL)manager:(FingerprintManager*)manager didObservedBeacons:(int)beaconCount atSample:(int)sampleCount;
 -(void)manager:(FingerprintManager*)manager didSendData:(NSString*)idString withError:(NSError*)error;
+-(void)manager:(FingerprintManager*)manager didSamplingsLoaded:(NSArray*)samplings;
 @end
 
 @interface FingerprintManager : NSObject <HLPBeaconSamplerDelegate>
@@ -44,13 +45,14 @@
 @property (readonly) long beaconsSampleCount;
 @property NSArray *floorplans;
 @property NSMutableDictionary *refpoints;
-@property NSMutableArray *samples;
+@property NSArray *samplings;
 @property (readonly) HLPRefpoint *selectedRefpoint;
 
 
 +(instancetype)sharedManager;
 
 -(void)load;
+-(void)loadSamplings:(void(^)(void))complete;
 -(void)select:(HLPRefpoint*)rp;
 -(void)startSamplingAtLat:(double)lat Lng:(double)lng;
 -(void)cancel;

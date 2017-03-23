@@ -96,6 +96,14 @@
     return YES;
 }
 
+- (void)manager:(FingerprintManager *)manager didSamplingsLoaded:(NSArray *)samplings
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showFingerprints:samplings];
+        [self updateView];
+    });
+}
+
 - (void)locationChanged:(NSNotification*)note
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
@@ -153,7 +161,17 @@
                                          fpm.selectedRefpoint.floor,
                                          fpm.beaconsSampleCount, count, fpm.visibleBeaconCount];
         } else {
-            self.navigationItem.title = existRefpoint?fpm.selectedRefpoint.floor:@"Fingerprint";
+            if (existRefpoint) {
+                if (fpm.samplings) {
+                    self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld]",
+                                                 fpm.selectedRefpoint.floor,
+                                                 [fpm.samplings count]];
+                } else {
+                    self.navigationItem.title = fpm.selectedRefpoint.floor;
+                }
+            } else {
+                self.navigationItem.title = @"Fingerprint";
+            }
         }
     });
 }
@@ -166,6 +184,36 @@
 - (void) loaded {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self insertScript];
+    });
+}
+
+- (void) insertScript
+{
+    NSString *jspath = [[NSBundle mainBundle] pathForResource:@"fingerprint" ofType:@"js"];
+    NSString *js = [[NSString alloc] initWithContentsOfFile:jspath encoding:NSUTF8StringEncoding error:nil];
+    [helper evalScript:js];
+}
+
+- (void) showFingerprints:(NSArray*) points
+{
+    NSMutableArray *temp = [@[] mutableCopy];
+    for(HLPSampling *p in points) {
+        [temp addObject:
+         @{
+           @"lat": @(p.lat),
+           @"lng": @(p.lng),
+           @"count": @([p.beacons count])
+           }];
+    }
+    
+    NSData *data = [NSJSONSerialization dataWithJSONObject:temp options:0 error:nil];
+    NSString* str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+    NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
+    NSLog(@"%@", script);
+    [helper evalScript:script];
 }
 
 - (void)checkConnection {

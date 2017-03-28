@@ -22,6 +22,7 @@
 
 #import <Foundation/Foundation.h>
 
+#import "HLPGeoJSON.h"
 #import <Mantle/Mantle.h>
 #import "HLPLocation.h"
 
@@ -43,6 +44,7 @@
 @property (nonatomic, readonly) double lat;
 @property (nonatomic, readonly) double lng;
 @property (nonatomic, readonly) double rotate;
+@property (nonatomic) HLPGeoJSON *beacons;
 @end
 
 @interface HLPRefpoint : HLPDBObject

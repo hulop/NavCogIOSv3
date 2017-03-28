@@ -26,7 +26,7 @@
 #import "ConfigManager.h"
 #import "LocationEvent.h"
 #import "AuthManager.h"
-#import "ServerConfig.h"
+#import "ServerConfig+FingerPrint.h"
 #import "NavUtil.h"
 #import "NavDataStore.h"
 #import "FingerprintManager.h"
@@ -115,6 +115,20 @@ static HLPSetting *idLabel, *refpointLabel;
     if (userSettingHelper) {
         idLabel.label = [NavDataStore sharedDataStore].userID;
         refpointLabel.label = [NSString stringWithFormat:@"Refpoint: %@", [FingerprintManager sharedManager].selectedRefpoint.floor];
+        
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        ServerConfig *sc = [ServerConfig sharedConfig];
+        NSArray *uuids = [ud arrayForKey:@"finger_printing_beacon_uuid_list"];
+        NSString *uuid = [sc fingerPrintingBeaconUUID];
+        if (uuid) {
+            if ([uuids indexOfObject:uuid] == NSNotFound) {
+                NSMutableArray *temp = [uuids mutableCopy];
+                [temp addObject:uuid];
+                [ud setObject:temp forKey:@"finger_printing_beacon_uuid_list"];
+            }
+            [ud setObject:uuid forKey:@"selected_finger_printing_beacon_uuid"];
+        }
+        
         return;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
@@ -158,8 +172,6 @@ static HLPSetting *idLabel, *refpointLabel;
         
         [refpointSettingHelper addActionTitle:rp.floor Name:key];
     }
-    
-
 }
 
 - (void)didReceiveMemoryWarning {

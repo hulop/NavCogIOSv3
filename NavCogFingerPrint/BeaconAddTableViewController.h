@@ -20,13 +20,11 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import <Foundation/Foundation.h>
-#import "ServerConfig.h"
+#import <UIKit/UIKit.h>
+#import "FingerprintManager.h"
 
-@interface ServerConfig (FingerPrint)
+@interface BeaconAddTableViewController : UITableViewController <FingerprintManagerDelegate>
 
-- (BOOL) isFingerPrintingAvailable;
-- (NSString*) fingerPrintingServerHost;
-- (NSString*) fingerPrintingBeaconUUID;
+@property CLBeacon* selectedBeacon;
 
 @end

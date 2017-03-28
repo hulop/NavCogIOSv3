@@ -35,13 +35,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self updateView];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if ([[ServerConfig sharedConfig] isFingerPrintingAvailable]) {
-        [self performSegueWithIdentifier:@"user_blind" sender:self];
-    } else {        
+    if (![[ServerConfig sharedConfig] isFingerPrintingAvailable]) {
         [[ServerConfig sharedConfig] clear];
 
         [self performSegueWithIdentifier:@"unwind_init" sender:self];
@@ -55,8 +54,11 @@
 
 - (void) updateView
 {
-    self.blindButton.hidden = YES;
-    self.wcButton.hidden = YES;
+    [self.blindButton setTitle:@"Fingerprint" forState:UIControlStateNormal];
+    [self.wcButton setTitle:@"Beacon" forState:UIControlStateNormal];
+    BOOL fpAvailable = [[ServerConfig sharedConfig] isFingerPrintingAvailable];
+    self.blindButton.enabled = fpAvailable;
+    self.wcButton.enabled = fpAvailable;
     self.gpButton.hidden = YES;
 }
 
@@ -78,5 +80,24 @@
     [[NSUserDefaults standardUserDefaults] setObject:segue.identifier forKey:@"user_mode"];
 }
 
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    if ([sender isKindOfClass:UIButton.class]) {
+        if ([identifier isEqualToString:@"user_blind"]) {
+            [[NSUserDefaults standardUserDefaults] setObject:@"fingerprint" forKey:@"fp_mode"];
+        }
+        if ([identifier isEqualToString:@"user_wheelchair"]) {
+            [[NSUserDefaults standardUserDefaults] setObject:@"beacon" forKey:@"fp_mode"];
+        }
+    }
+    if ([identifier isEqualToString:@"user_wheelchair"]) {
+        [self performSegueWithIdentifier:@"user_blind" sender:@"beacon"];
+        return NO;
+    }
+    if ([identifier isEqualToString:@"user_general"]) {
+        return NO;
+    }
+    return YES;
+}
 
 @end

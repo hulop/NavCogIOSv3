@@ -26,6 +26,7 @@
 #import "NavUtil.h"
 #import "ServerConfig.h"
 #import "NavDataStore.h"
+#import "BeaconAddTableViewController.h"
 
 
 @interface BlindViewController () {
@@ -38,6 +39,8 @@
 
 @implementation BlindViewController {
     FingerprintManager *fpm;
+    BeaconAddTableViewController *batvc;
+    NSString *fp_mode;
 }
 
 - (void)dealloc
@@ -53,6 +56,9 @@
     [super viewDidLoad];
     
     state = ViewStateLoading;
+    fp_mode = [[NSUserDefaults standardUserDefaults] stringForKey:@"fp_mode"];
+
+
 
     helper = [[NavWebviewHelper alloc] initWithWebview:self.webView];
     helper.delegate = self;
@@ -67,7 +73,7 @@
     [fpm load];
 }
 
-- (void)manager:(FingerprintManager *)manager didStatusChanged:(BOOL)isReady
+- (void)manager:(FingerprintManager *)manager didRefpointSelected:(HLPRefpoint *)refpoint
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         HLPRefpoint *rp = manager.selectedRefpoint;
@@ -76,6 +82,18 @@
                                 @"location": [[HLPLocation alloc] initWithLat:rp.anchor_lat Lng:rp.anchor_lng Floor:rp.floor_num]
                                 };
         [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:self userInfo:param];
+        
+        [self updateView];
+    });
+}
+
+- (void)manager:(FingerprintManager *)manager didStatusChanged:(BOOL)isReady
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        if ([fp_mode isEqualToString:@"beacon"]) {
+            [self showBeacons:manager.selectedFloorplan.beacons withRefpoint:manager.selectedRefpoint];
+        }
         [self updateView];
     });
 }
@@ -92,6 +110,7 @@
     [self updateView];
     long count = [[NSUserDefaults standardUserDefaults] integerForKey:@"finger_printing_duration"];
     if (sampleCount >= count) {
+        [fpm sendData];
         return NO;
     }
     return YES;
@@ -100,7 +119,9 @@
 - (void)manager:(FingerprintManager *)manager didSamplingsLoaded:(NSArray *)samplings
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self showFingerprints:samplings];
+        if ([fp_mode isEqualToString:@"fingerprint"]) {
+            [self showFingerprints:samplings];
+        }
         [self updateView];
     });
 }
@@ -117,6 +138,7 @@
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     HLPLocation *center = nds.mapCenter;
+    fpm.delegate = self;
     [fpm startSamplingAtLat:center.lat Lng:center.lng];
 }
 - (void) cancelSampling
@@ -139,42 +161,65 @@
 
 - (void) updateView
 {
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         NavDataStore *nds = [NavDataStore sharedDataStore];
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        
         BOOL existRefpoint = fpm.selectedRefpoint != nil;
         BOOL existUUID = ([ud stringForKey:@"selected_finger_printing_beacon_uuid"] != nil);
-        
-        self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
-        self.settingButton.enabled = fpm.isReady;
-        
         BOOL isSampling = fpm.isSampling;
-        self.searchButton.title = NSLocalizedStringFromTable(isSampling?@"Cancel":@"Start", @"Fingerprint", @"");
-        self.devFingerprint.hidden = NO;
-
-        self.navigationItem.rightBarButtonItem = _searchButton;
-        self.navigationItem.leftBarButtonItem = _settingButton;
         
-        if (isSampling) {
-            long count = [ud integerForKey:@"finger_printing_duration"];
-            self.navigationItem.title = [NSString stringWithFormat:@"%@ - %ld/%ld (%ld)",
-                                         fpm.selectedRefpoint.floor,
-                                         fpm.beaconsSampleCount, count, fpm.visibleBeaconCount];
-        } else {
-            if (existRefpoint) {
-                if (fpm.samplings) {
-                    self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld]",
-                                                 fpm.selectedRefpoint.floor,
-                                                 [fpm.samplings count]];
-                } else {
-                    self.navigationItem.title = fpm.selectedRefpoint.floor;
-                }
+        if ([fp_mode isEqualToString:@"fingerprint"]) {
+            
+            
+            self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
+            self.settingButton.enabled = fpm.isReady;
+            
+            self.searchButton.title = NSLocalizedStringFromTable(isSampling?@"Cancel":@"Start", @"Fingerprint", @"");
+            self.devFingerprint.hidden = NO;
+            
+            self.navigationItem.rightBarButtonItem = _searchButton;
+            self.navigationItem.leftBarButtonItem = _settingButton;
+            
+            if (isSampling) {
+                long count = [ud integerForKey:@"finger_printing_duration"];
+                self.navigationItem.title = [NSString stringWithFormat:@"%@ - %ld/%ld (%ld)",
+                                             fpm.selectedRefpoint.floor,
+                                             fpm.beaconsSampleCount, count, fpm.visibleBeaconCount];
             } else {
-                self.navigationItem.title = @"Fingerprint";
+                if (existRefpoint) {
+                    if (fpm.samplings) {
+                        self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld]",
+                                                     fpm.selectedRefpoint.floor,
+                                                     [fpm.samplings count]];
+                    } else {
+                        self.navigationItem.title = fpm.selectedRefpoint.floor;
+                    }
+                } else {
+                    self.navigationItem.title = @"Fingerprint";
+                }
             }
+        } else if ([fp_mode isEqualToString:@"beacon"]) {
+            self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
+            self.settingButton.enabled = fpm.isReady;
+            
+            self.searchButton.title = NSLocalizedStringFromTable(@"Add", @"Fingerprint", @"");
+            self.devFingerprint.hidden = NO;
+            
+            self.navigationItem.rightBarButtonItem = _searchButton;
+            self.navigationItem.leftBarButtonItem = _settingButton;
+            
+            
+            
+            if (existRefpoint) {
+                self.navigationItem.title = [NSString stringWithFormat:@"%@ Beacon [%ld]",
+                                             fpm.selectedRefpoint.floor,
+                                             [fpm beaconsCount]];
+            } else {
+                self.navigationItem.title = @"Beacon";
+            }
+
         }
-        
         [helper evalScript:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();"];
     });
 }
@@ -198,6 +243,31 @@
     NSString *jspath = [[NSBundle mainBundle] pathForResource:@"fingerprint" ofType:@"js"];
     NSString *js = [[NSString alloc] initWithContentsOfFile:jspath encoding:NSUTF8StringEncoding error:nil];
     [helper evalScript:js];
+}
+
+- (void) showBeacons:(HLPGeoJSON*) beacons withRefpoint:(HLPRefpoint*)rp
+{
+    NSMutableArray *temp = [@[] mutableCopy];
+    for(HLPGeoJSONFeature *p in beacons.features) {
+        if ([p.properties[@"type"] isEqualToString:@"beacon"]) {
+            
+            MKMapPoint local = MKMapPointMake([p.geometry.coordinates[0] doubleValue], [p.geometry.coordinates[1] doubleValue]);
+            CLLocationCoordinate2D global = [FingerprintManager convertFromLocal:local ToGlobalWithRefpoint:rp];
+            
+            [temp addObject:
+             @{
+               @"lat": @(global.latitude),
+               @"lng": @(global.longitude),
+               @"count": @"B"
+               }];
+        }
+    }
+    
+    NSData *data = [NSJSONSerialization dataWithJSONObject:temp options:0 error:nil];
+    NSString* str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+    NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
+    NSLog(@"%@", script);
+    [helper evalScript:script];
 }
 
 - (void) showFingerprints:(NSArray*) points
@@ -263,15 +333,30 @@
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
     if ([identifier isEqualToString:@"show_search"]) {
-        if (fpm.isSampling) {
-            [self cancelSampling];
-        } else {
-            [self startSampling];
+        if ([fp_mode isEqualToString:@"fingerprint"]) {
+            if (fpm.isSampling) {
+                [self cancelSampling];
+            } else {
+                [self startSampling];
+            }
+        } else if ([fp_mode isEqualToString:@"beacon"]) {
+            batvc = [[UIStoryboard storyboardWithName:@"BeaconAdd" bundle:nil] instantiateViewControllerWithIdentifier:@"beaconadd"];
+            [self.navigationController pushViewController:batvc animated:YES];
+
         }
         return NO;
     }
     
     return YES;
+}
+
+- (IBAction)returnActionForSegue:(UIStoryboardSegue *)segue
+{
+    fpm.delegate = self;
+    if (batvc.selectedBeacon) {
+        HLPLocation *center = [[NavDataStore sharedDataStore] mapCenter];
+        [fpm addBeacon:batvc.selectedBeacon AtLat:center.lat LNG:center.lng];
+    }
 }
 
 

@@ -54,7 +54,7 @@ $hulop.fp = (function(){
 	vectorSource.clear(true);
 	vectorSource.addFeatures(features);
       } catch(e) {
-	alert(e.message);
+	//alert(e.message);
       }
     }
     
@@ -62,6 +62,6 @@ $hulop.fp = (function(){
       showFingerprints:showFingerprints
     };
   } catch(e) {
-    alert(e.message);
+    //alert(e.message);
   }
 })();

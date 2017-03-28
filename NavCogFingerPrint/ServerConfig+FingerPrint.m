@@ -40,4 +40,15 @@
     return nil;
 }
 
+- (NSString *)fingerPrintingBeaconUUID
+{
+    if (self.selectedServerConfig) {
+        NSString *str = self.selectedServerConfig[@"finger_printing_beacon_uuid"];
+        if (str && [str length] > 0) {
+            return str;
+        }
+    }
+    return nil;
+}
+
 @end

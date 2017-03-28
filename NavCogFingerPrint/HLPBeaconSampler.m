@@ -71,6 +71,7 @@ static HLPBeaconSampler *sharedData_ = nil;
         [sampledData removeAllObjects];
     }
     lastProcessedIndex = 0;
+    _visibleBeacons = nil;
     [sampledPoint removeAllObjects];
 }
 
@@ -124,7 +125,7 @@ static HLPBeaconSampler *sharedData_ = nil;
 }
 
 - (long) visibleBeaconCount {
-    return [visibleBeacons count];
+    return [_visibleBeacons count];
 }
 
 - (BOOL)isRecording {
@@ -162,7 +163,7 @@ static HLPBeaconSampler *sharedData_ = nil;
 {
     if (IRTCF_DEBUG) NSLog(@"didRangeBeacons %ld", (unsigned long)[beacons count]);
     
-    visibleBeacons = beacons;
+    _visibleBeacons = beacons;
     
     @synchronized(self) {
         HLPBeaconSample *bs = [[HLPBeaconSample alloc ]initWithBeacons:beacons];

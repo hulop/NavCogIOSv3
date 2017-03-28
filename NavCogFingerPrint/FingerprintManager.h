@@ -21,8 +21,10 @@
  *******************************************************************************/
 
 #import <Foundation/Foundation.h>
+#import <MapKit/MapKit.h>
 #import "HLPFingerprint.h"
 #import "HLPBeaconSampler.h"
+#import <CoreLocation/CoreLocation.h>
 
 @class FingerprintManager;
 
@@ -31,6 +33,7 @@
 @required
 // return if observe one more fingerprint sample
 -(void)manager:(FingerprintManager*)manager didStatusChanged:(BOOL)isReady;
+-(void)manager:(FingerprintManager*)manager didRefpointSelected:(HLPRefpoint*)refpoint;
 -(BOOL)manager:(FingerprintManager*)manager didObservedBeacons:(int)beaconCount atSample:(int)sampleCount;
 -(void)manager:(FingerprintManager*)manager didSendData:(NSString*)idString withError:(NSError*)error;
 -(void)manager:(FingerprintManager*)manager didSamplingsLoaded:(NSArray*)samplings;
@@ -47,7 +50,7 @@
 @property NSMutableDictionary *refpoints;
 @property NSArray *samplings;
 @property (readonly) HLPRefpoint *selectedRefpoint;
-
+@property (readonly) HLPFloorplan *selectedFloorplan;
 
 +(instancetype)sharedManager;
 
@@ -58,5 +61,11 @@
 -(void)cancel;
 -(void)sendData;
 -(void)deleteFingerprint:(NSString*)idString;
+-(long)beaconsCount;
+-(void)addBeacon:(CLBeacon*)beacon AtLat:(double)lat LNG:(double)lng;
+-(NSArray<CLBeacon*>*)visibleBeacons;
+
++ (MKMapPoint) convertFromGlobal:(CLLocationCoordinate2D)global ToLocalWithRefpoint:(HLPRefpoint*)rp;
++ (CLLocationCoordinate2D) convertFromLocal:(MKMapPoint)local ToGlobalWithRefpoint:(HLPRefpoint*)rp;
 
 @end

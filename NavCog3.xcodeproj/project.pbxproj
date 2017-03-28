@@ -86,6 +86,8 @@
 		7E6E42E91D90FD1B006B6899 /* BlindViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42E81D90FD1B006B6899 /* BlindViewController.m */; };
 		7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */; };
 		7E8A33C61D92D13400D20CD5 /* HLPLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33C51D92D13400D20CD5 /* HLPLocation.m */; };
+		7E8D8F361E8A92F9006DB46D /* BeaconAddTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8D8F341E8A92F9006DB46D /* BeaconAddTableViewController.m */; };
+		7E8D8F391E8AA542006DB46D /* BeaconAdd.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E8D8F381E8AA542006DB46D /* BeaconAdd.storyboard */; };
 		7E9238E61D5189F100875766 /* HLPSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9238DA1D5189F100875766 /* HLPSetting.m */; };
 		7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9238DC1D5189F100875766 /* HLPSettingHelper.m */; };
 		7E9238E81D5189F100875766 /* HLPSettingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9238DE1D5189F100875766 /* HLPSettingTableView.m */; };
@@ -305,6 +307,9 @@
 		7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = HLPDataUtil.m; path = model/HLPDataUtil.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		7E8A33C41D92D13400D20CD5 /* HLPLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPLocation.h; path = model/HLPLocation.h; sourceTree = "<group>"; };
 		7E8A33C51D92D13400D20CD5 /* HLPLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HLPLocation.m; path = model/HLPLocation.m; sourceTree = "<group>"; };
+		7E8D8F331E8A92F9006DB46D /* BeaconAddTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconAddTableViewController.h; sourceTree = "<group>"; };
+		7E8D8F341E8A92F9006DB46D /* BeaconAddTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconAddTableViewController.m; sourceTree = "<group>"; };
+		7E8D8F381E8AA542006DB46D /* BeaconAdd.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = BeaconAdd.storyboard; sourceTree = "<group>"; };
 		7E9238D91D5189F100875766 /* HLPSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPSetting.h; path = SettingUtil/HLPSetting.h; sourceTree = "<group>"; };
 		7E9238DA1D5189F100875766 /* HLPSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HLPSetting.m; path = SettingUtil/HLPSetting.m; sourceTree = "<group>"; };
 		7E9238DB1D5189F100875766 /* HLPSettingHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPSettingHelper.h; path = SettingUtil/HLPSettingHelper.h; sourceTree = "<group>"; };
@@ -524,6 +529,9 @@
 				7E30FA421E81567B00D542E5 /* ServerConfig+FingerPrint.m */,
 				7E30FA3E1E81564000D542E5 /* FingerprintManager.h */,
 				7E30FA3F1E81564000D542E5 /* FingerprintManager.m */,
+				7E8D8F331E8A92F9006DB46D /* BeaconAddTableViewController.h */,
+				7E8D8F341E8A92F9006DB46D /* BeaconAddTableViewController.m */,
+				7E8D8F381E8AA542006DB46D /* BeaconAdd.storyboard */,
 				7E30FA441E8164ED00D542E5 /* model */,
 				7E30F9AF1E813FFC00D542E5 /* AppDelegate.h */,
 				7E30F9B01E813FFC00D542E5 /* AppDelegate.m */,
@@ -1020,6 +1028,7 @@
 				7E30FA2E1E814D2900D542E5 /* HLPSettingViewSliderCell.xib in Resources */,
 				7E30F9B91E813FFC00D542E5 /* Assets.xcassets in Resources */,
 				7E30FA301E814D2900D542E5 /* HLPSettingViewSwitchCell.xib in Resources */,
+				7E8D8F391E8AA542006DB46D /* BeaconAdd.storyboard in Resources */,
 				7E30FA261E814D2900D542E5 /* HLPSettingView.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1208,6 +1217,7 @@
 				7E30F9CE1E8142B200D542E5 /* AuthManager.m in Sources */,
 				7E30F9F91E8149A300D542E5 /* NavWebviewHelper.m in Sources */,
 				7E30F9E51E8144D000D542E5 /* DownloadViewController.m in Sources */,
+				7E8D8F361E8A92F9006DB46D /* BeaconAddTableViewController.m in Sources */,
 				7E30F9B11E813FFC00D542E5 /* AppDelegate.m in Sources */,
 				7E30F9EE1E81463C00D542E5 /* ConfigManager.m in Sources */,
 				7E30F9FF1E8149EF00D542E5 /* NavDeviceTTS.m in Sources */,

@@ -40,7 +40,6 @@
     CLBeaconRegion *allBeacons;
     NSString *collectionName;
     
-    NSArray *visibleBeacons;
     BOOL recording;
     BOOL pauseing;
     BOOL isStartRecording;
@@ -52,6 +51,7 @@
 }
 
 @property (nonatomic, assign) id<HLPBeaconSamplerDelegate> delegate;
+@property (nonatomic, readonly) NSArray* visibleBeacons;
 
 + (HLPBeaconSampler *)sharedInstance;
 

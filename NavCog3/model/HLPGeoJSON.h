@@ -33,7 +33,7 @@
 @end
 
 
-@interface HLPGeoJSON : MTLModel<MTLJSONSerializing, NSCoding> {
+@interface HLPGeoJSONFeature : MTLModel<MTLJSONSerializing, NSCoding> {
 @protected
     NSString *_type;
     HLPGeometry *_geometry;
@@ -45,6 +45,11 @@
 - (HLPLocation*)nearestLocationTo:(HLPLocation*) location;
 @end
 
+@interface HLPGeoJSON : MTLModel<MTLJSONSerializing, NSCoding>
+@property (nonatomic, readonly) NSString *type;
+@property (nonatomic, readonly) NSArray<HLPGeoJSONFeature*> *features;
+@end
+
 typedef enum {
     HLP_OBJECT_CATEGORY_LINK=1,
     HLP_OBJECT_CATEGORY_NODE,
@@ -53,7 +58,7 @@ typedef enum {
     HLP_OBJECT_CATEGORY_TOILET
 } HLPObjectCategory;
 
-@interface HLPObject : HLPGeoJSON {
+@interface HLPObject : HLPGeoJSONFeature {
 @protected
     NSString *__id;
     NSString *__rev;
@@ -68,7 +73,7 @@ typedef enum {
 
 @class HLPNode;
 
-@interface HLPLandmark : HLPGeoJSON
+@interface HLPLandmark : HLPGeoJSONFeature
 @property (nonatomic, readonly) NSString *category;
 @property (nonatomic, readonly) NSString *exit;
 @property (nonatomic, readonly) NSString *name;

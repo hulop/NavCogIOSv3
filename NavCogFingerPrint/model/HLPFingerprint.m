@@ -49,6 +49,7 @@
              @"lat": @"lat",
              @"lng": @"lng",
              @"rotate": @"rotate",
+             @"beacons": @"beacons"
              }];
 }
 @end

@@ -25,7 +25,6 @@
 #import "HLPDataUtil.h"
 #import "HLPFingerprint.h"
 #import "HLPBeaconSampler.h"
-#import <MapKit/MapKit.h>
 #import <sys/types.h>
 #import <sys/sysctl.h>
 
@@ -64,10 +63,28 @@ static FingerprintManager *instance;
     }];
 }
 
+- (HLPFloorplan*)getSelectedFloorplan
+{
+    if (!_selectedRefpoint) {
+        return nil;
+    }
+    HLPFloorplan *fp;
+    for(fp in _floorplans) {
+        if ([_selectedRefpoint.refid[@"$oid"] isEqualToString:fp._id[@"$oid"]]) {
+            break;
+        }
+    }
+    return fp;
+}
+
 - (void)select:(HLPRefpoint *)rp
 {
     _selectedRefpoint = rp;
-    [_delegate manager:self didStatusChanged:_isReady];
+    if (!rp) {
+        return;
+    }
+    _selectedFloorplan = [self getSelectedFloorplan];
+    [_delegate manager:self didRefpointSelected:_selectedRefpoint];
     [self loadSamplings:^{
         [_delegate manager:self didSamplingsLoaded:_samplings];
     }];
@@ -106,6 +123,9 @@ static FingerprintManager *instance;
                 }
             }
             _floorplans = temp;
+            if (_selectedRefpoint) {
+                _selectedFloorplan = [self getSelectedFloorplan];
+            }
             complete();
             //NSLog(@"%@", floorplans);
         }
@@ -285,6 +305,8 @@ static FingerprintManager *instance;
     [sampler stopRecording];
     [sampler reset];
     _isSampling = NO;
+    _visibleBeaconCount = 0;
+    _beaconsSampleCount = 0;
     [_delegate manager:self didStatusChanged:_isReady];
 }
 
@@ -298,7 +320,7 @@ static FingerprintManager *instance;
     } else {
         if (sampler.isRecording) {
             [sampler stopRecording];
-            [self sendData];
+            //[self sendData];
         }
     }
 }
@@ -374,6 +396,94 @@ static FingerprintManager *instance;
 - (void)deleteFingerprint:(NSString *)idString
 {
     
+}
+
+- (long)beaconsCount
+{
+    if (!_selectedFloorplan) {
+        return 0;
+    }
+    return [_selectedFloorplan.beacons.features count];
+}
+
+- (void)addBeacon:(CLBeacon *)beacon AtLat:(double)lat_ LNG:(double)lng_
+{
+    if (!beacon) {
+        return;
+    }
+    if (!_selectedFloorplan) {
+        return;
+    }
+    
+    lat = lat_;
+    lng = lng_;
+    
+    CLLocationCoordinate2D g = CLLocationCoordinate2DMake(lat, lng);
+    
+    MKMapPoint local = [FingerprintManager convertFromGlobal:g ToLocalWithRefpoint:_selectedRefpoint];
+    x = local.x;
+    y = local.y;
+    
+    NSError *error;
+    NSDictionary *dic =
+    @{
+      @"type": @"Feature",
+      @"properties": @{
+              @"type": @"beacon",
+              @"uuid": beacon.proximityUUID.UUIDString,
+              @"major": beacon.major,
+              @"minor": beacon.minor,
+              },
+      @"geometry": @{
+              @"type": @"Point",
+              @"coordinates": @[@(x), @(y)]
+              }
+      };
+    HLPGeoJSONFeature *feature = [MTLJSONAdapter modelOfClass:HLPGeoJSONFeature.class fromJSONDictionary:dic error:&error];
+
+    
+    HLPFloorplan *fp = _selectedFloorplan;
+    NSMutableArray *features = [[NSMutableArray alloc] initWithArray:fp.beacons.features];
+    [features addObject:feature];
+    
+    NSDictionary *json = @{
+        @"type": @"FeatureCollection",
+        @"features": [MTLJSONAdapter JSONArrayFromModels:features error:&error]
+        };
+    HLPGeoJSON *temp =  [MTLJSONAdapter modelOfClass:HLPGeoJSON.class fromJSONDictionary:json error:&error];
+    if (!temp) {
+        return;
+    }
+    
+    NSDictionary *query = @{@"_id":fp._id};
+    
+    NSDictionary *beacons = [MTLJSONAdapter JSONDictionaryFromModel:temp error:&error];
+    NSDictionary *update = @{@"$set" : @{@"beacons" : beacons}};
+    NSDictionary *data =
+    @{
+      @"action": @"update",
+      @"query": [self stringify:query],
+      @"update": [self stringify:update]
+    };
+    NSLog(@"%@", data);
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
+    NSString *server = [[ServerConfig sharedConfig] fingerPrintingServerHost];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:FLOORPLANS_API_URL, https, server]];
+    [HLPDataUtil postRequest:url withData:data callback:^(NSData *response) {
+        _isSampling = NO;
+        if (response) {
+            [self loadFloorplans:^{
+                [self.delegate manager:self didStatusChanged:_isReady];
+            }];
+        } else {
+            [_delegate manager:self didSendData:nil withError:[NSError errorWithDomain:@"beacon.update" code:0 userInfo:nil]];
+        }
+    }];
+}
+
+- (NSArray<CLBeacon *> *)visibleBeacons
+{
+    return sampler.visibleBeacons;
 }
 
 + (MKMapPoint) convertFromGlobal:(CLLocationCoordinate2D)global ToLocalWithRefpoint:(HLPRefpoint*)rp

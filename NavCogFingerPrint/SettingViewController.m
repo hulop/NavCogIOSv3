@@ -97,7 +97,12 @@ static HLPSetting *idLabel, *refpointLabel;
     if ([setting.name isEqualToString:@"choose_config"]) {
         [self performSegueWithIdentifier:setting.name sender:self];
     } else {
-        HLPRefpoint *rp = [FingerprintManager sharedManager].refpoints[setting.name];
+        HLPRefpoint *rp;
+        for(rp in [FingerprintManager sharedManager].refpoints) {
+            if ([rp._id[@"$oid"] isEqualToString:setting.name]) {
+                break;
+            }
+        }
         if (rp) {
             [[FingerprintManager sharedManager] select:rp];
         }
@@ -152,7 +157,6 @@ static HLPSetting *idLabel, *refpointLabel;
 
 + (void)setupRefpointSettingHelper
 {
-    
     if (!refpointSettingHelper) {
         refpointSettingHelper = [[HLPSettingHelper alloc] init];
     }
@@ -161,16 +165,13 @@ static HLPSetting *idLabel, *refpointLabel;
     
     [refpointSettingHelper addSectionTitle:@"Refpoints"];
     
-    NSDictionary<NSString*, HLPRefpoint*> *refpoints = [FingerprintManager sharedManager].refpoints;
-    NSArray *keys = [refpoints allKeys];
-    keys = [keys sortedArrayUsingComparator:^NSComparisonResult(NSString*  _Nonnull obj1, NSString*  _Nonnull obj2) {
-        return [refpoints[obj1].floor compare:refpoints[obj2].floor];
+    NSArray *refpoints = [FingerprintManager sharedManager].refpoints;
+    refpoints = [refpoints sortedArrayUsingComparator:^NSComparisonResult(HLPRefpoint*  _Nonnull obj1, HLPRefpoint*  _Nonnull obj2) {
+        return [obj1.floor compare:obj2.floor];
     }];
 
-    for(NSString *key in keys) {
-        HLPRefpoint *rp = [FingerprintManager sharedManager].refpoints[key];
-        
-        [refpointSettingHelper addActionTitle:rp.floor Name:key];
+    for(HLPRefpoint* rp in refpoints) {
+        [refpointSettingHelper addActionTitle:rp._metadata[@"name"] Name:rp._id[@"$oid"]];
     }
 }
 

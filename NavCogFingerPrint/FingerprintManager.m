@@ -28,9 +28,9 @@
 #import <sys/types.h>
 #import <sys/sysctl.h>
 
-#define SAMPLINGS_API_URL @"%@://%@/LocationService/data/samplings"
-#define FLOORPLANS_API_URL @"%@://%@/LocationService/data/floorplans"
-#define REFPOINTS_API_URL @"%@://%@/LocationService/data/refpoints"
+#define SAMPLINGS_API_URL @"%@://%@/LocationService/data/samplings%@"
+#define FLOORPLANS_API_URL @"%@://%@/LocationService/data/floorplans%@"
+#define REFPOINTS_API_URL @"%@://%@/LocationService/data/refpoints%@"
 
 @implementation FingerprintManager {
     double lat,lng,x,y;
@@ -107,7 +107,7 @@ static FingerprintManager *instance;
 {
     NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
     NSString *server = [[ServerConfig sharedConfig] fingerPrintingServerHost];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:FLOORPLANS_API_URL, https, server]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:FLOORPLANS_API_URL, https, server, [self getTime]]];
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if ([result isKindOfClass:NSArray.class]) {
             NSArray *fs = (NSArray*)result;
@@ -136,11 +136,12 @@ static FingerprintManager *instance;
 {
     NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
     NSString *server = [[ServerConfig sharedConfig] fingerPrintingServerHost];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:REFPOINTS_API_URL, https, server]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:REFPOINTS_API_URL, https, server, [self getTime]]];
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if ([result isKindOfClass:NSArray.class]) {
             NSArray *rs = (NSArray*)result;
-            _refpoints = [@{} mutableCopy];
+            NSMutableArray *temp = [@[] mutableCopy];
+            _floorplanRefpointMap = [@{} mutableCopy];
             for (NSDictionary *dic in rs) {
                 NSError *error;
                 HLPRefpoint *rp = [MTLJSONAdapter modelOfClass:HLPRefpoint.class fromJSONDictionary:dic error:&error];
@@ -148,14 +149,16 @@ static FingerprintManager *instance;
                     NSLog(@"%@", error);
                     NSLog(@"%@", dic);
                 } else {
+                    [temp addObject:rp];
                     NSString *refid = rp.refid[@"$oid"];
                     if (refid) {
-                        if (rp.x == 0 && rp.y == 0) {
-                            _refpoints[refid] = rp;
+                        if (rp.x == 0 && rp.y == 0 && rp.rotate == 0) {
+                            _floorplanRefpointMap[refid] = rp;
                         }
                     }
                 }
             }
+            _refpoints = temp;
             //NSLog(@"%@", refpoints);
             complete();
         }
@@ -174,7 +177,7 @@ static FingerprintManager *instance;
                                  }
                          }];
     
-    NSURLComponents *components = [NSURLComponents componentsWithString:[NSString stringWithFormat:SAMPLINGS_API_URL, https, server]];
+    NSURLComponents *components = [NSURLComponents componentsWithString:[NSString stringWithFormat:SAMPLINGS_API_URL, https, server, [self getTime]]];
     NSURLQueryItem *search = [NSURLQueryItem queryItemWithName:@"query" value:query];
     components.queryItems = @[ search ];
     NSURL *url = components.URL;
@@ -208,13 +211,13 @@ static FingerprintManager *instance;
 
 - (BOOL) createRefpointForFloorplan:(HLPFloorplan*)fp withComplete:(void(^)(void)) complete
 {
-    if (_refpoints[fp._id[@"$oid"]]) {
+    if (_floorplanRefpointMap[fp._id[@"$oid"]]) {
         return false;
     }
     
     NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
     NSString *server = [[ServerConfig sharedConfig] fingerPrintingServerHost];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:REFPOINTS_API_URL, https, server]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:REFPOINTS_API_URL, https, server, [self getTime]]];
     
     NSString *name = [NSString stringWithFormat:@"%@-%@", fp.group, [self floorString:fp.floor]];;
     
@@ -239,21 +242,9 @@ static FingerprintManager *instance;
 
     [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
         if (response) {
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:response options:0 error:nil];
-            NSError *error;
-            HLPRefpoint *rp = [MTLJSONAdapter modelOfClass:HLPRefpoint.class fromJSONDictionary:dic error:&error];
-            if (error) {
-                NSLog(@"%@", error);
-                NSLog(@"%@", dic);
-            } else {
-                NSString *refid = rp.refid[@"$oid"];
-                if (refid) {
-                    if (rp.x == 0 && rp.y == 0) {
-                        _refpoints[refid] = rp;
-                    }
-                }
-            }
-            complete();
+            [self loadRefpoints:^{
+                complete();
+            }];
         }
     }];
     return true;
@@ -367,7 +358,7 @@ static FingerprintManager *instance;
     
     NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
     NSString *server = [[ServerConfig sharedConfig] fingerPrintingServerHost];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:SAMPLINGS_API_URL, https, server]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:SAMPLINGS_API_URL, https, server, @""]];
     [HLPDataUtil postRequest:url withData:data callback:^(NSData *response) {
         _isSampling = NO;
         if (response) {
@@ -468,7 +459,7 @@ static FingerprintManager *instance;
     NSLog(@"%@", data);
     NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
     NSString *server = [[ServerConfig sharedConfig] fingerPrintingServerHost];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:FLOORPLANS_API_URL, https, server]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:FLOORPLANS_API_URL, https, server, @""]];
     [HLPDataUtil postRequest:url withData:data callback:^(NSData *response) {
         _isSampling = NO;
         if (response) {
@@ -484,6 +475,11 @@ static FingerprintManager *instance;
 - (NSArray<CLBeacon *> *)visibleBeacons
 {
     return sampler.visibleBeacons;
+}
+
+- (NSString*) getTime
+{
+    return [NSString stringWithFormat:@"?dummy=%ld", (long)([[NSDate date] timeIntervalSince1970] * 1000)];
 }
 
 + (MKMapPoint) convertFromGlobal:(CLLocationCoordinate2D)global ToLocalWithRefpoint:(HLPRefpoint*)rp

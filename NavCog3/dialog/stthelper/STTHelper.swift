@@ -227,7 +227,7 @@ open class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, SF
 
             if e != nil {
                 weakself.stoptimer()
-                guard let error:NSError = e as? NSError else {
+                guard let error:NSError = e as NSError? else {
                     print(e!)
                     weakself.endRecognize()
                     timeout()
@@ -332,7 +332,7 @@ open class STTHelper: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, SF
             NSLog("TTS is speaking so this listen is eliminated")
             return
         }
-        NSLog("Listen \(selfvoice) \(actions)")
+        NSLog("Listen \(String(describing: selfvoice)) \(actions)")
         self.last_actions = actions
 
         self.stoptimer()

@@ -23,7 +23,7 @@
 #import "NavCoverView.h"
 #import "LocationEvent.h"
 #import "NavDeviceTTS.h"
-#import "NavCog3-swift.h"
+#import "NavCog3-Swift.h"
 
 
 @implementation NavAnnounceItem

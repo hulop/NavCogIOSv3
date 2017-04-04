@@ -60,7 +60,7 @@ class AnimLayer: CALayer {
         var k:[CGFloat] = []
         let N = 30
         for i in 0..<N+1 {
-            v.append(size+size*(scale-1)*sin(CGFloat(i)/CGFloat(N)*CGFloat(M_PI)*2))
+            v.append(size+size*(scale-1)*sin(CGFloat(i)/CGFloat(N)*CGFloat(Double.pi)*2))
             k.append(CGFloat(i)/CGFloat(N))
         }
         a.values = v

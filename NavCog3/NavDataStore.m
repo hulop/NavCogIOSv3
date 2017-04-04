@@ -558,6 +558,9 @@ static NavDataStore* instance_ = nil;
 
 - (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
 {
+    if (isnan(lat) || isnan(lng) || user == nil || user_lang == nil) {
+        return NO;
+    }
     int dist = 500;
     
     HLPLocation *requestLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
@@ -655,6 +658,9 @@ static NavDataStore* instance_ = nil;
 
 - (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID forUser:(NSString*)user withLang:(NSString*)lang useCache:(BOOL)useCache withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
 {
+    if (fromID == nil || toID == nil || user == nil || lang == nil || prefs == nil) {
+        return;
+    }
     NSDictionary *param = @{@"fromID":fromID, @"toID":toID, @"user":user, @"user_lang":lang, @"prefs":prefs};
     [Logging logType:@"showRoute" withParam:param];
 

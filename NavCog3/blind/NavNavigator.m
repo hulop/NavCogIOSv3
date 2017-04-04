@@ -119,14 +119,14 @@ static NavNavigatorConstants *_instance;
              @"PREVENT_REMAINING_DISTANCE_EVENT_FOR_FIRST_N_METERS": @[@(7.0), @(0), @(20), @(1), FIXED],
              @"APPROACHING_DISTANCE_THRESHOLD": @[@(6.0), @(1), @(10), @(0.5)],
              @"APPROACHED_DISTANCE_THRESHOLD": @[@(2.0), @(0.5), @(5), @(0.25)],
-             @"NO_APPROACHING_DISTANCE_THRESHOLD": @[@(2.0), @(0.5), @(15), @(0.25)],
-             @"REMAINING_DISTANCE_INTERVAL": @[@(10.0), @(1), @(25), @(1)],
-             @"NO_ANDTURN_DISTANCE_THRESHOLD": @[@(2.0), @(0), @(10), @(0.5)],
+             @"NO_APPROACHING_DISTANCE_THRESHOLD": @[@(6.0), @(0.5), @(15), @(0.25)],
+             @"REMAINING_DISTANCE_INTERVAL": @[@(15.0), @(1), @(25), @(1)],
+             @"NO_ANDTURN_DISTANCE_THRESHOLD": @[@(4.0), @(0), @(10), @(0.5)],
              
              @"IGNORE_FIRST_LINK_LENGTH_THRESHOLD": @[@(3.0), @(0), @(10.0), @(0.5)],
              @"IGNORE_LAST_LINK_LENGTH_THRESHOLD": @[@(3.0), @(0), @(10.0), @(0.5), FIXED],
              
-             @"POI_ANNOUNCE_DISTANCE": @[@(2.0), @(0), @(10), @(0.5)],
+             @"POI_ANNOUNCE_DISTANCE": @[@(4.0), @(0), @(10), @(0.5)],
              @"POI_START_INFO_DISTANCE_THRESHOLD": @[@(3.0), @(3), @(10), @(1), FIXED],
              @"POI_END_INFO_DISTANCE_THRESHOLD": @[@(3.0), @(3), @(10), @(1), FIXED],
              @"POI_DISTANCE_MIN_THRESHOLD": @[@(5.0), @(2), @(50), @(5), FIXED],
@@ -139,7 +139,7 @@ static NavNavigatorConstants *_instance;
              @"REPEAT_ACTION_TIME_INTERVAL": @[@(15.0), @(5), @(100), @(5), FIXED],
              
              
-             @"OFF_ROUTE_THRESHOLD": @[@(5.0), @(1.0), @(50.0), @(1.0)],
+             @"OFF_ROUTE_THRESHOLD": @[@(6.0), @(1.0), @(50.0), @(1.0)],
              @"OFF_ROUTE_EXT_LINK_THRETHOLD": @[@(3.0), @(1.0), @(10.0), @(1.0), FIXED],
              @"REROUTE_DISTANCE_THRESHOLD": @[@(6.0), @(1.0), @(10.0), @(1.0), FIXED],
              @"OFF_ROUTE_ANNOUNCE_MIN_INTERVAL": @[@(10), @(5), @(60), @(5), FIXED],
@@ -148,13 +148,13 @@ static NavNavigatorConstants *_instance;
              
              @"OFF_ROUTE_BEARING_THRESHOLD": @[@(2.0), @(0), @(10), @(0.1), FIXED],
              @"CHANGE_HEADING_THRESHOLD": @[@(30.0), @(0), @(90), @(5)],
-             @"ADJUST_HEADING_MARGIN": @[@(15.0), @(0), @(90), @(5)],
+             @"ADJUST_HEADING_MARGIN": @[@(20.0), @(0), @(90), @(5)],
              
-             @"BACK_DETECTION_THRESHOLD": @[@(2.0), @(0), @(10), @(1)],
+             @"BACK_DETECTION_THRESHOLD": @[@(5.0), @(0), @(10), @(1)],
              @"BACK_DETECTION_HEADING_THRESHOLD": @[@(120), @(90), @(180), @(5), FIXED],
              @"BACK_ANNOUNCE_MIN_INTERVAL": @[@(10), @(5), @(60), @(5), FIXED],
              
-             @"FLOOR_DIFF_THRESHOLD": @[@(0.1), @(0), @(0.5), @(0.1)],
+             @"FLOOR_DIFF_THRESHOLD": @[@(0.4), @(0), @(0.5), @(0.1)],
              
              @"CRANK_REMOVE_SAFE_RATE": @[@(0.75), @(0), @(1.0), @(0.05), FIXED],
              

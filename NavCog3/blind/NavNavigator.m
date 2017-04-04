@@ -299,13 +299,13 @@ static NavNavigatorConstants *_instance;
             
             double hLocToTarget = [loc bearingTo:_link.targetLocation];
             double dLocToTarget = [loc distanceTo:_link.targetLocation];
-            BOOL inAngleAtTarget = fabs([HLPLocation normalizeDegree:hLocToTarget - poi.heading]) < poi.angle;
+            BOOL inAngleAtTarget = fabs([HLPLocation normalizeDegree:hLocToTarget - poi.heading]) <= poi.angle;
             
             double hInitial = [HLPLocation normalizeDegree:_link.initialBearingFromSource - 180];
-            BOOL inAngleInitial = fabs([HLPLocation normalizeDegree:hInitial - poi.heading]) < poi.angle;
+            BOOL inAngleInitial = fabs([HLPLocation normalizeDegree:hInitial - poi.heading]) <= poi.angle;
             
             double hLast = [HLPLocation normalizeDegree:_link.lastBearingForTarget - 180];
-            BOOL inAngleLast = fabs([HLPLocation normalizeDegree:hLast - poi.heading]) < poi.angle;
+            BOOL inAngleLast = fabs([HLPLocation normalizeDegree:hLast - poi.heading]) <= poi.angle;
             
             
             NavPOI *navpoi = nil;
@@ -385,20 +385,8 @@ static NavNavigatorConstants *_instance;
                     }
                 case HLPPOICategoryCornerEnd:
                 case HLPPOICategoryCornerLandmark:
-                    if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
-                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
-                                  @{
-                                    @"origin": poi,
-                                    @"forCorner": @(YES),
-                                    @"forCornerEnd": @(poi.poiCategory == HLPPOICategoryCornerEnd),
-                                    @"forCornerWarningBlock": @(poi.poiCategory == HLPPOICategoryCornerWarningBlock),
-                                    @"flagPlural": @(poi.flags.flagPlural),
-                                    @"longDescription": poi.longDescription?poi.longDescription:@""
-                                    }];
-                    }
-                    break;
                 case HLPPOICategoryCornerWarningBlock:
-                    if (inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
+                    if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
                                     @"origin": poi,

@@ -20,54 +20,32 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "HLPLocation.h"
+#import "NavWebviewHelper.h"
+#import "NavCoverView.h"
+#import "FingerprintManager.h"
 
-#define TRIGGER_WEBVIEW_CONTROL @"trigger_webview_control"
-#define ROUTE_SEARCH_OPTION_BUTTON @"route_search_option_button"
-#define ROUTE_SEARCH_BUTTON @"route_search_button"
-#define END_NAVIGATION @"end_navigation"
-#define BACK_TO_CONTROL @"BACK_TO_CONTROL"
-#define DONE_BUTTON @"DONE_BUTTON"
+@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, FingerprintManagerDelegate>
 
-typedef NS_ENUM(NSInteger, ViewState) {
-    ViewStateMap,
-    ViewStateSearch,
-    ViewStateSearchDetail,
-    ViewStateSearchSetting,
-    ViewStateRouteConfirm,
-    ViewStateNavigation,
-    ViewStateTransition,
-    ViewStateRouteCheck,
-    ViewStateLoading
-};
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *micButton;
+@property (weak, nonatomic) IBOutlet UIButton *retryButton;
+@property (weak, nonatomic) IBOutlet UILabel *errorMessage;
 
-@interface NavWebView : UIWebView
+@property (weak, nonatomic) IBOutlet NavCoverView *cover;
+@property (weak, nonatomic) IBOutlet UIButton *devLeft;
+@property (weak, nonatomic) IBOutlet UIButton *devRight;
+@property (weak, nonatomic) IBOutlet UIButton *devGo;
+@property (weak, nonatomic) IBOutlet UIButton *devAuto;
+@property (weak, nonatomic) IBOutlet UIButton *devReset;
+@property (weak, nonatomic) IBOutlet UIButton *devMarker;
+@property (weak, nonatomic) IBOutlet UIButton *devUp;
+@property (weak, nonatomic) IBOutlet UIButton *devDown;
+@property (weak, nonatomic) IBOutlet UIButton *devNote;
+@property (weak, nonatomic) IBOutlet UIButton *devRestart;
+@property (weak, nonatomic) IBOutlet UIButton *devFingerprint;
 
-@end
-
-@protocol NavWebviewHelperDelegate <NSObject>
-- (void) startLoading;
-- (void) loaded;
-- (void) bridgeInserted;
-- (void) checkConnection;
-@end
-
-@interface NavWebviewHelper : NSObject <UIWebViewDelegate>
-
-@property (weak) id<NavWebviewHelperDelegate> delegate;
-@property (readonly) BOOL isReady;
-
-- (instancetype) initWithWebview: (UIWebView*) webView;
-- (void) prepareForDealloc;
-
-- (void) sendData:(NSObject*)data withName:(NSString*) name;
-- (void) showRoute:(NSArray*)route;
-- (void) setBrowserHash:(NSString*) hash;
-- (NSString*) evalScript:(NSString*) script;
-- (HLPLocation*) getCenter;
-- (NSDictionary*) getState;
-- (void) retry;
 @end

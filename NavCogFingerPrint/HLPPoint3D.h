@@ -19,55 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *******************************************************************************/
-
-
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import "HLPLocation.h"
 
-#define TRIGGER_WEBVIEW_CONTROL @"trigger_webview_control"
-#define ROUTE_SEARCH_OPTION_BUTTON @"route_search_option_button"
-#define ROUTE_SEARCH_BUTTON @"route_search_button"
-#define END_NAVIGATION @"end_navigation"
-#define BACK_TO_CONTROL @"BACK_TO_CONTROL"
-#define DONE_BUTTON @"DONE_BUTTON"
+@interface HLPPoint3D : NSObject
 
-typedef NS_ENUM(NSInteger, ViewState) {
-    ViewStateMap,
-    ViewStateSearch,
-    ViewStateSearchDetail,
-    ViewStateSearchSetting,
-    ViewStateRouteConfirm,
-    ViewStateNavigation,
-    ViewStateTransition,
-    ViewStateRouteCheck,
-    ViewStateLoading
-};
+@property (atomic, assign) float x;
+@property (atomic, assign) float y;
+@property (atomic, assign) float z;
+@property (atomic, assign) NSString *floor;
+@property (atomic, assign) long long time;
 
-@interface NavWebView : UIWebView
+- (id) initWithX:(float)x Y:(float)y Z:(float)z Floor:(NSString*)floor;
++ (HLPPoint3D*) interpolateFrom:(HLPPoint3D*)from To:(HLPPoint3D*)to inTime:(long long)time;
++ (HLPPoint3D*) interpolateFrom:(HLPPoint3D*)from To:(HLPPoint3D*)to inRatio:(float)ratio;
+- (float) distanceTo:(HLPPoint3D*)point;
+- (NSDictionary*) toJSON;
 
-@end
-
-@protocol NavWebviewHelperDelegate <NSObject>
-- (void) startLoading;
-- (void) loaded;
-- (void) bridgeInserted;
-- (void) checkConnection;
-@end
-
-@interface NavWebviewHelper : NSObject <UIWebViewDelegate>
-
-@property (weak) id<NavWebviewHelperDelegate> delegate;
-@property (readonly) BOOL isReady;
-
-- (instancetype) initWithWebview: (UIWebView*) webView;
-- (void) prepareForDealloc;
-
-- (void) sendData:(NSObject*)data withName:(NSString*) name;
-- (void) showRoute:(NSArray*)route;
-- (void) setBrowserHash:(NSString*) hash;
-- (NSString*) evalScript:(NSString*) script;
-- (HLPLocation*) getCenter;
-- (NSDictionary*) getState;
-- (void) retry;
 @end

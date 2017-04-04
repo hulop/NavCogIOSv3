@@ -19,55 +19,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *******************************************************************************/
-
-
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import "HLPLocation.h"
+#import <CoreLocation/CoreLocation.h>
+#import <CoreMotion/CoreMotion.h>
+#import "HLPPoint3D.h"
+#import "HLPBeaconSample.h"
 
-#define TRIGGER_WEBVIEW_CONTROL @"trigger_webview_control"
-#define ROUTE_SEARCH_OPTION_BUTTON @"route_search_option_button"
-#define ROUTE_SEARCH_BUTTON @"route_search_button"
-#define END_NAVIGATION @"end_navigation"
-#define BACK_TO_CONTROL @"BACK_TO_CONTROL"
-#define DONE_BUTTON @"DONE_BUTTON"
+#define IRTCF_DEBUG NO
+@protocol HLPBeaconSamplerDelegate <NSObject>
 
-typedef NS_ENUM(NSInteger, ViewState) {
-    ViewStateMap,
-    ViewStateSearch,
-    ViewStateSearchDetail,
-    ViewStateSearchSetting,
-    ViewStateRouteConfirm,
-    ViewStateNavigation,
-    ViewStateTransition,
-    ViewStateRouteCheck,
-    ViewStateLoading
-};
-
-@interface NavWebView : UIWebView
+@required
+- (void)updated;
+@optional
 
 @end
 
-@protocol NavWebviewHelperDelegate <NSObject>
-- (void) startLoading;
-- (void) loaded;
-- (void) bridgeInserted;
-- (void) checkConnection;
-@end
+@interface HLPBeaconSampler : NSObject <CLLocationManagerDelegate>{
+    CLLocationManager *locationManager;
+    
+    CLBeaconRegion *allBeacons;
+    NSString *collectionName;
+    
+    BOOL recording;
+    BOOL pauseing;
+    BOOL isStartRecording;
+    
+    NSMutableArray *sampledData;
+    NSMutableArray *sampledPoint;
+    
+    long lastProcessedIndex;
+}
 
-@interface NavWebviewHelper : NSObject <UIWebViewDelegate>
+@property (nonatomic, assign) id<HLPBeaconSamplerDelegate> delegate;
+@property (nonatomic, readonly) NSArray* visibleBeacons;
 
-@property (weak) id<NavWebviewHelperDelegate> delegate;
-@property (readonly) BOOL isReady;
++ (HLPBeaconSampler *)sharedInstance;
 
-- (instancetype) initWithWebview: (UIWebView*) webView;
-- (void) prepareForDealloc;
+- (void) setSamplingBeaconUUID:(NSString*)uuid_str;
+- (void) setSamplingLocation:(HLPPoint3D *)point;
 
-- (void) sendData:(NSObject*)data withName:(NSString*) name;
-- (void) showRoute:(NSArray*)route;
-- (void) setBrowserHash:(NSString*) hash;
-- (NSString*) evalScript:(NSString*) script;
-- (HLPLocation*) getCenter;
-- (NSDictionary*) getState;
-- (void) retry;
+- (void) reset;
+- (BOOL) startRecording;
+- (void) stopRecording;
+
+- (NSMutableDictionary*) toJSON;
+- (long) visibleBeaconCount;
+- (long) beaconSampleCount;
+- (BOOL) isRecording;
+
 @end

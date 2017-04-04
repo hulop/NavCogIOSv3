@@ -102,7 +102,7 @@
 
 @end
 
-@implementation HLPGeoJSON {
+@implementation HLPGeoJSONFeature {
     HLPLocation *loc1;
     HLPLocation *loc2;
     HLPLocation *loc3;
@@ -157,6 +157,22 @@
     }
     [minloc updateFloor:location.floor];
     return minloc;
+}
+
+@end
+
+@implementation  HLPGeoJSON
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey
+{
+    return @{
+             @"type": @"type",
+             @"features": @"features"
+             };
+}
+
++ (NSValueTransformer *)featuresJSONTransformer {
+    return [MTLJSONAdapter arrayTransformerWithModelClass:HLPGeoJSONFeature.class];
 }
 
 @end

@@ -20,54 +20,12 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "HLPLocation.h"
 
-#define TRIGGER_WEBVIEW_CONTROL @"trigger_webview_control"
-#define ROUTE_SEARCH_OPTION_BUTTON @"route_search_option_button"
-#define ROUTE_SEARCH_BUTTON @"route_search_button"
-#define END_NAVIGATION @"end_navigation"
-#define BACK_TO_CONTROL @"BACK_TO_CONTROL"
-#define DONE_BUTTON @"DONE_BUTTON"
+@interface InitViewController : UIViewController
 
-typedef NS_ENUM(NSInteger, ViewState) {
-    ViewStateMap,
-    ViewStateSearch,
-    ViewStateSearchDetail,
-    ViewStateSearchSetting,
-    ViewStateRouteConfirm,
-    ViewStateNavigation,
-    ViewStateTransition,
-    ViewStateRouteCheck,
-    ViewStateLoading
-};
+@property (weak, nonatomic) IBOutlet UIButton *blindButton;
+@property (weak, nonatomic) IBOutlet UIButton *wcButton;
+@property (weak, nonatomic) IBOutlet UIButton *gpButton;
 
-@interface NavWebView : UIWebView
-
-@end
-
-@protocol NavWebviewHelperDelegate <NSObject>
-- (void) startLoading;
-- (void) loaded;
-- (void) bridgeInserted;
-- (void) checkConnection;
-@end
-
-@interface NavWebviewHelper : NSObject <UIWebViewDelegate>
-
-@property (weak) id<NavWebviewHelperDelegate> delegate;
-@property (readonly) BOOL isReady;
-
-- (instancetype) initWithWebview: (UIWebView*) webView;
-- (void) prepareForDealloc;
-
-- (void) sendData:(NSObject*)data withName:(NSString*) name;
-- (void) showRoute:(NSArray*)route;
-- (void) setBrowserHash:(NSString*) hash;
-- (NSString*) evalScript:(NSString*) script;
-- (HLPLocation*) getCenter;
-- (NSDictionary*) getState;
-- (void) retry;
 @end

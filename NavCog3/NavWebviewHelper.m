@@ -430,6 +430,9 @@
     NSLog(@"insertBridge,%@", callback);
     if (callback != nil) { // check if "callback" string is available
         [timer invalidate];
+        if ([self.delegate respondsToSelector:@selector(bridgeInserted)]) {
+            [self.delegate bridgeInserted];
+        }
     }
 
     NSString *path = [[NSBundle mainBundle] pathForResource:@"ios_bridge" ofType:@"js"];

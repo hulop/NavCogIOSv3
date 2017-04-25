@@ -124,11 +124,14 @@ open class ConversationEx {
             failure?(error)
             return
         }
+        
+        let ud = UserDefaults.standard
+        let https = ud.bool(forKey: "https_connection") ? "https" : "http"
 
         // construct REST request
         let request = RestRequest(
             method: "POST",
-            url: "https://" + server + "/service",
+            url: https + "://" + server + "/service",
             //userAgent: "NavCogDialog",
             credentials: Credentials.apiKey,
             headerParameters: [:],

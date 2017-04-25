@@ -82,8 +82,17 @@
 {
     NSDictionary *param = [note userInfo];
     NSString *toID = param[@"toID"];
+    NSString *fromID = param[@"fromID"];
     NSArray *toIDs = [toID componentsSeparatedByString:@"|"];
     
+    if (fromID) {
+        NavDestination *from = [[NavDataStore sharedDataStore] destinationByID:fromID];
+        if (from) {
+            NavDataStore *nds = [NavDataStore sharedDataStore];
+            nds.from = from;
+            [self updateViewWithFlag:YES];
+        }
+    }
     if (toID) {
         NavDestination *dest = [[NavDataStore sharedDataStore] destinationByIDs:toIDs];
         if (dest) {

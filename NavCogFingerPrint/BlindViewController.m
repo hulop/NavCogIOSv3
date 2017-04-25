@@ -149,6 +149,7 @@
     
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
     helper = [[NavBlindWebviewHelper alloc] initWithWebview:self.webView server:server];
+    helper.developerMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);
     helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
     helper.delegate = self;
     
@@ -356,7 +357,7 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"developer_mode"]) {
-        helper.developerMode = @(YES);
+        helper.developerMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);
     }
 }
 
@@ -427,6 +428,7 @@
                                              fpm.beaconsSampleCount, count, fpm.visibleBeaconCount];
             } else {
                 if (existRefpoint) {
+                    hideMove = NO;
                     if (fpm.samplings) {
                         self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld] (%.1f, %.1f)",
                                                      fpm.selectedRefpoint.floor,

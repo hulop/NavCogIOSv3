@@ -872,6 +872,10 @@
         [self speak:message withOptions:@{} completionHandler:^{
         }];
     };
+    ctx[@"speakInLang"] = ^(NSString *message, NSString *lang) {
+        [self speak:message withOptions:@{@"lang":lang} completionHandler:^{
+        }];
+    };
     ctx[@"openURL"] = ^(NSString *url, NSString *title, NSString *message) {
         if (!title || !message || !url) {
             if (url) {

@@ -515,6 +515,7 @@ void functionCalledToLog(void *inUserData, string text)
     HLPLocation *loc = properties[@"location"];
     double heading = [properties[@"heading"] doubleValue];
     [loc updateOrientation:heading withAccuracy:0];
+    currentOrientationAccuracy = 0;
     [self resetLocation:loc];
 }
 
@@ -528,8 +529,8 @@ void functionCalledToLog(void *inUserData, string text)
                            @"orientation": @(isnan(heading)?0:heading),
                            @"orientationAccuracy": @(currentOrientationAccuracy)
                            };
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:self userInfo:data];
     if (!_isActive || !isMapLoaded) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:self userInfo:data];
         return;
     }
     

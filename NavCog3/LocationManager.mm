@@ -568,7 +568,9 @@ void functionCalledToLog(void *inUserData, string text)
         //localizer->resetStatus(newPose);
 
         loc::Pose stdevPose;
-        stdevPose.x(1).y(1).orientation(currentOrientationAccuracy/180*M_PI);
+        
+        double std_dev = [[NSUserDefaults standardUserDefaults] doubleForKey:@"reset_std_dev"];
+        stdevPose.x(std_dev).y(std_dev).orientation(currentOrientationAccuracy/180*M_PI);
         try {
             localizer->resetStatus(newPose, stdevPose);
         } catch(const std::exception& ex) {

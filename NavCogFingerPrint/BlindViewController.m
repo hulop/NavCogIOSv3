@@ -33,6 +33,9 @@
     NavWebviewHelper *helper;
     
     ViewState state;
+    
+    int x, y;
+    double fx, fy;
 }
 
 @end
@@ -58,8 +61,11 @@
     state = ViewStateLoading;
     fp_mode = [[NSUserDefaults standardUserDefaults] stringForKey:@"fp_mode"];
 
-
-
+    [self.devUp setTitle:@"Up" forState:UIControlStateNormal];
+    [self.devDown setTitle:@"Down" forState:UIControlStateNormal];
+    [self.devLeft setTitle:@"Left" forState:UIControlStateNormal];
+    [self.devRight setTitle:@"Right" forState:UIControlStateNormal];
+    
     helper = [[NavWebviewHelper alloc] initWithWebview:self.webView];
     helper.delegate = self;
     
@@ -130,6 +136,12 @@
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     if (nds.isManualLocation) {
+        if (fpm.selectedRefpoint) {
+            MKMapPoint local = [FingerprintManager convertFromGlobal: CLLocationCoordinate2DMake([nds currentLocation].lat, [nds currentLocation].lng) ToLocalWithRefpoint:fpm.selectedRefpoint];
+            fx = local.x;
+            fy = local.y;
+        }
+        
         [self updateView];
     }
 }
@@ -171,7 +183,6 @@
         
         if ([fp_mode isEqualToString:@"fingerprint"]) {
             
-            
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady;
             
@@ -180,6 +191,8 @@
             
             self.navigationItem.rightBarButtonItem = _searchButton;
             self.navigationItem.leftBarButtonItem = _settingButton;
+
+            BOOL hideMove = YES;
             
             if (isSampling) {
                 long count = [ud integerForKey:@"finger_printing_duration"];
@@ -188,10 +201,11 @@
                                              fpm.beaconsSampleCount, count, fpm.visibleBeaconCount];
             } else {
                 if (existRefpoint) {
+                    hideMove = NO;
                     if (fpm.samplings) {
-                        self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld]",
+                        self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld] (%.1f, %.1f)",
                                                      fpm.selectedRefpoint.floor,
-                                                     [fpm.samplings count]];
+                                                     [fpm.samplings count], fx, fy];
                     } else {
                         self.navigationItem.title = fpm.selectedRefpoint.floor;
                     }
@@ -199,6 +213,10 @@
                     self.navigationItem.title = @"Fingerprint";
                 }
             }
+            self.devUp.hidden = hideMove;
+            self.devDown.hidden = hideMove;
+            self.devLeft.hidden = hideMove;
+            self.devRight.hidden = hideMove;
         } else if ([fp_mode isEqualToString:@"beacon"]) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady;
@@ -357,6 +375,53 @@
         HLPLocation *center = [[NavDataStore sharedDataStore] mapCenter];
         [fpm addBeacon:batvc.selectedBeacon AtLat:center.lat LNG:center.lng];
     }
+}
+
+# pragma mark action
+
+- (void)updateMapCenter
+{
+    HLPRefpoint *rp = fpm.selectedRefpoint;
+    if (!rp) {
+        return;
+    }
+    CLLocationCoordinate2D global = [FingerprintManager convertFromLocal:MKMapPointMake(x, y) ToGlobalWithRefpoint:rp];
+    fx = x;
+    fy = y;
+    NSDictionary *param = @{
+                            @"sync": @(false),
+                            @"location": [[HLPLocation alloc] initWithLat:global.latitude Lng:global.longitude Floor:rp.floor_num]
+                            };
+    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:self userInfo:param];
+
+}
+
+- (IBAction)turnLeftBit:(id)sender
+{
+    x -= 1;
+    [self updateMapCenter];
+    [self updateView];
+}
+
+- (IBAction)turnRightBit:(id)sender
+{
+    x += 1;
+    [self updateMapCenter];
+    [self updateView];
+}
+
+- (IBAction)floorDown:(id)sender
+{
+    y -= 1;
+    [self updateMapCenter];
+    [self updateView];
+}
+
+- (IBAction)floorUp:(id)sender
+{
+    y += 1;
+    [self updateMapCenter];
+    [self updateView];
 }
 
 

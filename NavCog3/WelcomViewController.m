@@ -114,6 +114,7 @@
                 [self performSegueWithIdentifier:@"show_server_selection" sender:self];
             });
         } else {
+            NSLog(@"loading serverlist.json");
             self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
             [[ServerConfig sharedConfig] requestServerList:@"" withComplete:^(NSDictionary *config) {
                 [self checkConfig];
@@ -129,6 +130,7 @@
         if (config.agreementConfig) {
             BOOL agreed = [config.agreementConfig[@"agreed"] boolValue];
             if (agreed) {
+                NSLog(@"no check agreement");
                 // noop
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -137,6 +139,8 @@
                 return;
             }
         } else {
+            NSLog(@"check agreement");
+            
             self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
             [[ServerConfig sharedConfig] checkAgreement:^(NSDictionary* config) {
                 [self checkConfig];
@@ -148,10 +152,12 @@
         if (config.selectedServerConfig) {
             NSArray *files = [config checkDownloadFiles];
             if ([files count] > 0) {
+                NSLog(@"check download files");
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self performSegueWithIdentifier:@"show_download" sender:self];
                 });
             } else {
+                NSLog(@"file downloaded");
                 NSArray *files = config.downloadConfig[@"map_files"];
                 NSFileManager *fm = [NSFileManager defaultManager];
 
@@ -199,6 +205,7 @@
                 });
             }
         } else {
+            NSLog(@"check server config");
             self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
             [[ServerConfig sharedConfig] requestServerConfig:^(NSDictionary *config) {
                 [self checkConfig];

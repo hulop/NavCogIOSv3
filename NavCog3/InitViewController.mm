@@ -59,6 +59,17 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    NSDictionary *config = [ServerConfig sharedConfig].selectedServerConfig;
+    if (config[@"default_mode"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSegueWithIdentifier:config[@"default_mode"] sender:self];
+        });
+    }
+}
+
+
 - (void)infoButtonPushed:(NSObject*)sender
 {
     NSURL *url = [NSURL URLWithString:@"https://hulop.github.io/"];

@@ -76,6 +76,12 @@ static ServerConfig *instance;
         NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
         if (json) {
             _serverList = json;
+            
+            for (NSDictionary *server in _serverList[@"servers"]) {
+                if ([server[@"selected"] boolValue]) {
+                    _selected = server;
+                }
+            }
             complete(json);
             return;
         }
@@ -91,6 +97,12 @@ static ServerConfig *instance;
     [HLPDataUtil getJSON:[NSURL URLWithString:serverlist] withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
             _serverList = (NSDictionary*)result;
+            
+            for (NSDictionary *server in _serverList[@"servers"]) {
+                if ([server[@"selected"] boolValue]) {
+                    _selected = server;
+                }
+            }
             complete(_serverList);
         } else {
             complete(nil);
@@ -183,6 +195,12 @@ static ServerConfig *instance;
 
 - (void)checkAgreement:(void(^)(NSDictionary*))complete
 {
+    if ([[[ServerConfig sharedConfig].selected objectForKey:@"no_checkagreement"] boolValue]) {
+        _agreementConfig = @{@"agreed":@(true)};
+        complete(_agreementConfig);
+        return;
+    }
+    
     NSString *server_host = [[ServerConfig sharedConfig].selected objectForKey:@"hostname"];
     NSString *device_id = [[UIDevice currentDevice].identifierForVendor UUIDString];
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/api/check_agreement?id=%@",server_host, device_id]];

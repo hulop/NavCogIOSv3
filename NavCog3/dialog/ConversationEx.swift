@@ -159,7 +159,14 @@ open class ConversationEx {
                     let userInfo = [NSLocalizedDescriptionKey:message]
                     failure?(NSError(domain:domain, code: code, userInfo:userInfo))
                 }
-            } catch {
+            } catch (let e){
+                print(e)
+                
+                let domain = "swift.conversationex"
+                let code = -1
+                let message = e.localizedDescription
+                let userInfo = [NSLocalizedDescriptionKey:message]
+                failure?(NSError(domain:domain, code: code, userInfo:userInfo))
             }
         }
     }

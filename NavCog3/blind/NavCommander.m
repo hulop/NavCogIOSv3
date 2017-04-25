@@ -789,18 +789,15 @@
         NSString *text = poi.text;
         NSString *ld = poi.longDescription;
         
-        if (poi.isDestination) {
-            text = [NavDataStore sharedDataStore].to.namePron;
-        }
         
         NSMutableString *string = [@"" mutableCopy];
         if (angle && (poi.text || text)) {
             if (poi.isDestination) {
                 [string appendFormat:NSLocalizedStringFromTable(@"destination is %@", @"BlindView", @""), text, angle];
-                if (poi.text) {
+                /*if (poi.text) {
                     [string appendString:NSLocalizedStringFromTable(@"PERIOD", @"BlindView", @"")];
                     [string appendString:poi.text];
-                }
+                }*/
                 isDestinationPOI = YES;
             } else {
                 if (poi.flagPlural) {
@@ -824,7 +821,7 @@
         NSArray *result = [self checkCommand:string];
         
         [_delegate speak:result[0] withOptions:properties completionHandler:^{
-            if (isDestinationPOI) {
+            if (poi.isDestination) {
                 [[NavDataStore sharedDataStore] clearRoute];
                 [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:nil];
             }

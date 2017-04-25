@@ -412,7 +412,9 @@ static NavNavigatorConstants *_instance;
                 // destination with a leaf node, make second last link as last link
                 //_isNextDestination = YES;
                 if (_nextLink.length < 3) {
-                    navpoi = [[NavPOI alloc] initWithText:nil Location:ent.facility.location Options:
+                    
+                    navpoi = [[NavPOI alloc] initWithText:[NavDataStore sharedDataStore].to.namePron
+                                                 Location:ent.facility.location Options:
                               @{
                                 @"origin": ent,
                                 @"forAfterEnd": @(YES),
@@ -424,10 +426,11 @@ static NavNavigatorConstants *_instance;
             } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
                 // destination with non-leaf node
                 //_isNextDestination = YES;
-                navpoi = [[NavPOI alloc] initWithText:obj.properties[@"long_description"]
+                navpoi = [[NavPOI alloc] initWithText:[ent getLongDescription]
                                              Location:ent.node.location
                                               Options: @{
                                                          @"origin": ent,
+                                                         @"isDestination": @(YES),
                                                          @"forAfterEnd": @(YES)
                                                          }];
             } else {
@@ -1091,7 +1094,7 @@ static NavNavigatorConstants *_instance;
                 (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
                 return;
             }
-            if (link.isLeaf) {
+            if (link.isLeaf && link.length < 3) {
                 return;
             }
             
@@ -1119,7 +1122,7 @@ static NavNavigatorConstants *_instance;
                 (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
                 return;
             }
-            if (link.isLeaf) {
+            if (link.isLeaf && link.length < 3) {
                 return;
             }
             

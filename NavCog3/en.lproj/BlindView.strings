@@ -49,6 +49,11 @@
 /* No comment provided by engineer. */
 "Go to %1$@" = "Go to the %1$@.";
 
+/* No comment provided by engineer. */
+"FloorChangeActionString2Down" = "Go down to the %2$@ by %1$@.";
+
+/* No comment provided by engineer. */
+"FloorChangeActionString2Up" = "Go up to the %2$@ by %1$@.";
 
 /* No comment provided by engineer. */
 "FloorChangeActionString4Down" = "go down to the %4$@ by %2$@ %3$@ %1$@";
@@ -142,10 +147,10 @@ Head to the correct orientation
 "Watch your step, %@" = "Watch your step, it's %@";
 
 /* arrived message */
-"You arrived" = "You arrived";
+"You arrived" = "You have arrived";
 
 /* arrived message with destination name */
-"You arrived at %1$@" = "You arrived at %1$@";
+"You arrived at %1$@" = "You have arrived at %1$@";
 
 /* No comment provided by engineer. */
 "_nav_building" = "Building";

@@ -25,52 +25,72 @@ import Foundation
 import Speech
 
 protocol LocalContextDelegate{
-    func onContextChange(context:LocalContext)
+    func onContextChange(_ context:LocalContext)
+    func showNoAudioAccessAlert()
+    func showNoSpeechRecoAlert()
 }
 
-public class LocalContext: NSObject{
-    private let context:NSMutableDictionary = NSMutableDictionary()
-    private let localvariables:NSMutableDictionary = NSMutableDictionary()
-    private static var no_welcome = false
+open class LocalContext: NSObject{
+    fileprivate var context:[String:Any] = [:]
+    fileprivate var localvariables:[String:Any] = [:]
+    fileprivate static var no_welcome = false
 
     internal var delegate:LocalContextDelegate?
 
     override init(){
     }
-    public func verify_security() -> Bool{
+    
+    open func verifyPrivacy() {
+        self.verifyAudioAccess();
+    }
+    
+    fileprivate func verifyAudioAccess() {
+        AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeAudio, completionHandler: {(granted: Bool) in
+            if granted {
+                self.verifySpeechRecoAccess()
+            } else {
+                self.showNoAudioAccessAlert()
+            }
+        })
+
+    }
+    open func verifySpeechRecoAccess() {
         SFSpeechRecognizer.requestAuthorization { authStatus in
-            if authStatus == .Authorized {
-                    self.notify_delegate_as_needed()
+            if authStatus == .authorized {
+                self.notify_delegate_as_needed()
+            } else {
+                self.showNoSpeechRecoAlert()
             }
         }
-        return true
     }
-    public func start_update_location(cnt:Int){
+
+    open func welcome_shown() {
+        LocalContext.no_welcome = true
     }
-    public func is_updating() -> Bool{
-        return SFSpeechRecognizer.authorizationStatus() != SFSpeechRecognizerAuthorizationStatus.Authorized
-    }
-    public func set_profile(prof:NSDictionary){
-        self.context["profile"] = prof
-        if !is_updating() {
-            self.notify_delegate_as_needed()
-            LocalContext.no_welcome = true
-        }
-    }
-    public func get_profile() -> NSDictionary?{
-        return self.context["profile"] as? NSDictionary
-    }
-    public func getContext() -> NSDictionary{
+    
+    open func getContext() -> [String: Any]{
         self.context["local"] = self.localvariables
         if LocalContext.no_welcome {
             self.context["no_welcome"] = true
         }
-        DialogManager.sharedManager().setLocationContext(self.context)
+        DialogManager.sharedManager().setLocationContext(&self.context)
         return self.context
     }
-    private func notify_delegate_as_needed(){
+    
+    fileprivate func notify_delegate_as_needed(){
         if let del = self.delegate{
             del.onContextChange(self);
+        }
+    }
+    
+    fileprivate func showNoAudioAccessAlert(){
+        if let del = self.delegate {
+            del.showNoAudioAccessAlert()
+        }
+    }
+    fileprivate func showNoSpeechRecoAlert(){
+        if let del = self.delegate {
+            del.showNoSpeechRecoAlert()
         }
     }
 }

@@ -89,8 +89,25 @@
         if (dest) {
             [NavDataStore sharedDataStore].to = dest;
             [self updateViewWithFlag:YES];
+            
+            
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self startNavigation:self];
+                NavDataStore *nds = [NavDataStore sharedDataStore];
+                nds.previewMode = !self.startButton.enabled;
+                nds.exerciseMode = NO;
+                
+                NSMutableDictionary *override = [@{} mutableCopy];
+                if (param[@"use_stair"]) {
+                  override[@"stairs"] = [param[@"use_stair"] boolValue]?@"9":@"1";
+                }
+                if (param[@"use_elevator"]) {
+                    override[@"elv"] = [param[@"use_elevator"] boolValue]?@"9":@"1";
+                }
+                if (param[@"use_escalator"]) {
+                    override[@"esc"] = [param[@"use_escalator"] boolValue]?@"9":@"1";
+                }
+                
+                [self _startNavigation:override];
             });
         }
     }
@@ -221,22 +238,21 @@
     NavDataStore *nds = [NavDataStore sharedDataStore];
     nds.previewMode = YES;
     nds.exerciseMode = NO;
-    
-    [self _startNavigation];
+    [self _startNavigation:nil];
 }
 
 - (IBAction)startNavigation:(id)sender {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     nds.previewMode = NO;
     nds.exerciseMode = NO;
-    [self _startNavigation];
+    [self _startNavigation:nil];
 }
 
-- (void) _startNavigation
+- (void) _startNavigation:(NSDictionary*)override
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    NSDictionary *prefs = @{
+    __block NSMutableDictionary *prefs = [@{
                             @"dist":@"500",
                             @"preset":@"9",
                             @"min_width":@"8",
@@ -247,7 +263,11 @@
                             @"esc":[ud boolForKey:@"route_use_escalator"]?@"9":@"1",
                             @"elv":[ud boolForKey:@"route_use_elevator"]?@"9":@"1",
                             @"tactile_paving":[ud boolForKey:@"route_tactile_paving"]?@"1":@"",
-                            };
+                            } mutableCopy];
+    // override
+    [override enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        prefs[key] = obj;
+    }];
     
     actionEnabled = NO;
     [self updateViewWithFlag:NO];
@@ -268,6 +288,7 @@
              */
             
             [self.navigationController popViewControllerAnimated:YES];
+            [NavUtil hideModalWaiting];
         });
     }];
 }

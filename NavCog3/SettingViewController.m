@@ -30,6 +30,8 @@
 #import "NavCog3-Swift.h"
 #import "NavDeviceTTS.h"
 #import "NavDataStore.h"
+#import "AuthManager.h"
+#import "NavUtil.h"
 
 @interface SettingViewController ()
 
@@ -47,9 +49,12 @@ static HLPSettingHelper *configSettingHelper;
 static HLPSettingHelper *logSettingHelper;
 static HLPSettingHelper *routeOptionsSettingHelper;
 
-static HLPSetting *speechSpeedSetting;
-static HLPSetting *vibrateSetting;
-static HLPSetting *soundEffectSetting;
+static HLPSetting *speechLabel, *speechSpeedSetting, *vibrateSetting, *soundEffectSetting;
+static HLPSetting *previewSpeedSetting, *previewWithActionSetting;
+static HLPSetting *boneConductionSetting, *exerciseLabel, *exerciseAction, *resetLocation;
+static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitFeet, *idLabel;
+static HLPSetting *advancedLabel, *advancedMenu;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -133,7 +138,8 @@ static HLPSetting *soundEffectSetting;
                 double value = [change[@"new"] doubleValue];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *string = NSLocalizedString(@"SPEECH_SPEED_CHECK", "");
-                    [[NavDeviceTTS sharedTTS] speak:[NSString stringWithFormat:string, value] force:YES completionHandler:nil];
+                    [[NavDeviceTTS sharedTTS] speak:[NSString stringWithFormat:string, value]
+                                        withOptions:@{@"force":@(YES)} completionHandler:nil];
                 });
             }
         }
@@ -220,6 +226,14 @@ static HLPSetting *soundEffectSetting;
     } else if ([setting.name isEqualToString:@"launch_exercise"]) {
         [[NavDataStore sharedDataStore] startExercise];
         [self.navigationController popToRootViewControllerAnimated:YES];
+    } else if ([setting.name isEqualToString:@"Reset_Location"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    } else if ([setting.name isEqualToString:@"OpenHelp"]) {
+        NSString *lang = [@"-" stringByAppendingString:[[NavDataStore sharedDataStore] userLanguage]];
+        if ([lang isEqualToString:@"-en"]) { lang = @""; }
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://hulop.github.io/help%@", lang]];
+        [NavUtil openURL:url onViewController:self];
     } else {
         [self performSegueWithIdentifier:setting.name sender:self];
     }
@@ -262,46 +276,72 @@ static HLPSetting *soundEffectSetting;
 + (void)setupUserSettings
 {
     if (userSettingHelper) {
-        if (speechSpeedSetting) {
-            speechSpeedSetting.visible = !UIAccessibilityIsVoiceOverRunning();
-        }
         BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_BLIND"];
-        if (vibrateSetting) {
-            vibrateSetting.visible = blindMode;
-        }
-        if (soundEffectSetting) {
-            soundEffectSetting.visible = blindMode;
-        }
+        //[speechLabel setVisible:blindMode];
+        //[speechSpeedSetting setVisible:blindMode];
+        [previewSpeedSetting setVisible:blindMode];
+        [previewWithActionSetting setVisible:blindMode];
+        [vibrateSetting setVisible:blindMode];
+        [soundEffectSetting setVisible:blindMode];
+        [boneConductionSetting setVisible:blindMode];
+        [exerciseLabel setVisible:blindMode];
+        [exerciseAction setVisible:blindMode];
+        //[mapLabel setVisible:blindMode];
+        //[initialZoomSetting setVisible:blindMode];
+        [resetLocation setVisible:!blindMode];
+        [unitLabel setVisible:blindMode];
+        [unitMeter setVisible:blindMode];
+        [unitFeet setVisible:blindMode];
+        
+        idLabel.label = [NavDataStore sharedDataStore].userID;
+        BOOL isDeveloperAuthorized = [[AuthManager sharedManager] isDeveloperAuthorized];
+        [idLabel setVisible:isDeveloperAuthorized];
+        [advancedLabel setVisible:isDeveloperAuthorized];
+        [advancedMenu setVisible:isDeveloperAuthorized];
+        
         return;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
 
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech_Sound", @"label for tts options")];
+    
+    speechLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech_Sound", @"label for tts options")];
     speechSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
-                                     Name:@"speech_speed" DefaultValue:@(0.6) Min:0.1 Max:1 Interval:0.05];
-    [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
+                                     Name:@"speech_speed" DefaultValue:@(0.55) Min:0.1 Max:1 Interval:0.05];
+    previewSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
+    previewWithActionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
     vibrateSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"vibrateSetting", @"") Name:@"vibrate" DefaultValue:@(YES) Accept:nil];
     soundEffectSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"soundEffectSetting", @"") Name:@"sound_effect" DefaultValue:@(YES) Accept:nil];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"for_bone_conduction_headset",@"") Name:@"for_bone_conduction_headset" DefaultValue:@(NO) Accept:nil];
+    boneConductionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"for_bone_conduction_headset",@"") Name:@"for_bone_conduction_headset" DefaultValue:@(NO) Accept:nil];
 
     
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
-    [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];
+    exerciseLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
+    exerciseAction = [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];
     
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Map", @"label for map")];
-    [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Initial zoom level for navigation", @"") Name:@"zoom_for_navigation" DefaultValue:@(20) Min:15 Max:22 Interval:1];
+    mapLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Map", @"label for map")];
+    mapLabel.visible = NO;
+    initialZoomSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Initial zoom level for navigation", @"") Name:@"zoom_for_navigation" DefaultValue:@(20) Min:15 Max:22 Interval:1];
+    initialZoomSetting.visible = NO;
+    
+    resetLocation = [userSettingHelper addActionTitle:NSLocalizedString(@"Reset_Location", @"") Name:@"Reset_Location"];
     
 
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];
-    [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Meter", @"meter distance unit label")
+    unitLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];
+    unitMeter = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Meter", @"meter distance unit label")
                                      Name:@"unit_meter" Group:@"distance_unit" DefaultValue:@(YES) Accept:nil];
-    [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
+    unitFeet = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
                                      Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
     
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Advanced", @"")];
-    [userSettingHelper addActionTitle:NSLocalizedString(@"Advanced Setting", @"") Name:@"advanced_settings"];
+    [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenHelp", @"") Name:@"OpenHelp"];
+
+    NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    NSString *buildNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     
+    [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"version: %@ (%@)", versionNo, buildNo]];
+    idLabel = [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"%@", [NavDataStore sharedDataStore].userID]];
+    
+    advancedLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Advanced", @"")];
+    advancedMenu = [userSettingHelper addActionTitle:NSLocalizedString(@"Advanced Setting", @"") Name:@"advanced_settings"];
 }
 
 + (void)setupDeveloperSettings
@@ -335,7 +375,8 @@ static HLPSetting *soundEffectSetting;
 
     [detailSettingHelper addSectionTitle:@"Navigation server"];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil];
-    [detailSettingHelper addSettingWithType:HOST_PORT Label:@"Server" Name:@"hokoukukan_server" DefaultValue:@[@"hokoukukan.mybluemix.net"] Accept:nil];
+    [detailSettingHelper addSettingWithType:HOST_PORT Label:@"Server" Name:@"hokoukukan_server" DefaultValue:@[@""] Accept:nil];
+    [detailSettingHelper addSettingWithType:SUBTITLE Label:@"Server" Name:@"selected_hokoukukan_server" DefaultValue:@"" Accept:nil];
     [detailSettingHelper addSettingWithType:TEXTINPUT Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil];
 
     /*
@@ -389,9 +430,19 @@ static HLPSetting *soundEffectSetting;
 
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"nStates" Name:@"nStates" DefaultValue:@(500) Min:100 Max:2000 Interval:100];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"nEffective (recommended gt or eq nStates/2)" Name:@"nEffective" DefaultValue:@(250) Min:50 Max:2000 Interval:50];
+    
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"alphaWeaken" Name:@"alphaWeaken" DefaultValue:@(0.3)  Min:0 Max:1.0 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"RSSI bias" Name:@"rssi_bias" DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev coefficient for different floor" Name:@"coeffDiffFloorStdev" DefaultValue:@(5)  Min:5 Max:1000 Interval:5];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"RSSI bias (old)" Name:@"rssi_bias" DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5];
+    
+    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use RSSI bias for models" Name:@"rssi_bias_model_used" DefaultValue:@(YES) Accept:nil];
+    NSString *deviceModel = [NavUtil deviceModel];
+    [blelocppSettingHelper addSettingWithType:DOUBLE
+                                        Label:[NSString stringWithFormat:@"RSSI bias (%@)", deviceModel]
+                                         Name:[@"rssi_bias_m_" stringByAppendingString:deviceModel]
+                                 DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5];
+    
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev coefficient for different floor" Name:@"coeffDiffFloorStdev" DefaultValue:@(5)  Min:1 Max:10000 Interval:1];
+    
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use wheelchair PDR threthold" Name:@"wheelchair_pdr" DefaultValue:@(NO) Accept:nil];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability from likelihood" Name:@"mixProba" DefaultValue:@(0) Min:0 Max:0.01 Interval:0.001];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix reject distance [m]" Name:@"rejectDistance" DefaultValue:@(5) Min:0 Max:30 Interval:1];
@@ -409,17 +460,18 @@ static HLPSetting *soundEffectSetting;
     
     // Parameters for status monitoring
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (location status monitoring)"];
-    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Activate location status monitoring" Name:@"activatesStatusMonitoring" DefaultValue:@(NO) Accept:nil];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Location status monitoring interval [ms]" Name:@"statusMonitoringIntervalMS" DefaultValue:@(3000) Min:0 Max:10000 Interval:1000] setVisible:YES];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter locating radius [m]" Name:@"enterLocating" DefaultValue:@(10) Min:0 Max:20 Interval:1] setVisible:NO];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit locating radius [m]" Name:@"exitLocating" DefaultValue:@(12) Min:0 Max:20 Interval:1] setVisible:NO];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter stable radius [m]" Name:@"enterStable" DefaultValue:@(10) Min:0 Max:20 Interval:1] setVisible:NO];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit stable radius [m]" Name:@"exitStable" DefaultValue:@(12) Min:0 Max:20 Interval:1] setVisible:NO];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exponent n of minimum weight stable (w=10^n)" Name:@"exponentMinWeightStable" DefaultValue:@(-5) Min:-9 Max:-1 Interval:1] setVisible:NO];
+    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Activate location status monitoring" Name:@"activatesStatusMonitoring" DefaultValue:@(YES) Accept:nil];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Location status monitoring interval [ms]" Name:@"statusMonitoringIntervalMS" DefaultValue:@(0) Min:0 Max:10000 Interval:1000] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter locating radius [m]" Name:@"enterLocating" DefaultValue:@(3.5) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit locating radius [m]" Name:@"exitLocating" DefaultValue:@(5.0) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter stable radius [m]" Name:@"enterStable" DefaultValue:@(3.5) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit stable radius [m]" Name:@"exitStable" DefaultValue:@(5.0) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exponent n of minimum weight stable (w=10^n)" Name:@"exponentMinWeightStable" DefaultValue:@(-4) Min:-9 Max:-1 Interval:1] setVisible:YES];
 
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (floor transition)"];
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use altimeter for floor trans support" Name:@"use_altimeter" DefaultValue:@(YES) Accept:nil];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability for floor trans area" Name:@"mixtureProbabilityFloorTransArea" DefaultValue:@(0.25) Min:0.0 Max:1.0 Interval:0.05];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Weight multiplier for floor trans area" Name:@"weightFloorTransArea" DefaultValue:@(4) Min:1 Max:5 Interval:0.1] setVisible:YES];
     
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (prediction)"];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Sigma stop for random walker" Name:@"sigmaStopRW" DefaultValue:@(0.2) Min:0.0 Max:1.0 Interval:0.1];

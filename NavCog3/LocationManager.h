@@ -39,7 +39,7 @@
 + (instancetype) sharedManager;
 
 - (void) start;
-- (void) stop;
+// - (void) stop; // no need to stop anymore
 - (void) setModelAtPath:(NSString*) path withWorkingDir:(NSString*) dir;
 - (void) getRssiBias:(NSDictionary*)param withCompletion:(void (^)(float rssiBias)) completion;
 - (loc::LatLngConverter::Ptr) getProjection;

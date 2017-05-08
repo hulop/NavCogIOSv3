@@ -23,19 +23,20 @@
 #import "NavCoverView.h"
 #import "LocationEvent.h"
 #import "NavDeviceTTS.h"
-#import "NavCog3-swift.h"
+#import "NavCog3-Swift.h"
 
-@interface NavAnnounceItem: UIAccessibilityElement
-@end
 
 @implementation NavAnnounceItem
 
 - (void)accessibilityElementDidBecomeFocused
 {
     NSString *text = self.accessibilityLabel;
-    NSLog(@"accessibilityElementDidBecomeFocused:%@", text);
-    [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:self userInfo:
-     @{@"text":text,@"force":@(YES),@"debug":@(YES)}];
+    if (text != nil) {
+        NSLog(@"accessibilityElementDidBecomeFocused:%@", text);
+        [[NSNotificationCenter defaultCenter] postNotificationName:SPEAK_TEXT_QUEUEING object:self userInfo:
+         @{@"text":text,@"force":@(YES),@"debug":@(YES)}];
+    }
+    [self.delegate didBecomeFocused:self];
 }
 
 @end
@@ -53,28 +54,35 @@
     if (!_noSpeak) {
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
     }
+    [self.delegate didBecomeFocused:self];
 }
 
-- (NSString*)accessibilityLabel
-{
-    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-    if (self.accessibilityElementIsFocused && now - lastCall > 0.5) {
-        // hack code
-        // speak request navigation status if the user tap screen
-        // accessibilityLabel is called twice for each tap
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
-    }
-    lastCall = now;
-    return @"";
-}
+// this hack code causes repeating announcement because voiceover might detect
+// screen change based on rendering on webview
+// this hack is no longer used and another hack code is implemented
+//- (NSString*)accessibilityLabel
+//{
+//    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+//    if (self.accessibilityElementIsFocused && now - lastCall > 0.5) {
+//        // first hack code
+//        // speak request navigation status if the user tap screen
+//        // accessibilityLabel is called twice for each tap
+//        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
+//    }
+//    lastCall = now;
+//    return @"";
+//}
 
 @end
 
 @implementation NavCoverView {
-    NSArray *elements;
-    NSArray *speaks;
-    UIAccessibilityElement *first;
+    NSMutableArray *elements;
+    NSMutableArray *speaks;
+    NSArray *summary;
+    NavAnnounceItem *first;
     NavCurrentStatusItem *currentStatusItem;
+    NavCurrentStatusItem *currentStatusItem2; // for hack
+    NavAnnounceItem *header;
     long currentIndex;
     BOOL preventCurrentStatus;
 }
@@ -85,14 +93,15 @@
     if (currentStatusItem) {
         currentStatusItem.noSpeak = preventCurrentStatus;
     }
+    if (currentStatusItem2) {
+        currentStatusItem2.noSpeak = preventCurrentStatus;
+    }
 }
 
 - (BOOL) preventCurrentStatus
 {
     return preventCurrentStatus;
 }
-
-
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
@@ -103,14 +112,43 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteControl:) name:REMOTE_CONTROL_EVENT object:nil];
     
-    first = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+    first = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
+    first.delegate = self;
     first.accessibilityLabel = NSLocalizedString(@"Navigation", @"");
     first.accessibilityTraits = UIAccessibilityTraitStaticText | UIAccessibilityTraitHeader;
+    first.accessibilityFrame = CGRectMake(0,0,1,1);
     
-    speaks = @[];
-    elements = @[];
+    header = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
+    header.delegate = self;
+    header.accessibilityTraits = UIAccessibilityTraitHeader | UIAccessibilityTraitStaticText;
+    header.accessibilityLabel = NSLocalizedStringFromTable(@"SummaryHeader",@"BlindView",@"");
+    header.accessibilityFrame = CGRectMake(0,0,1,1);
+
     
+    speaks = [@[] mutableCopy];
+    elements = [@[] mutableCopy];
+
+    if (!currentStatusItem) {
+        currentStatusItem = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];
+        currentStatusItem.accessibilityFrame = self.window.frame;
+        currentStatusItem.delegate = self;
+        
+        currentStatusItem2 = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];
+        currentStatusItem2.accessibilityFrame = CGRectMake(0, 0, 1, 1);
+        currentStatusItem2.delegate = self;
+    }
+
     return self;
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    [elements removeAllObjects];
+    [elements addObject:first];
+    [elements addObject:currentStatusItem];
+    currentStatusItem.accessibilityFrame = self.window.frame;
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, first);
 }
 
 - (void)dealloc
@@ -143,6 +181,35 @@
     currentIndex = 0;
 }
 
+// second hack code
+// switch between two accessibility element to detect tap on screen
+- (void)didBecomeFocused:(NavAnnounceItem *)item
+{
+    NSLog(@"focused:%@", item);
+    if (item == currentStatusItem) {
+        currentStatusItem.accessibilityFrame = CGRectMake(0,0,1,1);
+        currentStatusItem2.accessibilityFrame = self.window.frame;
+        [elements addObject: currentStatusItem2];
+    } else if (item == currentStatusItem2) {
+        NSInteger index = [elements indexOfObject:currentStatusItem];
+        elements[index] = currentStatusItem2;
+        elements[[elements count] - 1] = currentStatusItem;
+        NavCurrentStatusItem *temp = currentStatusItem;
+        currentStatusItem = currentStatusItem2;
+        currentStatusItem2 = temp;
+        currentStatusItem.accessibilityFrame = CGRectMake(0,0,1,1);
+        currentStatusItem2.accessibilityFrame = self.window.frame;
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, item);
+    } else {
+        currentStatusItem.accessibilityFrame = self.window.frame;
+        if ([elements lastObject] == currentStatusItem2) {
+            [elements removeLastObject];
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, item);
+        }
+    }
+    NSLog(@"%@", elements);
+}
+
 - (void)speakCurrentElement
 {
     if (speaks && [speaks count] == currentIndex) {
@@ -166,7 +233,7 @@
     if (UIAccessibilityIsVoiceOverRunning()) {
         UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, text);
     } else {
-        [[NavDeviceTTS sharedTTS] selfspeak:text force:YES completionHandler:^{
+        [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"selfspeak":@(YES), @"force":@(YES)} completionHandler:^{
         }];
     }    
 }
@@ -212,8 +279,9 @@
 - (void)clear:(NSNotification*)note
 {
     @synchronized (self) {
-        speaks = @[];
-        elements = @[];
+        [speaks removeAllObjects];
+        [elements removeAllObjects];
+        summary = nil;
     }
 }
 
@@ -231,52 +299,71 @@
         }
         NSString *text = dict[@"text"];
         
-        if (!speaks) {
-            speaks = @[text];
+        if ([speaks count] == 0) {
             flag = YES;
-        } else {
-            speaks = [speaks arrayByAddingObject:text];
-            if ([speaks count] > 10) {
-                speaks = [speaks subarrayWithRange:NSMakeRange(1, [speaks count]-1)];
-            }
         }
+        NavAnnounceItem *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
+        e.delegate = self;
+        e.accessibilityLabel = text;
+        e.accessibilityFrame = CGRectMake(0,0,1,1);
+        [speaks addObject:e];
+        
+        BOOL contains2 = ([elements lastObject] == currentStatusItem2);
 
-        NSMutableArray *temp = [@[first] mutableCopy];
+        [elements removeAllObjects];
+        [elements addObject:first];
         for(int i = 0 ; i < [speaks count]; i++) {
-            NSString *s = speaks[i];
-            BOOL last = (i == [speaks count] - 1);
-            UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
-            
-            e.accessibilityLabel = s;
-            [temp addObject:e];
+            [elements addObject:speaks[i]];
         }
         
-        currentStatusItem = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];
-        currentStatusItem.accessibilityFrame = self.frame;
-        [temp addObject:currentStatusItem];
-
+        [elements addObject:currentStatusItem];
+        if (!contains2) {
+            currentStatusItem.accessibilityFrame = self.window.frame;
+        }
         
         // future summary
         if (_fsSource) {
+            if (summary == nil) {
+                NSMutableArray *temp = [@[] mutableCopy];
+                
+                for(int i = 0 ; i < [_fsSource numberOfSummary]; i++) {
+                    NSString *str = [_fsSource summaryAtIndex:i];
+                    NavAnnounceItem *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
+                    e.delegate = self;
+                    e.accessibilityLabel = [NavDeviceTTS removeDots:str];
+                    e.accessibilityFrame = CGRectMake(0,0,1,1);
+                    [temp addObject:e];
+                }
+                summary = temp;
+            }
+
             // use flat structure for non-voiceover usage
-            UIAccessibilityElement *header = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            header.accessibilityTraits = UIAccessibilityTraitHeader | UIAccessibilityTraitStaticText;
-            header.accessibilityLabel = NSLocalizedStringFromTable(@"SummaryHeader",@"BlindView",@"");
-            [temp addObject:header];
-
-            for(int i = 0 ; i < [_fsSource numberOfSummary]; i++) {
-                NSString *str = [_fsSource summaryAtIndex:i];
-                UIAccessibilityElement *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
-                e.accessibilityLabel = [NavDeviceTTS removeDots:str];
-
-                [temp addObject:e];
+            [elements addObject:header];
+            
+            for(long i = [_fsSource currentIndex]; i < [summary count]; i++) {
+                [elements addObject:summary[i]];
             }
         }
         
-        elements = temp;
-    }
-    if (flag) {
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, elements[0]);
+        if (contains2) {
+            [elements addObject:currentStatusItem2];
+            //currentStatusItem2.accessibilityFrame = CGRectMake(0, 0, 1, 1);
+        }
+        
+        
+        // check focused element
+        UIAccessibilityElement *focusedElement = nil;
+        for(int i = 0; i < [elements count]; i++) {
+            UIAccessibilityElement *e = elements[i];
+            if (e.accessibilityElementIsFocused) {
+                focusedElement = e;
+            }
+        }
+        if (focusedElement) {
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, focusedElement);
+        }
+        NSLog(@"focusedElement:%@", focusedElement);
+        NSLog(@"%@", elements);
     }
 }
 

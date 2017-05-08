@@ -31,6 +31,10 @@
 
 #import "NavDebugHelper.h"
 
+#import "RatingViewController.h"
+
+#import "ServerConfig.h"
+
 @import JavaScriptCore;
 @import CoreMotion;
 
@@ -61,6 +65,7 @@
     DialogViewHelper *dialogHelper;
     
     NSTimeInterval lastShake;
+    ViewState state;
 }
 
 @end
@@ -83,6 +88,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    state = ViewStateLoading;
+
     helper = [[NavWebviewHelper alloc] initWithWebview:self.webView];
     helper.delegate = self;
     
@@ -112,15 +119,57 @@
     dialogHelper.helperView.hidden = YES;
     
     self.searchButton.enabled = NO;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debugPeerStateChanged:) name:DEBUG_PEER_STATE_CHANGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogStart:) name:REQUEST_DIALOG_START object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleLocaionUnknown:) name:REQUEST_HANDLE_LOCATION_UNKNOWN object:nil];
-     [self locationChanged:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURL:) name: REQUEST_OPEN_URL object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestRating:) name:REQUEST_RATING object:nil];
+
+
+    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkMapCenter:) userInfo:nil repeats:YES];
+}
+
+- (void) checkMapCenter:(NSTimer*)timer
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        HLPLocation *loc = [helper getCenter];
+        if (loc != nil) {
+            [NavDataStore sharedDataStore].mapCenter = loc;
+            HLPLocation *cloc = [NavDataStore sharedDataStore].currentLocation;
+            if (isnan(cloc.lat) || isnan(cloc.lng)) {
+                NSDictionary *param =
+                @{
+                  @"floor": @(loc.floor),
+                  @"lat": @(loc.lat),
+                  @"lng": @(loc.lng),
+                  @"sync": @(YES)
+                  };
+                [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:param];
+
+            }
+            [self updateView];
+            [timer invalidate];
+        }
+    });
+}
+
+
+- (void) openURL:(NSNotification*)note
+{
+    [NavUtil openURL:[note userInfo][@"url"] onViewController:self];
+}
+
+- (void) requestRating:(NSNotification*)note
+{
+    if ([NavDataStore sharedDataStore].previewMode == NO &&
+        [[ServerConfig sharedConfig] shouldAskRating]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSegueWithIdentifier:@"show_rating" sender:self];
+        });
+    }
 }
 
 - (void)tapped
@@ -175,10 +224,30 @@
     [self updateView];
 }
 
+- (UILabel*)findLabel:(NSArray*)views
+{
+    for(UIView* view in views) {
+        if ([view isKindOfClass:UILabel.class]) {
+            return (UILabel*)view;
+        }
+        if (view.subviews) {
+            UILabel* result = [self findLabel:view.subviews];
+            if (result) {
+                return result;
+            }
+        }
+    }
+    return (UILabel*)nil;
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:self];
     [self becomeFirstResponder];
+    
+    UIView* target = [self findLabel:self.navigationController.navigationBar.subviews];
+    
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, target.superview);
 }
 
 - (BOOL)canBecomeFirstResponder
@@ -239,7 +308,10 @@
         self.devRestart.hidden = !devMode || previewMode;
         
         self.devAuto.selected = previewer.autoProceed;
-        self.cover.hidden = devMode || !isActive;
+        //self.cover.hidden = devMode || !isActive;
+        self.cover.hidden = devMode;
+        
+        self.searchButton.enabled = hasCenter;
         
         self.navigationItem.leftBarButtonItem = nil;
         if ((isActive && !devMode) || previewMode || initFlag) {
@@ -280,19 +352,8 @@
         }
 
     });
-
 }
 
-- (void)locationChanged:(NSNotification*)note
-{
-    if ([[NavDataStore sharedDataStore] mapCenter]) {
-        if (self.searchButton.enabled == NO) {
-            self.searchButton.enabled = YES;
-            [self updateView];
-            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, dialogHelper.helperView);
-        }
-    }
-}
 
 - (void) logReplay:(NSNotification*)note
 {
@@ -574,7 +635,6 @@
 {
     [commander didActiveStatusChanged:properties];
     [previewer didActiveStatusChanged:properties];
-    
     BOOL isActive = [properties[@"isActive"] boolValue];
     BOOL requestBackground = isActive && ![NavDataStore sharedDataStore].previewMode;
     if (!requestBackground) {
@@ -630,17 +690,18 @@
         [timerForSimulator invalidate];
         timerForSimulator = nil;
     }
+    [NavDataStore sharedDataStore].start = [[NSDate date] timeIntervalSince1970];
     dispatch_async(dispatch_get_main_queue(), ^{
         [helper evalScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
 
-        _cover.preventCurrentStatus = YES;
+        //_cover.preventCurrentStatus = YES;
         [NavUtil hideModalWaiting];
     });
     
-    double delayInSeconds = 1.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        _cover.preventCurrentStatus = NO;
+    //double delayInSeconds = 1.0;
+    //dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    //dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        //_cover.preventCurrentStatus = NO;
         [commander didNavigationStarted:properties];
         [previewer didNavigationStarted:properties];
 
@@ -650,7 +711,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_SHOW_ROUTE object:self userInfo:@{@"route":temp}];
         }
         //[helper showRoute:temp];
-    });
+    //});
 }
 
 - (void)didNavigationFinished:(NSDictionary *)properties
@@ -815,7 +876,10 @@
         if (!title || !message || !url) {
             if (url) {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]
+                                                       options:@{}
+                                             completionHandler:^(BOOL success) {
+                    }];
                 });
             }
             return;
@@ -830,7 +894,9 @@
         [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
                                                   style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                                                       dispatch_async(dispatch_get_main_queue(), ^(void){
-                                                          [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+                                                          [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]
+                                                                                             options:@{}
+                                                                                   completionHandler:^(BOOL success) {}];
                                                       });
                                                   }]];
         
@@ -888,6 +954,16 @@
             }
         }
     });
+    
+    if ([segue.identifier isEqualToString:@"show_rating"]) {
+        RatingViewController *rv = (RatingViewController*)segue.destinationViewController;
+        NavDataStore *nds = [NavDataStore sharedDataStore];
+        rv.start = nds.start;
+        rv.end = [[NSDate date] timeIntervalSince1970];
+        rv.from = nds.from._id;
+        rv.to = nds.to._id;
+        rv.device_id = [nds userID];
+    }
 }
 
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender

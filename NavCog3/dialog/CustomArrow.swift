@@ -37,10 +37,10 @@ class CustomLeftArrow: UIView
     var y3:CGFloat? = nil
     
     var horOffset:CGFloat = 1.0
-    var fillColor:UIColor? = UIColor.whiteColor()
-    var strokeColor:UIColor? = UIColor.blackColor()
+    var fillColor:UIColor? = UIColor.white
+    var strokeColor:UIColor? = UIColor.black
 
-    func setSize(rect:CGRect){
+    func setSize(_ rect:CGRect){
         x = 0.0
         y = rect.size.height / 2
         
@@ -50,7 +50,7 @@ class CustomLeftArrow: UIView
         x3 = rect.size.width
         y3 = rect.size.height
     }
-    override func drawRect(rect: CGRect)
+    override func draw(_ rect: CGRect)
     {
         setSize(rect)
         
@@ -58,9 +58,9 @@ class CustomLeftArrow: UIView
         
         let line = UIBezierPath()
         line.lineWidth = linewidth
-        line.moveToPoint(CGPointMake(x2!, y2!))
-        line.addLineToPoint(CGPointMake(x!, y!))
-        line.addLineToPoint(CGPointMake(x3!, y3!))
+        line.move(to: CGPoint(x: x2!, y: y2!))
+        line.addLine(to: CGPoint(x: x!, y: y!))
+        line.addLine(to: CGPoint(x: x3!, y: y3!))
         line.stroke()
         
         self.fillColor!.setStroke()
@@ -68,17 +68,17 @@ class CustomLeftArrow: UIView
         
         let line2 = UIBezierPath()
         line2.lineWidth = linewidth
-        line2.moveToPoint(CGPointMake(x2! + horOffset, y2!))
-        line2.addLineToPoint(CGPointMake(x! + horOffset, y!))
-        line2.addLineToPoint(CGPointMake(x3! + horOffset, y3!))
-        line2.closePath()
+        line2.move(to: CGPoint(x: x2! + horOffset, y: y2!))
+        line2.addLine(to: CGPoint(x: x! + horOffset, y: y!))
+        line2.addLine(to: CGPoint(x: x3! + horOffset, y: y3!))
+        line2.close()
         line2.stroke()
         line2.fill()
     }
 }
 
 class CustomRightArrow: CustomLeftArrow{
-    override func setSize(rect: CGRect)
+    override func setSize(_ rect: CGRect)
     {
         x = rect.size.width
         y = rect.size.height / 2

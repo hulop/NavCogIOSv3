@@ -21,6 +21,7 @@
  *******************************************************************************/
 
 #import "NavUtil.h"
+#import <sys/utsname.h>
 
 @implementation UIMessageView
 
@@ -33,13 +34,15 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
 
 +(void)showModalWaitingWithMessage:(NSString *)message
 {
-    UIView *view = [[[[UIApplication sharedApplication] delegate] window] subviews][0];
+    NSArray *subViews = [[[[UIApplication sharedApplication] delegate] window] subviews];    
+    UIView *view = [subViews lastObject];
     [NavUtil showWaitingForView:view withMessage:message];
 }
 
 +(void)hideModalWaiting
 {
-    UIView *view = [[[[UIApplication sharedApplication] delegate] window] subviews][0];
+    NSArray *subViews = [[[[UIApplication sharedApplication] delegate] window] subviews];    
+    UIView *view = [subViews lastObject];
     [NavUtil hideWaitingForView:view];
 }
 
@@ -123,11 +126,43 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
     overlay.action = btn;
     return overlay;
 }
+
 +(void)hideMessageView:(UIView *)view
 {
     NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
     id overlay = messageViewMap[address];
     [overlay removeFromSuperview];
+}
+
++(void)openURL:(NSURL*) url onViewController:(UIViewController*)controller
+{
+    if (url == nil) {
+        return;
+    }
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Open_with_Safari",@"")
+                                                                   message:NSLocalizedString(@"Open_with_Safari_Message", @"")
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"Cancel", @"BlindView", @"")
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                              }]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  [[UIApplication sharedApplication] openURL:url
+                                                                                     options:@{}
+                                                                           completionHandler:^(BOOL success) {
+                                                                           }];
+                                              }]];
+    
+    [controller presentViewController:alert animated:YES completion:nil];
+}
+
++(NSString*)deviceModel
+{
+    struct utsname sysinfo;
+    uname(&sysinfo);
+    NSString* deviceName = [NSString stringWithCString:sysinfo.machine encoding:NSUTF8StringEncoding];
+    
+    return deviceName;
 }
 
 @end

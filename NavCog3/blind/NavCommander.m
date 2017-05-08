@@ -23,6 +23,7 @@
 #import "NavCommander.h"
 #import "TTTOrdinalNumberFormatter.h"
 #import "NavDataStore.h"
+#import "LocationEvent.h"
 
 @implementation NavCommander {
     NSTimeInterval lastPOIAnnounceTime;
@@ -229,7 +230,7 @@
         int sourceHeight = [properties[@"sourceHeight"] intValue];
         int targetHeight = [properties[@"targetHeight"] intValue];
         NSString *mean = [HLPLink nameOfLinkType:linkType];
-        NSString *sfloor = [self floorString:sourceHeight];
+        //NSString *sfloor = [self floorString:sourceHeight];
         NSString *tfloor = [self floorString:targetHeight];
         //string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %2$@ by %1$@, now you are in %3$@",@"BlindView",@"") , mean, tfloor, sfloor];
         BOOL up = targetHeight > sourceHeight;
@@ -454,10 +455,14 @@
     if (looseDirection) {
         if (diffHeading < -135 || 135 < diffHeading) {
             string = NSLocalizedStringFromTable(@"turn around",@"BlindView", @"head to the back");
-        } else if (diffHeading < -45) {
+        } else if (diffHeading < -67.5) {
             string = NSLocalizedStringFromTable(@"turn to the left",@"BlindView", @"head to the left direction");
-        } else if (diffHeading > 45) {
+        } else if (diffHeading > 67.5) {
             string = NSLocalizedStringFromTable(@"turn to the right",@"BlindView", @"head to the right direction");
+        } else if (diffHeading < -threshold) {
+            string = NSLocalizedStringFromTable(@"bear left",@"BlindView", @"head to the diagonally forward left direction");
+        } else if (diffHeading > threshold) {
+            string = NSLocalizedStringFromTable(@"bear right",@"BlindView", @"head to the diagonally forward right direction");
         } else {
             return nil;
         }
@@ -568,6 +573,7 @@
     [_delegate speak:string withOptions:properties completionHandler:^{
         if (hasDestinationPOI == NO) {
             [[NavDataStore sharedDataStore] clearRoute];
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:nil];
         }
     }];
 
@@ -820,6 +826,7 @@
         [_delegate speak:result[0] withOptions:properties completionHandler:^{
             if (isDestinationPOI) {
                 [[NavDataStore sharedDataStore] clearRoute];
+                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:nil];
             }
             
             if ([result count] < 2) {

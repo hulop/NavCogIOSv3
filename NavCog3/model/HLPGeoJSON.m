@@ -102,7 +102,7 @@
 
 @end
 
-@implementation HLPGeoJSON {
+@implementation HLPGeoJSONFeature {
     HLPLocation *loc1;
     HLPLocation *loc2;
     HLPLocation *loc3;
@@ -157,6 +157,22 @@
     }
     [minloc updateFloor:location.floor];
     return minloc;
+}
+
+@end
+
+@implementation  HLPGeoJSON
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey
+{
+    return @{
+             @"type": @"type",
+             @"features": @"features"
+             };
+}
+
++ (NSValueTransformer *)featuresJSONTransformer {
+    return [MTLJSONAdapter arrayTransformerWithModelClass:HLPGeoJSONFeature.class];
 }
 
 @end
@@ -1075,7 +1091,6 @@
 - (void)updateWithLang:(NSString *)lang
 {
     _lang = lang;
-    NSString *langPron = [_lang stringByAppendingString:@"-Pron"];
     _name = [self getI18nAttribute:PROPKEY_ENTRANCE_NAME Lang:_lang];
     _namePron = [self getI18nPronAttribute:PROPKEY_ENTRANCE_NAME Lang:_lang];
     if (_namePron == nil) {
@@ -1106,7 +1121,7 @@
 {
     NSString *ret = nil;
     if (_facility) {
-        if (_name) {
+        if (_name && [_name length] > 0) {
             ret = [_facility.namePron stringByAppendingFormat:@" %@", _namePron];
         } else {
             ret = _facility.namePron;

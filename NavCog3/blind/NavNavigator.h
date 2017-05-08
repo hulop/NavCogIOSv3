@@ -29,6 +29,7 @@
 @protocol NavFutureSummarySource
 - (NSInteger)numberOfSummary;
 - (NSString*)summaryAtIndex:(NSInteger)index;
+- (NSInteger)currentIndex;
 @end
 
 @interface NavNavigatorConstants : NSObject

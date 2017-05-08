@@ -2,12 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>navcogdialog</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>NavCog</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -37,19 +35,22 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>navcogdialog</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app use beacon location</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Only for including CoreBluetooth</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Only for including OpenCV</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app use beacon location</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>For conversation</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Only for including OpenCV</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>For conversation</string>
 	<key>UIBackgroundModes</key>

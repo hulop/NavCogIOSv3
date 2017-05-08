@@ -23,7 +23,19 @@
 #import <UIKit/UIKit.h>
 #import "NavNavigator.h"
 
-@interface NavCoverView : UIView
+@class NavAnnounceItem;
+
+@protocol NavAnnounceItemDelegate
+-(void)didBecomeFocused:(NavAnnounceItem*)item;
+@end
+
+@interface NavAnnounceItem: UIAccessibilityElement
+@property id<NavAnnounceItemDelegate> delegate;
+@end
+
+@interface NavCoverView : UIView <NavAnnounceItemDelegate>
 @property id<NavFutureSummarySource> fsSource;
 @property BOOL preventCurrentStatus;
+
+- (void)focusFirst;
 @end

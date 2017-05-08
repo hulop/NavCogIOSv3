@@ -66,6 +66,8 @@ typedef enum {
 @property HLPLocation *mapCenter;
 @property (readonly) NSDictionary *buildingInfo;
 
+@property NSTimeInterval start;
+
 + (instancetype) sharedDataStore;
 
 - (void) reset;
@@ -81,7 +83,6 @@ typedef enum {
 - (NSArray*) features;
 - (NSString*) userLanguage;
 - (NSArray*) searchHistory;
-- (NSDictionary*) serverConfig;
 - (BOOL) isManualLocation;
 
 - (void) switchFromTo;

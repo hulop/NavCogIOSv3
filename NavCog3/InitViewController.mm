@@ -23,30 +23,51 @@
 #import "InitViewController.h"
 #import "ConfigManager.h"
 #import "LocationManager.h"
+#import "NavUtil.h"
+#import "ServerConfig.h"
+#import "AuthManager.h"
 
 @interface InitViewController ()
 
 @end
 
-@implementation InitViewController
+@implementation InitViewController {
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
-    if (UIAccessibilityIsVoiceOverRunning()) {
-        [self performSegueWithIdentifier:@"user_blind" sender:self];
+    [self updateView];
+}
+
+- (void) updateView
+{
+    self.blindButton.enabled = NO;
+    //self.wcButton.enabled = NO;
+    //self.gpButton.enabled = NO;
+    
+    NSDictionary *config = [ServerConfig sharedConfig].selectedServerConfig;
+    
+    if (config[@"key_for_blind"]) {
+        BOOL blind_authorized = [[AuthManager sharedManager] isAuthorizedForName:@"blind" withKey:config[@"key_for_blind"]];
+        self.blindButton.enabled = blind_authorized;
+    } else {
+        self.blindButton.enabled = YES;
     }
+}
+
+- (void)infoButtonPushed:(NSObject*)sender
+{
+    NSURL *url = [NSURL URLWithString:@"https://hulop.github.io/"];
+    [NavUtil openURL:url onViewController:self];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
-
 
 #pragma mark - Navigation
 
@@ -55,12 +76,15 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     if ([segue.identifier isEqualToString:@"user_blind"]) {
+        [[NSUserDefaults standardUserDefaults] setObject:@"UI_BLIND" forKey:@"ui_mode"];
         [ConfigManager loadConfig:@"presets/blind.plist"];
     }
     else if ([segue.identifier isEqualToString:@"user_wheelchair"]) {
+        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
         [ConfigManager loadConfig:@"presets/wheelchair.plist"];
     }
     else if ([segue.identifier isEqualToString:@"user_general"]) {
+        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
         [ConfigManager loadConfig:@"presets/general.plist"];
     }
     

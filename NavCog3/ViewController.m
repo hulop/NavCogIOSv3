@@ -24,27 +24,19 @@
 #import "LocationEvent.h"
 #import "NavDebugHelper.h"
 #import "NavUtil.h"
+#import "NavDataStore.h"
+#import "RatingViewController.h"
+#import "ServerConfig.h"
 
 @interface ViewController () {
     NavWebviewHelper *helper;
     UISwipeGestureRecognizer *recognizer;
     NSDictionary *uiState;
     DialogViewHelper *dialogHelper;
+    NSDictionary *ratingInfo;
 }
 
 @end
-
-typedef NS_ENUM(NSInteger, ViewState) {
-    ViewStateMap,
-    ViewStateSearch,
-    ViewStateSearchDetail,
-    ViewStateSearchSetting,
-    ViewStateRouteConfirm,
-    ViewStateNavigation,
-    ViewStateTransition,
-    ViewStateRouteCheck,
-    ViewStateLoading
-};
 
 @implementation ViewController {
     ViewState state;
@@ -93,7 +85,41 @@ typedef NS_ENUM(NSInteger, ViewState) {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURL:) name: REQUEST_OPEN_URL object:nil];
+    
     [self updateView];
+    
+    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkState:) userInfo:nil repeats:YES];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestRating:) name:REQUEST_RATING object:nil];
+}
+
+- (void) requestRating:(NSNotification*)note
+{
+    if ([[ServerConfig sharedConfig] shouldAskRating]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            ratingInfo = [note userInfo];
+            [self performSegueWithIdentifier:@"show_rating" sender:self];
+        });
+    }
+}
+
+- (void) checkState:(NSTimer*)timer
+{
+    if (state != ViewStateLoading) {
+        [timer invalidate];
+        return;
+    }
+    NSLog(@"checkState");
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *json = [helper getState];
+        [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:json];
+    });
+}
+
+- (void) openURL:(NSNotification*)note
+{
+    [NavUtil openURL:[note userInfo][@"url"] onViewController:self];
 }
 
 
@@ -298,7 +324,21 @@ typedef NS_ENUM(NSInteger, ViewState) {
     if (options[@"toID"] == nil) {
         return;
     }
-    NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f", options[@"toID"], [[NSDate date] timeIntervalSince1970]];
+    NSString *elv = @"";
+    if (options[@"use_elevator"]) {
+        elv = [options[@"use_elevator"] boolValue]?@"&elv=9":@"&elv=1";
+    }
+    NSString *stairs = @"";
+    if (options[@"use_stair"]) {
+        stairs = [options[@"use_stair"] boolValue]?@"&stairs=9":@"&stairs=1";
+    }
+    NSString *esc = @"";
+    if (options[@"use_escalator"]) {
+        esc = [options[@"use_escalator"] boolValue]?@"&esc=9":@"&esc=1";
+    }
+    
+    NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f%@%@%@", options[@"toID"],
+                      [[NSDate date] timeIntervalSince1970], elv, stairs, esc];
     [helper setBrowserHash: hash];
 }
 
@@ -332,6 +372,18 @@ typedef NS_ENUM(NSInteger, ViewState) {
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     segue.destinationViewController.restorationIdentifier = segue.identifier;
+    
+    
+    if ([segue.identifier isEqualToString:@"show_rating"] && ratingInfo) {
+        RatingViewController *rv = (RatingViewController*)segue.destinationViewController;
+        rv.start = [ratingInfo[@"start"] doubleValue]/1000.0;
+        rv.end = [ratingInfo[@"end"] doubleValue]/1000.0;
+        rv.from = ratingInfo[@"from"];
+        rv.to = ratingInfo[@"to"];
+        rv.device_id = [[NavDataStore sharedDataStore] userID];
+        
+        ratingInfo = nil;
+    }
 }
 
 - (IBAction)retry:(id)sender {

@@ -22,62 +22,61 @@
 
 
 import Foundation
-import Alamofire
 import ConversationV1
-import Freddy
 import RestKit
 
-public struct MessageResponse: JSONDecodable {// copied from original to keep consistency and to override context structure
-
-
+public struct MessageResponse: JSONDecodable {// copied from original to keep consistency
+    
+    /// The raw JSON object used to construct this model.
+    public let json: [String: Any]
+    
     /// The user input from the request.
-    public let input: InputData
-
+    public let input: Input?
+    
+    /// Whether to return more than one intent.
+    /// Included in the response only when sent with the request.
+    public let alternateIntents: Bool?
+    
     /// Information about the state of the conversation.
-    public let context: NSDictionary
-
+    public let context: [String: Any]
+    
     /// An array of terms from the request that were identified as entities.
+    /// The array is empty if no entities were identified.
     public let entities: [Entity]
-
-    /// An array of terms from the request that were identified as intents. The list is sorted in
-    /// descending order of confidence. If there are 10 or fewer intents, the sum of the confidence
-    /// values is 100%.
+    
+    /// An array of terms from the request that were identified as intents. Each intent has an
+    /// associated confidence. The list is sorted in descending order of confidence. If there are
+    /// 10 or fewer intents then the sum of the confidence values is 100%. The array is empty if
+    /// no intents were identified.
     public let intents: [Intent]
-
+    
     /// An output object that includes the response to the user,
     /// the nodes that were hit, and messages from the log.
-    public let output: OutputData
-
+    public let output: Output
+    
     /// Used internally to initialize a `MessageResponse` model from JSON.
     public init(json: JSON) throws {
-        input = try json.decode("input")
-        let jdic = try json.dictionary()
-        let cdata = try jdic["context"]!.serialize()
-        context = try NSJSONSerialization.JSONObjectWithData(cdata, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
-        entities = try json.arrayOf("entities", type: Entity.self)
-        intents = try json.arrayOf("intents",  type: Intent.self)
-        output = try json.decode("output")
+        self.json = try json.getDictionaryObject()
+        input = try? json.decode(at: "input")
+        alternateIntents = try? json.getBool(at: "alternate_intents")
+        let cdata:Context = try json.decode(at: "context")
+        context = cdata.json
+        entities = try json.decodedArray(at: "entities", type: Entity.self)
+        intents = try json.decodedArray(at: "intents",  type: Intent.self)
+        output = try json.decode(at: "output")
     }
 }
 
-class AlamofireManager {
-    static let sharedInstance: Manager = {
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
-        configuration.timeoutIntervalForRequest = 15
-        return Manager(configuration: configuration)
-    }()
-}
 
-public class ConversationEx {
+open class ConversationEx {
 
-    private let domain = "hulop.navcog.ConversationV1"
+    fileprivate let domain = "hulop.navcog.ConversationV1"
     static var running = false
-    private func dataToError(data: NSData) -> NSError? {
+    fileprivate func dataToError(_ data: Data) -> NSError? {
         do {
             let json = try JSON(data: data)
-            let error = try json.string("error")
-            let code = (try? json.int("code")) ?? 400
+            let error = try json.getString(at: "error")
+            let code = (try? json.getInt(at: "code")) ?? 400
             let userInfo = [NSLocalizedFailureReasonErrorKey: error]
             return NSError(domain: domain, code: code, userInfo: userInfo)
         } catch {
@@ -91,34 +90,34 @@ public class ConversationEx {
      - parameter failure: A function executed if an error occurs.
      - parameter success: A function executed with the conversation service's response.
      */
-    public func message(
-        text: String? = nil,
+    open func message(
+        _ text: String? = nil,
         server: String,
         api_key: String,
         client_id: String? = nil,
-        context: NSDictionary? = nil,
-        failure: (NSError -> Void)? = nil,
-        success: MessageResponse -> Void)
+        context: [String: Any]? = nil,
+        failure: ((Error) -> Void)? = nil,
+        success: @escaping (MessageResponse) -> Void)
     {
         if ConversationEx.running {
             return
         }
         // construct query parameters
-        var queryParameters = [NSURLQueryItem]()
-        queryParameters.append(NSURLQueryItem(name: "lang", value: NSLocale.currentLocale().languageCode))
-        queryParameters.append(NSURLQueryItem(name: "api_key", value: api_key))
+        var queryParameters = [URLQueryItem]()
+        queryParameters.append(URLQueryItem(name: "lang", value: (Locale.current as NSLocale).languageCode))
+        queryParameters.append(URLQueryItem(name: "api_key", value: api_key))
         if text != nil {
-            queryParameters.append(NSURLQueryItem(name: "text", value: text))
+            queryParameters.append(URLQueryItem(name: "text", value: text))
         }
         if client_id != nil {
-            queryParameters.append(NSURLQueryItem(name: "id", value: client_id))
+            queryParameters.append(URLQueryItem(name: "id", value: client_id))
         }
-        var json = [String: JSON]()
+        var json = [String: Any]()
         if let context = context {
-            let njsdata = try! NSJSONSerialization.dataWithJSONObject(context, options: [])
-            json["context"] = try! Freddy.JSONParser.createJSONFromData(njsdata)
+            let njsdata = try! JSONSerialization.data(withJSONObject: context, options: [])
+            json["context"] = try! JSONSerialization.jsonObject(with: njsdata, options: [])
         }
-        guard let body = try? JSON.Dictionary(json).serialize() else {
+        guard let body = try? JSON(dictionary: json).serialize() else {
             let failureReason = "context could not be serialized to JSON."
             let userInfo = [NSLocalizedFailureReasonErrorKey: failureReason]
             let error = NSError(domain: domain, code: 0, userInfo: userInfo)
@@ -128,26 +127,37 @@ public class ConversationEx {
 
         // construct REST request
         let request = RestRequest(
-            method: .POST,
+            method: "POST",
             url: "https://" + server + "/service",
+            //userAgent: "NavCogDialog",
+            credentials: Credentials.apiKey,
+            headerParameters: [:],
             acceptType: "application/json",
             contentType: "application/json",
-            userAgent: "NavCogDialog",
-            queryParameters: queryParameters,
-            headerParameters: [:],
+            queryItems: queryParameters,
             messageBody: body)
 
 
         // execute REST request
         ConversationEx.running = true
-        AlamofireManager.sharedInstance.request(request)
-            .responseObject(dataToError: dataToError) {
-                (response: Response<MessageResponse, NSError>) in
-                ConversationEx.running = false
+        
+        request.responseData { (response) in
+            ConversationEx.running = false
+            do {
                 switch response.result {
-                case .Success(let response): success(response)
-                case .Failure(let error): failure?(error)
+                case .success(let data):
+                    let json = try MessageResponse(json: JSON(data:data))
+                    success(json)
+                    break
+                case .failure(_):
+                    let domain = "swift.conversationex"
+                    let code = -1
+                    let message = NSLocalizedString("checkNetworkConnection", comment:"")
+                    let userInfo = [NSLocalizedDescriptionKey:message]
+                    failure?(NSError(domain:domain, code: code, userInfo:userInfo))
                 }
+            } catch {
+            }
         }
     }
 }

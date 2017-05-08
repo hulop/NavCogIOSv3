@@ -124,13 +124,15 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     NSURL *url = [request URL];
-    [webView stringByEvaluatingJavaScriptFromString:@"$IOS.readyForNext=true;"];
     if (IRTCF_DEBUG) NSLog(@"%@", url);
     
     if ([@"about:blank" isEqualToString:[url absoluteString]]) {
         return NO;
     }
     else if ([@"native" isEqualToString:[url scheme]]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [webView stringByEvaluatingJavaScriptFromString:@"$IOS.readyForNext=true;"];
+        });
         NSString *component = [url host];
         NSString *func = [[url pathComponents] objectAtIndex:1];
         NSString *paramString = [url query];

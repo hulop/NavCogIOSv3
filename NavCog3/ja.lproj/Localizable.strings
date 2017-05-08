@@ -117,3 +117,58 @@
 "DialogStart" = "再開";
 
 "DialogStartHint" = "対話を再開するにはダブルタップします";
+
+"Reset_Location" = "位置推定をやり直す";
+
+"Open_with_Safari" = "Safariで開く";
+"Open_with_Safari_Message" = "ウェブページをSafariで開きますが、よろしいですか？";
+
+"CheckServerList" = "リストを確認中...";
+"CheckAgreement" = "設定を確認中...";
+"CheckServerConfig" = "設定を確認中...";
+"DOWNLOADING_DATA" = "データをダウンロード中...";
+
+"NoAltimeterAlertTitle" = "気圧計がありません";
+"NoAltimeterAlertMessage" = "NavCogはお使いのデバイスをサポートしていません。お使いのデバイスには気圧計が搭載されていないため、位置推定結果が不安定になる可能性があります。";
+"I_Understand" = "了解しました";
+
+"BluetoothOffAlertTitle" = "Bluetoothがオフです";
+"BluetoothOffAlertMessage" = "屋内での位置推定の機能を使うためにはBluetoothをオンにする必要があります。";
+"CANCEL" = "キャンセル";
+"SETTING" = "設定を開く";
+
+
+"LocationNotAllowedTitle" = "位置情報が許可されていません";
+"LocationNotAllowedMessage" = "屋内での位置推定の機能を使うためには位置情報サービスを許可する必要があります。
+プライバシー設定画面から
+位置情報サービス　→
+NavCog　→
+このAppの使用中のみ許可
+を選択します。";
+
+"THANKYOU_SENDING" = "アンケートにご協力ありがとうございます。
+データを送信中です...";
+
+"Help" = "ヘルプ";
+"OpenHelp" = "ヘルプページを開く";
+
+"NeedToUpdateAppTitle" = "アプリの更新";
+"NeedToUpdateAppMessage" = "アプリの更新が必要です";
+"OpenAppStore" = "App Storeを開く";
+
+"WAIT_ACTION" = "話しかけていただけるのを待っています。マイクボタンを押して再開してください。";
+
+"NoAudioAccessAlertTitle" = "マイクが許可されていません";
+"NoAudioAccessAlertMessage" = "対話検索の機能を使うためにはマイクを許可する必要があります。
+プライバシー設定画面から
+マイク　→　NavCog
+の設定をオンにします。";
+
+"NoSpeechRecoAccessAlertTitle" = "音声認識が許可されていません";
+"NoSpeechRecoAccessAlertMessage" = "対話検索の機能を使うためには音声認識を許可する必要があります。
+プライバシー設定画面から
+音声認識　→　NavCog
+の設定をオンにします。";
+
+"unknownError0" = "音声認識を開始できませんでした。もう一度お試しください";
+"unknownError1" = "現在、音声認識を行うことが出来ません。あとでもう一度お試しください";

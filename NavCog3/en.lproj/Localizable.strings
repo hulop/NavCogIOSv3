@@ -97,6 +97,57 @@
 
 "soundEffectSetting" = "Use Sound Effect";
 
-"for_bone_conduction_headset" = "Sound Effect for Bone Conduction Headeset";
+"for_bone_conduction_headset" = "Sound Effect for Bone Conduction Headset";
 
 "Error" = "Error";
+
+"Reset_Location" = "Re-init Localization";
+
+"Open_with_Safari" = "Open with Safari?";
+"Open_with_Safari_Message" = "Is it okay to open a webpage with Safari?";
+
+"CheckServerList" = "Checking server list...";
+"CheckAgreement" = "Checking server setting...";
+"CheckServerConfig" = "Checking server setting...";
+"DOWNLOADING_DATA" = "Downloading data files...";
+
+"NoAltimeterAlertTitle" = "No Barometer Sensor";
+"NoAltimeterAlertMessage" = "NavCog does not support this device. Localization could be unstable because your device does not have barometer sensor.";
+"I_Understand" = "I understand";
+
+"BluetoothOffAlertTitle" = "Bluetooth is off";
+"BluetoothOffAlertMessage" = "You need to turn on bluetooth to enable indoor localization function.";
+"CANCEL" = "Cancel";
+"SETTING" = "Open Settings";
+
+"LocationNotAllowedTitle" = "Location not allowed";
+"LocationNotAllowedMessage" = "You need to allow access to location service to enable indoor localization function.
+From privacy settings, please select
+Location Services ->
+NavCog ->
+While Using the App";
+
+"THANKYOU_SENDING" = "Thank you for your feedback!
+Feedback is sending...";
+
+"Help" = "Help";
+"OpenHelp" = "Open help page";
+
+"NeedToUpdateAppTitle" = "App Update";
+"NeedToUpdateAppMessage" = "App is required to be updated";
+"OpenAppStore" = "Open App Store";
+
+"WAIT_ACTION" = "Waiting for your question. Tap the microphone button to restart.";
+
+"NoAudioAccessAlertTitle" = "Microphone not allowed";
+"NoAudioAccessAlertMessage" = "You need to allow access to microphone to enable conversation function.
+From privacy settigs, please turn on
+Microphone　→　NavCog";
+
+"NoSpeechRecoAccessAlertTitle" = "Speech Recognition not allowed";
+"NoSpeechRecoAccessAlertMessage" = "You need to allow access to speech recognition to enable conversation function.
+From privacy settigs, please turn on
+Speech Recognition　→　NavCog";
+
+"unknownError0" = "Voice recognition could not be started. Please try again.";
+"unknownError1" = "Voice recognition is not available. Please try again later.";

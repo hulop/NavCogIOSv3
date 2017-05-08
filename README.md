@@ -12,16 +12,20 @@ This mode is for blind users.
 This mode is mainly for wheel chair users and also all sighted users.
 
 ## Pre-Requisites
-- [OpenCV 3.0](http://opencv.org/) (BSD License)
 - [Mantle 2.0.7](https://github.com/Mantle/Mantle) (MIT License)
-- [Alamofire 3.5.1](https://github.com/Alamofire/Alamofire) (MIT license)
-- [blelocpp (BLE localization library)](https://github.com/hulop/blelocpp)
+- [Alamofire 3.5.1](https://github.com/Alamofire/Alamofire) (MIT License)
+- [Watson Developer Cloud Swift SDK 0.8.2](https://github.com/watson-developer-cloud/swift-sdk) (Apache 2.0)
+- [blelocpp (BLE localization library)](https://github.com/hulop/blelocpp) (MIT License)
+- [Freddy N/A](https://github.com/bignerdranch/Freddy)	(MIT License) (pre-req for Watson Swift SDK)
 
 ## Setup
 
 1. Install [CocoaPods](https://cocoapods.org/).
 2. In the project directory, run `pod install`.
-3. Build NavCog3 project with xcode.
+3. install [Carthage](https://github.com/Carthage/Carthage).
+4. In the project directory, run `carthage bootstrap --platfom ios`.
+5. Open NavCog3.xcworkspace
+6. Build NavCog3 project with xcode.
 
 ----
 ## About

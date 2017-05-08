@@ -188,7 +188,6 @@
 - (NSString*)name
 {
     HLPLocation *loc;
-    NSMutableString *temp;
     int floor;
     switch(_type) {
         case NavDestinationTypeLandmark:
@@ -305,7 +304,8 @@ static NavDataStore* instance_ = nil;
 
 - (void) setUserID:(NSString *)userID
 {
-    _userID = [NSString stringWithFormat:@"%@:%@", userID, userLanguage];
+    //_userID = [NSString stringWithFormat:@"%@:%@", userID, userLanguage];
+    _userID = userID;
 }
 
 - (NSString*) userID
@@ -558,6 +558,9 @@ static NavDataStore* instance_ = nil;
 
 - (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
 {
+    if (isnan(lat) || isnan(lng) || user == nil || user_lang == nil) {
+        return NO;
+    }
     int dist = 500;
     
     HLPLocation *requestLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
@@ -655,6 +658,9 @@ static NavDataStore* instance_ = nil;
 
 - (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID forUser:(NSString*)user withLang:(NSString*)lang useCache:(BOOL)useCache withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
 {
+    if (fromID == nil || toID == nil || user == nil || lang == nil || prefs == nil) {
+        return;
+    }
     NSDictionary *param = @{@"fromID":fromID, @"toID":toID, @"user":user, @"user_lang":lang, @"prefs":prefs};
     [Logging logType:@"showRoute" withParam:param];
 
@@ -692,6 +698,11 @@ static NavDataStore* instance_ = nil;
 - (void)requestServerConfigWithComplete:(void(^)())complete
 {
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
+    
+    if (!server || [server length] == 0) {
+        return;
+    }
+    
     NSString *context = [[NSUserDefaults standardUserDefaults] stringForKey:@"hokoukukan_server_context"];
     NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:CONFIG_JSON, https, server, context]];
@@ -699,8 +710,15 @@ static NavDataStore* instance_ = nil;
     [HLPDataUtil getJSON:url withCallback:^(NSObject* json){
         if (json && [json isKindOfClass:NSDictionary.class]) {
             serverConfig = (NSDictionary*)json;
+            complete();
+        } else {
+            NSLog(@"error in loading dialog_config, retrying...");
+            double delayInSeconds = 3.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [self requestServerConfigWithComplete:complete];
+            });
         }
-        complete();
     }];
 }
 
@@ -867,10 +885,12 @@ static NavDataStore* instance_ = nil;
         } else {
             if (savedCenterLocation) {
                 [_mapCenter update:savedCenterLocation];
-                [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION
-                                                                    object:self
-                                                                  userInfo:@{@"location":_mapCenter,
-                                                                             @"sync":@(!savedIsManualLocation)}];
+                if (_mapCenter) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION
+                                                                        object:self
+                                                                      userInfo:@{@"location":_mapCenter,
+                                                                                 @"sync":@(!savedIsManualLocation)}];
+                }
             }
             [currentLocation update:savedLocation];
             savedLocation = nil;

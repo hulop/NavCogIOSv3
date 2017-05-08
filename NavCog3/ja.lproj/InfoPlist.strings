@@ -1,1 +1,4 @@
 /* No Localized Strings */
+"NSLocationWhenInUseUsageDescription" = "このアプリはiBeaconの情報を使います";
+"NSMicrophoneUsageDescription" = "このアプリは対話のためにマイクを使用します";
+"NSSpeechRecognitionUsageDescription" = "このアプリは対話のために音声認識を使用します";

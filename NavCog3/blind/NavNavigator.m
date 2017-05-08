@@ -119,14 +119,14 @@ static NavNavigatorConstants *_instance;
              @"PREVENT_REMAINING_DISTANCE_EVENT_FOR_FIRST_N_METERS": @[@(7.0), @(0), @(20), @(1), FIXED],
              @"APPROACHING_DISTANCE_THRESHOLD": @[@(6.0), @(1), @(10), @(0.5)],
              @"APPROACHED_DISTANCE_THRESHOLD": @[@(2.0), @(0.5), @(5), @(0.25)],
-             @"NO_APPROACHING_DISTANCE_THRESHOLD": @[@(2.0), @(0.5), @(15), @(0.25)],
-             @"REMAINING_DISTANCE_INTERVAL": @[@(10.0), @(1), @(25), @(1)],
-             @"NO_ANDTURN_DISTANCE_THRESHOLD": @[@(2.0), @(0), @(10), @(0.5)],
+             @"NO_APPROACHING_DISTANCE_THRESHOLD": @[@(6.0), @(0.5), @(15), @(0.25)],
+             @"REMAINING_DISTANCE_INTERVAL": @[@(15.0), @(1), @(25), @(1)],
+             @"NO_ANDTURN_DISTANCE_THRESHOLD": @[@(4.0), @(0), @(10), @(0.5)],
              
              @"IGNORE_FIRST_LINK_LENGTH_THRESHOLD": @[@(3.0), @(0), @(10.0), @(0.5)],
              @"IGNORE_LAST_LINK_LENGTH_THRESHOLD": @[@(3.0), @(0), @(10.0), @(0.5), FIXED],
              
-             @"POI_ANNOUNCE_DISTANCE": @[@(2.0), @(0), @(10), @(0.5)],
+             @"POI_ANNOUNCE_DISTANCE": @[@(4.0), @(0), @(10), @(0.5)],
              @"POI_START_INFO_DISTANCE_THRESHOLD": @[@(3.0), @(3), @(10), @(1), FIXED],
              @"POI_END_INFO_DISTANCE_THRESHOLD": @[@(3.0), @(3), @(10), @(1), FIXED],
              @"POI_DISTANCE_MIN_THRESHOLD": @[@(5.0), @(2), @(50), @(5), FIXED],
@@ -139,7 +139,7 @@ static NavNavigatorConstants *_instance;
              @"REPEAT_ACTION_TIME_INTERVAL": @[@(15.0), @(5), @(100), @(5), FIXED],
              
              
-             @"OFF_ROUTE_THRESHOLD": @[@(5.0), @(1.0), @(50.0), @(1.0)],
+             @"OFF_ROUTE_THRESHOLD": @[@(6.0), @(1.0), @(50.0), @(1.0)],
              @"OFF_ROUTE_EXT_LINK_THRETHOLD": @[@(3.0), @(1.0), @(10.0), @(1.0), FIXED],
              @"REROUTE_DISTANCE_THRESHOLD": @[@(6.0), @(1.0), @(10.0), @(1.0), FIXED],
              @"OFF_ROUTE_ANNOUNCE_MIN_INTERVAL": @[@(10), @(5), @(60), @(5), FIXED],
@@ -148,13 +148,13 @@ static NavNavigatorConstants *_instance;
              
              @"OFF_ROUTE_BEARING_THRESHOLD": @[@(2.0), @(0), @(10), @(0.1), FIXED],
              @"CHANGE_HEADING_THRESHOLD": @[@(30.0), @(0), @(90), @(5)],
-             @"ADJUST_HEADING_MARGIN": @[@(15.0), @(0), @(90), @(5)],
+             @"ADJUST_HEADING_MARGIN": @[@(20.0), @(0), @(90), @(5)],
              
-             @"BACK_DETECTION_THRESHOLD": @[@(2.0), @(0), @(10), @(1)],
+             @"BACK_DETECTION_THRESHOLD": @[@(5.0), @(0), @(10), @(1)],
              @"BACK_DETECTION_HEADING_THRESHOLD": @[@(120), @(90), @(180), @(5), FIXED],
              @"BACK_ANNOUNCE_MIN_INTERVAL": @[@(10), @(5), @(60), @(5), FIXED],
              
-             @"FLOOR_DIFF_THRESHOLD": @[@(0.1), @(0), @(0.5), @(0.1)],
+             @"FLOOR_DIFF_THRESHOLD": @[@(0.4), @(0), @(0.5), @(0.1)],
              
              @"CRANK_REMOVE_SAFE_RATE": @[@(0.75), @(0), @(1.0), @(0.05), FIXED],
              
@@ -203,7 +203,7 @@ static NavNavigatorConstants *_instance;
     _expirationTimeOfPreventRemainingDistanceEvent = NAN;
     _backDetectedLocation = nil;
     _distanceFromBackDetectedLocationToLocation = NAN;
-    _noBearing = NO;
+    _noBearing = (_link.minimumWidth <= 2.0);
     
     _isComplex = fabs([HLPLocation normalizeDegree:_link.initialBearingFromSource - _link.lastBearingForTarget]) > 10;
     
@@ -231,7 +231,7 @@ static NavNavigatorConstants *_instance;
                     _isNextDestination = YES;
                 }
             } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
-                _isNextDestination = ent.node.isLeaf;
+                _isNextDestination = _isNextDestination || ent.node.isLeaf;
             }
         }
     }];
@@ -293,19 +293,19 @@ static NavNavigatorConstants *_instance;
             double hLocToNearest = [loc bearingTo:nearest];
             BOOL inAngleAtNearest = fabs([HLPLocation normalizeDegree:hLocToNearest - poi.heading]) < poi.angle;
             
-            double hLocToSource = [loc bearingTo:_link.sourceLocation];
+            //double hLocToSource = [loc bearingTo:_link.sourceLocation];
             double dLocToSource = [loc distanceTo:_link.sourceLocation];
-            BOOL inAngleAtSource = fabs([HLPLocation normalizeDegree:hLocToSource - poi.heading]) < poi.angle;
+            //BOOL inAngleAtSource = fabs([HLPLocation normalizeDegree:hLocToSource - poi.heading]) < poi.angle;
             
             double hLocToTarget = [loc bearingTo:_link.targetLocation];
             double dLocToTarget = [loc distanceTo:_link.targetLocation];
-            BOOL inAngleAtTarget = fabs([HLPLocation normalizeDegree:hLocToTarget - poi.heading]) < poi.angle;
+            BOOL inAngleAtTarget = fabs([HLPLocation normalizeDegree:hLocToTarget - poi.heading]) <= poi.angle;
             
             double hInitial = [HLPLocation normalizeDegree:_link.initialBearingFromSource - 180];
-            BOOL inAngleInitial = fabs([HLPLocation normalizeDegree:hInitial - poi.heading]) < poi.angle;
+            BOOL inAngleInitial = fabs([HLPLocation normalizeDegree:hInitial - poi.heading]) <= poi.angle;
             
             double hLast = [HLPLocation normalizeDegree:_link.lastBearingForTarget - 180];
-            BOOL inAngleLast = fabs([HLPLocation normalizeDegree:hLast - poi.heading]) < poi.angle;
+            BOOL inAngleLast = fabs([HLPLocation normalizeDegree:hLast - poi.heading]) <= poi.angle;
             
             
             NavPOI *navpoi = nil;
@@ -319,7 +319,7 @@ static NavNavigatorConstants *_instance;
                                   @{
                                     @"origin": poi,
                                     @"forBeforeStart": @(!_isFirst),
-                                    @"forWelcome": @(_isFirst),
+                                    @"forWelcome": @(_isFirst && poi.flags.flagWelcome),
                                     @"longDescription": poi.longDescription?poi.longDescription:@"",
                                     @"flagCaution": @(poi.flags.flagCaution)
                                     }];
@@ -385,20 +385,8 @@ static NavNavigatorConstants *_instance;
                     }
                 case HLPPOICategoryCornerEnd:
                 case HLPPOICategoryCornerLandmark:
-                    if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
-                        navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
-                                  @{
-                                    @"origin": poi,
-                                    @"forCorner": @(YES),
-                                    @"forCornerEnd": @(poi.poiCategory == HLPPOICategoryCornerEnd),
-                                    @"forCornerWarningBlock": @(poi.poiCategory == HLPPOICategoryCornerWarningBlock),
-                                    @"flagPlural": @(poi.flags.flagPlural),
-                                    @"longDescription": poi.longDescription?poi.longDescription:@""
-                                    }];
-                    }
-                    break;
                 case HLPPOICategoryCornerWarningBlock:
-                    if (inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
+                    if (inAngleAtTarget && inAngleLast && dLocToTarget < C.POI_TARGET_DISTANCE_THRESHOLD) {
                         navpoi = [[NavPOI alloc] initWithText:poi.name Location:nearest Options:
                                   @{
                                     @"origin": poi,
@@ -456,13 +444,16 @@ static NavNavigatorConstants *_instance;
                     } else {
                         double angle = [HLPLocation normalizeDegree:[nearest bearingTo:ent.node.location] - _link.initialBearingFromSource];
                         if (45 < fabs(angle) && fabs(angle) < 135) {
-                            navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
-                                      @{
-                                        @"origin": ent,
-                                        //@"longDescription": [ent getLongDescriptionPron],
-                                        @"angleFromLocation": @([nearest bearingTo:ent.node.location]),
-                                        @"flagOnomastic":@(YES)
-                                        }];
+                            NSString *name = [ent getNamePron];
+                            if (name && [name length] > 0) {
+                                navpoi = [[NavPOI alloc] initWithText:[ent getNamePron] Location:nearest Options:
+                                          @{
+                                            @"origin": ent,
+                                            //@"longDescription": [ent getLongDescriptionPron],
+                                            @"angleFromLocation": @([nearest bearingTo:ent.node.location]),
+                                            @"flagOnomastic":@(YES)
+                                            }];
+                            }
                         }
                     }
                 }
@@ -654,7 +645,7 @@ static NavNavigatorConstants *_instance;
     // convert NAVCOG1/2 acc info into NavPOI
     [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *surroundInfo = link.properties[link.backward?@"_NAVCOG_infoFromNode2":@"_NAVCOG_infoFromNode1"];
-        if (surroundInfo) {
+        if (surroundInfo && [surroundInfo length] > 0) {
             NSLog(@"surroundInfo=%@", surroundInfo);
             
             HLPLocation *poiloc = link.sourceLocation;
@@ -666,7 +657,7 @@ static NavNavigatorConstants *_instance;
         }
         
         NSString *nodeInfoJSON = link.properties[link.backward?@"_NAVCOG_infoAtNode1":@"_NAVCOG_infoAtNode2"];
-        if (nodeInfoJSON) {
+        if (nodeInfoJSON && [nodeInfoJSON length] > 0) {
             NSError *error;
             NSDictionary* nodeInfo = [NSJSONSerialization JSONObjectWithData:[nodeInfoJSON dataUsingEncoding:NSUTF8StringEncoding] options:NSUTF8StringEncoding error:&error];
             if (error) {
@@ -680,13 +671,13 @@ static NavNavigatorConstants *_instance;
                 HLPLocation *poiloc = link.targetLocation;
                 HLPLocation *trickloc = [link locationDistanceToTarget:15];
                 
-                if (info) {
+                if (info && [info length] > 0) {
                     NavPOI *poi = [[NavPOI alloc] initWithText:info Location:poiloc Options:
                                    @{@"origin":info}];
                     [poisTemp addObject:poi];
                 }
                 
-                if (destInfo) {
+                if (destInfo && [destInfo length] > 0) {
                     NavPOI *poi = [[NavPOI alloc] initWithText:destInfo Location:poiloc Options:
                                    @{
                                      @"origin":destInfo,
@@ -695,7 +686,7 @@ static NavNavigatorConstants *_instance;
                     [poisTemp addObject:poi];
                 }
                 
-                if (trickyInfo && beTricky) {
+                if (trickyInfo && [trickyInfo length] > 0 && beTricky) {
                     NavPOI *poi = [[NavPOI alloc] initWithText:trickyInfo Location:trickloc Options:
                                    @{
                                      @"origin":trickyInfo,
@@ -982,6 +973,10 @@ static NavNavigatorConstants *_instance;
     }
     for(HLPEntrance *ent in features) {
         if ([ent isKindOfClass:HLPEntrance.class]) {
+            if ([[ent getName] isEqualToString:@"#"]) {
+                // remove special door tag
+                continue;
+            }
             [ent updateNode:nodesMapTemp[ent.forNodeID]
                 andFacility:poiMapTemp[ent.forFacilityID]];
             
@@ -1093,7 +1088,7 @@ static NavNavigatorConstants *_instance;
         [linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
             
             if (!isnan(loc.floor) &&
-                (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
+                (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
                 return;
             }
             if (link.isLeaf) {
@@ -1226,6 +1221,9 @@ static NavNavigatorConstants *_instance;
             if ([destinationNode.forFacilityID isEqualToString:ent.forFacilityID]) {
                 NSLog(@"%@", ent);
             }
+            if (!ent.node) { // special door tag
+                continue;
+            }
             
             BOOL isLeaf = ent.node.isLeaf;
             NSArray *links = nearestLinks(ent.node.location, isLeaf?@{@"onlyEnd":@(YES)}:@{});
@@ -1241,7 +1239,7 @@ static NavNavigatorConstants *_instance;
                     linkPoiMap[nearestLink._id] = linkPois;
                 }
                 [linkPois addObject:ent];
-                break;
+                //break;
             }
         }
     }
@@ -1599,10 +1597,10 @@ static NavNavigatorConstants *_instance;
             
             //TODO add fix protocol with lower accuracy
             double diffHeading = firstLinkInfo.diffBearingAtSnappedLocationOnLink;
-            if (fabs(diffHeading) > C.ADJUST_HEADING_MARGIN) {
+            if (fabs(diffHeading) > C.CHANGE_HEADING_THRESHOLD) {
                 if (!firstLinkInfo.hasBeenBearing && !firstLinkInfo.hasBeenActivated) {
                     firstLinkInfo.hasBeenBearing = YES;
-                    firstLinkInfo.bearingTargetThreshold = C.ADJUST_HEADING_MARGIN;
+                    firstLinkInfo.bearingTargetThreshold = C.CHANGE_HEADING_THRESHOLD;
                     if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
                         [self.delegate userNeedsToChangeHeading:
                          @{
@@ -2178,6 +2176,8 @@ static NavNavigatorConstants *_instance;
                                @"turnAngle": @(linkInfo.nextTurnAngle),
                                @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
                                @"linkType": @(linkInfo.link.linkType),
+                               @"sourceHeight": @(linkInfo.link.sourceHeight),
+                               @"targetHeight": @(linkInfo.link.targetHeight),
                                @"nextLinkType": @(linkInfo.nextLink.linkType),
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                                @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
@@ -2328,16 +2328,37 @@ static NavNavigatorConstants *_instance;
         id obj = linkInfos[i];
         if ([obj isKindOfClass:NavLinkInfo.class]) {
             NavLinkInfo *info = (NavLinkInfo*)obj;
-            if (!info.hasBeenActivated) {
-                count++;
-            }
+            count++;
             if (info.isNextDestination) {
+                count++;
                 break;
             }
         }
     }
     return count;
 }
+
+- (NSInteger)currentIndex
+{
+    int count = 0;
+    for(int i = 0; i < [linkInfos count]; i++) {
+        id obj = linkInfos[i];
+        if ([obj isKindOfClass:NavLinkInfo.class]) {
+            NavLinkInfo *info = (NavLinkInfo*)obj;
+            if (info.hasBeenActivated) {
+                count++;
+            } else {
+                break;
+            }
+            if (info.isNextDestination) {
+                break;
+            }
+
+        }
+    }
+    return count;
+}
+
 
 - (NSString *)summaryAtIndex:(NSInteger)index
 {
@@ -2347,39 +2368,34 @@ static NavNavigatorConstants *_instance;
         id obj = linkInfos[i];
         if ([obj isKindOfClass:NavLinkInfo.class]) {
             NavLinkInfo *linkInfo = (NavLinkInfo*)obj;
-            if (!linkInfo.hasBeenActivated) {
-                if (index == count) {
-                    if ([self.delegate respondsToSelector:@selector(summaryString:)]) {
-                        double distance = linkInfo.link.length;
-                        double noAndTurnMinDistance = C.NO_ANDTURN_DISTANCE_THRESHOLD;
-                        if (linkInfo.nextLink.linkType == LINK_TYPE_ESCALATOR ||
-                            linkInfo.nextLink.linkType == LINK_TYPE_ELEVATOR ||
-                            linkInfo.nextLink.linkType == LINK_TYPE_STAIRWAY) {
-                            noAndTurnMinDistance = NAN;
-                        }
-                        
-                        return [self.delegate summaryString:
-                                @{
-                                  @"pois": linkInfo.pois,
-                                  @"isFirst": @(navIndex == firstLinkIndex),
-                                  @"distance": @(distance),
-                                  @"noAndTurnMinDistance": @(noAndTurnMinDistance),
-                                  @"linkType": @(linkInfo.link.linkType),
-                                  @"nextLinkType": @(linkInfo.nextLink.linkType),
-                                  @"turnAngle": @(linkInfo.nextTurnAngle),
-                                  @"isNextDestination": @(linkInfo.isNextDestination),
-                                  @"sourceHeight": @(linkInfo.link.sourceHeight),
-                                  @"targetHeight": @(linkInfo.link.targetHeight),
-                                  @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                                  @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
-                                  }];
+            if (index == count) {
+                if ([self.delegate respondsToSelector:@selector(summaryString:)]) {
+                    double distance = linkInfo.link.length;
+                    double noAndTurnMinDistance = C.NO_ANDTURN_DISTANCE_THRESHOLD;
+                    if (linkInfo.nextLink.linkType == LINK_TYPE_ESCALATOR ||
+                        linkInfo.nextLink.linkType == LINK_TYPE_ELEVATOR ||
+                        linkInfo.nextLink.linkType == LINK_TYPE_STAIRWAY) {
+                        noAndTurnMinDistance = NAN;
                     }
+                    
+                    return [self.delegate summaryString:
+                            @{
+                              @"pois": linkInfo.pois,
+                              @"isFirst": @(navIndex == firstLinkIndex),
+                              @"distance": @(distance),
+                              @"noAndTurnMinDistance": @(noAndTurnMinDistance),
+                              @"linkType": @(linkInfo.link.linkType),
+                              @"nextLinkType": @(linkInfo.nextLink.linkType),
+                              @"turnAngle": @(linkInfo.nextTurnAngle),
+                              @"isNextDestination": @(linkInfo.isNextDestination),
+                              @"sourceHeight": @(linkInfo.link.sourceHeight),
+                              @"targetHeight": @(linkInfo.link.targetHeight),
+                              @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                              @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                              }];
                 }
-                count++;
             }
-            if (linkInfo.isNextDestination) {
-                break;
-            }
+            count++;
         }
     }
     return nil;
@@ -2403,7 +2419,7 @@ static NavNavigatorConstants *_instance;
         }
         return;
     }
-    NavNavigatorConstants *C = [NavNavigatorConstants constants];
+    //NavNavigatorConstants *C = [NavNavigatorConstants constants];
     
     id obj = linkInfos[navIndex];
     if (obj && [obj isKindOfClass:NavLinkInfo.class]) {

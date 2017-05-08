@@ -30,7 +30,7 @@
 
 #define LOADING_TIMEOUT 30
 
-#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader&noclose"
+#define UI_PAGE @"%@://%@/%@mobile.jsp?noheader&noclose&id=%@"
 //#define UI_PAGE @"%@://%@/%@mobile.html?noheader" // for backward compatibility
 // does not work with old server
 
@@ -109,7 +109,7 @@
     [handler registerFunc:^(NSDictionary *param, UIWebView *webView) {
         NSString *text = [param objectForKey:@"text"];
         BOOL flush = [[param objectForKey:@"flush"] boolValue];
-        [[NavDeviceTTS sharedTTS] speak:text force:flush completionHandler:nil];
+        [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force":@(flush)} completionHandler:nil];
     } withName:@"speak" inComponent:@"SpeechSynthesizer"];
     
     [handler registerFunc:^(NSDictionary *param, UIWebView *wv) {
@@ -156,6 +156,12 @@
                 NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:param];
+            }
+            if ([text rangeOfString:@"navigationFinished,"].location == 0) {
+                NSData *data = [[text substringFromIndex:[@"navigationFinished," length]] dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *param = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:param];
             }
             if ([Logging isLogging]) {
                 NSLog(@"%@", text);
@@ -367,7 +373,8 @@
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
     NSString *context = [[NSUserDefaults standardUserDefaults] stringForKey:@"hokoukukan_server_context"];
     NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:UI_PAGE, https, server, context]];
+    NSString *device_id = [[UIDevice currentDevice].identifierForVendor UUIDString];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:UI_PAGE, https, server, context, device_id]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [webView loadRequest: request];
     currentRequest = request;
@@ -383,6 +390,14 @@
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
+    NSRange range = [request.URL.absoluteString rangeOfString:server];
+    if (range.location == NSNotFound) {
+        // TODO
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL
+                                                            object:self userInfo:@{@"url":request.URL}];
+        return NO;
+    }
     return YES;
 }
 
@@ -415,6 +430,9 @@
     NSLog(@"insertBridge,%@", callback);
     if (callback != nil) { // check if "callback" string is available
         [timer invalidate];
+        if ([self.delegate respondsToSelector:@selector(bridgeInserted)]) {
+            [self.delegate bridgeInserted];
+        }
     }
 
     NSString *path = [[NSBundle mainBundle] pathForResource:@"ios_bridge" ofType:@"js"];
@@ -447,40 +465,41 @@
 
 # pragma mark - public methods
 
+- (NSObject*) removeNaNValue:(NSObject*)obj
+{
+    NSObject* newObj;
+    if ([obj isKindOfClass:NSArray.class]) {
+        NSArray* arr = (NSArray*) obj;
+        NSMutableArray* newArr = [arr mutableCopy];
+        for(int i=0; i<[arr count]; i++){
+            NSObject* tmp = arr[i];
+            newArr[i] = [self removeNaNValue:tmp];
+        }
+        newObj = (NSObject*) newArr;
+    }else if ([obj isKindOfClass:NSDictionary.class]) {
+        NSDictionary* dict = (NSDictionary*) obj;
+        NSMutableDictionary* newDict = [dict mutableCopy];
+        for(id key in [dict keyEnumerator]){
+            NSObject* val = dict[key];
+            if([val isKindOfClass:NSNumber.class]){
+                double dVal = [(NSNumber*) val doubleValue];
+                if(isnan(dVal)){
+                    [newDict removeObjectForKey:key];
+                }
+            }
+        }
+        newObj = (NSObject*) newDict;
+    }
+    return newObj;
+}
+
 - (void) sendData:(NSObject*)data withName:(NSString*) name
 {
     if (callback == nil) {
         return;
     }
     
-    __block NSObject*(^removeNaNValue)(NSObject*) = ^(NSObject *obj) {
-        NSObject* newObj;
-        if ([obj isKindOfClass:NSArray.class]) {
-            NSArray* arr = (NSArray*) obj;
-            NSMutableArray* newArr = [arr mutableCopy];
-            for(int i=0; i<[arr count]; i++){
-                NSObject* tmp = arr[i];
-                newArr[i] = removeNaNValue(tmp);
-            }
-            newObj = (NSObject*) newArr;
-        }else if ([obj isKindOfClass:NSDictionary.class]) {
-            NSDictionary* dict = (NSDictionary*) obj;
-            NSMutableDictionary* newDict = [dict mutableCopy];
-            for(id key in [dict keyEnumerator]){
-                NSObject* val = dict[key];
-                if([val isKindOfClass:NSNumber.class]){
-                    double dVal = [(NSNumber*) val doubleValue];
-                    if(isnan(dVal)){
-                        [newDict removeObjectForKey:key];
-                    }
-                }
-            }
-            newObj = (NSObject*) newDict;
-        }
-        return newObj;
-    };
-    
-    data = removeNaNValue(data);
+    data = [self removeNaNValue:data];
     
     NSString *jsonstr = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:data options:0 error:nil]encoding:NSUTF8StringEncoding];
     
@@ -564,20 +583,23 @@
 
 - (void)requestStartDialog:(NSNotificationCenter*)notification
 {
-    BOOL result = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"navcogdialog://start_dialog/?"]];
-    if (!result) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"No Dialog App"
-                                                                       message:@"You need to install NavCog dialog app"
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
-                                                  style:UIAlertActionStyleDefault handler:nil]];
-        
-        UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while (topController.presentedViewController) {
-            topController = topController.presentedViewController;
-        }
-        [topController presentViewController:alert animated:YES completion:nil];
-    }
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"navcogdialog://start_dialog/?"]
+                                       options:@{}
+                             completionHandler:^(BOOL success) {
+                                 if (!success) {
+                                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"No Dialog App"
+                                                                                                    message:@"You need to install NavCog dialog app"
+                                                                                             preferredStyle:UIAlertControllerStyleAlert];
+                                     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                                                               style:UIAlertActionStyleDefault handler:nil]];
+                                     
+                                     UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+                                     while (topController.presentedViewController) {
+                                         topController = topController.presentedViewController;
+                                     }
+                                     [topController presentViewController:alert animated:YES completion:nil];
+                                 }
+                             }];
 }
 
 - (void)requestShowRoute:(NSNotification*)note
@@ -590,6 +612,36 @@
 - (void)retry
 {
     [self loadUIPage];
+}
+
+- (HLPLocation *)getCenter
+{
+    NSString *script = @"(function(){var a=$hulop.map.getCenter();var f=$hulop.indoor.getCurrentFloor();f=f>0?f-1:f;return JSON.stringify({lat:a[1],lng:a[0],floor:f});})()";
+    NSString *state = [self evalScript:script];
+    NSError *error = nil;
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[state dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+    if (json) {
+        return [[HLPLocation alloc] initWithLat:[json[@"lat"] doubleValue]
+                                            Lng:[json[@"lng"] doubleValue]
+                                          Floor:[json[@"floor"] doubleValue]];
+    } else {
+        NSLog(@"%@", error.localizedDescription);
+    }
+    return nil;
+    
+}
+
+- (NSDictionary*) getState
+{
+    NSString *state = [self evalScript:@"(function(){return JSON.stringify($hulop.map.getState());})()"];
+    NSError *error = nil;
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[state dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+    if (json) {
+        return json;
+    } else {
+        NSLog(@"%@", error.localizedDescription);
+    }
+    return nil;
 }
 
 @end

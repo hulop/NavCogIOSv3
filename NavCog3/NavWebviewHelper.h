@@ -32,6 +32,18 @@
 #define BACK_TO_CONTROL @"BACK_TO_CONTROL"
 #define DONE_BUTTON @"DONE_BUTTON"
 
+typedef NS_ENUM(NSInteger, ViewState) {
+    ViewStateMap,
+    ViewStateSearch,
+    ViewStateSearchDetail,
+    ViewStateSearchSetting,
+    ViewStateRouteConfirm,
+    ViewStateNavigation,
+    ViewStateTransition,
+    ViewStateRouteCheck,
+    ViewStateLoading
+};
+
 @interface NavWebView : UIWebView
 
 @end
@@ -39,6 +51,7 @@
 @protocol NavWebviewHelperDelegate <NSObject>
 - (void) startLoading;
 - (void) loaded;
+- (void) bridgeInserted;
 - (void) checkConnection;
 @end
 
@@ -55,5 +68,6 @@
 - (void) setBrowserHash:(NSString*) hash;
 - (NSString*) evalScript:(NSString*) script;
 - (HLPLocation*) getCenter;
+- (NSDictionary*) getState;
 - (void) retry;
 @end

@@ -233,16 +233,17 @@
     return nil;
 }
 
-- (void)addSectionTitle:(NSString *)title
+- (HLPSetting*)addSectionTitle:(NSString *)title
 {
     HLPSetting *s = [[HLPSetting alloc] init];
     s.type = SECTION;
     s.label = title;
     
     [self.settings addObject:s];
+    return s;
 }
 
-- (void)addActionTitle:(NSString *)title Name:(NSString*)name
+- (HLPSetting*)addActionTitle:(NSString *)title Name:(NSString*)name
 {
     HLPSetting *s = [[HLPSetting alloc] init];
     s.type = ACTION;
@@ -250,6 +251,7 @@
     s.name = name;
     
     [self.settings addObject:s];
+    return s;
 }
 
 - (HLPSetting*)addSettingWithType:(NavCogSettingType)type Label:(NSString *)label Name:(NSString *)name DefaultValue:(NSObject *)defaultValue Min:(double)min Max:(double)max Interval:(double)interval

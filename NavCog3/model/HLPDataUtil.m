@@ -216,7 +216,12 @@
         
         NSMutableString *temp = [[NSMutableString alloc] init];
         for(NSString *key in [data allKeys]) {
-            [temp appendFormat:@"%@=%@&", key, data[key]];
+            if ([data[key] isKindOfClass:NSString.class]) {
+                NSString * escaped = [data[key] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+                [temp appendFormat:@"%@=%@&", key, escaped];
+            } else {
+                [temp appendFormat:@"%@=%@&", key, data[key]];
+            }
         }
         
         //NSLog(@"Requesting %@ \n%@", url, temp);
@@ -272,14 +277,16 @@
                     callback(json);
                 } else {
                     NSLog(@"Error2: %@", [error2 localizedDescription]);
+                    callback(nil);
                 }
             } else {
                 NSLog(@"Error: %@", [error localizedDescription]);
+                callback(nil);
             }
-            callback(nil);
         }
         @catch(NSException *e) {
             NSLog(@"%@", [e debugDescription]);
+            callback(nil);
         }
     }] resume];
 }

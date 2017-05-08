@@ -59,8 +59,8 @@
                                Max:(double)max
                           Interval:(double)interval;
 
-- (void) addSectionTitle:(NSString*)title;
-- (void) addActionTitle:(NSString*)title Name:(NSString*)name;
+- (HLPSetting*) addSectionTitle:(NSString*)title;
+- (HLPSetting*) addActionTitle:(NSString*)title Name:(NSString*)name;
 - (void) removeAllSetting;
 
 - (NSInteger) numberOfSections;

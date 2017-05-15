@@ -18,7 +18,7 @@ This mode is mainly for wheel chair users and also all sighted users.
 - [blelocpp (BLE localization library)](https://github.com/hulop/blelocpp) (MIT License)
 - [Freddy N/A](https://github.com/bignerdranch/Freddy)	(MIT License) (pre-req for Watson Swift SDK)
 
-## Setup
+## Build
 
 1. Install [CocoaPods](https://cocoapods.org/).
 2. In the project directory, run `pod install`.
@@ -26,6 +26,10 @@ This mode is mainly for wheel chair users and also all sighted users.
 4. In the project directory, run `carthage bootstrap --platfom ios`.
 5. Open NavCog3.xcworkspace
 6. Build NavCog3 project with xcode.
+
+## Setup
+
+See [wiki](https://github.com/hulop/NavCogIOSv3/wiki) for set up servers and data.
 
 ----
 ## About

@@ -83,6 +83,10 @@
                                 };
         [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:self userInfo:param];
         
+        if ([fp_mode isEqualToString:@"beacon"]) {
+            [self showBeacons:manager.selectedFloorplan.beacons withRefpoint:manager.selectedRefpoint];
+        }
+        
         [self updateView];
     });
 }

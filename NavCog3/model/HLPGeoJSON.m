@@ -1014,6 +1014,17 @@
     return (_poiCategory == HLPPOICategoryElevator) || (_poiCategory == HLPPOICategoryElevatorEquipments);
 }
 
+- (NSString*)poiCategoryString
+{
+    if (_poiCategory == HLPPOICategoryCOUNT) {
+        return @"?";
+    }
+    NSString *temp = [NSString stringWithCString:HLPPOICategoryStrings[_poiCategory] encoding:NSUTF8StringEncoding];
+    temp = [temp stringByReplacingOccurrencesOfString:@"_nav_" withString:@""];
+    temp = [temp stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+    return temp;
+}
+
 @end
 
 @implementation HLPFacility{

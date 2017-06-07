@@ -27,6 +27,7 @@
 #import "ServerConfig.h"
 #import "NavDataStore.h"
 #import "BeaconAddTableViewController.h"
+#import "POIAddTableViewController.h"
 
 
 @interface BlindViewController () {
@@ -40,7 +41,13 @@
 @implementation BlindViewController {
     FingerprintManager *fpm;
     BeaconAddTableViewController *batvc;
+    POIAddTableViewController *poivc;
     NSString *fp_mode;
+    NSArray<NSObject*>* showingFeatures;
+    NSDictionary*(^showingStyle)(NSObject* obj);
+    NSObject* selectedFeature;
+    POIManager *poim;
+    HLPLocation *center;
 }
 
 - (void)dealloc
@@ -58,20 +65,23 @@
     state = ViewStateLoading;
     fp_mode = [[NSUserDefaults standardUserDefaults] stringForKey:@"fp_mode"];
 
-
-
     helper = [[NavWebviewHelper alloc] initWithWebview:self.webView];
     helper.delegate = self;
     
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:MANUAL_LOCATION_CHANGED_NOTIFICATION object:nil];
     
     fpm = [FingerprintManager sharedManager];
     fpm.delegate = self;
     [fpm load];
+    
+    poim = [POIManager sharedManager];
+    poim.delegate = self;
 }
+
+#pragma mark - FingerprintManagerDelegate
 
 - (void)manager:(FingerprintManager *)manager didRefpointSelected:(HLPRefpoint *)refpoint
 {
@@ -130,18 +140,45 @@
     });
 }
 
+#pragma mark - POIManagerDelegate
+
+- (void)manager:(POIManager *)manager didPOIsLoaded:(NSArray<HLPObject *> *)pois
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([fp_mode isEqualToString:@"poi"]) {
+            [self showPOIs:pois];
+        }
+        [self updateView];
+    });
+}
+
+#pragma mark - private
+
 - (void)locationChanged:(NSNotification*)note
 {
-    NavDataStore *nds = [NavDataStore sharedDataStore];
-    if (nds.isManualLocation) {
-        [self updateView];
+    NSDictionary *obj = [note userInfo];
+    double floor = [obj[@"floor"] doubleValue];
+    if (floor == 0) {
+        floor = NAN;
+    } else if (floor >= 1) {
+        floor -= 1;
     }
+
+    center = [[HLPLocation alloc] initWithLat:[obj[@"lat"] doubleValue]
+                                                       Lng:[obj[@"lng"] doubleValue]
+                                                  Accuracy:1
+                                                     Floor:floor
+                                                     Speed:1.0
+                                               Orientation:0
+                                       OrientationAccuracy:999];
+    [poim initCenter:center];
+    NSObject *poi = [self findFeatureAt:center];
+    selectedFeature = poi;
+    [self updateView];
 }
 
 - (void) startSampling
 {
-    NavDataStore *nds = [NavDataStore sharedDataStore];
-    HLPLocation *center = nds.mapCenter;
     fpm.delegate = self;
     [fpm startSamplingAtLat:center.lat Lng:center.lng];
 }
@@ -165,7 +202,6 @@
 
 - (void) updateView
 {
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         NavDataStore *nds = [NavDataStore sharedDataStore];
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
@@ -174,8 +210,6 @@
         BOOL isSampling = fpm.isSampling;
         
         if ([fp_mode isEqualToString:@"fingerprint"]) {
-            
-            
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady;
             
@@ -207,24 +241,68 @@
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady;
             
-            self.searchButton.title = NSLocalizedStringFromTable(@"Add", @"Fingerprint", @"");
+            if (selectedFeature) {
+                self.searchButton.title = NSLocalizedStringFromTable(@"Delete", @"Fingerprint", @"");
+            } else {
+                self.searchButton.title = NSLocalizedStringFromTable(@"Add", @"Fingerprint", @"");
+            }
             self.devFingerprint.hidden = NO;
             
             self.navigationItem.rightBarButtonItem = _searchButton;
             self.navigationItem.leftBarButtonItem = _settingButton;
             
             
-            
             if (existRefpoint) {
-                self.navigationItem.title = [NSString stringWithFormat:@"%@ Beacon [%ld]",
-                                             fpm.selectedRefpoint.floor,
-                                             [fpm beaconsCount]];
+                if (selectedFeature &&
+                    [selectedFeature isKindOfClass:HLPGeoJSONFeature.class]) {
+                    HLPGeoJSONFeature* f = (HLPGeoJSONFeature*)selectedFeature;
+                    NSString *maj = f.properties[@"major"];
+                    NSString *min = f.properties[@"minor"];
+                    self.navigationItem.title = [NSString stringWithFormat:@"%@-%@", maj, min];
+                } else {
+                    self.navigationItem.title = [NSString stringWithFormat:@"%@ Beacon [%ld]",
+                                                 fpm.selectedRefpoint.floor,
+                                                 [fpm beaconsCount]];
+                }
+                
             } else {
                 self.navigationItem.title = @"Beacon";
             }
 
+        } else if ([fp_mode isEqualToString:@"poi"]) {
+            self.searchButton.enabled = nds.isManualLocation;
+            self.settingButton.enabled =  NO;
+            
+            [NavUtil hideMessageView:self.view];
+            if (selectedFeature) {
+                self.searchButton.title = NSLocalizedStringFromTable(@"Delete", @"Fingerprint", @"");
+                UIMessageView *view = [NavUtil showMessageView:self.view];
+                NSString *name = @"";
+                NSString *category = @"";
+                if ([selectedFeature isKindOfClass:HLPLandmark.class]) {
+                    HLPLandmark *l = (HLPLandmark*)selectedFeature;
+                    name = [l getLandmarkName];
+                    category = l.isToilet?@"Toilet":@"Facility";
+                }
+                if ([selectedFeature isKindOfClass:HLPPOI.class]) {
+                    HLPPOI *p = (HLPPOI*)selectedFeature;
+                    name = [p name];
+                    category = p.poiCategoryString;
+                }
+                view.message.text = [NSString stringWithFormat:@"    Name: %@\nCategory: %@", name, category];
+            } else {
+                self.searchButton.title = NSLocalizedStringFromTable(@"Add", @"Fingerprint", @"");
+            }
+            self.devFingerprint.hidden = NO;
+            
+            self.navigationItem.rightBarButtonItem = _searchButton;
+            self.navigationItem.leftBarButtonItem = nil;
+            
+            self.navigationItem.title = @"POI";
         }
-        [helper evalScript:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();"];
+        if (![fp_mode isEqualToString:@"poi"]) {
+            [helper evalScript:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();"];
+        }
     });
 }
 
@@ -249,49 +327,113 @@
     [helper evalScript:js];
 }
 
+- (void) showFingerprints:(NSArray*) points
+{
+    [self showFeatures:points withStyle:^NSDictionary *(NSObject *obj) {
+        if([obj isKindOfClass:HLPSampling.class]) {
+            HLPSampling *p = (HLPSampling*)obj;
+            return @{
+                     @"lat": @(p.lat),
+                     @"lng": @(p.lng),
+                     @"count": @([p.beacons count])
+                     };
+        }
+        return (NSDictionary*)nil;
+    }];
+}
+
 - (void) showBeacons:(HLPGeoJSON*) beacons withRefpoint:(HLPRefpoint*)rp
 {
+    [self showFeatures:beacons.features withStyle:^(NSObject *obj) {
+        if ([obj isKindOfClass:HLPGeoJSONFeature.class]) {
+            HLPGeoJSONFeature* f = (HLPGeoJSONFeature*)obj;
+            if ([f.properties[@"type"] isEqualToString:@"beacon"]) {
+                MKMapPoint local = MKMapPointMake([f.geometry.coordinates[0] doubleValue], [f.geometry.coordinates[1] doubleValue]);
+                CLLocationCoordinate2D global = [FingerprintManager convertFromLocal:local ToGlobalWithRefpoint:rp];
+                
+                return @{
+                   @"lat": @(global.latitude),
+                   @"lng": @(global.longitude),
+                   @"count": @"B"
+                   };
+            }
+        }
+        return (NSDictionary*)nil;
+    }];
+}
+
+- (void) showPOIs:(NSArray<HLPObject*>*)pois
+{
+    [self showFeatures:pois withStyle:^NSDictionary *(NSObject *obj) {
+        if ([obj isKindOfClass:HLPPOI.class]) {
+            HLPPOI* p = (HLPPOI*)obj;
+            NSString *name = @"P";
+            if (p.poiCategoryString) {
+                name = [name stringByAppendingString:[p.poiCategoryString substringToIndex:1]];
+            }
+            
+            return @{
+                     @"lat": p.geometry.coordinates[1],
+                     @"lng": p.geometry.coordinates[0],
+                     @"count": name
+                     };
+        }
+        if ([obj isKindOfClass:HLPLandmark.class]) {
+            HLPLandmark* l = (HLPLandmark*)obj;
+            
+            return @{
+                     @"lat": l.geometry.coordinates[1],
+                     @"lng": l.geometry.coordinates[0],
+                     @"count": l.isToilet?@"T":@"L"
+                     };
+        }
+        return (NSDictionary*)nil;
+    }];
+}
+
+- (void) showFeatures:(NSArray<NSObject*>*)features withStyle:(NSDictionary*(^)(NSObject* obj))styleFunction
+{
+    showingFeatures = features;
+    showingStyle = styleFunction;
+    selectedFeature = nil;
+    
     NSMutableArray *temp = [@[] mutableCopy];
-    for(HLPGeoJSONFeature *p in beacons.features) {
-        if ([p.properties[@"type"] isEqualToString:@"beacon"]) {
-            
-            MKMapPoint local = MKMapPointMake([p.geometry.coordinates[0] doubleValue], [p.geometry.coordinates[1] doubleValue]);
-            CLLocationCoordinate2D global = [FingerprintManager convertFromLocal:local ToGlobalWithRefpoint:rp];
-            
-            [temp addObject:
-             @{
-               @"lat": @(global.latitude),
-               @"lng": @(global.longitude),
-               @"count": @"B"
-               }];
+    for(NSObject *f in features) {
+        NSDictionary *dict = styleFunction(f);
+        if (dict) {
+            [temp addObject:dict];
         }
     }
     
     NSData *data = [NSJSONSerialization dataWithJSONObject:temp options:0 error:nil];
     NSString* str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
     NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
-    NSLog(@"%@", script);
+    //NSLog(@"%@", script);
     [helper evalScript:script];
 }
 
-- (void) showFingerprints:(NSArray*) points
+- (NSObject*) findFeatureAt:(HLPLocation*)location
 {
-    NSMutableArray *temp = [@[] mutableCopy];
-    for(HLPSampling *p in points) {
-        [temp addObject:
-         @{
-           @"lat": @(p.lat),
-           @"lng": @(p.lng),
-           @"count": @([p.beacons count])
-           }];
+    HLPLocation *loc = [[HLPLocation alloc] initWithLat:0 Lng:0];
+    double min = DBL_MAX;
+    NSObject *mino = nil;
+    for(NSObject *f in showingFeatures) {
+        NSDictionary *dict = showingStyle(f);
+        if (dict) {
+            [loc updateLat:[dict[@"lat"] doubleValue] Lng:[dict[@"lng"] doubleValue]];
+            double d = [loc distanceTo:location];
+            if (d < min) {
+                min = d;
+                mino = f;
+            }
+        }
     }
-    
-    NSData *data = [NSJSONSerialization dataWithJSONObject:temp options:0 error:nil];
-    NSString* str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-    NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
-    NSLog(@"%@", script);
-    [helper evalScript:script];
+    if (min < 1) {
+        return mino;
+    }
+    return nil;
 }
+
 
 - (void)checkConnection {
     [_indicator stopAnimating];
@@ -344,9 +486,19 @@
                 [self startSampling];
             }
         } else if ([fp_mode isEqualToString:@"beacon"]) {
-            batvc = [[UIStoryboard storyboardWithName:@"BeaconAdd" bundle:nil] instantiateViewControllerWithIdentifier:@"beaconadd"];
-            [self.navigationController pushViewController:batvc animated:YES];
-
+            if (selectedFeature && [selectedFeature isKindOfClass:HLPGeoJSONFeature.class]) {
+                [fpm removeBeacon:(HLPGeoJSONFeature*)selectedFeature];
+            } else {
+                batvc = [[UIStoryboard storyboardWithName:@"FingerPrint" bundle:nil] instantiateViewControllerWithIdentifier:@"beaconadd"];
+                [self.navigationController pushViewController:batvc animated:YES];
+            }
+        } else if ([fp_mode isEqualToString:@"poi"]) {
+            if (selectedFeature && [selectedFeature isKindOfClass:HLPGeoJSONFeature.class]) {
+                [poim removePOI:(HLPGeoJSONFeature*)selectedFeature];
+            } else {
+                poivc = [[UIStoryboard storyboardWithName:@"FingerPrint" bundle:nil] instantiateViewControllerWithIdentifier:@"poiadd"];
+                [self.navigationController pushViewController:poivc animated:YES];
+            }
         }
         return NO;
     }
@@ -357,10 +509,16 @@
 - (IBAction)returnActionForSegue:(UIStoryboardSegue *)segue
 {
     fpm.delegate = self;
-    if (batvc.selectedBeacon) {
+    if (batvc && batvc.selectedBeacon) {
         HLPLocation *center = [[NavDataStore sharedDataStore] mapCenter];
-        [fpm addBeacon:batvc.selectedBeacon AtLat:center.lat LNG:center.lng];
+        [fpm addBeacon:batvc.selectedBeacon atLat:center.lat Lng:center.lng];
+        batvc.selectedBeacon = nil;
     }
+    if (poivc && poivc.selectedPOI) {
+        [poim addPOI:poivc.selectedPOI at:center];
+        poivc.selectedPOI = nil;
+    }
+    
 }
 
 

@@ -56,10 +56,13 @@
 {
     [self.blindButton setTitle:@"Fingerprint" forState:UIControlStateNormal];
     [self.wcButton setTitle:@"Beacon" forState:UIControlStateNormal];
+    [self.gpButton setTitle:@"POI" forState:UIControlStateNormal];
+    
     BOOL fpAvailable = [[ServerConfig sharedConfig] isFingerPrintingAvailable];
     self.blindButton.enabled = fpAvailable;
     self.wcButton.enabled = fpAvailable;
-    self.gpButton.hidden = YES;
+    BOOL mkAvailable = [[ServerConfig sharedConfig] isMapEditorKeyAvailable];
+    self.gpButton.enabled = mkAvailable;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -89,12 +92,18 @@
         if ([identifier isEqualToString:@"user_wheelchair"]) {
             [[NSUserDefaults standardUserDefaults] setObject:@"beacon" forKey:@"fp_mode"];
         }
+        if ([identifier isEqualToString:@"user_general"]) {
+            [[NSUserDefaults standardUserDefaults] setObject:@"poi" forKey:@"fp_mode"];
+        }
     }
+    
+    // reuse user_blind segue
     if ([identifier isEqualToString:@"user_wheelchair"]) {
         [self performSegueWithIdentifier:@"user_blind" sender:@"beacon"];
         return NO;
     }
     if ([identifier isEqualToString:@"user_general"]) {
+        [self performSegueWithIdentifier:@"user_blind" sender:@"beacon"];
         return NO;
     }
     return YES;

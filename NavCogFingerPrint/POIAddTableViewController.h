@@ -20,15 +20,10 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import <Foundation/Foundation.h>
-#import "ServerConfig.h"
+#import <UIKit/UIKit.h>
 
-@interface ServerConfig (FingerPrint)
+@interface POIAddTableViewController : UITableViewController
 
-- (BOOL) isFingerPrintingAvailable;
-- (BOOL) isMapEditorKeyAvailable;
-- (NSString*) fingerPrintingServerHost;
-- (NSString*) fingerPrintingBeaconUUID;
-- (NSString*) mapEditorKey;
+@property NSDictionary *selectedPOI;
 
 @end

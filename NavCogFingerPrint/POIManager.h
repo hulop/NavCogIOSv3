@@ -21,14 +21,18 @@
  *******************************************************************************/
 
 #import <Foundation/Foundation.h>
-#import "ServerConfig.h"
+#import "HLPGeoJSON.h"
 
-@interface ServerConfig (FingerPrint)
+@class POIManager;
+@protocol POIManagerDelegate
+-(void) manager:(POIManager*)manager didPOIsLoaded:(NSArray<HLPObject*>*)pois;
+@end
 
-- (BOOL) isFingerPrintingAvailable;
-- (BOOL) isMapEditorKeyAvailable;
-- (NSString*) fingerPrintingServerHost;
-- (NSString*) fingerPrintingBeaconUUID;
-- (NSString*) mapEditorKey;
-
+@interface POIManager : NSObject
+@property id<POIManagerDelegate> delegate;
++(instancetype)sharedManager;
+-(void)initCenter:(HLPLocation*)loc;
+-(void)loadPOIs;
+-(void)addPOI:(NSDictionary*)poi at:(HLPLocation*)location;
+-(void)removePOI:(HLPGeoJSONFeature*)poi;
 @end

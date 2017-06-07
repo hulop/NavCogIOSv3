@@ -130,6 +130,8 @@
 
 
     [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkMapCenter:) userInfo:nil repeats:YES];
+    
+    [self updateView];
 }
 
 - (void) checkMapCenter:(NSTimer*)timer

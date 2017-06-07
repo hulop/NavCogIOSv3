@@ -63,7 +63,8 @@
 -(void)sendData;
 -(void)deleteFingerprint:(NSString*)idString;
 -(long)beaconsCount;
--(void)addBeacon:(CLBeacon*)beacon AtLat:(double)lat LNG:(double)lng;
+-(void)addBeacon:(CLBeacon*)beacon atLat:(double)lat Lng:(double)lng;
+-(void)removeBeacon:(HLPGeoJSONFeature*)beacon;
 -(NSArray<CLBeacon*>*)visibleBeacons;
 
 + (MKMapPoint) convertFromGlobal:(CLLocationCoordinate2D)global ToLocalWithRefpoint:(HLPRefpoint*)rp;

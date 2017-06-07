@@ -105,12 +105,13 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
     UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, w-size, size)];
     label.text = @"Log Replaying";
     label.font = [UIFont fontWithName:@"Courier" size:14];
+    label.numberOfLines = 0;
     
     UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(w-size, 0, size, size)];
     [btn setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
     
     [overlay setBackgroundColor:
-     [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
+     [UIColor colorWithRed:1 green:1 blue:1 alpha:0.75]];
     [overlay addSubview:label];
     [overlay addSubview:btn];
     

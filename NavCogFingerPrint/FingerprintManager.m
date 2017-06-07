@@ -397,7 +397,7 @@ static FingerprintManager *instance;
     return [_selectedFloorplan.beacons.features count];
 }
 
-- (void)addBeacon:(CLBeacon *)beacon AtLat:(double)lat_ LNG:(double)lng_
+- (void)addBeacon:(CLBeacon *)beacon atLat:(double)lat_ Lng:(double)lng_
 {
     if (!beacon) {
         return;
@@ -447,9 +447,41 @@ static FingerprintManager *instance;
     }
     
     NSDictionary *query = @{@"_id":fp._id};
-    
     NSDictionary *beacons = [MTLJSONAdapter JSONDictionaryFromModel:temp error:&error];
     NSDictionary *update = @{@"$set" : @{@"beacons" : beacons}};
+    
+    [self requestUpdate:update withQuery:query];
+}
+
+- (void)removeBeacon:(HLPGeoJSONFeature *)beacon
+{
+    if (!beacon) {
+        return;
+    }
+    if (!_selectedFloorplan) {
+        return;
+    }
+    
+    NSError *error;
+    NSArray *features = [_selectedFloorplan.beacons.features mtl_arrayByRemovingObject:beacon];
+    NSDictionary *json = @{
+                           @"type": @"FeatureCollection",
+                           @"features": [MTLJSONAdapter JSONArrayFromModels:features error:&error]
+                           };
+    HLPGeoJSON *temp =  [MTLJSONAdapter modelOfClass:HLPGeoJSON.class fromJSONDictionary:json error:&error];
+    if (!temp) {
+        return;
+    }
+    
+    NSDictionary *query = @{@"_id":_selectedFloorplan._id};
+    NSDictionary *beacons = [MTLJSONAdapter JSONDictionaryFromModel:temp error:&error];
+    NSDictionary *update = @{@"$set" : @{@"beacons" : beacons}};
+    
+    [self requestUpdate:update withQuery:query];
+}
+
+-(void) requestUpdate:(NSDictionary*)update withQuery:(NSDictionary*)query
+{
     NSDictionary *data =
     @{
       @"action": @"update",

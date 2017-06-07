@@ -279,6 +279,7 @@ static const char* HLPPOICategoryStrings[] = {
 @property (nonatomic, readonly) HLPPOIElevatorButtons *elevatorButtons;
 @property (nonatomic, readonly) HLPPOIElevatorEquipments *elevatorEquipments;
 - (BOOL) allowsNoFloor;
+- (NSString*) poiCategoryString;
 @end
 
 @interface HLPEntrance : HLPObject

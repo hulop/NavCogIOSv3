@@ -216,21 +216,16 @@
         
         NSMutableString *temp = [[NSMutableString alloc] init];
         for(NSString *key in [data allKeys]) {
-            if ([data[key] isKindOfClass:NSString.class]) {
-                NSString * escaped = [data[key] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-                [temp appendFormat:@"%@=%@&", key, escaped];
-            } else {
-                [temp appendFormat:@"%@=%@&", key, data[key]];
-            }
+            [temp appendFormat:@"%@=%@&", key, data[key]];
         }
+        NSString *temp2 = [temp stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        NSData *query = [temp2 dataUsingEncoding:NSUTF8StringEncoding];
         
-        //NSLog(@"Requesting %@ \n%@", url, temp);
         
-        
-        NSData *query = [temp dataUsingEncoding:NSUTF8StringEncoding];
+        //NSLog(@"Requesting %@ \n%@", url, temp2);
         
         [request setHTTPMethod: @"POST"];
-        [request setValue: @"application/x-www-form-urlencoded"  forHTTPHeaderField: @"Content-Type"];
+        [request setValue: @"application/x-www-form-urlencoded; charset=UTF-8"  forHTTPHeaderField: @"Content-Type"];
         [request setValue: [NSString stringWithFormat: @"%lu", (unsigned long)[query length]]  forHTTPHeaderField: @"Content-Length"];
         [request setHTTPBody: query];
         

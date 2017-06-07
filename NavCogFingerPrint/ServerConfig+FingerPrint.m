@@ -29,6 +29,11 @@
     return [self fingerPrintingServerHost] != nil;
 }
 
+- (BOOL) isMapEditorKeyAvailable
+{
+    return [self mapEditorKey] != nil;
+}
+
 - (NSString*) fingerPrintingServerHost
 {
     if (self.selectedServerConfig) {
@@ -44,6 +49,17 @@
 {
     if (self.selectedServerConfig) {
         NSString *str = self.selectedServerConfig[@"finger_printing_beacon_uuid"];
+        if (str && [str length] > 0) {
+            return str;
+        }
+    }
+    return nil;
+}
+
+- (NSString*) mapEditorKey
+{
+    if (self.selectedServerConfig) {
+        NSString *str = self.selectedServerConfig[@"editor_api_key"];
         if (str && [str length] > 0) {
             return str;
         }

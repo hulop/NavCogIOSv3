@@ -13,6 +13,7 @@
     "properties": {
       "file": "@toolname",
       "名称": "@name",
+      "height": "@height",
       "category": "公共施設の情報",
       "施設ID": "@id"
     }

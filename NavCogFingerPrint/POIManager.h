@@ -25,7 +25,9 @@
 
 @class POIManager;
 @protocol POIManagerDelegate
+-(void) didStartLoading;
 -(void) manager:(POIManager*)manager didPOIsLoaded:(NSArray<HLPObject*>*)pois;
+-(void) manager:(POIManager*)manager requestInfo:(NSString *)type forPOI:(NSDictionary*)poi at:(HLPLocation*)loc;
 @end
 
 @interface POIManager : NSObject
@@ -33,6 +35,6 @@
 +(instancetype)sharedManager;
 -(void)initCenter:(HLPLocation*)loc;
 -(void)loadPOIs;
--(void)addPOI:(NSDictionary*)poi at:(HLPLocation*)location;
+-(void)addPOI:(NSDictionary*)poi at:(HLPLocation*)location withOptions:(NSDictionary*)options;
 -(void)removePOI:(HLPGeoJSONFeature*)poi;
 @end

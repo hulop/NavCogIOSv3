@@ -44,6 +44,7 @@
 #define PROPKEY_EFFECTIVE_WIDTH @"有効幅員"
 #define PROPKEY_ELEVATOR_EQUIPMENTS @"elevator_equipments"
 #define PROPKEY_BRAILLE_BLOCK @"視覚障害者誘導用ブロック"
+#define PROPKEY_ADDR @"所在地"
 
 // for extension
 #define PROPKEY_EXT_MAJOR_CATEGORY @"major_category"
@@ -1053,6 +1054,9 @@
     }
     
     _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];
+    if (self.properties[PROPKEY_ADDR]) {
+        _addr = self.properties[PROPKEY_ADDR];
+    }
     
     return self;
 }

@@ -31,6 +31,7 @@
 @implementation POIManager {
     HLPLocation *lastLocation;
     NSArray *cachedFeatures;
+    NSMutableDictionary<NSString*, HLPNode*> *facilityNodeMap;
 }
 
 static POIManager *instance;
@@ -52,9 +53,12 @@ static POIManager *instance;
                 [temp addObject:o];
             }
         }
-        if ([o isKindOfClass:HLPLandmark.class]) {
-            HLPLandmark *landmark = (HLPLandmark*)o;
-            if (isnan(loc.floor) || loc.floor == landmark.nodeHeight) {
+        else if ([o isKindOfClass:HLPFacility.class]) {
+            HLPFacility *f = (HLPFacility*)o;
+            HLPNode *n = facilityNodeMap[f._id];
+            if (isnan(loc.floor) ||
+                (n && n.height == loc.floor) ||
+                (!n && !isnan(f.height) && f.height == loc.floor)) {
                 [temp addObject:o];
             }
         }
@@ -64,6 +68,7 @@ static POIManager *instance;
 
 - (void)initCenter:(HLPLocation*)loc
 {
+    NSLog(@"initCenter %@", loc);
     if (lastLocation && [loc distanceTo:lastLocation] < 200) {
         if (loc.floor != lastLocation.floor) {
             [_delegate manager:self didPOIsLoaded:[self filteredPOIsAt:loc]];
@@ -73,8 +78,10 @@ static POIManager *instance;
     }
     NavDataStore *nds = [NavDataStore sharedDataStore];
     [HLPDataUtil loadLandmarksAtLat:loc.lat Lng:loc.lng inDist:DIST forUser:nds.userID withLang:nds.userLanguage withCallback:^(NSArray<HLPObject *> *result) {
-        cachedFeatures = result;
-        [self loadPOIs];
+        [HLPDataUtil loadNodeMapForUser:nds.userID withLang:nds.userLanguage WithCallback:^(NSArray<HLPObject *> *result) {
+            cachedFeatures = result;
+            [self loadPOIs];
+        }];
     }];
     lastLocation = loc;
 }
@@ -83,15 +90,24 @@ static POIManager *instance;
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     
+    [_delegate didStartLoading];
     [HLPDataUtil loadFeaturesForUser:nds.userID withLang:nds.userLanguage WithCallback:^(NSArray<HLPObject *> *result) {
         cachedFeatures = [cachedFeatures arrayByAddingObjectsFromArray:result];
+        facilityNodeMap = [@{} mutableCopy];
+        NSMutableDictionary* nodeMap = [@{} mutableCopy];
+        for(HLPObject* o in cachedFeatures) {
+            if ([o isKindOfClass:HLPNode.class]) {
+                nodeMap[o._id] = o;
+            }
+        }
+        for(HLPObject* o in cachedFeatures) {
+            if ([o isKindOfClass:HLPEntrance.class]) {
+                HLPEntrance* e = (HLPEntrance*)o;
+                facilityNodeMap[e.forFacilityID] = nodeMap[e.forNodeID];
+            }
+        }
         [_delegate manager:self didPOIsLoaded:[self filteredPOIsAt:lastLocation]];
     }];
-}
-
-- (void)addPOI:(NSDictionary *)poi at:(HLPLocation*)location
-{
-    [self addPOI:poi at:location withName:nil];
 }
 
 - (BOOL)checkName:(NSObject*)obj
@@ -151,10 +167,10 @@ static POIManager *instance;
     return [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/%@api/editor", https, server, context]];
 }
 
-- (void)addPOI:(NSDictionary *)poi at:(HLPLocation*)location withName:(NSString*)name
+- (void)addPOI:(NSDictionary *)poi at:(HLPLocation*)location withOptions:(NSDictionary *)options
 {
-    if (!name && [self checkName:poi]) {
-        //TODO prompt a name
+    if ([self checkName:poi] && !options[@"@name"]) {
+        [_delegate manager:self requestInfo:@"@name" forPOI:poi at:location];
         return;
     }
     
@@ -166,14 +182,13 @@ static POIManager *instance;
     int height = location.floor >= 0 ? location.floor+1 : location.floor;
     
     NSDictionary *temp = (NSDictionary*)[self substitute:poi withOptions:
-                          @{
+                          [@{
                             @"@lat":@(location.lat),
                             @"@lng":@(location.lng),
                             @"@id":genid,
                             @"@toolname":@"NavCogFP",
-                            @"@height":@(height),
-                            @"@name":name?name:@""
-                            }];
+                            @"@height":[@(height) stringValue]
+                            } mtl_dictionaryByAddingEntriesFromDictionary:options]];
     NSLog(@"%@", temp);
     NSError *error;
     NSData *data = [NSJSONSerialization dataWithJSONObject:@[temp] options:0 error:&error];
@@ -193,7 +208,7 @@ static POIManager *instance;
                         NSDictionary *temp2 = [temp mtl_dictionaryByAddingEntriesFromDictionary:result[@"insert"][0]];
                         
                         NSError *error;
-                        HLPPOI *p = [MTLJSONAdapter modelOfClass:HLPPOI.class fromJSONDictionary:temp2 error:&error];
+                        HLPObject *p = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:temp2 error:&error];
                         if (error) {
                             NSLog(@"%@", error);
                             return;

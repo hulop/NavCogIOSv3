@@ -26,7 +26,7 @@
 #import "FingerprintManager.h"
 #import "POIManager.h"
 
-@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, FingerprintManagerDelegate, POIManagerDelegate>
+@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, FingerprintManagerDelegate, POIManagerDelegate, UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;

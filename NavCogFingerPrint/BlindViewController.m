@@ -59,6 +59,11 @@
     _settingButton = nil;
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -67,6 +72,11 @@
 
     helper = [[NavWebviewHelper alloc] initWithWebview:self.webView];
     helper.delegate = self;
+    
+    UITapGestureRecognizer *webViewTapped = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapAction:)];
+    webViewTapped.numberOfTapsRequired = 1;
+    webViewTapped.delegate = self;
+    [self.webView addGestureRecognizer:webViewTapped];
     
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
@@ -79,6 +89,20 @@
     
     poim = [POIManager sharedManager];
     poim.delegate = self;
+}
+
+- (void)tapAction:(UITapGestureRecognizer *)sender
+{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSString *result = [helper evalScript:@"(function(){return $hulop.indoor.getCurrentFloor()})()"];
+        NSLog(@"touched %@", result);
+        double height = [result doubleValue];
+        height = height<1?height:height-1;
+        HLPLocation* temp = [[HLPLocation alloc] init];
+        [temp update:center];
+        [temp updateFloor:height];
+        [self locationChange:temp];
+    });
 }
 
 #pragma mark - FingerprintManagerDelegate
@@ -142,13 +166,46 @@
 
 #pragma mark - POIManagerDelegate
 
+- (void)didStartLoading
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil showWaitingForView:self.view withMessage:@"Loading..."];
+    });
+}
+
 - (void)manager:(POIManager *)manager didPOIsLoaded:(NSArray<HLPObject *> *)pois
 {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil hideWaitingForView:self.view];
+    });
+
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([fp_mode isEqualToString:@"poi"]) {
             [self showPOIs:pois];
         }
         [self updateView];
+    });
+}
+
+- (void)manager:(POIManager *)manager requestInfo:(NSString *)type forPOI:(NSDictionary*)poi at:(HLPLocation*)loc
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@", type]
+                                                                   message:@"Input text"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+    }];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"Cancel", @"BlindView", @"")
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                              }]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  NSMutableDictionary *temp = [@{} mutableCopy];
+                                                  temp[type] = alert.textFields[0].text;
+                                                  [manager addPOI:poi at:loc withOptions:temp];
+                                              }]];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self presentViewController:alert animated:YES completion:nil];
     });
 }
 
@@ -164,13 +221,19 @@
         floor -= 1;
     }
 
-    center = [[HLPLocation alloc] initWithLat:[obj[@"lat"] doubleValue]
+    HLPLocation *loc = [[HLPLocation alloc] initWithLat:[obj[@"lat"] doubleValue]
                                                        Lng:[obj[@"lng"] doubleValue]
                                                   Accuracy:1
                                                      Floor:floor
                                                      Speed:1.0
                                                Orientation:0
                                        OrientationAccuracy:999];
+    [self locationChange:loc];
+}
+
+- (void)locationChange:(HLPLocation*)loc
+{
+    center = loc;
     [poim initCenter:center];
     NSObject *poi = [self findFeatureAt:center];
     selectedFeature = poi;
@@ -279,10 +342,13 @@
                 UIMessageView *view = [NavUtil showMessageView:self.view];
                 NSString *name = @"";
                 NSString *category = @"";
-                if ([selectedFeature isKindOfClass:HLPLandmark.class]) {
-                    HLPLandmark *l = (HLPLandmark*)selectedFeature;
-                    name = [l getLandmarkName];
-                    category = l.isToilet?@"Toilet":@"Facility";
+                if ([selectedFeature isKindOfClass:HLPFacility.class]) {
+                    HLPFacility *l = (HLPFacility*)selectedFeature;
+                    name = l.name;
+                    if (l.addr) {
+                        name = [NSString stringWithFormat:@"%@ (%@)", l.name, l.addr];
+                    }
+                    category = l.category==HLP_OBJECT_CATEGORY_TOILET?@"Toilet":@"Facility";
                 }
                 if ([selectedFeature isKindOfClass:HLPPOI.class]) {
                     HLPPOI *p = (HLPPOI*)selectedFeature;
@@ -378,13 +444,14 @@
                      @"count": name
                      };
         }
-        if ([obj isKindOfClass:HLPLandmark.class]) {
-            HLPLandmark* l = (HLPLandmark*)obj;
+        else if ([obj isKindOfClass:HLPFacility.class]) {
+            HLPFacility* p = (HLPFacility*)obj;
+            NSString *name = @"L";
             
             return @{
-                     @"lat": l.geometry.coordinates[1],
-                     @"lng": l.geometry.coordinates[0],
-                     @"count": l.isToilet?@"T":@"L"
+                     @"lat": p.geometry.coordinates[1],
+                     @"lng": p.geometry.coordinates[0],
+                     @"count": name
                      };
         }
         return (NSDictionary*)nil;
@@ -515,7 +582,7 @@
         batvc.selectedBeacon = nil;
     }
     if (poivc && poivc.selectedPOI) {
-        [poim addPOI:poivc.selectedPOI at:center];
+        [poim addPOI:poivc.selectedPOI at:center withOptions:@{}];
         poivc.selectedPOI = nil;
     }
     

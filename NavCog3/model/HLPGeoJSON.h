@@ -240,6 +240,7 @@ typedef enum: int {
 @property (nonatomic, readonly) NSString *longDescription;
 @property (nonatomic, readonly) NSString *longDescriptionPron;
 @property (nonatomic, readonly) NSString *lang;
+@property (nonatomic, readonly) NSString *addr;
 
 - (HLPLocation*) location;
 @end

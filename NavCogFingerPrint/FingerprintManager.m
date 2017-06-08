@@ -101,6 +101,9 @@ static FingerprintManager *instance;
     }
     _isReady = true;
     [_delegate manager:self didStatusChanged:_isReady];
+    if (_selectedRefpoint) {
+        [self select:_selectedRefpoint];
+    }
 }
 
 - (void) loadFloorplans:(void(^)(void))complete

@@ -48,6 +48,7 @@
     NSObject* selectedFeature;
     POIManager *poim;
     HLPLocation *center;
+    BOOL loaded;
 }
 
 - (void)dealloc
@@ -87,7 +88,6 @@
     
     fpm = [FingerprintManager sharedManager];
     fpm.delegate = self;
-    [fpm load];
     
     poim = [POIManager sharedManager];
     poim.delegate = self;
@@ -95,6 +95,9 @@
 
 - (void)backToModeSelect:(NSNotification*)note
 {
+    fpm.delegate = nil;
+    poim.delegate = nil;
+
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -117,13 +120,7 @@
 - (void)manager:(FingerprintManager *)manager didRefpointSelected:(HLPRefpoint *)refpoint
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        HLPRefpoint *rp = manager.selectedRefpoint;
-        NSDictionary *param = @{
-                                @"sync": @(false),
-                                @"location": [[HLPLocation alloc] initWithLat:rp.anchor_lat Lng:rp.anchor_lng Floor:rp.floor_num]
-                                };
-        [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:self userInfo:param];
-        
+        [self showRefpoint:manager.selectedRefpoint];
         if ([fp_mode isEqualToString:@"beacon"]) {
             [self showBeacons:manager.selectedFloorplan.beacons withRefpoint:manager.selectedRefpoint];
         }
@@ -132,13 +129,20 @@
     });
 }
 
+-(void) showRefpoint:(HLPRefpoint*)rp
+{
+    if (!rp) return;
+    NSDictionary *param = @{
+                            @"sync": @(false),
+                            @"location": [[HLPLocation alloc] initWithLat:rp.anchor_lat Lng:rp.anchor_lng Floor:rp.floor_num]
+                            };
+    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:self userInfo:param];
+}
+
 - (void)manager:(FingerprintManager *)manager didStatusChanged:(BOOL)isReady
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        
-        if ([fp_mode isEqualToString:@"beacon"]) {
-            [self showBeacons:manager.selectedFloorplan.beacons withRefpoint:manager.selectedRefpoint];
-        }
+        [self showRefpoint:manager.selectedRefpoint];
         [self updateView];
     });
 }
@@ -230,7 +234,7 @@
     } else if (floor >= 1) {
         floor -= 1;
     }
-
+    
     HLPLocation *loc = [[HLPLocation alloc] initWithLat:[obj[@"lat"] doubleValue]
                                                        Lng:[obj[@"lng"] doubleValue]
                                                   Accuracy:1
@@ -399,6 +403,13 @@
     });
 }
 
+- (void)bridgeInserted
+{
+    [NSTimer scheduledTimerWithTimeInterval:2 repeats:NO block:^(NSTimer * _Nonnull timer) {
+        [fpm load];
+    }];
+}
+
 - (void) insertScript
 {
     NSString *jspath = [[NSBundle mainBundle] pathForResource:@"fingerprint" ofType:@"js"];
@@ -489,7 +500,9 @@
     NSString* str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
     NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
     //NSLog(@"%@", script);
-    [helper evalScript:script];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [helper evalScript:script];
+    });
 }
 
 - (NSObject*) findFeatureAt:(HLPLocation*)location

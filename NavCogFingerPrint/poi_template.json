@@ -33,6 +33,7 @@
       "file": "@toolname",
       "major_category": "_nav_poi_",
       "sub_category": "_nav_obstacle_",
+      "minor_category": "@minor_category",
       "height": "@height",
       "category": "公共施設の情報",
       "施設ID": "@id"

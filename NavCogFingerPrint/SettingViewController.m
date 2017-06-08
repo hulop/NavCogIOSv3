@@ -44,6 +44,7 @@ static HLPSettingHelper *userSettingHelper;
 static HLPSettingHelper *refpointSettingHelper;
 
 static HLPSetting *idLabel, *refpointLabel;
+static HLPSetting *chooseConfig, *fingerprintLabel, *beaconUUID, *duration;
 
 
 - (void)viewDidLoad {
@@ -137,16 +138,26 @@ static HLPSetting *idLabel, *refpointLabel;
             [ud setObject:uuid forKey:@"selected_finger_printing_beacon_uuid"];
         }
         
+        NSString *fp_mode = [[NSUserDefaults standardUserDefaults] stringForKey:@"fp_mode"];
+        BOOL isFingerprint = [fp_mode isEqualToString:@"fingerprint"];
+        BOOL isBeacon = [fp_mode isEqualToString:@"beacon"];
+        //BOOL isPOI = [fp_mode isEqualToString:@"poi"];
+        
+        chooseConfig.visible = isFingerprint || isBeacon;
+        fingerprintLabel.visible = isFingerprint;
+        beaconUUID.visible = isFingerprint;
+        duration.visible = isFingerprint;
+        
         return;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
 
     refpointLabel = [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"Refpoint: %@", [FingerprintManager sharedManager].selectedRefpoint.floor]];
-    [userSettingHelper addActionTitle:@"Select Refpoint" Name:@"choose_config"];
+    chooseConfig = [userSettingHelper addActionTitle:@"Select Refpoint" Name:@"choose_config"];
 
-    [userSettingHelper addSectionTitle:@"Finger Printing"];
-    [userSettingHelper addSettingWithType:UUID_TYPE Label:@"Beacon UUID" Name:@"finger_printing_beacon_uuid" DefaultValue:@[] Accept:nil];
-    [userSettingHelper addSettingWithType:DOUBLE Label:@"Duration" Name:@"finger_printing_duration" DefaultValue:@(5) Min:1 Max:30 Interval:1];
+    fingerprintLabel = [userSettingHelper addSectionTitle:@"Finger Printing"];
+    beaconUUID = [userSettingHelper addSettingWithType:UUID_TYPE Label:@"Beacon UUID" Name:@"finger_printing_beacon_uuid" DefaultValue:@[] Accept:nil];
+    duration = [userSettingHelper addSettingWithType:DOUBLE Label:@"Duration" Name:@"finger_printing_duration" DefaultValue:@(5) Min:1 Max:30 Interval:1];
 
     [[userSettingHelper addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
     [[userSettingHelper addSettingWithType:TEXTINPUT Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil] setVisible:NO];

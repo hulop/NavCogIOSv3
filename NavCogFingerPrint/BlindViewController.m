@@ -189,12 +189,14 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([fp_mode isEqualToString:@"poi"]) {
             [self showPOIs:pois];
+            NSObject *poi = [self findFeatureAt:center];
+            selectedFeature = poi;
         }
         [self updateView];
     });
 }
 
-- (void)manager:(POIManager *)manager requestInfo:(NSString *)type forPOI:(NSDictionary*)poi at:(HLPLocation*)loc
+- (void)manager:(POIManager *)manager requestInfo:(NSString *)type forPOI:(NSDictionary*)poi at:(HLPLocation*)loc withOptions:(NSDictionary*)options
 {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@", type]
                                                                    message:@"Input text"
@@ -208,7 +210,8 @@
                                               style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                                                   NSMutableDictionary *temp = [@{} mutableCopy];
                                                   temp[type] = alert.textFields[0].text;
-                                                  [manager addPOI:poi at:loc withOptions:temp];
+                                                  
+                                                  [manager addPOI:poi at:loc withOptions:[temp mtl_dictionaryByAddingEntriesFromDictionary:options]];
                                               }]];
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -341,7 +344,7 @@
 
         } else if ([fp_mode isEqualToString:@"poi"]) {
             self.searchButton.enabled = nds.isManualLocation;
-            self.settingButton.enabled =  NO;
+            self.settingButton.enabled =  YES;
             
             [NavUtil hideMessageView:self.view];
             if (selectedFeature) {
@@ -361,6 +364,9 @@
                     HLPPOI *p = (HLPPOI*)selectedFeature;
                     name = [p name];
                     category = p.poiCategoryString;
+                    if (p.minorCategory) {
+                        category = [NSString stringWithFormat:@"%@ (%@)", category, p.minorCategory];
+                    }
                 }
                 view.message.text = [NSString stringWithFormat:@"    Name: %@\nCategory: %@", name, category];
             } else {
@@ -369,7 +375,7 @@
             self.devFingerprint.hidden = NO;
             
             self.navigationItem.rightBarButtonItem = _searchButton;
-            self.navigationItem.leftBarButtonItem = nil;
+            self.navigationItem.leftBarButtonItem = _settingButton;
             
             self.navigationItem.title = @"POI";
         }
@@ -453,7 +459,7 @@
         }
         else if ([obj isKindOfClass:HLPFacility.class]) {
             HLPFacility* p = (HLPFacility*)obj;
-            NSString *name = @"L";
+            NSString *name = @"F";
             
             return @{
                      @"lat": p.geometry.coordinates[1],
@@ -584,7 +590,6 @@
 {
     fpm.delegate = self;
     if (batvc && batvc.selectedBeacon) {
-        HLPLocation *center = [[NavDataStore sharedDataStore] mapCenter];
         [fpm addBeacon:batvc.selectedBeacon atLat:center.lat Lng:center.lng];
         batvc.selectedBeacon = nil;
     }

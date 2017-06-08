@@ -27,7 +27,7 @@
 @protocol POIManagerDelegate
 -(void) didStartLoading;
 -(void) manager:(POIManager*)manager didPOIsLoaded:(NSArray<HLPObject*>*)pois;
--(void) manager:(POIManager*)manager requestInfo:(NSString *)type forPOI:(NSDictionary*)poi at:(HLPLocation*)loc;
+-(void) manager:(POIManager*)manager requestInfo:(NSString *)type forPOI:(NSDictionary*)poi at:(HLPLocation*)loc withOptions:(NSDictionary*)options;
 @end
 
 @interface POIManager : NSObject

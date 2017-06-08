@@ -68,7 +68,6 @@ static POIManager *instance;
 
 - (void)initCenter:(HLPLocation*)loc
 {
-    NSLog(@"initCenter %@", loc);
     if (lastLocation && [loc distanceTo:lastLocation] < 200) {
         if (loc.floor != lastLocation.floor) {
             [_delegate manager:self didPOIsLoaded:[self filteredPOIsAt:loc]];
@@ -77,6 +76,7 @@ static POIManager *instance;
         return;
     }
     NavDataStore *nds = [NavDataStore sharedDataStore];
+    [_delegate didStartLoading];
     [HLPDataUtil loadLandmarksAtLat:loc.lat Lng:loc.lng inDist:DIST forUser:nds.userID withLang:nds.userLanguage withCallback:^(NSArray<HLPObject *> *result) {
         [HLPDataUtil loadNodeMapForUser:nds.userID withLang:nds.userLanguage WithCallback:^(NSArray<HLPObject *> *result) {
             cachedFeatures = result;
@@ -90,7 +90,6 @@ static POIManager *instance;
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     
-    [_delegate didStartLoading];
     [HLPDataUtil loadFeaturesForUser:nds.userID withLang:nds.userLanguage WithCallback:^(NSArray<HLPObject *> *result) {
         cachedFeatures = [cachedFeatures arrayByAddingObjectsFromArray:result];
         facilityNodeMap = [@{} mutableCopy];
@@ -110,24 +109,24 @@ static POIManager *instance;
     }];
 }
 
-- (BOOL)checkName:(NSObject*)obj
+- (BOOL)check:(NSObject*)obj type:(NSString*)type
 {
     if ([obj isKindOfClass:NSDictionary.class]) {
         NSDictionary *dic = (NSDictionary*)obj;
         BOOL result = false;
         for(NSString *key in dic) {
-            result = result || [self checkName:dic[key]];
+            result = result || [self check:dic[key] type:type];
         }
         return result;
     } else if ([obj isKindOfClass:NSArray.class]) {
         NSArray *arr = (NSArray*)obj;
         BOOL result = false;
         for(NSObject *o in arr) {
-            result = result || [self checkName:o];
+            result = result || [self check:o type:type];
         }
         return result;
     } else if ([obj isKindOfClass:NSString.class]) {
-        return [@"@name" isEqualToString:(NSString*)obj];
+        return [type isEqualToString:(NSString*)obj];
     }
     return NO;
 }
@@ -169,9 +168,11 @@ static POIManager *instance;
 
 - (void)addPOI:(NSDictionary *)poi at:(HLPLocation*)location withOptions:(NSDictionary *)options
 {
-    if ([self checkName:poi] && !options[@"@name"]) {
-        [_delegate manager:self requestInfo:@"@name" forPOI:poi at:location];
-        return;
+    for(NSString* type in @[@"@name",@"@minor_category"]) {
+        if ([self check:poi type:type] && !options[type]) {
+            [_delegate manager:self requestInfo:type forPOI:poi at:location withOptions:options];
+            return;
+        }
     }
     
     NSString* (^idgen)(NSDictionary*) = ^(NSDictionary* dic) {

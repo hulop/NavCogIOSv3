@@ -82,6 +82,8 @@
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:MANUAL_LOCATION_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backToModeSelect:) name:@"BACK_TO_MODE_SELECTION" object:nil];
+    
     
     fpm = [FingerprintManager sharedManager];
     fpm.delegate = self;
@@ -89,6 +91,11 @@
     
     poim = [POIManager sharedManager];
     poim.delegate = self;
+}
+
+- (void)backToModeSelect:(NSNotification*)note
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)tapAction:(UITapGestureRecognizer *)sender

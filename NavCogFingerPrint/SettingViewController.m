@@ -32,6 +32,7 @@
 #import "FingerprintManager.h"
 #import "HLPFingerprint.h"
 
+
 @interface SettingViewController ()
 
 @end
@@ -96,6 +97,8 @@ static HLPSetting *idLabel, *refpointLabel;
 {
     if ([setting.name isEqualToString:@"choose_config"]) {
         [self performSegueWithIdentifier:setting.name sender:self];
+    } else if ([setting.name isEqualToString:@"back_to_mode_selection"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"BACK_TO_MODE_SELECTION" object:nil];
     } else {
         HLPRefpoint *rp;
         for(rp in [FingerprintManager sharedManager].refpoints) {
@@ -153,6 +156,8 @@ static HLPSetting *idLabel, *refpointLabel;
     
     [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"version: %@ (%@)", versionNo, buildNo]];
     idLabel = [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"%@", [NavDataStore sharedDataStore].userID]];
+    
+    [userSettingHelper addActionTitle:@"Mode Selection" Name:@"back_to_mode_selection"];
 }
 
 + (void)setupRefpointSettingHelper

@@ -32,7 +32,6 @@
 
 @interface BlindViewController () {
     NavWebviewHelper *helper;
-    
     ViewState state;
 }
 
@@ -49,6 +48,7 @@
     POIManager *poim;
     HLPLocation *center;
     BOOL loaded;
+    HLPRefpoint* currentRp;
 }
 
 - (void)dealloc
@@ -132,17 +132,23 @@
 -(void) showRefpoint:(HLPRefpoint*)rp
 {
     if (!rp) return;
+    if (currentRp == rp) return;
     NSDictionary *param = @{
                             @"sync": @(false),
                             @"location": [[HLPLocation alloc] initWithLat:rp.anchor_lat Lng:rp.anchor_lng Floor:rp.floor_num]
                             };
     [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:self userInfo:param];
+    currentRp = rp;
 }
 
 - (void)manager:(FingerprintManager *)manager didStatusChanged:(BOOL)isReady
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil hideModalWaiting];
         [self showRefpoint:manager.selectedRefpoint];
+        if ([fp_mode isEqualToString:@"beacon"]) {
+            [self showBeacons:manager.selectedFloorplan.beacons withRefpoint:manager.selectedRefpoint];
+        }
         [self updateView];
     });
 }
@@ -150,8 +156,11 @@
 - (void)manager:(FingerprintManager *)manager didSendData:(NSString *)idString withError:(NSError *)error
 {
     NSLog(@"sample id %@", idString);
-    [self vibrate];
-    [self updateView];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil hideWaitingForView:self.view];
+        [self vibrate];
+        [self updateView];
+    });
 }
 
 - (BOOL)manager:(FingerprintManager *)manager didObservedBeacons:(int)beaconCount atSample:(int)sampleCount
@@ -168,6 +177,7 @@
 - (void)manager:(FingerprintManager *)manager didSamplingsLoaded:(NSArray *)samplings
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil hideModalWaiting];
         if ([fp_mode isEqualToString:@"fingerprint"]) {
             [self showFingerprints:samplings];
         }
@@ -188,13 +198,12 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [NavUtil hideWaitingForView:self.view];
+        [NavUtil hideModalWaiting];
     });
 
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([fp_mode isEqualToString:@"poi"]) {
             [self showPOIs:pois];
-            NSObject *poi = [self findFeatureAt:center];
-            selectedFeature = poi;
         }
         [self updateView];
     });
@@ -290,7 +299,12 @@
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady;
             
-            self.searchButton.title = NSLocalizedStringFromTable(isSampling?@"Cancel":@"Start", @"Fingerprint", @"");
+            if (selectedFeature) {
+                self.searchButton.title = NSLocalizedStringFromTable(@"Delete", @"Fingerprint", @"");
+            } else {
+                self.searchButton.title = NSLocalizedStringFromTable(isSampling?@"Cancel":@"Start", @"Fingerprint", @"");
+            }
+            
             self.devFingerprint.hidden = NO;
             
             self.navigationItem.rightBarButtonItem = _searchButton;
@@ -486,7 +500,10 @@
 {
     showingFeatures = features;
     showingStyle = styleFunction;
-    selectedFeature = nil;
+
+    NSObject *poi = [self findFeatureAt:center];
+    selectedFeature = poi;
+
     
     NSMutableArray *temp = [@[] mutableCopy];
     for(NSObject *f in features) {
@@ -521,7 +538,9 @@
             }
         }
     }
-    if (min < 1) {
+    double zoom = [[helper evalScript:@"(function(){return $hulop.map.getMap().getView().getZoom();})()"] doubleValue];
+    
+    if (min < pow(2, 20-zoom)) {
         return mino;
     }
     return nil;
@@ -573,21 +592,36 @@
 {
     if ([identifier isEqualToString:@"show_search"]) {
         if ([fp_mode isEqualToString:@"fingerprint"]) {
-            if (fpm.isSampling) {
-                [self cancelSampling];
+            if (selectedFeature && [selectedFeature isKindOfClass:HLPSampling.class]) {
+                [self checkDeletion:^{
+                    [NavUtil showModalWaitingWithMessage:@"Deleting..."];
+                    [fpm deleteFingerprint:((HLPSampling*)selectedFeature)._id[@"$oid"]];
+                } withType:@"Fingerprint"];
             } else {
-                [self startSampling];
+                if (fpm.isSampling) {
+                    [NavUtil hideWaitingForView:self.view];
+                    [self cancelSampling];
+                } else {
+                    [NavUtil showWaitingForView:self.view withMessage:@"Sampling..."];
+                    [self startSampling];
+                }
             }
         } else if ([fp_mode isEqualToString:@"beacon"]) {
             if (selectedFeature && [selectedFeature isKindOfClass:HLPGeoJSONFeature.class]) {
-                [fpm removeBeacon:(HLPGeoJSONFeature*)selectedFeature];
+                [self checkDeletion:^{
+                    [NavUtil showModalWaitingWithMessage:@"Deleting..."];
+                    [fpm removeBeacon:(HLPGeoJSONFeature*)selectedFeature];
+                } withType:@"Beacon"];
             } else {
                 batvc = [[UIStoryboard storyboardWithName:@"FingerPrint" bundle:nil] instantiateViewControllerWithIdentifier:@"beaconadd"];
                 [self.navigationController pushViewController:batvc animated:YES];
             }
         } else if ([fp_mode isEqualToString:@"poi"]) {
             if (selectedFeature && [selectedFeature isKindOfClass:HLPGeoJSONFeature.class]) {
-                [poim removePOI:(HLPGeoJSONFeature*)selectedFeature];
+                [self checkDeletion:^{
+                    [NavUtil showModalWaitingWithMessage:@"Deleting..."];
+                    [poim removePOI:(HLPGeoJSONFeature*)selectedFeature];
+                } withType:@"POI"];
             } else {
                 poivc = [[UIStoryboard storyboardWithName:@"FingerPrint" bundle:nil] instantiateViewControllerWithIdentifier:@"poiadd"];
                 [self.navigationController pushViewController:poivc animated:YES];
@@ -599,14 +633,36 @@
     return YES;
 }
 
+-(void) checkDeletion:(void(^)(void))deletion withType:(NSString*)type
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Delete %@", type]
+                                                                   message:@"Are you sure to delete?"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"Cancel", @"BlindView", @"")
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                              }]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  deletion();
+                                              }]];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self presentViewController:alert animated:YES completion:nil];
+    });
+
+}
+
+
 - (IBAction)returnActionForSegue:(UIStoryboardSegue *)segue
 {
     fpm.delegate = self;
     if (batvc && batvc.selectedBeacon) {
+        [NavUtil showModalWaitingWithMessage:@"Adding..."];
         [fpm addBeacon:batvc.selectedBeacon atLat:center.lat Lng:center.lng];
         batvc.selectedBeacon = nil;
     }
     if (poivc && poivc.selectedPOI) {
+        [NavUtil showModalWaitingWithMessage:@"Adding..."];
         [poim addPOI:poivc.selectedPOI at:center withOptions:@{}];
         poivc.selectedPOI = nil;
     }

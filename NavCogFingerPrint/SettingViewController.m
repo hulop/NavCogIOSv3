@@ -145,7 +145,7 @@ static HLPSetting *chooseConfig, *fingerprintLabel, *beaconUUID, *duration;
         
         chooseConfig.visible = isFingerprint || isBeacon;
         fingerprintLabel.visible = isFingerprint;
-        beaconUUID.visible = isFingerprint;
+        beaconUUID.visible = isFingerprint || isBeacon;
         duration.visible = isFingerprint;
         
         return;

@@ -389,7 +389,16 @@ static FingerprintManager *instance;
 
 - (void)deleteFingerprint:(NSString *)idString
 {
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
+    NSString *server = [[ServerConfig sharedConfig] fingerPrintingServerHost];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:SAMPLINGS_API_URL, https, server, [@"/" stringByAppendingString:idString]]];
     
+    [HLPDataUtil deleteRequest:url withData:nil callback:^(NSData *response) {
+        [self loadSamplings:^{
+            [_delegate manager:self didSamplingsLoaded:_samplings];
+        }];
+    }];
+
 }
 
 - (long)beaconsCount
@@ -481,6 +490,11 @@ static FingerprintManager *instance;
     NSDictionary *update = @{@"$set" : @{@"beacons" : beacons}};
     
     [self requestUpdate:update withQuery:query];
+}
+
+-(void)removeSample:(HLPSampling *)sample
+{
+    
 }
 
 -(void) requestUpdate:(NSDictionary*)update withQuery:(NSDictionary*)query

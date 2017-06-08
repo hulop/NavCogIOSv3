@@ -208,6 +208,16 @@
 
 +(void)postRequest:(NSURL*) url withData:(NSDictionary*) data callback:(void(^)(NSData* response))callback
 {
+    [HLPDataUtil method:@"POST" request:url withData:data callback:callback];
+}
+
++(void)deleteRequest:(NSURL*) url withData:(NSDictionary*) data callback:(void(^)(NSData* response))callback
+{
+    [HLPDataUtil method:@"DELETE" request:url withData:data callback:callback];
+}
+
++(void)method:(NSString*)method request:(NSURL*) url withData:(NSDictionary*) data callback:(void(^)(NSData* response))callback
+{
     @try {
         NSMutableURLRequest *request = [NSMutableURLRequest
                                         requestWithURL: url
@@ -224,7 +234,7 @@
         
         //NSLog(@"Requesting %@ \n%@", url, temp2);
         
-        [request setHTTPMethod: @"POST"];
+        [request setHTTPMethod: method];
         [request setValue: @"application/x-www-form-urlencoded; charset=UTF-8"  forHTTPHeaderField: @"Content-Type"];
         [request setValue: [NSString stringWithFormat: @"%lu", (unsigned long)[query length]]  forHTTPHeaderField: @"Content-Length"];
         [request setHTTPBody: query];

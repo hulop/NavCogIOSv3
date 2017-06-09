@@ -31,7 +31,7 @@ class DialogManager: NSObject {
         }
     }
     static var instance:DialogManager?
-    static func sharedManager()->DialogManager {
+    @discardableResult static func sharedManager()->DialogManager {
         if instance == nil {
             instance = DialogManager()
         }

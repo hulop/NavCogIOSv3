@@ -68,6 +68,10 @@
     return beaconCount < 1;
 }
 
+- (void)manager:(FingerprintManager *)manager didRefpointSelected:(HLPRefpoint *)refpoint
+{
+}
+
 - (void)manager:(FingerprintManager *)manager didStatusChanged:(BOOL)isReady
 {
 }

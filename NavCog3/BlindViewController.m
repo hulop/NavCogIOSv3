@@ -362,7 +362,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         UIMessageView *mv = [NavUtil showMessageView:self.view];
         
-        id observer = [[NSNotificationCenter defaultCenter] addObserverForName:LOG_REPLAY_PROGRESS object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        __block __weak id observer = [[NSNotificationCenter defaultCenter] addObserverForName:LOG_REPLAY_PROGRESS object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
             long progress = [[note userInfo][@"progress"] longValue];
             long total = [[note userInfo][@"total"] longValue];
             NSDictionary *marker = [note userInfo][@"marker"];
@@ -421,6 +421,9 @@
 - (void) loaded {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
+}
+
+- (void) bridgeInserted {
 }
 
 - (void)checkConnection {

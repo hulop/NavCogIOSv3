@@ -286,6 +286,9 @@
     _indicator.hidden = YES;
 }
 
+- (void) bridgeInserted {
+}
+
 - (void)checkConnection
 {
     _errorMessage.hidden = NO;

@@ -109,7 +109,7 @@ static NavSound *instance;
     } else {
         SEL sel = NSSelectorFromString(name);
         if ([self respondsToSelector:sel]) {
-            [self performSelector:sel];
+            [self performSelector:sel withObject:nil afterDelay:0.0f];
         }
     }
 }

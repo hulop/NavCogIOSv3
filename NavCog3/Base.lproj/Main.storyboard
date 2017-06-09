@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="rPX-gt-o07">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="rPX-gt-o07">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -308,7 +308,7 @@
         <!--NavCog-->
         <scene sceneID="jsF-Mo-vEC">
             <objects>
-                <viewController id="1gp-c3-Yyi" customClass="BlindViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="blind_ui" id="1gp-c3-Yyi" customClass="BlindViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="o5u-Kq-7q4"/>
                         <viewControllerLayoutGuide type="bottom" id="rXg-ft-RDc"/>
@@ -326,10 +326,10 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="LpH-RC-RJy">
-                                <rect key="frame" x="177" y="291.5" width="20" height="20"/>
+                                <rect key="frame" x="177" y="292" width="20" height="20"/>
                             </activityIndicatorView>
                             <button hidden="YES" opaque="NO" alpha="0.80000000000000004" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3qj-Dh-1lE">
-                                <rect key="frame" x="59.5" y="0.0" width="80" height="50"/>
+                                <rect key="frame" x="60" y="0.0" width="80" height="50"/>
                                 <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="2Fl-Ty-9qU"/>
@@ -350,7 +350,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t9O-hh-LqB">
-                                <rect key="frame" x="147.5" y="0.0" width="80" height="50"/>
+                                <rect key="frame" x="148" y="0.0" width="80" height="50"/>
                                 <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="eX7-Mc-ZOD"/>
@@ -371,7 +371,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w8D-6y-H77">
-                                <rect key="frame" x="235.5" y="74" width="80" height="50"/>
+                                <rect key="frame" x="236" y="74" width="80" height="50"/>
                                 <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="9YE-qh-rQM"/>
@@ -392,7 +392,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Qc-Ae-cih">
-                                <rect key="frame" x="59.5" y="74" width="80" height="50"/>
+                                <rect key="frame" x="60" y="74" width="80" height="50"/>
                                 <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="I2S-hj-hLx"/>
@@ -413,7 +413,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ckT-Tm-n01">
-                                <rect key="frame" x="147.5" y="533" width="80" height="50"/>
+                                <rect key="frame" x="148" y="533" width="80" height="50"/>
                                 <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="6Qv-hE-8kr"/>
@@ -528,13 +528,13 @@
                                 </connections>
                             </button>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network Error" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5yL-Mp-iYF">
-                                <rect key="frame" x="134.5" y="204" width="106.5" height="20.5"/>
+                                <rect key="frame" x="134" y="204" width="107" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.70388170809999995" green="0.70388170809999995" blue="0.70388170809999995" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button hidden="YES" opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TqI-cp-f3Y">
-                                <rect key="frame" x="147.5" y="232.5" width="80" height="50"/>
+                                <rect key="frame" x="148" y="233" width="80" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="jYi-Vz-Q3t"/>
                                     <constraint firstAttribute="height" constant="50" id="lR6-cq-i8H"/>
@@ -548,7 +548,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Cs-ZC-ieK">
-                                <rect key="frame" x="235.5" y="0.0" width="80" height="50"/>
+                                <rect key="frame" x="236" y="0.0" width="80" height="50"/>
                                 <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="9MU-fL-uer"/>
@@ -571,7 +571,6 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="rXg-ft-RDc" firstAttribute="top" secondItem="tBq-Mg-lUf" secondAttribute="bottom" id="0Vn-cV-rN9"/>
                             <constraint firstItem="tBq-Mg-lUf" firstAttribute="leading" secondItem="Vhx-Qg-XmL" secondAttribute="leading" id="1y0-bQ-OGq"/>
                             <constraint firstItem="cMN-Lw-Y8t" firstAttribute="leading" secondItem="Vhx-Qg-XmL" secondAttribute="leadingMargin" id="1zc-a2-b8n"/>
                             <constraint firstItem="8Qc-Ae-cih" firstAttribute="top" secondItem="7Cs-ZC-ieK" secondAttribute="bottom" constant="24" id="2bt-PK-hM1"/>
@@ -586,6 +585,7 @@
                             <constraint firstItem="LpH-RC-RJy" firstAttribute="top" secondItem="TqI-cp-f3Y" secondAttribute="bottom" constant="9" id="Dtz-hS-uOk"/>
                             <constraint firstItem="aGM-ZR-uTt" firstAttribute="leading" secondItem="Vhx-Qg-XmL" secondAttribute="leading" id="H3d-cS-htQ"/>
                             <constraint firstItem="t8J-sc-MUY" firstAttribute="top" secondItem="cMN-Lw-Y8t" secondAttribute="bottom" constant="50" id="Jhj-1x-IxI"/>
+                            <constraint firstAttribute="bottom" secondItem="tBq-Mg-lUf" secondAttribute="bottom" id="JxM-0m-0W6"/>
                             <constraint firstItem="Tdh-uv-IeP" firstAttribute="centerY" secondItem="cMN-Lw-Y8t" secondAttribute="centerY" id="LoH-n3-K3x"/>
                             <constraint firstItem="rXg-ft-RDc" firstAttribute="top" secondItem="aGM-ZR-uTt" secondAttribute="bottom" id="NKK-D7-ptX"/>
                             <constraint firstItem="w8D-6y-H77" firstAttribute="top" secondItem="7Cs-ZC-ieK" secondAttribute="bottom" constant="24" id="buQ-Q1-xrO"/>
@@ -1427,10 +1427,10 @@
         <image name="Menu" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="x9Q-EB-G1d"/>
-        <segue reference="jup-Rk-ibd"/>
-        <segue reference="Kab-D7-zbh"/>
-        <segue reference="y9t-k8-dBv"/>
         <segue reference="Uqw-3g-GCM"/>
+        <segue reference="y9t-k8-dBv"/>
+        <segue reference="x9Q-EB-G1d"/>
+        <segue reference="GK1-dG-XDF"/>
+        <segue reference="XlC-wp-uNx"/>
     </inferredMetricsTieBreakers>
 </document>

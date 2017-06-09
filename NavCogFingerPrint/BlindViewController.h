@@ -26,6 +26,12 @@
 #import "FingerprintManager.h"
 #import "POIManager.h"
 
+typedef NS_ENUM(NSInteger, FPMode) {
+    FPModeFingerprint,
+    FPModeBeacon,
+    FPModePOI
+};
+
 @interface BlindViewController : UIViewController <NavWebviewHelperDelegate, FingerprintManagerDelegate, POIManagerDelegate, UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
@@ -48,5 +54,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *devNote;
 @property (weak, nonatomic) IBOutlet UIButton *devRestart;
 @property (weak, nonatomic) IBOutlet UIButton *devFingerprint;
+
+@property FPMode fp_mode;
 
 @end

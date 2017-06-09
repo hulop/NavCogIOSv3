@@ -20,12 +20,9 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+
 #import <UIKit/UIKit.h>
 
-@interface InitViewController : UIViewController
-
-@property (weak, nonatomic) IBOutlet UIButton *blindButton;
-@property (weak, nonatomic) IBOutlet UIButton *wcButton;
-@property (weak, nonatomic) IBOutlet UIButton *gpButton;
+@interface FPTabBarController : UITabBarController
 
 @end

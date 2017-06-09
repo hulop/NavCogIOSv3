@@ -20,14 +20,11 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+
 #import <UIKit/UIKit.h>
-#import "HLPSettingHelper.h"
-#import "BlindViewController.h"
 
-@interface SettingViewController : UITableViewController <HLPSettingHelperDelegate>
-
-+(void)setup;
-
-@property FPMode fp_mode;
+@interface WelcomViewController : UIViewController
+@property (weak, nonatomic) IBOutlet UILabel *statusLabel;
+@property (weak, nonatomic) IBOutlet UIButton *retryButton;
 
 @end

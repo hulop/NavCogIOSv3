@@ -37,6 +37,8 @@ See [wiki](https://github.com/hulop/NavCogIOSv3/wiki) for set up servers and dat
 ## About
 [About HULOP](https://github.com/hulop/00Readme)
 
+## Icons
+Icons in NavCogFingerPrint are from [https://github.com/IBM-Design/icons](https://github.com/IBM-Design/icons)
 
 ## License
 [MIT](http://opensource.org/licenses/MIT)

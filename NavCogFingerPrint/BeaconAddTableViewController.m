@@ -40,6 +40,7 @@
     self.navigationItem.rightBarButtonItem = refreshBtn;
  
     fpm = [FingerprintManager sharedManager];
+    
     [self refreshBeacons];
     [self updateView];
 }

@@ -35,7 +35,6 @@
 		7E30F9B91E813FFC00D542E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E30F9B81E813FFC00D542E5 /* Assets.xcassets */; };
 		7E30F9BC1E813FFC00D542E5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E30F9BA1E813FFC00D542E5 /* LaunchScreen.storyboard */; };
 		7E30F9C31E8141CB00D542E5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E30F9C11E8141CB00D542E5 /* Main.storyboard */; };
-		7E30F9C61E81425C00D542E5 /* WelcomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9C51E81425C00D542E5 /* WelcomViewController.m */; };
 		7E30F9CB1E81429700D542E5 /* ServerConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9CA1E81429700D542E5 /* ServerConfig.m */; };
 		7E30F9CE1E8142B200D542E5 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9CD1E8142B200D542E5 /* AuthManager.m */; };
 		7E30F9D21E8142D300D542E5 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9D11E8142D300D542E5 /* Logging.m */; };
@@ -45,7 +44,6 @@
 		7E30F9DF1E81448600D542E5 /* ServerSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9DE1E81448600D542E5 /* ServerSelectionViewController.m */; };
 		7E30F9E21E8144AD00D542E5 /* AgreementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9E11E8144AD00D542E5 /* AgreementViewController.m */; };
 		7E30F9E51E8144D000D542E5 /* DownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9E41E8144D000D542E5 /* DownloadViewController.m */; };
-		7E30F9EB1E81458A00D542E5 /* InitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9EA1E81458A00D542E5 /* InitViewController.mm */; };
 		7E30F9EE1E81463C00D542E5 /* ConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9ED1E81463C00D542E5 /* ConfigManager.m */; };
 		7E30F9F21E8146BE00D542E5 /* BlindViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9F11E8146BE00D542E5 /* BlindViewController.m */; };
 		7E30F9F51E81496500D542E5 /* NavUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9F41E81496500D542E5 /* NavUtil.m */; };
@@ -126,6 +124,9 @@
 		7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC371D1E0E5E00AC111A /* LocationManager.mm */; };
 		7EE8E5DA1EE67E08006EE7C3 /* POIAddTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E5D91EE67E08006EE7C3 /* POIAddTableViewController.m */; };
 		7EE8E5DC1EE68449006EE7C3 /* poi_template.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE8E5DB1EE68449006EE7C3 /* poi_template.json */; };
+		7EE8E5DF1EE935A3006EE7C3 /* FPTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E5DE1EE935A3006EE7C3 /* FPTabBarController.m */; };
+		7EE8E5E11EE93D1C006EE7C3 /* icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EE8E5E01EE93D1C006EE7C3 /* icons.xcassets */; };
+		7EE8E5E71EE94857006EE7C3 /* WelcomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E5E61EE94857006EE7C3 /* WelcomViewController.m */; };
 		7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */; };
 		7EF45E321E3F1E3700208042 /* AgreementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2A1E3F1E3700208042 /* AgreementViewController.m */; };
 		7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */; };
@@ -217,8 +218,6 @@
 		7E30F9BB1E813FFC00D542E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7E30F9BD1E813FFC00D542E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7E30F9C21E8141CB00D542E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = NavCog3/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
-		7E30F9C41E81425C00D542E5 /* WelcomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WelcomViewController.h; path = NavCog3/WelcomViewController.h; sourceTree = SOURCE_ROOT; };
-		7E30F9C51E81425C00D542E5 /* WelcomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WelcomViewController.m; path = NavCog3/WelcomViewController.m; sourceTree = SOURCE_ROOT; };
 		7E30F9C91E81429700D542E5 /* ServerConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServerConfig.h; path = NavCog3/ServerConfig.h; sourceTree = SOURCE_ROOT; };
 		7E30F9CA1E81429700D542E5 /* ServerConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerConfig.m; path = NavCog3/ServerConfig.m; sourceTree = SOURCE_ROOT; };
 		7E30F9CC1E8142B200D542E5 /* AuthManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AuthManager.h; path = NavCog3/AuthManager.h; sourceTree = SOURCE_ROOT; };
@@ -238,8 +237,6 @@
 		7E30F9E11E8144AD00D542E5 /* AgreementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AgreementViewController.m; path = NavCog3/AgreementViewController.m; sourceTree = SOURCE_ROOT; };
 		7E30F9E31E8144D000D542E5 /* DownloadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DownloadViewController.h; path = NavCog3/DownloadViewController.h; sourceTree = SOURCE_ROOT; };
 		7E30F9E41E8144D000D542E5 /* DownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DownloadViewController.m; path = NavCog3/DownloadViewController.m; sourceTree = SOURCE_ROOT; };
-		7E30F9E91E81458A00D542E5 /* InitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitViewController.h; sourceTree = "<group>"; };
-		7E30F9EA1E81458A00D542E5 /* InitViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InitViewController.mm; sourceTree = "<group>"; };
 		7E30F9EC1E81463C00D542E5 /* ConfigManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConfigManager.h; path = NavCog3/ConfigManager.h; sourceTree = SOURCE_ROOT; };
 		7E30F9ED1E81463C00D542E5 /* ConfigManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConfigManager.m; path = NavCog3/ConfigManager.m; sourceTree = SOURCE_ROOT; };
 		7E30F9F01E8146BE00D542E5 /* BlindViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlindViewController.h; sourceTree = "<group>"; };
@@ -371,6 +368,11 @@
 		7EE8E5D81EE67E08006EE7C3 /* POIAddTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POIAddTableViewController.h; sourceTree = "<group>"; };
 		7EE8E5D91EE67E08006EE7C3 /* POIAddTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POIAddTableViewController.m; sourceTree = "<group>"; };
 		7EE8E5DB1EE68449006EE7C3 /* poi_template.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = poi_template.json; sourceTree = "<group>"; };
+		7EE8E5DD1EE935A3006EE7C3 /* FPTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPTabBarController.h; sourceTree = "<group>"; };
+		7EE8E5DE1EE935A3006EE7C3 /* FPTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPTabBarController.m; sourceTree = "<group>"; };
+		7EE8E5E01EE93D1C006EE7C3 /* icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = icons.xcassets; sourceTree = "<group>"; };
+		7EE8E5E51EE94857006EE7C3 /* WelcomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomViewController.h; sourceTree = "<group>"; };
+		7EE8E5E61EE94857006EE7C3 /* WelcomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomViewController.m; sourceTree = "<group>"; };
 		7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		7EF45E2A1E3F1E3700208042 /* AgreementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AgreementViewController.m; sourceTree = "<group>"; };
 		7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadViewController.m; sourceTree = "<group>"; };
@@ -527,8 +529,10 @@
 			isa = PBXGroup;
 			children = (
 				7E30F9EF1E81469B00D542E5 /* shared */,
-				7E30F9E91E81458A00D542E5 /* InitViewController.h */,
-				7E30F9EA1E81458A00D542E5 /* InitViewController.mm */,
+				7EE8E5E51EE94857006EE7C3 /* WelcomViewController.h */,
+				7EE8E5E61EE94857006EE7C3 /* WelcomViewController.m */,
+				7EE8E5DD1EE935A3006EE7C3 /* FPTabBarController.h */,
+				7EE8E5DE1EE935A3006EE7C3 /* FPTabBarController.m */,
 				7E30F9F01E8146BE00D542E5 /* BlindViewController.h */,
 				7E30F9F11E8146BE00D542E5 /* BlindViewController.m */,
 				7E30FA061E814A9E00D542E5 /* SettingViewController.h */,
@@ -561,6 +565,7 @@
 			isa = PBXGroup;
 			children = (
 				7E30F9AD1E813FFC00D542E5 /* main.m */,
+				7EE8E5E01EE93D1C006EE7C3 /* icons.xcassets */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -568,8 +573,6 @@
 		7E30F9C71E81426300D542E5 /* view */ = {
 			isa = PBXGroup;
 			children = (
-				7E30F9C41E81425C00D542E5 /* WelcomViewController.h */,
-				7E30F9C51E81425C00D542E5 /* WelcomViewController.m */,
 				7E30F9DD1E81448600D542E5 /* ServerSelectionViewController.h */,
 				7E30F9DE1E81448600D542E5 /* ServerSelectionViewController.m */,
 				7E30F9E01E8144AD00D542E5 /* AgreementViewController.h */,
@@ -1043,6 +1046,7 @@
 				7E30F9B91E813FFC00D542E5 /* Assets.xcassets in Resources */,
 				7E30FA301E814D2900D542E5 /* HLPSettingViewSwitchCell.xib in Resources */,
 				7E8D8F391E8AA542006DB46D /* FingerPrint.storyboard in Resources */,
+				7EE8E5E11EE93D1C006EE7C3 /* icons.xcassets in Resources */,
 				7E30FA261E814D2900D542E5 /* HLPSettingView.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1226,7 +1230,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E30F9EB1E81458A00D542E5 /* InitViewController.mm in Sources */,
 				7E30F9FC1E8149C800D542E5 /* NavSound.m in Sources */,
 				7E30F9CE1E8142B200D542E5 /* AuthManager.m in Sources */,
 				7E30F9F91E8149A300D542E5 /* NavWebviewHelper.m in Sources */,
@@ -1234,6 +1237,7 @@
 				7E8D8F361E8A92F9006DB46D /* BeaconAddTableViewController.m in Sources */,
 				7E30F9B11E813FFC00D542E5 /* AppDelegate.m in Sources */,
 				7E30F9EE1E81463C00D542E5 /* ConfigManager.m in Sources */,
+				7EE8E5E71EE94857006EE7C3 /* WelcomViewController.m in Sources */,
 				7E30F9FF1E8149EF00D542E5 /* NavDeviceTTS.m in Sources */,
 				7E30F9E21E8144AD00D542E5 /* AgreementViewController.m in Sources */,
 				7EBE397A1E8298C5002A7BF9 /* HLPBeaconSample.m in Sources */,
@@ -1251,12 +1255,12 @@
 				7EE8E5DA1EE67E08006EE7C3 /* POIAddTableViewController.m in Sources */,
 				7E30F9CB1E81429700D542E5 /* ServerConfig.m in Sources */,
 				7E30FA471E81650D00D542E5 /* HLPFingerprint.m in Sources */,
+				7EE8E5DF1EE935A3006EE7C3 /* FPTabBarController.m in Sources */,
 				7E30FA431E81567B00D542E5 /* ServerConfig+FingerPrint.m in Sources */,
 				7E30F9DA1E81440100D542E5 /* HLPDataUtil.m in Sources */,
 				7E30F9DB1E81440100D542E5 /* HLPGeoJSON.m in Sources */,
 				7E30FA291E814D2900D542E5 /* HLPSetting.m in Sources */,
 				7E30F9AE1E813FFC00D542E5 /* main.m in Sources */,
-				7E30F9C61E81425C00D542E5 /* WelcomViewController.m in Sources */,
 				7E30F9D21E8142D300D542E5 /* Logging.m in Sources */,
 				7E30F9F21E8146BE00D542E5 /* BlindViewController.m in Sources */,
 				7E30FA051E814A1E00D542E5 /* NavDebugHelper.m in Sources */,

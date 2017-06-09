@@ -28,6 +28,7 @@
 #import "NavDataStore.h"
 #import "BeaconAddTableViewController.h"
 #import "POIAddTableViewController.h"
+#import "SettingViewController.h"
 
 
 @interface BlindViewController () {
@@ -41,7 +42,6 @@
     FingerprintManager *fpm;
     BeaconAddTableViewController *batvc;
     POIAddTableViewController *poivc;
-    NSString *fp_mode;
     NSArray<NSObject*>* showingFeatures;
     NSDictionary*(^showingStyle)(NSObject* obj);
     NSObject* selectedFeature;
@@ -69,7 +69,6 @@
     [super viewDidLoad];
     
     state = ViewStateLoading;
-    fp_mode = [[NSUserDefaults standardUserDefaults] stringForKey:@"fp_mode"];
 
     helper = [[NavWebviewHelper alloc] initWithWebview:self.webView];
     helper.delegate = self;
@@ -82,23 +81,27 @@
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:MANUAL_LOCATION_CHANGED_NOTIFICATION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backToModeSelect:) name:@"BACK_TO_MODE_SELECTION" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:MANUAL_LOCATION_CHANGED_NOTIFICATION object:helper];
     
-    
-    fpm = [FingerprintManager sharedManager];
-    fpm.delegate = self;
-    
-    poim = [POIManager sharedManager];
-    poim.delegate = self;
+    if (_fp_mode == FPModePOI) {
+        poim = [[POIManager alloc] init];
+    } else {
+        fpm = [FingerprintManager sharedManager];
+    }
 }
 
-- (void)backToModeSelect:(NSNotification*)note
-{
-    fpm.delegate = nil;
-    poim.delegate = nil;
+- (void)viewWillAppear:(BOOL)animated{
+    fpm.delegate = self;
+    poim.delegate = self;
+    [self updateView];
+}
 
-    [self dismissViewControllerAnimated:YES completion:nil];
+- (void)viewWillDisappear:(BOOL)animated
+{
+    if(fpm.isSampling) {
+        [NavUtil hideWaitingForView:self.view];
+        [self cancelSampling];
+    }
 }
 
 - (void)tapAction:(UITapGestureRecognizer *)sender
@@ -121,7 +124,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showRefpoint:manager.selectedRefpoint];
-        if ([fp_mode isEqualToString:@"beacon"]) {
+        if (_fp_mode == FPModeBeacon) {
             [self showBeacons:manager.selectedFloorplan.beacons withRefpoint:manager.selectedRefpoint];
         }
         
@@ -146,7 +149,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [NavUtil hideModalWaiting];
         [self showRefpoint:manager.selectedRefpoint];
-        if ([fp_mode isEqualToString:@"beacon"]) {
+        if (_fp_mode == FPModeBeacon) {
             [self showBeacons:manager.selectedFloorplan.beacons withRefpoint:manager.selectedRefpoint];
         }
         [self updateView];
@@ -178,7 +181,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [NavUtil hideModalWaiting];
-        if ([fp_mode isEqualToString:@"fingerprint"]) {
+        if (_fp_mode == FPModeFingerprint) {
             [self showFingerprints:samplings];
         }
         [self updateView];
@@ -202,7 +205,7 @@
     });
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([fp_mode isEqualToString:@"poi"]) {
+        if (_fp_mode == FPModePOI) {
             [self showPOIs:pois];
         }
         [self updateView];
@@ -273,11 +276,6 @@
     [fpm cancel];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [self updateView];
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
 }
@@ -295,7 +293,7 @@
         BOOL existUUID = ([ud stringForKey:@"selected_finger_printing_beacon_uuid"] != nil);
         BOOL isSampling = fpm.isSampling;
         
-        if ([fp_mode isEqualToString:@"fingerprint"]) {
+        if (_fp_mode == FPModeFingerprint) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady;
             
@@ -328,7 +326,7 @@
                     self.navigationItem.title = @"Fingerprint";
                 }
             }
-        } else if ([fp_mode isEqualToString:@"beacon"]) {
+        } else if (_fp_mode == FPModeBeacon) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady;
             
@@ -360,7 +358,7 @@
                 self.navigationItem.title = @"Beacon";
             }
 
-        } else if ([fp_mode isEqualToString:@"poi"]) {
+        } else if (_fp_mode == FPModePOI) {
             self.searchButton.enabled = nds.isManualLocation;
             self.settingButton.enabled =  YES;
             
@@ -397,7 +395,7 @@
             
             self.navigationItem.title = @"POI";
         }
-        if (![fp_mode isEqualToString:@"poi"]) {
+        if (_fp_mode != FPModePOI) {
             [helper evalScript:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();"];
         }
     });
@@ -586,12 +584,19 @@
             }
         }
     });
+    
+    if ([segue.identifier isEqualToString:@"blind_settings"]) {
+        segue.destinationViewController.hidesBottomBarWhenPushed = YES;
+        if ([segue.destinationViewController isKindOfClass:SettingViewController.class]) {
+            ((SettingViewController*)segue.destinationViewController).fp_mode = _fp_mode;
+        }
+    }
 }
 
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
     if ([identifier isEqualToString:@"show_search"]) {
-        if ([fp_mode isEqualToString:@"fingerprint"]) {
+        if (_fp_mode == FPModeFingerprint) {
             if (selectedFeature && [selectedFeature isKindOfClass:HLPSampling.class]) {
                 [self checkDeletion:^{
                     [NavUtil showModalWaitingWithMessage:@"Deleting..."];
@@ -606,7 +611,7 @@
                     [self startSampling];
                 }
             }
-        } else if ([fp_mode isEqualToString:@"beacon"]) {
+        } else if (_fp_mode == FPModeBeacon) {
             if (selectedFeature && [selectedFeature isKindOfClass:HLPGeoJSONFeature.class]) {
                 [self checkDeletion:^{
                     [NavUtil showModalWaitingWithMessage:@"Deleting..."];
@@ -616,7 +621,7 @@
                 batvc = [[UIStoryboard storyboardWithName:@"FingerPrint" bundle:nil] instantiateViewControllerWithIdentifier:@"beaconadd"];
                 [self.navigationController pushViewController:batvc animated:YES];
             }
-        } else if ([fp_mode isEqualToString:@"poi"]) {
+        } else if (_fp_mode == FPModePOI) {
             if (selectedFeature && [selectedFeature isKindOfClass:HLPGeoJSONFeature.class]) {
                 [self checkDeletion:^{
                     [NavUtil showModalWaitingWithMessage:@"Deleting..."];

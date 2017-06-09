@@ -26,7 +26,6 @@
 #import "AuthManager.h"
 #import "LocationEvent.h"
 #import "Logging.h"
-#import "FPTabBarController.h"
 
 @interface WelcomViewController ()
 
@@ -37,7 +36,7 @@
     int agreementCount;
     int retryCount;
     BOOL networkError;
-    FPTabBarController *tab;
+    UIViewController *vc;
 }
 
 - (void)viewDidLoad {
@@ -197,10 +196,10 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *hostname = config.selected[@"hostname"];
                     [[NSUserDefaults standardUserDefaults] setObject:hostname forKey:@"selected_hokoukukan_server"];
-                    //[self performSegueWithIdentifier:@"show_mode_selection" sender:self];
                     
-                    tab = [[FPTabBarController alloc] init];
-                    [self presentViewController:tab animated:YES completion:nil];
+                    vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"blind_ui_navigation"];
+                    
+                    [self presentViewController:vc animated:YES completion:nil];
                 });
             }
         } else {

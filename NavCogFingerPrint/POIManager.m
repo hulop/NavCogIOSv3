@@ -69,10 +69,8 @@ static POIManager *instance;
 - (void)initCenter:(HLPLocation*)loc
 {
     if (lastLocation && [loc distanceTo:lastLocation] < 200) {
-        if (loc.floor != lastLocation.floor) {
-            [_delegate manager:self didPOIsLoaded:[self filteredPOIsAt:loc]];
-            lastLocation = loc;
-        }
+        [_delegate manager:self didPOIsLoaded:[self filteredPOIsAt:loc]];
+        lastLocation = loc;
         return;
     }
     NavDataStore *nds = [NavDataStore sharedDataStore];

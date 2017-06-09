@@ -38,12 +38,12 @@
 @end
 
 @implementation SettingViewController {
-    HLPSettingHelper *userSettingHelper;
-    HLPSettingHelper *refpointSettingHelper;
-    
-    HLPSetting *idLabel, *refpointLabel;
-    HLPSetting *chooseConfig, *fingerprintLabel, *beaconUUID, *duration;
 }
+
+static HLPSettingHelper *userSettingHelper;
+static HLPSettingHelper *refpointSettingHelper;
+static HLPSetting *idLabel, *refpointLabel;
+static HLPSetting *chooseConfig, *fingerprintLabel, *beaconUUID, *duration;
 
 
 - (void)viewDidLoad {
@@ -57,12 +57,12 @@
     if ([self.restorationIdentifier isEqualToString:@"user_settings"] ||
         [self.restorationIdentifier isEqualToString:@"blind_settings"]
         ) {
-        [self setupUserSettings];
+        [SettingViewController setupUserSettings];
         helper = userSettingHelper;
     }
     
     if ([self.restorationIdentifier isEqualToString:@"choose_config"]) {
-        [self setupRefpointSettingHelper];
+        [SettingViewController setupRefpointSettingHelper];
         helper = refpointSettingHelper;
     }
 
@@ -113,14 +113,10 @@
 
 + (void)setup
 {
-    HLPSettingHelper *temp = [[HLPSettingHelper alloc] init];
-    [temp addSettingWithType:UUID_TYPE Label:@"Beacon UUID" Name:@"finger_printing_beacon_uuid" DefaultValue:@[] Accept:nil];
-    [temp addSettingWithType:DOUBLE Label:@"Duration" Name:@"finger_printing_duration" DefaultValue:@(5) Min:1 Max:30 Interval:1];
-    [temp addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil];
-    [temp addSettingWithType:TEXTINPUT Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil];
+    [SettingViewController setupUserSettings];
 }
 
-- (void)setupUserSettings
++ (void)setupUserSettings
 {
     if (userSettingHelper) {
         idLabel.label = [NavDataStore sharedDataStore].userID;
@@ -138,15 +134,6 @@
             }
             [ud setObject:uuid forKey:@"selected_finger_printing_beacon_uuid"];
         }
-        
-        BOOL isFingerprint = _fp_mode == FPModeFingerprint;
-        BOOL isBeacon = _fp_mode == FPModeBeacon;
-        //BOOL isPOI = [fp_mode isEqualToString:@"poi"];
-        
-        chooseConfig.visible = isFingerprint || isBeacon;
-        fingerprintLabel.visible = isFingerprint;
-        beaconUUID.visible = isFingerprint || isBeacon;
-        duration.visible = isFingerprint;
         
         return;
     }
@@ -170,7 +157,7 @@
     
 }
 
-- (void)setupRefpointSettingHelper
++ (void)setupRefpointSettingHelper
 {
     if (!refpointSettingHelper) {
         refpointSettingHelper = [[HLPSettingHelper alloc] init];

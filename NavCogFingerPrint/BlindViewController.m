@@ -24,7 +24,7 @@
 #import "NavSound.h"
 #import "LocationEvent.h"
 #import "NavUtil.h"
-#import "ServerConfig.h"
+#import "ServerConfig+FingerPrint.h"
 #import "NavDataStore.h"
 #import "BeaconAddTableViewController.h"
 #import "POIAddTableViewController.h"
@@ -34,6 +34,7 @@
 @interface BlindViewController () {
     NavWebviewHelper *helper;
     ViewState state;
+    FPMode fpMode;
 }
 
 @end
@@ -49,6 +50,8 @@
     HLPLocation *center;
     BOOL loaded;
     HLPRefpoint* currentRp;
+    UITabBar *tabbar;
+    UITabBarItem *item1, *item2, *item3;
 }
 
 - (void)dealloc
@@ -68,6 +71,68 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    tabbar = [[UITabBar alloc] init];
+    [self.view addSubview:tabbar];
+    
+    item1 = [[UITabBarItem alloc]initWithTitle:@"FingerPrint" image:[UIImage imageNamed:@"fingerprint"] tag:0];
+    item2 = [[UITabBarItem alloc]initWithTitle:@"Beacon" image:[UIImage imageNamed:@"beacon"] tag:1];
+    item3 = [[UITabBarItem alloc]initWithTitle:@"POI" image:[UIImage imageNamed:@"poi"] tag:2];
+    item1.enabled = item2.enabled = item3.enabled = NO;
+    
+    tabbar.items = @[item1, item2, item3];
+    tabbar.selectedItem = item1;
+    tabbar.delegate = self;
+    
+    [tabbar setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    NSLayoutConstraint *layoutLeft =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeLeading
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.view
+                                 attribute:NSLayoutAttributeLeading
+                                multiplier:1.0
+                                  constant:0.0];
+    
+    NSLayoutConstraint *layoutRight =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeTrailing
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.view
+                                 attribute:NSLayoutAttributeTrailing
+                                multiplier:1.0
+                                  constant:0.0];
+    
+    NSLayoutConstraint *layoutBottom =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeBottom
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.view
+                                 attribute:NSLayoutAttributeBottom
+                                multiplier:1.0
+                                  constant:0.0];
+    
+    NSLayoutConstraint *layoutHeight =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeHeight
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:nil
+                                 attribute:NSLayoutAttributeHeight
+                                multiplier:1.0
+                                  constant:49];
+    
+    NSLayoutConstraint *layoutBottom2 =
+    [NSLayoutConstraint constraintWithItem:self.view
+                                 attribute:NSLayoutAttributeBottom
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.webView
+                                 attribute:NSLayoutAttributeBottom
+                                multiplier:1.0
+                                  constant:49];
+
+    [self.view addConstraints:@[layoutLeft, layoutRight, layoutBottom, layoutHeight, layoutBottom2]];
+    [self.view layoutIfNeeded];
+    
     state = ViewStateLoading;
 
     helper = [[NavWebviewHelper alloc] initWithWebview:self.webView];
@@ -83,23 +148,24 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:MANUAL_LOCATION_CHANGED_NOTIFICATION object:helper];
     
-    if (_fp_mode == FPModePOI) {
-        poim = [[POIManager alloc] init];
-    } else {
-        fpm = [FingerprintManager sharedManager];
-    }
-}
-
-- (void)viewWillAppear:(BOOL)animated{
+    poim = [[POIManager alloc] init];
+    fpm = [FingerprintManager sharedManager];
     fpm.delegate = self;
     poim.delegate = self;
+}
+
+- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
+{
+    FPMode modes[3] = {FPModeFingerprint, FPModeBeacon, FPModePOI};
+    fpMode = modes[item.tag];
+    [self clearFeatures];
     [self updateView];
+    [self reload];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     if(fpm.isSampling) {
-        [NavUtil hideWaitingForView:self.view];
         [self cancelSampling];
     }
 }
@@ -124,7 +190,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showRefpoint:manager.selectedRefpoint];
-        if (_fp_mode == FPModeBeacon) {
+        if (fpMode == FPModeBeacon) {
             [self showBeacons:manager.selectedFloorplan.beacons withRefpoint:manager.selectedRefpoint];
         }
         
@@ -147,9 +213,11 @@
 - (void)manager:(FingerprintManager *)manager didStatusChanged:(BOOL)isReady
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil hideWaitingForView:self.view];
         [NavUtil hideModalWaiting];
+        
         [self showRefpoint:manager.selectedRefpoint];
-        if (_fp_mode == FPModeBeacon) {
+        if (fpMode == FPModeBeacon) {
             [self showBeacons:manager.selectedFloorplan.beacons withRefpoint:manager.selectedRefpoint];
         }
         [self updateView];
@@ -181,7 +249,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [NavUtil hideModalWaiting];
-        if (_fp_mode == FPModeFingerprint) {
+        if (fpMode == FPModeFingerprint) {
             [self showFingerprints:samplings];
         }
         [self updateView];
@@ -202,12 +270,8 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [NavUtil hideWaitingForView:self.view];
         [NavUtil hideModalWaiting];
-    });
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (_fp_mode == FPModePOI) {
-            [self showPOIs:pois];
-        }
+        [self showPOIs:pois];
         [self updateView];
     });
 }
@@ -260,7 +324,9 @@
 - (void)locationChange:(HLPLocation*)loc
 {
     center = loc;
-    [poim initCenter:center];
+    if (fpMode == FPModePOI) {
+        [poim initCenter:center];
+    }
     NSObject *poi = [self findFeatureAt:center];
     selectedFeature = poi;
     [self updateView];
@@ -269,15 +335,18 @@
 - (void) startSampling
 {
     fpm.delegate = self;
+    [NavUtil showWaitingForView:self.view withMessage:@"Sampling..."];
     [fpm startSamplingAtLat:center.lat Lng:center.lng];
 }
 - (void) cancelSampling
 {
+    [NavUtil hideWaitingForView:self.view];
     [fpm cancel];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    [self updateView];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -293,7 +362,7 @@
         BOOL existUUID = ([ud stringForKey:@"selected_finger_printing_beacon_uuid"] != nil);
         BOOL isSampling = fpm.isSampling;
         
-        if (_fp_mode == FPModeFingerprint) {
+        if (fpMode == FPModeFingerprint) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady;
             
@@ -302,8 +371,6 @@
             } else {
                 self.searchButton.title = NSLocalizedStringFromTable(isSampling?@"Cancel":@"Start", @"Fingerprint", @"");
             }
-            
-            self.devFingerprint.hidden = NO;
             
             self.navigationItem.rightBarButtonItem = _searchButton;
             self.navigationItem.leftBarButtonItem = _settingButton;
@@ -323,10 +390,10 @@
                         self.navigationItem.title = fpm.selectedRefpoint.floor;
                     }
                 } else {
-                    self.navigationItem.title = @"Fingerprint";
+                    self.navigationItem.title = @"No Reference Point";
                 }
             }
-        } else if (_fp_mode == FPModeBeacon) {
+        } else if (fpMode == FPModeBeacon) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady;
             
@@ -335,11 +402,9 @@
             } else {
                 self.searchButton.title = NSLocalizedStringFromTable(@"Add", @"Fingerprint", @"");
             }
-            self.devFingerprint.hidden = NO;
             
             self.navigationItem.rightBarButtonItem = _searchButton;
             self.navigationItem.leftBarButtonItem = _settingButton;
-            
             
             if (existRefpoint) {
                 if (selectedFeature &&
@@ -349,16 +414,16 @@
                     NSString *min = f.properties[@"minor"];
                     self.navigationItem.title = [NSString stringWithFormat:@"%@-%@", maj, min];
                 } else {
-                    self.navigationItem.title = [NSString stringWithFormat:@"%@ Beacon [%ld]",
+                    self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld]",
                                                  fpm.selectedRefpoint.floor,
                                                  [fpm beaconsCount]];
                 }
                 
             } else {
-                self.navigationItem.title = @"Beacon";
+                self.navigationItem.title = @"No Reference Point";
             }
 
-        } else if (_fp_mode == FPModePOI) {
+        } else if (fpMode == FPModePOI) {
             self.searchButton.enabled = nds.isManualLocation;
             self.settingButton.enabled =  YES;
             
@@ -388,14 +453,13 @@
             } else {
                 self.searchButton.title = NSLocalizedStringFromTable(@"Add", @"Fingerprint", @"");
             }
-            self.devFingerprint.hidden = NO;
             
             self.navigationItem.rightBarButtonItem = _searchButton;
             self.navigationItem.leftBarButtonItem = _settingButton;
             
             self.navigationItem.title = @"POI";
         }
-        if (_fp_mode != FPModePOI) {
+        if (fpMode != FPModePOI) {
             [helper evalScript:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();"];
         }
     });
@@ -417,8 +481,11 @@
 
 - (void)bridgeInserted
 {
+    item1.enabled = item2.enabled = YES;
+    item3.enabled = [[ServerConfig sharedConfig] isMapEditorKeyAvailable];
+
     [NSTimer scheduledTimerWithTimeInterval:2 repeats:NO block:^(NSTimer * _Nonnull timer) {
-        [fpm load];
+        [self reload];
     }];
 }
 
@@ -427,6 +494,19 @@
     NSString *jspath = [[NSBundle mainBundle] pathForResource:@"fingerprint" ofType:@"js"];
     NSString *js = [[NSString alloc] initWithContentsOfFile:jspath encoding:NSUTF8StringEncoding error:nil];
     [helper evalScript:js];
+}
+
+- (void) reload
+{
+    [NavUtil showWaitingForView:self.view withMessage:@"Loading..."];
+    switch(fpMode) {
+        case FPModeFingerprint: case FPModeBeacon:
+            [fpm load];
+            break;
+        case FPModePOI:
+            [poim initCenter:center];
+            break;
+    }
 }
 
 - (void) showFingerprints:(NSArray*) points
@@ -492,6 +572,17 @@
         }
         return (NSDictionary*)nil;
     }];
+}
+
+- (void) clearFeatures
+{
+    showingFeatures = @[];
+    showingStyle = nil;
+    selectedFeature = nil;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [helper evalScript:@"$hulop.fp.showFingerprints([]);"];
+    });
 }
 
 - (void) showFeatures:(NSArray<NSObject*>*)features withStyle:(NSDictionary*(^)(NSObject* obj))styleFunction
@@ -588,7 +679,7 @@
     if ([segue.identifier isEqualToString:@"blind_settings"]) {
         segue.destinationViewController.hidesBottomBarWhenPushed = YES;
         if ([segue.destinationViewController isKindOfClass:SettingViewController.class]) {
-            ((SettingViewController*)segue.destinationViewController).fp_mode = _fp_mode;
+            ((SettingViewController*)segue.destinationViewController).fp_mode = fpMode;
         }
     }
 }
@@ -596,7 +687,7 @@
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
     if ([identifier isEqualToString:@"show_search"]) {
-        if (_fp_mode == FPModeFingerprint) {
+        if (fpMode == FPModeFingerprint) {
             if (selectedFeature && [selectedFeature isKindOfClass:HLPSampling.class]) {
                 [self checkDeletion:^{
                     [NavUtil showModalWaitingWithMessage:@"Deleting..."];
@@ -604,14 +695,12 @@
                 } withType:@"Fingerprint"];
             } else {
                 if (fpm.isSampling) {
-                    [NavUtil hideWaitingForView:self.view];
                     [self cancelSampling];
                 } else {
-                    [NavUtil showWaitingForView:self.view withMessage:@"Sampling..."];
                     [self startSampling];
                 }
             }
-        } else if (_fp_mode == FPModeBeacon) {
+        } else if (fpMode == FPModeBeacon) {
             if (selectedFeature && [selectedFeature isKindOfClass:HLPGeoJSONFeature.class]) {
                 [self checkDeletion:^{
                     [NavUtil showModalWaitingWithMessage:@"Deleting..."];
@@ -621,7 +710,7 @@
                 batvc = [[UIStoryboard storyboardWithName:@"FingerPrint" bundle:nil] instantiateViewControllerWithIdentifier:@"beaconadd"];
                 [self.navigationController pushViewController:batvc animated:YES];
             }
-        } else if (_fp_mode == FPModePOI) {
+        } else if (fpMode == FPModePOI) {
             if (selectedFeature && [selectedFeature isKindOfClass:HLPGeoJSONFeature.class]) {
                 [self checkDeletion:^{
                     [NavUtil showModalWaitingWithMessage:@"Deleting..."];

@@ -124,7 +124,6 @@
 		7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC371D1E0E5E00AC111A /* LocationManager.mm */; };
 		7EE8E5DA1EE67E08006EE7C3 /* POIAddTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E5D91EE67E08006EE7C3 /* POIAddTableViewController.m */; };
 		7EE8E5DC1EE68449006EE7C3 /* poi_template.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE8E5DB1EE68449006EE7C3 /* poi_template.json */; };
-		7EE8E5DF1EE935A3006EE7C3 /* FPTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E5DE1EE935A3006EE7C3 /* FPTabBarController.m */; };
 		7EE8E5E11EE93D1C006EE7C3 /* icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EE8E5E01EE93D1C006EE7C3 /* icons.xcassets */; };
 		7EE8E5E71EE94857006EE7C3 /* WelcomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E5E61EE94857006EE7C3 /* WelcomViewController.m */; };
 		7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */; };
@@ -368,8 +367,6 @@
 		7EE8E5D81EE67E08006EE7C3 /* POIAddTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POIAddTableViewController.h; sourceTree = "<group>"; };
 		7EE8E5D91EE67E08006EE7C3 /* POIAddTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POIAddTableViewController.m; sourceTree = "<group>"; };
 		7EE8E5DB1EE68449006EE7C3 /* poi_template.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = poi_template.json; sourceTree = "<group>"; };
-		7EE8E5DD1EE935A3006EE7C3 /* FPTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPTabBarController.h; sourceTree = "<group>"; };
-		7EE8E5DE1EE935A3006EE7C3 /* FPTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPTabBarController.m; sourceTree = "<group>"; };
 		7EE8E5E01EE93D1C006EE7C3 /* icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = icons.xcassets; sourceTree = "<group>"; };
 		7EE8E5E51EE94857006EE7C3 /* WelcomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomViewController.h; sourceTree = "<group>"; };
 		7EE8E5E61EE94857006EE7C3 /* WelcomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomViewController.m; sourceTree = "<group>"; };
@@ -531,8 +528,6 @@
 				7E30F9EF1E81469B00D542E5 /* shared */,
 				7EE8E5E51EE94857006EE7C3 /* WelcomViewController.h */,
 				7EE8E5E61EE94857006EE7C3 /* WelcomViewController.m */,
-				7EE8E5DD1EE935A3006EE7C3 /* FPTabBarController.h */,
-				7EE8E5DE1EE935A3006EE7C3 /* FPTabBarController.m */,
 				7E30F9F01E8146BE00D542E5 /* BlindViewController.h */,
 				7E30F9F11E8146BE00D542E5 /* BlindViewController.m */,
 				7E30FA061E814A9E00D542E5 /* SettingViewController.h */,
@@ -1255,7 +1250,6 @@
 				7EE8E5DA1EE67E08006EE7C3 /* POIAddTableViewController.m in Sources */,
 				7E30F9CB1E81429700D542E5 /* ServerConfig.m in Sources */,
 				7E30FA471E81650D00D542E5 /* HLPFingerprint.m in Sources */,
-				7EE8E5DF1EE935A3006EE7C3 /* FPTabBarController.m in Sources */,
 				7E30FA431E81567B00D542E5 /* ServerConfig+FingerPrint.m in Sources */,
 				7E30F9DA1E81440100D542E5 /* HLPDataUtil.m in Sources */,
 				7E30F9DB1E81440100D542E5 /* HLPGeoJSON.m in Sources */,

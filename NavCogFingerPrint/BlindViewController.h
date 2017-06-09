@@ -32,7 +32,7 @@ typedef NS_ENUM(NSInteger, FPMode) {
     FPModePOI
 };
 
-@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, FingerprintManagerDelegate, POIManagerDelegate, UIGestureRecognizerDelegate>
+@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, FingerprintManagerDelegate, POIManagerDelegate, UIGestureRecognizerDelegate, UITabBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
@@ -53,8 +53,5 @@ typedef NS_ENUM(NSInteger, FPMode) {
 @property (weak, nonatomic) IBOutlet UIButton *devDown;
 @property (weak, nonatomic) IBOutlet UIButton *devNote;
 @property (weak, nonatomic) IBOutlet UIButton *devRestart;
-@property (weak, nonatomic) IBOutlet UIButton *devFingerprint;
-
-@property FPMode fp_mode;
 
 @end

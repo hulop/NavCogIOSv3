@@ -31,6 +31,7 @@
 
 - (BOOL) isMapEditorKeyAvailable
 {
+
     return [self mapEditorKey] != nil;
 }
 

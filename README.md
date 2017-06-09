@@ -10,9 +10,9 @@ You need to provide a [model file](https://github.com/hulop/NavCogIOSv3/wiki/Pre
 - **Wheel Chair / General Pedestrian Mode**: This mode is mainly for wheel chair users and also all sighted users.
 
 ## NavCog3 Tools
-The workspace also includes the foolowing tools.
+The workspace also includes the following tools.
 
-- **NavCogFingerPrint**: For fingerprintig
+- **NavCogFingerPrint**: For fingerprinting
 - **NavCogTool**: For simulate blind user navigation commands
 
 ## Pre-Requisites
@@ -25,9 +25,9 @@ The workspace also includes the foolowing tools.
 1. Install [CocoaPods](https://cocoapods.org/).
 2. In the project directory, run `pod install`.
 3. install [Carthage](https://github.com/Carthage/Carthage).
-4. In the project directory, run `carthage bootstrap --platfom ios`.
+4. In the project directory, run `carthage bootstrap --platform iOS`.
 5. Open NavCog3.xcworkspace
-6. Build NavCog3 project with xcode.
+6. Build NavCog3 project with Xcode.
 
 ## Setup
 

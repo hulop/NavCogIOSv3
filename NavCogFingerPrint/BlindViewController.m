@@ -163,6 +163,11 @@
     [self reload];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [poim initCenter:center];
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     if(fpm.isSampling) {
@@ -324,9 +329,7 @@
 - (void)locationChange:(HLPLocation*)loc
 {
     center = loc;
-    if (fpMode == FPModePOI) {
-        [poim initCenter:center];
-    }
+    [poim initCenter:center];
     NSObject *poi = [self findFeatureAt:center];
     selectedFeature = poi;
     [self updateView];
@@ -498,14 +501,14 @@
 
 - (void) reload
 {
+    BOOL showRoute = [[NSUserDefaults standardUserDefaults] boolForKey:@"finger_printing_show_route"];
+    
     [NavUtil showWaitingForView:self.view withMessage:@"Loading..."];
-    switch(fpMode) {
-        case FPModeFingerprint: case FPModeBeacon:
-            [fpm load];
-            break;
-        case FPModePOI:
-            [poim initCenter:center];
-            break;
+    if (fpMode == FPModePOI || showRoute) {
+        [poim initCenter:center];
+    }
+    if (fpMode == FPModeFingerprint || fpMode == FPModeBeacon) {
+        [fpm load];
     }
 }
 
@@ -546,32 +549,55 @@
 
 - (void) showPOIs:(NSArray<HLPObject*>*)pois
 {
-    [self showFeatures:pois withStyle:^NSDictionary *(NSObject *obj) {
-        if ([obj isKindOfClass:HLPPOI.class]) {
-            HLPPOI* p = (HLPPOI*)obj;
-            NSString *name = @"P";
-            if (p.poiCategoryString) {
-                name = [name stringByAppendingString:[p.poiCategoryString substringToIndex:1]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [helper evalScript:@"$hulop.map.clearRoute()"];
+        BOOL showRoute = [[NSUserDefaults standardUserDefaults] boolForKey:@"finger_printing_show_route"];
+        if (showRoute) {
+            NSArray *route = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+                if ([evaluatedObject isKindOfClass:HLPLink.class]) {
+                    HLPLink *link = (HLPLink*)evaluatedObject;
+                    return (link.sourceHeight == center.floor || link.targetHeight == center.floor);
+                }
+                return NO;
+            }]];
+            
+            [helper showRoute:route];
+        }
+    });
+    if (fpMode == FPModePOI) {
+        [self showFeatures:pois withStyle:^NSDictionary *(NSObject *obj) {
+            if ([obj isKindOfClass:HLPPOI.class]) {
+                HLPPOI* p = (HLPPOI*)obj;
+                if (isnan(center.floor) || isnan(p.height) || center.floor == p.height){
+                    NSString *name = @"P";
+                    if (p.poiCategoryString) {
+                        name = [name stringByAppendingString:[p.poiCategoryString substringToIndex:1]];
+                    }
+                    
+                    return @{
+                             @"lat": p.geometry.coordinates[1],
+                             @"lng": p.geometry.coordinates[0],
+                             @"count": name
+                             };
+                }
             }
-            
-            return @{
-                     @"lat": p.geometry.coordinates[1],
-                     @"lng": p.geometry.coordinates[0],
-                     @"count": name
-                     };
-        }
-        else if ([obj isKindOfClass:HLPFacility.class]) {
-            HLPFacility* p = (HLPFacility*)obj;
-            NSString *name = @"F";
-            
-            return @{
-                     @"lat": p.geometry.coordinates[1],
-                     @"lng": p.geometry.coordinates[0],
-                     @"count": name
-                     };
-        }
-        return (NSDictionary*)nil;
-    }];
+            else if ([obj isKindOfClass:HLPFacility.class]) {
+                HLPFacility* f = (HLPFacility*)obj;
+                HLPNode *n = [poim nodeForFaciligy:f];
+                if (isnan(center.floor) ||
+                    (n && n.height == center.floor) ||
+                    (!n && !isnan(f.height) && f.height == center.floor)) {
+                    
+                    return @{
+                             @"lat": f.geometry.coordinates[1],
+                             @"lng": f.geometry.coordinates[0],
+                             @"count": @"F"
+                             };
+                }
+            }
+            return (NSDictionary*)nil;
+        }];
+    }
 }
 
 - (void) clearFeatures

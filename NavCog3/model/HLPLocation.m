@@ -204,6 +204,9 @@ double(^normalize)(double) = ^(double deg) {
 
 +(double)distanceFromLat:(double)lat1 Lng:(double)lng1 toLat:(double)lat2 Lng:(double)lng2
 {
+    if (lat1 == lat2 && lng1 == lng2) {
+        return 0;
+    }
     CLLocation *l1 = [[CLLocation alloc] initWithLatitude:lat1 longitude:lng1];
     CLLocation *l2 = [[CLLocation alloc] initWithLatitude:lat2 longitude:lng2];
     return [l1 distanceFromLocation:l2];

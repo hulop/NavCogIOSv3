@@ -37,4 +37,6 @@
 -(void)loadPOIs;
 -(void)addPOI:(NSDictionary*)poi at:(HLPLocation*)location withOptions:(NSDictionary*)options;
 -(void)removePOI:(HLPGeoJSONFeature*)poi;
+-(HLPNode*)nodeForFaciligy:(HLPFacility*)facility;
+-(HLPNode*)nodeByID:(NSString*)nodeid;
 @end

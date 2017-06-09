@@ -32,6 +32,7 @@
     HLPLocation *lastLocation;
     NSArray *cachedFeatures;
     NSMutableDictionary<NSString*, HLPNode*> *facilityNodeMap;
+    NSMutableDictionary<NSString*, HLPNode*> *nodeMap;
 }
 
 static POIManager *instance;
@@ -43,33 +44,10 @@ static POIManager *instance;
     return instance;
 }
 
-- (NSArray*)filteredPOIsAt:(HLPLocation*)loc
-{
-    NSMutableArray *temp = [@[] mutableCopy];
-    for(HLPObject* o in cachedFeatures) {
-        if ([o isKindOfClass:HLPPOI.class]) {
-            HLPPOI *poi = (HLPPOI*)o;
-            if (isnan(loc.floor) || isnan(poi.height) || loc.floor == poi.height){
-                [temp addObject:o];
-            }
-        }
-        else if ([o isKindOfClass:HLPFacility.class]) {
-            HLPFacility *f = (HLPFacility*)o;
-            HLPNode *n = facilityNodeMap[f._id];
-            if (isnan(loc.floor) ||
-                (n && n.height == loc.floor) ||
-                (!n && !isnan(f.height) && f.height == loc.floor)) {
-                [temp addObject:o];
-            }
-        }
-    }
-    return temp;
-}
-
 - (void)initCenter:(HLPLocation*)loc
 {
     if (lastLocation && [loc distanceTo:lastLocation] < 200) {
-        [_delegate manager:self didPOIsLoaded:[self filteredPOIsAt:loc]];
+        [_delegate manager:self didPOIsLoaded:cachedFeatures];
         lastLocation = loc;
         return;
     }
@@ -91,10 +69,10 @@ static POIManager *instance;
     [HLPDataUtil loadFeaturesForUser:nds.userID withLang:nds.userLanguage WithCallback:^(NSArray<HLPObject *> *result) {
         cachedFeatures = [cachedFeatures arrayByAddingObjectsFromArray:result];
         facilityNodeMap = [@{} mutableCopy];
-        NSMutableDictionary* nodeMap = [@{} mutableCopy];
+        nodeMap = [@{} mutableCopy];
         for(HLPObject* o in cachedFeatures) {
             if ([o isKindOfClass:HLPNode.class]) {
-                nodeMap[o._id] = o;
+                nodeMap[o._id] = (HLPNode*)o;
             }
         }
         for(HLPObject* o in cachedFeatures) {
@@ -102,8 +80,12 @@ static POIManager *instance;
                 HLPEntrance* e = (HLPEntrance*)o;
                 facilityNodeMap[e.forFacilityID] = nodeMap[e.forNodeID];
             }
+            if ([o isKindOfClass:HLPLink.class]) {
+                HLPLink* l = (HLPLink*)o;
+                [l updateWithNodesMap:nodeMap];
+            }
         }
-        [_delegate manager:self didPOIsLoaded:[self filteredPOIsAt:lastLocation]];
+        [_delegate manager:self didPOIsLoaded:cachedFeatures];
     }];
 }
 
@@ -213,7 +195,7 @@ static POIManager *instance;
                             return;
                         }
                         cachedFeatures = [cachedFeatures arrayByAddingObjectsFromArray:@[p]];
-                        [_delegate manager:self didPOIsLoaded:[self filteredPOIsAt:lastLocation]];
+                        [_delegate manager:self didPOIsLoaded:cachedFeatures];
                     }];
 }
 
@@ -245,8 +227,18 @@ static POIManager *instance;
                             }
                             return YES;
                         }]];
-                        [_delegate manager:self didPOIsLoaded:[self filteredPOIsAt:lastLocation]];
+                        [_delegate manager:self didPOIsLoaded:cachedFeatures];
                     }];
+}
+
+- (HLPNode *)nodeForFaciligy:(HLPFacility *)facility
+{
+    return facilityNodeMap[facility._id];
+}
+
+- (HLPNode *)nodeByID:(NSString *)nodeid
+{
+    return nodeMap[nodeid];
 }
 
 @end

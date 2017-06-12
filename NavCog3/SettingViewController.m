@@ -22,7 +22,6 @@
 
 #import <UIKit/UIKit.h>
 #import "SettingViewController.h"
-#import "NavWebviewHelper.h"
 #import "NavNavigator.h"
 #import "ConfigManager.h"
 #import "LocationEvent.h"
@@ -604,15 +603,15 @@ static HLPSetting *advancedLabel, *advancedMenu;
 {
     NSString *id = [[tableView cellForRowAtIndexPath:indexPath] reuseIdentifier];
     if ([id isEqualToString:@"search_option"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:self userInfo:@{@"control":ROUTE_SEARCH_OPTION_BUTTON}];
+        [self.webViewHelper triggerWebviewControl:WebviewControlRouteSearchOptionButton];
         [self.navigationController popViewControllerAnimated:YES];
     }
     if ([id isEqualToString:@"search_route"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:self userInfo:@{@"control":ROUTE_SEARCH_BUTTON}];
+        [self.webViewHelper triggerWebviewControl:WebviewControlRouteSearchButton];
         [self.navigationController popViewControllerAnimated:YES];
     }
     if ([id isEqualToString:@"end_navigation"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:TRIGGER_WEBVIEW_CONTROL object:self userInfo:@{@"control":END_NAVIGATION}];
+        [self.webViewHelper triggerWebviewControl:WebviewControlEndNavigation];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }

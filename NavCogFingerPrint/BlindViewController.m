@@ -29,12 +29,17 @@
 #import "BeaconAddTableViewController.h"
 #import "POIAddTableViewController.h"
 #import "SettingViewController.h"
+#import "NavDeviceTTS.h"
+#import "NavBlindWebviewHelper.h"
 
 
 @interface BlindViewController () {
-    NavWebviewHelper *helper;
+    NavBlindWebviewHelper *helper;
     ViewState state;
     FPMode fpMode;
+    
+    int x, y;
+    double fx, fy;
 }
 
 @end
@@ -61,6 +66,8 @@
     helper = nil;
     
     _settingButton = nil;
+    
+    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"developer_mode"];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -135,7 +142,14 @@
     
     state = ViewStateLoading;
 
-    helper = [[NavWebviewHelper alloc] initWithWebview:self.webView];
+    [self.devUp setTitle:@"Up" forState:UIControlStateNormal];
+    [self.devDown setTitle:@"Down" forState:UIControlStateNormal];
+    [self.devLeft setTitle:@"Left" forState:UIControlStateNormal];
+    [self.devRight setTitle:@"Right" forState:UIControlStateNormal];
+    
+    NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
+    helper = [[NavBlindWebviewHelper alloc] initWithWebview:self.webView server:server];
+    helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
     helper.delegate = self;
     
     UITapGestureRecognizer *webViewTapped = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapAction:)];
@@ -146,12 +160,14 @@
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:MANUAL_LOCATION_CHANGED_NOTIFICATION object:helper];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self];
     
     poim = [[POIManager alloc] init];
     fpm = [FingerprintManager sharedManager];
     fpm.delegate = self;
     poim.delegate = self;
+    
+    [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
@@ -207,11 +223,9 @@
 {
     if (!rp) return;
     if (currentRp == rp) return;
-    NSDictionary *param = @{
-                            @"sync": @(false),
-                            @"location": [[HLPLocation alloc] initWithLat:rp.anchor_lat Lng:rp.anchor_lng Floor:rp.floor_num]
-                            };
-    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION object:self userInfo:param];
+    
+    HLPLocation* loc = [[HLPLocation alloc] initWithLat:rp.anchor_lat Lng:rp.anchor_lng Floor:rp.floor_num];
+    [helper manualLocation:loc withSync:NO];
     currentRp = rp;
 }
 
@@ -324,6 +338,13 @@
                                                Orientation:0
                                        OrientationAccuracy:999];
     [self locationChange:loc];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"developer_mode"]) {
+        helper.developerMode = @(YES);
+    }
 }
 
 - (void)locationChange:(HLPLocation*)loc
@@ -677,6 +698,40 @@
 - (void)vibrate
 {
     [[NavSound sharedInstance] vibrate:nil];
+}
+
+#pragma mark - NavWebviewHelperDelegate
+
+- (void) speak:(NSString*)text withOptions:(NSDictionary*)options {
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:nil];
+}
+
+- (BOOL) isSpeaking {
+    return [[NavDeviceTTS sharedTTS] isSpeaking];
+}
+
+- (void) vibrateOnAudioServices {
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+}
+
+- (void) manualLocationChangedWithOptions:(NSDictionary*)options {
+    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:options];
+}
+
+- (void) buildingChangedWithOptions:(NSDictionary*)options {
+    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:options];
+}
+
+- (void) wcuiStateChangedWithOptions:(NSDictionary*)options {
+    [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:options];
+}
+
+- (void) requestRatingWithOptions:(NSDictionary*)options {
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:options];
+}
+
+- (void) requestOpenURL:(NSURL*)url {
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
 }
 
 #pragma mark - Navigation

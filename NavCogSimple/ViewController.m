@@ -24,24 +24,19 @@
 #import "LocationEvent.h"
 #import "NavDebugHelper.h"
 #import "NavUtil.h"
-#import "NavDataStore.h"
-#import "RatingViewController.h"
-// ???: HLPSetting.h:43:5: Expected identifier
-//#import "SettingViewController.h"
-#import "ServerConfig.h"
+#import "SettingViewController.h"
 #import "NavDeviceTTS.h"
 
 @interface ViewController () {
     NavWebviewHelper *helper;
     UISwipeGestureRecognizer *recognizer;
     NSDictionary *uiState;
-    DialogViewHelper *dialogHelper;
-    NSDictionary *ratingInfo;
 }
 
 @end
 
 @implementation ViewController {
+    BOOL first;
     ViewState state;
     UIColor *defaultColor;
 }
@@ -59,37 +54,24 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    first = YES;
+    
     defaultColor = self.navigationController.navigationBar.barTintColor;
     
     state = ViewStateLoading;
     
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
     helper = [[NavWebviewHelper alloc] initWithWebview:self.webView server:server];
-    helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
     helper.delegate = self;
     
     recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
     recognizer.delegate = self;
     [self.webView addGestureRecognizer:recognizer];
-    
-    dialogHelper = [[DialogViewHelper alloc] init];
-    double scale = 0.75;
-    double size = (113*scale)/2;
-    double x = size+8;
-    double y = self.view.bounds.size.height - (size+8) - 63;
-    dialogHelper.transparentBack = YES;
-    dialogHelper.layerScale = scale;
-    [dialogHelper inactive];
-    [dialogHelper setup:self.view position:CGPointMake(x, y)];
-    dialogHelper.delegate = self;
-    dialogHelper.helperView.hidden = YES;
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiStateChanged:) name:WCUI_STATE_CHANGED_NOTIFICATION object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURL:) name: REQUEST_OPEN_URL object:nil];
@@ -98,18 +80,16 @@
     
     [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkState:) userInfo:nil repeats:YES];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestRating:) name:REQUEST_RATING object:nil];
-    
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
 }
 
-- (void) requestRating:(NSNotification*)note
-{
-    if ([[ServerConfig sharedConfig] shouldAskRating]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            ratingInfo = [note userInfo];
-            [self performSegueWithIdentifier:@"show_rating" sender:self];
-        });
+- (void)viewDidAppear:(BOOL)animated {
+    if (first) {
+        first = NO;
+        // TODO: load configure
+        [[NSUserDefaults standardUserDefaults] setObject:@"hulop-mapservice.au-syd.mybluemix.net" forKey:@"selected_hokoukukan_server"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"hokoukukan_server_context"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"https_connection"];
     }
 }
 
@@ -129,19 +109,6 @@
 - (void) openURL:(NSNotification*)note
 {
     [NavUtil openURL:[note userInfo][@"url"] onViewController:self];
-}
-
-
-- (void)tapped
-{
-    [dialogHelper inactive];
-    dialogHelper.helperView.hidden = YES;
-    [self performSegueWithIdentifier:@"show_dialog_wc" sender:self];
-}
-
-- (void)dialogStateChanged:(NSNotification*)note
-{
-    [self updateView];
 }
 
 - (void)uiStateChanged:(NSNotification*)note
@@ -259,20 +226,7 @@
             self.navigationItem.leftBarButtonItems = @[self.settingButton];
             break;
     }
-    
-    if (state == ViewStateMap) {
-        if ([[DialogManager sharedManager] isDialogAvailable]) {
-            if (dialogHelper.helperView.hidden) {
-                dialogHelper.helperView.hidden = NO;
-                [dialogHelper recognize];
-            }
-        } else {
-            dialogHelper.helperView.hidden = YES;
-        }
-    } else {
-        dialogHelper.helperView.hidden = YES;
-    }
-    
+
     self.navigationItem.title = NSLocalizedStringFromTable(@"NavCog", @"BlindView", @"");
     
     if (debugFollower) {
@@ -295,9 +249,6 @@
 - (void) loaded {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
-}
-
-- (void) bridgeInserted {
 }
 
 - (void)checkConnection
@@ -423,16 +374,6 @@
     if ([segue.identifier isEqualToString:@"user_settings"]) {
         SettingViewController *sv = (SettingViewController*)segue.destinationViewController;
         sv.webViewHelper = helper;
-    }
-    if ([segue.identifier isEqualToString:@"show_rating"] && ratingInfo) {
-        RatingViewController *rv = (RatingViewController*)segue.destinationViewController;
-        rv.start = [ratingInfo[@"start"] doubleValue]/1000.0;
-        rv.end = [ratingInfo[@"end"] doubleValue]/1000.0;
-        rv.from = ratingInfo[@"from"];
-        rv.to = ratingInfo[@"to"];
-        rv.device_id = [[NavDataStore sharedDataStore] userID];
-        
-        ratingInfo = nil;
     }
 }
 

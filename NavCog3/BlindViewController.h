@@ -21,11 +21,13 @@
  *******************************************************************************/
 
 #import <UIKit/UIKit.h>
-#import "NavWebviewHelper.h"
+#import "NavBlindWebviewHelper.h"
 #import "NavCoverView.h"
 #import "NavNavigator.h"
 #import "NavCommander.h"
 #import "NavPreviewer.h"
+// ???: HLPSetting.h:43:5: Expected identifier
+#import "SettingViewController.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import "NavCog3-Swift.h"
 

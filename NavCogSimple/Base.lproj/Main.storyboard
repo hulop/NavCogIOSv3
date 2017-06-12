@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="S1z-Er-If2">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--NavCog-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wNX-E7-1MH">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
+                                <color key="backgroundColor" red="0.28958413004875183" green="0.31462949514389038" blue="0.32950475811958313" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </webView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="aPe-k5-pXe">
+                                <rect key="frame" x="177.5" y="291.5" width="20" height="20"/>
+                            </activityIndicatorView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network Error" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NRG-DQ-bhb">
+                                <rect key="frame" x="134.5" y="205" width="106.5" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.70388170809999995" green="0.70388170809999995" blue="0.70388170809999995" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button hidden="YES" opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SE5-WT-I7E">
+                                <rect key="frame" x="147.5" y="233.5" width="80" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="7PU-8d-Qd4"/>
+                                    <constraint firstAttribute="height" constant="50" id="8If-cy-ze1"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="fyA-gh-RhU"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="qw1-Dh-EeT"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Retry"/>
+                                <connections>
+                                    <action selector="retry:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HfS-q2-bPG"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="wNX-E7-1MH" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="CVL-Jp-RWf"/>
+                            <constraint firstItem="SE5-WT-I7E" firstAttribute="top" secondItem="NRG-DQ-bhb" secondAttribute="bottom" constant="8" id="DXe-oC-EfA"/>
+                            <constraint firstItem="aPe-k5-pXe" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="EF9-iu-dmX"/>
+                            <constraint firstAttribute="trailing" secondItem="wNX-E7-1MH" secondAttribute="trailing" id="Igb-dy-wT6"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="wNX-E7-1MH" secondAttribute="bottom" id="MGW-UT-nJu"/>
+                            <constraint firstItem="NRG-DQ-bhb" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="N0M-5W-Zwz"/>
+                            <constraint firstItem="aPe-k5-pXe" firstAttribute="top" secondItem="SE5-WT-I7E" secondAttribute="bottom" constant="8" id="Qcn-l2-xNl"/>
+                            <constraint firstItem="SE5-WT-I7E" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="RVd-aa-7Ee"/>
+                            <constraint firstItem="SE5-WT-I7E" firstAttribute="top" secondItem="NRG-DQ-bhb" secondAttribute="bottom" constant="8" id="gTD-bb-0Oy"/>
+                            <constraint firstItem="wNX-E7-1MH" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="mQ6-Go-Kxb"/>
+                            <constraint firstItem="wNX-E7-1MH" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="qNF-2u-q8m"/>
+                            <constraint firstItem="aPe-k5-pXe" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="sgs-su-GS2"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="CVL-Jp-RWf"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <navigationItem key="navigationItem" title="NavCog" id="xcm-nO-qOJ">
+                        <leftBarButtonItems>
+                            <barButtonItem systemItem="cancel" id="44B-zx-RwE">
+                                <color key="tintColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="doCancel:" destination="BYZ-38-t0r" id="nHr-O6-y2U"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="done" id="iMt-r5-1Ew">
+                                <color key="tintColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="doDone:" destination="BYZ-38-t0r" id="Hzw-s4-D7t"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Back" id="BhE-tH-Cn7" userLabel="Back">
+                                <color key="tintColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="doBack:" destination="BYZ-38-t0r" id="Wmz-Fl-YHL"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
+                        <rightBarButtonItems>
+                            <barButtonItem style="done" systemItem="search" id="hZO-hm-xZr">
+                                <color key="tintColor" red="0.0" green="0.3275701105594635" blue="0.57671862840652466" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="doSearch:" destination="BYZ-38-t0r" id="Eqq-lv-cKQ"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="Menu" id="Qtb-wA-avE">
+                                <color key="tintColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <segue destination="5By-Wf-lM7" kind="show" identifier="user_settings" id="jup-Rk-ibd"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="stop" id="JcV-tW-wQ0">
+                                <color key="tintColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="stopNavigation:" destination="BYZ-38-t0r" id="nwk-rP-rzD"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="backButton" destination="BhE-tH-Cn7" id="GGF-jw-kPZ"/>
+                        <outlet property="cancelButton" destination="44B-zx-RwE" id="TAn-1X-WFb"/>
+                        <outlet property="doneButton" destination="iMt-r5-1Ew" id="NvR-T4-4xD"/>
+                        <outlet property="errorMessage" destination="NRG-DQ-bhb" id="FEc-rJ-g7v"/>
+                        <outlet property="indicator" destination="aPe-k5-pXe" id="4I3-2V-3a2"/>
+                        <outlet property="retryButton" destination="SE5-WT-I7E" id="CNf-Tp-CPV"/>
+                        <outlet property="searchButton" destination="hZO-hm-xZr" id="ak4-E5-qgu"/>
+                        <outlet property="settingButton" destination="Qtb-wA-avE" id="fKs-jx-5S6"/>
+                        <outlet property="stopButton" destination="JcV-tW-wQ0" id="qQq-2e-ij1"/>
+                        <outlet property="webView" destination="wNX-E7-1MH" id="WBa-rx-tvV"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="788" y="158"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="HgL-RI-FlR">
+            <objects>
+                <navigationController storyboardIdentifier="wheelchair_ui_navigation" useStoryboardIdentifierAsRestorationIdentifier="YES" id="S1z-Er-If2" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="CbX-U2-dSC">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="Nc5-Sp-ZyM"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Vyc-g2-8po" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="8" y="158"/>
+        </scene>
+        <!--Setting View Controller-->
+        <scene sceneID="6eY-Gj-biD">
+            <objects>
+                <tableViewController useStoryboardIdentifierAsRestorationIdentifier="YES" id="5By-Wf-lM7" customClass="SettingViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="dyR-sF-yjs" customClass="HLPSettingTableView">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <connections>
+                            <outlet property="dataSource" destination="5By-Wf-lM7" id="tPj-li-QHb"/>
+                            <outlet property="delegate" destination="5By-Wf-lM7" id="Ce4-zl-f1k"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XtF-Nf-Wwm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3506" y="401"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Menu" width="32" height="32"/>
+    </resources>
+</document>

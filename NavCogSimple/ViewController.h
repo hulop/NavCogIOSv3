@@ -22,36 +22,20 @@
 
 #import <UIKit/UIKit.h>
 #import <NavWebView/NavWebView.h>
-#import "NavCoverView.h"
-#import "FingerprintManager.h"
-#import "POIManager.h"
 
-typedef NS_ENUM(NSInteger, FPMode) {
-    FPModeFingerprint,
-    FPModeBeacon,
-    FPModePOI
-};
+@interface ViewController : UIViewController <UIGestureRecognizerDelegate, NavWebviewHelperDelegate>
 
-@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, FingerprintManagerDelegate, POIManagerDelegate, UIGestureRecognizerDelegate, UITabBarDelegate>
-
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *doneButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *stopButton;
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *micButton;
-@property (weak, nonatomic) IBOutlet UIButton *retryButton;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (weak, nonatomic) IBOutlet UILabel *errorMessage;
-
-@property (weak, nonatomic) IBOutlet NavCoverView *cover;
-@property (weak, nonatomic) IBOutlet UIButton *devLeft;
-@property (weak, nonatomic) IBOutlet UIButton *devRight;
-@property (weak, nonatomic) IBOutlet UIButton *devGo;
-@property (weak, nonatomic) IBOutlet UIButton *devAuto;
-@property (weak, nonatomic) IBOutlet UIButton *devReset;
-@property (weak, nonatomic) IBOutlet UIButton *devMarker;
-@property (weak, nonatomic) IBOutlet UIButton *devUp;
-@property (weak, nonatomic) IBOutlet UIButton *devDown;
-@property (weak, nonatomic) IBOutlet UIButton *devNote;
-@property (weak, nonatomic) IBOutlet UIButton *devRestart;
+@property (weak, nonatomic) IBOutlet UIButton *retryButton;
 
 @end
+

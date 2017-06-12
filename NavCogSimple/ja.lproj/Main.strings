@@ -1,0 +1,12 @@
+
+/* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "BhE-tH-Cn7"; */
+"BhE-tH-Cn7.title" = "Back";
+
+/* Class = "UILabel"; text = "Network Error"; ObjectID = "NRG-DQ-bhb"; */
+"NRG-DQ-bhb.text" = "Network Error";
+
+/* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "SE5-WT-I7E"; */
+"SE5-WT-I7E.normalTitle" = "Retry";
+
+/* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "xcm-nO-qOJ"; */
+"xcm-nO-qOJ.title" = "NavCog";

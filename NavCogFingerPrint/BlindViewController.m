@@ -721,7 +721,7 @@
     [[NavSound sharedInstance] vibrate:nil];
 }
 
-#pragma mark - NavWebviewHelperDelegate
+#pragma mark - HLPWebviewHelperDelegate
 
 - (void) speak:(NSString*)text withOptions:(NSDictionary*)options {
     [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:nil];

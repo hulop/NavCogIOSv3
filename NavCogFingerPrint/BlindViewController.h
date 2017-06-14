@@ -21,7 +21,7 @@
  *******************************************************************************/
 
 #import <UIKit/UIKit.h>
-#import <NavWebView/NavWebView.h>
+#import <HLPWebView/HLPWebView.h>
 #import "NavCoverView.h"
 #import "FingerprintManager.h"
 #import "POIManager.h"
@@ -32,7 +32,7 @@ typedef NS_ENUM(NSInteger, FPMode) {
     FPModePOI
 };
 
-@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, FingerprintManagerDelegate, POIManagerDelegate, UIGestureRecognizerDelegate, UITabBarDelegate>
+@interface BlindViewController : UIViewController <HLPWebviewHelperDelegate, FingerprintManagerDelegate, POIManagerDelegate, UIGestureRecognizerDelegate, UITabBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;

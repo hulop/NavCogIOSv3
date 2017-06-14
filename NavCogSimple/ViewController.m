@@ -28,7 +28,7 @@
 #import "NavDeviceTTS.h"
 
 @interface ViewController () {
-    NavWebviewHelper *helper;
+    HLPWebviewHelper *helper;
     UISwipeGestureRecognizer *recognizer;
     NSDictionary *uiState;
 }
@@ -39,6 +39,9 @@
     BOOL first;
     ViewState state;
     UIColor *defaultColor;
+    
+    NSTimeInterval lastLocationSent;
+    NSTimeInterval lastOrientationSent;
 }
 
 - (void)dealloc
@@ -61,12 +64,14 @@
     state = ViewStateLoading;
     
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
-    helper = [[NavWebviewHelper alloc] initWithWebview:self.webView server:server];
+    helper = [[HLPWebviewHelper alloc] initWithWebview:self.webView server:server];
     helper.delegate = self;
     
     recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
     recognizer.delegate = self;
     [self.webView addGestureRecognizer:recognizer];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
 
@@ -104,6 +109,70 @@
         NSDictionary *json = [helper getState];
         [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:json];
     });
+}
+
+- (void)locationChanged:(NSNotification *)note {
+    UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+    if (appState == UIApplicationStateBackground || appState == UIApplicationStateInactive) {
+        return;
+    }
+    
+    NSDictionary *locations = [note userInfo];
+    if (!locations) {
+        return;
+    }
+    HLPLocation *location = locations[@"current"];
+    if (!location || [location isEqual:[NSNull null]]) {
+        return;
+    }
+    
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    
+    double orientation = -location.orientation / 180 * M_PI;
+    
+    if (lastOrientationSent + 0.2 < now) {
+        [helper sendData:@[@{
+                               @"type":@"ORIENTATION",
+                               @"z":@(orientation)
+                               }]
+                withName:@"Sensor"];
+        lastOrientationSent = now;
+    }
+    
+    
+    location = locations[@"actual"];
+    if (!location || [location isEqual:[NSNull null]]) {
+        return;
+    }
+    
+    /*
+     if (isnan(location.lat) || isnan(location.lng)) {
+     return;
+     }
+     */
+    
+    if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
+        if (!location.params) {
+            return;
+        }
+        //return; // prevent too much send location info
+    }
+    
+    double floor = location.floor;
+    
+    [helper sendData:@{
+                       @"lat":@(location.lat),
+                       @"lng":@(location.lng),
+                       @"floor":@(floor),
+                       @"accuracy":@(location.accuracy),
+                       @"rotate":@(0), // dummy
+                       @"orientation":@(999), //dummy
+                       @"debug_info":location.params?location.params[@"debug_info"]:[NSNull null],
+                       @"debug_latlng":location.params?location.params[@"debug_latlng"]:[NSNull null]
+                       }
+            withName:@"XYZ"];
+    
+    lastLocationSent = now;
 }
 
 - (void) openURL:(NSNotification*)note
@@ -240,7 +309,7 @@
     }
 }
 
-#pragma mark - NavWebviewHelperDelegate
+#pragma mark - HLPWebviewHelperDelegate
 
 - (void) startLoading {
     [_indicator startAnimating];
@@ -249,6 +318,9 @@
 - (void) loaded {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
+}
+
+- (void) bridgeInserted {
 }
 
 - (void)checkConnection

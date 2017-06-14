@@ -21,7 +21,7 @@
  *******************************************************************************/
 
 #import <UIKit/UIKit.h>
-#import <NavWebView/NavWebView.h>
+#import <HLPWebView/HLPWebView.h>
 #import "SettingViewController.h"
 #import "LocationEvent.h"
 #import "NavDeviceTTS.h"

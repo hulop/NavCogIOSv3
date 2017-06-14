@@ -23,10 +23,10 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <NavWebView/NavWebView.h>
+#import <HLPWebView/HLPWebView.h>
 #import "HLPLocation.h"
 
-@interface NavBlindWebviewHelper : NavWebviewHelper
+@interface NavBlindWebviewHelper : HLPWebviewHelper
 
 - (void)initTarget:(NSArray *)landmarks;
 - (void)clearRoute;

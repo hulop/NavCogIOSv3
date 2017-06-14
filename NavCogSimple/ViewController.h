@@ -21,9 +21,9 @@
  *******************************************************************************/
 
 #import <UIKit/UIKit.h>
-#import <NavWebView/NavWebView.h>
+#import <HLPWebView/HLPWebView.h>
 
-@interface ViewController : UIViewController <UIGestureRecognizerDelegate, NavWebviewHelperDelegate>
+@interface ViewController : UIViewController <UIGestureRecognizerDelegate, HLPWebviewHelperDelegate>
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *doneButton;

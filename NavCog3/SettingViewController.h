@@ -22,13 +22,13 @@
 
 #import <UIKit/UIKit.h>
 #import "HLPSettingHelper.h"
-#import <NavWebView/NavWebView.h>
+#import <HLPWebView/HLPWebView.h>
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 
 @interface SettingViewController : UITableViewController <HLPSettingHelperDelegate, MCBrowserViewControllerDelegate>
 
 +(void)setup;
 @property (weak, nonatomic) IBOutlet UITableViewCell *dialogSearchCell;
-@property NavWebviewHelper *webViewHelper;
+@property HLPWebviewHelper *webViewHelper;
 
 @end

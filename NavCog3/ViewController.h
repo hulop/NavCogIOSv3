@@ -21,12 +21,12 @@
  *******************************************************************************/
 
 #import <UIKit/UIKit.h>
-#import <NavWebView/NavWebView.h>
+#import <HLPWebView/HLPWebView.h>
 // ???: HLPSetting.h:43:5: Expected identifier
 #import "SettingViewController.h"
 #import "NavCog3-Swift.h"
 
-@interface ViewController : UIViewController <UIGestureRecognizerDelegate, NavWebviewHelperDelegate, DialogViewDelegate>
+@interface ViewController : UIViewController <UIGestureRecognizerDelegate, HLPWebviewHelperDelegate, DialogViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *doneButton;

@@ -1,4 +1,5 @@
 project 'NavCog3'
+inhibit_all_warnings!
 
 target 'NavCog3' do
   platform :ios, '8.4'
@@ -11,6 +12,7 @@ target 'NavCog3' do
   pod 'cereal', :podspec => './podspecs/cereal.podspec'
   pod 'picojson', :podspec => './podspecs/picojson.podspec'
   pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
+  pod 'HLPWebView', :path => '../HLPWebView'
 end
 
 target 'NavCogTool' do
@@ -22,6 +24,7 @@ end
 target 'NavCogFingerPrint' do
   platform :ios, '8.4'
   pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
+  pod 'HLPWebView', :path => '../HLPWebView'
 end
 
 target 'NavCogSimple' do
@@ -35,4 +38,5 @@ target 'NavCogSimple' do
   pod 'cereal', :podspec => './podspecs/cereal.podspec'
   pod 'picojson', :podspec => './podspecs/picojson.podspec'
   pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
+  pod 'HLPWebView', :podspec => '../HLPWebView'
 end

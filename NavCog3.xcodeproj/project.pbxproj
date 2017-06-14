@@ -183,19 +183,6 @@
 		A9037BFD1ECD55D1003FD719 /* HLPGeoJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */; };
 		A9037BFE1ECD55D1003FD719 /* HLPDataUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */; };
 		A9037BFF1ECD55D1003FD719 /* HLPLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33C51D92D13400D20CD5 /* HLPLocation.m */; };
-		A90B734A1ED401260082E149 /* ios_bridge.js in Resources */ = {isa = PBXBuildFile; fileRef = A90B73491ED401260082E149 /* ios_bridge.js */; };
-		A93ED2631ED2D91300B75760 /* NavWebView.h in Headers */ = {isa = PBXBuildFile; fileRef = A93ED2611ED2D91300B75760 /* NavWebView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A93ED2691ED2D97200B75760 /* NavJSNativeHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = A93ED2671ED2D97200B75760 /* NavJSNativeHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A93ED26A1ED2D97200B75760 /* NavJSNativeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = A93ED2681ED2D97200B75760 /* NavJSNativeHandler.m */; };
-		A93ED26D1ED2D9BB00B75760 /* NavWebviewHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = A93ED26B1ED2D9BB00B75760 /* NavWebviewHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A93ED26E1ED2D9BB00B75760 /* NavWebviewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A93ED26C1ED2D9BB00B75760 /* NavWebviewHelper.m */; };
-		A93ED2811ED2DE3200B75760 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93ED2801ED2DE3200B75760 /* MapKit.framework */; };
-		A94F90EA1EDBD46C003908A7 /* NavWebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93ED25F1ED2D91300B75760 /* NavWebView.framework */; };
-		A94F90EB1EDBD46C003908A7 /* NavWebView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A93ED25F1ED2D91300B75760 /* NavWebView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		A94F90EF1EDBD6E2003908A7 /* NavWebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93ED25F1ED2D91300B75760 /* NavWebView.framework */; };
-		A94F90F01EDBD6E2003908A7 /* NavWebView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A93ED25F1ED2D91300B75760 /* NavWebView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		A96226A11ED561840025AFEB /* NavWebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93ED25F1ED2D91300B75760 /* NavWebView.framework */; };
-		A96226A21ED561840025AFEB /* NavWebView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A93ED25F1ED2D91300B75760 /* NavWebView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9DCB6901ED2862B0089FA84 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
 		A9DCB6911ED286470089FA84 /* HLPLocationManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC371D1E0E5E00AC111A /* HLPLocationManager.mm */; };
 		A9DCB6921ED286590089FA84 /* NavNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5150A31D8BF32800ED25FB /* NavNavigator.m */; };
@@ -207,30 +194,6 @@
 		A9DCB69A1ED2873A0089FA84 /* NavSound.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF6FBB11DA4DD8200382F76 /* NavSound.m */; };
 		AA99A92C6F0742F5C4ABAC19 /* libPods-NavCogSimple.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 29A45F28C51BD38760AE1D9A /* libPods-NavCogSimple.a */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		A94F90EC1EDBD46C003908A7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7EDEDC141D1E0C6800AC111A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A93ED25E1ED2D91300B75760;
-			remoteInfo = NavWebView;
-		};
-		A94F90F11EDBD6E2003908A7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7EDEDC141D1E0C6800AC111A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A93ED25E1ED2D91300B75760;
-			remoteInfo = NavWebView;
-		};
-		A96226A31ED561840025AFEB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7EDEDC141D1E0C6800AC111A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A93ED25E1ED2D91300B75760;
-			remoteInfo = NavWebView;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		7EF7F79B1DD178F7000A625A /* CopyFiles */ = {
@@ -244,39 +207,6 @@
 				7EC20B5C1DDAC9C900818E33 /* BlindView.stringsdict in CopyFiles */,
 				7EC20B5D1DDAC9C900818E33 /* Localizable.strings in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A94F90EE1EDBD46C003908A7 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				A94F90EB1EDBD46C003908A7 /* NavWebView.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A94F90F31EDBD6E2003908A7 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				A94F90F01EDBD6E2003908A7 /* NavWebView.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A96226A51ED561840025AFEB /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				A96226A21ED561840025AFEB /* NavWebView.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -527,14 +457,6 @@
 		A9037BDB1ECD44BC003FD719 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewController.m; path = NavCogSimple/ViewController.m; sourceTree = "<group>"; };
 		A9037BE71ECD44D2003FD719 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = NavCogSimple/Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A9037BEA1ECD44D9003FD719 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = NavCogSimple/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		A90B73491ED401260082E149 /* ios_bridge.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ios_bridge.js; sourceTree = "<group>"; };
-		A93ED25F1ED2D91300B75760 /* NavWebView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NavWebView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A93ED2611ED2D91300B75760 /* NavWebView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NavWebView.h; sourceTree = "<group>"; };
-		A93ED2621ED2D91300B75760 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A93ED2671ED2D97200B75760 /* NavJSNativeHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavJSNativeHandler.h; sourceTree = "<group>"; };
-		A93ED2681ED2D97200B75760 /* NavJSNativeHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavJSNativeHandler.m; sourceTree = "<group>"; };
-		A93ED26B1ED2D9BB00B75760 /* NavWebviewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavWebviewHelper.h; sourceTree = "<group>"; };
-		A93ED26C1ED2D9BB00B75760 /* NavWebviewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavWebviewHelper.m; sourceTree = "<group>"; };
 		A93ED2731ED2DBA900B75760 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A93ED2751ED2DBB000B75760 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A93ED2771ED2DBB800B75760 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -554,7 +476,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E30FA3D1E81551900D542E5 /* CoreBluetooth.framework in Frameworks */,
-				A94F90EF1EDBD6E2003908A7 /* NavWebView.framework in Frameworks */,
 				36517BDCBA7EC763A7A14A05 /* libPods-NavCogFingerPrint.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -569,7 +490,6 @@
 				7EF45E3D1E3F426F00208042 /* Security.framework in Frameworks */,
 				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
-				A94F90EA1EDBD46C003908A7 /* NavWebView.framework in Frameworks */,
 				12CE60FFF66333BF27326795 /* libPods-NavCog3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -592,16 +512,7 @@
 				A9037B861ECD4276003FD719 /* Security.framework in Frameworks */,
 				A9037B871ECD4276003FD719 /* MultipeerConnectivity.framework in Frameworks */,
 				A9037B881ECD4276003FD719 /* CoreMotion.framework in Frameworks */,
-				A96226A11ED561840025AFEB /* NavWebView.framework in Frameworks */,
 				AA99A92C6F0742F5C4ABAC19 /* libPods-NavCogSimple.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A93ED25B1ED2D91300B75760 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A93ED2811ED2DE3200B75760 /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1005,7 +916,6 @@
 				7EF7F79E1DD178F7000A625A /* NavCogTool */,
 				7E30F9AB1E813FFC00D542E5 /* NavCogFingerPrint */,
 				A9037BA71ECD431F003FD719 /* NavCogSimple */,
-				A93ED2601ED2D91300B75760 /* NavWebView */,
 				7EDEDC1D1D1E0C6800AC111A /* Products */,
 				0F5EA397BCF0C5EEF08F5111 /* Frameworks */,
 				1C5266A3860B0BAEB202CD0E /* Pods */,
@@ -1019,7 +929,6 @@
 				7EF7F79D1DD178F7000A625A /* NavCogTool */,
 				7E30F9AA1E813FFC00D542E5 /* NavCogFingerPrint.app */,
 				A9037BA51ECD4276003FD719 /* NavCogSimple.app */,
-				A93ED25F1ED2D91300B75760 /* NavWebView.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1100,34 +1009,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		A93ED2601ED2D91300B75760 /* NavWebView */ = {
-			isa = PBXGroup;
-			children = (
-				A93ED2611ED2D91300B75760 /* NavWebView.h */,
-				A93ED26B1ED2D9BB00B75760 /* NavWebviewHelper.h */,
-				A93ED26C1ED2D9BB00B75760 /* NavWebviewHelper.m */,
-				A90B73491ED401260082E149 /* ios_bridge.js */,
-				A93ED2671ED2D97200B75760 /* NavJSNativeHandler.h */,
-				A93ED2681ED2D97200B75760 /* NavJSNativeHandler.m */,
-				A93ED2621ED2D91300B75760 /* Info.plist */,
-			);
-			path = NavWebView;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
-
-/* Begin PBXHeadersBuildPhase section */
-		A93ED25C1ED2D91300B75760 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A93ED2631ED2D91300B75760 /* NavWebView.h in Headers */,
-				A93ED26D1ED2D9BB00B75760 /* NavWebviewHelper.h in Headers */,
-				A93ED2691ED2D97200B75760 /* NavJSNativeHandler.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		7E30F9A91E813FFC00D542E5 /* NavCogFingerPrint */ = {
@@ -1140,12 +1022,10 @@
 				7E30F9A81E813FFC00D542E5 /* Resources */,
 				E53336C306D5DD2723B19B3B /* [CP] Embed Pods Frameworks */,
 				71E58B5CDD9F8FC574FAC157 /* [CP] Copy Pods Resources */,
-				A94F90F31EDBD6E2003908A7 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				A94F90F21EDBD6E2003908A7 /* PBXTargetDependency */,
 			);
 			name = NavCogFingerPrint;
 			productName = NavCogFingerPrint;
@@ -1163,12 +1043,10 @@
 				3AD4AA683ED6D64EDE1BF2E8 /* [CP] Embed Pods Frameworks */,
 				5F71D1C14A5EA1F4F8125B8B /* [CP] Copy Pods Resources */,
 				7EF45E4D1E3F42BD00208042 /* ShellScript */,
-				A94F90EE1EDBD46C003908A7 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				A94F90ED1EDBD46C003908A7 /* PBXTargetDependency */,
 			);
 			name = NavCog3;
 			productName = NavCog3;
@@ -1206,35 +1084,15 @@
 				A9037BA11ECD4276003FD719 /* ShellScript */,
 				0B292A29E80ACDF6A0217FC1 /* [CP] Embed Pods Frameworks */,
 				C48839C4DF8F7D8EB8BE5AA3 /* [CP] Copy Pods Resources */,
-				A96226A51ED561840025AFEB /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				A96226A41ED561840025AFEB /* PBXTargetDependency */,
 			);
 			name = NavCogSimple;
 			productName = NavCog3;
 			productReference = A9037BA51ECD4276003FD719 /* NavCogSimple.app */;
 			productType = "com.apple.product-type.application";
-		};
-		A93ED25E1ED2D91300B75760 /* NavWebView */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A93ED2661ED2D91300B75760 /* Build configuration list for PBXNativeTarget "NavWebView" */;
-			buildPhases = (
-				A93ED25A1ED2D91300B75760 /* Sources */,
-				A93ED25B1ED2D91300B75760 /* Frameworks */,
-				A93ED25C1ED2D91300B75760 /* Headers */,
-				A93ED25D1ED2D91300B75760 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = NavWebView;
-			productName = NavWebView;
-			productReference = A93ED25F1ED2D91300B75760 /* NavWebView.framework */;
-			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -1267,10 +1125,6 @@
 					A9037B4F1ECD4276003FD719 = {
 						ProvisioningStyle = Automatic;
 					};
-					A93ED25E1ED2D91300B75760 = {
-						CreatedOnToolsVersion = 8.3.2;
-						ProvisioningStyle = Automatic;
-					};
 				};
 			};
 			buildConfigurationList = 7EDEDC171D1E0C6800AC111A /* Build configuration list for PBXProject "NavCog3" */;
@@ -1292,7 +1146,6 @@
 				7EF7F79C1DD178F7000A625A /* NavCogTool */,
 				7E30F9A91E813FFC00D542E5 /* NavCogFingerPrint */,
 				A9037B4F1ECD4276003FD719 /* NavCogSimple */,
-				A93ED25E1ED2D91300B75760 /* NavWebView */,
 			);
 		};
 /* End PBXProject section */
@@ -1379,14 +1232,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A93ED25D1ED2D91300B75760 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A90B734A1ED401260082E149 /* ios_bridge.js in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -1417,7 +1262,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		36AFE6E71E5E98123D26EB46 /* [CP] Check Pods Manifest.lock */ = {
@@ -1432,7 +1277,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		3AD4AA683ED6D64EDE1BF2E8 /* [CP] Embed Pods Frameworks */ = {
@@ -1477,7 +1322,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		5F71D1C14A5EA1F4F8125B8B /* [CP] Copy Pods Resources */ = {
@@ -1580,7 +1425,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1726,34 +1571,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A93ED25A1ED2D91300B75760 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A93ED26E1ED2D9BB00B75760 /* NavWebviewHelper.m in Sources */,
-				A93ED26A1ED2D97200B75760 /* NavJSNativeHandler.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		A94F90ED1EDBD46C003908A7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A93ED25E1ED2D91300B75760 /* NavWebView */;
-			targetProxy = A94F90EC1EDBD46C003908A7 /* PBXContainerItemProxy */;
-		};
-		A94F90F21EDBD6E2003908A7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A93ED25E1ED2D91300B75760 /* NavWebView */;
-			targetProxy = A94F90F11EDBD6E2003908A7 /* PBXContainerItemProxy */;
-		};
-		A96226A41ED561840025AFEB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A93ED25E1ED2D91300B75760 /* NavWebView */;
-			targetProxy = A96226A31ED561840025AFEB /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		7E17F1A01D9A225A00DB1F34 /* InfoPlist.strings */ = {
@@ -2190,58 +2008,6 @@
 			};
 			name = Release;
 		};
-		A93ED2641ED2D91300B75760 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = NavWebView/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavWebView;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		A93ED2651ED2D91300B75760 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = NavWebView/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavWebView;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2286,15 +2052,6 @@
 			buildConfigurations = (
 				A9037BA31ECD4276003FD719 /* Debug */,
 				A9037BA41ECD4276003FD719 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A93ED2661ED2D91300B75760 /* Build configuration list for PBXNativeTarget "NavWebView" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A93ED2641ED2D91300B75760 /* Debug */,
-				A93ED2651ED2D91300B75760 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

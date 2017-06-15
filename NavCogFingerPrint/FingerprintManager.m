@@ -533,21 +533,18 @@ static FingerprintManager *instance;
 
 + (MKMapPoint) convertFromGlobal:(CLLocationCoordinate2D)global ToLocalWithRefpoint:(HLPRefpoint*)rp
 {
-    MKMapPoint gm = MKMapPointForCoordinate(global);
+    double distance = [HLPLocation distanceFromLat:global.latitude Lng:global.longitude toLat:rp.anchor_lat Lng:rp.anchor_lng];
+    double d2r = M_PI / 180;
+    double r = [HLPLocation bearingFromLat:rp.anchor_lat Lng:rp.anchor_lng toLat:global.latitude Lng:global.longitude];
+    r = (r - rp.anchor_rotate) * d2r;
     
-    CLLocationCoordinate2D a = CLLocationCoordinate2DMake(rp.anchor_lat, rp.anchor_lng);
-    MKMapPoint am = MKMapPointForCoordinate(a);
-    
-    CLLocationDistance distance = MKMetersBetweenMapPoints(gm, am);
-    double r = atan2(gm.y-am.y, gm.x-am.x) - rp.anchor_rotate / 180 * M_PI;
-    
-    return MKMapPointMake(distance*cos(r), -distance*sin(r));
+    return MKMapPointMake(distance*sin(r), distance*cos(r));
 }
 
 + (CLLocationCoordinate2D) convertFromLocal:(MKMapPoint)local ToGlobalWithRefpoint:(HLPRefpoint*)rp
 {
     HLPLocation *loc = [[HLPLocation alloc] initWithLat:rp.anchor_lat Lng:rp.anchor_lng];
-    double r = atan2(local.x, local.y)/M_PI*180 + rp.anchor_rotate;
+    double r = atan2(local.x, local.y)*180/M_PI + rp.anchor_rotate;
     double d = sqrt(local.x*local.x+local.y*local.y);
     
     loc = [loc offsetLocationByDistance:d Bearing:r];

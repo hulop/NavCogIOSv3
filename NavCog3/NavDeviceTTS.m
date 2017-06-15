@@ -141,6 +141,21 @@ static NavDeviceTTS *instance = nil;
     return [AVSpeechSynthesisVoice voiceWithLanguage:voiceLangCode];
 }
 
+
++ (AVSpeechSynthesisVoice*)getVoiceOfLang:(NSString *)language {
+
+    NSString *voiceLangCode;
+    NSArray *speechVoices = [AVSpeechSynthesisVoice speechVoices];
+    for (AVSpeechSynthesisVoice *speechVoice in speechVoices) {
+        NSLog(@"%@", speechVoice.language);
+        if ([speechVoice.language hasPrefix:language]) {
+            voiceLangCode = speechVoice.language;
+            break;
+        }
+    }
+    return [AVSpeechSynthesisVoice voiceWithLanguage:voiceLangCode];
+}
+
 - (void) pause:(double)duration
 {
     HLPSpeechEntry *se = [[HLPSpeechEntry alloc] init];
@@ -174,8 +189,12 @@ static NavDeviceTTS *instance = nil;
     BOOL selfspeak = [options[@"selfspeak"] boolValue];
     BOOL nohistory = [options[@"nohistory"] boolValue];
     BOOL quickAnswer = [options[@"quickAnswer"] boolValue];
+    AVSpeechSynthesisVoice *voice = nil;
+    if (options[@"lang"]) {
+        voice = [NavDeviceTTS getVoiceOfLang:options[@"lang"]];
+    }
     
-    return [self _speak:text force:force selfvoicing:selfspeak nohistory:nohistory quickAnswer:quickAnswer completionHandler:handler];
+    return [self _speak:text force:force selfvoicing:selfspeak nohistory:nohistory quickAnswer:quickAnswer voice:voice completionHandler:handler];
 }
 
 - (AVSpeechUtterance *)selfspeak:(NSString *)text completionHandler:(void (^)())handler
@@ -185,7 +204,7 @@ static NavDeviceTTS *instance = nil;
 
 - (AVSpeechUtterance *)selfspeak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)())handler
 {
-    return [self _speak:text force:flag selfvoicing:YES nohistory:YES quickAnswer:NO completionHandler:handler];
+    return [self _speak:text force:flag selfvoicing:YES nohistory:YES quickAnswer:NO voice:nil completionHandler:handler];
 }
 
 - (AVSpeechUtterance*) speak: (NSString*) text completionHandler:(void (^)())handler
@@ -195,7 +214,7 @@ static NavDeviceTTS *instance = nil;
 
 - (AVSpeechUtterance*) speak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)())handler
 {
-    return [self _speak:text force:flag selfvoicing:NO nohistory:NO quickAnswer:NO completionHandler:handler];
+    return [self _speak:text force:flag selfvoicing:NO nohistory:NO quickAnswer:NO voice:nil completionHandler:handler];
 }
 
 - (AVSpeechUtterance*) _speak:(NSString*)text
@@ -203,11 +222,15 @@ static NavDeviceTTS *instance = nil;
                   selfvoicing:(BOOL)selfvoicing
                     nohistory:(BOOL)nohistory
                   quickAnswer:(BOOL)quickAnswer
+                        voice:(AVSpeechSynthesisVoice*)voice_
             completionHandler:(void (^)())handler
 {
     if (text == nil) {
         handler();
         return nil;
+    }
+    if (voice_ == nil) {
+        voice_ = [NavDeviceTTS getVoice];
     }
     
     // check pause
@@ -218,9 +241,10 @@ static NavDeviceTTS *instance = nil;
     for(int i = 0; i < [text length]; i++) {
         if ([[text substringWithRange:NSMakeRange(i, 1)] isEqualToString:pauseStr]) {
             keep++;
+        } else if ([[text substringWithRange:NSMakeRange(i, 1)] isEqualToString:@" "]) {
         } else {
             if (keep >= 3) {
-                [self _speak:[text substringWithRange:NSMakeRange(start, i-keep)] force:flag && isFirst selfvoicing:selfvoicing nohistory:nohistory quickAnswer:quickAnswer completionHandler:nil];
+                [self _speak:[text substringWithRange:NSMakeRange(start, i-keep)] force:flag && isFirst selfvoicing:selfvoicing nohistory:nohistory quickAnswer:quickAnswer voice:nil completionHandler:nil];
                 [self pause:0.1*keep];
                 text = [text substringFromIndex:i];
                 flag = NO;
@@ -245,7 +269,7 @@ static NavDeviceTTS *instance = nil;
     se.ut = [AVSpeechUtterance speechUtteranceWithString:[NavDeviceTTS removeDots:text]];
     se.ut.volume = 1.0;
     se.ut.rate = speechRate;
-    se.ut.voice = [NavDeviceTTS getVoice];
+    se.ut.voice = voice_;
     se.selfvoicing = selfvoicing;
     se.issued = [[NSDate date] timeIntervalSince1970];
     se.quickAnswer = quickAnswer;

@@ -282,6 +282,7 @@
                     callback(json);
                 } else {
                     NSLog(@"Error2: %@", [error2 localizedDescription]);
+                    NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
                     callback(nil);
                 }
             } else {

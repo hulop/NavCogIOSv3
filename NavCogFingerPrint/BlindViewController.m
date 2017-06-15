@@ -202,6 +202,8 @@
         [temp update:center];
         [temp updateFloor:height];
         [self locationChange:temp];
+        x = fx;
+        y = fy;
     });
 }
 
@@ -322,6 +324,17 @@
 
 - (void)locationChanged:(NSNotification*)note
 {
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    if (nds.isManualLocation) {
+        if (fpm.selectedRefpoint) {
+            MKMapPoint local = [FingerprintManager convertFromGlobal: CLLocationCoordinate2DMake([nds currentLocation].lat, [nds currentLocation].lng) ToLocalWithRefpoint:fpm.selectedRefpoint];
+            fx = local.x;
+            fy = local.y;
+        }
+        
+        [self updateView];
+    }
+    
     NSDictionary *obj = [note userInfo];
     double floor = [obj[@"floor"] doubleValue];
     if (floor == 0) {
@@ -386,6 +399,13 @@
         BOOL existUUID = ([ud stringForKey:@"selected_finger_printing_beacon_uuid"] != nil);
         BOOL isSampling = fpm.isSampling;
         
+        BOOL showButtons = existRefpoint && (fpMode == FPModeFingerprint);
+        
+        self.devUp.hidden = !showButtons;
+        self.devDown.hidden = !showButtons;
+        self.devLeft.hidden = !showButtons;
+        self.devRight.hidden = !showButtons;
+        
         if (fpMode == FPModeFingerprint) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady;
@@ -398,6 +418,7 @@
             
             self.navigationItem.rightBarButtonItem = _searchButton;
             self.navigationItem.leftBarButtonItem = _settingButton;
+
             
             if (isSampling) {
                 long count = [ud integerForKey:@"finger_printing_duration"];
@@ -407,9 +428,9 @@
             } else {
                 if (existRefpoint) {
                     if (fpm.samplings) {
-                        self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld]",
+                        self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld] (%.1f, %.1f)",
                                                      fpm.selectedRefpoint.floor,
-                                                     [fpm.samplings count]];
+                                                     [fpm.samplings count], fx, fy];
                     } else {
                         self.navigationItem.title = fpm.selectedRefpoint.floor;
                     }
@@ -842,6 +863,50 @@
         poivc.selectedPOI = nil;
     }
     
+}
+
+# pragma mark action
+
+- (void)updateMapCenter
+{
+    HLPRefpoint *rp = fpm.selectedRefpoint;
+    if (!rp) {
+        return;
+    }
+    CLLocationCoordinate2D global = [FingerprintManager convertFromLocal:MKMapPointMake(x, y) ToGlobalWithRefpoint:rp];
+    fx = x;
+    fy = y;
+    HLPLocation *loc = [[HLPLocation alloc] initWithLat:global.latitude Lng:global.longitude Floor:rp.floor_num];
+    
+    [helper manualLocation:loc withSync:NO];
+}
+
+- (IBAction)turnLeftBit:(id)sender
+{
+    x -= 1;
+    [self updateMapCenter];
+    [self updateView];
+}
+
+- (IBAction)turnRightBit:(id)sender
+{
+    x += 1;
+    [self updateMapCenter];
+    [self updateView];
+}
+
+- (IBAction)floorDown:(id)sender
+{
+    y -= 1;
+    [self updateMapCenter];
+    [self updateView];
+}
+
+- (IBAction)floorUp:(id)sender
+{
+    y += 1;
+    [self updateMapCenter];
+    [self updateView];
 }
 
 

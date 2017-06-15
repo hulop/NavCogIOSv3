@@ -124,11 +124,14 @@ open class ConversationEx {
             failure?(error)
             return
         }
+        
+        let ud = UserDefaults.standard
+        let https = ud.bool(forKey: "https_connection") ? "https" : "http"
 
         // construct REST request
         let request = RestRequest(
             method: "POST",
-            url: "https://" + server + "/service",
+            url: https + "://" + server + "/service",
             //userAgent: "NavCogDialog",
             credentials: Credentials.apiKey,
             headerParameters: [:],
@@ -156,7 +159,14 @@ open class ConversationEx {
                     let userInfo = [NSLocalizedDescriptionKey:message]
                     failure?(NSError(domain:domain, code: code, userInfo:userInfo))
                 }
-            } catch {
+            } catch (let e){
+                print(e)
+                
+                let domain = "swift.conversationex"
+                let code = -1
+                let message = e.localizedDescription
+                let userInfo = [NSLocalizedDescriptionKey:message]
+                failure?(NSError(domain:domain, code: code, userInfo:userInfo))
             }
         }
     }

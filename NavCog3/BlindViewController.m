@@ -809,7 +809,11 @@
             
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_point"] && !rerouteFlag) {
             [[NavDataStore sharedDataStore] manualLocationReset:properties];
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:self userInfo:properties];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_heading"]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_HEADING_RESET object:self userInfo:properties];
+            } else {
+                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:self userInfo:properties];
+            }
         }
         
         if ([NavDataStore sharedDataStore].previewMode) {
@@ -1027,6 +1031,10 @@
     JSContext *ctx = [[JSContext alloc] init];
     ctx[@"speak"] = ^(NSString *message) {
         [self speak:message withOptions:@{} completionHandler:^{
+        }];
+    };
+    ctx[@"speakInLang"] = ^(NSString *message, NSString *lang) {
+        [self speak:message withOptions:@{@"lang":lang} completionHandler:^{
         }];
     };
     ctx[@"openURL"] = ^(NSString *url, NSString *title, NSString *message) {

@@ -386,13 +386,16 @@ static HLPSetting *advancedLabel, *advancedMenu;
 
     [detailSettingHelper addSectionTitle:@"For Demo"];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use compass" Name:@"use_compass" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset bleloc at start" Name:@"reset_as_start_point" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset as start location" Name:@"reset_as_start_point" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset as start heading" Name:@"reset_as_start_heading" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:DOUBLE Label:@"Reset std dev" Name:@"reset_std_dev" DefaultValue:@(1.0) Min:0 Max:3 Interval:0.5];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset at elevator" Name:@"reset_at_elevator" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset at elevator continuously" Name:@"reset_at_elevator_continuously" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Current Location\"" Name:@"hide_current_location_from_start" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Facility\"" Name:@"hide_facility_from_to" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Accuracy for demo" Name:@"accuracy_for_demo" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Bearing for demo" Name:@"bearing_for_demo" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSectionTitle:@"Test"];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Send beacon data" Name:@"send_beacon_data" DefaultValue:@(NO) Accept:nil];

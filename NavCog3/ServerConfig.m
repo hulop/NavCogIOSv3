@@ -76,6 +76,12 @@ static ServerConfig *instance;
         NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
         if (json) {
             _serverList = json;
+            
+            for (NSDictionary *server in _serverList[@"servers"]) {
+                if ([server[@"selected"] boolValue]) {
+                    _selected = server;
+                }
+            }
             complete(json);
             return;
         }
@@ -91,6 +97,12 @@ static ServerConfig *instance;
     [HLPDataUtil getJSON:[NSURL URLWithString:serverlist] withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
             _serverList = (NSDictionary*)result;
+            
+            for (NSDictionary *server in _serverList[@"servers"]) {
+                if ([server[@"selected"] boolValue]) {
+                    _selected = server;
+                }
+            }
             complete(_serverList);
         } else {
             complete(nil);
@@ -102,8 +114,9 @@ static ServerConfig *instance;
 {
     NSString *server_host = [self.selected objectForKey:@"hostname"];
     NSString *config_file_name = [self.selected objectForKey:@"config_file_name"];
+    NSString *https = [[self.selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
     config_file_name = config_file_name?config_file_name:@"server_config.json";
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/config/%@",server_host, config_file_name]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/config/%@",https, server_host, config_file_name]];
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
@@ -118,6 +131,7 @@ static ServerConfig *instance;
 - (NSArray*) checkDownloadFiles
 {
     NSString *server_host = [self.selected objectForKey:@"hostname"];
+    NSString *https = [[self.selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
     NSDictionary *json = _selectedServerConfig;
 
     NSLog(@"server_config.json: %@", json);
@@ -132,7 +146,7 @@ static ServerConfig *instance;
             if (![self checkIfExists:src size:size]) {
                 [files addObject:@{
                                    @"length": @(size),
-                                   @"url": [NSString stringWithFormat:@"https://%@/%@",server_host, src]
+                                   @"url": [NSString stringWithFormat:@"%@://%@/%@",https, server_host, src]
                                    }];
             }
             [maps addObject:[self getDestLocation:src].path];
@@ -148,7 +162,7 @@ static ServerConfig *instance;
             if (![self checkIfExists:src size:size]) {
                 [files addObject:@{
                                    @"length": @(size),
-                                   @"url": [NSString stringWithFormat:@"https://%@/%@",server_host,src]
+                                   @"url": [NSString stringWithFormat:@"%@://%@/%@",https, server_host,src]
                                    }];
             }
             [config_json setValue:[self getDestLocation:src].path forKey:obj];
@@ -183,6 +197,12 @@ static ServerConfig *instance;
 
 - (void)checkAgreement:(void(^)(NSDictionary*))complete
 {
+    if ([[[ServerConfig sharedConfig].selected objectForKey:@"no_checkagreement"] boolValue]) {
+        _agreementConfig = @{@"agreed":@(true)};
+        complete(_agreementConfig);
+        return;
+    }
+    
     NSString *server_host = [[ServerConfig sharedConfig].selected objectForKey:@"hostname"];
     NSString *device_id = [[UIDevice currentDevice].identifierForVendor UUIDString];
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/api/check_agreement?id=%@",server_host, device_id]];

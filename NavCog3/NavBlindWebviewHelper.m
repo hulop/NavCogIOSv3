@@ -109,7 +109,7 @@
     [script appendFormat:@"$hulop.map.setSync(%@);", sync?@"true":@"false"];
     if (loc) {
         [script appendFormat:@"var map = $hulop.map;"];
-        [script appendFormat:@"map.setCenter([%f,%f]);",loc.lng,loc.lat];
+        [script appendFormat:@"map.setCenter([%.16f,%.16f]);",loc.lng,loc.lat];
     } else {
         [script appendFormat:@"var map = $hulop.map"];
         [script appendFormat:@"var c = map.getCenter();"];

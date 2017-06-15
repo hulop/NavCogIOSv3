@@ -412,7 +412,9 @@ static NavNavigatorConstants *_instance;
                 // destination with a leaf node, make second last link as last link
                 //_isNextDestination = YES;
                 if (_nextLink.length < 3) {
-                    navpoi = [[NavPOI alloc] initWithText:nil Location:ent.facility.location Options:
+                    
+                    navpoi = [[NavPOI alloc] initWithText:[NavDataStore sharedDataStore].to.namePron
+                                                 Location:ent.facility.location Options:
                               @{
                                 @"origin": ent,
                                 @"forAfterEnd": @(YES),
@@ -424,10 +426,11 @@ static NavNavigatorConstants *_instance;
             } else if([_link.targetNodeID isEqualToString:ent.node._id]) {
                 // destination with non-leaf node
                 //_isNextDestination = YES;
-                navpoi = [[NavPOI alloc] initWithText:obj.properties[@"long_description"]
+                navpoi = [[NavPOI alloc] initWithText:[ent getLongDescription]
                                              Location:ent.node.location
                                               Options: @{
                                                          @"origin": ent,
+                                                         @"isDestination": @(YES),
                                                          @"forAfterEnd": @(YES)
                                                          }];
             } else {
@@ -1091,7 +1094,7 @@ static NavNavigatorConstants *_instance;
                 (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
                 return;
             }
-            if (link.isLeaf) {
+            if (link.isLeaf && link.length < 3) {
                 return;
             }
             
@@ -1119,7 +1122,7 @@ static NavNavigatorConstants *_instance;
                 (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
                 return;
             }
-            if (link.isLeaf) {
+            if (link.isLeaf && link.length < 3) {
                 return;
             }
             
@@ -2031,7 +2034,10 @@ static NavNavigatorConstants *_instance;
             }
             
             if (linkInfo.hasBeenBearing) {
-                if (fabs(linkInfo.diffBearingAtUserLocation) < linkInfo.bearingTargetThreshold) {
+                BOOL bearing_for_demo = [[NSUserDefaults standardUserDefaults] boolForKey:@"bearing_for_demo"];
+                
+                if ((!bearing_for_demo && fabs(linkInfo.diffBearingAtUserLocation) < linkInfo.bearingTargetThreshold) ||
+                    (bearing_for_demo && fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < linkInfo.bearingTargetThreshold)) {
                     linkInfo.hasBeenBearing = NO;
                     if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
                         [self.delegate userAdjustedHeading:@{}];
@@ -2275,41 +2281,70 @@ static NavNavigatorConstants *_instance;
             
             
             if (!linkInfo.hasBeenBearing && !linkInfo.noBearing) {
-                double BEARING_TARGET_DISTANCE = 20;
-                double BEARING_DIFF_THRETHOLD = 5.0;
-                double BEARING_DURATION_FACTOR = 0.1;
-                double BEARING_NOTIFY_WAIT = 3.0;
                 
-                double distance = MIN(BEARING_TARGET_DISTANCE, linkInfo.distanceToTargetFromUserLocation);
+                BOOL bearing_for_demo = [[NSUserDefaults standardUserDefaults] boolForKey:@"bearing_for_demo"];
                 
-                HLPLocation *bearingTarget = [linkInfo.userLocation offsetLocationByDistance:distance Bearing:[linkInfo.userLocation bearingTo:linkInfo.targetLocation]];
-                
-                HLPLocation *predicted = [linkInfo.userLocation offsetLocationByDistance:distance Bearing:linkInfo.userLocation.orientation];
-                
-                double diffBearingDistance = [bearingTarget distanceTo:predicted];
-                double bearingThreshold = BEARING_DIFF_THRETHOLD + distance / linkInfo.userLocation.speed * BEARING_DURATION_FACTOR;
-                if (diffBearingDistance > bearingThreshold) {
-                    if (linkInfo.lastBearingDetected == 0) {
-                        linkInfo.lastBearingDetected = now;
-                    }
-                    
-                    if (now - linkInfo.lastBearingDetected > BEARING_NOTIFY_WAIT &&
-                        linkInfo.diffBearingAtUserLocation < 60
-                        ) {
-                        //NSLog(@"needs to bearing: %f degree", linkInfo.diffBearingAtUserLocation);
-                        if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
-                            [self.delegate userNeedsToChangeHeading:
-                             @{
-                               @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
-                               @"threshold": @(0)
-                               }];
+                if (bearing_for_demo) {
+                    if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) > 20) {
+                        if (linkInfo.lastBearingDetected == 0) {
+                            linkInfo.lastBearingDetected = now;
                         }
-                        linkInfo.hasBeenBearing = YES;
-                        linkInfo.bearingTargetThreshold = fabs(linkInfo.diffBearingAtUserLocation / 2);
+                        
+                        if (now - linkInfo.lastBearingDetected > 0.5 &&
+                            fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < 60
+                            ) {
+                            //NSLog(@"needs to bearing: %f degree", linkInfo.diffBearingAtUserLocation);
+                            if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
+                                [self.delegate userNeedsToChangeHeading:
+                                 @{
+                                   @"diffHeading": @(linkInfo.diffBearingAtSnappedLocationOnLink),
+                                   @"threshold": @(0)
+                                   }];
+                            }
+                            linkInfo.hasBeenBearing = YES;
+                            linkInfo.bearingTargetThreshold = fabs(linkInfo.diffBearingAtSnappedLocationOnLink / 2);
+                            linkInfo.lastBearingDetected = 0;
+                        }
+                    } else {
                         linkInfo.lastBearingDetected = 0;
                     }
-                } else {
-                    linkInfo.lastBearingDetected = 0;
+                } else { 
+                    double BEARING_TARGET_DISTANCE = 20;
+                    double BEARING_DIFF_THRETHOLD = 2.0;
+                    double BEARING_DURATION_FACTOR = 0.1;
+                    double BEARING_NOTIFY_WAIT = 0.0; // 3.0;
+                    
+                    double distance = MIN(BEARING_TARGET_DISTANCE, linkInfo.distanceToTargetFromUserLocation);
+                    
+                    HLPLocation *bearingTarget = [linkInfo.userLocation offsetLocationByDistance:distance Bearing:[linkInfo.userLocation bearingTo:linkInfo.targetLocation]];
+                    
+                    HLPLocation *predicted = [linkInfo.userLocation offsetLocationByDistance:distance Bearing:linkInfo.userLocation.orientation];
+                    
+                    double diffBearingDistance = [bearingTarget distanceTo:predicted];
+                    double bearingThreshold = BEARING_DIFF_THRETHOLD + distance / linkInfo.userLocation.speed * BEARING_DURATION_FACTOR;
+                    if (diffBearingDistance > bearingThreshold) {
+                        if (linkInfo.lastBearingDetected == 0) {
+                            linkInfo.lastBearingDetected = now;
+                        }
+                        
+                        if (now - linkInfo.lastBearingDetected > BEARING_NOTIFY_WAIT &&
+                            linkInfo.diffBearingAtUserLocation < 60
+                            ) {
+                            //NSLog(@"needs to bearing: %f degree", linkInfo.diffBearingAtUserLocation);
+                            if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
+                                [self.delegate userNeedsToChangeHeading:
+                                 @{
+                                   @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
+                                   @"threshold": @(0)
+                                   }];
+                            }
+                            linkInfo.hasBeenBearing = YES;
+                            linkInfo.bearingTargetThreshold = fabs(linkInfo.diffBearingAtUserLocation / 2);
+                            linkInfo.lastBearingDetected = 0;
+                        }
+                    } else {
+                        linkInfo.lastBearingDetected = 0;
+                    }
                 }
             }
             

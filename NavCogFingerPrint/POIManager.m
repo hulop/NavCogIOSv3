@@ -46,6 +46,9 @@ static POIManager *instance;
 
 - (void)initCenter:(HLPLocation*)loc
 {
+    if (isnan(loc.lat) || isnan(loc.lng)) {
+        return;
+    }
     if (lastLocation && [loc distanceTo:lastLocation] < 200) {
         [_delegate manager:self didPOIsLoaded:cachedFeatures];
         lastLocation = loc;

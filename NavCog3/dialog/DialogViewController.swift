@@ -614,6 +614,9 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 if let dest_info:[String:Any] = cc["dest_info"] as! [String:Any]? {
                     if let nodes:String = dest_info["nodes"] as? String {
                         var info:[String : Any] = ["toID": nodes]
+                        if let from = dest_info["from"] as? String {
+                            info["fromID"] = from
+                        }
                         if cc["use_stair"] != nil {
                             info["use_stair"] = cc["use_stair"] as! Bool;
                         }

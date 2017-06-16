@@ -682,6 +682,8 @@ static NavDataStore* instance_ = nil;
                     [f updateWithLang:lang];
                 }
                 
+                [self analyzeFeatures:featuresCache];
+                
                 if (complete) {
                     complete();
                 }
@@ -691,6 +693,156 @@ static NavDataStore* instance_ = nil;
         }];
     }];
     
+}
+
+// attribute names of hokoukukan network data in Japanese
+#define FOR_NODE_ID @"対応ノードID"
+#define SOURCE_NODE_ID @"起点ノードID"
+#define TARGET_NODE_ID @"終点ノードID"
+#define FACILITY_ID @"施設ID"
+#define FOR_FACILITY_ID @"対応施設ID"
+
+- (void) analyzeFeatures:(NSArray*)features
+{
+    NSMutableDictionary *idMapTemp = [@{} mutableCopy];
+    NSMutableDictionary *entranceMapTemp = [@{} mutableCopy];
+    NSMutableDictionary *poiMapTemp = [@{} mutableCopy];
+    NSMutableArray *poisTemp = [@[] mutableCopy];
+    NSMutableDictionary *nodesMapTemp = [@{} mutableCopy];
+    NSMutableDictionary *linksMapTemp = [@{} mutableCopy];
+    NSMutableDictionary *nodeLinksMapTemp = [@{} mutableCopy];
+    NSMutableArray *escalatorLinksTemp = [@[] mutableCopy];
+    
+    for(HLPObject *obj in features) {
+        @try {
+            idMapTemp[obj._id] = obj;
+            NSMutableArray *array = nil;
+            switch(obj.category) {
+                case HLP_OBJECT_CATEGORY_LINK:
+                    linksMapTemp[obj._id] = obj;
+                    array = nodeLinksMapTemp[obj.properties[SOURCE_NODE_ID]];
+                    if (!array) {
+                        array = [@[] mutableCopy];
+                        nodeLinksMapTemp[obj.properties[SOURCE_NODE_ID]] = array;
+                    }
+                    [array addObject:obj];
+                    
+                    array = nodeLinksMapTemp[obj.properties[TARGET_NODE_ID]];
+                    if (!array) {
+                        array = [@[] mutableCopy];
+                        nodeLinksMapTemp[obj.properties[TARGET_NODE_ID]] = array;
+                    }
+                    [array addObject:obj];
+                    if (((HLPLink*)obj).linkType == LINK_TYPE_ESCALATOR) {
+                        [escalatorLinksTemp addObject:obj];
+                    }
+                    
+                    break;
+                case HLP_OBJECT_CATEGORY_NODE:
+                    nodesMapTemp[obj._id] = obj;
+                    break;
+                case HLP_OBJECT_CATEGORY_TOILET:
+                case HLP_OBJECT_CATEGORY_PUBLIC_FACILITY:
+                    poiMapTemp[obj.properties[FACILITY_ID]] = obj;
+                    [poisTemp addObject:obj];
+                    break;
+                default:
+                    break;
+            }
+        }
+        @catch(NSException *e) {
+            NSLog(@"%@", [e debugDescription]);
+            NSLog(@"%@", obj);
+        }
+    }
+    for(HLPEntrance *ent in features) {
+        if ([ent isKindOfClass:HLPEntrance.class]) {
+            if ([[ent getName] isEqualToString:@"#"]) {
+                // remove special door tag
+                continue;
+            }
+            [ent updateNode:nodesMapTemp[ent.forNodeID]
+                andFacility:poiMapTemp[ent.forFacilityID]];
+            
+            entranceMapTemp[ent.forNodeID] = ent;
+        }
+    }
+    
+    _idMap = idMapTemp;
+    _entranceMap = entranceMapTemp;
+    _poiMap = poiMapTemp;
+    _pois = poisTemp;
+    _nodesMap = nodesMapTemp;
+    _linksMap = linksMapTemp;
+    _nodeLinksMap = nodeLinksMapTemp;
+    _escalatorLinks = escalatorLinksTemp;
+    
+    [_linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        [obj updateWithNodesMap:_nodesMap];
+    }];
+    
+    // determine escalator side from links
+    for(int i = 0; i < [_escalatorLinks count]; i++) {
+        HLPLink* link1 = _escalatorLinks[i];
+        if (link1.direction == DIRECTION_TYPE_BOTH) {
+            continue;
+        }
+        BOOL dir1 = (link1.direction == DIRECTION_TYPE_SOURCE_TO_TARGET);
+        HLPLocation *source1 = dir1?link1.sourceLocation:link1.targetLocation;
+        double bearing1 = [source1 bearingTo:dir1?link1.targetLocation:link1.sourceLocation];
+        
+        HLPPOIEscalatorFlags*(^isSideBySideEscalator)(HLPLink*) = ^(HLPLink* link2) {
+            BOOL dir2 = (link2.direction == DIRECTION_TYPE_SOURCE_TO_TARGET);
+            HLPLocation *source2 = nil, *target2 = nil;
+            if (source1.floor == link2.sourceHeight) {
+                source2 = link2.sourceLocation;
+                target2 = link2.targetLocation;
+            }
+            else if (source1.floor == link2.targetHeight) {
+                source2 = link2.targetLocation;
+                target2 = link2.sourceLocation;
+            }
+            if (!source2) {
+                return (HLPPOIEscalatorFlags*)nil;
+            }
+            if ([source1 distanceTo:source2] > 2.5) {
+                return (HLPPOIEscalatorFlags*)nil;
+            }
+            double bearing = [HLPLocation normalizeDegree:[source1 bearingTo:source2] - bearing1];
+            if (fabs(bearing) < 80 || 100 < fabs(bearing)) {
+                //NSLog(@"bearing-%f", bearing);
+                //return (HLPPOIEscalatorFlags*)nil;
+            }
+            NSMutableString* temp = [@"" mutableCopy];
+            [temp appendString:bearing<0?@"_left_ ":@"_right_ "];
+            [temp appendString:((source2==link2.sourceLocation) && dir2) ? @"_forward_ ":@"_backward_ "];
+            [temp appendString:source2.floor > target2.floor ? @"_downward_ ":@"_upward_ "];
+            
+            return [[HLPPOIEscalatorFlags alloc] initWithString:temp];
+        };
+        
+        NSMutableArray *flags = [@[] mutableCopy];
+        
+        for(int j = 0; j < [_escalatorLinks count]; j++) {
+            HLPLink* link2 = _escalatorLinks[j];
+            if (link1 == link2 ||
+                (source1.floor != link2.sourceHeight && source1.floor != link2.targetHeight) ||
+                link2.direction == DIRECTION_TYPE_BOTH
+                ) {
+                continue;
+            }
+            
+            HLPPOIEscalatorFlags *flag = isSideBySideEscalator(link2);
+            if (flag == nil) {
+                continue;
+            }
+            [flags addObject:flag];
+        }
+        NSLog(@"%@, %f->%f, %@", link1._id, link1.sourceHeight, link1.targetHeight, flags);
+        
+        link1.escalatorFlags = flags;
+    }
+
 }
 
 #define CONFIG_JSON @"%@://%@/%@config/dialog_config.json"

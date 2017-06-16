@@ -105,9 +105,13 @@
         } else {
             NSError *error;
             NSArray *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+            NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+            
             if (error) {
                 NSLog(@"%@", error);
                 NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+                callback(nil);
+            } else if ([json isKindOfClass:NSDictionary.class]) { // error json
                 callback(nil);
             } else {
                 NSMutableArray *array = [@[] mutableCopy];

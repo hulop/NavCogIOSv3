@@ -928,7 +928,7 @@
         <!--Dialog View Controller-->
         <scene sceneID="7vw-Hj-Rkg">
             <objects>
-                <viewController id="YRz-sv-vaW" customClass="DialogViewController" customModule="NavCogFingerPrint" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="YRz-sv-vaW" customClass="DialogViewController" customModule="NavCogPreview" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ckh-WA-6CF"/>
                         <viewControllerLayoutGuide type="bottom" id="h1Z-UX-Seu"/>
@@ -1427,10 +1427,10 @@
         <image name="Menu" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Uqw-3g-GCM"/>
-        <segue reference="y9t-k8-dBv"/>
         <segue reference="x9Q-EB-G1d"/>
-        <segue reference="GK1-dG-XDF"/>
         <segue reference="XlC-wp-uNx"/>
+        <segue reference="y9t-k8-dBv"/>
+        <segue reference="BKg-hP-LrX"/>
+        <segue reference="Uqw-3g-GCM"/>
     </inferredMetricsTieBreakers>
 </document>

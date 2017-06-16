@@ -24,6 +24,12 @@ target 'NavCogFingerPrint' do
   pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
 end
 
+target 'NavCogPreview' do
+  platform :ios, '8.4'
+  pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
+  pod 'FormatterKit'
+end
+
 target 'NavCogSimple' do
   platform :ios, '8.4'
   pod 'OpenCV', '2.4.9'

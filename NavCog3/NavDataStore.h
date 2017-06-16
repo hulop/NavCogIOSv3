@@ -66,6 +66,17 @@ typedef enum {
 @property HLPLocation *mapCenter;
 @property (readonly) NSDictionary *buildingInfo;
 
+
+@property (readonly) NSDictionary *idMap;
+@property (readonly) NSDictionary *entranceMap;
+@property (readonly) NSDictionary *poiMap;
+@property (readonly) NSDictionary *nodesMap;
+@property (readonly) NSDictionary *linksMap;
+@property (readonly) NSDictionary *nodeLinksMap;
+@property (readonly) NSArray *pois;
+@property (readonly) NSArray *escalatorLinks;
+
+
 @property NSTimeInterval start;
 
 + (instancetype) sharedDataStore;

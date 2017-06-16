@@ -26,14 +26,6 @@
 #import "NavDataStore.h"
 #import "objc/runtime.h"
 
-
-// attribute names of hokoukukan network data in Japanese
-#define FOR_NODE_ID @"対応ノードID"
-#define SOURCE_NODE_ID @"起点ノードID"
-#define TARGET_NODE_ID @"終点ノードID"
-#define FACILITY_ID @"施設ID"
-#define FOR_FACILITY_ID @"対応施設ID"
-
 #define FIXED @(YES)
 #define NOT_FIXED @(NO)
 
@@ -822,20 +814,9 @@ static NavNavigatorConstants *_instance;
 @implementation NavNavigator {
     BOOL isFirst;
     NSArray *route;
-    NSArray *features;
-    
     NSMutableArray *linkInfos;
     
-    NSDictionary *idMap;
-    NSDictionary *toiletMap;
-    NSDictionary *entranceMap;
-    NSDictionary *poiMap;
-    NSDictionary *nodesMap;
-    NSDictionary *linksMap;
-    NSDictionary *nodeLinksMap;
-    NSArray *pois;
     NSArray *oneHopLinks;
-    NSArray *escalatorLinks;
     
     //NSString *destination;
     //NSString *startPoint;
@@ -920,166 +901,23 @@ static NavNavigatorConstants *_instance;
     waitingStartUntil = [[NSDate date] timeIntervalSince1970] + 1.0;
     [self reset];
     
-    // prepare data
-    features = nds.features;
-    
-    NSMutableDictionary *idMapTemp = [@{} mutableCopy];
-    NSMutableDictionary *entranceMapTemp = [@{} mutableCopy];
-    NSMutableDictionary *poiMapTemp = [@{} mutableCopy];
-    NSMutableArray *poisTemp = [@[] mutableCopy];
-    NSMutableDictionary *nodesMapTemp = [@{} mutableCopy];
-    NSMutableDictionary *linksMapTemp = [@{} mutableCopy];
-    NSMutableDictionary *nodeLinksMapTemp = [@{} mutableCopy];
-    NSMutableArray *escalatorLinksTemp = [@[] mutableCopy];
-    
-    for(HLPObject *obj in features) {
-        @try {
-            idMapTemp[obj._id] = obj;
-            NSMutableArray *array = nil;
-            switch(obj.category) {
-                case HLP_OBJECT_CATEGORY_LINK:
-                    linksMapTemp[obj._id] = obj;
-                    array = nodeLinksMapTemp[obj.properties[SOURCE_NODE_ID]];
-                    if (!array) {
-                        array = [@[] mutableCopy];
-                        nodeLinksMapTemp[obj.properties[SOURCE_NODE_ID]] = array;
-                    }
-                    [array addObject:obj];
-                    
-                    array = nodeLinksMapTemp[obj.properties[TARGET_NODE_ID]];
-                    if (!array) {
-                        array = [@[] mutableCopy];
-                        nodeLinksMapTemp[obj.properties[TARGET_NODE_ID]] = array;
-                    }
-                    [array addObject:obj];
-                    if (((HLPLink*)obj).linkType == LINK_TYPE_ESCALATOR) {
-                        [escalatorLinksTemp addObject:obj];
-                    }
-                    
-                    break;
-                case HLP_OBJECT_CATEGORY_NODE:
-                    nodesMapTemp[obj._id] = obj;
-                    break;
-                case HLP_OBJECT_CATEGORY_TOILET:
-                case HLP_OBJECT_CATEGORY_PUBLIC_FACILITY:
-                    poiMapTemp[obj.properties[FACILITY_ID]] = obj;
-                    [poisTemp addObject:obj];
-                    break;
-                default:
-                    break;
-            }
-        }
-        @catch(NSException *e) {
-            NSLog(@"%@", [e debugDescription]);
-            NSLog(@"%@", obj);
-        }
-    }
-    for(HLPEntrance *ent in features) {
-        if ([ent isKindOfClass:HLPEntrance.class]) {
-            if ([[ent getName] isEqualToString:@"#"]) {
-                // remove special door tag
-                continue;
-            }
-            [ent updateNode:nodesMapTemp[ent.forNodeID]
-                andFacility:poiMapTemp[ent.forFacilityID]];
-            
-            entranceMapTemp[ent.forNodeID] = ent;
-        }
-    }
-    
-    idMap = idMapTemp;
-    entranceMap = entranceMapTemp;
-    poiMap = poiMapTemp;
-    pois = poisTemp;
-    nodesMap = nodesMapTemp;
-    linksMap = linksMapTemp;
-    nodeLinksMap = nodeLinksMapTemp;
-    escalatorLinks = escalatorLinksTemp;
-    
-    [linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-        [obj updateWithNodesMap:nodesMap];
-    }];
     [route enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj isKindOfClass:HLPLink.class]) {
-            [obj updateWithNodesMap:nodesMap];
+            [obj updateWithNodesMap:nds.nodesMap];
         }
     }];
-    
-    
-    // determine escalator side from links
-    for(int i = 0; i < [escalatorLinks count]; i++) {
-        HLPLink* link1 = escalatorLinks[i];
-        if (link1.direction == DIRECTION_TYPE_BOTH) {
-            continue;
-        }
-        BOOL dir1 = (link1.direction == DIRECTION_TYPE_SOURCE_TO_TARGET);
-        HLPLocation *source1 = dir1?link1.sourceLocation:link1.targetLocation;
-        double bearing1 = [source1 bearingTo:dir1?link1.targetLocation:link1.sourceLocation];
-        
-        HLPPOIEscalatorFlags*(^isSideBySideEscalator)(HLPLink*) = ^(HLPLink* link2) {
-            BOOL dir2 = (link2.direction == DIRECTION_TYPE_SOURCE_TO_TARGET);
-            HLPLocation *source2 = nil, *target2 = nil;
-            if (source1.floor == link2.sourceHeight) {
-                source2 = link2.sourceLocation;
-                target2 = link2.targetLocation;
-            }
-            else if (source1.floor == link2.targetHeight) {
-                source2 = link2.targetLocation;
-                target2 = link2.sourceLocation;
-            }
-            if (!source2) {
-                return (HLPPOIEscalatorFlags*)nil;
-            }
-            if ([source1 distanceTo:source2] > 2.5) {
-                return (HLPPOIEscalatorFlags*)nil;
-            }
-            double bearing = [HLPLocation normalizeDegree:[source1 bearingTo:source2] - bearing1];
-            if (fabs(bearing) < 80 || 100 < fabs(bearing)) {
-                //NSLog(@"bearing-%f", bearing);
-                //return (HLPPOIEscalatorFlags*)nil;
-            }
-            NSMutableString* temp = [@"" mutableCopy];
-            [temp appendString:bearing<0?@"_left_ ":@"_right_ "];
-            [temp appendString:((source2==link2.sourceLocation) && dir2) ? @"_forward_ ":@"_backward_ "];
-            [temp appendString:source2.floor > target2.floor ? @"_downward_ ":@"_upward_ "];
-            
-            return [[HLPPOIEscalatorFlags alloc] initWithString:temp];
-        };
-        
-        NSMutableArray *flags = [@[] mutableCopy];
-        
-        for(int j = 0; j < [escalatorLinks count]; j++) {
-            HLPLink* link2 = escalatorLinks[j];
-            if (link1 == link2 ||
-                (source1.floor != link2.sourceHeight && source1.floor != link2.targetHeight) ||
-                link2.direction == DIRECTION_TYPE_BOTH
-                ) {
-                continue;
-            }
-            
-            HLPPOIEscalatorFlags *flag = isSideBySideEscalator(link2);
-            if (flag == nil) {
-                continue;
-            }
-            [flags addObject:flag];
-        }
-        NSLog(@"%@, %f->%f, %@", link1._id, link1.sourceHeight, link1.targetHeight, flags);
-        
-        link1.escalatorFlags = flags;
-    }
     
     [route enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj isKindOfClass:HLPLink.class]) {
             HLPLink *link = (HLPLink*)obj;
-            link.escalatorFlags = [linksMap[link._id] escalatorFlags];
+            link.escalatorFlags = [nds.linksMap[link._id] escalatorFlags];
         }
     }];
     
-    
     navIndex = 0;
     
-    destinationNode = entranceMap[[[route lastObject] _id]];
-    startNode = entranceMapTemp[[[route firstObject] _id]];
+    destinationNode = nds.entranceMap[[[route lastObject] _id]];
+    startNode = nds.entranceMap[[[route firstObject] _id]];
     
     NSArray*(^nearestLinks)(HLPLocation*, NSDictionary*) = ^ NSArray* (HLPLocation *loc, NSDictionary* option) {
         NSMutableArray<HLPLink*> __block *nearestLinks = [@[] mutableCopy];
@@ -1088,7 +926,7 @@ static NavNavigatorConstants *_instance;
         HLPLinkType linkType = [option[@"linkType"] intValue];
         BOOL onlyEnd = [option[@"onlyEnd"] boolValue];
         
-        [linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
+        [nds.linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
             
             if (!isnan(loc.floor) &&
                 (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
@@ -1116,7 +954,7 @@ static NavNavigatorConstants *_instance;
                 nearestLinks = [@[link] mutableCopy];
             }
         }];
-        [linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
+        [nds.linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
             
             if (!isnan(loc.floor) &&
                 (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
@@ -1154,22 +992,22 @@ static NavNavigatorConstants *_instance;
         NSMutableArray *temp = [@[] mutableCopy];
         for(HLPObject *obj2 in array) {
             if ([obj2 isKindOfClass:HLPLink.class]) {
-                HLPNode *sn = nodesMap[[(HLPLink*)obj2 sourceNodeID]];
-                HLPNode *tn = nodesMap[[(HLPLink*)obj2 targetNodeID]];
+                HLPNode *sn = nds.nodesMap[[(HLPLink*)obj2 sourceNodeID]];
+                HLPNode *tn = nds.nodesMap[[(HLPLink*)obj2 targetNodeID]];
                 
                 for(HLPLink *lid in sn.connectedLinkIDs) {
-                    HLPLink *link = linksMap[lid];
+                    HLPLink *link = nds.linksMap[lid];
                     if (link) {
-                        [link setTargetNodeIfNeeded:sn withNodesMap:nodesMap];
+                        [link setTargetNodeIfNeeded:sn withNodesMap:nds.nodesMap];
                         if (![temp containsObject:link]) {
                             [temp addObject:link];
                         }
                     }
                 }
                 for(HLPLink *lid in tn.connectedLinkIDs) {
-                    HLPLink *link = linksMap[lid];
+                    HLPLink *link = nds.linksMap[lid];
                     if (link) {
-                        [link setTargetNodeIfNeeded:tn withNodesMap:nodesMap];
+                        [link setTargetNodeIfNeeded:tn withNodesMap:nds.nodesMap];
                         if (![temp containsObject:link]) {
                             [temp addObject:link];
                         }
@@ -1190,11 +1028,11 @@ static NavNavigatorConstants *_instance;
     
     // associate pois to links
     NSMutableDictionary *linkPoiMap = [@{} mutableCopy];
-    for(int j = 0; j < [pois count]; j++) {
-        if ([pois[j] isKindOfClass:HLPPOI.class] == NO) {
+    for(int j = 0; j < [nds.pois count]; j++) {
+        if ([nds.pois[j] isKindOfClass:HLPPOI.class] == NO) {
             continue;
         }
-        HLPPOI *poi = pois[j];
+        HLPPOI *poi = nds.pois[j];
         HLPLocation *poiLoc = poi.location;
         HLPLinkType linkType = 0;
         if (poi.poiCategory == HLPPOICategoryElevatorEquipments ||
@@ -1215,7 +1053,7 @@ static NavNavigatorConstants *_instance;
         }
     }
     
-    for(HLPEntrance *ent in features) {
+    for(HLPEntrance *ent in nds.features) {
         if ([ent isKindOfClass:HLPEntrance.class]) {
             
             if ([startNode.forFacilityID isEqualToString:ent.forFacilityID]) {

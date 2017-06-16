@@ -31,6 +31,20 @@
              @"_metadata": @"_metadata"
              };
 }
+static NSValueTransformer *transformer;
++(NSValueTransformer*) stringNumberTransformer
+{
+    if (!transformer) {
+        transformer = [MTLValueTransformer transformerUsingForwardBlock:^id(id value, BOOL *success, NSError *__autoreleasing *error) {
+            if ([value isKindOfClass:NSString.class]) {
+                return @([((NSString*)value) doubleValue]);
+            } else {
+                return value;
+            }
+        }];
+    }
+    return transformer;
+}
 @end
 
 @implementation HLPFloorplan
@@ -52,6 +66,17 @@
              @"beacons": @"beacons"
              }];
 }
+
++ (NSValueTransformer *)floorJSONTransformer { return [HLPDBObject stringNumberTransformer];}
++ (NSValueTransformer *)origin_xJSONTransformer { return [HLPDBObject stringNumberTransformer];}
++ (NSValueTransformer *)origin_yJSONTransformer { return [HLPDBObject stringNumberTransformer];}
++ (NSValueTransformer *)widthJSONTransformer { return [HLPDBObject stringNumberTransformer];}
++ (NSValueTransformer *)heightJSONTransformer { return [HLPDBObject stringNumberTransformer];}
++ (NSValueTransformer *)ppm_xJSONTransformer { return [HLPDBObject stringNumberTransformer];}
++ (NSValueTransformer *)ppm_yJSONTransformer { return [HLPDBObject stringNumberTransformer];}
++ (NSValueTransformer *)latJSONTransformer { return [HLPDBObject stringNumberTransformer];}
++ (NSValueTransformer *)lngJSONTransformer { return [HLPDBObject stringNumberTransformer];}
++ (NSValueTransformer *)rotateJSONTransformer { return [HLPDBObject stringNumberTransformer];}
 @end
 
 @implementation HLPRefpoint
@@ -69,6 +94,16 @@
              @"y": @"y",
              @"rotate": @"rotate"
              }];
+}
+
++ (NSValueTransformer *)rotateEntityAttributeTransformer {
+    return [MTLValueTransformer transformerUsingForwardBlock:^id(id value, BOOL *success, NSError *__autoreleasing *error) {
+        if ([value isKindOfClass:NSString.class]) {
+            return @([((NSString*)value) doubleValue]);
+        } else {
+            return value;
+        }
+    }];
 }
 @end
 

@@ -100,6 +100,7 @@
 		7E27F9441EFA70BC00FB3309 /* HLPSettingViewSubtitleCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E31D5189F100875766 /* HLPSettingViewSubtitleCell.xib */; };
 		7E27F9451EFA70BC00FB3309 /* HLPSettingViewSwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E41D5189F100875766 /* HLPSettingViewSwitchCell.xib */; };
 		7E27F9461EFA70BC00FB3309 /* HLPSettingViewTextCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E51D5189F100875766 /* HLPSettingViewTextCell.xib */; };
+		7E27F9921EFBA92800FB3309 /* HLPPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E27F9911EFBA92800FB3309 /* HLPPreviewer.m */; };
 		7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E28479E1E024112006B1FB8 /* exercise-data.json */; };
 		7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */; };
 		7E308BDB1DAF147600E525F6 /* BlindView.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
@@ -386,6 +387,8 @@
 		7E27F8F51EFA5FFE00FB3309 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		7E27F8F61EFA5FFE00FB3309 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		7E27F9401EFA6DC300FB3309 /* Preview.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Preview.storyboard; sourceTree = "<group>"; };
+		7E27F9901EFBA92800FB3309 /* HLPPreviewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPPreviewer.h; sourceTree = "<group>"; };
+		7E27F9911EFBA92800FB3309 /* HLPPreviewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPPreviewer.m; sourceTree = "<group>"; };
 		7E28479E1E024112006B1FB8 /* exercise-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "exercise-data.json"; path = "model/exercise-data.json"; sourceTree = "<group>"; };
 		7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
@@ -962,6 +965,8 @@
 				7E5739F41EF27B2B00BA3601 /* SettingViewController.m */,
 				7E5739F61EF27BA500BA3601 /* BlindViewController.h */,
 				7E5739F71EF27BA500BA3601 /* BlindViewController.m */,
+				7E27F9901EFBA92800FB3309 /* HLPPreviewer.h */,
+				7E27F9911EFBA92800FB3309 /* HLPPreviewer.m */,
 				7E5739F81EF27BA500BA3601 /* WelcomViewController.h */,
 				7E5739F91EF27BA500BA3601 /* WelcomViewController.m */,
 				7E27F8F11EFA5FFE00FB3309 /* DestinationTableViewController.h */,
@@ -1717,6 +1722,7 @@
 				7E27F9051EFA609200FB3309 /* NavUtil.m in Sources */,
 				7E27F9041EFA608C00FB3309 /* NavDeviceTTS.m in Sources */,
 				7E27F9001EFA608500FB3309 /* HLPSetting.m in Sources */,
+				7E27F9921EFBA92800FB3309 /* HLPPreviewer.m in Sources */,
 				7E27F9011EFA608500FB3309 /* HLPSettingHelper.m in Sources */,
 				7E27F9021EFA608500FB3309 /* HLPSettingTableView.m in Sources */,
 				7E27F9031EFA608500FB3309 /* HLPSettingViewCell.m in Sources */,

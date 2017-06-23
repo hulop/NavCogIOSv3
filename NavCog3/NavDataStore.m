@@ -122,6 +122,19 @@
     }
     _landmarks = [_landmarks arrayByAddingObject:landmark];
 }
+- (HLPLocation *)location
+{
+    switch(_type) {
+        case NavDestinationTypeLandmark:
+            return [_landmark nodeLocation];
+        case NavDestinationTypeLandmarks:
+            return [[[NavDataStore sharedDataStore] closestDestinationInLandmarks:_landmarks] location];
+        case NavDestinationTypeLocation:
+            return _location;
+        default:
+            return nil;
+    }
+}
 
 + (instancetype)selectStart
 {
@@ -781,6 +794,17 @@ static NavDataStore* instance_ = nil;
         [obj updateWithNodesMap:_nodesMap];
     }];
     
+    [nodeLinksMapTemp enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, NSMutableArray* obj, BOOL * _Nonnull stop) {
+        HLPNode *node = _nodesMap[key];
+        [obj sortUsingComparator:^NSComparisonResult(HLPLink *l1, HLPLink *l2) {
+            double o1, o2;
+            o1 = (l1.sourceNode == node)?l1.initialBearingFromSource:l1.initialBearingFromTarget;
+            o2 = (l2.sourceNode == node)?l2.initialBearingFromSource:l2.initialBearingFromTarget;
+            return [@(o1) compare:@(o2)];
+        }];
+    }];
+     
+     
     // determine escalator side from links
     for(int i = 0; i < [_escalatorLinks count]; i++) {
         HLPLink* link1 = _escalatorLinks[i];

@@ -27,6 +27,59 @@
 #import "DestinationTableViewController.h"
 @import AVFoundation;
 
+@interface NavSearchHistoryDataSource2: NavSearchHistoryDataSource
+@end
+
+@implementation NavSearchHistoryDataSource2
+
+- (BOOL)isKnownHist:(NSDictionary*)dic
+{
+    NavDestination *from = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"from"]];
+    NavDestination *to = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"to"]];
+    if (to.type == NavDestinationTypeSelectDestination) {
+        return [[NavDataStore sharedDataStore] isKnownDestination:from];
+    }
+    return [[NavDataStore sharedDataStore] isKnownDestination:from] &&
+    [[NavDataStore sharedDataStore] isKnownDestination:to];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *CellIdentifier = @"historyCell";
+    //UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if(!cell){
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    }
+    NSArray *hist = [[NavDataStore sharedDataStore] searchHistory];
+    NSDictionary *dic = hist[indexPath.row];
+    BOOL isKnown = [self isKnownHist:dic];
+    
+    NavDestination *from = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"from"]];
+    NavDestination *to = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"to"]];
+    
+    cell.textLabel.numberOfLines = 1;
+    cell.textLabel.adjustsFontSizeToFitWidth = YES;
+    cell.textLabel.lineBreakMode = NSLineBreakByClipping;
+    cell.textLabel.text = from.name;
+    cell.textLabel.accessibilityLabel = isKnown?from.namePron:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Disabled", @"BlindView", @""), from.namePron];
+    
+    if (to.type == NavDestinationTypeSelectDestination) {
+        cell.detailTextLabel.text = nil;
+        cell.detailTextLabel.accessibilityLabel = nil;
+    } else {
+        cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedStringFromTable(@"to: %@", @"BlindView", @""), to.name];
+        cell.detailTextLabel.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"to: %@", @"BlindView", @""), to.namePron];
+    }
+    
+    cell.contentView.layer.opacity = isKnown?1.0:0.5;
+    
+    return cell;
+}
+
+@end
+
 @interface SearchViewController () {
     BOOL updated;
     BOOL actionEnabled;
@@ -64,7 +117,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
 
 
-    historySource = [[NavSearchHistoryDataSource alloc] init];
+    historySource = [[NavSearchHistoryDataSource2 alloc] init];
     _historyView.dataSource = historySource;
     _historyView.delegate = self;
     [_historyView reloadData];

@@ -20,31 +20,46 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import <UIKit/UIKit.h>
-#import <NavWebView/NavWebView.h>
+#import <Foundation/Foundation.h>
 #import "NavCoverView.h"
-#import "HLPPreviewer.h"
+#import "HLPGeoJSON.h"
 
-@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, HLPPreviewerDelegate, PreviewCommandDelegate, PreviewTraverseDelegate,  UITabBarDelegate>
+@interface HLPPreviewEvent : NSObject
+@property (readonly) HLPLink *link;
+@property (readonly) HLPLink *rightLink;
+@property (readonly) HLPLink *leftLink;
+@property (readonly) NSArray<HLPLink*>* linksToNextIntersection;
+@property (readonly) NSArray<HLPLink*>* linksToPrevIntersection;
+@property (readonly) HLPLocation *location;
+@property (readonly) double orientation;
+@property (readonly) HLPObject *target;
+@property (readonly) HLPObject *nextTarget;
+@property (readonly) HLPObject *prevTarget;
+@property (readonly) HLPNode *intersection;
+@property (readonly) NSArray<HLPFacility*> *pois;
 
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *micButton;
-@property (weak, nonatomic) IBOutlet UIButton *retryButton;
-@property (weak, nonatomic) IBOutlet UILabel *errorMessage;
+- (HLPLocation*) nextTargetLocation;
+- (double) distanceToNextTarget;
+- (double) distanceToNextIntersection;
+- (HLPLocation*) prevTargetLocation;
+- (double) distanceToPrevTarget;
+- (double) distanceToPrevIntersection;
+@end
 
-@property (weak, nonatomic) IBOutlet NavCoverView *cover;
-@property (weak, nonatomic) IBOutlet UIButton *devLeft;
-@property (weak, nonatomic) IBOutlet UIButton *devRight;
-@property (weak, nonatomic) IBOutlet UIButton *devGo;
-@property (weak, nonatomic) IBOutlet UIButton *devAuto;
-@property (weak, nonatomic) IBOutlet UIButton *devReset;
-@property (weak, nonatomic) IBOutlet UIButton *devMarker;
-@property (weak, nonatomic) IBOutlet UIButton *devUp;
-@property (weak, nonatomic) IBOutlet UIButton *devDown;
-@property (weak, nonatomic) IBOutlet UIButton *devNote;
-@property (weak, nonatomic) IBOutlet UIButton *devRestart;
+
+@protocol HLPPreviewerDelegate
+-(void)previewStarted:(HLPPreviewEvent*)event;
+-(void)previewUpdated:(HLPPreviewEvent*)event;
+-(void)userMoved:(double)distance;
+-(void)previewStopped:(HLPPreviewEvent*)event;
+@end
+
+@interface HLPPreviewer : NSObject <PreviewTraverseDelegate>
+
+@property (readonly) HLPPreviewEvent *event;
+@property (weak) id<HLPPreviewerDelegate> delegate;
+
+- (void)startAt:(HLPLocation*)loc;
+- (void)stop;
 
 @end

@@ -48,27 +48,30 @@
 
 #define PreviewGestureSpeedUnit 100
 
-@protocol PreviewGestureDelegate
+@protocol PreviewCommandDelegate
 - (void)speakAtPoint:(CGPoint)point;
 - (void)stopSpeaking;
 - (void)speakCurrentPOI;
 - (void)selectCurrentPOI;
+- (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active;
+//- (void)autoStepBackward;
+- (void)quit; // quit preview
+@end
+
+@protocol PreviewTraverseDelegate
 - (void)gotoBegin;
 - (void)gotoEnd;
 - (void)stepForward;
 - (void)stepBackward;
 - (void)jumpForward;
 - (void)jumpBackward;
-- (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active;
-//- (void)autoStepBackward;
 - (void)faceRight;
 - (void)faceLeft; // choose previous
-- (void)quit; // quit preview
 @end
 
 
 @interface NavCoverView : UIView <UIGestureRecognizerDelegate>
 
-@property (weak) id<PreviewGestureDelegate> delegate;
+@property (weak) id<PreviewCommandDelegate, PreviewTraverseDelegate> delegate;
 
 @end

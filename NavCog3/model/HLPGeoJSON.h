@@ -30,6 +30,8 @@
 
 - (void) updateCoordinates:(NSArray*)coordinates;
 - (instancetype)initWithLocations:(NSArray*) locations;
+- (HLPLocation*)point;
+- (NSArray<HLPLocation*>*)points;
 @end
 
 
@@ -204,10 +206,15 @@ typedef enum: int {
 @property (nonatomic, readonly) HLPBrailleBlockType brailleBlockType;
 @property (nonatomic, readonly) BOOL isLeaf;
 @property NSArray<HLPPOIEscalatorFlags*>* escalatorFlags;
+@property (nonatomic, readonly) HLPNode *sourceNode;
+@property (nonatomic, readonly) HLPNode *targetNode;
 
 + (NSString*) nameOfLinkType:(HLPLinkType)type;
 - (double) initialBearingFromSource;
 - (double) lastBearingForTarget;
+- (double) initialBearingFromTarget;
+- (double) lastBearingForSource;
+- (double) bearingAtLocation:(HLPLocation*)loc;
 - (void) updateLastBearingForTarget:(double)bearing;
 - (HLPLocation*) sourceLocation;
 - (HLPLocation*) targetLocation;

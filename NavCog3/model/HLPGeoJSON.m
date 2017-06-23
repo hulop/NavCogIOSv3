@@ -100,6 +100,26 @@
     return self;
 }
 
+- (HLPLocation *)point
+{
+    if ([_coordinates[0] isKindOfClass:NSArray.class]) {
+        return nil;
+    }
+    return [[HLPLocation alloc] initWithLat:[_coordinates[1] doubleValue] Lng:[_coordinates[0] doubleValue]];
+}
+
+- (NSArray<HLPLocation *> *)points
+{
+    NSMutableArray *temp = [@[] mutableCopy];
+    for(NSArray* a in _coordinates) {
+        if ([a isKindOfClass:NSArray.class]) {
+            [temp addObject:[[HLPLocation alloc] initWithLat:[a[1] doubleValue] Lng:[a[0] doubleValue]]];
+        } else {
+            return nil;
+        }
+    }
+    return temp;
+}
 
 @end
 
@@ -575,7 +595,9 @@
 @implementation HLPLink {
 @protected
     double initialBearingFromSource;
+    double initialBearingFromTarget;
     double lastBearingForTarget;
+    double lastBearingForSource;
 }
 
 + (NSString *)nameOfLinkType:(HLPLinkType)type
@@ -659,6 +681,10 @@
                                                            Lng:[secondLast[0] doubleValue]
                                                          toLat:[last[1] doubleValue]
                                                            Lng:[last[0] doubleValue]];
+            
+            initialBearingFromTarget = [HLPLocation normalizeDegree:180-lastBearingForTarget];
+            lastBearingForSource = [HLPLocation normalizeDegree:180-initialBearingFromSource];
+            
         } else if ([self.geometry.type isEqualToString:@"Point"] && [self.geometry.coordinates count] == 2) {
             double lat = [self.geometry.coordinates[1] doubleValue];
             double lng = [self.geometry.coordinates[0] doubleValue];
@@ -667,6 +693,7 @@
             targetLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng Floor:_targetHeight];
             
             initialBearingFromSource = lastBearingForTarget = NAN;
+            initialBearingFromTarget = lastBearingForSource = NAN;
         }
     }
 }
@@ -676,6 +703,7 @@
     _sourceNodeID = self.properties[_backward?PROPKEY_TARGET_NODE_ID:PROPKEY_SOURCE_NODE_ID];
     HLPNode *snode = nodesMap[_sourceNodeID];
     if (snode) {
+        _sourceNode = snode;
         _sourceHeight = snode.height;
         [sourceLocation updateFloor:_sourceHeight];
     }
@@ -683,6 +711,7 @@
     _targetNodeID = self.properties[!_backward?PROPKEY_TARGET_NODE_ID:PROPKEY_SOURCE_NODE_ID];
     HLPNode *tnode = nodesMap[_targetNodeID];
     if (tnode) {
+        _targetNode = tnode;
         _targetHeight = tnode.height;
         [targetLocation updateFloor:_targetHeight];
     }
@@ -701,6 +730,36 @@
 - (double)lastBearingForTarget
 {
     return lastBearingForTarget;
+}
+
+- (double)initialBearingFromTarget;
+{
+    return initialBearingFromTarget;
+}
+
+- (double)lastBearingForSource;
+{
+    return lastBearingForSource;
+}
+
+- (double)bearingAtLocation:(HLPLocation *)loc
+{
+    int i = 0;
+    double orientation = 0;
+    double min = DBL_MAX;
+    NSArray *points = _geometry.points;
+    for(;i<[points count]-1; i++) {
+        HLPLocation *a = points[i];
+        HLPLocation *b = points[i+1];
+        
+        HLPLocation *c = [loc nearestLocationToLineFromLocation:a ToLocation:b];
+        double d = [c distanceTo:loc];
+        if (d < min) {
+            min = d;
+            orientation = [c bearingTo:b];
+        }
+    }
+    return orientation;
 }
 
 - (void) updateLastBearingForTarget:(double)bearing

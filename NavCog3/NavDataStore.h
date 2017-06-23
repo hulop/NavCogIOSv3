@@ -50,6 +50,7 @@ typedef enum {
 -(instancetype)initWithLocation:(HLPLocation*)location;
 -(instancetype)initWithLabel:(NSString*)label Filter:(NSDictionary*)filter;
 -(void)addLandmark:(HLPLandmark*)landmark;
+-(HLPLocation*)location;
 +(instancetype)selectStart;
 +(instancetype)selectDestination;
 +(instancetype)dialogSearch;
@@ -68,7 +69,7 @@ typedef enum {
 
 
 @property (readonly) NSDictionary *idMap;
-@property (readonly) NSDictionary *entranceMap;
+@property (readonly) NSDictionary<NSString*, HLPEntrance*> *entranceMap;
 @property (readonly) NSDictionary *poiMap;
 @property (readonly) NSDictionary *nodesMap;
 @property (readonly) NSDictionary *linksMap;

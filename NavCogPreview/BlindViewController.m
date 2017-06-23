@@ -26,12 +26,12 @@
 #import "NavUtil.h"
 #import "NavDataStore.h"
 #import "SettingViewController.h"
-#import "NavDeviceTTS.h"
 #import "NavBlindWebviewHelper.h"
 
 
 @interface BlindViewController () {
     NavBlindWebviewHelper *helper;
+    HLPPreviewer *previewer;
 }
 
 @end
@@ -79,6 +79,12 @@
     [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkMapCenter:) userInfo:nil repeats:YES];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeChanged:) name:ROUTE_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged) name:UIAccessibilityVoiceOverStatusChanged object:nil];
+}
+
+- (void) voiceOverStatusChanged:(NSNotification*)note
+{
+    [self updateView];
 }
 
 - (void) routeChanged:(NSNotification*)note
@@ -89,6 +95,11 @@
     NSLog(@"%@", [nds route]);
     NSLog(@"%@", (nds.to._id == nil)?@"No Dest":@"With Dests");
     
+    previewer = [[HLPPreviewer alloc] init];
+    _cover.delegate = self;
+    
+    [previewer startAt:nds.from.location];
+    previewer.delegate = self;
 }
 
 - (void) checkMapCenter:(NSTimer*)timer
@@ -132,6 +143,99 @@
 {
 }
 
+#pragma mark - HLPPreviewerDelegate
+
+
+-(void)previewStarted:(HLPPreviewEvent*)event
+{
+    [helper manualLocation:event.location withSync:NO];
+}
+
+-(void)previewUpdated:(HLPPreviewEvent*)event
+{
+    [helper manualLocation:event.location withSync:NO];
+}
+
+-(void)userMoved:(double)distance
+{
+    
+}
+
+-(void)previewStopped:(HLPPreviewEvent*)event
+{
+    
+}
+
+#pragma mark - PreviewCommandDelegate
+
+- (void)speakAtPoint:(CGPoint)point
+{
+}
+
+- (void)stopSpeaking
+{
+}
+
+- (void)speakCurrentPOI
+{
+}
+
+- (void)selectCurrentPOI
+{
+}
+
+- (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active
+{
+    
+}
+
+- (void)quit
+{
+    
+}
+
+#pragma mark - PreviewTraverseDelegate
+
+- (void)gotoBegin
+{
+    [previewer gotoBegin];
+}
+
+- (void)gotoEnd
+{
+    [previewer gotoEnd];
+}
+
+- (void)stepForward
+{
+    [previewer stepForward];
+}
+
+- (void)stepBackward
+{
+    [previewer stepBackward];
+}
+
+- (void)jumpForward
+{
+    [previewer jumpForward];
+}
+
+- (void)jumpBackward
+{
+    [previewer jumpBackward];
+}
+
+- (void)faceRight
+{
+    [previewer faceRight];
+}
+
+- (void)faceLeft
+{
+    [previewer faceLeft];
+}
+
 #pragma mark - private
 
 - (void) updateView
@@ -140,9 +244,10 @@
         NavDataStore *nds = [NavDataStore sharedDataStore];
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
         
-        BOOL hasCenter = [[NavDataStore sharedDataStore] mapCenter] != nil;
+        BOOL hasCenter = [nds mapCenter] != nil;
         
         self.searchButton.enabled = hasCenter;
+        self.cover.hidden = !nds.previewMode;
     });
 }
 
@@ -275,15 +380,16 @@
 #pragma mark - NavWebviewHelperDelegate
 
 - (void) speak:(NSString*)text withOptions:(NSDictionary*)options {
-    [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:nil];
+    //[[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:nil];
 }
 
 - (BOOL) isSpeaking {
-    return [[NavDeviceTTS sharedTTS] isSpeaking];
+    //return [[NavDeviceTTS sharedTTS] isSpeaking];
+    return NO;
 }
 
 - (void) vibrateOnAudioServices {
-    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+    //AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
 - (void) manualLocationChangedWithOptions:(NSDictionary*)options {

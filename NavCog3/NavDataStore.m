@@ -1145,5 +1145,18 @@ static NavDataStore* instance_ = nil;
     }
 }
 
+- (BOOL)isElevatorNode:(HLPNode *)node
+{
+    if (node == nil) {
+        return NO;
+    }
+    for(HLPLink *l in _nodeLinksMap[node._id]) {
+        if (l.linkType == LINK_TYPE_ELEVATOR) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 @end
 

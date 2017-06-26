@@ -214,6 +214,7 @@ typedef enum: int {
 - (double) lastBearingForTarget;
 - (double) initialBearingFromTarget;
 - (double) lastBearingForSource;
+- (double) initialBearingFrom:(HLPNode*)node;
 - (double) bearingAtLocation:(HLPLocation*)loc;
 - (void) updateLastBearingForTarget:(double)bearing;
 - (HLPLocation*) sourceLocation;

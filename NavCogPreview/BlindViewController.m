@@ -32,6 +32,9 @@
 @interface BlindViewController () {
     NavBlindWebviewHelper *helper;
     HLPPreviewer *previewer;
+    HLPLocation *location;
+    HLPLocation *targetLocation;
+    NSTimer *locationTimer;
 }
 
 @end
@@ -96,10 +99,10 @@
     NSLog(@"%@", (nds.to._id == nil)?@"No Dest":@"With Dests");
     
     previewer = [[HLPPreviewer alloc] init];
+    previewer.delegate = self;
     _cover.delegate = self;
     
     [previewer startAt:nds.from.location];
-    previewer.delegate = self;
 }
 
 - (void) checkMapCenter:(NSTimer*)timer
@@ -148,12 +151,71 @@
 
 -(void)previewStarted:(HLPPreviewEvent*)event
 {
-    [helper manualLocation:event.location withSync:NO];
+    [self targetLocation:event];
 }
 
 -(void)previewUpdated:(HLPPreviewEvent*)event
 {
-    [helper manualLocation:event.location withSync:NO];
+    [self targetLocation:event];
+}
+
+- (void) targetLocation:(HLPPreviewEvent*)event
+{
+    if (!location) {
+        location = [[HLPLocation alloc] init];
+        [location update:event.location];
+        [location updateOrientation:event.orientation withAccuracy:0];
+        targetLocation = [[HLPLocation alloc] init];
+        [targetLocation update:location];
+    } else {
+        if (!targetLocation) {
+            targetLocation = [[HLPLocation alloc] init];
+        }
+        [targetLocation update:event.location];
+        [targetLocation updateOrientation:event.orientation withAccuracy:0];
+    }
+    
+    if (!locationTimer) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            locationTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                double r = 0.8;
+                [location updateFloor:targetLocation.floor];
+                [location updateLat:location.lat*r + targetLocation.lat*(1-r)
+                                Lng:location.lng*r + targetLocation.lng*(1-r)];
+                
+                double diff = [HLPLocation normalizeDegree:targetLocation.orientation - location.orientation];
+                double ori = location.orientation + diff * (1-r);
+
+                [location updateOrientation:ori withAccuracy:0];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showLocation];
+                });
+            }];
+        });
+    }
+}
+
+- (void) showLocation
+{
+    double orientation = -location.orientation / 180 * M_PI;
+    
+    [helper sendData:@[@{
+                           @"type":@"ORIENTATION",
+                           @"z":@(orientation)
+                           }]
+            withName:@"Sensor"];
+    
+    [helper sendData:@{
+                       @"lat":@(location.lat),
+                       @"lng":@(location.lng),
+                       @"floor":@(location.floor),
+                       @"accuracy":@(1),
+                       @"rotate":@(0), // dummy
+                       @"orientation":@(999), //dummy
+                       @"debug_info":[NSNull null],
+                       @"debug_latlng":[NSNull null]
+                       }
+            withName:@"XYZ"];
 }
 
 -(void)userMoved:(double)distance

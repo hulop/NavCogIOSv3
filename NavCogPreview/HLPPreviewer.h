@@ -24,26 +24,30 @@
 #import "NavCoverView.h"
 #import "HLPGeoJSON.h"
 
-@interface HLPPreviewEvent : NSObject
+@interface HLPPreviewEvent : NSObject <NSCopying>
 @property (readonly) HLPLink *link;
-@property (readonly) HLPLink *rightLink;
-@property (readonly) HLPLink *leftLink;
-@property (readonly) NSArray<HLPLink*>* linksToNextIntersection;
-@property (readonly) NSArray<HLPLink*>* linksToPrevIntersection;
 @property (readonly) HLPLocation *location;
 @property (readonly) double orientation;
-@property (readonly) HLPObject *target;
-@property (readonly) HLPObject *nextTarget;
-@property (readonly) HLPObject *prevTarget;
-@property (readonly) HLPNode *intersection;
-@property (readonly) NSArray<HLPFacility*> *pois;
 
+- (HLPObject*) target;
+- (HLPNode*) targetNode;
+- (HLPNode*) targetIntersection;
+- (NSArray<HLPFacility*>*) targetPOIs;
+
+- (HLPLink*) rightLink;
+- (HLPLink*) leftLink;
+
+- (HLPObject*) nextTarget;
 - (HLPLocation*) nextTargetLocation;
 - (double) distanceToNextTarget;
 - (double) distanceToNextIntersection;
+
+/*
+- (HLPObject*) prevTarget;
 - (HLPLocation*) prevTargetLocation;
 - (double) distanceToPrevTarget;
 - (double) distanceToPrevIntersection;
+ */
 @end
 
 

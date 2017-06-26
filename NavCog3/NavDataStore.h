@@ -108,6 +108,9 @@ typedef enum {
 - (BOOL) isKnownDestination:(NavDestination*)dest;
 - (void) startExercise;
 
+- (BOOL) isElevatorNode:(HLPNode*)node;
+
+
 + (NavDestination*) destinationForCurrentLocation;
 
 @end

@@ -671,19 +671,21 @@
             NSArray *secondLast = self.geometry.coordinates[!_backward?[self.geometry.coordinates count]-2:1];
             
             sourceLocation = [[HLPLocation alloc] initWithLat:[first[1] doubleValue] Lng:[first[0] doubleValue] Floor:_sourceHeight];
+            targetLocation = [[HLPLocation alloc] initWithLat:[last[1] doubleValue] Lng:[last[0] doubleValue] Floor:_targetHeight];
             
             initialBearingFromSource = [sourceLocation bearingToLat:[second[1] doubleValue]
                                                                Lng:[second[0] doubleValue]];
-            
-            targetLocation = [[HLPLocation alloc] initWithLat:[last[1] doubleValue] Lng:[last[0] doubleValue] Floor:_targetHeight];
+            initialBearingFromTarget = [targetLocation bearingToLat:[secondLast[1] doubleValue]
+                                                                Lng:[secondLast[0] doubleValue]];
             
             lastBearingForTarget = [HLPLocation bearingFromLat:[secondLast[1] doubleValue]
                                                            Lng:[secondLast[0] doubleValue]
                                                          toLat:[last[1] doubleValue]
                                                            Lng:[last[0] doubleValue]];
-            
-            initialBearingFromTarget = [HLPLocation normalizeDegree:180-lastBearingForTarget];
-            lastBearingForSource = [HLPLocation normalizeDegree:180-initialBearingFromSource];
+            lastBearingForSource = [HLPLocation bearingFromLat:[second[1] doubleValue]
+                                                           Lng:[second[0] doubleValue]
+                                                         toLat:[first[1] doubleValue]
+                                                           Lng:[first[0] doubleValue]];
             
         } else if ([self.geometry.type isEqualToString:@"Point"] && [self.geometry.coordinates count] == 2) {
             double lat = [self.geometry.coordinates[1] doubleValue];
@@ -741,6 +743,18 @@
 {
     return lastBearingForSource;
 }
+
+- (double) initialBearingFrom:(HLPNode *)node
+{
+    if (_sourceNode == node) {
+        return self.initialBearingFromSource;
+    }
+    if (_targetNode == node) {
+        return self.initialBearingFromTarget;
+    }
+    return NAN;
+}
+
 
 - (double)bearingAtLocation:(HLPLocation *)loc
 {
@@ -898,6 +912,7 @@
     _sourceHeight = source.floor;
     _targetHeight = target.floor;
     lastBearingForTarget = initialBearingFromSource = [source bearingTo:target];
+    initialBearingFromTarget = lastBearingForSource = [target bearingTo:source];
     _length = [source distanceTo:target];
     _backward = NO;
     _geometry = [[HLPGeometry alloc] initWithLocations:@[source, target]];
@@ -1014,7 +1029,9 @@
     
     _backward = NO;
     initialBearingFromSource = link1.initialBearingFromSource;
+    initialBearingFromTarget = link2.initialBearingFromTarget;
     lastBearingForTarget = link2.lastBearingForTarget;
+    lastBearingForSource = link1.lastBearingForSource;
     sourceLocation = [link1 sourceLocation];
     targetLocation = [link2 targetLocation];
     

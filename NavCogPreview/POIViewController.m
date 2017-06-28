@@ -20,22 +20,44 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import <Foundation/Foundation.h>
-#import "HLPPreviewer.h"
+#import "POIViewController.h"
+#import "NavDataStore.h"
 
-@protocol HLPPreviewCommanderDelegate
-
-- (void) playStep;
-- (void) playNoStep;
-- (void) vibrate;
-- (void) speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void(^)())handler;
+@interface POIViewController ()
 
 @end
 
-@interface HLPPreviewCommander : NSObject <HLPPreviewerDelegate>
+@implementation POIViewController
 
-@property id<HLPPreviewCommanderDelegate> delegate;
+- (void)viewDidLoad {
+    [super viewDidLoad];
 
-- (void) previewCurrent;
+    if (_pois) {
+        NSMutableString *str = [@"<html><body>" mutableCopy];
+        for(HLPFacility *poi in _pois) {
+            [str appendFormat:@"<h1>%@</h1>", [poi name]];
+            if (poi.longDescription) {
+                [str appendFormat:@"<div>%@</div>", poi.longDescription];
+            }
+        }
+        [str appendString:@"</body></html>"];
+        [self.webView loadHTMLString:str baseURL:nil];
+    }
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
 
 @end

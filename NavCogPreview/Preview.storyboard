@@ -195,6 +195,56 @@
             </objects>
             <point key="canvasLocation" x="788" y="1782"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="WxT-qD-y4g">
+            <objects>
+                <navigationController id="OVH-be-HK2" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="zzs-j2-4oW">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="gXm-Tp-N7T" kind="relationship" relationship="rootViewController" id="2Og-eM-UAN"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Esa-LR-SMf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-185" y="2734"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="GmO-gP-w78">
+            <objects>
+                <viewController storyboardIdentifier="poi_view" id="gXm-Tp-N7T" customClass="POIViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ivc-DY-g75"/>
+                        <viewControllerLayoutGuide type="bottom" id="lhw-Ge-px6"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="W0T-Q0-VEA">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zj5-E8-AoT">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Zj5-E8-AoT" firstAttribute="top" secondItem="W0T-Q0-VEA" secondAttribute="top" id="JfE-Q5-5nv"/>
+                            <constraint firstItem="lhw-Ge-px6" firstAttribute="top" secondItem="Zj5-E8-AoT" secondAttribute="bottom" id="fPF-0U-mRD"/>
+                            <constraint firstAttribute="trailing" secondItem="Zj5-E8-AoT" secondAttribute="trailing" id="l8A-oo-Wzt"/>
+                            <constraint firstItem="Zj5-E8-AoT" firstAttribute="leading" secondItem="W0T-Q0-VEA" secondAttribute="leading" id="uh6-92-2lB"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="RiU-sp-B8e"/>
+                    <connections>
+                        <outlet property="webView" destination="Zj5-E8-AoT" id="5AP-44-GOn"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SPb-PC-6aH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="788" y="2734.1829085457275"/>
+        </scene>
         <!--Destination Table View Controller-->
         <scene sceneID="8FV-13-EM0">
             <objects>

@@ -29,11 +29,13 @@
 @property (readonly) HLPLocation *location;
 @property (readonly) double orientation;
 @property (readonly) double distanceMoved;
+@property (readonly) HLPPreviewEvent* prev;
 
 - (HLPObject*) target;
 - (HLPNode*) targetNode;
 - (HLPNode*) targetIntersection;
 - (NSArray<HLPFacility*>*) targetPOIs;
+- (NSArray<HLPEntrance*>*) targetPOIEntrances;
 - (NSArray<HLPLink*>*) intersectionLinks;
 
 - (HLPLink*) rightLink;

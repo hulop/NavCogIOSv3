@@ -20,22 +20,11 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import <Foundation/Foundation.h>
-#import "HLPPreviewer.h"
+#import <UIKit/UIKit.h>
 
-@protocol HLPPreviewCommanderDelegate
+@interface POIViewController : UIViewController
 
-- (void) playStep;
-- (void) playNoStep;
-- (void) vibrate;
-- (void) speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void(^)())handler;
-
-@end
-
-@interface HLPPreviewCommander : NSObject <HLPPreviewerDelegate>
-
-@property id<HLPPreviewCommanderDelegate> delegate;
-
-- (void) previewCurrent;
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property NSArray *pois;
 
 @end

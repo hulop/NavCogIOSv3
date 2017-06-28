@@ -28,6 +28,7 @@
 #import "NavDataStore.h"
 #import "SettingViewController.h"
 #import "NavBlindWebviewHelper.h"
+#import "POIViewController.h"
 
 
 @interface BlindViewController () {
@@ -48,6 +49,14 @@
     NSObject* selectedFeature;
     HLPLocation *center;
     BOOL loaded;
+    
+    HLPPreviewEvent *current;
+
+    BOOL isAutoProceed;
+    NSTimer *autoTimer;
+    double stepSpeed;
+    double stepCounter;
+    double remainingDistance;
 }
 
 - (void)dealloc
@@ -180,12 +189,16 @@
 {
     [self targetLocation:event];
     [commander previewStarted:event];
+    current = event;
+    remainingDistance = current.next.distanceMoved;
 }
 
 -(void)previewUpdated:(HLPPreviewEvent*)event
 {
     [self targetLocation:event];
     [commander previewUpdated:event];
+    current = event;
+    remainingDistance = current.next.distanceMoved;
 }
 
 -(void)previewStopped:(HLPPreviewEvent*)event
@@ -195,7 +208,12 @@
 
 - (void)userMoved:(double)distance
 {
-    [commander userMoved:distance];
+    if (isAutoProceed == NO) {
+        [commander userMoved:distance];
+    }
+    if (distance == 0) {
+        isAutoProceed = NO;
+    }
 }
 
 - (void) targetLocation:(HLPPreviewEvent*)event
@@ -213,7 +231,11 @@
         [targetLocation update:event.location];
         [targetLocation updateOrientation:event.orientation withAccuracy:0];
     }
-    
+    [self startLocationAnimation];
+}
+
+- (void)startLocationAnimation
+{
     if (!locationTimer) {
         dispatch_async(dispatch_get_main_queue(), ^{
             locationTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
@@ -261,26 +283,80 @@
 
 - (void)speakAtPoint:(CGPoint)point
 {
+    isAutoProceed = NO;
     // not implemented
 }
 
 - (void)stopSpeaking
 {
+    isAutoProceed = NO;
     [[NavDeviceTTS sharedTTS] stop:NO];
 }
 
 - (void)speakCurrentPOI
 {
+    isAutoProceed = NO;
+    [commander previewCurrent];
 }
 
 - (void)selectCurrentPOI
 {
+    isAutoProceed = NO;
+    if (current && current.targetPOIs) {
+        POIViewController *vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"poi_view"];
+        vc.pois = current.targetPOIs;
+        [self.navigationController pushViewController:vc animated:YES];
+    }
 }
+
+#define TIMER_INTERVAL (1.0/64.0)
 
 - (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active
 {
+    NSLog(@"%@ %f, %d", NSStringFromSelector(_cmd), speed, active);
     
+    if (!autoTimer) {
+        stepCounter = 1;
+        autoTimer = [NSTimer scheduledTimerWithTimeInterval:TIMER_INTERVAL target:self selector:@selector(autoStep:) userInfo:nil repeats:YES];
+    } else {
+        if (speed == 0) {
+            [autoTimer invalidate];
+            autoTimer = nil;
+        }
+    }
+    
+    stepSpeed = speed;
+    isAutoProceed = active;
 }
+
+- (void)autoStep:(NSTimer*)timer
+{
+    if (isAutoProceed == NO) {
+        [autoTimer invalidate];
+        autoTimer = nil;
+    }
+    
+    stepCounter += TIMER_INTERVAL * stepSpeed;
+    if (stepCounter >= 1.0) {
+        double step_length = [[NSUserDefaults standardUserDefaults] doubleForKey:@"preview_step_length"];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self playStep];
+            if (isAutoProceed) {
+                targetLocation = [targetLocation offsetLocationByDistance:step_length Bearing:targetLocation.orientation];
+            }
+        });
+        stepCounter -= 1.0;
+
+        if (isAutoProceed) {
+            remainingDistance -= step_length;
+            if (remainingDistance < 0) {
+                [previewer stepForward];
+            }
+        }
+    }
+}
+
 
 - (void)quit
 {
@@ -310,41 +386,49 @@
 
 - (void)gotoBegin
 {
+    isAutoProceed = NO;
     [previewer gotoBegin];
 }
 
 - (void)gotoEnd
 {
+    isAutoProceed = NO;
     [previewer gotoEnd];
 }
 
 - (void)stepForward
 {
+    isAutoProceed = NO;
     [previewer stepForward];
 }
 
 - (void)stepBackward
 {
+    isAutoProceed = NO;
     [previewer stepBackward];
 }
 
 - (void)jumpForward
 {
+    isAutoProceed = NO;
     [previewer jumpForward];
 }
 
 - (void)jumpBackward
 {
+    isAutoProceed = NO;
     [previewer jumpBackward];
 }
 
 - (void)faceRight
 {
+    isAutoProceed = NO;
     [previewer faceRight];
 }
 
 - (void)faceLeft
 {
+    isAutoProceed = NO;
     [previewer faceLeft];
 }
 

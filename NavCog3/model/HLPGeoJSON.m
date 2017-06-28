@@ -1106,6 +1106,7 @@
 
 @implementation HLPFacility{
     HLPLocation *_location;
+    NSMutableArray *entrances;
 }
 
 
@@ -1158,6 +1159,19 @@
     }
 }
 
+- (void)addEntrance:(HLPEntrance*)ent
+{
+    if (!entrances) {
+        entrances = [[NSMutableArray alloc] init];
+    }
+    [entrances addObject:ent];
+}
+
+- (NSArray *)entrances
+{
+    return entrances;
+}
+
 @end
 
 @implementation HLPEntrance
@@ -1177,6 +1191,7 @@
 {
     _node = node;
     _facility = facility;
+    [_facility addEntrance:self];
 }
 
 - (void)updateWithLang:(NSString *)lang

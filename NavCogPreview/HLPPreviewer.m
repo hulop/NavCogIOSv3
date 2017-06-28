@@ -37,6 +37,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     HLPPreviewEvent *temp = [[[self class] allocWithZone:zone] initWithLink:_link Location:_location Orientation:_orientation];
     [temp setDistanceMoved:_distanceMoved];
+    [temp setPrev:_prev];
     return temp;
 }
 
@@ -190,12 +191,21 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     return NAN;
 }
 
+- (void) setPrev:(HLPPreviewEvent *)prev
+{
+    _prev = prev;
+}
+
 - (HLPPreviewEvent *)next
 {
-    HLPPreviewEvent *temp = [self copy];
-    
+    HLPPreviewEvent *temp = self;
+
     double distance = 0;
     while(true) {
+        HLPPreviewEvent *prev = temp;
+        temp = [temp copy];
+        [temp setPrev:prev];
+        
         if (temp.stepTarget) {
             distance += [temp distanceToStepTarget];
             [temp setLocation:temp.stepTargetLocation];
@@ -206,9 +216,8 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             break;
         }
     }
-    if (distance > 0) {
-        [temp setDistanceMoved:distance];
-    }
+    [temp setDistanceMoved:distance];
+
     return temp;
 }
 
@@ -254,6 +263,10 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         return nil;
     }
     
+    if ([[NavDataStore sharedDataStore] isElevatorNode:self.targetNode]) {
+        return self.targetNode;
+    }
+    
     NSArray *links = [self intersectionLinks];
     return links.count > 2 ? self.targetNode : nil;
 }
@@ -281,6 +294,28 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     return nil;
 }
 
+- (NSArray<HLPEntrance *> *)targetPOIEntrances
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    if (self.targetNode == nil) {
+        return nil;
+    }
+    NSMutableArray *temp = [@[] mutableCopy];
+    for(HLPLink* link in nds.nodeLinksMap[self.targetNode._id]) {
+        if (link.isLeaf) {
+            if (nds.entranceMap[link.sourceNodeID]) {
+                [temp addObject:nds.entranceMap[link.sourceNodeID]];
+            }
+            if (nds.entranceMap[link.targetNodeID]) {
+                [temp addObject:nds.entranceMap[link.targetNodeID]];
+            }
+        }
+    }
+    if ([temp count] > 0) {
+        return temp;
+    }
+    return nil;
+}
 
 - (HLPLink*) _nextLink:(BOOL)clockwise
 {
@@ -450,7 +485,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 - (void)gotoBegin
 {
     current = history[0];
-    [_delegate previewUpdated:current];
+    [_delegate previewUpdated:[current copy]];
 }
 
 - (void)gotoEnd
@@ -462,7 +497,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     double distance = [self _stepForward];
     [_delegate userMoved:distance];
-    [_delegate previewUpdated:current];
+    [_delegate previewUpdated:[current copy]];
 }
 
 - (double)_stepForward
@@ -483,7 +518,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         [history removeLastObject];
         
         [_delegate userMoved:distance];
-        [_delegate previewUpdated:current];
+        [_delegate previewUpdated:[current copy]];
     } else {
         [_delegate userMoved:0];
     }
@@ -500,7 +535,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         }
     }
     [_delegate userMoved:distance];
-    [_delegate previewUpdated:current];
+    [_delegate previewUpdated:[current copy]];
 }
 
 - (void)jumpBackward
@@ -516,7 +551,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             }
         }
         [_delegate userMoved:distance];
-        [_delegate previewUpdated:current];
+        [_delegate previewUpdated:[current copy]];
     } else {
         [_delegate userMoved:0];
     }
@@ -525,8 +560,11 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 - (void)faceRight
 {
     if (current.rightLink) {
-        [current turnToLink:current.rightLink];
-        [_delegate previewUpdated:current];
+        HLPPreviewEvent *temp = [current copy];
+        [temp setPrev:current];
+        [temp turnToLink:temp.rightLink];
+        current = temp;
+        [_delegate previewUpdated:[current copy]];
     } else {
         [_delegate userMoved:0];
     }
@@ -535,8 +573,11 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 - (void)faceLeft
 {
     if (current.leftLink) {
-        [current turnToLink:current.leftLink];
-        [_delegate previewUpdated:current];
+        HLPPreviewEvent *temp = [current copy];
+        [temp setPrev:current];
+        [temp turnToLink:temp.leftLink];
+        current = temp;
+        [_delegate previewUpdated:[current copy]];
     } else {
         [_delegate userMoved:0];
     }

@@ -339,10 +339,21 @@
               }];
 }
 
++ (NSValueTransformer *)nodeHeightJSONTransformer {
+    return [MTLValueTransformer transformerUsingForwardBlock:^id(NSString *height, BOOL *success, NSError *__autoreleasing *error) {
+        double h = [height doubleValue];
+        return @((h >= 1)?h-1:h);
+    } reverseBlock:^id(NSNumber *height, BOOL *success, NSError *__autoreleasing *error) {
+        double h = [height doubleValue];
+        h = (h >= 0)?h+1:h;
+        return [NSString stringWithFormat:@"%.0f",h];
+    }];
+}
+
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError *__autoreleasing *)error
 {
     self = [super initWithDictionary:dictionaryValue error:error];
-    _nodeHeight = (_nodeHeight >= 1)?_nodeHeight-1:_nodeHeight;
+    //_nodeHeight = (_nodeHeight >= 1)?_nodeHeight-1:_nodeHeight;
     
     if(dictionaryValue[@"nodeCoordinates"]) {
         double lat = [dictionaryValue[@"nodeCoordinates"][1] doubleValue];
@@ -409,6 +420,8 @@
     [_properties[@"sub_category"] isEqualToString:@"RE_L"] ||
     [self isToilet];
 }
+
+
 
 @end
 

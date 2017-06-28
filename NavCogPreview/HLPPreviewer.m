@@ -280,12 +280,13 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     NSMutableArray *temp = [@[] mutableCopy];
     for(HLPLink* link in nds.nodeLinksMap[self.targetNode._id]) {
         if (link.isLeaf) {
-            if (nds.entranceMap[link.sourceNodeID]) {
-                [temp addObject:nds.entranceMap[link.sourceNodeID].facility];
-            }
-            if (nds.entranceMap[link.targetNodeID]) {
-                [temp addObject:nds.entranceMap[link.targetNodeID].facility];
-            }
+            void(^check)(HLPEntrance*) = ^(HLPEntrance* ent) {
+                if (ent && ent.facility && ent.facility.name && ent.facility.name.length > 0) {
+                    [temp addObject:ent.facility];
+                }
+            };
+            check(nds.entranceMap[link.sourceNodeID]);
+            check(nds.entranceMap[link.targetNodeID]);
         }
     }
     if ([temp count] > 0) {
@@ -456,6 +457,10 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     for(NSObject *key in nds.linksMap) {
         HLPLink *link = nds.linksMap[key];
         if (link.isLeaf) {
+            continue;
+        }
+        if (link.sourceNode.height != link.targetNode.height ||
+            link.sourceNode.height != loc.floor) {
             continue;
         }
         double d = [[link nearestLocationTo:loc] distanceTo:loc];

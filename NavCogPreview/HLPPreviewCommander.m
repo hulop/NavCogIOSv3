@@ -117,6 +117,9 @@
         double heading = [HLPLocation normalizeDegree:poiDir - event.orientation];
         
         NSString *name = [ent.facility namePron];
+        if (!name || name.length == 0) {
+            continue;
+        }
         
         if (heading > 45) {
             [str appendFormat:@"%@ is on your right", name];

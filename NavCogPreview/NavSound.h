@@ -20,50 +20,13 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+
 #import <Foundation/Foundation.h>
-#import "NavCoverView.h"
-#import "HLPGeoJSON.h"
 
-@interface HLPPreviewEvent : NSObject <NSCopying>
-@property (readonly) HLPLink *link;
-@property (readonly) HLPLocation *location;
-@property (readonly) double orientation;
-@property (readonly) double distanceMoved;
+@interface NavSound : NSObject
 
-- (HLPObject*) target;
-- (HLPNode*) targetNode;
-- (HLPNode*) targetIntersection;
-- (NSArray<HLPFacility*>*) targetPOIs;
-- (NSArray<HLPLink*>*) intersectionLinks;
-
-- (HLPLink*) rightLink;
-- (HLPLink*) leftLink;
-
-- (HLPPreviewEvent*) next;
-
-
-/*
-- (HLPObject*) prevTarget;
-- (HLPLocation*) prevTargetLocation;
-- (double) distanceToPrevTarget;
-- (double) distanceToPrevIntersection;
- */
-@end
-
-
-@protocol HLPPreviewerDelegate
--(void)previewStarted:(HLPPreviewEvent*)event;
--(void)previewUpdated:(HLPPreviewEvent*)event;
--(void)userMoved:(double)distance;
--(void)previewStopped:(HLPPreviewEvent*)event;
-@end
-
-@interface HLPPreviewer : NSObject <PreviewTraverseDelegate>
-
-@property (readonly) HLPPreviewEvent *event;
-@property (weak) id<HLPPreviewerDelegate> delegate;
-
-- (void)startAt:(HLPLocation*)loc;
-- (void)stop;
-
++ (instancetype) sharedInstance;
+- (void) playStep:(NSDictionary*)param;
+- (void) playNoStep;
+- (void) vibrate:(NSDictionary*)param;
 @end

@@ -22,6 +22,7 @@
 
 #import "BlindViewController.h"
 #import "NavSound.h"
+#import "NavDeviceTTS.h"
 #import "LocationEvent.h"
 #import "NavUtil.h"
 #import "NavDataStore.h"
@@ -30,16 +31,18 @@
 
 
 @interface BlindViewController () {
-    NavBlindWebviewHelper *helper;
-    HLPPreviewer *previewer;
-    HLPLocation *location;
-    HLPLocation *targetLocation;
-    NSTimer *locationTimer;
 }
 
 @end
 
 @implementation BlindViewController {
+    NavBlindWebviewHelper *helper;
+    HLPPreviewer *previewer;
+    HLPPreviewCommander *commander;
+    HLPLocation *location;
+    HLPLocation *targetLocation;
+    NSTimer *locationTimer;
+
     NSArray<NSObject*>* showingFeatures;
     NSDictionary*(^showingStyle)(NSObject* obj);
     NSObject* selectedFeature;
@@ -82,7 +85,7 @@
     [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkMapCenter:) userInfo:nil repeats:YES];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeChanged:) name:ROUTE_CHANGED_NOTIFICATION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged) name:UIAccessibilityVoiceOverStatusChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged:) name:UIAccessibilityVoiceOverStatusChanged object:nil];
 }
 
 - (void) voiceOverStatusChanged:(NSNotification*)note
@@ -101,6 +104,9 @@
     previewer = [[HLPPreviewer alloc] init];
     previewer.delegate = self;
     _cover.delegate = self;
+    
+    commander = [[HLPPreviewCommander alloc] init];
+    commander.delegate = self;
     
     [previewer startAt:nds.from.location];
 }
@@ -146,17 +152,50 @@
 {
 }
 
-#pragma mark - HLPPreviewerDelegate
+#pragma mark - HLPPreivewCommanderDelegate
 
+- (void) playStep
+{
+    [[NavSound sharedInstance] playStep:nil];
+}
+
+- (void) playNoStep
+{
+    [[NavSound sharedInstance] playNoStep];
+}
+
+- (void) vibrate
+{
+    [[NavSound sharedInstance] vibrate:nil];
+}
+
+- (void)speak:(NSString *)text withOptions:(NSDictionary *)options completionHandler:(void (^)())handler
+{
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:handler];
+}
+
+#pragma mark - HLPPreviewerDelegate
 
 -(void)previewStarted:(HLPPreviewEvent*)event
 {
     [self targetLocation:event];
+    [commander previewStarted:event];
 }
 
 -(void)previewUpdated:(HLPPreviewEvent*)event
 {
     [self targetLocation:event];
+    [commander previewUpdated:event];
+}
+
+-(void)previewStopped:(HLPPreviewEvent*)event
+{
+    [commander previewStopped:event];
+}
+
+- (void)userMoved:(double)distance
+{
+    [commander userMoved:distance];
 }
 
 - (void) targetLocation:(HLPPreviewEvent*)event
@@ -218,24 +257,16 @@
             withName:@"XYZ"];
 }
 
--(void)userMoved:(double)distance
-{
-    
-}
-
--(void)previewStopped:(HLPPreviewEvent*)event
-{
-    
-}
-
 #pragma mark - PreviewCommandDelegate
 
 - (void)speakAtPoint:(CGPoint)point
 {
+    // not implemented
 }
 
 - (void)stopSpeaking
 {
+    [[NavDeviceTTS sharedTTS] stop:NO];
 }
 
 - (void)speakCurrentPOI
@@ -253,7 +284,26 @@
 
 - (void)quit
 {
+    NSString *title = @"Quit Preview";
+    NSString *message = @"Are you sure to quit preview?";
+    NSString *quit = @"Quit";
+    NSString *cancel = @"Cancel";
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:quit
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  [previewer stop];
+                                                  [NavDataStore sharedDataStore].previewMode = NO;
+                                                  [self updateView];
+                                              }]];
+    [alert addAction:[UIAlertAction actionWithTitle:cancel
+                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                              }]];
     
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self presentViewController:alert animated:YES completion:nil];
+    });
 }
 
 #pragma mark - PreviewTraverseDelegate
@@ -309,7 +359,13 @@
         BOOL hasCenter = [nds mapCenter] != nil;
         
         self.searchButton.enabled = hasCenter;
-        self.cover.hidden = !nds.previewMode;
+        if (nds.previewMode) {
+            self.cover.hidden = NO;
+            [self.cover becomeFirstResponder];
+        } else {
+            self.cover.hidden = YES;
+        }
+        
     });
 }
 
@@ -434,10 +490,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)vibrate
-{
-    [[NavSound sharedInstance] vibrate:nil];
-}
 
 #pragma mark - NavWebviewHelperDelegate
 

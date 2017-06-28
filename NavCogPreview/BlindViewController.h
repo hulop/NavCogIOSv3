@@ -24,6 +24,7 @@
 #import <NavWebView/NavWebView.h>
 #import "NavCoverView.h"
 #import "HLPPreviewer.h"
+#import "HLPPreviewCommander.h"
 
 @interface BlindViewController : UIViewController <NavWebviewHelperDelegate, HLPPreviewerDelegate, PreviewCommandDelegate, PreviewTraverseDelegate,  UITabBarDelegate>
 

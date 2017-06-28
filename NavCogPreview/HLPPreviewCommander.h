@@ -21,49 +21,19 @@
  *******************************************************************************/
 
 #import <Foundation/Foundation.h>
-#import "NavCoverView.h"
-#import "HLPGeoJSON.h"
+#import "HLPPreviewer.h"
 
-@interface HLPPreviewEvent : NSObject <NSCopying>
-@property (readonly) HLPLink *link;
-@property (readonly) HLPLocation *location;
-@property (readonly) double orientation;
-@property (readonly) double distanceMoved;
+@protocol HLPPreviewCommanderDelegate
 
-- (HLPObject*) target;
-- (HLPNode*) targetNode;
-- (HLPNode*) targetIntersection;
-- (NSArray<HLPFacility*>*) targetPOIs;
-- (NSArray<HLPLink*>*) intersectionLinks;
+- (void) playStep;
+- (void) playNoStep;
+- (void) vibrate;
+- (void) speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void(^)())handler;
 
-- (HLPLink*) rightLink;
-- (HLPLink*) leftLink;
-
-- (HLPPreviewEvent*) next;
-
-
-/*
-- (HLPObject*) prevTarget;
-- (HLPLocation*) prevTargetLocation;
-- (double) distanceToPrevTarget;
-- (double) distanceToPrevIntersection;
- */
 @end
 
+@interface HLPPreviewCommander : NSObject <HLPPreviewerDelegate>
 
-@protocol HLPPreviewerDelegate
--(void)previewStarted:(HLPPreviewEvent*)event;
--(void)previewUpdated:(HLPPreviewEvent*)event;
--(void)userMoved:(double)distance;
--(void)previewStopped:(HLPPreviewEvent*)event;
-@end
-
-@interface HLPPreviewer : NSObject <PreviewTraverseDelegate>
-
-@property (readonly) HLPPreviewEvent *event;
-@property (weak) id<HLPPreviewerDelegate> delegate;
-
-- (void)startAt:(HLPLocation*)loc;
-- (void)stop;
+@property id<HLPPreviewCommanderDelegate> delegate;
 
 @end

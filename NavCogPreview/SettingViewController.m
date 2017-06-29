@@ -113,6 +113,8 @@ static HLPSetting *idLabel;
     
     [[userSettingHelper addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
     [[userSettingHelper addSettingWithType:TEXTINPUT Label:@"Server Host" Name:@"hokoukukan_server" DefaultValue:@"" Accept:nil] setVisible:NO];
+    [[userSettingHelper addSettingWithType:TEXTINPUT Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil] setVisible:NO];
+
 
     NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     NSString *buildNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];

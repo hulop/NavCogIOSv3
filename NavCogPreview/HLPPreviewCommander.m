@@ -68,34 +68,49 @@
 -(void)previewCurrent
 {
     NSMutableString *str = [@"" mutableCopy];
-    [str appendString:[self poisString:current]];
     
-    if (prev != nil && (current.targetNode.height != prev.targetNode.height)) {
-        NavDataStore *nds = [NavDataStore sharedDataStore];
-        
-        if ([nds isElevatorNode:current.targetNode] &&
-            ![nds isElevatorNode:prev.targetNode]) {
-            [str appendFormat:@"Elevator. "];
-        }
-        HLPPreviewEvent *temp = current;
-        while(temp && temp.target != prev.target) {
-            temp = temp.prev;
-            if (temp.link.linkType == LINK_TYPE_ESCALATOR) {
-                [str appendFormat:@"Escalator. "];
-                break;
-            }
-            if (temp.link.linkType == LINK_TYPE_STAIRWAY) {
-                [str appendFormat:@"Stairs. "];
-                break;
-            }
-        }
-        
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    
+    // elevator
+    if ([nds isElevatorNode:current.targetNode]) {
+        [str appendFormat:@"Elevator. "];
         [str appendFormat:@"You are on the %@.", [self floorString:current.targetNode.height]];
+    } else {
+        // others
+        
+        // escalator or stairs
+        if (prev != nil && (current.targetNode.height != prev.targetNode.height)) {
+            HLPPreviewEvent *temp = current;
+            while(temp && temp.target != prev.target) {
+                temp = temp.prev;
+                if (temp.link.linkType == LINK_TYPE_ESCALATOR) {
+                    [str appendFormat:@"Escalator. "];
+                    break;
+                }
+                if (temp.link.linkType == LINK_TYPE_STAIRWAY) {
+                    [str appendFormat:@"Stairs. "];
+                    break;
+                }
+            }
+            [str appendFormat:@"You are on the %@.", [self floorString:current.targetNode.height]];
+        }
+        
+        if (prev != nil) {
+            if (current.target != prev.target) {
+                [str appendString:[self intersectionString:current]];
+                [str appendString:[self upcomingString:current]];
+            }
+            if (current.target == prev.target && current.orientation != prev.orientation) {
+                double heading = [self turnAngle:prev.orientation toLink:current.link atNode:current.target];
+                if (fabs(heading) > 20) {
+                    [str appendString:[self turnString:heading]];
+                    [str appendString:@". "];
+                }
+            }
+        }
     }
-    if (prev != nil && (current.target != prev.target)) {
-        [str appendString:[self intersectionString:current]];
-        [str appendString:[self upcomingString:current]];
-    }
+    
+    [str appendString:[self poisString:current]];
     
     if (str.length > 0) {
         [self addBlock:^(void (^complete)(void)) {
@@ -122,13 +137,13 @@
         }
         
         if (heading > 45) {
-            [str appendFormat:@"%@ is on your right", name];
+            [str appendFormat:@"%@ is on your right. ", name];
         }
-        else if (heading < 45) {
-            [str appendFormat:@"%@ is on your left", name];
+        else if (heading < -45) {
+            [str appendFormat:@"%@ is on your left. ", name];
         }
         else {
-            [str appendFormat:@"%@ is in your front", name];
+            [str appendFormat:@"%@ is in your front. ", name];
         }
     }
     return str;
@@ -170,7 +185,7 @@
 
 - (NSString*) intersectionString:(HLPPreviewEvent*)event
 {
-    HLPNode *node = event.targetIntersection;
+    HLPNode *node = event.targetNode;
     if (node == nil) {
         return @"";
     }
@@ -192,7 +207,7 @@
         else if (remains.count == 1) {
             double heading = [self turnAngle:event.orientation toLink:remains[0] atNode:node];
             NSString *turn = [self turnString:heading];
-            [str appendFormat:@"You need to %@", turn];
+            [str appendFormat:@"You need to %@. ", turn];
         }
         else {
             [str appendString:@"You need to "];
@@ -207,6 +222,7 @@
                 NSString *turn = [self turnString:heading];
                 [str appendString:turn];
             }
+            [str appendString:@". "];
         }
     } else {
         [str appendString:@"You can "];
@@ -267,7 +283,8 @@
                 }
                 else if (p.link.linkType == LINK_TYPE_ESCALATOR) {
                     [context addObject:p];
-                    if (root.node.height < p.node.height) {
+                    if ((p.link.sourceNode == p.node && p.link.sourceNode.height < p.link.targetNode.height) ||
+                        (p.link.targetNode == p.node && p.link.targetNode.height < p.link.sourceNode.height)) {
                         [temp addObject:@"up escalator"];
                     } else {
                         [temp addObject:@"down escalator"];

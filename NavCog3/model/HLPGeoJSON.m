@@ -1165,6 +1165,27 @@
     if (_namePron == nil) {
         _namePron = _name;
     }
+    
+    if(self.category == HLP_OBJECT_CATEGORY_TOILET) {
+        NSMutableString *temp = [[NSMutableString alloc] init];
+        if (self.properties) {
+            NSString *sex = self.properties[PROPKEY_MALE_OR_FEMALE];
+            if ([sex isEqualToString:@"1"]) {
+                [temp appendString:NSLocalizedString(@"FOR_MALE",@"Toilet for male")];
+            }
+            else if ([sex isEqualToString:@"2"]) {
+                [temp appendString:NSLocalizedString(@"FOR_FEMALE",@"Toilet for female")];
+            }
+            NSString *multi = self.properties[PROPKEY_MULTI_PURPOSE_TOILET];
+            
+            if ([multi isEqualToString:@"1"] || [multi isEqualToString:@"2"]) {
+                [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
+            }
+        }
+        _namePron = _name = temp;
+    }
+    
+    
     _longDescription = [self getI18nAttribute:PROPKEY_EXT_LONG_DESCRIPTION Lang:_lang];
     _longDescriptionPron = [self getI18nPronAttribute:PROPKEY_EXT_LONG_DESCRIPTION Lang:lang];
     if (_longDescriptionPron == nil) {

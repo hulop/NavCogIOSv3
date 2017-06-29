@@ -382,27 +382,31 @@
     }
     
     double step_length = [[NSUserDefaults standardUserDefaults] doubleForKey:@"preview_step_length"];
+    BOOL step_sound_for_jump = [[NSUserDefaults standardUserDefaults] doubleForKey:@"step_sound_for_jump"];
     
-    int steps = MAX(round(distance / step_length), 2);
-    // todo
-    
-    [self addBlock:^(void(^complete)(void)){
-        __block int n = MIN(steps, 20);
-        if (steps > 20) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSString *str = [NSString stringWithFormat:@"%.0f meters", distance];
-                [_delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:nil];
-            });
-        }
-        [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-            [_delegate playStep];
-            n--;
-            if (n <= 0) {
-                [timer invalidate];
-                complete();
+    if (step_sound_for_jump == YES) {
+        
+        int steps = MAX(round(distance / step_length), 2);
+        // todo
+        
+        [self addBlock:^(void(^complete)(void)){
+            __block int n = MIN(steps, 20);
+            if (steps > 20) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString *str = [NSString stringWithFormat:@"%.0f meters", distance];
+                    [_delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:nil];
+                });
             }
+            [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                [_delegate playStep];
+                n--;
+                if (n <= 0) {
+                    [timer invalidate];
+                    complete();
+                }
+            }];
         }];
-    }];
+    }
 }
 
 -(void) addBlock:(void (^)(void(^complete)(void)))block

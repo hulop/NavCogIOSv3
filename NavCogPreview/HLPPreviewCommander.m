@@ -196,7 +196,7 @@
     HLPPreviewEvent *next = event.next;
     NSArray<HLPLink*> *remains = [links filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLink* link, NSDictionary<NSString *,id> * _Nullable bindings) {
         double heading = [self turnAngle:event.orientation toLink:link atNode:node];
-        return fabs(heading) < 180-20;
+        return 20 < fabs(heading) && fabs(heading) < 180-20;
     }]];
     
     if (event.target == next.target) {
@@ -224,7 +224,7 @@
             }
             [str appendString:@". "];
         }
-    } else {
+    } else if (remains.count > 0){
         [str appendString:@"You can "];
         for(int i = 0; i < remains.count; i++) {
             HLPLink *link = remains[i];

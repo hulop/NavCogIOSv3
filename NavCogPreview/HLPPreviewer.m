@@ -68,6 +68,8 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     
     HLPLink *temp = nil;
     double min = DBL_MAX;
+    BOOL isInitial = isnan(_orientation);
+    if (isInitial) _orientation = 0;
     for(HLPLink *l in links) {
         double d = 0;
         if (l.sourceNode == self.target) {
@@ -81,6 +83,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             temp = l;
         }
     }
+    if (isInitial) _orientation = min;
     
     if (min < 20) {
         _link = temp;
@@ -473,7 +476,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }
     if (minLink) {
         loc = [minLink nearestLocationTo:loc];
-        current = [[HLPPreviewEvent alloc] initWithLink:minLink Location:loc Orientation:0];
+        current = [[HLPPreviewEvent alloc] initWithLink:minLink Location:loc Orientation:NAN];
     } else {
         NSLog(@"no link found");
         //[_delegate errorWithMessage:@"closest link is not found"];

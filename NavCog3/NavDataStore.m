@@ -563,8 +563,8 @@ static NavDataStore* instance_ = nil;
     }
     int dist = 500;
     
-    HLPLocation *requestLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
-    if (destinationCacheLocation && [destinationCacheLocation distanceTo:requestLocation] < dist/2) {
+    _loadLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
+    if (destinationCacheLocation && [destinationCacheLocation distanceTo:_loadLocation] < dist/2) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
         });
@@ -590,7 +590,7 @@ static NavDataStore* instance_ = nil;
         destinationCache = [result sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
             return [[self normalizePron:[obj1 getLandmarkNamePron]] compare:[self normalizePron:[obj2 getLandmarkNamePron]]];
         }];
-        destinationCacheLocation = requestLocation;
+        destinationCacheLocation = _loadLocation;
                 
         NSMutableDictionary *temp = [@{} mutableCopy];
         [destinationCache enumerateObjectsUsingBlock:^(HLPLandmark *obj, NSUInteger idx, BOOL * _Nonnull stop) {

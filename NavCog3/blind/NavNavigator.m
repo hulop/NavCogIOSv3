@@ -25,7 +25,8 @@
 #import "LocationEvent.h"
 #import "NavDataStore.h"
 #import "objc/runtime.h"
-
+#import <GameplayKit/GameplayKit.h>
+#import <MapKit/MapKit.h>
 
 // attribute names of hokoukukan network data in Japanese
 #define FOR_NODE_ID @"対応ノードID"
@@ -1081,6 +1082,45 @@ static NavNavigatorConstants *_instance;
     destinationNode = entranceMap[[[route lastObject] _id]];
     startNode = entranceMapTemp[[[route firstObject] _id]];
     
+    MKMapPoint (^convertFromGlobal)(HLPLocation*, HLPLocation*) = ^(HLPLocation *global, HLPLocation *rp) {
+        double distance = [HLPLocation distanceFromLat:global.lat Lng:global.lng toLat:rp.lat Lng:rp.lng];
+        double d2r = M_PI / 180;
+        double r = [HLPLocation bearingFromLat:rp.lat Lng:rp.lng toLat:global.lat Lng:global.lng] * d2r;
+        return MKMapPointMake(distance*sin(r), distance*cos(r));
+    };
+    
+    HLPLocation *rp = [[NavDataStore sharedDataStore] loadLocation];
+    __block float maxx = FLT_MIN, maxy = FLT_MIN, minx = FLT_MAX, miny = FLT_MAX;
+    [linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, HLPLink *link, BOOL * _Nonnull stop) {
+        MKMapPoint ms = convertFromGlobal(link.sourceLocation, rp);
+        MKMapPoint mt = convertFromGlobal(link.targetLocation, rp);
+        
+        maxx = (float)MAX(maxx, ms.x);
+        maxx = (float)MAX(maxx, mt.x);
+        minx = (float)MIN(minx, ms.x);
+        minx = (float)MIN(minx, mt.x);
+        
+        maxy = (float)MAX(maxy, ms.y);
+        maxy = (float)MAX(maxy, mt.y);
+        miny = (float)MIN(miny, ms.y);
+        miny = (float)MIN(miny, mt.y);
+    }];
+    struct GKQuad q;
+    q.quadMin = (vector_float2){minx, miny};
+    q.quadMax = (vector_float2){maxx, maxy};
+    GKQuadtree *quadtree = [GKQuadtree quadtreeWithBoundingQuad:q minimumCellSize:1];
+
+    [linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, HLPLink *link, BOOL * _Nonnull stop) {
+        MKMapPoint ms = convertFromGlobal(link.sourceLocation, rp);
+        MKMapPoint mt = convertFromGlobal(link.targetLocation, rp);
+
+        struct GKQuad q;
+        q.quadMin = (vector_float2){(float)MIN(ms.x,mt.x), (float)MIN(ms.y,mt.y)};
+        q.quadMax = (vector_float2){(float)MAX(ms.x,mt.x), (float)MAX(ms.y,mt.y)};
+        
+        [quadtree addElement:link withQuad:q];
+    }];
+    
     NSArray*(^nearestLinks)(HLPLocation*, NSDictionary*) = ^ NSArray* (HLPLocation *loc, NSDictionary* option) {
         NSMutableArray<HLPLink*> __block *nearestLinks = [@[] mutableCopy];
         double __block minDistance = DBL_MAX;
@@ -1088,7 +1128,18 @@ static NavNavigatorConstants *_instance;
         HLPLinkType linkType = [option[@"linkType"] intValue];
         BOOL onlyEnd = [option[@"onlyEnd"] boolValue];
         
-        [linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
+        HLPLocation *l1 = [loc offsetLocationByDistance:5 Bearing:-45];
+        HLPLocation *l2 = [loc offsetLocationByDistance:5 Bearing:135];
+
+        MKMapPoint ms = convertFromGlobal(l1, rp);
+        MKMapPoint mt = convertFromGlobal(l2, rp);
+        
+        struct GKQuad q;
+        q.quadMin = (vector_float2){(float)MIN(ms.x,mt.x), (float)MIN(ms.y,mt.y)};
+        q.quadMax = (vector_float2){(float)MAX(ms.x,mt.x), (float)MAX(ms.y,mt.y)};
+
+        NSArray * links = [quadtree elementsInQuad:q];
+        [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
             
             if (!isnan(loc.floor) &&
                 (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
@@ -1116,7 +1167,7 @@ static NavNavigatorConstants *_instance;
                 nearestLinks = [@[link] mutableCopy];
             }
         }];
-        [linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
+        [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
             
             if (!isnan(loc.floor) &&
                 (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {

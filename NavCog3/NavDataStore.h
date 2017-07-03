@@ -65,6 +65,7 @@ typedef enum {
 @property NSString* userID;
 @property HLPLocation *mapCenter;
 @property (readonly) NSDictionary *buildingInfo;
+@property HLPLocation *loadLocation;
 
 @property NSTimeInterval start;
 

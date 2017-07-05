@@ -1128,8 +1128,8 @@ static NavNavigatorConstants *_instance;
         HLPLinkType linkType = [option[@"linkType"] intValue];
         BOOL onlyEnd = [option[@"onlyEnd"] boolValue];
         
-        HLPLocation *l1 = [loc offsetLocationByDistance:5 Bearing:-45];
-        HLPLocation *l2 = [loc offsetLocationByDistance:5 Bearing:135];
+        HLPLocation *l1 = [loc offsetLocationByDistance:10 Bearing:-45];
+        HLPLocation *l2 = [loc offsetLocationByDistance:10 Bearing:135];
 
         MKMapPoint ms = convertFromGlobal(l1, rp);
         MKMapPoint mt = convertFromGlobal(l2, rp);

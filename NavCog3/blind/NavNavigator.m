@@ -2095,7 +2095,7 @@ static NavNavigatorConstants *_instance;
                     }
                 }
                 // TODO if skip this turn
-                return;
+                // return;
             }
             if (linkInfo.hasBeenFixBackward) {
                 if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
@@ -2336,7 +2336,8 @@ static NavNavigatorConstants *_instance;
                 BOOL bearing_for_demo = [[NSUserDefaults standardUserDefaults] boolForKey:@"bearing_for_demo"];
                 
                 if (bearing_for_demo) {
-                    if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) > 20) {
+                    if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) > 20 &&
+                        linkInfo.distanceToTargetFromSnappedLocationOnLink > 2) {
                         if (linkInfo.lastBearingDetected == 0) {
                             linkInfo.lastBearingDetected = now;
                         }

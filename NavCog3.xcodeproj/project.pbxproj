@@ -102,6 +102,7 @@
 		7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EA019001E2F54E7005E65ED /* InitViewController.mm */; };
 		7EAE6F0D1D2642D600614C35 /* NavBlindWebviewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebviewHelper.m */; };
 		7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */; };
+		7EBE0AE01F0E291C001D2169 /* HLPLocationManager+Player.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE0ADF1F0E291C001D2169 /* HLPLocationManager+Player.mm */; };
 		7EBE397A1E8298C5002A7BF9 /* HLPBeaconSample.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE39791E8298C5002A7BF9 /* HLPBeaconSample.m */; };
 		7EBE397D1E8298D7002A7BF9 /* HLPPoint3D.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE397C1E8298D7002A7BF9 /* HLPPoint3D.m */; };
 		7EBE39801E829928002A7BF9 /* HLPBeaconSampler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE397F1E829928002A7BF9 /* HLPBeaconSampler.m */; };
@@ -116,7 +117,7 @@
 		7EDEDC2A1D1E0C6800AC111A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7EDEDC281D1E0C6800AC111A /* Main.storyboard */; };
 		7EDEDC2C1D1E0C6800AC111A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EDEDC2B1D1E0C6800AC111A /* Assets.xcassets */; };
 		7EDEDC2F1D1E0C6800AC111A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7EDEDC2D1D1E0C6800AC111A /* LaunchScreen.storyboard */; };
-		7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC371D1E0E5E00AC111A /* LocationManager.mm */; };
+		7EDEDC381D1E0E5E00AC111A /* HLPLocationManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC371D1E0E5E00AC111A /* HLPLocationManager.mm */; };
 		7EE8E5DA1EE67E08006EE7C3 /* POIAddTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E5D91EE67E08006EE7C3 /* POIAddTableViewController.m */; };
 		7EE8E5DC1EE68449006EE7C3 /* poi_template.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE8E5DB1EE68449006EE7C3 /* poi_template.json */; };
 		7EE8E5E11EE93D1C006EE7C3 /* icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EE8E5E01EE93D1C006EE7C3 /* icons.xcassets */; };
@@ -196,7 +197,7 @@
 		A96226A11ED561840025AFEB /* NavWebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93ED25F1ED2D91300B75760 /* NavWebView.framework */; };
 		A96226A21ED561840025AFEB /* NavWebView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A93ED25F1ED2D91300B75760 /* NavWebView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9DCB6901ED2862B0089FA84 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
-		A9DCB6911ED286470089FA84 /* LocationManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC371D1E0E5E00AC111A /* LocationManager.mm */; };
+		A9DCB6911ED286470089FA84 /* HLPLocationManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC371D1E0E5E00AC111A /* HLPLocationManager.mm */; };
 		A9DCB6921ED286590089FA84 /* NavNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5150A31D8BF32800ED25FB /* NavNavigator.m */; };
 		A9DCB6941ED286790089FA84 /* ConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E08DB571DB9F08E00E82161 /* ConfigManager.m */; };
 		A9DCB6961ED2869B0089FA84 /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
@@ -288,6 +289,7 @@
 		5594B179DE315D3A6DCE0830 /* libPods-NavWebView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavWebView.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B1C2274ED5639001C0B2B15 /* Pods-NavCogFingerPrint.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFingerPrint.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFingerPrint/Pods-NavCogFingerPrint.release.xcconfig"; sourceTree = "<group>"; };
 		77240D9B05BCD8D34D286665 /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E00C8691F0F3FEB0024384D /* HLPLocationManagerParameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLPLocationManagerParameters.h; sourceTree = "<group>"; };
 		7E08DB561DB9F08E00E82161 /* ConfigManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigManager.h; sourceTree = "<group>"; };
 		7E08DB571DB9F08E00E82161 /* ConfigManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigManager.m; sourceTree = "<group>"; };
 		7E0E97141D98B80100CF2960 /* NavDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavDataStore.h; sourceTree = "<group>"; };
@@ -446,6 +448,8 @@
 		7EAE6F0B1D2642D600614C35 /* NavBlindWebviewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavBlindWebviewHelper.h; sourceTree = "<group>"; };
 		7EAE6F0C1D2642D600614C35 /* NavBlindWebviewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavBlindWebviewHelper.m; sourceTree = "<group>"; };
 		7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		7EBE0ADE1F0E291C001D2169 /* HLPLocationManager+Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HLPLocationManager+Player.h"; sourceTree = "<group>"; };
+		7EBE0ADF1F0E291C001D2169 /* HLPLocationManager+Player.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "HLPLocationManager+Player.mm"; sourceTree = "<group>"; };
 		7EBE39781E8298C5002A7BF9 /* HLPBeaconSample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPBeaconSample.h; sourceTree = "<group>"; };
 		7EBE39791E8298C5002A7BF9 /* HLPBeaconSample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPBeaconSample.m; sourceTree = "<group>"; };
 		7EBE397B1E8298D7002A7BF9 /* HLPPoint3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPPoint3D.h; sourceTree = "<group>"; };
@@ -463,8 +467,8 @@
 		7EDEDC2B1D1E0C6800AC111A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7EDEDC2E1D1E0C6800AC111A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7EDEDC301D1E0C6800AC111A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7EDEDC361D1E0E5E00AC111A /* LocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
-		7EDEDC371D1E0E5E00AC111A /* LocationManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LocationManager.mm; sourceTree = "<group>"; };
+		7EDEDC361D1E0E5E00AC111A /* HLPLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPLocationManager.h; sourceTree = "<group>"; };
+		7EDEDC371D1E0E5E00AC111A /* HLPLocationManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HLPLocationManager.mm; sourceTree = "<group>"; };
 		7EE8E5D81EE67E08006EE7C3 /* POIAddTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POIAddTableViewController.h; sourceTree = "<group>"; };
 		7EE8E5D91EE67E08006EE7C3 /* POIAddTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POIAddTableViewController.m; sourceTree = "<group>"; };
 		7EE8E5DB1EE68449006EE7C3 /* poi_template.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = poi_template.json; sourceTree = "<group>"; };
@@ -938,8 +942,11 @@
 				7EF45E371E3F1E5600208042 /* ServerConfig.m */,
 				7EF45E381E3F1E5600208042 /* AuthManager.h */,
 				7EF45E391E3F1E5600208042 /* AuthManager.m */,
-				7EDEDC361D1E0E5E00AC111A /* LocationManager.h */,
-				7EDEDC371D1E0E5E00AC111A /* LocationManager.mm */,
+				7EDEDC361D1E0E5E00AC111A /* HLPLocationManager.h */,
+				7E00C8691F0F3FEB0024384D /* HLPLocationManagerParameters.h */,
+				7EDEDC371D1E0E5E00AC111A /* HLPLocationManager.mm */,
+				7EBE0ADE1F0E291C001D2169 /* HLPLocationManager+Player.h */,
+				7EBE0ADF1F0E291C001D2169 /* HLPLocationManager+Player.mm */,
 				7E08DB561DB9F08E00E82161 /* ConfigManager.h */,
 				7E08DB571DB9F08E00E82161 /* ConfigManager.m */,
 				7E9866CC1D5174780073CB49 /* Logging.h */,
@@ -1632,10 +1639,11 @@
 				7E683DF61E42DE8100D04037 /* StarRatingView.m in Sources */,
 				7EF45E341E3F1E3700208042 /* ServerSelectionViewController.m in Sources */,
 				7E1F9F3F1DF01AA5003E1B23 /* AnimLayer.swift in Sources */,
-				7EDEDC381D1E0E5E00AC111A /* LocationManager.mm in Sources */,
+				7EDEDC381D1E0E5E00AC111A /* HLPLocationManager.mm in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,
 				7EAE6F0D1D2642D600614C35 /* NavBlindWebviewHelper.m in Sources */,
 				7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */,
+				7EBE0AE01F0E291C001D2169 /* HLPLocationManager+Player.mm in Sources */,
 				7EF7F7721DCC1E08000A625A /* NavCoverView.m in Sources */,
 				7E96D9361DAD185800D57C8C /* DestinationTableViewController.m in Sources */,
 				7EF7F7AE1DD1949C000A625A /* NavDataSource.m in Sources */,
@@ -1704,7 +1712,7 @@
 				A9DCB6991ED287200089FA84 /* NavDeviceTTS.m in Sources */,
 				A9DCB6961ED2869B0089FA84 /* NavDataStore.m in Sources */,
 				A9DCB6981ED287170089FA84 /* NavUtil.m in Sources */,
-				A9DCB6911ED286470089FA84 /* LocationManager.mm in Sources */,
+				A9DCB6911ED286470089FA84 /* HLPLocationManager.mm in Sources */,
 				A9DCB6941ED286790089FA84 /* ConfigManager.m in Sources */,
 				A9DCB6901ED2862B0089FA84 /* Logging.m in Sources */,
 				A9DCB6971ED287080089FA84 /* NavDebugHelper.m in Sources */,

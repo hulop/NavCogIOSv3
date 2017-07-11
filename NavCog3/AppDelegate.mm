@@ -23,7 +23,7 @@
 #import "AppDelegate.h"
 #import "Logging.h"
 #import "SettingViewController.h"
-#import "LocationManager.h"
+#import "HLPLocationManager+Player.h"
 #import "LocationEvent.h"
 #import "NavDataStore.h"
 #import "NavDeviceTTS.h"
@@ -143,13 +143,114 @@ void uncaughtExceptionHandler(NSException *exception)
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_SAVE object:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"PauseConversation" object:self];
 
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableAcceleration:) name:DISABLE_ACCELEARATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableAcceleration:) name:ENABLE_ACCELEARATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationRestart:) name:REQUEST_LOCATION_RESTART object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationHeadingReset:) name:REQUEST_LOCATION_HEADING_RESET object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationReset:) name:REQUEST_LOCATION_RESET object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationUnknown:) name:REQUEST_LOCATION_UNKNOWN object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestBackgroundLocation:) name:REQUEST_BACKGROUND_LOCATION object:nil];
+
     UIApplication *app = [UIApplication sharedApplication];
     _backgroundID = [app beginBackgroundTaskWithExpirationHandler:^{
         [app endBackgroundTask:_backgroundID];
         _backgroundID = UIBackgroundTaskInvalid;
     }];
 }
+
+#pragma mark - NotificationCenter Observers
+
+- (void)disableAcceleration:(NSNotification*)note
+{
+    [HLPLocationManager sharedManager].isAccelerationEnabled = NO;
+}
+
+- (void)enableAcceleration:(NSNotification*)note
+{
+    [HLPLocationManager sharedManager].isAccelerationEnabled = YES;
+}
+
+- (void) requestLocationRestart:(NSNotification*) note
+{
+    [[HLPLocationManager sharedManager] restart];    
+}
+
+- (void) requestLocationUnknown:(NSNotification*) note
+{
+    [[HLPLocationManager sharedManager] makeStatusUnknown];
+}
+
+- (void) requestLocationReset:(NSNotification*) note
+{
+    NSDictionary *properties = [note userInfo];
+    HLPLocation *loc = properties[@"location"];
+    double std_dev = [[NSUserDefaults standardUserDefaults] doubleForKey:@"reset_std_dev"];
+    [loc updateOrientation:NAN withAccuracy:std_dev];
+    [[HLPLocationManager sharedManager] resetLocation:loc];
+}
+
+- (void) requestLocationHeadingReset:(NSNotification*) note
+{
+    NSDictionary *properties = [note userInfo];
+    HLPLocation *loc = properties[@"location"];
+    double heading = [properties[@"heading"] doubleValue];
+    double std_dev = [[NSUserDefaults standardUserDefaults] doubleForKey:@"reset_std_dev"];
+    [loc updateOrientation:heading withAccuracy:std_dev];
+    [[HLPLocationManager sharedManager] resetLocation:loc];
+}
+
+- (void) requestBackgroundLocation:(NSNotification*) note
+{
+    BOOL background = [[note userInfo][@"value"] boolValue];
+    [HLPLocationManager sharedManager].isBackground = background;
+}
+
+
+
+#pragma mark - HLPLocationManagerDelegate
+
+- (void)locationManager:(HLPLocationManager *)manager didLocationUpdate:(HLPLocation *)location
+{
+    NSMutableDictionary *data =
+    [@{
+       //@"x": @(refPose.x()),
+       //@"y": @(refPose.y()),
+       //@"z": @(refPose.z()),
+       @"floor":@(location.floor),
+       @"lat": @(location.lat),
+       @"lng": @(location.lng),
+       @"speed":@(location.speed),
+       @"orientation":@(location.orientation),
+       @"accuracy":@(location.accuracy),
+       @"orientationAccuracy":@(location.orientationAccuracy),
+       //@"anchor":@{
+       //@"lat":anchor[@"latitude"],
+       //@"lng":anchor[@"longitude"]
+       //},
+       //@"rotate":anchor[@"rotate"]
+       } mutableCopy];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:self userInfo:data];
+}
+
+- (void)locationManager:(HLPLocationManager *)manager didLocationStatusUpdate:(HLPLocationStatus)status
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:NAV_LOCATION_STATUS_CHANGE
+                                                        object:self
+                                                      userInfo:@{@"status":@(status)}];
+}
+
+- (void)locationManager:(HLPLocationManager *)manager didDebugInfoUpdate:(NSDictionary *)debugInfo
+{
+    
+}
+
+- (void)locationManager:(HLPLocationManager *)manager didRangeBeacons:(NSArray<CLBeacon *> *)beacons inRegion:(CLBeaconRegion *)region
+{
+    // nop
+}
+
+#pragma mark - AppDelegate
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
@@ -164,8 +265,10 @@ void uncaughtExceptionHandler(NSException *exception)
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     [UIApplication.sharedApplication endBackgroundTask:_backgroundID];
     
+    HLPLocationManager *manager = [HLPLocationManager sharedManager];
+    [manager prepareForPlayer];
+    manager.delegate = self;
     if (secondOrLater) {
-        LocationManager *manager = [LocationManager sharedManager];
         if (!manager.isActive) {
             [manager start];
         }

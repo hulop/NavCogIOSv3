@@ -30,6 +30,7 @@
 //#import "SettingViewController.h"
 #import "ServerConfig.h"
 #import "NavDeviceTTS.h"
+#import "HLPLocationManager.h"
 
 @interface ViewController () {
     NavWebviewHelper *helper;
@@ -450,10 +451,10 @@
 - (void)locationStatusChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NavLocationStatus status = [[note userInfo][@"status"] unsignedIntegerValue];
+        HLPLocationStatus status = [[note userInfo][@"status"] unsignedIntegerValue];
         
         switch(status) {
-            case NavLocationStatusLocating:
+            case HLPLocationStatusLocating:
                 [NavUtil showWaitingForView:self.view withMessage:NSLocalizedStringFromTable(@"Locating...", @"BlindView", @"")];
                 break;
             default:

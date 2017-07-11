@@ -23,26 +23,50 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
-#import <CoreMotion/CoreMotion.h>
-#import <bleloc/Status.hpp>
-#import <bleloc/BLEBeacon.hpp>
-#import <bleloc/LatLngConverter.hpp>
-#import "LocationEvent.h"
+#import "HLPLocation.h"
 
-@interface LocationManager : NSObject < CLLocationManagerDelegate >
 
-@property BOOL isReadyToStart;
-@property BOOL isActive;
-@property NavLocationStatus currentStatus;
+typedef NS_ENUM(NSUInteger, HLPLocationStatus) {
+    HLPLocationStatusStable,
+    HLPLocationStatusLocating,
+    HLPLocationStatusLost,
+    HLPLocationStatusBackground,
+    HLPLocationStatusUnknown
+};
+
+@class HLPLocationManager;
+
+@protocol HLPLocationManagerDelegate
+@required
+- (void)locationManager:(HLPLocationManager*)manager didLocationUpdate:(HLPLocation*)location;
+- (void)locationManager:(HLPLocationManager*)manager didLocationStatusUpdate:(HLPLocationStatus)status;
+@optional
+- (void)locationManager:(HLPLocationManager*)manager didDebugInfoUpdate:(NSDictionary*)debugInfo;
+- (void)locationManager:(HLPLocationManager*)manager didRangeBeacons:(NSArray<CLBeacon *> *)beacons inRegion:(CLBeaconRegion *)region;
+
+@end
+
+@interface HLPLocationManager: NSObject < CLLocationManagerDelegate >
+
+@property (weak) id<HLPLocationManagerDelegate> delegate;
+
+@property (readonly) BOOL isActive;
+@property BOOL isBackground;
+@property BOOL isAccelerationEnabled;
+@property (readonly) HLPLocationStatus currentStatus;
+@property NSDictionary* parameters;
+
 
 - (instancetype) init NS_UNAVAILABLE;
 + (instancetype) sharedManager;
 
+- (void) setModelPath:(NSString*)modelPath;
 - (void) start;
-// - (void) stop; // no need to stop anymore
-- (void) setModelAtPath:(NSString*) path withWorkingDir:(NSString*) dir;
-- (void) getRssiBias:(NSDictionary*)param withCompletion:(void (^)(float rssiBias)) completion;
-- (loc::LatLngConverter::Ptr) getProjection;
+- (void) restart;
+- (void) makeStatusUnknown;
+- (void) resetLocation:(HLPLocation*)loc;
+- (void) stop;
 
-
+//- (void) getRssiBias:(NSDictionary*)param withCompletion:(void (^)(float rssiBias)) completion;
+//- (loc::LatLngConverter::Ptr) getProjection;
 @end

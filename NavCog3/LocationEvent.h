@@ -40,14 +40,6 @@
 #define REQUEST_DIALOG_END @"REQUEST_DIALOG_END"
 #define REQUEST_DIALOG_ACTION @"REQUEST_DIALOG_ACTION"
 
-typedef NS_ENUM(NSUInteger, NavLocationStatus) {
-    NavLocationStatusStable,
-    NavLocationStatusLocating,
-    NavLocationStatusLost,
-    NavLocationStatusBackground,
-    NavLocationStatusUnknown
-};
-
 #define DESTINATIONS_CHANGED_NOTIFICATION @"destinations_changed_notification"
 #define ROUTE_CHANGED_NOTIFICATION @"route_changed_notification"
 #define ROUTE_CLEARED_NOTIFICATION @"route_cleared_notification"

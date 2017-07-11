@@ -32,10 +32,10 @@
 #import "NavDebugHelper.h"
 
 #import "RatingViewController.h"
-// ???: HLPSetting.h:43:5: Expected identifier
 //#import "SettingViewController.h"
 
 #import "ServerConfig.h"
+#import "HLPLocationManager+Player.h"
 
 @import JavaScriptCore;
 @import CoreMotion;
@@ -416,10 +416,10 @@
 - (void)locationStatusChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NavLocationStatus status = [[note userInfo][@"status"] unsignedIntegerValue];
+        HLPLocationStatus status = [[note userInfo][@"status"] unsignedIntegerValue];
         
         switch(status) {
-            case NavLocationStatusLocating:
+            case HLPLocationStatusLocating:
                 [NavUtil showWaitingForView:self.view withMessage:NSLocalizedStringFromTable(@"Locating...", @"BlindView", @"")];
                 break;
             default:
@@ -997,6 +997,9 @@
         [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait",@"")];
     });
     [nds requestRerouteFrom:[NavDataStore destinationForCurrentLocation]._id To:nds.to._id withPreferences:prefs complete:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [NavUtil hideModalWaiting];
+        });
     }];
 }
 

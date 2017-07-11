@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015  IBM Corporation, Carnegie Mellon University and others
+ * Copyright (c) 2014, 2016  IBM Corporation, Carnegie Mellon University and others
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,23 +20,14 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import "HLPLocationManager.h"
 
-@interface UIMessageView :UIView
-@property UILabel *message;
-@property UIButton *action;
+#define LOG_REPLAY_PROGRESS @"log_replay_progress"
+
+@interface HLPLocationManager (Player)
+
+- (void) prepareForPlayer;
+
 @end
-
-@interface NavUtil : NSObject
-
-+(void)showModalWaitingWithMessage:(NSString *)message;
-+(void)hideModalWaiting;
-+(void)showWaitingForView:(UIView*)view withMessage:(NSString*)message;
-+(void)hideWaitingForView:(UIView*)view;
-+(UIMessageView*)showMessageView:(UIView*)view;
-+(void)hideMessageView:(UIView*)view;
-+(void)openURL:(NSURL*)url onViewController:(UIViewController*)controller;
-+(NSString*)deviceModel;
-@end
-

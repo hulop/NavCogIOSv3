@@ -420,7 +420,6 @@
             self.navigationItem.rightBarButtonItem = _searchButton;
             self.navigationItem.leftBarButtonItem = _settingButton;
 
-            
             if (isSampling) {
                 long count = [ud integerForKey:@"finger_printing_duration"];
                 self.navigationItem.title = [NSString stringWithFormat:@"%@ - %ld/%ld (%ld)",
@@ -428,7 +427,6 @@
                                              fpm.beaconsSampleCount, count, fpm.visibleBeaconCount];
             } else {
                 if (existRefpoint) {
-                    hideMove = NO;
                     if (fpm.samplings) {
                         self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld] (%.1f, %.1f)",
                                                      fpm.selectedRefpoint.floor,

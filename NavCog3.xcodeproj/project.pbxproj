@@ -173,7 +173,6 @@
 /* Begin PBXFileReference section */
 		1300F8739DF4323F5D1B0435 /* libPods-NavCogFingerPrint.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogFingerPrint.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C17349E5EF9A003CBA676C4 /* Pods-NavCogTool.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.debug.xcconfig"; sourceTree = "<group>"; };
-		5594B179DE315D3A6DCE0830 /* libPods-NavWebView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavWebView.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B1C2274ED5639001C0B2B15 /* Pods-NavCogFingerPrint.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFingerPrint.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFingerPrint/Pods-NavCogFingerPrint.release.xcconfig"; sourceTree = "<group>"; };
 		77240D9B05BCD8D34D286665 /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E00C8691F0F3FEB0024384D /* HLPLocationManagerParameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLPLocationManagerParameters.h; sourceTree = "<group>"; };
@@ -1089,7 +1088,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		3AD4AA683ED6D64EDE1BF2E8 /* [CP] Embed Pods Frameworks */ = {
@@ -1134,7 +1133,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		5F71D1C14A5EA1F4F8125B8B /* [CP] Copy Pods Resources */ = {
@@ -1209,7 +1208,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

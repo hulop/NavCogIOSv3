@@ -40,6 +40,9 @@ typedef NS_ENUM(NSUInteger, HLPLocationStatus) {
 @required
 - (void)locationManager:(HLPLocationManager*)manager didLocationUpdate:(HLPLocation*)location;
 - (void)locationManager:(HLPLocationManager*)manager didLocationStatusUpdate:(HLPLocationStatus)status;
+- (void)locationManager:(HLPLocationManager*)manager didLocationAllowAlert:(BOOL)allowed;
+- (void)locationManager:(HLPLocationManager*)manager hasAltimeter:(BOOL)exists;
+- (void)locationManager:(HLPLocationManager*)manager didUpdateOrientation:(double)orientation withAccuracy:(double)accuracy;
 @optional
 - (void)locationManager:(HLPLocationManager*)manager didDebugInfoUpdate:(NSDictionary*)debugInfo;
 - (void)locationManager:(HLPLocationManager*)manager didRangeBeacons:(NSArray<CLBeacon *> *)beacons inRegion:(CLBeaconRegion *)region;

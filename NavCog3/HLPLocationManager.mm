@@ -24,7 +24,6 @@
 #import "HLPLocationManager.h"
 #import "HLPLocationManagerParameters.h"
 #import "HLPLocation.h"
-#import "LocationEvent.h"
 #import "objc/runtime.h"
 
 #import <CoreMotion/CoreMotion.h>
@@ -462,7 +461,7 @@ static HLPLocationManager *instance;
     switch (status) {
         case kCLAuthorizationStatusDenied:
             if ([CLLocationManager locationServicesEnabled]) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_NOT_ALLOWED_ALERT object:self];
+                [self.delegate locationManager:self didLocationAllowAlert:NO];
             } else {
                 // OS automatically shows alert
             }
@@ -641,7 +640,7 @@ static HLPLocationManager *instance;
     if (cbeacons.size() > 0) {
         if (altimeter == nil && !didAlertAboutAltimeter) {
             didAlertAboutAltimeter = YES;
-            [[NSNotificationCenter defaultCenter] postNotificationName:NO_ALTIMETER_ALERT object:self];
+            [self.delegate locationManager:self hasAltimeter:NO];
         }
         double s = [[NSDate date] timeIntervalSince1970];
         try {
@@ -762,12 +761,7 @@ void functionCalledToLog(void *inUserData, string text)
 - (void)directionUpdated:(double)direction withAccuracy:(double)acc
 {
     @try {
-        NSDictionary *dic = @{
-                              @"orientation": @(direction),
-                              @"orientationAccuracy": @(acc)
-                              };
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:ORIENTATION_CHANGED_NOTIFICATION object:self userInfo:dic];
+        [self.delegate locationManager:self didUpdateOrientation:direction withAccuracy:acc];
     }
     @catch(NSException *e) {
         NSLog(@"%@", [e debugDescription]);

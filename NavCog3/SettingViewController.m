@@ -53,6 +53,7 @@ static HLPSetting *previewSpeedSetting, *previewWithActionSetting;
 static HLPSetting *boneConductionSetting, *exerciseLabel, *exerciseAction, *resetLocation;
 static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitFeet, *idLabel;
 static HLPSetting *advancedLabel, *advancedMenu;
+static HLPSetting *poiLabel, *ignoreFacility;
 
 
 - (void)viewDidLoad {
@@ -278,6 +279,10 @@ static HLPSetting *advancedLabel, *advancedMenu;
         BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_BLIND"];
         //[speechLabel setVisible:blindMode];
         //[speechSpeedSetting setVisible:blindMode];
+        
+        [poiLabel setVisible:blindMode];
+        [ignoreFacility setVisible:blindMode];
+        
         [previewSpeedSetting setVisible:blindMode];
         [previewWithActionSetting setVisible:blindMode];
         [vibrateSetting setVisible:blindMode];
@@ -312,6 +317,9 @@ static HLPSetting *advancedLabel, *advancedMenu;
     soundEffectSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"soundEffectSetting", @"") Name:@"sound_effect" DefaultValue:@(YES) Accept:nil];
     boneConductionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"for_bone_conduction_headset",@"") Name:@"for_bone_conduction_headset" DefaultValue:@(NO) Accept:nil];
 
+    poiLabel = [userSettingHelper addSectionTitle:@"POI"];
+    ignoreFacility = [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info." Name:@"ignore_facility" DefaultValue:@(NO) Accept:nil];
+    
     
     exerciseLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
     exerciseAction = [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];

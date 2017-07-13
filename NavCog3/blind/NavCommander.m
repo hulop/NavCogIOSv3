@@ -764,6 +764,12 @@
     BOOL isDestinationPOI = NO;
     BOOL shortSentence = (now - lastPOIAnnounceTime) < 3;
     
+    
+    BOOL ignoreFacility = [[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility"];
+    if (ignoreFacility && [poi.origin isKindOfClass:HLPEntrance.class]) {
+        return;
+    }
+    
     if (poi.needsToPlaySound) {
         // play something
     }

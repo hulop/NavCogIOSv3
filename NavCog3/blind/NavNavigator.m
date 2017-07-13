@@ -1575,7 +1575,10 @@ static NavNavigatorConstants *_instance;
     
     @try {
         HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];
-        
+        if (isnan(location.lat) || isnan(location.lng)) {
+            return;
+        }
+
         if (!_isActive) { // return if navigation is not active
             return;
         }

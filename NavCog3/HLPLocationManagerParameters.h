@@ -191,6 +191,14 @@ typedef NS_ENUM(NSInteger, HLPLocationManagerRepLocation) {
 @property double maxRssiBias;
 @property double headingConfidenceForOrientationInit;
 
+@property BOOL accuracyForDemo;
+@property BOOL usesBlelocppAcc;
+@property double blelocppAccuracySigma;
+
+@property double oriAccThreshold;
+
+@property BOOL showsStates;
+@property BOOL usesCompass;
 
 @end
 

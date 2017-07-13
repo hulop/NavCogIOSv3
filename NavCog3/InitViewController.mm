@@ -159,7 +159,14 @@
       @"use_altimeter":     @"usesAltimeterForFloorTransCheck",
       @"weightFloorTransArea":@"pfFloorTransParams.weightTransitionArea",
       @"mixtureProbabilityFloorTransArea":@"pfFloorTransParams.mixtureProbaTransArea",
-      @"headingConfidenceInit":@"headingConfidenceForOrientationInit"
+      @"headingConfidenceInit":@"headingConfidenceForOrientationInit",
+      
+      @"accuracy_for_demo": @"accuracyForDemo",
+      @"use_blelocpp_acc":  @"usesBlelocppAcc",
+      @"blelocpp_accuracy_sigma":@"blelocppAccuracySigma",
+      @"oriAccThreshold":   @"oriAccThreshold",
+      @"show_states":       @"showsStates",
+      @"use_compass":       @"usesCompass",
       };
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];

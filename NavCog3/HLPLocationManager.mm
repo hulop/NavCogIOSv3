@@ -41,6 +41,19 @@ typedef struct {
     HLPLocationManager *locationManager;
 } LocalUserData;
 
+@interface HLPLocationManager ()
+
+@property BOOL accuracyForDemo;
+@property BOOL usesBlelocppAcc;
+@property double blelocppAccuracySigma;
+
+@property double oriAccThreshold;
+
+@property BOOL showsStates;
+@property BOOL usesCompass;
+
+@end
+
 @implementation HLPLocationManager
 {
     @protected
@@ -315,7 +328,6 @@ static HLPLocationManager *instance;
 {
     return _headingConfidenceForOrientationInit;
 }
-
 
 #pragma mark - public methods
 
@@ -852,10 +864,10 @@ int dcount = 0;
         }
         currentOrientationAccuracy = orientationAccuracy;
         
-        double acc = [[NSUserDefaults standardUserDefaults] boolForKey:@"accuracy_for_demo"]?0.5:5.0;
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"use_blelocpp_acc"]) {
+        double acc = _accuracyForDemo?0.5:5.0;
+        if (_usesBlelocppAcc) {
             auto std = loc::Location::standardDeviation(states);
-            double sigma = [[NSUserDefaults standardUserDefaults] doubleForKey:@"blelocpp_accuracy_sigma"];
+            double sigma = _blelocppAccuracySigma;
             acc = MAX(acc, (std.x()+std.y())/2.0*sigma);
         }
         
@@ -882,8 +894,7 @@ int dcount = 0;
                 lng = NAN;
                 currentOrientation = NAN;
             }
-            double oriAccThreshold = [[NSUserDefaults standardUserDefaults] doubleForKey:@"oriAccThreshold"];
-            if( oriAccThreshold < orientationAccuracy ){
+            if( _oriAccThreshold < orientationAccuracy ){
                 currentOrientation = NAN;
             }
         }
@@ -916,9 +927,7 @@ int dcount = 0;
          } mutableCopy];
          */
         
-        bool showsState = [[NSUserDefaults standardUserDefaults] boolForKey:@"show_states"] ;
-        
-        if (showsState && ( wasFloorUpdated ||  dcount % 10 == 0)) {
+        if (_showsStates && ( wasFloorUpdated ||  dcount % 10 == 0)) {
             NSMutableDictionary *data = [@{} mutableCopy];
             NSMutableArray *debug = [@[] mutableCopy];
             for(loc::State &s: states) {
@@ -1400,5 +1409,15 @@ int dcount = 0;
 - (double)minRssiBias {return _target.minRssiBias;}
 - (void)setHeadingConfidenceForOrientationInit:(double) headingConfidenceForOrientationInit {_target.headingConfidenceForOrientationInit = headingConfidenceForOrientationInit;}
 - (double)headingConfidenceForOrientationInit {return _target.headingConfidenceForOrientationInit;}
+
+- (void)setAccuracyForDemo:(BOOL)accuracyForDemo {_target.accuracyForDemo = accuracyForDemo;}
+- (BOOL)accuracyForDemo {return _target.accuracyForDemo;};
+- (void)setUsesBlelocppAcc:(BOOL)usesBlelocppAcc {_target.usesBlelocppAcc = usesBlelocppAcc;}
+- (BOOL)usesBlelocppAcc {return _target.usesBlelocppAcc;};
+- (void)setBlelocppAccuracySigma:(double)blelocppAccuracySigma {_target.blelocppAccuracySigma = blelocppAccuracySigma;}
+- (double)blelocppAccuracySigma {return _target.blelocppAccuracySigma;};
+
+- (void)setOriAccThreshold:(double)oriAccThreshold {_target.oriAccThreshold = oriAccThreshold;}
+- (double)oriAccThreshold {return _target.oriAccThreshold;};
 
 @end

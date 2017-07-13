@@ -250,6 +250,13 @@ void uncaughtExceptionHandler(NSException *exception)
     // nop
 }
 
+- (void)locationManager:(HLPLocationManager*)manager didLogText:(NSString *)text
+{
+    if ([Logging isLogging]) {
+        NSLog(@"%@", text);
+    }
+}
+
 #pragma mark - AppDelegate
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {

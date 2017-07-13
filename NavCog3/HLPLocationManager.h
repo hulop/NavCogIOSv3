@@ -43,6 +43,7 @@ typedef NS_ENUM(NSUInteger, HLPLocationStatus) {
 @optional
 - (void)locationManager:(HLPLocationManager*)manager didDebugInfoUpdate:(NSDictionary*)debugInfo;
 - (void)locationManager:(HLPLocationManager*)manager didRangeBeacons:(NSArray<CLBeacon *> *)beacons inRegion:(CLBeaconRegion *)region;
+- (void)locationManager:(HLPLocationManager*)manager didLogText:(NSString *)text;
 
 @end
 

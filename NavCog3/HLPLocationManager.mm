@@ -23,7 +23,6 @@
 
 #import "HLPLocationManager.h"
 #import "HLPLocationManagerParameters.h"
-#import "Logging.h"
 #import "HLPLocation.h"
 #import "LocationEvent.h"
 #import "objc/runtime.h"
@@ -756,9 +755,7 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void) _logText:(string) text {
     [loggingQueue addOperationWithBlock:^{
-        if ([Logging isLogging]) {
-            NSLog(@"%s", text.c_str());
-        }
+        [_delegate locationManager:self didLogText:[NSString stringWithCString:text.c_str() encoding:NSUTF8StringEncoding]];
     }];
 }
 

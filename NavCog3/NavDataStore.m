@@ -1000,8 +1000,8 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     HLPLinkType linkType = [option[@"linkType"] intValue];
     BOOL onlyEnd = [option[@"onlyEnd"] boolValue];
     
-    HLPLocation *l1 = [loc offsetLocationByDistance:10 Bearing:-45];
-    HLPLocation *l2 = [loc offsetLocationByDistance:10 Bearing:135];
+    HLPLocation *l1 = [loc offsetLocationByDistance:5 Bearing:-45];
+    HLPLocation *l2 = [loc offsetLocationByDistance:5 Bearing:135];
 
     HLPLocation *rp = _loadLocation;
     MKMapPoint ms = convertFromGlobal(l1, rp);
@@ -1012,10 +1012,11 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     q.quadMax = (vector_float2){(float)MAX(ms.x,mt.x), (float)MAX(ms.y,mt.y)};
     
     NSArray * links = [quadtree elementsInQuad:q];
+    links = [[NSSet alloc] initWithArray:links].allObjects;
     [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
         
         if (!isnan(loc.floor) &&
-            (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
+            (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
             return;
         }
         if (link.isLeaf && link.length < 3) {
@@ -1043,7 +1044,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
         
         if (!isnan(loc.floor) &&
-            (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
+            (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
             return;
         }
         if (link.isLeaf && link.length < 3) {
@@ -1066,9 +1067,9 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             [nearestLinks addObject:link];
         }
     }];
-    
+
     if (minDistance < (option[@"POI_DISTANCE_MIN_THRESHOLD"]?[option[@"POI_DISTANCE_MIN_THRESHOLD"] doubleValue]:5)) {
-        return nearestLinks;
+        return [[NSSet alloc] initWithArray:nearestLinks].allObjects;
     } else {
         return @[];
     }

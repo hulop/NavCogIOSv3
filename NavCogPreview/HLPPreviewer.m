@@ -51,6 +51,11 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     return self;
 }
 
+- (NSArray*) _linkPois
+{
+    return [NavDataStore sharedDataStore].linkPoiMap[_link._id];
+}
+
 - (void)setLocation:(HLPLocation *)location
 {
     _location = location;
@@ -276,11 +281,29 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (NSArray<HLPFacility *> *)targetPOIs
 {
-    NavDataStore *nds = [NavDataStore sharedDataStore];
-    if (self.targetNode == nil) {
+    if (self._linkPois == nil) {
         return nil;
     }
+    
     NSMutableArray *temp = [@[] mutableCopy];
+    for(HLPObject *obj in self._linkPois) {
+        if ([obj isKindOfClass:HLPEntrance.class]) {
+            void(^check)(HLPEntrance*) = ^(HLPEntrance* ent) {
+                if (ent && ent.facility && ent.facility.name && ent.facility.name.length > 0) {
+                    [temp addObject:ent.facility];
+                }
+            };
+            HLPEntrance *ent = (HLPEntrance*)obj;
+            check(ent);
+        }
+        else if ([obj isKindOfClass:HLPPOI.class]) {
+            HLPPOI *poi = (HLPPOI*)obj;
+            if ([[_link nearestLocationTo:poi.location] distanceTo:_location] < 0.01) {
+                [temp addObject:obj];
+            }
+        }
+    }
+    /*
     for(HLPLink* link in nds.nodeLinksMap[self.targetNode._id]) {
         if (link.isLeaf) {
             void(^check)(HLPEntrance*) = ^(HLPEntrance* ent) {
@@ -292,6 +315,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             check(nds.entranceMap[link.targetNodeID]);
         }
     }
+     */
     if ([temp count] > 0) {
         return temp;
     }
@@ -438,6 +462,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     NavDataStore *nds;
     HLPPreviewEvent *current;
     NSMutableArray<HLPPreviewEvent*> *history;
+    NSArray *route;
 }
 
 - (instancetype) init
@@ -452,30 +477,48 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     return current;
 }
 
+- (BOOL)isRouteMode
+{
+    return route != nil;
+}
+
 - (void)startAt:(HLPLocation *)loc
 {
     nds = [NavDataStore sharedDataStore];
+    route = nds.route;
     
     //find nearest link
     double min = DBL_MAX;
     HLPLink *minLink = nil;
-    for(NSObject *key in nds.linksMap) {
-        HLPLink *link = nds.linksMap[key];
-        if (link.isLeaf) {
-            continue;
+    double ori = NAN;
+    if (self.isRouteMode) {
+        HLPLink *first = route[0];
+        // route HLPLink is different instance from linksMap so need to get by link id
+        minLink = nds.linksMap[first._id];
+        loc = first.sourceNode.location;
+        ori = first.initialBearingFromSource;
+    } else {
+        for(NSObject *key in nds.linksMap) {
+            HLPLink *link = nds.linksMap[key];
+            if (link.isLeaf) {
+                continue;
+            }
+            if (link.sourceNode.height != link.targetNode.height ||
+                link.sourceNode.height != loc.floor) {
+                continue;
+            }
+            double d = [[link nearestLocationTo:loc] distanceTo:loc];
+            if (d < min) {
+                min = d;
+                minLink = link;
+            }
         }
-        if (link.sourceNode.height != link.targetNode.height ||
-            link.sourceNode.height != loc.floor) {
-            continue;
-        }
-        double d = [[link nearestLocationTo:loc] distanceTo:loc];
-        if (d < min) {
-            min = d;
-            minLink = link;
+        if (minLink) {
+            loc = [minLink nearestLocationTo:loc];
         }
     }
+
     if (minLink) {
-        loc = [minLink nearestLocationTo:loc];
         current = [[HLPPreviewEvent alloc] initWithLink:minLink Location:loc Orientation:NAN];
     } else {
         NSLog(@"no link found");

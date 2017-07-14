@@ -120,7 +120,7 @@
     
     if (str.length > 0) {
         [self addBlock:^(void (^complete)(void)) {
-            [_delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:nil];
+            [_delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:nil];
             complete();
         }];
     }
@@ -394,11 +394,11 @@
     BOOL step_sound_for_jump = [[NSUserDefaults standardUserDefaults] doubleForKey:@"step_sound_for_jump"];
 
     // always speak distance
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *str = [NSString stringWithFormat:@"%.0f meters", distance];
-        [_delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:nil];
-    });
-    
+    //dispatch_async(dispatch_get_main_queue(), ^{
+    NSString *str = [NSString stringWithFormat:@"%.0f meters", distance];
+    [_delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:nil];
+    //});
+
     if (step_sound_for_jump == YES) {
         int steps = MAX(round(distance / step_length), 2);
         

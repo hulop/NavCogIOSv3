@@ -120,6 +120,18 @@
     [previewer startAt:nds.from.location];
 }
 
+- (void) _showRoute
+{
+    NSArray *route = [[NavDataStore sharedDataStore].features filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+        if ([evaluatedObject isKindOfClass:HLPLink.class]) {
+            HLPLink *link = (HLPLink*)evaluatedObject;
+            return (link.sourceHeight == current.location.floor || link.targetHeight == current.location.floor);
+        }
+        return NO;
+    }]];
+    [helper showRoute:route];
+}
+
 - (void) checkMapCenter:(NSTimer*)timer
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -191,6 +203,7 @@
     [commander previewStarted:event];
     current = event;
     remainingDistance = current.next.distanceMoved;
+    [self _showRoute];
 }
 
 -(void)previewUpdated:(HLPPreviewEvent*)event
@@ -199,6 +212,7 @@
     [commander previewUpdated:event];
     current = event;
     remainingDistance = current.next.distanceMoved;
+    [self _showRoute];
 }
 
 -(void)previewStopped:(HLPPreviewEvent*)event

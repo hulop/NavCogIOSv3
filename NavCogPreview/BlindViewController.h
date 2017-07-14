@@ -26,7 +26,7 @@
 #import "HLPPreviewer.h"
 #import "HLPPreviewCommander.h"
 
-@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, HLPPreviewerDelegate, PreviewCommandDelegate, PreviewTraverseDelegate,  UITabBarDelegate>
+@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, HLPPreviewerDelegate, PreviewCommandDelegate, PreviewTraverseDelegate, HLPPreviewCommanderDelegate, UITabBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;

@@ -107,8 +107,8 @@
     NSLog(@"%@", NSStringFromSelector(_cmd));
     
     NavDataStore *nds = [NavDataStore sharedDataStore];
-    NSLog(@"%@", [nds route]);
-    NSLog(@"%@", (nds.to._id == nil)?@"No Dest":@"With Dests");
+    //NSLog(@"%@", [nds route]);
+    //NSLog(@"%@", (nds.to._id == nil)?@"No Dest":@"With Dests");
     
     previewer = [[HLPPreviewer alloc] init];
     previewer.delegate = self;
@@ -285,6 +285,7 @@
 {
     isAutoProceed = NO;
     // not implemented
+    [self stopSpeaking];
 }
 
 - (void)stopSpeaking
@@ -296,7 +297,7 @@
 - (void)speakCurrentPOI
 {
     isAutoProceed = NO;
-    [commander previewCurrent];
+    [commander previewCurrentFull];
 }
 
 - (void)selectCurrentPOI

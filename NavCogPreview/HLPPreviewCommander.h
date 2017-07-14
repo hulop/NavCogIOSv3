@@ -36,6 +36,6 @@
 
 @property id<HLPPreviewCommanderDelegate> delegate;
 
-- (void) previewCurrent;
+- (void) previewCurrentFull;
 
 @end

@@ -22,6 +22,7 @@
 
 #import "NavCoverView.h"
 
+#define SPEED_FACTOR (1.5)
 
 @implementation NavCoverView {
     UITapGestureRecognizer *tap1f, *tap2f, *tap3f, *tap4f;
@@ -305,7 +306,7 @@
 {
     //NSLog(@"%@", NSStringFromSelector(_cmd));
     if (isAutoActive) {
-        prevSpeed *= 1.2;
+        prevSpeed *= SPEED_FACTOR;
     }
     swipeUp2fTime = [[NSDate date] timeIntervalSince1970];
     [_delegate autoStepForwardSpeed:prevSpeed Active:YES];
@@ -328,7 +329,7 @@
 {
     //NSLog(@"%@", NSStringFromSelector(_cmd));
     if (isAutoActive) {
-        prevSpeed /= 1.2;
+        prevSpeed /= SPEED_FACTOR;
         swipeUp2fTime = [[NSDate date] timeIntervalSince1970];
         [_delegate autoStepForwardSpeed:prevSpeed Active:YES];
     }

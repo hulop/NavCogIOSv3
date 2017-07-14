@@ -25,6 +25,8 @@
 #import "LocationEvent.h"
 #import "NavDataStore.h"
 #import "objc/runtime.h"
+#import <GameplayKit/GameplayKit.h>
+#import <MapKit/MapKit.h>
 
 #define FIXED @(YES)
 #define NOT_FIXED @(NO)
@@ -919,6 +921,45 @@ static NavNavigatorConstants *_instance;
     destinationNode = nds.entranceMap[[[route lastObject] _id]];
     startNode = nds.entranceMap[[[route firstObject] _id]];
     
+    MKMapPoint (^convertFromGlobal)(HLPLocation*, HLPLocation*) = ^(HLPLocation *global, HLPLocation *rp) {
+        double distance = [HLPLocation distanceFromLat:global.lat Lng:global.lng toLat:rp.lat Lng:rp.lng];
+        double d2r = M_PI / 180;
+        double r = [HLPLocation bearingFromLat:rp.lat Lng:rp.lng toLat:global.lat Lng:global.lng] * d2r;
+        return MKMapPointMake(distance*sin(r), distance*cos(r));
+    };
+    
+    HLPLocation *rp = [[NavDataStore sharedDataStore] loadLocation];
+    __block float maxx = FLT_MIN, maxy = FLT_MIN, minx = FLT_MAX, miny = FLT_MAX;
+    [nds.linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, HLPLink *link, BOOL * _Nonnull stop) {
+        MKMapPoint ms = convertFromGlobal(link.sourceLocation, rp);
+        MKMapPoint mt = convertFromGlobal(link.targetLocation, rp);
+        
+        maxx = (float)MAX(maxx, ms.x);
+        maxx = (float)MAX(maxx, mt.x);
+        minx = (float)MIN(minx, ms.x);
+        minx = (float)MIN(minx, mt.x);
+        
+        maxy = (float)MAX(maxy, ms.y);
+        maxy = (float)MAX(maxy, mt.y);
+        miny = (float)MIN(miny, ms.y);
+        miny = (float)MIN(miny, mt.y);
+    }];
+    struct GKQuad q;
+    q.quadMin = (vector_float2){minx, miny};
+    q.quadMax = (vector_float2){maxx, maxy};
+    GKQuadtree *quadtree = [GKQuadtree quadtreeWithBoundingQuad:q minimumCellSize:1];
+
+    [nds.linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, HLPLink *link, BOOL * _Nonnull stop) {
+        MKMapPoint ms = convertFromGlobal(link.sourceLocation, rp);
+        MKMapPoint mt = convertFromGlobal(link.targetLocation, rp);
+
+        struct GKQuad q;
+        q.quadMin = (vector_float2){(float)MIN(ms.x,mt.x), (float)MIN(ms.y,mt.y)};
+        q.quadMax = (vector_float2){(float)MAX(ms.x,mt.x), (float)MAX(ms.y,mt.y)};
+        
+        [quadtree addElement:link withQuad:q];
+    }];
+    
     NSArray*(^nearestLinks)(HLPLocation*, NSDictionary*) = ^ NSArray* (HLPLocation *loc, NSDictionary* option) {
         NSMutableArray<HLPLink*> __block *nearestLinks = [@[] mutableCopy];
         double __block minDistance = DBL_MAX;
@@ -926,7 +967,18 @@ static NavNavigatorConstants *_instance;
         HLPLinkType linkType = [option[@"linkType"] intValue];
         BOOL onlyEnd = [option[@"onlyEnd"] boolValue];
         
-        [nds.linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
+        HLPLocation *l1 = [loc offsetLocationByDistance:10 Bearing:-45];
+        HLPLocation *l2 = [loc offsetLocationByDistance:10 Bearing:135];
+
+        MKMapPoint ms = convertFromGlobal(l1, rp);
+        MKMapPoint mt = convertFromGlobal(l2, rp);
+        
+        struct GKQuad q;
+        q.quadMin = (vector_float2){(float)MIN(ms.x,mt.x), (float)MIN(ms.y,mt.y)};
+        q.quadMax = (vector_float2){(float)MAX(ms.x,mt.x), (float)MAX(ms.y,mt.y)};
+
+        NSArray * links = [quadtree elementsInQuad:q];
+        [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
             
             if (!isnan(loc.floor) &&
                 (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
@@ -954,7 +1006,7 @@ static NavNavigatorConstants *_instance;
                 nearestLinks = [@[link] mutableCopy];
             }
         }];
-        [nds.linksMap enumerateKeysAndObjectsUsingBlock:^(NSString* key, HLPLink *link, BOOL * _Nonnull stop) {
+        [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
             
             if (!isnan(loc.floor) &&
                 (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
@@ -1362,7 +1414,10 @@ static NavNavigatorConstants *_instance;
     
     @try {
         HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];
-        
+        if (isnan(location.lat) || isnan(location.lng)) {
+            return;
+        }
+
         if (!_isActive) { // return if navigation is not active
             return;
         }
@@ -1882,7 +1937,7 @@ static NavNavigatorConstants *_instance;
                     }
                 }
                 // TODO if skip this turn
-                return;
+                // return;
             }
             if (linkInfo.hasBeenFixBackward) {
                 if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
@@ -2123,7 +2178,8 @@ static NavNavigatorConstants *_instance;
                 BOOL bearing_for_demo = [[NSUserDefaults standardUserDefaults] boolForKey:@"bearing_for_demo"];
                 
                 if (bearing_for_demo) {
-                    if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) > 20) {
+                    if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) > 20 &&
+                        linkInfo.distanceToTargetFromSnappedLocationOnLink > 2) {
                         if (linkInfo.lastBearingDetected == 0) {
                             linkInfo.lastBearingDetected = now;
                         }

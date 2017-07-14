@@ -25,8 +25,6 @@
 #import "LocationEvent.h"
 #import "NavDataStore.h"
 #import "objc/runtime.h"
-#import <GameplayKit/GameplayKit.h>
-#import <MapKit/MapKit.h>
 
 #define FIXED @(YES)
 #define NOT_FIXED @(NO)
@@ -822,8 +820,6 @@ static NavNavigatorConstants *_instance;
     
     //NSString *destination;
     //NSString *startPoint;
-    HLPEntrance *destinationNode;
-    HLPEntrance *startNode;
     NSTimeInterval lastCouldNotStartNavigationTime;
     NSTimeInterval waitingStartUntil;
     
@@ -917,129 +913,7 @@ static NavNavigatorConstants *_instance;
     }];
     
     navIndex = 0;
-    
-    destinationNode = nds.entranceMap[[[route lastObject] _id]];
-    startNode = nds.entranceMap[[[route firstObject] _id]];
-    
-    MKMapPoint (^convertFromGlobal)(HLPLocation*, HLPLocation*) = ^(HLPLocation *global, HLPLocation *rp) {
-        double distance = [HLPLocation distanceFromLat:global.lat Lng:global.lng toLat:rp.lat Lng:rp.lng];
-        double d2r = M_PI / 180;
-        double r = [HLPLocation bearingFromLat:rp.lat Lng:rp.lng toLat:global.lat Lng:global.lng] * d2r;
-        return MKMapPointMake(distance*sin(r), distance*cos(r));
-    };
-    
-    HLPLocation *rp = [[NavDataStore sharedDataStore] loadLocation];
-    __block float maxx = FLT_MIN, maxy = FLT_MIN, minx = FLT_MAX, miny = FLT_MAX;
-    [nds.linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, HLPLink *link, BOOL * _Nonnull stop) {
-        MKMapPoint ms = convertFromGlobal(link.sourceLocation, rp);
-        MKMapPoint mt = convertFromGlobal(link.targetLocation, rp);
         
-        maxx = (float)MAX(maxx, ms.x);
-        maxx = (float)MAX(maxx, mt.x);
-        minx = (float)MIN(minx, ms.x);
-        minx = (float)MIN(minx, mt.x);
-        
-        maxy = (float)MAX(maxy, ms.y);
-        maxy = (float)MAX(maxy, mt.y);
-        miny = (float)MIN(miny, ms.y);
-        miny = (float)MIN(miny, mt.y);
-    }];
-    struct GKQuad q;
-    q.quadMin = (vector_float2){minx, miny};
-    q.quadMax = (vector_float2){maxx, maxy};
-    GKQuadtree *quadtree = [GKQuadtree quadtreeWithBoundingQuad:q minimumCellSize:1];
-
-    [nds.linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, HLPLink *link, BOOL * _Nonnull stop) {
-        MKMapPoint ms = convertFromGlobal(link.sourceLocation, rp);
-        MKMapPoint mt = convertFromGlobal(link.targetLocation, rp);
-
-        struct GKQuad q;
-        q.quadMin = (vector_float2){(float)MIN(ms.x,mt.x), (float)MIN(ms.y,mt.y)};
-        q.quadMax = (vector_float2){(float)MAX(ms.x,mt.x), (float)MAX(ms.y,mt.y)};
-        
-        [quadtree addElement:link withQuad:q];
-    }];
-    
-    NSArray*(^nearestLinks)(HLPLocation*, NSDictionary*) = ^ NSArray* (HLPLocation *loc, NSDictionary* option) {
-        NSMutableArray<HLPLink*> __block *nearestLinks = [@[] mutableCopy];
-        double __block minDistance = DBL_MAX;
-        
-        HLPLinkType linkType = [option[@"linkType"] intValue];
-        BOOL onlyEnd = [option[@"onlyEnd"] boolValue];
-        
-        HLPLocation *l1 = [loc offsetLocationByDistance:10 Bearing:-45];
-        HLPLocation *l2 = [loc offsetLocationByDistance:10 Bearing:135];
-
-        MKMapPoint ms = convertFromGlobal(l1, rp);
-        MKMapPoint mt = convertFromGlobal(l2, rp);
-        
-        struct GKQuad q;
-        q.quadMin = (vector_float2){(float)MIN(ms.x,mt.x), (float)MIN(ms.y,mt.y)};
-        q.quadMax = (vector_float2){(float)MAX(ms.x,mt.x), (float)MAX(ms.y,mt.y)};
-
-        NSArray * links = [quadtree elementsInQuad:q];
-        [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
-            
-            if (!isnan(loc.floor) &&
-                (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
-                return;
-            }
-            if (link.isLeaf && link.length < 3) {
-                return;
-            }
-            
-            HLPLocation *nearest = [link nearestLocationTo:loc];
-            
-            if (onlyEnd) {
-                double sd = [link.sourceLocation distanceTo:loc];
-                double td = [link.targetLocation distanceTo:loc];
-                if (sd > td) {
-                    nearest = link.targetLocation;
-                } else {
-                    nearest = link.sourceLocation;
-                }
-            }
-            double distance = [loc distanceTo:nearest];
-            
-            if (distance < minDistance && (linkType == 0 || link.linkType == linkType)) {
-                minDistance = distance;
-                nearestLinks = [@[link] mutableCopy];
-            }
-        }];
-        [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
-            
-            if (!isnan(loc.floor) &&
-                (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
-                return;
-            }
-            if (link.isLeaf && link.length < 3) {
-                return;
-            }
-            
-            HLPLocation *nearest = [link nearestLocationTo:loc];
-            if (onlyEnd) {
-                double sd = [link.sourceLocation distanceTo:loc];
-                double td = [link.targetLocation distanceTo:loc];
-                if (sd > td) {
-                    nearest = link.targetLocation;
-                } else {
-                    nearest = link.sourceLocation;
-                }
-            }
-            double distance = [loc distanceTo:nearest];
-            
-            if (fabs(distance - minDistance) < 0.5 && (linkType == 0 || link.linkType == linkType)) {
-                [nearestLinks addObject:link];
-            }
-        }];
-        
-        if (minDistance < C.POI_DISTANCE_MIN_THRESHOLD) {
-            return nearestLinks;
-        } else {
-            return @[];
-        }
-    };
-    
     NSArray*(^collectLinks)(NSArray*) = ^(NSArray *array) {
         NSMutableArray *temp = [@[] mutableCopy];
         for(HLPObject *obj2 in array) {
@@ -1078,69 +952,9 @@ static NavNavigatorConstants *_instance;
     
     navIndex = 0;
     
-    // associate pois to links
-    NSMutableDictionary *linkPoiMap = [@{} mutableCopy];
-    for(int j = 0; j < [nds.pois count]; j++) {
-        if ([nds.pois[j] isKindOfClass:HLPPOI.class] == NO) {
-            continue;
-        }
-        HLPPOI *poi = nds.pois[j];
-        HLPLocation *poiLoc = poi.location;
-        HLPLinkType linkType = 0;
-        if (poi.poiCategory == HLPPOICategoryElevatorEquipments ||
-            poi.poiCategory == HLPPOICategoryElevator
-            ) {
-            linkType = LINK_TYPE_ELEVATOR;
-            [poiLoc updateFloor:NAN];
-        }
-        NSArray *links = nearestLinks(poiLoc, @{@"linkType":@(linkType)});
-        
-        for(HLPLink* nearestLink in links) {
-            NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
-            if (!linkPois) {
-                linkPois = [@[] mutableCopy];
-                linkPoiMap[nearestLink._id] = linkPois;
-            }
-            [linkPois addObject:poi];
-        }
-    }
-    
-    for(HLPEntrance *ent in nds.features) {
-        if ([ent isKindOfClass:HLPEntrance.class]) {
-            
-            if ([startNode.forFacilityID isEqualToString:ent.forFacilityID]) {
-                continue;
-            }
-            if ([destinationNode.forFacilityID isEqualToString:ent.forFacilityID]) {
-                NSLog(@"%@", ent);
-            }
-            if (!ent.node) { // special door tag
-                continue;
-            }
-            
-            BOOL isLeaf = ent.node.isLeaf;
-            NSArray *links = nearestLinks(ent.node.location, isLeaf?@{@"onlyEnd":@(YES)}:@{});
-            for(HLPLink* nearestLink in links) {
-                if ([nearestLink.sourceNodeID isEqualToString:ent.node._id] ||
-                    [nearestLink.targetNodeID isEqualToString:ent.node._id]) {
-                    //TODO announce about building
-                    //continue;
-                }
-                NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
-                if (!linkPois) {
-                    linkPois = [@[] mutableCopy];
-                    linkPoiMap[nearestLink._id] = linkPois;
-                }
-                [linkPois addObject:ent];
-                //break;
-            }
-        }
-    }
-    // end associate pois to links
     
     // optimize links for navigation
-    
-    
+        
     // remove crank
     NSArray*(^removeCrank)(NSArray*) = ^(NSArray *array) {
         NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
@@ -1292,10 +1106,10 @@ static NavNavigatorConstants *_instance;
             
             NSMutableSet *linkPois = [[NSMutableSet alloc] init];
             if (!isFirstLink) {
-                [linkPois addObjectsFromArray:linkPoiMap[link1._id]];
+                [linkPois addObjectsFromArray:nds.linkPoiMap[link1._id]];
                 if ([link1 isKindOfClass:HLPCombinedLink.class]) {
                     for(HLPLink *link in [(HLPCombinedLink*) link1 links]) {
-                        [linkPois addObjectsFromArray:linkPoiMap[link._id]];
+                        [linkPois addObjectsFromArray:nds.linkPoiMap[link._id]];
                     }
                 }
             }

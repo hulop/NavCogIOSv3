@@ -75,6 +75,7 @@ typedef enum {
 @property (readonly) NSDictionary *nodesMap;
 @property (readonly) NSDictionary *linksMap;
 @property (readonly) NSDictionary *nodeLinksMap;
+@property (readonly) NSDictionary *linkPoiMap;
 @property (readonly) NSArray *pois;
 @property (readonly) NSArray *escalatorLinks;
 
@@ -110,7 +111,7 @@ typedef enum {
 - (void) startExercise;
 
 - (BOOL) isElevatorNode:(HLPNode*)node;
-
+- (NSArray*) nearestLinksAt:(HLPLocation*)loc withOptions:(NSDictionary*)option;
 
 + (NavDestination*) destinationForCurrentLocation;
 

@@ -27,6 +27,9 @@
 #import "LocationEvent.h"
 #import "Logging.h"
 
+#import <GameplayKit/GameplayKit.h>
+#import <MapKit/MapKit.h>
+
 @implementation NavDestination {
     HLPLocation *_location;
 }
@@ -281,6 +284,8 @@
     
     NSDictionary *destinationHash;
     NSDictionary *serverConfig;
+    
+    GKQuadtree *quadtree;
 }
 
 static NavDataStore* instance_ = nil;
@@ -715,6 +720,13 @@ static NavDataStore* instance_ = nil;
 #define FACILITY_ID @"施設ID"
 #define FOR_FACILITY_ID @"対応施設ID"
 
+MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
+    double distance = [HLPLocation distanceFromLat:global.lat Lng:global.lng toLat:rp.lat Lng:rp.lng];
+    double d2r = M_PI / 180;
+    double r = [HLPLocation bearingFromLat:rp.lat Lng:rp.lng toLat:global.lat Lng:global.lng] * d2r;
+    return MKMapPointMake(distance*sin(r), distance*cos(r));
+}
+
 - (void) analyzeFeatures:(NSArray*)features
 {
     NSMutableDictionary *idMapTemp = [@{} mutableCopy];
@@ -804,7 +816,6 @@ static NavDataStore* instance_ = nil;
         }];
     }];
      
-     
     // determine escalator side from links
     for(int i = 0; i < [_escalatorLinks count]; i++) {
         HLPLink* link1 = _escalatorLinks[i];
@@ -866,7 +877,201 @@ static NavDataStore* instance_ = nil;
         
         link1.escalatorFlags = flags;
     }
+    
+    HLPLocation *rp = _loadLocation;
+    __block float maxx = FLT_MIN, maxy = FLT_MIN, minx = FLT_MAX, miny = FLT_MAX;
+    [self.linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, HLPLink *link, BOOL * _Nonnull stop) {
+        MKMapPoint ms = convertFromGlobal(link.sourceLocation, rp);
+        MKMapPoint mt = convertFromGlobal(link.targetLocation, rp);
+        
+        maxx = (float)MAX(maxx, ms.x);
+        maxx = (float)MAX(maxx, mt.x);
+        minx = (float)MIN(minx, ms.x);
+        minx = (float)MIN(minx, mt.x);
+        
+        maxy = (float)MAX(maxy, ms.y);
+        maxy = (float)MAX(maxy, mt.y);
+        miny = (float)MIN(miny, ms.y);
+        miny = (float)MIN(miny, mt.y);
+    }];
+    struct GKQuad q;
+    q.quadMin = (vector_float2){minx, miny};
+    q.quadMax = (vector_float2){maxx, maxy};
+    quadtree = [GKQuadtree quadtreeWithBoundingQuad:q minimumCellSize:100];
+    
+    [self.linksMap enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, HLPLink *link, BOOL * _Nonnull stop) {
+        MKMapPoint ms = convertFromGlobal(link.sourceLocation, rp);
+        MKMapPoint mt = convertFromGlobal(link.targetLocation, rp);
+        
+        [quadtree addElement:link withPoint:(vector_float2){ms.x, ms.y}];
+        [quadtree addElement:link withPoint:(vector_float2){mt.x, mt.y}];
+        
+        double d = sqrt(pow(ms.x-mt.x, 2)+pow(ms.y-mt.y, 2));
+        //NSLog(@"quadtree,%f, %f, %f, %f, %f", ms.x, ms.y, mt.x, mt.y, d);
+        while(d > 3) {
+            double r = 1;
+            MKMapPoint ms2 = MKMapPointMake((ms.x*(d-r)+mt.x*r)/d, (ms.y*(d-r)+mt.y*r)/d);
+            MKMapPoint mt2 = MKMapPointMake((mt.x*(d-r)+ms.x*r)/d, (mt.y*(d-r)+ms.y*r)/d);
+            [quadtree addElement:link withPoint:(vector_float2){ms2.x, ms2.y}];
+            [quadtree addElement:link withPoint:(vector_float2){mt2.x, mt2.y}];
+            ms = ms2;
+            mt = mt2;
+            d = sqrt(pow(ms.x-mt.x, 2)+pow(ms.y-mt.y, 2));
+            //NSLog(@"quadtree,%f, %f, %f, %f, %f", ms.x, ms.y, mt.x, mt.y, d);
+        }
+        //NSLog(@"quadtree------ %f (%f).", d, [link.sourceLocation distanceTo:link.targetLocation]);
+    }];
+    
+    // associate pois to links
+    NSMutableDictionary *linkPoiMap = [@{} mutableCopy];
+    for(int j = 0; j < [_pois count]; j++) {
+        if ([_pois[j] isKindOfClass:HLPPOI.class] == NO) {
+            continue;
+        }
+        HLPPOI *poi = _pois[j];
+        HLPLocation *poiLoc = poi.location;
+        HLPLinkType linkType = 0;
+        if (poi.poiCategory == HLPPOICategoryElevatorEquipments ||
+            poi.poiCategory == HLPPOICategoryElevator
+            ) {
+            linkType = LINK_TYPE_ELEVATOR;
+            [poiLoc updateFloor:NAN];
+        }
+        NSArray *links = [self nearestLinksAt:poiLoc withOptions:
+                          @{@"linkType":@(linkType),
+                            @"POI_DISTANCE_MIN_THRESHOLD":@(5)}];
+        
+        for(HLPLink* nearestLink in links) {
+            NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
+            if (!linkPois) {
+                linkPois = [@[] mutableCopy];
+                linkPoiMap[nearestLink._id] = linkPois;
+            }
+            [linkPois addObject:poi];
+        }
+    }
+    
+    HLPEntrance *destinationNode = _entranceMap[[[self.route lastObject] _id]];
+    HLPEntrance *startNode = _entranceMap[[[self.route firstObject] _id]];;
+    
+    for(HLPEntrance *ent in features) {
+        if ([ent isKindOfClass:HLPEntrance.class]) {
+            
+            if ([startNode.forFacilityID isEqualToString:ent.forFacilityID]) {
+                continue;
+            }
+            if ([destinationNode.forFacilityID isEqualToString:ent.forFacilityID]) {
+                NSLog(@"%@", ent);
+            }
+            if (!ent.node) { // special door tag
+                continue;
+            }
+            
+            BOOL isLeaf = ent.node.isLeaf;
+            NSMutableDictionary *opt = [isLeaf?@{@"onlyEnd":@(YES)}:@{} mutableCopy];
+            opt[@"POI_DISTANCE_MIN_THRESHOLD"] = @(5);
+            NSArray *links = [self nearestLinksAt:ent.node.location withOptions:opt];
+            for(HLPLink* nearestLink in links) {
+                if ([nearestLink.sourceNodeID isEqualToString:ent.node._id] ||
+                    [nearestLink.targetNodeID isEqualToString:ent.node._id]) {
+                    //TODO announce about building
+                    //continue;
+                }
+                NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
+                if (!linkPois) {
+                    linkPois = [@[] mutableCopy];
+                    linkPoiMap[nearestLink._id] = linkPois;
+                }
+                [linkPois addObject:ent];
+                //break;
+            }
+        }
+    }
+    _linkPoiMap = linkPoiMap;
+    // end associate pois to links
 
+}
+
+- (NSArray*) nearestLinksAt:(HLPLocation*)loc withOptions:(NSDictionary*)option
+{
+    NSMutableArray<HLPLink*> __block *nearestLinks = [@[] mutableCopy];
+    double __block minDistance = DBL_MAX;
+    
+    HLPLinkType linkType = [option[@"linkType"] intValue];
+    BOOL onlyEnd = [option[@"onlyEnd"] boolValue];
+    
+    HLPLocation *l1 = [loc offsetLocationByDistance:10 Bearing:-45];
+    HLPLocation *l2 = [loc offsetLocationByDistance:10 Bearing:135];
+
+    HLPLocation *rp = _loadLocation;
+    MKMapPoint ms = convertFromGlobal(l1, rp);
+    MKMapPoint mt = convertFromGlobal(l2, rp);
+    
+    struct GKQuad q;
+    q.quadMin = (vector_float2){(float)MIN(ms.x,mt.x), (float)MIN(ms.y,mt.y)};
+    q.quadMax = (vector_float2){(float)MAX(ms.x,mt.x), (float)MAX(ms.y,mt.y)};
+    
+    NSArray * links = [quadtree elementsInQuad:q];
+    [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        if (!isnan(loc.floor) &&
+            (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
+            return;
+        }
+        if (link.isLeaf && link.length < 3) {
+            return;
+        }
+        
+        HLPLocation *nearest = [link nearestLocationTo:loc];
+        
+        if (onlyEnd) {
+            double sd = [link.sourceLocation distanceTo:loc];
+            double td = [link.targetLocation distanceTo:loc];
+            if (sd > td) {
+                nearest = link.targetLocation;
+            } else {
+                nearest = link.sourceLocation;
+            }
+        }
+        double distance = [loc distanceTo:nearest];
+        
+        if (distance < minDistance && (linkType == 0 || link.linkType == linkType)) {
+            minDistance = distance;
+            nearestLinks = [@[link] mutableCopy];
+        }
+    }];
+    [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        if (!isnan(loc.floor) &&
+            (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
+            return;
+        }
+        if (link.isLeaf && link.length < 3) {
+            return;
+        }
+        
+        HLPLocation *nearest = [link nearestLocationTo:loc];
+        if (onlyEnd) {
+            double sd = [link.sourceLocation distanceTo:loc];
+            double td = [link.targetLocation distanceTo:loc];
+            if (sd > td) {
+                nearest = link.targetLocation;
+            } else {
+                nearest = link.sourceLocation;
+            }
+        }
+        double distance = [loc distanceTo:nearest];
+        
+        if (fabs(distance - minDistance) < 0.5 && (linkType == 0 || link.linkType == linkType)) {
+            [nearestLinks addObject:link];
+        }
+    }];
+    
+    if (minDistance < (option[@"POI_DISTANCE_MIN_THRESHOLD"]?[option[@"POI_DISTANCE_MIN_THRESHOLD"] doubleValue]:5)) {
+        return nearestLinks;
+    } else {
+        return @[];
+    }
 }
 
 #define CONFIG_JSON @"%@://%@/%@config/dialog_config.json"

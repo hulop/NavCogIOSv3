@@ -189,12 +189,6 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     //NSLog(@"%@", NSStringFromSelector(_cmd));
-    if (isAutoActive) {
-        isAutoActive = NO;
-        [_delegate autoStepForwardSpeed:0 Active:NO];
-    }
-    
-    active = nil;
     if ([touches count] > 0) {
         begin = [self centerOfTouches:touches];
     }
@@ -210,6 +204,7 @@
     return pow(2,dist);
 }
 
+/* disable
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     //NSLog(@"%@", NSStringFromSelector(_cmd));
@@ -245,6 +240,7 @@
         }
     }
 }
+ */
 
 #pragma mark - gesture handler
 
@@ -308,9 +304,12 @@
 - (void)didSwipeUp2f:(UISwipeGestureRecognizer*)sender
 {
     //NSLog(@"%@", NSStringFromSelector(_cmd));
-    active = sender;
+    if (isAutoActive) {
+        prevSpeed *= 1.2;
+    }
     swipeUp2fTime = [[NSDate date] timeIntervalSince1970];
-    //[_delegate autoStepForwardSpeed:1 Active:NO]
+    [_delegate autoStepForwardSpeed:prevSpeed Active:YES];
+    isAutoActive = YES;
 }
 
 - (void)didSwipeUp3f:(UISwipeGestureRecognizer*)sender
@@ -328,7 +327,11 @@
 - (void)didSwipeDown2f:(UISwipeGestureRecognizer*)sender
 {
     //NSLog(@"%@", NSStringFromSelector(_cmd));
-    active = sender;
+    if (isAutoActive) {
+        prevSpeed /= 1.2;
+        swipeUp2fTime = [[NSDate date] timeIntervalSince1970];
+        [_delegate autoStepForwardSpeed:prevSpeed Active:YES];
+    }
 }
 
 - (void)didSwipeDown3f:(UISwipeGestureRecognizer*)sender

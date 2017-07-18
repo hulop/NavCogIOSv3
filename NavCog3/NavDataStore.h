@@ -22,7 +22,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import "HLPLocation.h"
+#import <HLPLocationManager/HLPLocation.h>
 #import "HLPGeoJson.h"
 
 typedef enum {

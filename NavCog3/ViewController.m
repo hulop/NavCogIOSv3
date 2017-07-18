@@ -30,7 +30,7 @@
 //#import "SettingViewController.h"
 #import "ServerConfig.h"
 #import "NavDeviceTTS.h"
-#import "HLPLocationManager.h"
+#import <HLPLocationManager/HLPLocationManager.h>
 
 @interface ViewController () {
     HLPWebviewHelper *helper;

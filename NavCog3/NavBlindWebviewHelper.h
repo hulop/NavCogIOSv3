@@ -24,7 +24,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <HLPWebView/HLPWebView.h>
-#import "HLPLocation.h"
+#import <HLPLocationManager/HLPLocation.h>
 
 @interface NavBlindWebviewHelper : HLPWebviewHelper
 

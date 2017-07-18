@@ -21,7 +21,7 @@
  *******************************************************************************/
 
 #import "HLPGeoJSON.h"
-#import "HLPLocation.h"
+#import <HLPLocationManager/HLPLocation.h>
 #import "objc/runtime.h"
 
 #define PROPKEY_NODE_ID @"ノードID"

@@ -22,7 +22,7 @@
 
 #import <Foundation/Foundation.h>
 #import <Mantle/Mantle.h>
-#import "HLPLocation.h"
+#import <HLPLocationManager/HLPLocation.h>
 
 @interface HLPGeometry : MTLModel<MTLJSONSerializing, NSCoding>
 @property (nonatomic, readonly) NSString *type;

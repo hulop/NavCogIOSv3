@@ -22,7 +22,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import "HLPLocationManager.h"
+#import <HLPLocationManager/HLPLocationManager.h>
 
 #define LOG_REPLAY_PROGRESS @"log_replay_progress"
 

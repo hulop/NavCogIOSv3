@@ -1,6 +1,6 @@
 {
   "name": "boost",
- "version": "1.57.0",
+ "version": "1.61.0",
  "summary": "Boost provides free peer-reviewed portable C++ source libraries.",
  "homepage": "http://www.boost.org",
  "license": {
@@ -9,7 +9,7 @@
             },
  "authors": "Rene Rivera",
  "source": {
-             "http": "http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.gz"
+             "http": "http://sourceforge.net/projects/boost/files/boost/1.61.0/boost_1_61_0.tar.gz"
            },
  "platforms": {
                 "ios": "4.0",
@@ -121,23 +121,27 @@
                                     "boost/mpl/**/*.hpp",
                                     "boost/type_traits.hpp",
                                     "boost/type_traits/**/*.hpp",
-                                    "boost/accumulators/**/*.hpp"
+                                    "boost/accumulators/**/*.hpp",
+
+                                    "boost/predef.h",
+                                    "boost/predef/**/*.h",
+                                    "boost/lexical_cast.hpp",
+                                    "boost/lexical_cast/*.hpp",
+                                    "boost/lexical_cast/**/*.hpp",
+                                    "boost/atomic/*.hpp",
+                                    "boost/**/*.h",
+                                    "boost/**/*.hpp",
+                                    "boost/**/**/*.h",
+                                    "boost/**/**/*.hpp"
                                   ]
                },
                {
                  "name": "graph-includes",
                 "preserve_paths": [
-                  "boost/*.hpp","boost/*.h",
-                                    "boost/{algorithm,archive,bimap,bind,chrono,concept,config,container,date_time,detail,dynamic_bitset,exception,filesystem,format,function,functional,fusion,graph,integer,intrusive,io,iterator,math,move,mpi,mpl,multi_index,numeric,optional,parameter,pending,predef,preprocessor,property_map,property_tree,proto,python,random,range,ratio,regex,serialization,smart_ptr,spirit,system,test,thread,tr1,tuple,type_traits,typeof,units,unordered,utility,variant,xpressive}/**/*.{h,hpp}",
+                                    "boost/*.hpp",
+                                    "boost/{algorithm,archive,bimap,bind,chrono,concept,config,container,date_time,detail,dynamic_bitset,exception,filesystem,format,function,functional,fusion,graph,integer,intrusive,io,iterator,math,move,mpi,mpl,multi_index,numeric,optional,parameter,pending,preprocessor,property_map,property_tree,proto,python,random,range,ratio,regex,serialization,smart_ptr,spirit,system,test,thread,tr1,tuple,type_traits,typeof,units,unordered,utility,variant,xpressive}/**/*.hpp",
                                     "boost/xpressive/**/*.ipp"
                                   ]
-               },
-   {
-     "name":"all",
-     "preserve_paths": [
-       "boost/*.{hpp,h,ipp}",
-       "boost/**/*.{hpp,h,ipp}",
-       "boost/**/**/*.{hpp,h,ipp}"
-                        ]
-   }]
+               }
+             ]
 }

@@ -24,7 +24,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "HLPLocationManager.h"
+#import <HLPLocationManager/HLPLocationManager.h>
 
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, CBCentralManagerDelegate, HLPLocationManagerDelegate>

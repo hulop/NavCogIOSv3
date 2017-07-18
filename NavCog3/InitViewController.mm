@@ -22,11 +22,11 @@
 
 #import "InitViewController.h"
 #import "ConfigManager.h"
-#import "HLPLocationManager.h"
+#import <HLPLocationManager/HLPLocationManager.h>
 #import "NavUtil.h"
 #import "ServerConfig.h"
 #import "AuthManager.h"
-#import "HLPLocationManagerParameters.h"
+#import <HLPLocationManager/HLPLocationManagerParameters.h>
 
 @interface InitViewController ()
 

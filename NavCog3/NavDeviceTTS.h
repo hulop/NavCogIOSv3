@@ -22,7 +22,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-#import "HLPLocation.h"
+#import <HLPLocationManager/HLPLocation.h>
 
 #define SPEECH_SPEED @"speech_speed"
 

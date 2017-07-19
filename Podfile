@@ -20,7 +20,7 @@ target 'NavCogTool' do
   platform :osx, '10.10'
   pod 'FormatterKit', '1.8.2'
   pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
-#  pod 'HLPLocationManager', :path => '../HLPLocationManager'
+  pod 'HLPLocationManager', :path => '../HLPLocationManager'
 end
 
 target 'NavCogFingerPrint' do

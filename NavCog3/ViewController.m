@@ -31,6 +31,7 @@
 #import "ServerConfig.h"
 #import "NavDeviceTTS.h"
 #import <HLPLocationManager/HLPLocationManager.h>
+#import "NavCog3-Swift.h"
 
 @interface ViewController () {
     HLPWebviewHelper *helper;
@@ -93,7 +94,7 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiStateChanged:) name:WCUI_STATE_CHANGED_NOTIFICATION object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DialogManager.DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
 

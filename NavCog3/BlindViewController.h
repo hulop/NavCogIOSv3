@@ -28,7 +28,7 @@
 #import "NavPreviewer.h"
 #import "SettingViewController.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
-#import "NavCog3-Swift.h"
+#import <HLPDialog/HLPDialog-Swift.h>
 
 @interface BlindViewController : UIViewController <HLPWebviewHelperDelegate, NavNavigatorDelegate, NavCommanderDelegate, NavPreviewerDelegate, MCBrowserViewControllerDelegate, DialogViewDelegate>
 

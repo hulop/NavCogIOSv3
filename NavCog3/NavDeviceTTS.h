@@ -22,7 +22,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-#import <HLPLocationManager/HLPLocation.h>
+//#import <HLPLocationManager/HLPLocation.h>
 
 #define SPEECH_SPEED @"speech_speed"
 
@@ -44,7 +44,7 @@ typedef enum {
 @property SpeechSoundEffectType type;
 @property SpeechPriority priority;
 @property NSTimeInterval validBy;
-@property HLPLocation* location;
+//@property HLPLocation* location;
 @property double validRadius; // in meter
 @property (strong, nonatomic) void (^completionHandler)();
 @property NSTimeInterval issued;

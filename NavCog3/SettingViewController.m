@@ -26,7 +26,7 @@
 #import "ConfigManager.h"
 #import "LocationEvent.h"
 #import "NavDebugHelper.h"
-#import "NavCog3-Swift.h"
+#import <HLPDialog/HLPDialog-Swift.h>
 #import "NavDeviceTTS.h"
 #import "NavDataStore.h"
 #import "AuthManager.h"
@@ -110,7 +110,7 @@ static HLPSetting *advancedLabel, *advancedMenu;
     }
     [self updateView];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DialogManager.DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
 
     
     // Uncomment the following line to preserve selection between presentations.

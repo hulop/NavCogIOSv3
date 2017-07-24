@@ -23,7 +23,7 @@
 #import "DestinationTableViewController.h"
 #import "NavDataSource.h"
 #import "LocationEvent.h"
-#import "NavCog3-Swift.h"
+#import <HLPDialog/HLPDialog-Swift.h>
 
 @interface DestinationTableViewController ()
 
@@ -71,7 +71,7 @@
     
     [self.tableView reloadData];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DialogManager.DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -166,6 +166,7 @@
     if ([segue.destinationViewController isKindOfClass:DialogViewController.class]){
         DialogViewController* dView = (DialogViewController*)segue.destinationViewController;
         dView.root = _root;
+        dView.tts = nil;
     }
 }
 

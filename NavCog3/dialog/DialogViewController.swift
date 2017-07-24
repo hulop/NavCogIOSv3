@@ -24,7 +24,7 @@ import UIKit
 import RestKit
 import AVFoundation
 import ConversationV1
-
+import HLPDialog
 
 var standardError = FileHandle.standardError
 
@@ -50,7 +50,7 @@ protocol ControlViewDelegate: class {
     func actionPerformedByVoiceOver()
 }
 
-class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalContextDelegate, ControlViewDelegate, DialogViewDelegate{
+class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalContextDelegate, ControlViewDelegate, DialogViewDelegate ,DialogManagerDelegate {
     deinit {
         let notificationCenter = NotificationCenter.default
         notificationCenter.removeObserver(self)
@@ -133,6 +133,12 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         nc.addObserver(self, selector: #selector(pauseConversation), name: NSNotification.Name(rawValue: "PauseConversation"), object: nil)
         nc.addObserver(self, selector: #selector(requestDialogEnd), name: NSNotification.Name(rawValue: REQUEST_DIALOG_END), object: nil)
         nc.addObserver(self, selector: #selector(requestDialogAction), name: NSNotification.Name(rawValue: REQUEST_DIALOG_ACTION), object: nil)
+        
+        nc.addObserver(self, selector: #selector(serverConfigChanged(_:)), name: NSNotification.Name(rawValue: SERVER_CONFIG_CHANGED_NOTIFICATION), object: nil)
+        nc.addObserver(self, selector: #selector(locationChanged(_:)), name: NSNotification.Name(rawValue: NAV_LOCATION_CHANGED_NOTIFICATION), object: nil)
+        nc.addObserver(self, selector: #selector(buildingChanged(_:)), name: NSNotification.Name(rawValue: BUILDING_CHANGED_NOTIFICATION), object: nil)
+        nc.addObserver(self, selector: #selector(RestartConversation(_:)), name:NSNotification.Name(rawValue: "RestartConversation"), object: nil)
+        nc.addObserver(self, selector: #selector(ResetConversation(_:)), name:NSNotification.Name(rawValue: "ResetConversation"), object: nil)
     }
     
     internal func updateView() {
@@ -551,8 +557,8 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     var inflight:Timer? = nil
     var agent_name = ""
-    var lastresponse:MessageResponse? = nil
-    internal func newresponse(_ orgres: MessageResponse?){
+    var lastresponse:HLPDialog.MessageResponse? = nil
+    internal func newresponse(_ orgres: HLPDialog.MessageResponse?){
         conv_context_local.welcome_shown()
         DispatchQueue.main.async(execute: { [weak self] in
             if let weakself = self {
@@ -562,7 +568,7 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
         })
 
         self.removeImageView()
-        var resobj:MessageResponse? = orgres
+        var resobj:HLPDialog.MessageResponse? = orgres
         if resobj == nil{
             resobj = self.lastresponse
         }else{
@@ -918,6 +924,56 @@ class DialogViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 weakself.timeoutCustom()
             }
         })
+    }
+    
+    func serverConfigChanged(_ note:Notification) {
+        
+        let dm = DialogManager.sharedManager()
+        dm.available = false
+        // check serverconfig
+        if let config = note.userInfo {
+            //let config:NSDictionary = note.userInfo! // config json == NavDataStore.sharedDataStore().serverConfig()
+            
+            let server = config["conv_server"]
+            if let _server = server as? String {
+                let key = config["conv_api_key"]
+                if let _key = key as? String {
+                    dm.checkServerConfig(convServer:_server, apiKey:_key)
+                }
+            }
+        }
+    }
+    
+    func locationChanged (_ note:Notification) {
+        if let object = note.userInfo {
+            if let current = object["current"] as? HLPLocation {
+                DialogManager.sharedManager().changeLocation(lat:current.lat, lng:current.lng, floor:current.floor)
+            }
+        }
+    }
+    
+    func buildingChanged (_ note:Notification) {
+        //if let object:NSDictionary = (note.object as! NSDictionary) {
+        let dm = DialogManager.sharedManager()
+        
+        if let object:NSDictionary = note.userInfo as NSDictionary? {
+            dm.changeBuilding(Optional.none!)
+            if let building:String = object["building"] as? String {
+                dm.changeBuilding(building)
+            }
+        }
+    }
+    
+    func RestartConversation (_ note:Notification) {
+        DialogManager.sharedManager().activate()
+    }
+    
+    func ResetConversation (_ note:Notification) {
+        DialogManager.sharedManager().deactivate()
+    }
+    
+    func dialogAvailabilityChanged(withOptions options: [String: Any]) {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: DIALOG_AVAILABILITY_CHANGED_NOTIFICATION), object:self, userInfo:options)
     }
 }
 

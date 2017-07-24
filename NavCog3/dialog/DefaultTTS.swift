@@ -23,12 +23,7 @@
 import Foundation
 import AVFoundation
 import UIKit
-
-protocol TTSProtocol {
-    func speak(_ text:String?, callback: @escaping (Void)->Void)
-    func stop()
-    func stop(_ immediate: Bool)
-}
+import HLPDialog
 
 class DefaultTTS: TTSProtocol {
     func speak(_ text: String?, callback: @escaping (Void) -> Void) {
@@ -39,5 +34,11 @@ class DefaultTTS: TTSProtocol {
     }
     func stop(_ immediate: Bool) {
         NavDeviceTTS.shared().stop(immediate)
+    }
+    func vibrate() {
+        NavSound.sharedInstance().vibrate(nil)
+    }
+    func playVoiceRecoStart() {
+        NavSound.sharedInstance().playVoiceRecoStart()
     }
 }

@@ -16,17 +16,7 @@
 		7E17F1A31D9A226100DB1F34 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A51D9A226100DB1F34 /* Localizable.strings */; };
 		7E1F9F2A1DEEB1D3003E1B23 /* NavDebugHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */; };
 		7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */; };
-		7E1F9F3B1DF01AA5003E1B23 /* ConversationEx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F2F1DF01AA5003E1B23 /* ConversationEx.swift */; };
-		7E1F9F3C1DF01AA5003E1B23 /* CustomArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F301DF01AA5003E1B23 /* CustomArrow.swift */; };
-		7E1F9F3D1DF01AA5003E1B23 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F311DF01AA5003E1B23 /* CustomTableViewCell.swift */; };
-		7E1F9F3E1DF01AA5003E1B23 /* LocalContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F321DF01AA5003E1B23 /* LocalContext.swift */; };
-		7E1F9F3F1DF01AA5003E1B23 /* AnimLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F341DF01AA5003E1B23 /* AnimLayer.swift */; };
-		7E1F9F401DF01AA5003E1B23 /* DialogViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F351DF01AA5003E1B23 /* DialogViewHelper.swift */; };
-		7E1F9F411DF01AA5003E1B23 /* icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E1F9F361DF01AA5003E1B23 /* icons.xcassets */; };
-		7E1F9F431DF01AA5003E1B23 /* STTHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F381DF01AA5003E1B23 /* STTHelper.swift */; };
-		7E1F9F441DF01AA5003E1B23 /* TextToSpeech.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F391DF01AA5003E1B23 /* TextToSpeech.swift */; };
 		7E1F9F451DF01AA5003E1B23 /* DialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */; };
-		7E1F9F5F1DF14E6F003E1B23 /* DialogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */; };
 		7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E28479E1E024112006B1FB8 /* exercise-data.json */; };
 		7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */; };
 		7E308BDB1DAF147600E525F6 /* BlindView.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
@@ -148,6 +138,9 @@
 		7EF7F7B41DD1BC2B000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
 		7EF7F7B51DD1BC2B000A625A /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7EF7F7B71DD1C138000A625A /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
+		A9CD95B71F21EB2300A00D5D /* DefaultTTS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CD95B61F21EB2300A00D5D /* DefaultTTS.swift */; };
+		A9D62D5D1F25A699004625F7 /* HLPDialog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D62D5C1F25A699004625F7 /* HLPDialog.framework */; };
+		A9D62D5E1F25A699004625F7 /* HLPDialog.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A9D62D5C1F25A699004625F7 /* HLPDialog.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -162,6 +155,17 @@
 				7EC20B5C1DDAC9C900818E33 /* BlindView.stringsdict in CopyFiles */,
 				7EC20B5D1DDAC9C900818E33 /* Localizable.strings in CopyFiles */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9D62D5F1F25A699004625F7 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A9D62D5E1F25A699004625F7 /* HLPDialog.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -185,17 +189,7 @@
 		7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavDebugHelper.m; sourceTree = "<group>"; };
 		7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		7E1F9F2E1DF01AA4003E1B23 /* NavCog3-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NavCog3-Bridging-Header.h"; sourceTree = "<group>"; };
-		7E1F9F2F1DF01AA5003E1B23 /* ConversationEx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConversationEx.swift; path = dialog/ConversationEx.swift; sourceTree = "<group>"; };
-		7E1F9F301DF01AA5003E1B23 /* CustomArrow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomArrow.swift; path = dialog/CustomArrow.swift; sourceTree = "<group>"; };
-		7E1F9F311DF01AA5003E1B23 /* CustomTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomTableViewCell.swift; path = dialog/CustomTableViewCell.swift; sourceTree = "<group>"; };
-		7E1F9F321DF01AA5003E1B23 /* LocalContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalContext.swift; path = dialog/LocalContext.swift; sourceTree = "<group>"; };
-		7E1F9F341DF01AA5003E1B23 /* AnimLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimLayer.swift; sourceTree = "<group>"; };
-		7E1F9F351DF01AA5003E1B23 /* DialogViewHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogViewHelper.swift; sourceTree = "<group>"; };
-		7E1F9F361DF01AA5003E1B23 /* icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = icons.xcassets; sourceTree = "<group>"; };
-		7E1F9F381DF01AA5003E1B23 /* STTHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STTHelper.swift; sourceTree = "<group>"; };
-		7E1F9F391DF01AA5003E1B23 /* TextToSpeech.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextToSpeech.swift; sourceTree = "<group>"; };
 		7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogViewController.swift; path = dialog/DialogViewController.swift; sourceTree = "<group>"; };
-		7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogManager.swift; path = dialog/DialogManager.swift; sourceTree = "<group>"; };
 		7E28479E1E024112006B1FB8 /* exercise-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "exercise-data.json"; path = "model/exercise-data.json"; sourceTree = "<group>"; };
 		7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
@@ -394,6 +388,8 @@
 		A93ED2751ED2DBB000B75760 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A93ED2771ED2DBB800B75760 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A93ED2801ED2DE3200B75760 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		A9CD95B61F21EB2300A00D5D /* DefaultTTS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultTTS.swift; path = NavCog3/dialog/DefaultTTS.swift; sourceTree = SOURCE_ROOT; };
+		A9D62D5C1F25A699004625F7 /* HLPDialog.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = HLPDialog.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B70415D38942E3A3C101A1CA /* Pods-NavCogFingerPrint.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFingerPrint.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFingerPrint/Pods-NavCogFingerPrint.debug.xcconfig"; sourceTree = "<group>"; };
 		EAE46DDE56FCB7B0227EAEBC /* Pods-NavCog3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.release.xcconfig"; sourceTree = "<group>"; };
 		FD03A132F682A7BCE31C5B35 /* Pods-NavCog3.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.debug.xcconfig"; sourceTree = "<group>"; };
@@ -416,6 +412,7 @@
 				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EF45E491E3F42AB00208042 /* ConversationV1.framework in Frameworks */,
 				7EF45E4C1E3F42AB00208042 /* RestKit.framework in Frameworks */,
+				A9D62D5D1F25A699004625F7 /* HLPDialog.framework in Frameworks */,
 				7EF45E3D1E3F426F00208042 /* Security.framework in Frameworks */,
 				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
@@ -478,29 +475,11 @@
 		7E1F9F2D1DF0190F003E1B23 /* dialog */ = {
 			isa = PBXGroup;
 			children = (
-				7E1F9F2F1DF01AA5003E1B23 /* ConversationEx.swift */,
-				7E1F9F301DF01AA5003E1B23 /* CustomArrow.swift */,
-				7E1F9F311DF01AA5003E1B23 /* CustomTableViewCell.swift */,
-				7E1F9F321DF01AA5003E1B23 /* LocalContext.swift */,
-				7E1F9F331DF01AA5003E1B23 /* stthelper */,
 				7E1F9F2E1DF01AA4003E1B23 /* NavCog3-Bridging-Header.h */,
-				7E1F9F5E1DF14E6F003E1B23 /* DialogManager.swift */,
+				A9CD95B61F21EB2300A00D5D /* DefaultTTS.swift */,
 				7E1F9F3A1DF01AA5003E1B23 /* DialogViewController.swift */,
 			);
 			name = dialog;
-			sourceTree = "<group>";
-		};
-		7E1F9F331DF01AA5003E1B23 /* stthelper */ = {
-			isa = PBXGroup;
-			children = (
-				7E1F9F341DF01AA5003E1B23 /* AnimLayer.swift */,
-				7E1F9F351DF01AA5003E1B23 /* DialogViewHelper.swift */,
-				7E1F9F361DF01AA5003E1B23 /* icons.xcassets */,
-				7E1F9F381DF01AA5003E1B23 /* STTHelper.swift */,
-				7E1F9F391DF01AA5003E1B23 /* TextToSpeech.swift */,
-			);
-			name = stthelper;
-			path = dialog/stthelper;
 			sourceTree = "<group>";
 		};
 		7E28479B1E02409F006B1FB8 /* exercise */ = {
@@ -818,6 +797,7 @@
 		7EDEDC131D1E0C6800AC111A = {
 			isa = PBXGroup;
 			children = (
+				A9D62D5C1F25A699004625F7 /* HLPDialog.framework */,
 				7EDEDC1E1D1E0C6800AC111A /* NavCog3 */,
 				7EF7F79E1DD178F7000A625A /* NavCogTool */,
 				7E30F9AB1E813FFC00D542E5 /* NavCogFingerPrint */,
@@ -914,6 +894,7 @@
 				3AD4AA683ED6D64EDE1BF2E8 /* [CP] Embed Pods Frameworks */,
 				5F71D1C14A5EA1F4F8125B8B /* [CP] Copy Pods Resources */,
 				7EF45E4D1E3F42BD00208042 /* ShellScript */,
+				A9D62D5F1F25A699004625F7 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1041,7 +1022,6 @@
 				7E9238EB1D5189F100875766 /* HLPSettingViewSliderCell.xib in Resources */,
 				7E9238EC1D5189F100875766 /* HLPSettingViewSubtitleCell.xib in Resources */,
 				7E308BDB1DAF147600E525F6 /* BlindView.stringsdict in Resources */,
-				7E1F9F411DF01AA5003E1B23 /* icons.xcassets in Resources */,
 				7E96D9271DAC916C00D57C8C /* BlindView.strings in Resources */,
 				7E9238ED1D5189F100875766 /* HLPSettingViewSwitchCell.xib in Resources */,
 				7EDEDC2C1D1E0C6800AC111A /* Assets.xcassets in Resources */,
@@ -1241,13 +1221,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */,
-				7E1F9F3B1DF01AA5003E1B23 /* ConversationEx.swift in Sources */,
 				7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */,
+				A9CD95B71F21EB2300A00D5D /* DefaultTTS.swift in Sources */,
 				7EF45E321E3F1E3700208042 /* AgreementViewController.m in Sources */,
 				7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */,
 				7E683DF61E42DE8100D04037 /* StarRatingView.m in Sources */,
 				7EF45E341E3F1E3700208042 /* ServerSelectionViewController.m in Sources */,
-				7E1F9F3F1DF01AA5003E1B23 /* AnimLayer.swift in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,
 				7EAE6F0D1D2642D600614C35 /* NavBlindWebviewHelper.m in Sources */,
 				7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */,
@@ -1259,21 +1238,14 @@
 				7EDEDC271D1E0C6800AC111A /* ViewController.m in Sources */,
 				7E433DCF1D6E846300C6C993 /* NavDeviceTTS.m in Sources */,
 				7E6E42E91D90FD1B006B6899 /* BlindViewController.m in Sources */,
-				7E1F9F5F1DF14E6F003E1B23 /* DialogManager.swift in Sources */,
 				7EF7F7A81DD17D4A000A625A /* NavCommander.m in Sources */,
-				7E1F9F401DF01AA5003E1B23 /* DialogViewHelper.swift in Sources */,
 				7EDEDC241D1E0C6800AC111A /* AppDelegate.mm in Sources */,
-				7E1F9F3E1DF01AA5003E1B23 /* LocalContext.swift in Sources */,
 				7E5150A41D8BF32800ED25FB /* NavNavigator.m in Sources */,
 				7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */,
 				7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */,
 				7E1F9F451DF01AA5003E1B23 /* DialogViewController.swift in Sources */,
-				7E1F9F3C1DF01AA5003E1B23 /* CustomArrow.swift in Sources */,
 				7EF45E351E3F1E3700208042 /* WelcomViewController.m in Sources */,
-				7E1F9F431DF01AA5003E1B23 /* STTHelper.swift in Sources */,
-				7E1F9F3D1DF01AA5003E1B23 /* CustomTableViewCell.swift in Sources */,
 				7E9238E81D5189F100875766 /* HLPSettingTableView.m in Sources */,
-				7E1F9F441DF01AA5003E1B23 /* TextToSpeech.swift in Sources */,
 				7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */,
 				7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */,
 				7E9238E61D5189F100875766 /* HLPSetting.m in Sources */,

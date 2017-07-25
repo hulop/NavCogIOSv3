@@ -138,7 +138,7 @@
 		7EF7F7B41DD1BC2B000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
 		7EF7F7B51DD1BC2B000A625A /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7EF7F7B71DD1C138000A625A /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
-		A9CD95B71F21EB2300A00D5D /* DefaultTTS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CD95B61F21EB2300A00D5D /* DefaultTTS.swift */; };
+		A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A923DA091F26DBF60002E3CB /* DefaultTTS.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -186,7 +186,6 @@
 		7E1F9F281DEEB1D3003E1B23 /* NavDebugHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavDebugHelper.h; sourceTree = "<group>"; };
 		7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavDebugHelper.m; sourceTree = "<group>"; };
 		7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
-		7E1F9F2E1DF01AA4003E1B23 /* NavCog3-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NavCog3-Bridging-Header.h"; sourceTree = "<group>"; };
 		7E28479E1E024112006B1FB8 /* exercise-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "exercise-data.json"; path = "model/exercise-data.json"; sourceTree = "<group>"; };
 		7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
@@ -381,11 +380,12 @@
 		7EF7F7AD1DD1949C000A625A /* NavDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavDataSource.m; path = blind/NavDataSource.m; sourceTree = "<group>"; };
 		8DDC99F4D9772DC8C3D1284B /* Pods-NavCogTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.release.xcconfig"; sourceTree = "<group>"; };
 		A8BCABBA91517640CB17D3D9 /* libPods-NavCogTool.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogTool.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A923DA081F26DBF60002E3CB /* DefaultTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultTTS.h; path = dialog/DefaultTTS.h; sourceTree = "<group>"; };
+		A923DA091F26DBF60002E3CB /* DefaultTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DefaultTTS.m; path = dialog/DefaultTTS.m; sourceTree = "<group>"; };
 		A93ED2731ED2DBA900B75760 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A93ED2751ED2DBB000B75760 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A93ED2771ED2DBB800B75760 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A93ED2801ED2DE3200B75760 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		A9CD95B61F21EB2300A00D5D /* DefaultTTS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultTTS.swift; path = NavCog3/dialog/DefaultTTS.swift; sourceTree = SOURCE_ROOT; };
 		B70415D38942E3A3C101A1CA /* Pods-NavCogFingerPrint.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFingerPrint.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFingerPrint/Pods-NavCogFingerPrint.debug.xcconfig"; sourceTree = "<group>"; };
 		EAE46DDE56FCB7B0227EAEBC /* Pods-NavCog3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.release.xcconfig"; sourceTree = "<group>"; };
 		FD03A132F682A7BCE31C5B35 /* Pods-NavCog3.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.debug.xcconfig"; sourceTree = "<group>"; };
@@ -472,8 +472,8 @@
 		7E1F9F2D1DF0190F003E1B23 /* dialog */ = {
 			isa = PBXGroup;
 			children = (
-				7E1F9F2E1DF01AA4003E1B23 /* NavCog3-Bridging-Header.h */,
-				A9CD95B61F21EB2300A00D5D /* DefaultTTS.swift */,
+				A923DA081F26DBF60002E3CB /* DefaultTTS.h */,
+				A923DA091F26DBF60002E3CB /* DefaultTTS.m */,
 			);
 			name = dialog;
 			sourceTree = "<group>";
@@ -1217,7 +1217,6 @@
 			files = (
 				7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */,
 				7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */,
-				A9CD95B71F21EB2300A00D5D /* DefaultTTS.swift in Sources */,
 				7EF45E321E3F1E3700208042 /* AgreementViewController.m in Sources */,
 				7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */,
 				7E683DF61E42DE8100D04037 /* StarRatingView.m in Sources */,
@@ -1242,6 +1241,7 @@
 				7E9238E81D5189F100875766 /* HLPSettingTableView.m in Sources */,
 				7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */,
 				7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */,
+				A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */,
 				7E9238E61D5189F100875766 /* HLPSetting.m in Sources */,
 				7E683DF51E42DE8100D04037 /* RatingViewController.m in Sources */,
 				7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */,

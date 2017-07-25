@@ -20,13 +20,37 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-
+#import "DefaultTTS.h"
+#import <AVFoundation/AVFoundation.h>
+#import <UIKit/UIKit.h>
 #import "NavDeviceTTS.h"
 #import "NavSound.h"
 
-/*
-#import "NavDataStore.h"
-#import "LocationEvent.h"
-#import "ServerConfig.h"
-#import "AuthManager.h"
-*/
+@implementation DefaultTTS
+
+- (void)speak:(NSString * _Nullable)text callback:(void (^ _Nonnull)(void))callback
+{
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"selfspeak": @YES, @"quickAnswer": @NO} completionHandler:callback];
+}
+
+- (void)stop
+{
+    [self stop:NO];
+}
+
+- (void)stop:(BOOL)immediate
+{
+    [[NavDeviceTTS sharedTTS] stop:immediate];
+}
+
+- (void)vibrate
+{
+    [[NavSound sharedInstance] vibrate:nil];
+}
+
+- (void)playVoiceRecoStart
+{
+    [[NavSound sharedInstance] playVoiceRecoStart];
+}
+
+@end

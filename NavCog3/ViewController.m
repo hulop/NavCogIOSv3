@@ -31,7 +31,7 @@
 #import "ServerConfig.h"
 #import "NavDeviceTTS.h"
 #import <HLPLocationManager/HLPLocationManager.h>
-#import "NavCog3-Swift.h"
+#import "DefaultTTS.h"
 
 @interface ViewController () {
     HLPWebviewHelper *helper;

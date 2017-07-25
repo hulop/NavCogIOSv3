@@ -20,25 +20,10 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-import Foundation
-import AVFoundation
-import UIKit
-import HLPDialog
+#import <Foundation/Foundation.h>
 
-class DefaultTTS: TTSProtocol {
-    func speak(_ text: String?, callback: @escaping (Void) -> Void) {
-        NavDeviceTTS.shared().speak(text, withOptions:["selfspeak":true,"quickAnswer":false], completionHandler: callback)
-    }
-    func stop() {
-        self.stop(false)
-    }
-    func stop(_ immediate: Bool) {
-        NavDeviceTTS.shared().stop(immediate)
-    }
-    func vibrate() {
-        NavSound.sharedInstance().vibrate(nil)
-    }
-    func playVoiceRecoStart() {
-        NavSound.sharedInstance().playVoiceRecoStart()
-    }
-}
+@import HLPDialog;
+
+@interface DefaultTTS: NSObject <TTSProtocol>
+
+@end

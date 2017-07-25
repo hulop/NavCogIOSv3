@@ -36,7 +36,7 @@
 
 #import "ServerConfig.h"
 #import "HLPLocationManager+Player.h"
-#import "NavCog3-Swift.h"
+#import "DefaultTTS.h"
 
 @import JavaScriptCore;
 @import CoreMotion;

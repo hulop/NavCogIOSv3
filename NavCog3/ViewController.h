@@ -24,7 +24,6 @@
 #import <HLPWebView/HLPWebView.h>
 // ???: HLPSetting.h:43:5: Expected identifier
 #import "SettingViewController.h"
-#import "DefaultTTS.h"
 #import <HLPDialog/HLPDialog-Swift.h>
 
 @interface ViewController : UIViewController <UIGestureRecognizerDelegate, HLPWebviewHelperDelegate, DialogViewDelegate>

@@ -24,6 +24,7 @@
 #import "NavDataSource.h"
 #import "LocationEvent.h"
 #import <HLPDialog/HLPDialog-Swift.h>
+#import "DefaultTTS.h"
 
 @interface DestinationTableViewController ()
 
@@ -166,7 +167,7 @@
     if ([segue.destinationViewController isKindOfClass:DialogViewController.class]){
         DialogViewController* dView = (DialogViewController*)segue.destinationViewController;
         dView.root = _root;
-        dView.tts = nil;
+        dView.tts = [DefaultTTS new];
     }
 }
 

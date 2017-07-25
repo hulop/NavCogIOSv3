@@ -1,2 +1,1 @@
-#github "watson-developer-cloud/swift-sdk" == 0.16.0
-git "file:///Users/daisuke/Desktop/kobayashi/HLPDialog"
+git "./../HLPDialog" "master"

@@ -14,7 +14,6 @@
 		7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7E17F19E1D9A225A00DB1F34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A01D9A225A00DB1F34 /* InfoPlist.strings */; };
 		7E17F1A31D9A226100DB1F34 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A51D9A226100DB1F34 /* Localizable.strings */; };
-		7E1BE48C1F25B78300FF17BD /* HLPDialog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */; };
 		7E1F9F2A1DEEB1D3003E1B23 /* NavDebugHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */; };
 		7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */; };
 		7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E28479E1E024112006B1FB8 /* exercise-data.json */; };
@@ -117,7 +116,6 @@
 		7EF45E351E3F1E3700208042 /* WelcomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */; };
 		7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E371E3F1E5600208042 /* ServerConfig.m */; };
 		7EF45E3B1E3F1E5600208042 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E391E3F1E5600208042 /* AuthManager.m */; };
-		7EF45E3D1E3F426F00208042 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E3C1E3F426F00208042 /* Security.framework */; };
 		7EF45E491E3F42AB00208042 /* ConversationV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E441E3F42AB00208042 /* ConversationV1.framework */; };
 		7EF45E4C1E3F42AB00208042 /* RestKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E471E3F42AB00208042 /* RestKit.framework */; };
 		7EF45E4F1E3F53FF00208042 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E4E1E3F53FF00208042 /* Security.framework */; };
@@ -127,7 +125,6 @@
 		7EF6FBB21DA4DD8200382F76 /* NavSound.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF6FBB11DA4DD8200382F76 /* NavSound.m */; };
 		7EF7F7721DCC1E08000A625A /* NavCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7711DCC1E08000A625A /* NavCoverView.m */; };
 		7EF7F7A01DD178F7000A625A /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F79F1DD178F7000A625A /* main.mm */; };
-		7EF7F7A51DD17A8D000A625A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF7F7A41DD17A8D000A625A /* Foundation.framework */; };
 		7EF7F7A81DD17D4A000A625A /* NavCommander.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7A71DD17D4A000A625A /* NavCommander.m */; };
 		7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
 		7EF7F7AE1DD1949C000A625A /* NavDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AD1DD1949C000A625A /* NavDataSource.m */; };
@@ -139,6 +136,7 @@
 		7EF7F7B51DD1BC2B000A625A /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7EF7F7B71DD1C138000A625A /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
 		A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A923DA091F26DBF60002E3CB /* DefaultTTS.m */; };
+		A9C94C321F283E1C00B60A46 /* HLPDialog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -153,16 +151,6 @@
 				7EC20B5C1DDAC9C900818E33 /* BlindView.stringsdict in CopyFiles */,
 				7EC20B5D1DDAC9C900818E33 /* Localizable.strings in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A9D62D5F1F25A699004625F7 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -355,11 +343,7 @@
 		7EF45E371E3F1E5600208042 /* ServerConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerConfig.m; sourceTree = "<group>"; };
 		7EF45E381E3F1E5600208042 /* AuthManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthManager.h; sourceTree = "<group>"; };
 		7EF45E391E3F1E5600208042 /* AuthManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthManager.m; sourceTree = "<group>"; };
-		7EF45E3C1E3F426F00208042 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		7EF45E431E3F42AB00208042 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		7EF45E441E3F42AB00208042 /* ConversationV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ConversationV1.framework; path = Carthage/Build/iOS/ConversationV1.framework; sourceTree = "<group>"; };
-		7EF45E451E3F42AB00208042 /* DialogV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DialogV1.framework; path = Carthage/Build/iOS/DialogV1.framework; sourceTree = "<group>"; };
-		7EF45E461E3F42AB00208042 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/iOS/Freddy.framework; sourceTree = "<group>"; };
 		7EF45E471E3F42AB00208042 /* RestKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RestKit.framework; path = Carthage/Build/iOS/RestKit.framework; sourceTree = "<group>"; };
 		7EF45E4E1E3F53FF00208042 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
 		7EF45E531E3F58D200208042 /* dev.hashfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dev.hashfile; sourceTree = "<group>"; };
@@ -371,7 +355,6 @@
 		7EF7F7711DCC1E08000A625A /* NavCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavCoverView.m; path = blind/NavCoverView.m; sourceTree = "<group>"; };
 		7EF7F79D1DD178F7000A625A /* NavCogTool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NavCogTool; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EF7F79F1DD178F7000A625A /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
-		7EF7F7A41DD17A8D000A625A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		7EF7F7A61DD17D4A000A625A /* NavCommander.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavCommander.h; path = blind/NavCommander.h; sourceTree = "<group>"; };
 		7EF7F7A71DD17D4A000A625A /* NavCommander.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavCommander.m; path = blind/NavCommander.m; sourceTree = "<group>"; };
 		7EF7F7A91DD189B0000A625A /* NavPreviewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavPreviewer.h; path = blind/NavPreviewer.h; sourceTree = "<group>"; };
@@ -405,13 +388,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E1BE48C1F25B78300FF17BD /* HLPDialog.framework in Frameworks */,
-				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EF45E491E3F42AB00208042 /* ConversationV1.framework in Frameworks */,
-				7EF45E4C1E3F42AB00208042 /* RestKit.framework in Frameworks */,
-				7EF45E3D1E3F426F00208042 /* Security.framework in Frameworks */,
-				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
+				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
+				A9C94C321F283E1C00B60A46 /* HLPDialog.framework in Frameworks */,
+				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
+				7EF45E4C1E3F42AB00208042 /* RestKit.framework in Frameworks */,
 				12CE60FFF66333BF27326795 /* libPods-NavCog3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -421,7 +403,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7EF45E4F1E3F53FF00208042 /* Security.framework in Frameworks */,
-				7EF7F7A51DD17A8D000A625A /* Foundation.framework in Frameworks */,
 				4D5913145F8F9F8919F39900 /* libPods-NavCogTool.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -432,23 +413,18 @@
 		0F5EA397BCF0C5EEF08F5111 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */,
-				A93ED2801ED2DE3200B75760 /* MapKit.framework */,
 				A93ED2771ED2DBB800B75760 /* AVFoundation.framework */,
-				A93ED2751ED2DBB000B75760 /* Foundation.framework */,
-				A93ED2731ED2DBA900B75760 /* UIKit.framework */,
-				7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */,
-				7EF45E4E1E3F53FF00208042 /* Security.framework */,
-				7EF45E431E3F42AB00208042 /* Alamofire.framework */,
 				7EF45E441E3F42AB00208042 /* ConversationV1.framework */,
-				7EF45E451E3F42AB00208042 /* DialogV1.framework */,
-				7EF45E461E3F42AB00208042 /* Freddy.framework */,
-				7EF45E471E3F42AB00208042 /* RestKit.framework */,
-				7EF45E3C1E3F426F00208042 /* Security.framework */,
-				7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */,
-				7EF7F7A41DD17A8D000A625A /* Foundation.framework */,
-				7E5150EA1D8D75C400ED25FB /* Mantle.framework */,
+				7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */,
 				7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */,
+				A93ED2751ED2DBB000B75760 /* Foundation.framework */,
+				7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */,
+				7E5150EA1D8D75C400ED25FB /* Mantle.framework */,
+				A93ED2801ED2DE3200B75760 /* MapKit.framework */,
+				7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */,
+				7EF45E471E3F42AB00208042 /* RestKit.framework */,
+				7EF45E4E1E3F53FF00208042 /* Security.framework */,
+				A93ED2731ED2DBA900B75760 /* UIKit.framework */,
 				77240D9B05BCD8D34D286665 /* libPods-NavCog3.a */,
 				A8BCABBA91517640CB17D3D9 /* libPods-NavCogTool.a */,
 				1300F8739DF4323F5D1B0435 /* libPods-NavCogFingerPrint.a */,
@@ -889,7 +865,6 @@
 				3AD4AA683ED6D64EDE1BF2E8 /* [CP] Embed Pods Frameworks */,
 				5F71D1C14A5EA1F4F8125B8B /* [CP] Copy Pods Resources */,
 				7EF45E4D1E3F42BD00208042 /* ShellScript */,
-				A9D62D5F1F25A699004625F7 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1131,6 +1106,7 @@
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/ConversationV1.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RestKit.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/HLPDialog.framework",
 			);
 			outputPaths = (
 			);
@@ -1546,6 +1522,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FD03A132F682A7BCE31C5B35 /* Pods-NavCog3.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1587,6 +1564,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EAE46DDE56FCB7B0227EAEBC /* Pods-NavCog3.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";

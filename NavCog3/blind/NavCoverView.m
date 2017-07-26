@@ -23,7 +23,7 @@
 #import "NavCoverView.h"
 #import "LocationEvent.h"
 #import "NavDeviceTTS.h"
-#import <HLPDialog/HLPDialog-Swift.h>
+#import <HLPDialog/HLPDialog.h>
 
 
 @implementation NavAnnounceItem

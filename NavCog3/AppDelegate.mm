@@ -29,7 +29,7 @@
 #import "NavDeviceTTS.h"
 #import "NavSound.h"
 #import <Speech/Speech.h> // for Swift header
-#import <HLPDialog/HLPDialog-Swift.h>
+#import <HLPDialog/HLPDialog.h>
 #import <AVFoundation/AVFoundation.h>
 
 @interface AppDelegate ()

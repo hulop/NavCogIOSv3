@@ -35,17 +35,21 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (id)copyWithZone:(NSZone*)zone
 {
-    HLPPreviewEvent *temp = [[[self class] allocWithZone:zone] initWithLink:_link Location:_location Orientation:_orientation];
+    HLPPreviewEvent *temp = [[[self class] allocWithZone:zone] initWithLink:_link
+                                                                   Location:_location
+                                                                Orientation:_orientation
+                                                                    onRoute:_routeLink];
     [temp setDistanceMoved:_distanceMoved];
     [temp setPrev:_prev];
     return temp;
 }
 
-- (instancetype)initWithLink:(HLPLink *)link Location:(HLPLocation*)location Orientation:(double)orientation
+- (instancetype)initWithLink:(HLPLink *)link Location:(HLPLocation*)location Orientation:(double)orientation onRoute:(HLPLink*)routeLink
 {
     self = [super init];
     _link = link;
     _orientation = orientation;
+    _routeLink = routeLink;
     [self setLocation:location];
 
     return self;
@@ -71,10 +75,14 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     
     NSArray *links = [self intersectionLinks];
     
-    HLPLink *temp = nil;
+    HLPLink *nextLink = nil;
+    HLPLink *nextRouteLink = nil;
     double min = DBL_MAX;
+    double min2 = DBL_MAX;
     BOOL isInitial = isnan(_orientation);
     if (isInitial) _orientation = 0;
+    
+    // find possible next link and possible next route link
     for(HLPLink *l in links) {
         double d = 0;
         if (l.sourceNode == self.target) {
@@ -85,13 +93,21 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         }
         if (d < min) {
             min = d;
-            temp = l;
+            nextLink = l;
+        }
+        // special for elevator
+        if ([nds isElevatorNode:self.targetNode]) {
+            d = 0;
+        }
+        if (d < min2 && [nds isOnRoute:l._id]) {
+            min2 = d;
+            nextRouteLink = [nds routeLinkById:l._id];
         }
     }
     if (isInitial) _orientation = min;
     
     if (min < 20) {
-        _link = temp;
+        _link = nextLink;
         if (_link.sourceNode == self.target) {
             _orientation = _link.initialBearingFromSource;
         }
@@ -105,6 +121,37 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         }
     }
     // otherwise keep previous link
+    
+    _routeLink = nextRouteLink;
+}
+
+- (BOOL) isOnRoute
+{
+    if (self.target == nil) {
+        return NO;
+    }
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    
+    if ([nds isElevatorNode:self.targetNode]) {
+        return [nds hasRoute] && [nds isOnRoute:self.targetNode._id];
+    } else {
+        return [nds hasRoute] && _link && _routeLink;
+    }
+}
+
+- (BOOL) isGoingToBeOffRoute
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    
+    return [nds hasRoute] && _link && _routeLink && ![_link._id isEqualToString:_routeLink._id];
+}
+
+- (BOOL)isGoingBackward
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    
+    return [nds hasRoute] && _link && _routeLink && [_link._id isEqualToString:_routeLink._id] &&
+    _orientation == _routeLink.initialBearingFromTarget;
 }
 
 - (HLPLocation*)location
@@ -151,7 +198,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         if (link.direction == DIRECTION_TYPE_TARGET_TO_SOURCE) {
             return (link.targetNode == node);
         }
-        return !link.isLeaf;
+        return link.isLeaf == NO || link.length >= 3;
     }]];
 }
 
@@ -217,7 +264,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         if (temp.stepTarget) {
             distance += [temp distanceToStepTarget];
             [temp setLocation:temp.stepTargetLocation];
-            if (temp.targetPOIs || temp.targetIntersection) {
+            if (temp.targetPOIs || temp.targetIntersection || temp.isGoingToBeOffRoute) {
                 break;
             }
         } else {
@@ -477,11 +524,6 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     return current;
 }
 
-- (BOOL)isRouteMode
-{
-    return route != nil;
-}
-
 - (void)startAt:(HLPLocation *)loc
 {
     nds = [NavDataStore sharedDataStore];
@@ -490,13 +532,19 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     //find nearest link
     double min = DBL_MAX;
     HLPLink *minLink = nil;
+    HLPLink *routeLink = nil;
     double ori = NAN;
-    if (self.isRouteMode) {
-        HLPLink *first = route[0];
+    
+    // with route
+    if ([nds hasRoute]) {
+        HLPLink *first = [nds firstRouteLink];
         // route HLPLink is different instance from linksMap so need to get by link id
+        routeLink = first;
         minLink = nds.linksMap[first._id];
         loc = first.sourceNode.location;
         ori = first.initialBearingFromSource;
+        
+    // without route
     } else {
         for(NSObject *key in nds.linksMap) {
             HLPLink *link = nds.linksMap[key];
@@ -519,7 +567,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }
 
     if (minLink) {
-        current = [[HLPPreviewEvent alloc] initWithLink:minLink Location:loc Orientation:NAN];
+        current = [[HLPPreviewEvent alloc] initWithLink:minLink Location:loc Orientation:ori onRoute:routeLink];
     } else {
         NSLog(@"no link found");
         //[_delegate errorWithMessage:@"closest link is not found"];

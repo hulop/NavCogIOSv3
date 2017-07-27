@@ -269,6 +269,7 @@
         self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
         self.previewButton.enabled = ((!useDest || nds.to._id != nil) && nds.from._id != nil && actionEnabled);
         
+        self.routeOptionsButton.enabled = (useDest && actionEnabled);
         
         [self.fromButton setTitle:nds.from.name forState:UIControlStateNormal];
         

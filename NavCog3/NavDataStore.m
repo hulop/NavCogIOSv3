@@ -85,7 +85,7 @@
             _landmark = [aDecoder decodeObjectForKey:@"landmark"];
             break;
         case NavDestinationTypeLocation:
-            _location = [aDecoder decodeObjectForKey:@"location"];
+            //_location = [aDecoder decodeObjectForKey:@"location"];
             break;
         default:
             break;
@@ -97,7 +97,7 @@
 {
     self = [super init];
     _type = NavDestinationTypeLocation;
-    _location = location;
+    //_location = location;
     return self;
 }
 
@@ -701,6 +701,7 @@ static NavDataStore* instance_ = nil;
                 }
                 
                 [self analyzeFeatures:featuresCache];
+                [self updateRoute];
                 
                 if (complete) {
                     complete();
@@ -711,6 +712,22 @@ static NavDataStore* instance_ = nil;
         }];
     }];
     
+}
+
+- (void) updateRoute
+{
+    [routeCache enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:HLPLink.class]) {
+            [obj updateWithNodesMap:_nodesMap];
+        }
+    }];
+    
+    [routeCache enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:HLPLink.class]) {
+            HLPLink *link = (HLPLink*)obj;
+            link.escalatorFlags = [_linksMap[link._id] escalatorFlags];
+        }
+    }];
 }
 
 // attribute names of hokoukukan network data in Japanese
@@ -966,6 +983,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             if (!ent.node) { // special door tag
                 continue;
             }
+            //NSLog(@"Facility: %@ %@", ent._id, ent.facility.name);
             
             BOOL isLeaf = ent.node.isLeaf;
             NSMutableDictionary *opt = [isLeaf?@{@"onlyEnd":@(YES)}:@{} mutableCopy];
@@ -983,6 +1001,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
                     linkPoiMap[nearestLink._id] = linkPois;
                 }
                 [linkPois addObject:ent];
+                //NSLog(@"%@", nearestLink._id);
                 //break;
             }
         }
@@ -1362,6 +1381,74 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
         }
     }
     return NO;
+}
+
+
+- (BOOL)hasRoute
+{
+    return self.route != nil && [self.route count] >= 3;
+}
+
+- (BOOL)isOnRoute:(NSString *)objID
+{
+    if (self.route == nil) {
+        return NO;
+    }
+    for(HLPObject *o in self.route) {
+        if ([o._id isEqualToString:objID]) {
+            return YES;
+        }
+        if ([o isKindOfClass:HLPLink.class]) {
+            HLPLink *l = (HLPLink*)o;
+            if ([l.sourceNodeID isEqualToString:objID] || [l.targetNodeID isEqualToString:objID]){
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
+- (BOOL)isOnDestination:(NSString *)nodeID
+{
+    HLPLink *link = [self lastRouteLink];
+    return [link.targetNodeID isEqualToString:nodeID];
+}
+
+- (HLPLink *)firstRouteLink
+{
+    if (![self hasRoute]) {
+        return nil;
+    }
+    HLPLink* first = self.route[1];
+    if (first.length < 3 && self.route.count >= 4) {
+        first = self.route[2];
+    }
+    return first;
+}
+
+- (HLPLink*)lastRouteLink
+{
+    if (![self hasRoute]) {
+        return nil;
+    }
+    HLPLink* last = self.route[self.route.count-2];
+    if (last.length < 3 && self.route.count >= 4) {
+        last = self.route[self.route.count-3];
+    }
+    return last;
+}
+
+- (HLPLink *)routeLinkById:(NSString *)linkID
+{
+    if (self.route == nil) {
+        return nil;
+    }
+    for(HLPObject *o in self.route) {
+        if ([o._id isEqualToString:linkID]) {
+            return o;
+        }
+    }
+    return nil;
 }
 
 @end

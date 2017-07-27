@@ -26,6 +26,7 @@
 
 @interface HLPPreviewEvent : NSObject <NSCopying>
 @property (readonly) HLPLink *link;
+@property (readonly) HLPLink *routeLink;
 @property (readonly) HLPLocation *location;
 @property (readonly) double orientation;
 @property (readonly) double distanceMoved;
@@ -42,6 +43,10 @@
 - (HLPLink*) leftLink;
 
 - (HLPPreviewEvent*) next;
+
+- (BOOL) isOnRoute;
+- (BOOL) isGoingToBeOffRoute;
+- (BOOL) isGoingBackward;
 
 
 /*

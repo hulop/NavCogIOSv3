@@ -77,6 +77,12 @@
     
     NavDataStore *nds = [NavDataStore sharedDataStore];
     
+    NSLog(@"isOnRoute:%d", current.isOnRoute);
+    NSLog(@"isGoingToBeOffRoute:%d", current.isGoingToBeOffRoute);
+    NSLog(@"arrived:%d", [nds isOnDestination:current.targetNode._id]);
+    NSLog(@"isGoingBackward:%d", current.isGoingBackward);
+
+    
     // elevator
     if ([nds isElevatorNode:current.targetNode]) {
         [str appendFormat:@"Elevator. "];
@@ -101,11 +107,14 @@
             [str appendFormat:@"You are on the %@.", [self floorString:current.targetNode.height]];
         }
         
+        // not start point
         if (prev != nil) {
+            // moved
             if (current.target != prev.target) {
                 [str appendString:[self intersectionString:current]];
                 [str appendString:[self upcomingString:current]];
             }
+            // turned
             if (current.target == prev.target && current.orientation != prev.orientation) {
                 double heading = [self turnAngle:prev.orientation toLink:current.link atNode:current.target];
                 if (fabs(heading) > 20) {

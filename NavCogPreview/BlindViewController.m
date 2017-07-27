@@ -122,13 +122,19 @@
 
 - (void) _showRoute
 {
-    NSArray *route = [[NavDataStore sharedDataStore].features filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-        if ([evaluatedObject isKindOfClass:HLPLink.class]) {
-            HLPLink *link = (HLPLink*)evaluatedObject;
-            return (link.sourceHeight == current.location.floor || link.targetHeight == current.location.floor);
-        }
-        return NO;
-    }]];
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+
+    NSArray *route = nds.route;
+    
+    if (!route) {// show all if no route
+        route = [[NavDataStore sharedDataStore].features filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+            if ([evaluatedObject isKindOfClass:HLPLink.class]) {
+                HLPLink *link = (HLPLink*)evaluatedObject;
+                return (link.sourceHeight == current.location.floor || link.targetHeight == current.location.floor);
+            }
+            return NO;
+        }]];
+    }
     [helper showRoute:route];
 }
 

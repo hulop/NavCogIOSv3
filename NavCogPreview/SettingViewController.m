@@ -38,6 +38,8 @@
 }
 
 static HLPSettingHelper *userSettingHelper;
+static HLPSettingHelper *routeOptionsSettingHelper;
+
 static HLPSetting *idLabel;
 
 
@@ -55,6 +57,10 @@ static HLPSetting *idLabel;
         [SettingViewController setupUserSettings];
         helper = userSettingHelper;
     }
+    if ([self.restorationIdentifier isEqualToString:@"route_options_setting"]) {
+        helper = routeOptionsSettingHelper;
+    }
+
     
     if (helper) {
         helper.delegate = self;
@@ -90,6 +96,7 @@ static HLPSetting *idLabel;
 + (void)setup
 {
     [SettingViewController setupUserSettings];
+    [SettingViewController setupRouteOptionsSettings];
 }
 
 + (void)setupUserSettings
@@ -124,6 +131,24 @@ static HLPSetting *idLabel;
     [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"version: %@ (%@)", versionNo, buildNo]];
     idLabel = [userSettingHelper addSectionTitle:[NSString stringWithFormat:@"%@", [NavDataStore sharedDataStore].userID]];
     
+}
+
++ (void)setupRouteOptionsSettings
+{
+    if (routeOptionsSettingHelper) {
+        return;
+    }
+    routeOptionsSettingHelper = [[HLPSettingHelper alloc] init];
+    
+    
+    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Prefer Tactile Paving", @"")
+                                             Name:@"route_tactile_paving" DefaultValue:@(YES) Accept:nil];
+    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Elevator", @"")
+                                             Name:@"route_use_elevator" DefaultValue:@(YES) Accept:nil];
+    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Escalator", @"")
+                                             Name:@"route_use_escalator" DefaultValue:@(NO) Accept:nil];
+    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Stairs", @"")
+                                             Name:@"route_use_stairs" DefaultValue:@(YES) Accept:nil];
 }
 
 - (void)didReceiveMemoryWarning {

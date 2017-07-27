@@ -111,6 +111,12 @@ typedef enum {
 - (void) startExercise;
 
 - (BOOL) isElevatorNode:(HLPNode*)node;
+- (BOOL) hasRoute;
+- (BOOL) isOnRoute:(NSString*)objID;
+- (BOOL) isOnDestination:(NSString*)nodeID;
+- (HLPLink*) firstRouteLink;
+- (HLPLink*) lastRouteLink;
+- (HLPLink*) routeLinkById:(NSString*)linkID;
 - (NSArray*) nearestLinksAt:(HLPLocation*)loc withOptions:(NSDictionary*)option;
 
 + (NavDestination*) destinationForCurrentLocation;

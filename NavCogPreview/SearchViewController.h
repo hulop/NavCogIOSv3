@@ -28,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *switchButton;
 @property (weak, nonatomic) IBOutlet UIButton *historyClearButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *refreshButton;
+@property (weak, nonatomic) IBOutlet UIButton *routeOptionsButton;
 
 @property (weak, nonatomic) IBOutlet UITableView *historyView;
 @property (weak, nonatomic) IBOutlet UIButton *previewButton;

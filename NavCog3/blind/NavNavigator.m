@@ -899,18 +899,6 @@ static NavNavigatorConstants *_instance;
     waitingStartUntil = [[NSDate date] timeIntervalSince1970] + 1.0;
     [self reset];
     
-    [route enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj isKindOfClass:HLPLink.class]) {
-            [obj updateWithNodesMap:nds.nodesMap];
-        }
-    }];
-    
-    [route enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj isKindOfClass:HLPLink.class]) {
-            HLPLink *link = (HLPLink*)obj;
-            link.escalatorFlags = [nds.linksMap[link._id] escalatorFlags];
-        }
-    }];
     
     navIndex = 0;
         

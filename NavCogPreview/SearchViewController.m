@@ -404,6 +404,11 @@
         NavDataStore *nds = [NavDataStore sharedDataStore];
         nds.to = [NSKeyedUnarchiver unarchiveObjectWithData:hist[@"to"]];
         nds.from = [NSKeyedUnarchiver unarchiveObjectWithData:hist[@"from"]];
+        if (nds.to.type == NavDestinationTypeSelectDestination) {
+            self.useDestination.on = NO;
+        } else {
+            self.useDestination.on = YES;
+        }
         [self updateViewWithFlag:YES];
     }
 }

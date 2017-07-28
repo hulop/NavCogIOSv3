@@ -928,7 +928,7 @@
         <!--Dialog View Controller-->
         <scene sceneID="7vw-Hj-Rkg">
             <objects>
-                <viewController id="YRz-sv-vaW" customClass="_TtC9HLPDialog20DialogViewController" sceneMemberID="viewController">
+                <viewController id="YRz-sv-vaW" customClass="DialogViewController" customModule="HLPDialog" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ckh-WA-6CF"/>
                         <viewControllerLayoutGuide type="bottom" id="h1Z-UX-Seu"/>

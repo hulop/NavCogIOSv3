@@ -43,10 +43,13 @@
 - (HLPLink*) leftLink;
 
 - (HLPPreviewEvent*) next;
+- (HLPPreviewEvent*) right;
+- (HLPPreviewEvent*) left;
 
 - (BOOL) isOnRoute;
 - (BOOL) isGoingToBeOffRoute;
 - (BOOL) isGoingBackward;
+- (BOOL) isArrived;
 
 
 /*

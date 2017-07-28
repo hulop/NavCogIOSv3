@@ -154,6 +154,15 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     _orientation == _routeLink.initialBearingFromTarget;
 }
 
+- (BOOL)isArrived
+{
+    if (self.targetNode == nil) {
+        return NO;
+    }
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    return [nds isOnDestination:self.targetNode._id];
+}
+
 - (HLPLocation*)location
 {
     double floor = 0;
@@ -273,6 +282,22 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }
     [temp setDistanceMoved:distance];
 
+    return temp;
+}
+
+- (HLPPreviewEvent *)right
+{
+    HLPPreviewEvent *temp = [self copy];
+    
+    [temp turnToLink:self.rightLink];
+    return temp;
+}
+
+- (HLPPreviewEvent *)left
+{
+    HLPPreviewEvent *temp = [self copy];
+    
+    [temp turnToLink:self.leftLink];
     return temp;
 }
 

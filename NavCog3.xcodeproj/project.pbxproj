@@ -1240,6 +1240,7 @@
 					};
 					7EE8E60A1EF27541006EE7C3 = {
 						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = 76CMF53Q35;
 						ProvisioningStyle = Automatic;
 					};
 					7EF7F79C1DD178F7000A625A = {
@@ -2137,10 +2138,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				DEVELOPMENT_TEAM = 76CMF53Q35;
 				INFOPLIST_FILE = NavCogPreview/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogPreview;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ibm.research.tokyo.NavCogPreview;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -2152,10 +2154,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				DEVELOPMENT_TEAM = 76CMF53Q35;
 				INFOPLIST_FILE = NavCogPreview/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogPreview;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ibm.research.tokyo.NavCogPreview;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

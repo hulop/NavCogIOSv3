@@ -43,6 +43,8 @@
     switch(_type) {
         case NavDestinationTypeLandmark:
             return [_landmark isEqual:obj->_landmark];
+        case NavDestinationTypeLandmarks:
+            return [_landmarks isEqualToArray:obj->_landmarks];
         case NavDestinationTypeLocation:
             return [_location isEqual:obj->_location];
         default:

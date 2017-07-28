@@ -32,6 +32,8 @@
     HLPPreviewEvent *current;
     HLPPreviewEvent *prev;
     
+    BOOL onRoute;
+    
     NSMutableSet *context;
 }
 
@@ -39,11 +41,24 @@
 {
     prev = nil;
     current = event;
-    
+    onRoute = current.isOnRoute;
     context = [[NSMutableSet alloc] init];
+    
+    NavDataStore *nds = [NavDataStore sharedDataStore];
     
     NSMutableString *str = [@"" mutableCopy];
     [str appendFormat:@"Preview is started. "];
+    if (nds.hasRoute) {
+        double d = 0;
+        for(HLPObject *o in nds.route) {
+            if ([o isKindOfClass:HLPLink.class]) {
+                d += ((HLPLink*)o).length;
+            }
+        }
+        NSString *distString = [self distanceString:d];
+        [str appendFormat:@"%@ to %@. ", distString, nds.to.namePron];
+        [str appendString:[self nextActionString:current]];
+    }
     [str appendString:[self poisString:event]];
 
     [_delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:nil];
@@ -59,7 +74,7 @@
 
 -(void)previewUpdated:(HLPPreviewEvent *)event
 {
-    NSLog(@"%@", event);
+    //NSLog(@"%@", event);
     prev = current;
     current = event;
     [self previewCurrent:nil];
@@ -77,62 +92,153 @@
     
     NavDataStore *nds = [NavDataStore sharedDataStore];
     
-    NSLog(@"isOnRoute:%d", current.isOnRoute);
-    NSLog(@"isGoingToBeOffRoute:%d", current.isGoingToBeOffRoute);
-    NSLog(@"arrived:%d", [nds isOnDestination:current.targetNode._id]);
-    NSLog(@"isGoingBackward:%d", current.isGoingBackward);
-
-    
-    // elevator
-    if ([nds isElevatorNode:current.targetNode]) {
-        [str appendFormat:@"Elevator. "];
-        [str appendFormat:@"You are on the %@.", [self floorString:current.targetNode.height]];
-    } else {
-        // others
-        
-        // escalator or stairs
-        if (prev != nil && (current.targetNode.height != prev.targetNode.height)) {
-            HLPPreviewEvent *temp = current;
-            while(temp && temp.target != prev.target) {
-                temp = temp.prev;
-                if (temp.link.linkType == LINK_TYPE_ESCALATOR) {
-                    [str appendFormat:@"Escalator. "];
-                    break;
-                }
-                if (temp.link.linkType == LINK_TYPE_STAIRWAY) {
-                    [str appendFormat:@"Stairs. "];
-                    break;
-                }
-            }
-            [str appendFormat:@"You are on the %@.", [self floorString:current.targetNode.height]];
-        }
-        
-        // not start point
+    if (nds.hasRoute && current.isOnRoute) {
+        NSLog(@"isOnRoute:%d", current.isOnRoute);
+        NSLog(@"isGoingToBeOffRoute:%d", current.isGoingToBeOffRoute);
+        NSLog(@"isArrived:%d", current.isArrived);
+        NSLog(@"isGoingBackward:%d", current.isGoingBackward);
         if (prev != nil) {
             // moved
             if (current.target != prev.target) {
-                [str appendString:[self intersectionString:current]];
-                [str appendString:[self upcomingString:current]];
+                if (current.isArrived) {
+                    [str appendString:@"You have arrived. "];
+                }
+                else if (current.isGoingToBeOffRoute) {
+                    double angle = [self turnAngle:current.orientation toLink:current.routeLink at:current.target];
+                    [str appendString:[self turnString:angle]];
+                    [str appendString:@". "];
+                }
+                else if (!current.isGoingBackward) {
+                    [str appendString:[self nextActionString:current]];
+                }
+                else if (current.isGoingBackward) {
+                    if (!onRoute) { // recovered
+                        HLPPreviewEvent *temp = current.right;
+                        while(YES) {
+                            if ((!temp.isGoingBackward && !temp.isGoingToBeOffRoute) || temp.link == current.link) {
+                                break;
+                            }
+                            temp = temp.right;
+                        }
+                        [str appendString:@"You are back on route. "];
+                        if (temp.link != current.link) {
+                            double angle = [self turnAngle:current.orientation toLink:temp.link at:current.target];
+                            [str appendString:[self turnString:angle]];
+                        }
+                    } else {
+                        [str appendString:@"You are going backward. "];
+                    }
+                }
+                //[str appendString:[self intersectionString:current]];
+                //[str appendString:[self upcomingString:current]];
             }
             // turned
             if (current.target == prev.target && current.orientation != prev.orientation) {
-                double heading = [self turnAngle:prev.orientation toLink:current.link atNode:current.target];
-                if (fabs(heading) > 20) {
-                    [str appendString:[self turnString:heading]];
-                    [str appendString:@". "];
+                if (!current.isGoingToBeOffRoute) {
+                    [str appendString:[self nextActionString:current]];
                 }
             }
         }
-    }
-    
-    [str appendString:[self poisString:current]];
-    
+    } else {
+        if (onRoute) {
+            [str appendString:@"You are going wrong direction. "];
+        }
+        // elevator
+        if ([nds isElevatorNode:current.targetNode]) {
+            [str appendFormat:@"Elevator. "];
+            [str appendFormat:@"You are on the %@.", [self floorString:current.targetNode.height]];
+        } else {
+            // others
+            
+            // escalator or stairs
+            if (prev != nil && (current.targetNode.height != prev.targetNode.height)) {
+                HLPPreviewEvent *temp = current;
+                while(temp && temp.target != prev.target) {
+                    temp = temp.prev;
+                    if (temp.link.linkType == LINK_TYPE_ESCALATOR) {
+                        [str appendFormat:@"Escalator. "];
+                        break;
+                    }
+                    if (temp.link.linkType == LINK_TYPE_STAIRWAY) {
+                        [str appendFormat:@"Stairs. "];
+                        break;
+                    }
+                }
+                [str appendFormat:@"You are on the %@.", [self floorString:current.targetNode.height]];
+            }
+            
+            // not start point
+            if (prev != nil) {
+                // moved
+                if (current.target != prev.target) {
+                    [str appendString:[self intersectionString:current]];
+                    [str appendString:[self upcomingString:current]];
+                }
+                // turned
+                if (current.target == prev.target && current.orientation != prev.orientation) {
+                    double heading = [self turnAngle:prev.orientation toLink:current.link at:current.target];
+                    if (fabs(heading) > 20) {
+                        [str appendString:[self turnString:heading]];
+                        [str appendString:@". "];
+                    }
+                }
+            }
+        }
+        
+        [str appendString:[self poisString:current]];
+     }
+     
     if (str.length > 0) {
+        __weak HLPPreviewCommander *weakself = self;
         [self addBlock:^(void (^complete)(void)) {
-            [_delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:nil];
-            complete();
+            if (weakself) {
+                [weakself.delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:nil];
+                complete();
+            }
         }];
     }
+    onRoute = current.isOnRoute;
+}
+
+#pragma mark - string functions
+
+- (NSString*)distanceString:(double)distance
+{
+    distance = round(distance);
+    if (distance > 10) {
+        distance = round(distance / 5) * 5;
+    }
+    if (distance == 1) {
+        return @"1 meter";
+    }
+    return [NSString stringWithFormat:@"%.0f meters", distance];
+}
+
+- (NSString*)nextActionString:(HLPPreviewEvent*)start
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    HLPPreviewEvent *next = start.next;
+    double d = next.distanceMoved;
+    while(YES) {
+        if (!next.isOnRoute || next.isGoingToBeOffRoute || next.isArrived) {
+            break;
+        }
+        next = next.next;
+        d = next.distanceMoved;
+    }
+    NSString *distStr = [self distanceString:d];
+    NSString *actionStr = @"";
+    if (next.isArrived) {
+        actionStr = [self poisString:next];
+    } else {
+        if ([nds isElevatorNode:next.targetNode]) {
+            actionStr = @"take an elevator";
+        } else {
+            double angle = [self turnAngle:next.orientation toLink:next.routeLink at:next.target];
+            actionStr = [self turnString:angle];
+        }
+    }
+    return [NSString stringWithFormat:@"proceed %@ and %@. ", distStr, actionStr];
 }
 
 - (NSString*) poisString:(HLPPreviewEvent *)event
@@ -145,6 +251,9 @@
     for(HLPEntrance *ent in ents) {
         double poiDir = [event.location bearingTo:ent.node.location];
         double heading = [HLPLocation normalizeDegree:poiDir - event.orientation];
+        if ([event.location distanceTo:ent.node.location] == 0) {
+            heading = 0;
+        }
         
         NSString *name = [ent.facility namePron];
         if (!name || name.length == 0) {
@@ -343,6 +452,16 @@
     return str;
 }
 
+- (double)turnAngle:(double)orientation toLink:(HLPLink*)link at:(HLPObject*)object
+{
+    if ([object isKindOfClass:HLPNode.class]) {
+        return [self turnAngle:orientation toLink:link atNode:(HLPNode*)object];
+    }
+    
+    NSAssert(NO, @"turnAngle with object is not implemented");
+    return 0;
+}
+
 - (double)turnAngle:(double)orientation toLink:(HLPLink*)link atNode:(HLPNode*)node
 {
     double linkDir = NAN;
@@ -404,7 +523,7 @@
 
     // always speak distance
     //dispatch_async(dispatch_get_main_queue(), ^{
-    NSString *str = [NSString stringWithFormat:@"%.0f meters", distance];
+    NSString *str = [NSString stringWithFormat:@"%.0f meters walked. ", distance];
     [_delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:nil];
     //});
 

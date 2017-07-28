@@ -606,7 +606,7 @@ static NavDataStore* instance_ = nil;
             });
             return;
         }
-        //NSLog(@"%ld landmarks are loaded", (unsigned long)[result count]);
+        NSLog(@"%ld landmarks are loaded", (unsigned long)[result count]);
         destinationCache = [result sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
             return [[self normalizePron:[obj1 getLandmarkNamePron]] compare:[self normalizePron:[obj2 getLandmarkNamePron]]];
         }];
@@ -1015,7 +1015,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
 
 - (NSArray*) nearestLinksAt:(HLPLocation*)loc withOptions:(NSDictionary*)option
 {
-    NSMutableArray<HLPLink*> __block *nearestLinks = [@[] mutableCopy];
+    NSMutableSet<HLPLink*> __block *nearestLinks = nil;
     double __block minDistance = DBL_MAX;
     
     HLPLinkType linkType = [option[@"linkType"] intValue];
@@ -1031,10 +1031,9 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     struct GKQuad q;
     q.quadMin = (vector_float2){(float)MIN(ms.x,mt.x), (float)MIN(ms.y,mt.y)};
     q.quadMax = (vector_float2){(float)MAX(ms.x,mt.x), (float)MAX(ms.y,mt.y)};
-    
-    NSArray * links = [quadtree elementsInQuad:q];
-    links = [[NSSet alloc] initWithArray:links].allObjects;
-    [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+    NSSet *links = [NSSet setWithArray:[quadtree elementsInQuad:q]];
+    [links enumerateObjectsUsingBlock:^(HLPLink *link, BOOL * _Nonnull stop) {
         
         if (!isnan(loc.floor) &&
             (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
@@ -1059,10 +1058,11 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
         
         if (distance < minDistance && (linkType == 0 || link.linkType == linkType)) {
             minDistance = distance;
-            nearestLinks = [@[link] mutableCopy];
+            nearestLinks = [[NSMutableSet alloc] init];
+            [nearestLinks addObject:link];
         }
     }];
-    [links enumerateObjectsUsingBlock:^(HLPLink *link, NSUInteger idx, BOOL * _Nonnull stop) {
+    [links enumerateObjectsUsingBlock:^(HLPLink *link, BOOL * _Nonnull stop) {
         
         if (!isnan(loc.floor) &&
             (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
@@ -1089,8 +1089,9 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
         }
     }];
 
+
     if (minDistance < (option[@"POI_DISTANCE_MIN_THRESHOLD"]?[option[@"POI_DISTANCE_MIN_THRESHOLD"] doubleValue]:5)) {
-        return [[NSSet alloc] initWithArray:nearestLinks].allObjects;
+        return nearestLinks.allObjects;
     } else {
         return @[];
     }
@@ -1194,7 +1195,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
 {
     HLPLocation *loc = [self currentLocation];
     double min = DBL_MAX;
-    HLPLandmark *minl = nil;
+    HLPLandmark *minl = landmarks[0];
     for(HLPLandmark *l in landmarks) {
         if (l) {
             double d = [[l nodeLocation] distanceTo:loc];

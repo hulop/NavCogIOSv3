@@ -200,6 +200,11 @@
 
 @implementation HLPObject
 
+- (NSUInteger)hash
+{
+    return [__id hash];
+}
+
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
     self = [super initWithDictionary:dictionaryValue error:error];
     if (self == nil) return nil;
@@ -425,14 +430,14 @@
 
 @end
 
-@implementation HLPNode {
+@implementation HLPLocationObject {
     HLPLocation *_location;
 }
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
     self = [super initWithDictionary:dictionaryValue error:error];
     if (self == nil) return nil;
-
+    
     _lat = [self.geometry.coordinates[1] doubleValue];
     _lng = [self.geometry.coordinates[0] doubleValue];
     
@@ -442,7 +447,23 @@
         _height = (_height >= 1)?_height-1:_height;
     }
     
-    _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];    
+    _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];
+    
+    return self;
+}
+
+- (HLPLocation*) location
+{
+    return _location;
+}
+
+@end
+
+@implementation HLPNode
+
+- (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
+    self = [super initWithDictionary:dictionaryValue error:error];
+    if (self == nil) return nil;
 
     NSMutableArray* temp = [@[] mutableCopy];
     for(NSString *key in [self.properties allKeys]) {
@@ -453,11 +474,6 @@
     _connectedLinkIDs = temp;
     
     return self;
-}
-
-- (HLPLocation*) location
-{
-    return _location;
 }
 
 - (BOOL) isLeaf
@@ -474,14 +490,20 @@
     @protected
     BOOL _flagPlural;
 }
+
+static NSRegularExpression *patternHLPPOIFlags;
+
 - (instancetype)initWithString:(NSString *)str
 {
     self = [super init];
     
+    if (!patternHLPPOIFlags) {
+        patternHLPPOIFlags = [NSRegularExpression regularExpressionWithPattern:@"([A-Z])" options:0 error:nil];
+    }
+    
     if (str) {
         NSString*(^camelToDash)(NSString*) = ^(NSString* str) {
-            NSRegularExpression *p = [NSRegularExpression regularExpressionWithPattern:@"([A-Z])" options:0 error:nil];
-            NSString *temp = [p stringByReplacingMatchesInString:str options:0 range:NSMakeRange(0, str.length) withTemplate:@"_$1"];
+            NSString *temp = [patternHLPPOIFlags stringByReplacingMatchesInString:str options:0 range:NSMakeRange(0, str.length) withTemplate:@"_$1"];
             return [NSString stringWithFormat:@"_%@_", [temp lowercaseString]];
         };
         
@@ -1118,7 +1140,6 @@
 @end
 
 @implementation HLPFacility{
-    HLPLocation *_location;
     NSMutableArray *entrances;
 }
 
@@ -1131,29 +1152,11 @@
     _namePron = _name = self.properties[PROPKEY_NAME];
     _longDescriptionPron = _longDescription = self.properties[PROPKEY_EXT_LONG_DESCRIPTION];
     
-    _lat = [self.geometry.coordinates[1] doubleValue];
-    _lng = [self.geometry.coordinates[0] doubleValue];
-    _height = NAN;
-    if (self.properties[PROPKEY_EXT_HEIGHT]) {
-        _height = [self.properties[PROPKEY_EXT_HEIGHT] doubleValue];
-        if (_height == 0) {
-            _height = NAN;
-        } else {
-            _height = (_height >= 1)?_height-1:_height;
-        }
-    }
-    
-    _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];
     if (self.properties[PROPKEY_ADDR]) {
         _addr = self.properties[PROPKEY_ADDR];
     }
     
     return self;
-}
-
-- (HLPLocation *)location
-{
-    return _location;
 }
 
 

@@ -91,13 +91,16 @@ typedef enum {
 - (BOOL) isFacility;
 @end
 
-@interface HLPNode : HLPObject
-@property (nonatomic, readonly) NSArray<NSString*> *connectedLinkIDs;
+@interface HLPLocationObject : HLPObject
 @property (nonatomic, readonly) double lat;
 @property (nonatomic, readonly) double lng;
 @property (nonatomic, readonly) double height;
-
 - (HLPLocation*) location;
+@end
+
+@interface HLPNode : HLPLocationObject
+@property (nonatomic, readonly) NSArray<NSString*> *connectedLinkIDs;
+
 - (BOOL) isLeaf;
 @end
 
@@ -239,10 +242,7 @@ typedef enum: int {
 
 @end
 
-@interface HLPFacility : HLPObject
-@property (nonatomic, readonly) double lat;
-@property (nonatomic, readonly) double lng;
-@property (nonatomic, readonly) double height;
+@interface HLPFacility : HLPLocationObject
 @property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly) NSString *namePron;
 @property (nonatomic, readonly) NSString *longDescription;
@@ -251,7 +251,6 @@ typedef enum: int {
 @property (nonatomic, readonly) NSString *addr;
 @property (nonatomic, readonly) NSArray *entrances;
 
-- (HLPLocation*) location;
 @end
 
 typedef NS_ENUM(NSInteger, HLPPOICategory) {

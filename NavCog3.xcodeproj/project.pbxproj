@@ -1050,7 +1050,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh\"\n\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		49102E36951DE683B790438B /* [CP] Check Pods Manifest.lock */ = {

@@ -37,6 +37,7 @@ typedef struct {
     BOOL checkRemote = NO;
     std::string filter = "";
     BOOL combinations = NO;
+    int timeout = 60;
 }Option;
 
 void printHelp() {
@@ -59,6 +60,7 @@ void printHelp() {
     std::cout << "--useElevator [1|0]    set useElevator" << std::endl;
     std::cout << "--tactilePaving [1|0]  set tactilePaving" << std::endl;
     std::cout << "--checkRemote [1|0]    setcheckRemote" << std::endl;
+    std::cout << "--timeout <number>     set timeout default is 60(sec)" << std::endl;
 }
 
 Option parseArguments(int argc, char * argv[]){
@@ -76,6 +78,7 @@ Option parseArguments(int argc, char * argv[]){
         {"useElevator",   required_argument, NULL,  0 },
         {"tactilePaving",   required_argument, NULL,  0 },
         {"checkRemote",   required_argument, NULL,  0 },
+        {"timeout",   required_argument, NULL,  0 },
         
         {0,         0,                 0,  0 }
     };
@@ -113,6 +116,10 @@ Option parseArguments(int argc, char * argv[]){
             }
             if (strcmp(long_options[option_index].name, "combinations") == 0){
                 opt.combinations = YES;
+            }
+            if (strcmp(long_options[option_index].name, "timeout") == 0){
+                sscanf(optarg, "%d", &boolean);
+                opt.timeout = boolean;
             }
             break;
         case 'k':
@@ -323,7 +330,7 @@ Option parseArguments(int argc, char * argv[]){
         std::cout << [processing[@"from"] UTF8String] << "-" << [processing[@"to"] UTF8String] << "-";
         fflush(stdout);
         
-        countDown = 60;
+        countDown = opt.timeout;
         timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(handleTimeout:) userInfo:nil repeats:YES];
         
         dataStore.previewMode = YES;

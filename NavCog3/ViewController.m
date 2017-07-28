@@ -31,6 +31,7 @@
 #import "ServerConfig.h"
 #import "NavDeviceTTS.h"
 #import <HLPLocationManager/HLPLocationManager.h>
+#import "DefaultTTS.h"
 
 @interface ViewController () {
     HLPWebviewHelper *helper;
@@ -144,6 +145,7 @@
     [dialogHelper inactive];
     dialogHelper.helperView.hidden = YES;
     [self performSegueWithIdentifier:@"show_dialog_wc" sender:self];
+    
 }
 
 - (void)dialogStateChanged:(NSNotification*)note
@@ -440,6 +442,10 @@
         rv.device_id = [[NavDataStore sharedDataStore] userID];
         
         ratingInfo = nil;
+    }
+    if ([segue.identifier isEqualToString:@"show_dialog_wc"]){
+        DialogViewController* dView = (DialogViewController*)segue.destinationViewController;
+        dView.tts = [DefaultTTS new];
     }
 }
 

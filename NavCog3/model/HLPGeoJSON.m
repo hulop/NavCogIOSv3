@@ -1143,6 +1143,34 @@ static NSRegularExpression *patternHLPPOIFlags;
     return temp;
 }
 
+- (BOOL)isOnFront:(HLPLocation *)location
+{
+    double distance = [location distanceTo:self.location];
+    
+    if (distance > 5) {
+        return NO;
+    }
+    
+    double hInitial = [HLPLocation normalizeDegree:location.orientation - 180];
+    BOOL inAngleInitial = fabs([HLPLocation normalizeDegree:hInitial - self.heading]) <= self.angle;
+    
+    return inAngleInitial;
+}
+
+- (BOOL)isOnSide:(HLPLocation*)location
+{
+    double distance = [location distanceTo:self.location];
+    
+    if (distance > 5) {
+        return NO;
+    }
+    
+    double hLocToNearest = [self.location bearingTo:location];
+    BOOL inAngleAtNearest = fabs([HLPLocation normalizeDegree:hLocToNearest - self.heading]) < self.angle;
+    
+    return inAngleAtNearest;
+}
+
 @end
 
 @implementation HLPFacility{

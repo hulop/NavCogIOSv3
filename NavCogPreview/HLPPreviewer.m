@@ -462,6 +462,21 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     return nil;
 }
 
+- (BOOL) isEffective:(HLPLocationObject*)obj
+{
+    NSString *name = nil;
+    if ([obj isKindOfClass:HLPEntrance.class]) {
+        name = ((HLPEntrance*)obj).facility.name;
+    }
+    if ([obj isKindOfClass:HLPPOI.class]) {
+        HLPPOI *poi = (HLPPOI*)obj;
+        if(poi.poiCategory == HLPPOICategoryInfo && ([poi isOnFront:self.location] || [poi isOnSide:self.location])) {
+            name = poi.name;
+        }
+    }
+    return name && name.length > 0;
+}
+
 - (NSArray<HLPFacility *> *)targetPOIs
 {
     if (self._linkPois == nil) {
@@ -471,45 +486,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     NSMutableArray *temp = [@[] mutableCopy];
     for(HLPLocationObject *obj in self._linkPois) {
         if ([[_link nearestLocationTo:obj.location] distanceTo:_location] < 0.5) {
-            [temp addObject:obj];
-        }
-    }
-    /*
-    for(HLPLink* link in nds.nodeLinksMap[self.targetNode._id]) {
-        if (link.isLeaf) {
-            void(^check)(HLPEntrance*) = ^(HLPEntrance* ent) {
-                if (ent && ent.facility && ent.facility.name && ent.facility.name.length > 0) {
-                    [temp addObject:ent.facility];
-                }
-            };
-            check(nds.entranceMap[link.sourceNodeID]);
-            check(nds.entranceMap[link.targetNodeID]);
-        }
-    }
-     */
-    if ([temp count] > 0) {
-        return temp;
-    }
-    return nil;
-}
-
-- (NSArray<HLPEntrance *> *)targetPOIEntrances
-{
-    NavDataStore *nds = [NavDataStore sharedDataStore];
-    if (self.targetNode == nil) {
-        return nil;
-    }
-    NSMutableArray *temp = [@[] mutableCopy];
-    NSArray *links = nds.nodeLinksMap[self.targetNode._id];
-    for(HLPLink* link in links) {
-        if (link.isLeaf) {
-            void(^check)(HLPEntrance*) = ^(HLPEntrance* ent) {
-                if (ent && ent.facility && ent.facility.name && ent.facility.name.length > 0) {
-                    [temp addObject:ent];
-                }
-            };
-            check(nds.entranceMap[link.sourceNodeID]);
-            check(nds.entranceMap[link.targetNodeID]);            
+            if ([self isEffective:obj]) {
+                [temp addObject:obj];
+            }
         }
     }
     if ([temp count] > 0) {

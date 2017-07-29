@@ -34,8 +34,7 @@
 - (HLPLocationObject*) target;
 - (HLPNode*) targetNode;
 - (HLPNode*) targetIntersection;
-- (NSArray<HLPFacility*>*) targetPOIs;
-- (NSArray<HLPEntrance*>*) targetPOIEntrances;
+- (NSArray<HLPLocationObject*>*) targetPOIs;
 - (NSArray<HLPLink*>*) intersectionLinks;
 
 - (HLPLink*) rightLink;

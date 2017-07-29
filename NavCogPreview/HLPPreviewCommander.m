@@ -105,6 +105,7 @@
             if (current.target != prev.target) {
                 if (current.isArrived) {
                     [str appendString:@"You have arrived. "];
+                    [str appendString:[self poisString:current]];
                 }
                 else if (current.isGoingToBeOffRoute) {
                     double angle = [self turnAngle:current.orientation toLink:current.routeLink at:current.target];
@@ -116,6 +117,7 @@
                         next = current.nextAction;
                         [str appendString:[self nextActionString:next]];
                     }
+                    [str appendString:[self poisString:current]];
                 }
                 else if (current.isGoingBackward) {
                     if (!onRoute) { // recovered
@@ -240,33 +242,75 @@
     return [NSString stringWithFormat:@"proceed %@ and %@. ", distStr, actionStr];
 }
 
+/*
+ 
+ - (NSArray<HLPEntrance *> *)targetPOIEntrances
+ {
+ NavDataStore *nds = [NavDataStore sharedDataStore];
+ if (self.targetNode == nil) {
+ return nil;
+ }
+ NSMutableArray *temp = [@[] mutableCopy];
+ NSArray *links = nds.nodeLinksMap[self.targetNode._id];
+ for(HLPLink* link in links) {
+ if (link.isLeaf) {
+ void(^check)(HLPEntrance*) = ^(HLPEntrance* ent) {
+ if (ent && ent.facility && ent.facility.name && ent.facility.name.length > 0) {
+ [temp addObject:ent];
+ }
+ };
+ check(nds.entranceMap[link.sourceNodeID]);
+ check(nds.entranceMap[link.targetNodeID]);
+ }
+ }
+ if ([temp count] > 0) {
+ return temp;
+ }
+ return nil;
+ }
+ */
+
 - (NSString*) poisString:(HLPPreviewEvent *)event
 {
-    NSArray<HLPEntrance*>*ents = event.targetPOIEntrances;
-    if (ents == nil) {
+    NSArray<HLPLocationObject*>*pois = event.targetPOIs;
+    if (pois == nil) {
         return @"";
     }
+
     NSMutableString *str = [@"" mutableCopy];
-    for(HLPEntrance *ent in ents) {
-        double poiDir = [event.location bearingTo:ent.node.location];
+    for(HLPLocationObject *lo in pois) {
+        double poiDir = [event.location bearingTo:lo.location];
         double heading = [HLPLocation normalizeDegree:poiDir - event.orientation];
-        if ([event.location distanceTo:ent.node.location] == 0) {
+        if ([event.location distanceTo:lo.location] == 0) {
             heading = 0;
         }
-        
-        NSString *name = [ent.facility namePron];
-        if (!name || name.length == 0) {
-            continue;
+
+
+        NSString *name = nil;
+        if ([lo isKindOfClass:HLPEntrance.class]) {
+            name = [((HLPEntrance*)lo).facility namePron];
         }
-        
-        if (heading > 45) {
-            [str appendFormat:@"%@ is on your right. ", name];
+        if ([lo isKindOfClass:HLPPOI.class]) {
+            HLPPOI *poi = (HLPPOI*)lo;
+            if (poi.poiCategory == HLPPOICategoryInfo) {
+                
+                if ([poi isOnFront:event.location]) {
+                    [str appendFormat:@"%@. ", poi.name];
+                } else if ([poi isOnSide:event.location]) {
+                    name = poi.name;
+                }
+            }
         }
-        else if (heading < -45) {
-            [str appendFormat:@"%@ is on your left. ", name];
-        }
-        else {
-            [str appendFormat:@"%@ is in your front. ", name];
+        if (name && name.length > 0) {
+            if (heading > 45) {
+                [str appendFormat:@"%@ is on your right. ", name];
+            }
+            else if (heading < -45) {
+                [str appendFormat:@"%@ is on your left. ", name];
+            }
+            else {
+                [str appendFormat:@"%@ is in your front. ", name];
+            }
         }
     }
     return str;

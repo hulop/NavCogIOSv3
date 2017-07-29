@@ -30,6 +30,7 @@
     NSMutableArray *playBlocks;
     void (^playingBlock)(void (^complete)());
     HLPPreviewEvent *current;
+    HLPPreviewEvent *next;
     HLPPreviewEvent *prev;
     
     BOOL onRoute;
@@ -57,7 +58,8 @@
         }
         NSString *distString = [self distanceString:d];
         [str appendFormat:@"%@ to %@. ", distString, nds.to.namePron];
-        [str appendString:[self nextActionString:current]];
+        next = current.nextAction;
+        [str appendString:[self nextActionString:next]];
     }
     [str appendString:[self poisString:event]];
 
@@ -74,7 +76,7 @@
 
 -(void)previewUpdated:(HLPPreviewEvent *)event
 {
-    //NSLog(@"%@", event);
+    NSLog(@"%@", event);
     prev = current;
     current = event;
     [self previewCurrent:nil];
@@ -97,6 +99,7 @@
         NSLog(@"isGoingToBeOffRoute:%d", current.isGoingToBeOffRoute);
         NSLog(@"isArrived:%d", current.isArrived);
         NSLog(@"isGoingBackward:%d", current.isGoingBackward);
+        
         if (prev != nil) {
             // moved
             if (current.target != prev.target) {
@@ -109,7 +112,10 @@
                     [str appendString:@". "];
                 }
                 else if (!current.isGoingBackward) {
-                    [str appendString:[self nextActionString:current]];
+                    if (!next) {
+                        next = current.nextAction;
+                        [str appendString:[self nextActionString:next]];
+                    }
                 }
                 else if (current.isGoingBackward) {
                     if (!onRoute) { // recovered
@@ -134,8 +140,10 @@
             }
             // turned
             if (current.target == prev.target && current.orientation != prev.orientation) {
+                next = nil;
                 if (!current.isGoingToBeOffRoute) {
-                    [str appendString:[self nextActionString:current]];
+                    next = current.nextAction;
+                    [str appendString:[self nextActionString:next]];
                 }
             }
         }
@@ -214,27 +222,18 @@
     return [NSString stringWithFormat:@"%.0f meters", distance];
 }
 
-- (NSString*)nextActionString:(HLPPreviewEvent*)start
+- (NSString*)nextActionString:(HLPPreviewEvent*)event
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
-    HLPPreviewEvent *next = start.next;
-    double d = next.distanceMoved;
-    while(YES) {
-        if (!next.isOnRoute || next.isGoingToBeOffRoute || next.isArrived) {
-            break;
-        }
-        next = next.next;
-        d = next.distanceMoved;
-    }
-    NSString *distStr = [self distanceString:d];
+    NSString *distStr = [self distanceString:event.distanceMoved];
     NSString *actionStr = @"";
-    if (next.isArrived) {
-        actionStr = [self poisString:next];
+    if (event.isArrived) {
+        actionStr = [self poisString:event];
     } else {
-        if ([nds isElevatorNode:next.targetNode]) {
+        if ([nds isElevatorNode:event.targetNode]) {
             actionStr = @"take an elevator";
         } else {
-            double angle = [self turnAngle:next.orientation toLink:next.routeLink at:next.target];
+            double angle = [self turnAngle:event.orientation toLink:event.routeLink at:event.target];
             actionStr = [self turnString:angle];
         }
     }
@@ -571,6 +570,25 @@
             [self processNextBlock];
         });
     });
+}
+
+- (void)userLocation:(HLPLocation *)location
+{
+}
+
+- (void)remainingDistance:(double)distance
+{
+    double step_length = [[NSUserDefaults standardUserDefaults] doubleForKey:@"preview_step_length"];
+    double target = MAX(floor(distance/15)*15, 5);
+    
+    if (distance > target && target > distance - step_length) {
+        if (target <= 5.0) {
+            [_delegate speak:@"approaching. " withOptions:@{@"force":@(YES)} completionHandler:nil];
+        } else {
+            NSString *distStr = [self distanceString:distance];
+            [_delegate speak:distStr withOptions:@{@"force":@(YES)} completionHandler:nil];
+        }
+    }
 }
 
 

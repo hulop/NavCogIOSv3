@@ -53,7 +53,6 @@
 - (void)stopSpeaking;
 - (void)speakCurrentPOI;
 - (void)selectCurrentPOI;
-- (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active;
 //- (void)autoStepBackward;
 - (void)quit; // quit preview
 @end
@@ -67,6 +66,7 @@
 - (void)jumpBackward;
 - (void)faceRight;
 - (void)faceLeft; // choose previous
+- (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active;
 @end
 
 

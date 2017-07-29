@@ -291,7 +291,7 @@ static const char* HLPPOICategoryStrings[] = {
 - (NSString*) poiCategoryString;
 @end
 
-@interface HLPEntrance : HLPObject
+@interface HLPEntrance : HLPLocationObject
 @property (nonatomic, readonly) NSString *forNodeID;
 @property (nonatomic, readonly) NSString *forFacilityID;
 @property (nonatomic, readonly) NSString *name;

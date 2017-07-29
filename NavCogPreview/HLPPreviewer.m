@@ -23,8 +23,27 @@
 #import "HLPPreviewer.h"
 #import "NavDataStore.h"
 
-@implementation HLPPreviewEvent : NSObject {
+@interface TemporalLocationObject : HLPLocationObject
+@end
+
+@implementation TemporalLocationObject {
     HLPLocation *_location;
+}
+
+- (instancetype) initWithLocation:(HLPLocation*)location {
+    self = [super init];
+    _location = location;
+    return self;
+}
+
+- (HLPLocation*) location{
+    return _location;
+}
+@end
+
+@implementation HLPPreviewEvent {
+    HLPLocation *_location;
+    NSArray *_linkPoisCache;
 }
 
 typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
@@ -57,13 +76,39 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (NSArray*) _linkPois
 {
-    return [NavDataStore sharedDataStore].linkPoiMap[_link._id];
+    if (!_linkPoisCache) {
+        NSArray *temp = [NavDataStore sharedDataStore].linkPoiMap[_link._id];
+        if (temp) {
+            temp = [temp sortedArrayUsingComparator:^NSComparisonResult(HLPPOI *poi1, HLPPOI *poi2) {
+                HLPLocation *l1 = [_link nearestLocationTo:poi1.location];
+                HLPLocation *l2 = [_link nearestLocationTo:poi2.location];
+                double diff = [l1 distanceTo:_link.sourceLocation] - [l2 distanceTo:_link.sourceLocation];
+                
+                if (self._sourceToTarget) {
+                    return diff < 0 ? NSOrderedAscending : NSOrderedDescending;
+                }
+                else if (self._targetToSource) {
+                    return diff > 0 ? NSOrderedAscending : NSOrderedDescending;
+                }
+                return NSOrderedSame;
+            }];
+            
+            [temp enumerateObjectsUsingBlock:^(HLPPOI *poi, NSUInteger idx, BOOL * _Nonnull stop) {
+                HLPLocation *l = [_link nearestLocationTo:poi.location];
+                double dist = [l distanceTo:self._sourceToTarget?_link.sourceLocation:_link.targetLocation];
+                NSLog(@"%@ %.2f", poi._id, dist);
+            }];
+        }
+        _linkPoisCache = temp;
+    }
+    return _linkPoisCache;
 }
 
 - (void)setLocation:(HLPLocation *)location
 {
     _location = location;
-    
+    _linkPoisCache = nil; // clear cache
+
     if (_link == nil) {
         return;
     }
@@ -83,46 +128,49 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     if (isInitial) _orientation = 0;
     
     // find possible next link and possible next route link
-    for(HLPLink *l in links) {
-        double d = 0;
-        if (l.sourceNode == self.target) {
-            d = fabs([HLPLocation normalizeDegree:_orientation - l.initialBearingFromSource]);
+    if ([self.target isKindOfClass:HLPNode.class]) {
+        for(HLPLink *l in links) {
+            double d = 0;
+            if (l.sourceNode == self.target) {
+                d = fabs([HLPLocation normalizeDegree:_orientation - l.initialBearingFromSource]);
+            }
+            else if (l.targetNode == self.target) {
+                d = fabs([HLPLocation normalizeDegree:_orientation - l.initialBearingFromTarget]);
+            }
+            if (d < min) {
+                min = d;
+                nextLink = l;
+            }
+            // special for elevator
+            if ([nds isElevatorNode:self.targetNode]) {
+                d = 0;
+            }
+            if (d < min2 && [nds isOnRoute:l._id]) {
+                min2 = d;
+                nextRouteLink = [nds routeLinkById:l._id];
+            }
         }
-        else if (l.targetNode == self.target) {
-            d = fabs([HLPLocation normalizeDegree:_orientation - l.initialBearingFromTarget]);
+
+        if (isInitial) _orientation = min;
+        
+        if (min < 20) {
+            _link = nextLink;
+            if (_link.sourceNode == self.target) {
+                _orientation = _link.initialBearingFromSource;
+            }
+            else if (_link.targetNode == self.target) {
+                _orientation = _link.initialBearingFromTarget;
+            }
+        } else {
+            // if it is on elevator, face to the exit
+            if ([nds isElevatorNode:self.targetNode]) {
+                _orientation = [_link initialBearingFrom:self.targetNode];
+            }
         }
-        if (d < min) {
-            min = d;
-            nextLink = l;
-        }
-        // special for elevator
-        if ([nds isElevatorNode:self.targetNode]) {
-            d = 0;
-        }
-        if (d < min2 && [nds isOnRoute:l._id]) {
-            min2 = d;
-            nextRouteLink = [nds routeLinkById:l._id];
-        }
+        // otherwise keep previous link
+        
+        _routeLink = nextRouteLink;
     }
-    if (isInitial) _orientation = min;
-    
-    if (min < 20) {
-        _link = nextLink;
-        if (_link.sourceNode == self.target) {
-            _orientation = _link.initialBearingFromSource;
-        }
-        else if (_link.targetNode == self.target) {
-            _orientation = _link.initialBearingFromTarget;
-        }
-    } else {
-        // if it is on elevator, face to the exit
-        if ([nds isElevatorNode:self.targetNode]) {
-            _orientation = [_link initialBearingFrom:self.targetNode];
-        }
-    }
-    // otherwise keep previous link
-    
-    _routeLink = nextRouteLink;
 }
 
 - (BOOL) isOnRoute
@@ -211,46 +259,75 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }]];
 }
 
-- (HLPObject*) stepTarget
+- (BOOL) _sourceToTarget {
+    return fabs(_orientation - _link.initialBearingFromSource) < 0.01;
+}
+
+- (BOOL) _targetToSource {
+    return fabs(_orientation - _link.initialBearingFromTarget) < 0.01;
+}
+
+- (HLPLocationObject*) stepTarget
 {
     if (_link == nil) {
         return nil;
     }
     
-    HLPObject *next = nil;
+    HLPLocationObject *next = nil;
     if (self.target == nil) {
-        if (_orientation == _link.initialBearingFromSource) {
+        if (self._sourceToTarget) {
             next = _link.targetNode;
-        } else if (_orientation == _link.initialBearingFromTarget) {
+        } else if (self._targetToSource) {
             next = _link.sourceNode;
         }
     } else {
-        HLPNode *node = (HLPNode*)self.target;
+        NSArray<HLPLocationObject*> *stepTargets = self._linkPois;
+        if (stepTargets == nil) stepTargets = @[];
         
-        if (_link.sourceNode == node && fabs(_link.initialBearingFromSource - _orientation) < DBL_EPSILON) {
-            next = _link.targetNode;
+        if (self._sourceToTarget) {
+            stepTargets = [@[_link.sourceNode] arrayByAddingObjectsFromArray:stepTargets];
+            stepTargets = [stepTargets arrayByAddingObject:_link.targetNode];
+        } else if (self._targetToSource) {
+            stepTargets = [@[_link.targetNode] arrayByAddingObjectsFromArray:stepTargets];
+            stepTargets = [stepTargets arrayByAddingObject:_link.sourceNode];
         }
-        if (_link.targetNode == node && fabs(_link.initialBearingFromTarget - _orientation) < DBL_EPSILON) {
-            next = _link.sourceNode;
+        
+        unsigned long j = 0;
+        for(unsigned long i = 0; i < stepTargets.count; i++) {
+            HLPLocationObject *lo = stepTargets[i];
+            if (![lo isKindOfClass:HLPLocationObject.class]) {
+                continue;
+            }
+            if ([[_link nearestLocationTo:lo.location] distanceTo:_location] < 0.5) {
+                j = MIN((i+1), stepTargets.count-1);
+            }
         }
+        
+        next = stepTargets[j];
+        
+        /* test
+        if ([_location distanceTo:stepTargets[j].location] > 5) {
+            HLPLocation *loc = [_location offsetLocationByDistance:5 Bearing:[_location bearingTo:stepTargets[j].location]];
+            next = [[TemporalLocationObject alloc] initWithLocation:loc];
+        } else {
+            next = stepTargets[j];
+        }
+         */
+        
     }
     return next;
 }
 
 - (HLPLocation*)stepTargetLocation
 {
-    if ([self.stepTarget isKindOfClass:HLPNode.class]) {
-        HLPNode* node = (HLPNode*)self.stepTarget;
-        
-        return node.location;
-    }
-    return nil;
+    return [_link nearestLocationTo:self.stepTarget.location];
 }
 
 - (double)distanceToStepTarget
 {
-    if ([self stepTargetLocation]) {
-        return [[self stepTargetLocation] distanceTo:_location];
+    HLPLocation *loc = self.stepTargetLocation;
+    if (loc) {
+        return [[_link nearestLocationTo:loc] distanceTo:_location];
     }
     return NAN;
 }
@@ -263,6 +340,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 - (HLPPreviewEvent *)next
 {
     HLPPreviewEvent *temp = self;
+    HLPLocationObject *prevTarget = nil;
 
     double distance = 0;
     while(true) {
@@ -270,7 +348,12 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         temp = [temp copy];
         [temp setPrev:prev];
         
-        if (temp.stepTarget) {
+        if (temp.stepTarget == prevTarget) {
+            temp = prev;
+            break;
+        }
+        
+        if ((prevTarget = temp.stepTarget)) {
             distance += [temp distanceToStepTarget];
             [temp setLocation:temp.stepTargetLocation];
             if (temp.targetPOIs || temp.targetIntersection || temp.isGoingToBeOffRoute) {
@@ -301,6 +384,22 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     return temp;
 }
 
+- (HLPPreviewEvent *)nextAction
+{
+    HLPPreviewEvent *next = self.next;
+    double d = next.distanceMoved;
+    while(YES) {
+        if (!next.isOnRoute || next.isGoingToBeOffRoute || next.isArrived) {
+            break;
+        }
+        next = next.next;
+        d += next.distanceMoved;
+    }
+    [next setDistanceMoved:d];
+    return next;
+}
+
+
 - (void)turnToLink:(HLPLink*)link
 {
     if (_link == link) {
@@ -312,7 +411,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     [self setLocation:_location];
 }
 
-- (HLPObject*) target
+- (HLPLocationObject*) target
 {
     if (_link == nil) {
         return nil;
@@ -326,6 +425,15 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     if ([_link.targetNode.location distanceTo:_location] < 0.5) {
         return _link.targetNode;
     }
+    NSArray *pois = self._linkPois;
+    if (pois) {
+        for(HLPLocationObject *lo in pois) {
+            if ([[_link nearestLocationTo:lo.location] distanceTo:_location] < 0.01) {
+                return lo;
+            }
+        }
+    }
+    
     return nil;
 }
 
@@ -348,7 +456,10 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }
     
     NSArray *links = [self intersectionLinks];
-    return links.count > 2 ? self.targetNode : nil;
+    if (links.count > 2) {
+        return self.targetNode;
+    }
+    return nil;
 }
 
 - (NSArray<HLPFacility *> *)targetPOIs
@@ -358,21 +469,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }
     
     NSMutableArray *temp = [@[] mutableCopy];
-    for(HLPObject *obj in self._linkPois) {
-        if ([obj isKindOfClass:HLPEntrance.class]) {
-            void(^check)(HLPEntrance*) = ^(HLPEntrance* ent) {
-                if (ent && ent.facility && ent.facility.name && ent.facility.name.length > 0) {
-                    [temp addObject:ent.facility];
-                }
-            };
-            HLPEntrance *ent = (HLPEntrance*)obj;
-            check(ent);
-        }
-        else if ([obj isKindOfClass:HLPPOI.class]) {
-            HLPPOI *poi = (HLPPOI*)obj;
-            if ([[_link nearestLocationTo:poi.location] distanceTo:_location] < 0.01) {
-                [temp addObject:obj];
-            }
+    for(HLPLocationObject *obj in self._linkPois) {
+        if ([[_link nearestLocationTo:obj.location] distanceTo:_location] < 0.5) {
+            [temp addObject:obj];
         }
     }
     /*
@@ -535,6 +634,14 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     HLPPreviewEvent *current;
     NSMutableArray<HLPPreviewEvent*> *history;
     NSArray *route;
+    
+    BOOL isAutoProceed;
+    NSTimer *autoTimer;
+    double stepSpeed;
+    double stepCounter;
+    double remainingDistanceToNextStep;
+    double remainingDistanceToNextAction;
+    HLPLocation *currentLocation;
 }
 
 - (instancetype) init
@@ -597,33 +704,76 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         NSLog(@"no link found");
         //[_delegate errorWithMessage:@"closest link is not found"];
     }
+    
+    remainingDistanceToNextStep = current.next.distanceMoved;
+    remainingDistanceToNextAction = current.nextAction.distanceMoved;
+    [self fireUserLocation:current.location];
     [_delegate previewStarted:current];
 }
 
 - (void)stop
 {
     current = nil;
+    [self fireUserLocation:current.location];
     [_delegate previewStopped:current];
+}
+
+- (void)firePreviewUpdated
+{
+    if (current.isOnRoute && current.isGoingToBeOffRoute) {
+        isAutoProceed = NO;
+    }
+    remainingDistanceToNextStep = current.next.distanceMoved;
+    remainingDistanceToNextAction = current.nextAction.distanceMoved;
+    [self fireUserLocation:current.location];
+    [_delegate previewUpdated:current];
+}
+
+- (void)fireUserMoved:(double)distance
+{
+    if (isAutoProceed == NO) {
+        [_delegate userMoved:distance];
+    }
+    if (distance == 0) {
+        isAutoProceed = NO;
+    }
+}
+
+- (void)fireUserLocation:(HLPLocation*)location
+{
+    HLPLocation *loc = [[HLPLocation alloc] init];
+    [loc update:location];
+    [loc updateOrientation:current.orientation withAccuracy:0];
+    currentLocation = loc;
+    [_delegate userLocation:loc];
+}
+
+- (void)fireRemainingDistance:(double)distance
+{
+    [_delegate remainingDistance:distance];
 }
 
 #pragma mark - PreviewTraverseDelegate
 
 - (void)gotoBegin
 {
+    isAutoProceed = NO;
     current = history[0];
-    [_delegate previewUpdated:[current copy]];
+    [self firePreviewUpdated];
 }
 
 - (void)gotoEnd
 {
-    [_delegate userMoved:0];
+    isAutoProceed = NO;
+    [self fireUserMoved:0];
 }
 
 - (void)stepForward
 {
+    isAutoProceed = NO;
     double distance = [self _stepForward];
-    [_delegate userMoved:distance];
-    [_delegate previewUpdated:[current copy]];
+    [self fireUserMoved:distance];
+    [self firePreviewUpdated];
 }
 
 - (double)_stepForward
@@ -638,20 +788,22 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)stepBackward
 {
+    isAutoProceed = NO;
     if (history.count > 0) {
         double distance = current.distanceMoved;
         current = [history lastObject];
         [history removeLastObject];
         
-        [_delegate userMoved:distance];
-        [_delegate previewUpdated:[current copy]];
+        [self fireUserMoved:distance];
+        [self firePreviewUpdated];
     } else {
-        [_delegate userMoved:0];
+        [self fireUserMoved:0];
     }
 }
 
 - (void)jumpForward
 {
+    isAutoProceed = NO;
     double distance = 0;
     while(true) {
         double d = [self _stepForward];
@@ -660,12 +812,13 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             break;
         }
     }
-    [_delegate userMoved:distance];
-    [_delegate previewUpdated:[current copy]];
+    [self fireUserMoved:distance];
+    [self firePreviewUpdated];
 }
 
 - (void)jumpBackward
 {
+    isAutoProceed = NO;
     if (history.count > 0) {
         double distance = 0;
         while (history.count > 0) {
@@ -676,36 +829,89 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
                 break;
             }
         }
-        [_delegate userMoved:distance];
-        [_delegate previewUpdated:[current copy]];
+        [self fireUserMoved:distance];
+        [self firePreviewUpdated];
     } else {
-        [_delegate userMoved:0];
+        [self fireUserMoved:0];
     }
 }
 
 - (void)faceRight
 {
+    isAutoProceed = NO;
     if (current.rightLink) {
         HLPPreviewEvent *temp = [current copy];
         [temp setPrev:current];
         [temp turnToLink:temp.rightLink];
         current = temp;
-        [_delegate previewUpdated:[current copy]];
+        [self firePreviewUpdated];
     } else {
-        [_delegate userMoved:0];
+        [self fireUserMoved:0];
     }
 }
 
 - (void)faceLeft
 {
+    isAutoProceed = NO;
     if (current.leftLink) {
         HLPPreviewEvent *temp = [current copy];
         [temp setPrev:current];
         [temp turnToLink:temp.leftLink];
         current = temp;
-        [_delegate previewUpdated:[current copy]];
+        [self firePreviewUpdated];
     } else {
-        [_delegate userMoved:0];
+        [self fireUserMoved:0];
+    }
+}
+
+#define TIMER_INTERVAL (1.0/64.0)
+
+- (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active
+{
+    NSLog(@"%@ %f, %d", NSStringFromSelector(_cmd), speed, active);
+    
+    if (!autoTimer) {
+        stepCounter = 1;
+        autoTimer = [NSTimer scheduledTimerWithTimeInterval:TIMER_INTERVAL target:self selector:@selector(autoStep:) userInfo:nil repeats:YES];
+    } else {
+        if (speed == 0) {
+            [autoTimer invalidate];
+            autoTimer = nil;
+        }
+    }
+    
+    stepSpeed = speed;
+    isAutoProceed = active;
+}
+
+- (void)autoStep:(NSTimer*)timer
+{
+    if (isAutoProceed == NO) {
+        [autoTimer invalidate];
+        autoTimer = nil;
+    }
+    
+    stepCounter += TIMER_INTERVAL * stepSpeed;
+    if (stepCounter >= 1.0) {
+        double step_length = [[NSUserDefaults standardUserDefaults] doubleForKey:@"preview_step_length"];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (isAutoProceed) {
+                currentLocation = [currentLocation offsetLocationByDistance:step_length Bearing:currentLocation.orientation];
+                [self fireUserLocation:currentLocation];
+            }
+        });
+        stepCounter -= 1.0;
+        
+        if (isAutoProceed) {            
+            remainingDistanceToNextStep -= step_length;
+            remainingDistanceToNextAction -= step_length;
+            [self fireRemainingDistance:remainingDistanceToNextAction];
+            if (remainingDistanceToNextStep < step_length) {
+                [self _stepForward];
+                [self firePreviewUpdated];
+            }
+        }
     }
 }
 

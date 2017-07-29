@@ -457,6 +457,12 @@
     return _location;
 }
 
+- (void) updateHeight:(double)height
+{
+    _height = height;
+    [_location updateFloor:_height];
+}
+
 @end
 
 @implementation HLPNode
@@ -1227,6 +1233,7 @@ static NSRegularExpression *patternHLPPOIFlags;
 - (void)updateNode:(HLPNode *)node andFacility:(HLPFacility *)facility
 {
     _node = node;
+    [self updateHeight:_node.height];
     _facility = facility;
     [_facility addEntrance:self];
 }

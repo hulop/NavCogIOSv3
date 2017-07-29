@@ -21,7 +21,6 @@
  *******************************************************************************/
 
 #import <Foundation/Foundation.h>
-#import "NavCoverView.h"
 #import "HLPGeoJSON.h"
 
 @interface HLPPreviewEvent : NSObject <NSCopying>
@@ -32,7 +31,7 @@
 @property (readonly) double distanceMoved;
 @property (readonly) HLPPreviewEvent* prev;
 
-- (HLPObject*) target;
+- (HLPLocationObject*) target;
 - (HLPNode*) targetNode;
 - (HLPNode*) targetIntersection;
 - (NSArray<HLPFacility*>*) targetPOIs;
@@ -45,19 +44,13 @@
 - (HLPPreviewEvent*) next;
 - (HLPPreviewEvent*) right;
 - (HLPPreviewEvent*) left;
+- (HLPPreviewEvent*) nextAction;
 
 - (BOOL) isOnRoute;
 - (BOOL) isGoingToBeOffRoute;
 - (BOOL) isGoingBackward;
 - (BOOL) isArrived;
 
-
-/*
-- (HLPObject*) prevTarget;
-- (HLPLocation*) prevTargetLocation;
-- (double) distanceToPrevTarget;
-- (double) distanceToPrevIntersection;
- */
 @end
 
 
@@ -65,15 +58,27 @@
 -(void)previewStarted:(HLPPreviewEvent*)event;
 -(void)previewUpdated:(HLPPreviewEvent*)event;
 -(void)userMoved:(double)distance;
+-(void)userLocation:(HLPLocation*)location;
+-(void)remainingDistance:(double)distance;
 -(void)previewStopped:(HLPPreviewEvent*)event;
 @end
 
-@interface HLPPreviewer : NSObject <PreviewTraverseDelegate>
+@interface HLPPreviewer : NSObject
 
 @property (readonly) HLPPreviewEvent *event;
 @property (weak) id<HLPPreviewerDelegate> delegate;
 
 - (void)startAt:(HLPLocation*)loc;
 - (void)stop;
+
+- (void)gotoBegin;
+- (void)gotoEnd;
+- (void)stepForward;
+- (void)stepBackward;
+- (void)jumpForward;
+- (void)jumpBackward;
+- (void)faceRight;
+- (void)faceLeft;
+- (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active;
 
 @end

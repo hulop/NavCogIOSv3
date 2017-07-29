@@ -40,8 +40,6 @@
     NavBlindWebviewHelper *helper;
     HLPPreviewer *previewer;
     HLPPreviewCommander *commander;
-    HLPLocation *location;
-    HLPLocation *targetLocation;
     NSTimer *locationTimer;
 
     NSArray<NSObject*>* showingFeatures;
@@ -51,12 +49,8 @@
     BOOL loaded;
     
     HLPPreviewEvent *current;
-
-    BOOL isAutoProceed;
-    NSTimer *autoTimer;
-    double stepSpeed;
-    double stepCounter;
-    double remainingDistance;
+    HLPLocation *userLocation;
+    HLPLocation *animLocation;
 }
 
 - (void)dealloc
@@ -205,19 +199,15 @@
 
 -(void)previewStarted:(HLPPreviewEvent*)event
 {
-    [self targetLocation:event];
     [commander previewStarted:event];
     current = event;
-    remainingDistance = current.next.distanceMoved;
     [self _showRoute];
 }
 
 -(void)previewUpdated:(HLPPreviewEvent*)event
 {
-    [self targetLocation:event];
     [commander previewUpdated:event];
     current = event;
-    remainingDistance = current.next.distanceMoved;
     [self _showRoute];
 }
 
@@ -228,30 +218,30 @@
 
 - (void)userMoved:(double)distance
 {
-    if (isAutoProceed == NO) {
-        [commander userMoved:distance];
-    }
-    if (distance == 0) {
-        isAutoProceed = NO;
-    }
+    [commander userMoved:distance];
 }
 
-- (void) targetLocation:(HLPPreviewEvent*)event
+- (void)userLocation:(HLPLocation*)location
 {
-    if (!location) {
-        location = [[HLPLocation alloc] init];
-        [location update:event.location];
-        [location updateOrientation:event.orientation withAccuracy:0];
-        targetLocation = [[HLPLocation alloc] init];
-        [targetLocation update:location];
+    if (!userLocation) {
+        userLocation = [[HLPLocation alloc] init];
+        [userLocation update:location];
+        [userLocation updateOrientation:location.orientation withAccuracy:0];
+        animLocation = [[HLPLocation alloc] init];
+        [animLocation update:location];
     } else {
-        if (!targetLocation) {
-            targetLocation = [[HLPLocation alloc] init];
+        if (!animLocation) {
+            animLocation = [[HLPLocation alloc] init];
         }
-        [targetLocation update:event.location];
-        [targetLocation updateOrientation:event.orientation withAccuracy:0];
+        [animLocation update:location];
+        [animLocation updateOrientation:location.orientation withAccuracy:0];
     }
     [self startLocationAnimation];
+}
+
+- (void)remainingDistance:(double)distance
+{
+    [commander remainingDistance:distance];
 }
 
 - (void)startLocationAnimation
@@ -260,14 +250,14 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             locationTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
                 double r = 0.8;
-                [location updateFloor:targetLocation.floor];
-                [location updateLat:location.lat*r + targetLocation.lat*(1-r)
-                                Lng:location.lng*r + targetLocation.lng*(1-r)];
+                [userLocation updateFloor:animLocation.floor];
+                [userLocation updateLat:userLocation.lat*r + animLocation.lat*(1-r)
+                                    Lng:userLocation.lng*r + animLocation.lng*(1-r)];
                 
-                double diff = [HLPLocation normalizeDegree:targetLocation.orientation - location.orientation];
-                double ori = location.orientation + diff * (1-r);
+                double diff = [HLPLocation normalizeDegree:animLocation.orientation - userLocation.orientation];
+                double ori = userLocation.orientation + diff * (1-r);
 
-                [location updateOrientation:ori withAccuracy:0];
+                [userLocation updateOrientation:ori withAccuracy:0];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self showLocation];
                 });
@@ -278,7 +268,7 @@
 
 - (void) showLocation
 {
-    double orientation = -location.orientation / 180 * M_PI;
+    double orientation = -userLocation.orientation / 180 * M_PI;
     
     [helper sendData:@[@{
                            @"type":@"ORIENTATION",
@@ -287,9 +277,9 @@
             withName:@"Sensor"];
     
     [helper sendData:@{
-                       @"lat":@(location.lat),
-                       @"lng":@(location.lng),
-                       @"floor":@(location.floor),
+                       @"lat":@(userLocation.lat),
+                       @"lng":@(userLocation.lng),
+                       @"floor":@(userLocation.floor),
                        @"accuracy":@(1),
                        @"rotate":@(0), // dummy
                        @"orientation":@(999), //dummy
@@ -303,81 +293,32 @@
 
 - (void)speakAtPoint:(CGPoint)point
 {
-    isAutoProceed = NO;
     // not implemented
+    [previewer autoStepForwardSpeed:0 Active:NO];
     [self stopSpeaking];
 }
 
 - (void)stopSpeaking
 {
-    isAutoProceed = NO;
+    [previewer autoStepForwardSpeed:0 Active:NO];
     [[NavDeviceTTS sharedTTS] stop:NO];
 }
 
 - (void)speakCurrentPOI
 {
-    isAutoProceed = NO;
+    [previewer autoStepForwardSpeed:0 Active:NO];
     [commander previewCurrentFull];
 }
 
 - (void)selectCurrentPOI
 {
-    isAutoProceed = NO;
+    [previewer autoStepForwardSpeed:0 Active:NO];
     if (current && current.targetPOIs) {
         POIViewController *vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"poi_view"];
         vc.pois = current.targetPOIs;
         [self.navigationController pushViewController:vc animated:YES];
     }
 }
-
-#define TIMER_INTERVAL (1.0/64.0)
-
-- (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active
-{
-    NSLog(@"%@ %f, %d", NSStringFromSelector(_cmd), speed, active);
-    
-    if (!autoTimer) {
-        stepCounter = 1;
-        autoTimer = [NSTimer scheduledTimerWithTimeInterval:TIMER_INTERVAL target:self selector:@selector(autoStep:) userInfo:nil repeats:YES];
-    } else {
-        if (speed == 0) {
-            [autoTimer invalidate];
-            autoTimer = nil;
-        }
-    }
-    
-    stepSpeed = speed;
-    isAutoProceed = active;
-}
-
-- (void)autoStep:(NSTimer*)timer
-{
-    if (isAutoProceed == NO) {
-        [autoTimer invalidate];
-        autoTimer = nil;
-    }
-    
-    stepCounter += TIMER_INTERVAL * stepSpeed;
-    if (stepCounter >= 1.0) {
-        double step_length = [[NSUserDefaults standardUserDefaults] doubleForKey:@"preview_step_length"];
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self playStep];
-            if (isAutoProceed) {
-                targetLocation = [targetLocation offsetLocationByDistance:step_length Bearing:targetLocation.orientation];
-            }
-        });
-        stepCounter -= 1.0;
-
-        if (isAutoProceed) {
-            remainingDistance -= step_length;
-            if (remainingDistance < 0) {
-                [previewer stepForward];
-            }
-        }
-    }
-}
-
 
 - (void)quit
 {
@@ -407,50 +348,47 @@
 
 - (void)gotoBegin
 {
-    isAutoProceed = NO;
     [previewer gotoBegin];
 }
 
 - (void)gotoEnd
 {
-    isAutoProceed = NO;
     [previewer gotoEnd];
 }
 
 - (void)stepForward
 {
-    isAutoProceed = NO;
     [previewer stepForward];
 }
 
 - (void)stepBackward
 {
-    isAutoProceed = NO;
     [previewer stepBackward];
 }
 
 - (void)jumpForward
 {
-    isAutoProceed = NO;
     [previewer jumpForward];
 }
 
 - (void)jumpBackward
 {
-    isAutoProceed = NO;
     [previewer jumpBackward];
 }
 
 - (void)faceRight
 {
-    isAutoProceed = NO;
     [previewer faceRight];
 }
 
 - (void)faceLeft
 {
-    isAutoProceed = NO;
     [previewer faceLeft];
+}
+
+- (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active
+{
+    [previewer autoStepForwardSpeed:speed Active:active];
 }
 
 #pragma mark - private
@@ -459,7 +397,6 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         NavDataStore *nds = [NavDataStore sharedDataStore];
-        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
         
         BOOL hasCenter = [nds mapCenter] != nil;
         

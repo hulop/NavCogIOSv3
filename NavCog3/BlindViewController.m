@@ -133,7 +133,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debugPeerStateChanged:) name:DEBUG_PEER_STATE_CHANGE object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogStart:) name:DialogManager.REQUEST_DIALOG_START object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DialogManager.DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleLocaionUnknown:) name:REQUEST_HANDLE_LOCATION_UNKNOWN object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURL:) name: REQUEST_OPEN_URL object:nil];
@@ -201,7 +200,8 @@
 {
     [dialogHelper inactive];
     dialogHelper.helperView.hidden = YES;
-    [[NSNotificationCenter defaultCenter] postNotificationName:DialogManager.REQUEST_DIALOG_START object:nil];
+    [self requestDialogStart];
+    [[DialogManager sharedManager] start];
 }
 
 - (void)dialogStateChanged:(NSNotification*)note
@@ -1081,7 +1081,7 @@
     [ctx evaluateScript:command];
 }
 
-- (void) requestDialogStart:(NSNotification*)note
+- (void)requestDialogStart
 {
     if ([navigator isActive] ||
         self.navigationController.topViewController != self ||

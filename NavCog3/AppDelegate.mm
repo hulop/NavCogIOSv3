@@ -106,7 +106,7 @@ void uncaughtExceptionHandler(NSException *exception)
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_SAVE object:self];
-    [[NSNotificationCenter defaultCenter] postNotificationName:DialogManager.REQUEST_DIALOG_PAUSE object:self];
+    [[DialogManager sharedManager] pause];
 
     UIApplication *app = [UIApplication sharedApplication];
     _backgroundID = [app beginBackgroundTaskWithExpirationHandler:^{

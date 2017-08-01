@@ -30,11 +30,14 @@
 #import "NavBlindWebviewHelper.h"
 #import "POIViewController.h"
 
+#import <CoreMotion/CoreMotion.h>
+
 
 @interface BlindViewController () {
 }
 
 @end
+
 
 @implementation BlindViewController {
     NavBlindWebviewHelper *helper;
@@ -51,6 +54,13 @@
     HLPPreviewEvent *current;
     HLPLocation *userLocation;
     HLPLocation *animLocation;
+    
+    CMMotionManager *motionManager;
+    NSOperationQueue *motionQueue;
+#define YAWS_MAX 15
+    double yaws[YAWS_MAX];
+    int yawsIndex;
+    double prevDiff;
 }
 
 - (void)dealloc
@@ -89,6 +99,37 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeChanged:) name:ROUTE_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged:) name:UIAccessibilityVoiceOverStatusChanged object:nil];
+    
+    motionManager = [[CMMotionManager alloc] init];
+    motionManager.deviceMotionUpdateInterval = 0.1;
+    motionQueue = [[NSOperationQueue alloc] init];
+    prevDiff = NAN;
+    [motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
+        
+        yaws[yawsIndex] = motion.attitude.yaw;
+        yawsIndex = (yawsIndex+1)%YAWS_MAX;
+        double x = 0;
+        double y = 0;
+        double ave = 0;
+        for(int i = 0; i < YAWS_MAX; i++) {
+            x += cos(yaws[i]);
+            y += sin(yaws[i]);
+        }
+        ave = atan2(y, x);
+        double diff = [HLPLocation normalizeDegree:(ave - motion.attitude.yaw)/M_PI*180];
+        if (fabs(diff) > 20) {
+            if (isnan(prevDiff)) {
+                if (diff > 0) { // right
+                    [self faceRight];
+                } else { // left
+                    [self faceLeft];
+                }
+                prevDiff = diff;
+            }
+        } else {
+            prevDiff = NAN;
+        }
+    }];
 }
 
 - (void) voiceOverStatusChanged:(NSNotification*)note
@@ -294,7 +335,6 @@
 - (void)speakAtPoint:(CGPoint)point
 {
     // not implemented
-    [previewer autoStepForwardSpeed:0 Active:NO];
     [self stopSpeaking];
 }
 

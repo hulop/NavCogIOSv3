@@ -29,6 +29,7 @@
 #import "SettingViewController.h"
 #import "NavBlindWebviewHelper.h"
 #import "POIViewController.h"
+#import "ServerConfig+Preview.h"
 
 #import <CoreMotion/CoreMotion.h>
 
@@ -625,8 +626,15 @@
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
     if ([identifier isEqualToString:@"show_search"]) {
-        UIViewController *vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
+        UIViewController *vc = nil;
+        if ([[ServerConfig sharedConfig] isExpMode]) {
+            vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"setting_view"];
+            vc.restorationIdentifier = @"exp_settings";
+        } else {
+            vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
+        }
         [self.navigationController pushViewController:vc animated:YES];
+        
         return NO;
     }
     return YES;

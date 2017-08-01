@@ -24,11 +24,12 @@
 #import "ConfigManager.h"
 #import "LocationEvent.h"
 #import "AuthManager.h"
-#import "ServerConfig+FingerPrint.h"
 #import "NavUtil.h"
 #import "NavDataStore.h"
 #import "HLPFingerprint.h"
 #import "BlindViewController.h"
+#import "ServerConfig+Preview.h"
+#import "ExpConfig.h"
 
 @interface SettingViewController ()
 
@@ -39,6 +40,7 @@
 
 static HLPSettingHelper *userSettingHelper;
 static HLPSettingHelper *routeOptionsSettingHelper;
+static HLPSettingHelper *expSettingHelper;
 
 static HLPSetting *idLabel;
 
@@ -60,7 +62,12 @@ static HLPSetting *idLabel;
     if ([self.restorationIdentifier isEqualToString:@"route_options_setting"]) {
         helper = routeOptionsSettingHelper;
     }
-
+    if ([self.restorationIdentifier isEqualToString:@"exp_settings"]) {
+        [SettingViewController setupExpSettings];
+        helper = expSettingHelper;
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:EXP_ROUTES_CHANGED_NOTIFICATION object:nil];
     
     if (helper) {
         helper.delegate = self;
@@ -71,9 +78,19 @@ static HLPSetting *idLabel;
     [self updateView];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    if ([self.restorationIdentifier isEqualToString:@"exp_settings"]) {
+        if ([SettingViewController expUserRoutes] == nil ){
+            [self performSegueWithIdentifier:@"show_exp_view" sender:self];
+        }
+    }
+}
+
 - (void) configChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        [SettingViewController setupExpSettings];
         [self updateView];
     });
 }
@@ -91,6 +108,31 @@ static HLPSetting *idLabel;
 
 - (void)actionPerformed:(HLPSetting *)setting
 {
+    if ([self.restorationIdentifier isEqualToString:@"exp_settings"]) {
+        
+        NSArray *routes = [SettingViewController expUserRoutes];
+        
+        for(NSDictionary *route in routes) {
+            if ([route[@"name"] isEqualToString:setting.name]) {
+                [self requestRoute:route];
+            }
+        }
+    }
+}
+
+- (void)requestRoute:(NSDictionary*)route
+{
+    NSString *from = route[@"from_id"];
+    NSString *to = route[@"to_id"];
+    NSDictionary *options = route[@"options"];
+    
+    [[NavDataStore sharedDataStore] requestRouteFrom:from To:to withPreferences:options complete:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [self.navigationController popViewControllerAnimated:YES];
+            [NavUtil hideModalWaiting];
+        });
+    }];
 }
 
 + (void)setup
@@ -149,6 +191,34 @@ static HLPSetting *idLabel;
                                              Name:@"route_use_escalator" DefaultValue:@(NO) Accept:nil];
     [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Stairs", @"")
                                              Name:@"route_use_stairs" DefaultValue:@(YES) Accept:nil];
+}
+
++ (NSArray*)expUserRoutes
+{
+    ExpConfig *ec = [ExpConfig sharedConfig];
+    if (ec.expRoutes == nil || ec.userInfo == nil) {
+        return nil;
+    }
+    NSDictionary *routes = ec.expRoutes[@"routes"];
+    NSString *group = ec.userInfo[@"group"];
+    if (routes == nil || group == nil) {
+        return nil;
+    }
+    
+    return routes[group];
+}
+
++ (void)setupExpSettings
+{
+    expSettingHelper = [[HLPSettingHelper alloc] init];
+    
+    NSArray *routes = [SettingViewController expUserRoutes];
+    if (routes == nil) {
+        return;
+    }
+    for(NSDictionary *route in routes) {
+        [expSettingHelper addActionTitle:route[@"name"] Name:route[@"name"]];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

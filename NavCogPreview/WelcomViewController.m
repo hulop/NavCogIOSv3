@@ -22,7 +22,7 @@
 
 
 #import "WelcomViewController.h"
-#import "ServerConfig.h"
+#import "ServerConfig+Preview.h"
 #import "AuthManager.h"
 #import "LocationEvent.h"
 #import "Logging.h"

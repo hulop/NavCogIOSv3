@@ -124,6 +124,7 @@
 		7E5D3BBF1F02480A002420DA /* HLPPreviewCommander.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5D3BBE1F02480A002420DA /* HLPPreviewCommander.m */; };
 		7E5D3BC21F0340D8002420DA /* HLPWalker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5D3BC11F0340D8002420DA /* HLPWalker.m */; };
 		7E5D3BC81F039E9B002420DA /* POIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5D3BC71F039E9B002420DA /* POIViewController.m */; };
+		7E5E65101F3067F100FE43E5 /* ExpConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5E650F1F3067F100FE43E5 /* ExpConfig.m */; };
 		7E683DF51E42DE8100D04037 /* RatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E683DF21E42DE8100D04037 /* RatingViewController.m */; };
 		7E683DF61E42DE8100D04037 /* StarRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E683DF41E42DE8100D04037 /* StarRatingView.m */; };
 		7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */; };
@@ -160,6 +161,8 @@
 		7EC20B5B1DDAC9C900818E33 /* BlindView.strings in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E96D9291DAC916C00D57C8C /* BlindView.strings */; };
 		7EC20B5C1DDAC9C900818E33 /* BlindView.stringsdict in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
 		7EC20B5D1DDAC9C900818E33 /* Localizable.strings in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E17F1A51D9A226100DB1F34 /* Localizable.strings */; };
+		7EDAFE8E1F304A0A00368058 /* ServerConfig+Preview.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDAFE8D1F304A0A00368058 /* ServerConfig+Preview.m */; };
+		7EDAFE911F3054A200368058 /* ExpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDAFE901F3054A200368058 /* ExpViewController.m */; };
 		7EDEDC211D1E0C6800AC111A /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC201D1E0C6800AC111A /* main.mm */; };
 		7EDEDC241D1E0C6800AC111A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC231D1E0C6800AC111A /* AppDelegate.mm */; };
 		7EDEDC271D1E0C6800AC111A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC261D1E0C6800AC111A /* ViewController.m */; };
@@ -439,6 +442,8 @@
 		7E5D3BC11F0340D8002420DA /* HLPWalker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPWalker.m; sourceTree = "<group>"; };
 		7E5D3BC61F039E9B002420DA /* POIViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POIViewController.h; sourceTree = "<group>"; };
 		7E5D3BC71F039E9B002420DA /* POIViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POIViewController.m; sourceTree = "<group>"; };
+		7E5E650E1F3067F100FE43E5 /* ExpConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExpConfig.h; sourceTree = "<group>"; };
+		7E5E650F1F3067F100FE43E5 /* ExpConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExpConfig.m; sourceTree = "<group>"; };
 		7E683DF11E42DE8100D04037 /* RatingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RatingViewController.h; sourceTree = "<group>"; };
 		7E683DF21E42DE8100D04037 /* RatingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RatingViewController.m; sourceTree = "<group>"; };
 		7E683DF31E42DE8100D04037 /* StarRatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarRatingView.h; sourceTree = "<group>"; };
@@ -498,6 +503,10 @@
 		7EBE397F1E829928002A7BF9 /* HLPBeaconSampler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPBeaconSampler.m; sourceTree = "<group>"; };
 		7EBE39811E83FFD1002A7BF9 /* fingerprint.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = fingerprint.js; sourceTree = "<group>"; };
 		7EDAFE8B1F3042C400368058 /* NavCog3.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NavCog3.pch; sourceTree = "<group>"; };
+		7EDAFE8C1F304A0A00368058 /* ServerConfig+Preview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ServerConfig+Preview.h"; sourceTree = "<group>"; };
+		7EDAFE8D1F304A0A00368058 /* ServerConfig+Preview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ServerConfig+Preview.m"; sourceTree = "<group>"; };
+		7EDAFE8F1F3054A200368058 /* ExpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExpViewController.h; sourceTree = "<group>"; };
+		7EDAFE901F3054A200368058 /* ExpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExpViewController.m; sourceTree = "<group>"; };
 		7EDEDC1C1D1E0C6800AC111A /* NavCog3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NavCog3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EDEDC201D1E0C6800AC111A /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		7EDEDC221D1E0C6800AC111A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -986,6 +995,8 @@
 				7E5D3BB71F01FADE002420DA /* NavSound.m */,
 				7E5739F61EF27BA500BA3601 /* BlindViewController.h */,
 				7E5739F71EF27BA500BA3601 /* BlindViewController.m */,
+				7EDAFE8F1F3054A200368058 /* ExpViewController.h */,
+				7EDAFE901F3054A200368058 /* ExpViewController.m */,
 				7E27F9901EFBA92800FB3309 /* HLPPreviewer.h */,
 				7E27F9911EFBA92800FB3309 /* HLPPreviewer.m */,
 				7E5D3BBD1F02480A002420DA /* HLPPreviewCommander.h */,
@@ -996,6 +1007,10 @@
 				7E5D3BC71F039E9B002420DA /* POIViewController.m */,
 				7E5739F81EF27BA500BA3601 /* WelcomViewController.h */,
 				7E5739F91EF27BA500BA3601 /* WelcomViewController.m */,
+				7EDAFE8C1F304A0A00368058 /* ServerConfig+Preview.h */,
+				7EDAFE8D1F304A0A00368058 /* ServerConfig+Preview.m */,
+				7E5E650E1F3067F100FE43E5 /* ExpConfig.h */,
+				7E5E650F1F3067F100FE43E5 /* ExpConfig.m */,
 				7E27F8F11EFA5FFE00FB3309 /* DestinationTableViewController.h */,
 				7E27F8F21EFA5FFE00FB3309 /* DestinationTableViewController.m */,
 				7E27F8F31EFA5FFE00FB3309 /* NavCoverView.h */,
@@ -1740,6 +1755,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EDAFE911F3054A200368058 /* ExpViewController.m in Sources */,
 				7E27F9171EFA629300FB3309 /* AuthManager.m in Sources */,
 				7E27F90B1EFA623100FB3309 /* AgreementViewController.m in Sources */,
 				7E27F90C1EFA623100FB3309 /* DownloadViewController.m in Sources */,
@@ -1759,11 +1775,13 @@
 				7E27F8FD1EFA607C00FB3309 /* HLPGeoJSON.m in Sources */,
 				7E27F8FE1EFA607C00FB3309 /* HLPDataUtil.m in Sources */,
 				7E27F8FF1EFA607C00FB3309 /* HLPLocation.m in Sources */,
+				7EDAFE8E1F304A0A00368058 /* ServerConfig+Preview.m in Sources */,
 				7E5D3BB81F01FADE002420DA /* NavSound.m in Sources */,
 				7E27F8FC1EFA607000FB3309 /* Logging.m in Sources */,
 				7E5D3BC81F039E9B002420DA /* POIViewController.m in Sources */,
 				7E27F8FA1EFA605F00FB3309 /* NavDataSource.m in Sources */,
 				7E27F8F81EFA5FFE00FB3309 /* NavCoverView.m in Sources */,
+				7E5E65101F3067F100FE43E5 /* ExpConfig.m in Sources */,
 				7E27F8F71EFA5FFE00FB3309 /* DestinationTableViewController.m in Sources */,
 				7E5739F21EF27AFA00BA3601 /* AppDelegate.m in Sources */,
 				7EE8E60F1EF27541006EE7C3 /* main.m in Sources */,

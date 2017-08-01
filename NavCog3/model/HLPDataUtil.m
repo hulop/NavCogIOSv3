@@ -105,7 +105,6 @@
         } else {
             NSError *error;
             NSArray *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
-            NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
             
             if (error) {
                 NSLog(@"%@", error);

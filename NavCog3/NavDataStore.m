@@ -892,7 +892,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             }
             [flags addObject:flag];
         }
-        NSLog(@"%@, %f->%f, %@", link1._id, link1.sourceHeight, link1.targetHeight, flags);
+        //NSLog(@"%@, %f->%f, %@", link1._id, link1.sourceHeight, link1.targetHeight, flags);
         
         link1.escalatorFlags = flags;
     }
@@ -980,7 +980,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
                 continue;
             }
             if ([destinationNode.forFacilityID isEqualToString:ent.forFacilityID]) {
-                NSLog(@"%@", ent);
+                //NSLog(@"%@", ent);
             }
             if (!ent.node) { // special door tag
                 continue;

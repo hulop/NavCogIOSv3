@@ -96,7 +96,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             [temp enumerateObjectsUsingBlock:^(HLPPOI *poi, NSUInteger idx, BOOL * _Nonnull stop) {
                 HLPLocation *l = [_link nearestLocationTo:poi.location];
                 double dist = [l distanceTo:self._sourceToTarget?_link.sourceLocation:_link.targetLocation];
-                NSLog(@"%@ %.2f", poi._id, dist);
+                //NSLog(@"%@ %.2f", poi._id, dist);
             }];
         }
         _linkPoisCache = temp;
@@ -680,7 +680,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     if (minLink) {
         current = [[HLPPreviewEvent alloc] initWithLink:minLink Location:loc Orientation:ori onRoute:routeLink];
     } else {
-        NSLog(@"no link found");
+        //NSLog(@"no link found");
         //[_delegate errorWithMessage:@"closest link is not found"];
     }
     
@@ -736,6 +736,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)gotoBegin
 {
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     isAutoProceed = NO;
     current = history[0];
     [self firePreviewUpdated];
@@ -743,12 +744,14 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)gotoEnd
 {
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     isAutoProceed = NO;
     [self fireUserMoved:0];
 }
 
 - (void)stepForward
 {
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     isAutoProceed = NO;
     double distance = [self _stepForward];
     [self fireUserMoved:distance];
@@ -767,6 +770,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)stepBackward
 {
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     isAutoProceed = NO;
     if (history.count > 0) {
         double distance = current.distanceMoved;
@@ -782,6 +786,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)jumpForward
 {
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     isAutoProceed = NO;
     double distance = 0;
     while(true) {
@@ -797,6 +802,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)jumpBackward
 {
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     isAutoProceed = NO;
     if (history.count > 0) {
         double distance = 0;
@@ -817,6 +823,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)faceRight
 {
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     isAutoProceed = NO;
     if (current.rightLink) {
         HLPPreviewEvent *temp = [current copy];
@@ -831,6 +838,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)faceLeft
 {
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     isAutoProceed = NO;
     if (current.leftLink) {
         HLPPreviewEvent *temp = [current copy];
@@ -847,7 +855,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active
 {
-    NSLog(@"%@ %f, %d", NSStringFromSelector(_cmd), speed, active);
+    NSLog(@"%@,%f,%d,%f", NSStringFromSelector(_cmd), speed, active, NSDate.date.timeIntervalSince1970);
     
     if (!autoTimer) {
         stepCounter = 1;

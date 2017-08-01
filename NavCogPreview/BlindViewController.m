@@ -120,8 +120,10 @@
         if (fabs(diff) > 20) {
             if (isnan(prevDiff)) {
                 if (diff > 0) { // right
+                    NSLog(@"gyro,right,%f",NSDate.date.timeIntervalSince1970);
                     [self faceRight];
                 } else { // left
+                    NSLog(@"gyro,left,%f",NSDate.date.timeIntervalSince1970);
                     [self faceLeft];
                 }
                 prevDiff = diff;

@@ -76,7 +76,7 @@
 
 -(void)previewUpdated:(HLPPreviewEvent *)event
 {
-    NSLog(@"%@", event);
+    //NSLog(@"%@", event);
     prev = current;
     current = event;
     [self previewCurrent:nil];
@@ -95,10 +95,10 @@
     NavDataStore *nds = [NavDataStore sharedDataStore];
     
     if (nds.hasRoute && current.isOnRoute) {
-        NSLog(@"isOnRoute:%d", current.isOnRoute);
-        NSLog(@"isGoingToBeOffRoute:%d", current.isGoingToBeOffRoute);
-        NSLog(@"isArrived:%d", current.isArrived);
-        NSLog(@"isGoingBackward:%d", current.isGoingBackward);
+        //NSLog(@"isOnRoute:%d", current.isOnRoute);
+        //NSLog(@"isGoingToBeOffRoute:%d", current.isGoingToBeOffRoute);
+        //NSLog(@"isArrived:%d", current.isArrived);
+        //NSLog(@"isGoingBackward:%d", current.isGoingBackward);
         
         if (prev != nil) {
             // moved
@@ -548,7 +548,7 @@
 
 -(void)userMoved:(double)distance
 {
-    NSLog(@"%@ %f", NSStringFromSelector(_cmd), distance);
+    //NSLog(@"%@ %f", NSStringFromSelector(_cmd), distance);
     __weak HLPPreviewCommander* weakself = self;
 
     if (distance == 0) {

@@ -189,7 +189,7 @@
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    //NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     if ([touches count] > 0) {
         begin = [self centerOfTouches:touches];
     }
@@ -208,7 +208,7 @@
 /* disable
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    //NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     if (active) {
         current = [self centerOfTouches:touches];
         if (active == swipeUp2f) {
@@ -226,7 +226,7 @@
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    //NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     if (active) {
         current = [self centerOfTouches:touches];
         if (active == swipeUp2f) {
@@ -247,7 +247,7 @@
 
 - (void) didTap1f:(UITapGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     CGPoint p = [self centerOfGesture:sender];
     //NSLog(@"%f, %f", p.x, p.y);
     [_delegate speakAtPoint:p];
@@ -255,19 +255,19 @@
 
 - (void) didTap2f:(UITapGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     [_delegate stopSpeaking];
 }
 
 - (void) didTap3f:(UITapGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     [_delegate speakCurrentPOI];
 }
 
 - (void) didTap4f:(UITapGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     CGPoint p = [self centerOfGesture:sender];
     CGFloat h = self.bounds.size.height;
     if (h*0.4 > p.y) { // upper
@@ -280,31 +280,31 @@
 
 - (void)didDoubleTap1f:(UITapGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     [_delegate selectCurrentPOI];
 }
 
 - (void)didSwipeLeft1f:(UISwipeGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     [_delegate faceLeft];
 }
 
 - (void)didSwipeRight1f:(UISwipeGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     [_delegate faceRight];
 }
 
 - (void)didSwipeUp1f:(UISwipeGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     [_delegate stepForward];
 }
 
 - (void)didSwipeUp2f:(UISwipeGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     if (isAutoActive) {
         prevSpeed *= SPEED_FACTOR;
     }
@@ -315,19 +315,19 @@
 
 - (void)didSwipeUp3f:(UISwipeGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     [_delegate jumpForward];
 }
 
 - (void)didSwipeDown1f:(UISwipeGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     [_delegate stepBackward];
 }
 
 - (void)didSwipeDown2f:(UISwipeGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     if (isAutoActive) {
         prevSpeed /= SPEED_FACTOR;
         swipeUp2fTime = [[NSDate date] timeIntervalSince1970];
@@ -337,7 +337,7 @@
 
 - (void)didSwipeDown3f:(UISwipeGestureRecognizer*)sender
 {
-    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     [_delegate jumpBackward];
 }
 

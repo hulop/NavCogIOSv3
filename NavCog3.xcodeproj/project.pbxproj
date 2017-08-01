@@ -497,6 +497,7 @@
 		7EBE397E1E829928002A7BF9 /* HLPBeaconSampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPBeaconSampler.h; sourceTree = "<group>"; };
 		7EBE397F1E829928002A7BF9 /* HLPBeaconSampler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPBeaconSampler.m; sourceTree = "<group>"; };
 		7EBE39811E83FFD1002A7BF9 /* fingerprint.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = fingerprint.js; sourceTree = "<group>"; };
+		7EDAFE8B1F3042C400368058 /* NavCog3.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NavCog3.pch; sourceTree = "<group>"; };
 		7EDEDC1C1D1E0C6800AC111A /* NavCog3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NavCog3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EDEDC201D1E0C6800AC111A /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		7EDEDC221D1E0C6800AC111A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -968,6 +969,7 @@
 				7EDEDC231D1E0C6800AC111A /* AppDelegate.mm */,
 				7E6E42EC1D911236006B6899 /* LocationEvent.h */,
 				7EF45E531E3F58D200208042 /* dev.hashfile */,
+				7EDAFE8B1F3042C400368058 /* NavCog3.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -2139,6 +2141,8 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				DEVELOPMENT_TEAM = 76CMF53Q35;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/NavCog3/NavCog3.pch";
 				INFOPLIST_FILE = NavCogPreview/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2155,6 +2159,8 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				DEVELOPMENT_TEAM = 76CMF53Q35;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/NavCog3/NavCog3.pch";
 				INFOPLIST_FILE = NavCogPreview/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

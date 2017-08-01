@@ -170,7 +170,9 @@ void uncaughtExceptionHandler(NSException *exception)
             [manager start];
         }
         [Logging stopLog];
-        [Logging startLog];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
+            [Logging startLog];
+        }
     }
     secondOrLater = YES;
     

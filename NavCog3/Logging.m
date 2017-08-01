@@ -23,14 +23,24 @@
 
 #import "Logging.h"
 
+void NavNSLog(NSString* fmt, ...) {
+    if (!isatty(STDERR_FILENO))
+    {
+        va_list args;
+        va_start(args, fmt);
+        NSLogv(fmt, args);
+        
+        NSString *msg = [[NSString alloc] initWithFormat:fmt arguments:args];
+        printf("%s\n", [msg UTF8String]);
+        va_end(args);
+    }
+}
+
 @implementation Logging
 
 static int stderrSave = 0;
 
 + (void)startLog {
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
-        return;
-    }
     if (stderrSave != 0) {
         return;
     }
@@ -74,5 +84,6 @@ static int stderrSave = 0;
     long timestamp = (long)([[NSDate date] timeIntervalSince1970]*1000);
     NSLog(@"%@,%ld,%@", type, timestamp, paramStr);
 }
+
 
 @end

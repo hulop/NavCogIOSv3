@@ -112,6 +112,9 @@
     motionQueue = [[NSOperationQueue alloc] init];
     prevDiff = NAN;
     [motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
+        if (previewer == nil || previewer.isActive == NO) {
+            return;
+        }
         
         yaws[yawsIndex] = motion.attitude.yaw;
         yawsIndex = (yawsIndex+1)%YAWS_MAX;
@@ -139,6 +142,15 @@
             prevDiff = NAN;
         }
     }];
+    
+    
+    previewer = [[HLPPreviewer alloc] init];
+    previewer.delegate = self;
+    
+    commander = [[HLPPreviewCommander alloc] init];
+    commander.delegate = self;
+
+    _cover.delegate = self;
 }
 
 - (void) voiceOverStatusChanged:(NSNotification*)note
@@ -151,16 +163,6 @@
     NSLog(@"%@", NSStringFromSelector(_cmd));
     
     NavDataStore *nds = [NavDataStore sharedDataStore];
-    //NSLog(@"%@", [nds route]);
-    //NSLog(@"%@", (nds.to._id == nil)?@"No Dest":@"With Dests");
-    
-    previewer = [[HLPPreviewer alloc] init];
-    previewer.delegate = self;
-    _cover.delegate = self;
-    
-    commander = [[HLPPreviewCommander alloc] init];
-    commander.delegate = self;
-    
     [previewer startAt:nds.from.location];
     [self updateView];
 }
@@ -268,6 +270,11 @@
 {
     [commander previewStopped:event];
     [helper clearRoute];
+    current = nil;
+    userLocation = nil;
+    animLocation = nil;
+    [locationTimer invalidate];
+    locationTimer = nil;
     [self updateView];
 
     dispatch_async(dispatch_get_main_queue(), ^{

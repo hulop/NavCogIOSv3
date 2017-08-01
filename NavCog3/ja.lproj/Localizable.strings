@@ -56,9 +56,6 @@
 /* No comment provided by engineer. */
 "Navigation" = "案内の履歴";
 
-/* Pausing */
-"PAUSING" = "<一時停止中>";
-
 /* No comment provided by engineer. */
 "Prefer Tactile Paving" = "点字ブロックを優先する";
 
@@ -67,9 +64,6 @@
 
 /* No comment provided by engineer. */
 "Preview with action" = "振ってプレビュー";
-
-/* Speak Now! */
-"SPEAK_NOW" = "<話しかけてください>";
 
 /* No comment provided by engineer. */
 "SPEECH_SPEED_CHECK" = "読み上げ速度:%.2f";
@@ -112,12 +106,6 @@
 
 "for_bone_conduction_headset" = "骨伝導ヘッドフォン用の効果音";
 
-"Error" = "エラー";
-
-"DialogStart" = "再開";
-
-"DialogStartHint" = "対話を再開するにはダブルタップします";
-
 "Reset_Location" = "位置推定をやり直す";
 
 "Open_with_Safari" = "Safariで開く";
@@ -155,20 +143,3 @@ NavCog　→
 "NeedToUpdateAppTitle" = "アプリの更新";
 "NeedToUpdateAppMessage" = "アプリの更新が必要です";
 "OpenAppStore" = "App Storeを開く";
-
-"WAIT_ACTION" = "話しかけていただけるのを待っています。マイクボタンを押して再開してください。";
-
-"NoAudioAccessAlertTitle" = "マイクが許可されていません";
-"NoAudioAccessAlertMessage" = "対話検索の機能を使うためにはマイクを許可する必要があります。
-プライバシー設定画面から
-マイク　→　NavCog
-の設定をオンにします。";
-
-"NoSpeechRecoAccessAlertTitle" = "音声認識が許可されていません";
-"NoSpeechRecoAccessAlertMessage" = "対話検索の機能を使うためには音声認識を許可する必要があります。
-プライバシー設定画面から
-音声認識　→　NavCog
-の設定をオンにします。";
-
-"unknownError0" = "音声認識を開始できませんでした。もう一度お試しください";
-"unknownError1" = "現在、音声認識を行うことが出来ません。あとでもう一度お試しください";

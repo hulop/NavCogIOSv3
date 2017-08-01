@@ -23,8 +23,6 @@
 #import <Foundation/Foundation.h>
 #import "ServerConfig.h"
 
-#define EXP_ROUTES_CHANGED_NOTIFICATION @"EXP_ROUTES_CHANGED_NOTIFICATION"
-
 @interface ServerConfig (Exp)
 
 - (BOOL) isExpMode;

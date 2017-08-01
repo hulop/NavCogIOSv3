@@ -24,25 +24,26 @@
 #import "Logging.h"
 
 void NavNSLog(NSString* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    NSString *msg = [[NSString alloc] initWithFormat:fmt arguments:args];
+    va_end(args);
     if (!isatty(STDERR_FILENO))
     {
-        va_list args;
-        va_start(args, fmt);
-        NSLogv(fmt, args);
-        
-        NSString *msg = [[NSString alloc] initWithFormat:fmt arguments:args];
-        printf("%s\n", [msg UTF8String]);
-        va_end(args);
+        fprintf(stdout, "%s\n", [msg UTF8String]);
     }
+    va_start(args, fmt);
+    NSLogv(fmt, args);
+    va_end(args);
 }
 
 @implementation Logging
 
 static int stderrSave = 0;
 
-+ (void)startLog {
++ (NSString*)startLog {
     if (stderrSave != 0) {
-        return;
+        return nil;
     }
     static NSDateFormatter *formatter;
     if (!formatter) {
@@ -57,6 +58,7 @@ static int stderrSave = 0;
     
     stderrSave = dup(STDERR_FILENO);
     freopen([path UTF8String],"a+",stderr);
+    return path;
 }
 
 +(void)stopLog {

@@ -43,6 +43,7 @@ static ExpConfig *instance;
 
 - (void)requestUserInfo:(NSString*)user_id withComplete:(void(^)(NSDictionary*))complete
 {
+    _user_id = user_id;
     NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
     NSString *https = [[[ServerConfig sharedConfig].selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
     
@@ -50,7 +51,7 @@ static ExpConfig *instance;
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
-            self.userInfo = (NSDictionary*)result;
+            _userInfo = (NSDictionary*)result;
             complete(self.userInfo);
         } else {
             complete(nil);
@@ -58,19 +59,6 @@ static ExpConfig *instance;
     }];
 }
 
-- (void)saveUserInfo:(NSString*)user_id withInfo:(NSDictionary *)info withComplete:(void (^)())complete
-{
-    NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
-    NSString *https = [[[ServerConfig sharedConfig].selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
-    
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/user?id=%@",https, server_host, user_id]];
-    
-    [HLPDataUtil postRequest:url withData:info callback:^(NSData *response) {
-        if (response != nil) {
-            self.userInfo = info;
-        }
-    }];
-}
 
 - (void)requestRoutesConfig:(void(^)(NSDictionary*))complete
 {
@@ -82,12 +70,111 @@ static ExpConfig *instance;
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
-            self.expRoutes = (NSDictionary*)result;
+            _expRoutes = (NSDictionary*)result;
             complete(self.expRoutes);
+            [[NSNotificationCenter defaultCenter] postNotificationName:EXP_ROUTES_CHANGED_NOTIFICATION object:self];
         } else {
             complete(nil);
         }
     }];
+}
+
+- (void)endExpStartAt:(double)startAt withLogFile:(NSString *)logFile withComplete:(void (^)())complete
+{
+    NSError *error;
+    
+    NSString *logFileName = [logFile lastPathComponent];
+    NSString *logFileId = [NSString stringWithFormat:@"%@/%@", _user_id, logFileName];
+    NSString *logContent = [NSString stringWithContentsOfFile:logFile encoding:NSUTF8StringEncoding error:&error];
+    
+    double endAt = [[NSDate date] timeIntervalSince1970];
+    double duration = endAt - startAt;
+    NSString *routeName = _currentRoute[@"name"];
+    
+    NSMutableDictionary *info = [_userInfo mutableCopy];
+    if (info[@"_id"] == nil) {
+        info[@"_id"] = _user_id;
+    }
+    
+    NSMutableArray *routes = [@[] mutableCopy];
+    if (!info[@"routes"]) {
+        info[@"routes"] = @[];
+    }
+    BOOL flag = YES;
+    for(NSDictionary *route in info[@"routes"]) {
+        if ([route[@"name"] isEqualToString:routeName]) {
+            flag = NO;
+            break;
+        }
+    }
+    if (flag) {
+        info[@"routes"] = [info[@"routes"] arrayByAddingObject:@{@"name":routeName, @"limit":_currentRoute[@"limit"]}];
+    }
+    for(NSDictionary *route in info[@"routes"]) {
+        if ([route[@"name"] isEqualToString:routeName]) {
+            NSMutableDictionary *temp = [route mutableCopy];
+            temp[@"elapsed_time"] = @([temp[@"elapsed_time"] doubleValue] + duration);
+            if (!temp[@"activities"]) {
+                temp[@"activities"] = @[];
+            }
+            temp[@"activities"] = [temp[@"activities"] arrayByAddingObject:
+                                   @{
+                                     @"start_at": @(startAt),
+                                     @"end_at": @(endAt),
+                                     @"duration": @(duration),
+                                     @"log_file": logFileId
+                                     }];
+            [routes addObject:temp];
+        } else {
+            [routes addObject:route];
+        }
+    }
+    info[@"routes"] = routes;
+
+    NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
+    NSString *https = [[[ServerConfig sharedConfig].selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    
+    NSURL *logurl = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/log?id=%@",https, server_host, logFileId]];
+    NSDictionary *logdic = @{
+                              @"_id": logFileId,
+                              @"user_id": _user_id,
+                              @"created_at": @(startAt),
+                              @"log": logContent
+                              };
+    
+    NSData *logdata = [NSJSONSerialization dataWithJSONObject:logdic options:0 error:&error];
+    
+    NSURL *userurl = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/user?id=%@",https, server_host, _user_id]];
+    NSData *userdata = [NSJSONSerialization dataWithJSONObject:info options:0 error:&error];
+    
+    [HLPDataUtil postRequest:logurl
+                 contentType:@"application/json; charset=UTF-8"
+                    withData:logdata
+                    callback:^(NSData *response)
+     {
+         NSError *error;
+         [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+         if (error) {
+             NSString *res = [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding];
+             NSLog(@"%@", res);
+         } else {
+             [HLPDataUtil postRequest:userurl
+                          contentType:@"application/json; charset=UTF-8"
+                             withData:userdata
+                             callback:^(NSData *response)
+              {
+                  NSError *error;
+                  [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+                  if (error) {
+                      NSString *res = [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding];
+                      NSLog(@"%@", res);
+                  } else {
+                      _userInfo = info;
+                      complete();
+                  }
+             }];
+         }
+     }];
 }
 
 @end

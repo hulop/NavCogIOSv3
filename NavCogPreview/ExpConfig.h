@@ -22,15 +22,21 @@
 
 #import <Foundation/Foundation.h>
 
+#define EXP_ROUTES_CHANGED_NOTIFICATION @"EXP_ROUTES_CHANGED_NOTIFICATION"
+
 @interface ExpConfig : NSObject
 
 + (instancetype) sharedConfig;
 
-@property NSDictionary *userInfo;
-@property NSDictionary *expRoutes;
+@property (readonly) NSString *user_id;
+@property (readonly) NSDictionary *userInfo;
+@property (readonly) NSDictionary *expRoutes;
+@property NSDictionary *currentRoute;
 
 - (void)requestUserInfo:(NSString*)user_id withComplete:(void(^)(NSDictionary*))complete;
 - (void)saveUserInfo:(NSString*)user_id withInfo:(NSDictionary*)info withComplete:(void(^)())complete;
 - (void)requestRoutesConfig:(void(^)(NSDictionary*))complete;
+
+- (void)endExpStartAt:(double)startAt withLogFile:(NSString*)logFile withComplete:(void(^)())complete;
 
 @end

@@ -122,6 +122,10 @@ static HLPSetting *idLabel;
 
 - (void)requestRoute:(NSDictionary*)route
 {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil showModalWaitingWithMessage:@"Loading, please wait..."];
+    });
+    [ExpConfig sharedConfig].currentRoute = route;
     NSString *from = route[@"from_id"];
     NSString *to = route[@"to_id"];
     NSDictionary *options = route[@"options"];
@@ -199,18 +203,20 @@ static HLPSetting *idLabel;
     if (ec.expRoutes == nil || ec.userInfo == nil) {
         return nil;
     }
-    NSDictionary *routes = ec.expRoutes[@"routes"];
     NSString *group = ec.userInfo[@"group"];
-    if (routes == nil || group == nil) {
+    if (group == nil) {
         return nil;
     }
     
-    return routes[group];
+    return ec.expRoutes[group][@"routes"];
 }
 
 + (void)setupExpSettings
 {
-    expSettingHelper = [[HLPSettingHelper alloc] init];
+    if (!expSettingHelper) {
+        expSettingHelper = [[HLPSettingHelper alloc] init];
+    }
+    [expSettingHelper removeAllSetting];
     
     NSArray *routes = [SettingViewController expUserRoutes];
     if (routes == nil) {

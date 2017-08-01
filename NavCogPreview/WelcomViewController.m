@@ -190,8 +190,8 @@
                                                                     object:self
                                                                   userInfo:config.selectedServerConfig];
 
-                [Logging stopLog];
-                [Logging startLog];
+                //[Logging stopLog];
+                //[Logging startLog];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *hostname = config.selected[@"hostname"];

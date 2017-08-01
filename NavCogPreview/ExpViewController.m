@@ -23,6 +23,8 @@
 #import "ExpViewController.h"
 #import "ExpConfig.h"
 #import "NavUtil.h"
+#import "NavDataStore.h"
+#import "LocationEvent.h"
 
 @interface ExpViewController ()
 
@@ -35,6 +37,14 @@
     
     self.errorLabel.hidden = YES;
     self.emailInput.delegate = self;
+    
+    NSString *user_id = [[NSUserDefaults standardUserDefaults] stringForKey:@"exp_user_id"];
+    if (user_id) {
+        self.emailInput.text = user_id;
+    }
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(destinationsChanged:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
+
     // Do any additional setup after loading the view.
 }
 
@@ -60,7 +70,7 @@
 - (void)submit
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.errorLabel.text = @"";
+        self.errorLabel.text = @" ";
         [NavUtil showModalWaitingWithMessage:@"Checking email address..."];
     });
     
@@ -74,7 +84,7 @@
             if (info == nil) { // error
                 self.errorLabel.text = @"invalid email address";
             } else {
-                self.errorLabel.text = @"";
+                self.errorLabel.text = @" ";
                 [[NSUserDefaults standardUserDefaults] setObject:user_id forKey:@"exp_user_id"];
                 [self loadRoutes];
             }
@@ -85,7 +95,7 @@
 - (void)loadRoutes
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.errorLabel.text = @"";
+        self.errorLabel.text = @" ";
         [NavUtil showModalWaitingWithMessage:@"Loading..."];
     });
         
@@ -97,14 +107,40 @@
             if (routes == nil) {
                 self.errorLabel.text = @"no routes info";
             } else {
-                self.errorLabel.text = @"";
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self dismissViewControllerAnimated:YES completion:nil];
-                });
+                self.errorLabel.text = @" ";
+                [[NavDataStore sharedDataStore] reloadDestinations:YES];
+                [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading...",@"")];
             }
         });
     }];
 
+}
+
+- (void) destinationsChanged:(NSNotification*)note
+{
+    [NavUtil hideModalWaiting];
+    
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    if ([[nds destinations] count] == 0) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error"
+                                                                       message:@"No destinations"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                      dispatch_async(dispatch_get_main_queue(), ^(void){
+                                                          [self dismissViewControllerAnimated:YES completion:nil];
+                                                      });
+                                                  }]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self presentViewController:alert animated:YES completion:nil];
+        });
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self dismissViewControllerAnimated:YES completion:nil];
+        });
+    }
 }
 
 /*

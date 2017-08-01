@@ -22,6 +22,7 @@
 
 #import "HLPPreviewer.h"
 #import "NavDataStore.h"
+#import "ServerConfig+Preview.h"
 
 @interface TemporalLocationObject : HLPLocationObject
 @end
@@ -637,6 +638,8 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)startAt:(HLPLocation *)loc
 {
+    _isActive = YES;
+    
     nds = [NavDataStore sharedDataStore];
     route = nds.route;
     
@@ -692,6 +695,8 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)stop
 {
+    _isActive = NO;
+    
     current = nil;
     [self fireUserLocation:current.location];
     [_delegate previewStopped:current];

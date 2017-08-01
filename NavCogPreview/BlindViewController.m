@@ -30,6 +30,9 @@
 #import "NavBlindWebviewHelper.h"
 #import "POIViewController.h"
 #import "ServerConfig+Preview.h"
+#import "ExpConfig.h"
+#import "Logging.h"
+
 
 #import <CoreMotion/CoreMotion.h>
 
@@ -62,6 +65,9 @@
     double yaws[YAWS_MAX];
     int yawsIndex;
     double prevDiff;
+    
+    double startAt;
+    NSString *logFile;
 }
 
 - (void)dealloc
@@ -156,6 +162,7 @@
     commander.delegate = self;
     
     [previewer startAt:nds.from.location];
+    [self updateView];
 }
 
 - (void) _showRoute
@@ -243,6 +250,9 @@
 
 -(void)previewStarted:(HLPPreviewEvent*)event
 {
+    logFile = [Logging startLog];
+    startAt = [[NSDate date] timeIntervalSince1970];
+    
     [commander previewStarted:event];
     current = event;
     [self _showRoute];
@@ -252,12 +262,25 @@
 {
     [commander previewUpdated:event];
     current = event;
-    [self _showRoute];
 }
 
 -(void)previewStopped:(HLPPreviewEvent*)event
 {
     [commander previewStopped:event];
+    [helper clearRoute];
+    [self updateView];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [Logging stopLog];
+        if ([[ServerConfig sharedConfig] isExpMode]) {
+            [NavUtil showModalWaitingWithMessage:@"Saving log..."];
+            [[ExpConfig sharedConfig] endExpStartAt:startAt withLogFile:logFile withComplete:^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [NavUtil hideModalWaiting];
+                });
+            }];
+        }
+    });
 }
 
 - (void)userMoved:(double)distance
@@ -375,8 +398,6 @@
     [alert addAction:[UIAlertAction actionWithTitle:quit
                                               style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                                                   [previewer stop];
-                                                  [NavDataStore sharedDataStore].previewMode = NO;
-                                                  [self updateView];
                                               }]];
     [alert addAction:[UIAlertAction actionWithTitle:cancel
                                               style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -444,13 +465,20 @@
         BOOL hasCenter = [nds mapCenter] != nil;
         
         self.searchButton.enabled = hasCenter;
-        if (nds.previewMode) {
+        if (previewer.isActive) {
             self.cover.hidden = NO;
             [self.cover becomeFirstResponder];
+            self.searchButton.title = @"Quit";
+            self.searchButton.accessibilityLabel = @"Quit preview";
         } else {
             self.cover.hidden = YES;
+            if ([[ServerConfig sharedConfig] isExpMode]) {
+                self.searchButton.title = @"Select";
+                self.searchButton.accessibilityLabel = @"Select a route";
+            } else {
+                self.searchButton.title = @"Search";
+            }
         }
-        
     });
 }
 
@@ -626,6 +654,11 @@
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
     if ([identifier isEqualToString:@"show_search"]) {
+        if (previewer.isActive) {
+            [previewer stop];
+            return NO;
+        }
+        
         UIViewController *vc = nil;
         if ([[ServerConfig sharedConfig] isExpMode]) {
             vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"setting_view"];

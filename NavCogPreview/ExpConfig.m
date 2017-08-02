@@ -177,4 +177,40 @@ static ExpConfig *instance;
      }];
 }
 
+
+- (NSArray*)expUserRoutes
+{
+    if (_expRoutes == nil || _userInfo == nil) {
+        return nil;
+    }
+    NSString *group = _userInfo[@"group"];
+    if (group == nil) {
+        return nil;
+    }
+    NSArray *routes = _expRoutes[group][@"routes"];
+    
+    return routes;
+}
+
+- (NSArray*)expUserRouteInfo
+{
+    if (_userInfo == nil) {
+        return nil;
+    }
+    return _userInfo[@"routes"];
+}
+
+- (NSDictionary *)expUserCurrentRouteInfo
+{
+    NSArray *infos = [self expUserRouteInfo];
+    if (infos != nil || _currentRoute != nil) {
+        for(NSDictionary *info in infos) {
+            if ([info[@"name"] isEqualToString:_currentRoute[@"name"]]) {
+                return info;
+            }
+        }
+    }
+    return nil;
+}
+
 @end

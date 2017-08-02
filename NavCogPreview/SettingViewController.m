@@ -81,7 +81,7 @@ static HLPSetting *idLabel;
 - (void)viewDidAppear:(BOOL)animated
 {
     if ([self.restorationIdentifier isEqualToString:@"exp_settings"]) {
-        if ([SettingViewController expUserRoutes] == nil ){
+        if ([[ExpConfig sharedConfig] expUserRoutes] == nil ){
             [self performSegueWithIdentifier:@"show_exp_view" sender:self];
         }
     }
@@ -110,7 +110,7 @@ static HLPSetting *idLabel;
 {
     if ([self.restorationIdentifier isEqualToString:@"exp_settings"]) {
         
-        NSArray *routes = [SettingViewController expUserRoutes];
+        NSArray *routes = [[ExpConfig sharedConfig] expUserRoutes];
         
         for(NSDictionary *route in routes) {
             if ([route[@"name"] isEqualToString:setting.name]) {
@@ -197,29 +197,6 @@ static HLPSetting *idLabel;
                                              Name:@"route_use_stairs" DefaultValue:@(YES) Accept:nil];
 }
 
-+ (NSArray*)expUserRoutes
-{
-    ExpConfig *ec = [ExpConfig sharedConfig];
-    if (ec.expRoutes == nil || ec.userInfo == nil) {
-        return nil;
-    }
-    NSString *group = ec.userInfo[@"group"];
-    if (group == nil) {
-        return nil;
-    }
-    NSArray *routes = ec.expRoutes[group][@"routes"];
-    
-    return routes;
-}
-
-+ (NSArray*)expUserRouteInfo
-{
-    ExpConfig *ec = [ExpConfig sharedConfig];
-    if (ec.userInfo == nil) {
-        return nil;
-    }
-    return ec.userInfo[@"routes"];
-}
 
 + (void)setupExpSettings
 {
@@ -228,8 +205,8 @@ static HLPSetting *idLabel;
     }
     [expSettingHelper removeAllSetting];
     
-    NSArray *routes = [SettingViewController expUserRoutes];
-    NSArray *infos = [SettingViewController expUserRouteInfo];
+    NSArray *routes = [[ExpConfig sharedConfig] expUserRoutes];
+    NSArray *infos = [[ExpConfig sharedConfig] expUserRouteInfo];
     if (routes == nil) {
         return;
     }

@@ -68,6 +68,7 @@
     
     double startAt;
     NSString *logFile;
+    NSTimer *timeout;
 }
 
 - (void)dealloc
@@ -255,6 +256,24 @@
     logFile = [Logging startLog];
     startAt = [[NSDate date] timeIntervalSince1970];
     
+    if ([[ServerConfig sharedConfig] isExpMode]) {
+        NSDictionary *info = [[ExpConfig sharedConfig] expUserCurrentRouteInfo];
+        NSDictionary *route = [[ExpConfig sharedConfig] currentRoute];
+        if (route) {
+            double limit = [route[@"limit"] doubleValue];
+            double elapsed_time = 0;
+            if (info && info[@"elapsed_time"]) {
+                elapsed_time = [info[@"elapsed_time"] doubleValue];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                timeout = [NSTimer scheduledTimerWithTimeInterval:(limit - elapsed_time) repeats:NO block:^(NSTimer * _Nonnull timer) {
+                    [previewer stop];
+                    [self speak:@"Time is up." withOptions:@{@"force":@(NO)} completionHandler:nil];
+                }];
+            });
+        }
+    }
+    
     [commander previewStarted:event];
     current = event;
     [self _showRoute];
@@ -268,6 +287,11 @@
 
 -(void)previewStopped:(HLPPreviewEvent*)event
 {
+    if (timeout) {
+        [timeout invalidate];
+        timeout = nil;
+    }
+    
     [commander previewStopped:event];
     [helper clearRoute];
     current = nil;

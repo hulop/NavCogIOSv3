@@ -39,4 +39,8 @@
 
 - (void)endExpStartAt:(double)startAt withLogFile:(NSString*)logFile withComplete:(void(^)())complete;
 
+- (NSArray*)expUserRoutes;
+- (NSArray*)expUserRouteInfo;
+- (NSDictionary*)expUserCurrentRouteInfo;
+
 @end

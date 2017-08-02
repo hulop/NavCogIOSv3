@@ -446,6 +446,14 @@
         _height = [self.properties[PROPKEY_HEIGHT] doubleValue];
         _height = (_height >= 1)?_height-1:_height;
     }
+    else if (self.properties[PROPKEY_EXT_HEIGHT]) {
+        _height = [self.properties[PROPKEY_EXT_HEIGHT] doubleValue];
+        if (_height == 0) {
+            _height = NAN;
+        } else {
+            _height = (_height >= 1)?_height-1:_height;
+        }
+    }
     
     _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];
     

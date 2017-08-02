@@ -69,8 +69,10 @@
     self.title.text = self.setting.label;
     self.title.adjustsFontSizeToFitWidth = YES;
     self.title.isAccessibilityElement = NO;
+    self.title.textColor = self.setting.disabled ? [UIColor grayColor] : [UIColor blackColor];
 
     if (self.slider) {
+        self.slider.enabled = !self.setting.disabled;
         self.slider.minimumValue = self.setting.min;
         self.slider.maximumValue = self.setting.max;
         if ([self.setting.currentValue isKindOfClass:[NSNumber class]]) {
@@ -80,10 +82,12 @@
         self.valueLabel.isAccessibilityElement = NO;
     }
     if (self.switchView) {
+        self.switchView.enabled = !self.setting.disabled;
         self.switchView.on = [self.setting boolValue];
         self.switchView.accessibilityLabel = self.setting.label;
     }
     if (self.subtitle) {
+        self.subtitle.textColor = self.setting.disabled ? [UIColor grayColor] : [UIColor blackColor];
         if (self.setting.type == OPTION) {
             self.accessoryType = [self.setting boolValue]?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
             self.subtitle.text = nil;
@@ -95,6 +99,7 @@
         }
     }
     if (self.textInput) {
+        self.textInput.enabled = !self.setting.disabled;
         self.textInput.secureTextEntry = (setting.type == PASSINPUT);
         self.textInput.text = [self.setting stringValue];
         self.textInput.accessibilityLabel = self.setting.label;
@@ -104,6 +109,9 @@
 
 - (void) tapped:(id)sender
 {
+    if (self.setting.disabled) {
+        return;
+    }
     if (self.switchView) {
         [self.switchView setOn:!self.switchView.on animated:YES];
         [self switchChanged:self.switchView];

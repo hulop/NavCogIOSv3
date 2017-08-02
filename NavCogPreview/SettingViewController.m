@@ -207,8 +207,18 @@ static HLPSetting *idLabel;
     if (group == nil) {
         return nil;
     }
+    NSArray *routes = ec.expRoutes[group][@"routes"];
     
-    return ec.expRoutes[group][@"routes"];
+    return routes;
+}
+
++ (NSArray*)expUserRouteInfo
+{
+    ExpConfig *ec = [ExpConfig sharedConfig];
+    if (ec.userInfo == nil) {
+        return nil;
+    }
+    return ec.userInfo[@"routes"];
 }
 
 + (void)setupExpSettings
@@ -219,11 +229,26 @@ static HLPSetting *idLabel;
     [expSettingHelper removeAllSetting];
     
     NSArray *routes = [SettingViewController expUserRoutes];
+    NSArray *infos = [SettingViewController expUserRouteInfo];
     if (routes == nil) {
         return;
     }
     for(NSDictionary *route in routes) {
-        [expSettingHelper addActionTitle:route[@"name"] Name:route[@"name"]];
+
+        double limit = [route[@"limit"] doubleValue];
+        double elapsed_time = 0;
+        if (infos) {
+            for(NSDictionary *info in infos) {
+                if ([route[@"name"] isEqualToString:info[@"name"]]) {
+                    elapsed_time = [info[@"elapsed_time"] doubleValue];
+                }
+            }
+        }
+        NSString *title = [NSString stringWithFormat:@"%@  [%.0f / %.0f minutes]", route[@"name"], floor(elapsed_time / 60), round(limit / 60)];
+        
+        HLPSetting *setting = [expSettingHelper addActionTitle:title Name:route[@"name"]];
+        
+        setting.disabled = (elapsed_time > limit);
     }
 }
 

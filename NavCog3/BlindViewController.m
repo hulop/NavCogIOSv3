@@ -435,56 +435,68 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY_STOP object:self];
 }
 
-
-- (void) startLoading {
+- (void)webviewHelperWillLoad:(HLPWebviewHelper *)helper
+{
     [_indicator startAnimating];
     _indicator.hidden = NO;
 }
 
-- (void) loaded {
+- (void)webviewHelperDidLoad:(HLPWebviewHelper *)helper
+{
     [_indicator stopAnimating];
     _indicator.hidden = YES;
 }
 
-- (void) bridgeInserted {
+
+- (void)webviewHelperWillInsertBridge:(HLPWebviewHelper *)helper
+{
 }
 
-- (void)checkConnection {
+- (void)webviewHelperWillCheckConnection:(HLPWebviewHelper *)helper
+{
     [_indicator stopAnimating];
     _indicator.hidden = YES;
     _retryButton.hidden = NO;
     _errorMessage.hidden = NO;
 }
 
-- (void) speak:(NSString*)text withOptions:(NSDictionary*)options {
-    [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:nil];
+- (void)webviewHelper:(HLPWebviewHelper *)helper speak:(NSString *)text force:(BOOL)isForce
+{
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:nil];
 }
 
-- (BOOL) isSpeaking {
+- (BOOL)webviewHelperIsSpeaking:(HLPWebviewHelper *)helper
+{
     return [[NavDeviceTTS sharedTTS] isSpeaking];
 }
 
-- (void) vibrateOnAudioServices {
+- (void)webviewHelperVibrate:(HLPWebviewHelper *)helper
+{
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
-- (void) manualLocationChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:options];
+- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeLocation:(NSDictionary *)locationInfo
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:locationInfo];
 }
 
-- (void) buildingChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:options];
+- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeBuilding:(NSDictionary *)buildingInfo
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:buildingInfo];
 }
 
-- (void) wcuiStateChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:options];
+- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeUIState:(NSDictionary *)uiState
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:uiState];
 }
 
-- (void) requestRatingWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:options];
+- (void)webviewHelper:(HLPWebviewHelper *)helper didFinishNavigation:(NSDictionary *)navigationInfo
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:navigationInfo];
 }
 
-- (void) requestOpenURL:(NSURL*)url {
+- (void)webviewHelper:(HLPWebviewHelper *)helper openURL:(NSURL *)url
+{
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
 }
 

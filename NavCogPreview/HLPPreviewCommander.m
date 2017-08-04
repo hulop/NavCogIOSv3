@@ -117,9 +117,7 @@
                         [str appendString:[self poisString:current]];
                     }
                     else if (current.isGoingToBeOffRoute) {
-                        double angle = [self turnAngle:current.orientation toLink:current.routeLink at:current.target];
-                        [str appendString:[self turnString:angle]];
-                        [str appendString:@". "];
+                        [str appendString:[self turnPoiString:current]];
                     }
                     else if (!current.isGoingBackward) {
                         if (!next) {
@@ -140,8 +138,7 @@
                             }
                             [str appendString:@"You are back on route. "];
                             if (temp.link != current.link) {
-                                double angle = [self turnAngle:current.orientation toLink:temp.link at:current.target];
-                                [str appendString:[self turnString:angle]];
+                                [str appendString:[self turnPoiString:current]];
                             }
                         } else {
                             if (![self isOnElevator]) {
@@ -261,8 +258,7 @@
         if ([nds isElevatorNode:event.targetNode]) {
             actionStr = @"take an elevator";
         } else {
-            double angle = [self turnAngle:event.orientation toLink:event.routeLink at:event.target];
-            actionStr = [self turnString:angle];
+            actionStr = [self turnPoiString:event];
         }
     }
     return [NSString stringWithFormat:@"proceed %@ and %@. ", distStr, actionStr];
@@ -529,6 +525,24 @@
     }
 
     return str;
+}
+
+- (NSString*)turnPoiString:(HLPPreviewEvent*)event
+{
+    double angle = [self turnAngle:event.orientation toLink:event.routeLink at:event.target];
+    NSString *actionStr = [self turnString:angle];
+    HLPPOI *poi = event.cornerPOI;
+    if (poi) {
+        if (poi.poiCategory == HLPPOICategoryCornerEnd) {
+            actionStr = [NSString stringWithFormat:@"%@ at the end of corridor. ", actionStr];
+        }
+        else if (poi.poiCategory == HLPPOICategoryCornerLandmark) {
+            actionStr = [NSString stringWithFormat:@"%@ at the %@. ", actionStr, poi.name];
+        }
+    } else {
+        actionStr = [actionStr stringByAppendingString:@". "];
+    }
+    return actionStr;
 }
 
 - (double)turnAngle:(double)orientation toLink:(HLPLink*)link at:(HLPObject*)object

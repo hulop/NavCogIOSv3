@@ -478,8 +478,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 - (BOOL) isEffective:(HLPLocationObject*)obj
 {
     NSString *name = nil;
-    if ([obj isKindOfClass:HLPEntrance.class] && ((HLPEntrance*)obj).node.isLeaf &&
-        (_previewer.isAutoProceed || ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_jump"])) {
+    if ([obj isKindOfClass:HLPEntrance.class] && ((HLPEntrance*)obj).node.isLeaf) {
         name = ((HLPEntrance*)obj).facility.name;
     }
     if ([obj isKindOfClass:HLPPOI.class]) {
@@ -504,12 +503,35 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     for(HLPLocationObject *obj in self._linkPois) {
         if ([[_link nearestLocationTo:obj.location] distanceTo:_location] < 0.5) {
             if ([self isEffective:obj]) {
+                if ([obj isKindOfClass:HLPEntrance.class] &&
+                    !_previewer.isAutoProceed &&
+                    !self.isArrived &&
+                    [[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_jump"]) {
+                    continue;
+                }
                 [temp addObject:obj];
             }
         }
     }
     if ([temp count] > 0) {
         return temp;
+    }
+    return nil;
+}
+
+- (HLPPOI*) cornerPOI
+{
+    for(HLPLocationObject *obj in self._linkPois) {
+        if (![obj isKindOfClass:HLPPOI.class]) {
+            continue;
+        }
+        HLPPOI *poi = (HLPPOI*)obj;
+        if (poi.poiCategory == HLPPOICategoryCornerEnd || poi.poiCategory == HLPPOICategoryCornerLandmark) {
+            if ([[_link nearestLocationTo:obj.location] distanceTo:_location] < 3 &&
+                [poi isOnFront:self.location]) {
+                return poi;
+            }
+        }
     }
     return nil;
 }

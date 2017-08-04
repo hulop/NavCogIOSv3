@@ -35,6 +35,7 @@
 - (HLPNode*) targetNode;
 - (HLPNode*) targetIntersection;
 - (NSArray<HLPLocationObject*>*) targetPOIs;
+- (HLPPOI*) cornerPOI;
 - (NSArray<HLPLink*>*) intersectionLinks;
 
 - (HLPLink*) rightLink;

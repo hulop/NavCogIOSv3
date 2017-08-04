@@ -22,6 +22,9 @@
 
 #import "NavCoverView.h"
 
+#define INITIAL_SPEED (2.0)
+#define MAX_SPEED (INITIAL_SPEED*1.5*1.5*1.5*1.5)
+#define MIN_SPEED (INITIAL_SPEED/1.5/1.5)
 #define SPEED_FACTOR (1.5)
 
 @implementation NavCoverView {
@@ -80,7 +83,7 @@
 {
     self = [super initWithCoder:aDecoder];
     
-    prevSpeed = 1.0;
+    prevSpeed = INITIAL_SPEED;
     
     tap1f = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTap1f:)];
     tap1f.numberOfTapsRequired = 1;
@@ -306,7 +309,7 @@
 {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     if (isAutoActive) {
-        prevSpeed *= SPEED_FACTOR;
+        prevSpeed = MIN(prevSpeed * SPEED_FACTOR, MAX_SPEED);
     }
     swipeUp2fTime = [[NSDate date] timeIntervalSince1970];
     [_delegate autoStepForwardSpeed:prevSpeed Active:YES];
@@ -329,7 +332,7 @@
 {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     if (isAutoActive) {
-        prevSpeed /= SPEED_FACTOR;
+        prevSpeed = MAX(prevSpeed / SPEED_FACTOR, MIN_SPEED);
         swipeUp2fTime = [[NSDate date] timeIntervalSince1970];
         [_delegate autoStepForwardSpeed:prevSpeed Active:YES];
     }

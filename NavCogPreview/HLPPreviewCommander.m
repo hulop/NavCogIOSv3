@@ -310,10 +310,7 @@
 
         NSString *name = nil;
         if ([lo isKindOfClass:HLPEntrance.class]) {
-            if (![_delegate isAutoProceed] ||
-                ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_walk"]) {
-                name = [((HLPEntrance*)lo).facility namePron];
-            }
+            name = [((HLPEntrance*)lo).facility namePron];
         }
         if ([lo isKindOfClass:HLPPOI.class]) {
             HLPPOI *poi = (HLPPOI*)lo;

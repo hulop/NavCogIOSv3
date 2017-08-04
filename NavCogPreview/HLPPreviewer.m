@@ -479,7 +479,11 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     NSString *name = nil;
     if ([obj isKindOfClass:HLPEntrance.class] && ((HLPEntrance*)obj).node.isLeaf) {
-        name = ((HLPEntrance*)obj).facility.name;
+        if ([[NavDataStore sharedDataStore] isOnDestination:obj._id] ||
+            (!_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_jump"]) ||
+            (_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_walk"])) {
+            name = ((HLPEntrance*)obj).facility.name;
+        }
     }
     if ([obj isKindOfClass:HLPPOI.class]) {
         HLPPOI *poi = (HLPPOI*)obj;
@@ -503,12 +507,6 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     for(HLPLocationObject *obj in self._linkPois) {
         if ([[_link nearestLocationTo:obj.location] distanceTo:_location] < 0.5) {
             if ([self isEffective:obj]) {
-                if ([obj isKindOfClass:HLPEntrance.class] &&
-                    !_previewer.isAutoProceed &&
-                    !self.isArrived &&
-                    [[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_jump"]) {
-                    continue;
-                }
                 [temp addObject:obj];
             }
         }
@@ -907,6 +905,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     if (_isAutoProceed) {
         stepSpeed = MIN(stepSpeed * SPEED_FACTOR, MAX_SPEED);
+        return;
     }
     
     if (!autoTimer) {
@@ -915,6 +914,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }
     
     _isAutoProceed = YES;
+    
+    remainingDistanceToNextStep = current.next.distanceMoved;
+    remainingDistanceToNextAction = current.nextAction.distanceMoved;
 }
 
 - (void)autoStepForwardDown

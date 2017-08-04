@@ -128,7 +128,7 @@
         }
         ave = atan2(y, x);
         double diff = [HLPLocation normalizeDegree:(ave - motion.attitude.yaw)/M_PI*180];
-        if (fabs(diff) > 20) {
+        if (fabs(diff) > 40) {
             if (isnan(prevDiff)) {
                 if (diff > 0) { // right
                     NSLog(@"gyro,right,%f",NSDate.date.timeIntervalSince1970);

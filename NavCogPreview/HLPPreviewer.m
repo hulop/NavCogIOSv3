@@ -854,6 +854,23 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (double)_stepForward
 {
+    if (current.isOnRoute && current.isGoingBackward && current.isOnElevator) { // special behavior for with route
+        if (current.right.isOnRoute) {
+            HLPPreviewEvent *temp = current.right;
+            while(temp.isOnRoute && temp.isGoingToBeOffRoute) {
+                temp = temp.right;
+            }
+            current = temp;
+        } else {
+            HLPPreviewEvent *temp = current.left;
+            while(temp.isOnRoute && temp.isGoingToBeOffRoute) {
+                temp = temp.left;
+            }
+            current = temp;
+        }
+        return 0;
+    }
+    
     HLPPreviewEvent *next = [current next];
     if (next.distanceMoved > 0.1) {
         [history addObject:current];

@@ -130,6 +130,10 @@ static HLPSetting *idLabel;
     NSString *to = route[@"to_id"];
     NSDictionary *options = route[@"options"];
     
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    nds.from = [nds destinationByID:from];
+    nds.to = [nds destinationByID:to];
+    
     [[NavDataStore sharedDataStore] requestRouteFrom:from To:to withPreferences:options complete:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             
@@ -163,8 +167,14 @@ static HLPSetting *idLabel;
                                      Name:@"speech_speed" DefaultValue:@(0.55) Min:0.1 Max:1 Interval:0.05];
 
     [userSettingHelper addSettingWithType:DOUBLE Label:@"Step Length" Name:@"preview_step_length" DefaultValue:@(0.75)Min:0.25 Max:1.5 Interval:0.05];
+    
+    [userSettingHelper addSectionTitle:@"Preview Jump"];
     [userSettingHelper addSettingWithType:BOOLEAN Label:@"Step sound for jump" Name:@"step_sound_for_jump" DefaultValue:@(YES) Accept:nil];
+    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info. for jump" Name:@"ignore_facility_for_jump" DefaultValue:@(NO) Accept:nil];
+    
+    [userSettingHelper addSectionTitle:@"Preview Walk"];
     [userSettingHelper addSettingWithType:BOOLEAN Label:@"Step sound for walk" Name:@"step_sound_for_walk" DefaultValue:@(YES) Accept:nil];
+    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info. for walk" Name:@"ignore_facility_for_walk" DefaultValue:@(NO) Accept:nil];
 
     
     [[userSettingHelper addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil] setVisible:NO];

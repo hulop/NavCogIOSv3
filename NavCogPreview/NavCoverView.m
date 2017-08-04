@@ -26,6 +26,7 @@
     UITapGestureRecognizer *tap1f, *tap2f, *tap3f, *tap4f;
     UITapGestureRecognizer *doubleTap1f;
     UISwipeGestureRecognizer *swipeLeft1f, *swipeRight1f;
+    UISwipeGestureRecognizer *swipeLeft2f, *swipeRight2f;
     UISwipeGestureRecognizer *swipeUp1f, *swipeUp2f, *swipeUp3f;
     UISwipeGestureRecognizer *swipeDown1f, *swipeDown2f, *swipeDown3f;
     
@@ -110,6 +111,16 @@
     swipeRight1f.direction = UISwipeGestureRecognizerDirectionRight;
     swipeRight1f.numberOfTouchesRequired = 1;
     [self addGestureRecognizer:swipeRight1f];
+    
+    swipeLeft2f = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipeLeft1f:)];
+    swipeLeft2f.direction = UISwipeGestureRecognizerDirectionLeft;
+    swipeLeft2f.numberOfTouchesRequired = 2;
+    [self addGestureRecognizer:swipeLeft2f];
+    
+    swipeRight2f = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipeRight1f:)];
+    swipeRight2f.direction = UISwipeGestureRecognizerDirectionRight;
+    swipeRight2f.numberOfTouchesRequired = 2;
+    [self addGestureRecognizer:swipeRight2f];
     
     swipeUp1f = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipeUp1f:)];
     swipeUp1f.direction = UISwipeGestureRecognizerDirectionUp;

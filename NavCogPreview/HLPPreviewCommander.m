@@ -222,6 +222,8 @@
      }
      
     if (str.length > 0) {
+        [self.delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:nil];
+        /*
         __weak HLPPreviewCommander *weakself = self;
         [self addBlock:^(void (^complete)(void)) {
             if (weakself) {
@@ -229,6 +231,7 @@
                 complete();
             }
         }];
+         */
     }
     onRoute = current.isOnRoute;
 }
@@ -311,7 +314,10 @@
 
         NSString *name = nil;
         if ([lo isKindOfClass:HLPEntrance.class]) {
-            name = [((HLPEntrance*)lo).facility namePron];
+            if (![_delegate isAutoProceed] ||
+                ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_walk"]) {
+                name = [((HLPEntrance*)lo).facility namePron];
+            }
         }
         if ([lo isKindOfClass:HLPPOI.class]) {
             HLPPOI *poi = (HLPPOI*)lo;
@@ -323,7 +329,14 @@
                     name = poi.name;
                 }
             }
+            
+            if(poi.poiCategory == HLPPOICategoryDoor) {
+                name = NSLocalizedStringFromTable(poi.flags.flagAuto?@"AutoDoorPOIString1": @"DoorPOIString1", @"BlindView", @"");
+                [str appendString:name];
+                continue;
+            }
         }
+        
         if (name && name.length > 0) {
             if (heading > 45) {
                 [str appendFormat:@"%@ is on your right. ", name];
@@ -575,12 +588,16 @@
     __weak HLPPreviewCommander* weakself = self;
 
     if (distance == 0) {
+        [weakself.delegate playNoStep];
+        
+        /*
         [self addBlock:^(void(^complete)(void)){
             if (weakself) {
                 [weakself.delegate playNoStep];
             }
             complete();
         }];
+         */
         return;
     }
     
@@ -595,7 +612,18 @@
 
     if (step_sound_for_jump == YES) {
         int steps = MAX(round(distance / step_length), 2);
+        __block int n = MIN(steps, 20);
         
+        [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+            if (weakself) {
+                [weakself.delegate playStep];
+            }
+            n--;
+            if (n <= 0) {
+                [timer invalidate];
+            }
+        }];
+        /*
         [self addBlock:^(void(^complete)(void)){
             __block int n = MIN(steps, 20);
             
@@ -610,6 +638,7 @@
                 }
             }];
         }];
+         */
     }
 }
 

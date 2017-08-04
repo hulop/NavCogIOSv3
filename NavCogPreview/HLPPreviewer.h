@@ -67,6 +67,7 @@
 @property (readonly) HLPPreviewEvent *event;
 @property (weak) id<HLPPreviewerDelegate> delegate;
 @property (readonly) BOOL isActive;
+@property (readonly) BOOL isAutoProceed;
 
 - (void)startAt:(HLPLocation*)loc;
 - (void)stop;

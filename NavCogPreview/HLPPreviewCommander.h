@@ -31,6 +31,7 @@
 - (void) playFail;
 - (void) vibrate;
 - (void) speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void(^)())handler;
+- (BOOL) isAutoProceed;
 
 @end
 

@@ -261,6 +261,11 @@
     [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:handler];
 }
 
+- (BOOL)isAutoProceed
+{
+    return previewer.isAutoProceed;
+}
+
 #pragma mark - HLPPreviewerDelegate
 
 -(void)previewStarted:(HLPPreviewEvent*)event

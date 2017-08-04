@@ -28,5 +28,8 @@
 + (instancetype) sharedInstance;
 - (void) playStep:(NSDictionary*)param;
 - (void) playNoStep;
+- (void) playSuccess;
+- (void) playFail;
+- (void) playAnnounceNotification;
 - (void) vibrate:(NSDictionary*)param;
 @end

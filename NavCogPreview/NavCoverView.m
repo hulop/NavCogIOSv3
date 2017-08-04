@@ -22,11 +22,6 @@
 
 #import "NavCoverView.h"
 
-#define INITIAL_SPEED (2.0)
-#define MAX_SPEED (INITIAL_SPEED*1.5*1.5*1.5*1.5)
-#define MIN_SPEED (INITIAL_SPEED/1.5/1.5)
-#define SPEED_FACTOR (1.5)
-
 @implementation NavCoverView {
     UITapGestureRecognizer *tap1f, *tap2f, *tap3f, *tap4f;
     UITapGestureRecognizer *doubleTap1f;
@@ -37,10 +32,6 @@
     UIGestureRecognizer *active;
     CGPoint begin;
     CGPoint current;
-    
-    BOOL isAutoActive;
-    NSTimeInterval swipeUp2fTime;
-    double prevSpeed;
 }
 
 - (BOOL)canBecomeFirstResponder
@@ -82,8 +73,6 @@
 - (instancetype) initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
-    
-    prevSpeed = INITIAL_SPEED;
     
     tap1f = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTap1f:)];
     tap1f.numberOfTapsRequired = 1;
@@ -208,44 +197,6 @@
     return pow(2,dist);
 }
 
-/* disable
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    //NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
-    if (active) {
-        current = [self centerOfTouches:touches];
-        if (active == swipeUp2f) {
-            NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-            if (now - swipeUp2fTime > 0.5) {
-                double speed = [self previewSpeed];
-                if (speed != prevSpeed) {
-                    [_delegate autoStepForwardSpeed:speed Active:NO];
-                    prevSpeed = speed;
-                }
-            }
-        }
-    }
-}
-
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    //NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
-    if (active) {
-        current = [self centerOfTouches:touches];
-        if (active == swipeUp2f) {
-            NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-            double speed = [self previewSpeed];
-            if (now - swipeUp2fTime < 0.5) {
-                speed = prevSpeed;
-            }
-            [_delegate autoStepForwardSpeed:speed Active:YES];
-            isAutoActive = YES;
-            prevSpeed = speed;
-        }
-    }
-}
- */
-
 #pragma mark - gesture handler
 
 - (void) didTap1f:(UITapGestureRecognizer*)sender
@@ -308,12 +259,7 @@
 - (void)didSwipeUp2f:(UISwipeGestureRecognizer*)sender
 {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
-    if (isAutoActive) {
-        prevSpeed = MIN(prevSpeed * SPEED_FACTOR, MAX_SPEED);
-    }
-    swipeUp2fTime = [[NSDate date] timeIntervalSince1970];
-    [_delegate autoStepForwardSpeed:prevSpeed Active:YES];
-    isAutoActive = YES;
+    [_delegate autoStepForwardUp];
 }
 
 - (void)didSwipeUp3f:(UISwipeGestureRecognizer*)sender
@@ -331,11 +277,7 @@
 - (void)didSwipeDown2f:(UISwipeGestureRecognizer*)sender
 {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
-    if (isAutoActive) {
-        prevSpeed = MAX(prevSpeed / SPEED_FACTOR, MIN_SPEED);
-        swipeUp2fTime = [[NSDate date] timeIntervalSince1970];
-        [_delegate autoStepForwardSpeed:prevSpeed Active:YES];
-    }
+    [_delegate autoStepForwardDown];
 }
 
 - (void)didSwipeDown3f:(UISwipeGestureRecognizer*)sender

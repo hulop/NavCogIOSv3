@@ -25,6 +25,9 @@
 #import <AVFoundation/AVFoundation.h>
 
 @implementation NavSound {
+    SystemSoundID successSoundID;
+    SystemSoundID AnnounceNotificationSoundID;
+    SystemSoundID failSoundID;
     SystemSoundID stepRID;
     SystemSoundID stepLID;
     SystemSoundID noStepID;
@@ -60,8 +63,15 @@ static NavSound *instance;
     url = [[NSBundle mainBundle] URLForResource:@"footstep-l" withExtension:@"aiff"];
     AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url,&stepLID);
     
-    url = [NSURL URLWithString:@"file:///System/Library/Audio/UISounds/nano/VoiceOver_Click_Haptic.caf"];
-    AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url,&noStepID);
+    void(^loadSound)(NSString*,SystemSoundID*) = ^(NSString *name, SystemSoundID *soundIDRef) {
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"file:///System/Library/Audio/UISounds/%@", name]];
+        AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url,soundIDRef);
+    };
+    
+    loadSound(@"nano/VoiceOver_Click_Haptic.caf", &noStepID);
+    loadSound(@"Modern/calendar_alert_chord.caf", &successSoundID);
+    loadSound(@"SIMToolkitNegativeACK.caf", &failSoundID);
+    loadSound(@"nano/3rdParty_Success_Haptic.caf", &AnnounceNotificationSoundID);
 }
 
 -(void)_playSystemSound:(SystemSoundID)soundID
@@ -94,6 +104,24 @@ static NavSound *instance;
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
     [self _playSystemSound:noStepID];
+}
+
+-(void)playSuccess
+{
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self _playSystemSound:successSoundID];
+}
+
+- (void)playFail
+{
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self _playSystemSound:failSoundID];
+}
+
+- (void)playAnnounceNotification
+{
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self _playSystemSound:AnnounceNotificationSoundID];
 }
 
 -(void)vibrate:(NSDictionary*)param

@@ -397,19 +397,19 @@
 
 - (void)stopSpeaking
 {
-    [previewer autoStepForwardSpeed:0 Active:NO];
+    [previewer autoStepForwardStop];
     [[NavDeviceTTS sharedTTS] stop:NO];
 }
 
 - (void)speakCurrentPOI
 {
-    [previewer autoStepForwardSpeed:0 Active:NO];
+    [previewer autoStepForwardStop];
     [commander previewCurrentFull];
 }
 
 - (void)selectCurrentPOI
 {
-    [previewer autoStepForwardSpeed:0 Active:NO];
+    [previewer autoStepForwardStop];
     if (current && current.targetPOIs) {
         POIViewController *vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"poi_view"];
         vc.pois = current.targetPOIs;
@@ -481,9 +481,16 @@
     [previewer faceLeft];
 }
 
-- (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active
+- (void)autoStepForwardUp
 {
-    [previewer autoStepForwardSpeed:speed Active:active];
+    [[NavSound sharedInstance] playStep:nil];
+    [previewer autoStepForwardUp];
+}
+
+- (void)autoStepForwardDown
+{
+    [[NavSound sharedInstance] playStep:nil];
+    [previewer autoStepForwardDown];
 }
 
 #pragma mark - private

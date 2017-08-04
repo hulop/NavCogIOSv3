@@ -79,6 +79,8 @@
 - (void)jumpBackward;
 - (void)faceRight;
 - (void)faceLeft;
-- (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active;
+- (void)autoStepForwardUp;
+- (void)autoStepForwardDown;
+- (void)autoStepForwardStop;
 
 @end

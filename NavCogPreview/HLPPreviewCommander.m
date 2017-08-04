@@ -622,6 +622,13 @@
 
 - (void)remainingDistance:(double)distance
 {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"step_sound_for_walk"]) {
+        [_delegate playStep];
+    }
+    if (![[NavDataStore sharedDataStore] hasRoute]) {
+        return;
+    }    
+    
     double step_length = [[NSUserDefaults standardUserDefaults] doubleForKey:@"preview_step_length"];
     double target = MAX(floor(distance/15)*15, 5);
     

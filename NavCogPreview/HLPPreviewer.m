@@ -24,6 +24,13 @@
 #import "NavDataStore.h"
 #import "ServerConfig+Preview.h"
 
+#define TIMER_INTERVAL (1.0/64.0)
+#define INITIAL_SPEED (2.0)
+#define MAX_SPEED (INITIAL_SPEED*1.5*1.5*1.5*1.5)
+#define MIN_SPEED (INITIAL_SPEED/1.5/1.5)
+#define SPEED_FACTOR (1.5)
+
+
 @interface TemporalLocationObject : HLPLocationObject
 @end
 
@@ -628,6 +635,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     self = [super init];
     history = [@[] mutableCopy];
+    stepSpeed = INITIAL_SPEED;
     return self;
 }
 
@@ -766,9 +774,11 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 - (double)_stepForward
 {
     HLPPreviewEvent *next = [current next];
-    if (next.distanceMoved > 0) {
+    if (next.distanceMoved > 0.1) {
         [history addObject:current];
         current = next;
+    } else {
+        isAutoProceed = NO;
     }
     return next.distanceMoved;
 }
@@ -856,24 +866,43 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }
 }
 
-#define TIMER_INTERVAL (1.0/64.0)
+- (void)autoStepForwardUp
+{    
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
+    if (isAutoProceed) {
+        stepSpeed = MIN(stepSpeed * SPEED_FACTOR, MAX_SPEED);
+    }
+    
+    if (!autoTimer) {
+        stepCounter = 1;
+        autoTimer = [NSTimer scheduledTimerWithTimeInterval:TIMER_INTERVAL target:self selector:@selector(autoStep:) userInfo:nil repeats:YES];
+    }
+    
+    isAutoProceed = YES;
+}
+
+- (void)autoStepForwardDown
+{
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
+    if (isAutoProceed) {
+        stepSpeed = MAX(stepSpeed / SPEED_FACTOR, MIN_SPEED);
+    }
+}
+
+- (void)autoStepForwardStop
+{
+    NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
+    
+    [autoTimer invalidate];
+    autoTimer = nil;
+    isAutoProceed = NO;
+}
 
 - (void)autoStepForwardSpeed:(double)speed Active:(BOOL)active
 {
     NSLog(@"%@,%f,%d,%f", NSStringFromSelector(_cmd), speed, active, NSDate.date.timeIntervalSince1970);
     
-    if (!autoTimer) {
-        stepCounter = 1;
-        autoTimer = [NSTimer scheduledTimerWithTimeInterval:TIMER_INTERVAL target:self selector:@selector(autoStep:) userInfo:nil repeats:YES];
-    } else {
-        if (speed == 0) {
-            [autoTimer invalidate];
-            autoTimer = nil;
-        }
-    }
     
-    stepSpeed = speed;
-    isAutoProceed = active;
 }
 
 - (void)autoStep:(NSTimer*)timer

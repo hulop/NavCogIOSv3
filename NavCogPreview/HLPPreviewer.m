@@ -155,9 +155,11 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
                 nextLink = l;
             }
             // special for elevator
+            
             if ([nds isElevatorNode:self.targetNode]) {
                 d = 0;
             }
+            
             if (d < min2 && [nds isOnRoute:l._id]) {
                 min2 = d;
                 nextRouteLink = [nds routeLinkById:l._id];
@@ -176,9 +178,10 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             }
         } else {
             // if it is on elevator, face to the exit
+            
             if ([nds isElevatorNode:self.targetNode]) {
                 _orientation = [_link initialBearingFrom:self.targetNode];
-            }
+            }            
         }
         // otherwise keep previous link
         
@@ -223,6 +226,12 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     return [nds isOnDestination:self.targetNode._id];
 }
+
+- (BOOL)isOnElevator
+{
+    return self.targetNode && [[NavDataStore sharedDataStore] isElevatorNode:self.targetNode];
+}
+
 
 - (HLPLocation*)location
 {
@@ -402,7 +411,8 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     HLPPreviewEvent *next = self.next;
     double d = next.distanceMoved;
     while(YES) {
-        if (!next.isOnRoute || next.isGoingToBeOffRoute || next.isArrived) {
+        if (!next.isOnRoute || next.isGoingToBeOffRoute || next.isArrived ||
+            [[NavDataStore sharedDataStore] isElevatorNode: next.targetNode]) {
             break;
         }
         next = next.next;
@@ -493,6 +503,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         if(poi.poiCategory == HLPPOICategoryDoor && ([poi isOnFront:self.location])) {            
             name = NSLocalizedStringFromTable(poi.flags.flagAuto?@"AutoDoorPOIString1": @"DoorPOIString1", @"BlindView", @"");
         }
+        if(poi.poiCategory == HLPPOICategoryElevator && ([poi isOnFront:self.location])) {
+            name = poi.elevatorButtons.description;
+        }
     }
     return name && name.length > 0;
 }
@@ -528,6 +541,40 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             if ([[_link nearestLocationTo:obj.location] distanceTo:_location] < 3 &&
                 [poi isOnFront:self.location]) {
                 return poi;
+            }
+        }
+    }
+    return nil;
+}
+
+- (HLPPOI*) elevatorPOI
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    NSArray *links = nds.nodeLinksMap[self.targetNode._id];
+    for(HLPLink* link in links) {
+        if (link.linkType == LINK_TYPE_ELEVATOR) {
+            NSArray *pois = nds.linkPoiMap[link._id];
+            for(HLPPOI *poi in pois) {
+                if (poi.poiCategory == HLPPOICategoryElevator) {
+                    return poi;
+                }
+            }
+        }
+    }
+    return nil;
+}
+
+- (HLPPOI*) elevatorEquipmentsPOI
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    NSArray *links = nds.nodeLinksMap[self.targetNode._id];
+    for(HLPLink* link in links) {
+        if (link.linkType == LINK_TYPE_ELEVATOR) {
+            NSArray *pois = nds.linkPoiMap[link._id];
+            for(HLPPOI *poi in pois) {
+                if (poi.poiCategory == HLPPOICategoryElevatorEquipments) {
+                    return poi;
+                }
             }
         }
     }

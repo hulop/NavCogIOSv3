@@ -36,6 +36,8 @@
 - (HLPNode*) targetIntersection;
 - (NSArray<HLPLocationObject*>*) targetPOIs;
 - (HLPPOI*) cornerPOI;
+- (HLPPOI*) elevatorPOI;
+- (HLPPOI*) elevatorEquipmentsPOI;
 - (NSArray<HLPLink*>*) intersectionLinks;
 
 - (HLPLink*) rightLink;
@@ -50,6 +52,7 @@
 - (BOOL) isGoingToBeOffRoute;
 - (BOOL) isGoingBackward;
 - (BOOL) isArrived;
+- (BOOL) isOnElevator;
 
 @end
 

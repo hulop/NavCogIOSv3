@@ -38,11 +38,6 @@
     NSMutableSet *context;
 }
 
-- (BOOL)isOnElevator
-{
-    return current && current.targetNode && [[NavDataStore sharedDataStore] isElevatorNode:current.targetNode];
-}
-
 - (void)previewStarted:(HLPPreviewEvent *)event
 {
     prev = nil;
@@ -64,7 +59,7 @@
         NSString *distString = [self distanceString:d];
         [str appendFormat:@"%@ to %@. ", distString, nds.to.namePron];
         next = current.nextAction;
-        [str appendString:[self nextActionString:next]];
+        [str appendString:[self nextActionString:next noDistance:NO]];
     }
     [str appendString:[self poisString:event]];
 
@@ -106,8 +101,23 @@
         //NSLog(@"isGoingBackward:%d", current.isGoingBackward);
         
         if (prev != nil) {
-            if ([self isOnElevator]) {
-            
+            if (current.isOnElevator) {
+                if (prev.isOnElevator) {
+                    if (current.isGoingToBeOffRoute || current.isGoingBackward) {
+                        [str appendString:[self floorString:current.location.floor]];
+                    } else {
+                        [str appendString:[self floorString:current.location.floor]];
+                        [str appendString:@", after getting off the elevator, "];
+                        BOOL noDistance = current.nextAction.distanceMoved < 5;
+                        [str appendString:[self nextActionString:current.nextAction noDistance:noDistance]];
+                    }
+                } else {
+                    HLPPOI *poi = current.elevatorEquipmentsPOI;
+                    [str appendString:@"getting on the elevator. "];
+                    if (poi) {
+                        [str appendString:poi.elevatorEquipments.description];
+                    }
+                }
             } else {
                 // moved
                 if (current.target != prev.target) {
@@ -123,7 +133,8 @@
                         if (!next) {
                             next = current.nextAction;
                             [_delegate playSuccess];
-                            [str appendString:[self nextActionString:next]];
+                            BOOL noDistance = next.isOnElevator && next.distanceMoved < 5;
+                            [str appendString:[self nextActionString:next noDistance:noDistance]];
                         }
                         [str appendString:[self poisString:current]];
                     }
@@ -141,7 +152,7 @@
                                 [str appendString:[self turnPoiString:current]];
                             }
                         } else {
-                            if (![self isOnElevator]) {
+                            if (!current.isOnElevator) {
                                 [str appendString:@"You are going backward. "];
                             }
                         }
@@ -155,7 +166,8 @@
                     if (!current.isGoingToBeOffRoute && !current.isGoingBackward) {
                         next = current.nextAction;
                         [_delegate playSuccess];
-                        [str appendString:[self nextActionString:next]];
+                        BOOL noDistance = current.nextAction.distanceMoved < 5;
+                        [str appendString:[self nextActionString:next noDistance:noDistance]];
                     } else {
                         [_delegate playFail];
                         if (current.target == prev.target && current.orientation != prev.orientation) {
@@ -174,7 +186,7 @@
             [str appendString:@"You are going wrong direction. "];
         }
         // elevator
-        if ([self isOnElevator]) {
+        if (current.isOnElevator) {
             [str appendFormat:@"Elevator. "];
             [str appendFormat:@"You are on the %@.", [self floorString:current.targetNode.height]];
         } else {
@@ -247,7 +259,7 @@
     return [NSString stringWithFormat:@"%.0f meters", distance];
 }
 
-- (NSString*)nextActionString:(HLPPreviewEvent*)event
+- (NSString*)nextActionString:(HLPPreviewEvent*)event noDistance:(BOOL)noDistance
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     NSString *distStr = [self distanceString:event.distanceMoved];
@@ -256,10 +268,29 @@
         actionStr = [self poisString:event];
     } else {
         if ([nds isElevatorNode:event.targetNode]) {
-            actionStr = @"take an elevator";
+            
+            if (event.right.isOnRoute) {
+                HLPPreviewEvent *temp = event.right;
+                while(temp.isOnRoute && temp.isGoingToBeOffRoute) {
+                    temp = temp.right;
+                }
+                actionStr = [NSString stringWithFormat:@"go up to %@ by elevator. ", [self floorString:temp.location.floor]];
+            } else {
+                HLPPreviewEvent *temp = event.left;
+                while(temp.isOnRoute && temp.isGoingToBeOffRoute) {
+                    temp = temp.left;
+                }
+                actionStr = [NSString stringWithFormat:@"go down to %@ by elevator. ", [self floorString:temp.location.floor]];
+            }
+            
+            HLPPOI *poi = event.elevatorPOI;
+            actionStr = [actionStr stringByAppendingString:poi.elevatorButtons.description];
         } else {
             actionStr = [self turnPoiString:event];
         }
+    }
+    if (noDistance) {
+        return actionStr;
     }
     return [NSString stringWithFormat:@"proceed %@ and %@. ", distStr, actionStr];
 }

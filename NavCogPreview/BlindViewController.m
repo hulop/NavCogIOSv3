@@ -239,6 +239,18 @@
     [[NavSound sharedInstance] playNoStep];
 }
 
+- (void)playSuccess
+{
+    [[NavSound sharedInstance] vibrate:nil];
+    //[[NavSound sharedInstance] playSuccess];
+    [[NavSound sharedInstance] playAnnounceNotification];
+}
+
+- (void)playFail
+{
+    [[NavSound sharedInstance] playFail];
+}
+
 - (void) vibrate
 {
     [[NavSound sharedInstance] vibrate:nil];

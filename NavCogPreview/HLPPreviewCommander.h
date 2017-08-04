@@ -27,6 +27,8 @@
 
 - (void) playStep;
 - (void) playNoStep;
+- (void) playSuccess;
+- (void) playFail;
 - (void) vibrate;
 - (void) speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void(^)())handler;
 

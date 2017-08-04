@@ -38,6 +38,11 @@
     NSMutableSet *context;
 }
 
+- (BOOL)isOnElevator
+{
+    return current && current.targetNode && [[NavDataStore sharedDataStore] isElevatorNode:current.targetNode];
+}
+
 - (void)previewStarted:(HLPPreviewEvent *)event
 {
     prev = nil;
@@ -101,51 +106,69 @@
         //NSLog(@"isGoingBackward:%d", current.isGoingBackward);
         
         if (prev != nil) {
-            // moved
-            if (current.target != prev.target) {
-                if (current.isArrived) {
-                    [str appendString:@"You have arrived. "];
-                    [str appendString:[self poisString:current]];
-                }
-                else if (current.isGoingToBeOffRoute) {
-                    double angle = [self turnAngle:current.orientation toLink:current.routeLink at:current.target];
-                    [str appendString:[self turnString:angle]];
-                    [str appendString:@". "];
-                }
-                else if (!current.isGoingBackward) {
-                    if (!next) {
-                        next = current.nextAction;
-                        [str appendString:[self nextActionString:next]];
+            if ([self isOnElevator]) {
+            
+            } else {
+                // moved
+                if (current.target != prev.target) {
+                    if (current.isArrived) {
+                        [_delegate playSuccess];
+                        [str appendString:@"You have arrived. "];
+                        [str appendString:[self poisString:current]];
                     }
-                    [str appendString:[self poisString:current]];
-                }
-                else if (current.isGoingBackward) {
-                    if (!onRoute) { // recovered
-                        HLPPreviewEvent *temp = current.right;
-                        while(YES) {
-                            if ((!temp.isGoingBackward && !temp.isGoingToBeOffRoute) || temp.link == current.link) {
-                                break;
+                    else if (current.isGoingToBeOffRoute) {
+                        double angle = [self turnAngle:current.orientation toLink:current.routeLink at:current.target];
+                        [str appendString:[self turnString:angle]];
+                        [str appendString:@". "];
+                    }
+                    else if (!current.isGoingBackward) {
+                        if (!next) {
+                            next = current.nextAction;
+                            [_delegate playSuccess];
+                            [str appendString:[self nextActionString:next]];
+                        }
+                        [str appendString:[self poisString:current]];
+                    }
+                    else if (current.isGoingBackward) {
+                        if (!onRoute) { // recovered
+                            HLPPreviewEvent *temp = current.right;
+                            while(YES) {
+                                if ((!temp.isGoingBackward && !temp.isGoingToBeOffRoute) || temp.link == current.link) {
+                                    break;
+                                }
+                                temp = temp.right;
                             }
-                            temp = temp.right;
+                            [str appendString:@"You are back on route. "];
+                            if (temp.link != current.link) {
+                                double angle = [self turnAngle:current.orientation toLink:temp.link at:current.target];
+                                [str appendString:[self turnString:angle]];
+                            }
+                        } else {
+                            if (![self isOnElevator]) {
+                                [str appendString:@"You are going backward. "];
+                            }
                         }
-                        [str appendString:@"You are back on route. "];
-                        if (temp.link != current.link) {
-                            double angle = [self turnAngle:current.orientation toLink:temp.link at:current.target];
-                            [str appendString:[self turnString:angle]];
-                        }
-                    } else {
-                        [str appendString:@"You are going backward. "];
                     }
+                    //[str appendString:[self intersectionString:current]];
+                    //[str appendString:[self upcomingString:current]];
                 }
-                //[str appendString:[self intersectionString:current]];
-                //[str appendString:[self upcomingString:current]];
-            }
-            // turned
-            if (current.target == prev.target && current.orientation != prev.orientation) {
-                next = nil;
-                if (!current.isGoingToBeOffRoute) {
-                    next = current.nextAction;
-                    [str appendString:[self nextActionString:next]];
+                // turned
+                if (current.target == prev.target && current.orientation != prev.orientation) {
+                    next = nil;
+                    if (!current.isGoingToBeOffRoute && !current.isGoingBackward) {
+                        next = current.nextAction;
+                        [_delegate playSuccess];
+                        [str appendString:[self nextActionString:next]];
+                    } else {
+                        [_delegate playFail];
+                        if (current.target == prev.target && current.orientation != prev.orientation) {
+                            double heading = [self turnAngle:prev.orientation toLink:current.link at:current.target];
+                            if (fabs(heading) > 20) {
+                                [str appendString:[self turnString:heading]];
+                                [str appendString:@". "];
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -154,7 +177,7 @@
             [str appendString:@"You are going wrong direction. "];
         }
         // elevator
-        if ([nds isElevatorNode:current.targetNode]) {
+        if ([self isOnElevator]) {
             [str appendFormat:@"Elevator. "];
             [str appendFormat:@"You are on the %@.", [self floorString:current.targetNode.height]];
         } else {
@@ -627,7 +650,10 @@
     }
     if (![[NavDataStore sharedDataStore] hasRoute]) {
         return;
-    }    
+    }
+    if (!current.isOnRoute || current.isGoingBackward) {
+        return;
+    }
     
     double step_length = [[NSUserDefaults standardUserDefaults] doubleForKey:@"preview_step_length"];
     double target = MAX(floor(distance/15)*15, 5);

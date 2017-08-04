@@ -715,6 +715,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     if (current.isOnRoute && current.isGoingToBeOffRoute) {
         isAutoProceed = NO;
     }
+    if (current.targetNode && [[NavDataStore sharedDataStore] isElevatorNode:current.targetNode]) {
+        isAutoProceed = NO;
+    }
     remainingDistanceToNextStep = current.next.distanceMoved;
     remainingDistanceToNextAction = current.nextAction.distanceMoved;
     [self fireUserLocation:current.location];

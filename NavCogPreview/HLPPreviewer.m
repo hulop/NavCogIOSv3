@@ -378,7 +378,14 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         if ((prevTarget = temp.stepTarget)) {
             distance += [temp distanceToStepTarget];
             [temp setLocation:temp.stepTargetLocation];
-            if (temp.targetPOIs || temp.targetIntersection || temp.isGoingToBeOffRoute) {
+            
+            if (self.isOnRoute && (temp.targetPOIs || temp.isGoingBackward)) {
+                break;
+            }
+            if (self.isOnRoute && temp.targetIntersection && temp.isGoingToBeOffRoute) {
+                break;
+            }
+            if (!self.isOnRoute && (temp.targetPOIs || temp.targetIntersection)) {
                 break;
             }
         } else {
@@ -854,7 +861,8 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (double)_stepForward
 {
-    if (current.isOnRoute && current.isGoingBackward && current.isOnElevator) { // special behavior for with route
+    // special elevator behavior for with route
+    if (current.isOnRoute && current.isGoingBackward && current.isOnElevator) {
         if (current.right.isOnRoute) {
             HLPPreviewEvent *temp = current.right;
             while(temp.isOnRoute && temp.isGoingToBeOffRoute) {

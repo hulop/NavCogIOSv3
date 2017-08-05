@@ -61,8 +61,9 @@
     
     CMMotionManager *motionManager;
     NSOperationQueue *motionQueue;
-#define YAWS_MAX 15
+#define YAWS_MAX 100
     double yaws[YAWS_MAX];
+    long yawsMax;
     int yawsIndex;
     double prevDiff;
     
@@ -108,42 +109,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeChanged:) name:ROUTE_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged:) name:UIAccessibilityVoiceOverStatusChanged object:nil];
     
+    
     motionManager = [[CMMotionManager alloc] init];
     motionManager.deviceMotionUpdateInterval = 0.1;
     motionQueue = [[NSOperationQueue alloc] init];
-    prevDiff = NAN;
-    [motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
-        if (previewer == nil || previewer.isActive == NO) {
-            return;
-        }
-        
-        yaws[yawsIndex] = motion.attitude.yaw;
-        yawsIndex = (yawsIndex+1)%YAWS_MAX;
-        double x = 0;
-        double y = 0;
-        double ave = 0;
-        for(int i = 0; i < YAWS_MAX; i++) {
-            x += cos(yaws[i]);
-            y += sin(yaws[i]);
-        }
-        ave = atan2(y, x);
-        double diff = [HLPLocation normalizeDegree:(ave - motion.attitude.yaw)/M_PI*180];
-        if (fabs(diff) > 40) {
-            if (isnan(prevDiff)) {
-                if (diff > 0) { // right
-                    NSLog(@"gyro,right,%f",NSDate.date.timeIntervalSince1970);
-                    [self faceRight];
-                } else { // left
-                    NSLog(@"gyro,left,%f",NSDate.date.timeIntervalSince1970);
-                    [self faceLeft];
-                }
-                prevDiff = diff;
-            }
-        } else {
-            prevDiff = NAN;
-        }
-    }];
-    
     
     previewer = [[HLPPreviewer alloc] init];
     previewer.delegate = self;
@@ -165,6 +134,42 @@
     
     NavDataStore *nds = [NavDataStore sharedDataStore];
     [previewer startAt:nds.from.location];
+    
+    prevDiff = NAN;
+    yawsIndex = 0;
+    yawsMax = [[NSUserDefaults standardUserDefaults] integerForKey:@"gyro_average_duration"];
+    [motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
+        if (previewer == nil || previewer.isActive == NO) {
+            return;
+        }
+        
+        yaws[yawsIndex] = motion.attitude.yaw;
+        yawsIndex = (yawsIndex+1)%yawsMax;
+        double x = 0;
+        double y = 0;
+        double ave = 0;
+        for(int i = 0; i < yawsMax; i++) {
+            x += cos(yaws[i]);
+            y += sin(yaws[i]);
+        }
+        ave = atan2(y, x);
+        double diff = [HLPLocation normalizeDegree:(ave - motion.attitude.yaw)/M_PI*180];
+        if (fabs(diff) > [[NSUserDefaults standardUserDefaults] integerForKey:@"gyro_motion_threshold"]) {
+            if (isnan(prevDiff)) {
+                if (diff > 0) { // right
+                    NSLog(@"gyro,right,%f",NSDate.date.timeIntervalSince1970);
+                    [self faceRight];
+                } else { // left
+                    NSLog(@"gyro,left,%f",NSDate.date.timeIntervalSince1970);
+                    [self faceLeft];
+                }
+                prevDiff = diff;
+            }
+        } else {
+            prevDiff = NAN;
+        }
+    }];
+    
     [self updateView];
 }
 
@@ -308,6 +313,8 @@
         [timeout invalidate];
         timeout = nil;
     }
+    
+    [motionManager stopDeviceMotionUpdates];
     
     [commander previewStopped:event];
     [helper clearRoute];

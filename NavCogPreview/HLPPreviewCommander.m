@@ -38,6 +38,16 @@
     NSMutableSet *context;
 }
 
+- (void)reset {
+    [playBlocks removeAllObjects];
+    playingBlock = nil;
+    current = nil;
+    next = nil;
+    prev = nil;
+    onRoute = NO;
+    [context removeAllObjects];
+}
+
 - (void)previewStarted:(HLPPreviewEvent *)event
 {
     prev = nil;
@@ -72,6 +82,8 @@
     [str appendFormat:@"Preview is stopped. "];
     
     [_delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:nil];
+    
+    [self reset];
 }
 
 -(void)previewUpdated:(HLPPreviewEvent *)event

@@ -133,7 +133,7 @@
                         if (!next) {
                             next = current.nextAction;
                             [_delegate playSuccess];
-                            BOOL noDistance = next.isOnElevator && next.distanceMoved < 5;
+                            BOOL noDistance = next.isOnElevator && (next.distanceMoved < 5);
                             [str appendString:[self nextActionString:next noDistance:noDistance]];
                         }
                         [str appendString:[self poisString:current]];
@@ -166,7 +166,7 @@
                     if (!current.isGoingToBeOffRoute && !current.isGoingBackward) {
                         next = current.nextAction;
                         [_delegate playSuccess];
-                        BOOL noDistance = current.nextAction.distanceMoved < 5;
+                        BOOL noDistance = next.isOnElevator && (current.nextAction.distanceMoved < 5);
                         [str appendString:[self nextActionString:next noDistance:noDistance]];
                     } else {
                         [_delegate playFail];

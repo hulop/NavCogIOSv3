@@ -243,16 +243,15 @@
      }
      
     if (str.length > 0) {
-        [self.delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:nil];
-        /*
+        //[self.delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:nil];
         __weak HLPPreviewCommander *weakself = self;
         [self addBlock:^(void (^complete)(void)) {
             if (weakself) {
-                [weakself.delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:nil];
-                complete();
+                [weakself.delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:^{
+                    complete();
+                }];
             }
         }];
-         */
     }
     onRoute = current.isOnRoute;
 }
@@ -638,20 +637,22 @@
 
 -(void)userMoved:(double)distance
 {
+    NSLog(@"playBlocks.count = %ld", [playBlocks count]);
+    [self clearBlock];
+    NSLog(@"playBlocks.count = %ld", [playBlocks count]);
+    
     //NSLog(@"%@ %f", NSStringFromSelector(_cmd), distance);
     __weak HLPPreviewCommander* weakself = self;
 
     if (distance == 0) {
-        [weakself.delegate playNoStep];
+        //[weakself.delegate playNoStep];
         
-        /*
         [self addBlock:^(void(^complete)(void)){
             if (weakself) {
                 [weakself.delegate playNoStep];
             }
             complete();
         }];
-         */
         return;
     }
     
@@ -659,41 +660,34 @@
     BOOL step_sound_for_jump = [[NSUserDefaults standardUserDefaults] doubleForKey:@"step_sound_for_jump"];
 
     // always speak distance
-    //dispatch_async(dispatch_get_main_queue(), ^{
-    NSString *str = [NSString stringWithFormat:@"%.0f meters walked. ", distance];
-    [_delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:nil];
-    //});
-
-    if (step_sound_for_jump == YES) {
-        int steps = MAX(round(distance / step_length), 2);
-        __block int n = MIN(steps, 20);
-        
-        [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-            if (weakself) {
-                [weakself.delegate playStep];
-            }
-            n--;
-            if (n <= 0) {
-                [timer invalidate];
-            }
-        }];
-        /*
-        [self addBlock:^(void(^complete)(void)){
-            __block int n = MIN(steps, 20);
-            
-            [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-                if (weakself) {
-                    [weakself.delegate playStep];
-                }
-                n--;
-                if (n <= 0) {
-                    [timer invalidate];
-                    complete();
-                }
+    [self addBlock:^(void(^complete)(void)){
+        if (weakself) {
+            NSString *str = [NSString stringWithFormat:@"%.0f meters walked. ", distance];
+            [weakself.delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:^{
+                complete();
             }];
-        }];
-         */
-    }
+            
+            if (step_sound_for_jump == YES) {
+                int steps = MAX(round(distance / step_length), 2);
+                __block int n = MIN(steps, 20);
+                
+                [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                    if (weakself) {
+                        [weakself.delegate playStep];
+                    }
+                    n--;
+                    if (n <= 0) {
+                        [timer invalidate];
+                    }
+                }];
+            }
+        }
+    }];
+}
+
+-(void) clearBlock
+{
+    [playBlocks removeAllObjects];
 }
 
 -(void) addBlock:(void (^)(void(^complete)(void)))block

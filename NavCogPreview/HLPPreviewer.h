@@ -28,6 +28,7 @@
 @property (readonly) HLPLink *routeLink;
 @property (readonly) HLPLocation *location;
 @property (readonly) double orientation;
+@property (readonly) double turnedAngle;
 @property (readonly) double distanceMoved;
 @property (readonly) HLPPreviewEvent* prev;
 
@@ -42,10 +43,14 @@
 
 - (HLPLink*) rightLink;
 - (HLPLink*) leftLink;
+- (HLPLink*) upFloorLink;
+- (HLPLink*) downFloorLink;
 
 - (HLPPreviewEvent*) next;
 - (HLPPreviewEvent*) right;
 - (HLPPreviewEvent*) left;
+- (HLPPreviewEvent*) upFloor;
+- (HLPPreviewEvent*) downFloor;
 - (HLPPreviewEvent*) nextAction;
 
 - (BOOL) isOnRoute;

@@ -160,7 +160,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
                 d = 0;
             }
             
-            if (d < min2 && [nds isOnRoute:l._id]) {
+            if (d < min2 && [nds isOnRoute:l._id] && l.linkType != LINK_TYPE_ELEVATOR) {
                 min2 = d;
                 nextRouteLink = [nds routeLinkById:l._id];
             }
@@ -399,18 +399,54 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (HLPPreviewEvent *)right
 {
-    HLPPreviewEvent *temp = [self copy];
-    
-    [temp turnToLink:self.rightLink];
-    return temp;
+    if (self.rightLink) {
+        HLPPreviewEvent *temp = [self copy];
+        double tempori = temp.orientation;
+        [temp turnToLink:self.rightLink];
+        temp->_turnedAngle = [HLPLocation normalizeDegree:temp.orientation - tempori];
+        if (temp->_turnedAngle < 0) {
+            temp->_turnedAngle += 360;
+        }
+        return temp;
+    }
+    return nil;
 }
 
 - (HLPPreviewEvent *)left
 {
-    HLPPreviewEvent *temp = [self copy];
-    
-    [temp turnToLink:self.leftLink];
-    return temp;
+    if (self.leftLink) {
+        HLPPreviewEvent *temp = [self copy];
+        double tempori = temp.orientation;
+        [temp turnToLink:self.leftLink];
+        temp->_turnedAngle = [HLPLocation normalizeDegree:temp.orientation - tempori];
+        if (temp->_turnedAngle > 0) {
+            temp->_turnedAngle -= 360;
+        }
+        return temp;
+    }
+    return nil;
+}
+
+- (HLPPreviewEvent *)upFloor
+{
+    if (self.upFloorLink) {
+        HLPPreviewEvent *temp = [self copy];
+        [temp turnToLink:self.upFloorLink];
+        temp->_turnedAngle = NAN;
+        return temp;
+    }
+    return nil;
+}
+
+- (HLPPreviewEvent *)downFloor
+{
+    if (self.downFloorLink) {
+        HLPPreviewEvent *temp = [self copy];
+        [temp turnToLink:self.downFloorLink];
+        temp->_turnedAngle = NAN;
+        return temp;
+    }
+    return nil;
 }
 
 - (HLPPreviewEvent *)nextAction
@@ -657,22 +693,30 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (HLPLink*) leftLink
 {
-    NavDataStore *nds = [NavDataStore sharedDataStore];
-    if ([nds isElevatorNode:self.targetNode]) {
-        return [self _floorLink:NO];
-    }
-    
     return [self _nextLink:NO];
 }
 
 - (HLPLink*) rightLink
 {
+    return [self _nextLink:YES];
+}
+
+- (HLPLink*) downFloorLink
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    if ([nds isElevatorNode:self.targetNode]) {
+        return [self _floorLink:NO];
+    }
+    return nil;
+}
+
+- (HLPLink*) upFloorLink
+{
     NavDataStore *nds = [NavDataStore sharedDataStore];
     if ([nds isElevatorNode:self.targetNode]) {
         return [self _floorLink:YES];
     }
-
-    return [self _nextLink:YES];
+    return nil;
 }
 
 - (void)setDistanceMoved:(double)distanceMoved
@@ -863,16 +907,16 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     // special elevator behavior for with route
     if (current.isOnRoute && current.isGoingBackward && current.isOnElevator) {
-        if (current.right.isOnRoute) {
-            HLPPreviewEvent *temp = current.right;
+        if (current.upFloor.isOnRoute) {
+            HLPPreviewEvent *temp = current.upFloor;
             while(temp.isOnRoute && temp.isGoingToBeOffRoute) {
-                temp = temp.right;
+                temp = temp.upFloor;
             }
             current = temp;
         } else {
-            HLPPreviewEvent *temp = current.left;
+            HLPPreviewEvent *temp = current.downFloor;
             while(temp.isOnRoute && temp.isGoingToBeOffRoute) {
-                temp = temp.left;
+                temp = temp.downFloor;
             }
             current = temp;
         }
@@ -946,14 +990,25 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     _isAutoProceed = NO;
-    if (current.rightLink) {
-        HLPPreviewEvent *temp = [current copy];
-        [temp setPrev:current];
-        [temp turnToLink:temp.rightLink];
-        current = temp;
-        [self firePreviewUpdated];
+    
+    if ([[NavDataStore sharedDataStore] isElevatorNode:current.targetNode]) {
+        if (current.upFloor) {
+            HLPPreviewEvent *temp = current.upFloor;
+            [temp setPrev:current];
+            current = temp;
+            [self firePreviewUpdated];
+        } else {
+            [self fireUserMoved:0];
+        }
     } else {
-        [self fireUserMoved:0];
+        if (current.right) {
+            HLPPreviewEvent *temp = current.right;
+            [temp setPrev:current];
+            current = temp;
+            [self firePreviewUpdated];
+        } else {
+            [self fireUserMoved:0];
+        }
     }
 }
 
@@ -961,14 +1016,25 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     _isAutoProceed = NO;
-    if (current.leftLink) {
-        HLPPreviewEvent *temp = [current copy];
-        [temp setPrev:current];
-        [temp turnToLink:temp.leftLink];
-        current = temp;
-        [self firePreviewUpdated];
+    
+    if ([[NavDataStore sharedDataStore] isElevatorNode:current.targetNode]) {
+        if (current.downFloor) {
+            HLPPreviewEvent *temp = current.downFloor;
+            [temp setPrev:current];
+            current = temp;
+            [self firePreviewUpdated];
+        } else {
+            [self fireUserMoved:0];
+        }
     } else {
-        [self fireUserMoved:0];
+        if (current.left) {
+            HLPPreviewEvent *temp = current.left;
+            [temp setPrev:current];
+            current = temp;
+            [self firePreviewUpdated];
+        } else {
+            [self fireUserMoved:0];
+        }
     }
 }
 

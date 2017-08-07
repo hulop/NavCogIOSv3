@@ -279,17 +279,16 @@
         actionStr = [self poisString:event];
     } else {
         if ([nds isElevatorNode:event.targetNode]) {
-            
-            if (event.right.isOnRoute) {
-                HLPPreviewEvent *temp = event.right;
+            if (event.upFloor.isOnRoute) {
+                HLPPreviewEvent *temp = event.upFloor;
                 while(temp.isOnRoute && temp.isGoingToBeOffRoute) {
-                    temp = temp.right;
+                    temp = temp.upFloor;
                 }
                 actionStr = [NSString stringWithFormat:@"go up to %@ by elevator. ", [self floorString:temp.location.floor]];
             } else {
-                HLPPreviewEvent *temp = event.left;
+                HLPPreviewEvent *temp = event.downFloor;
                 while(temp.isOnRoute && temp.isGoingToBeOffRoute) {
-                    temp = temp.left;
+                    temp = temp.downFloor;
                 }
                 actionStr = [NSString stringWithFormat:@"go down to %@ by elevator. ", [self floorString:temp.location.floor]];
             }

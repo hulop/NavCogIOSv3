@@ -349,7 +349,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     HLPLocation *loc = self.stepTargetLocation;
     if (loc) {
-        return [[_link nearestLocationTo:loc] distanceTo:_location];
+        return [loc distanceTo:_location];
     }
     return NAN;
 }
@@ -370,7 +370,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         temp = [temp copy];
         [temp setPrev:prev];
         
-        if (temp.stepTarget == prevTarget) {
+        if (temp.stepTarget == prevTarget && [prev.link._id isEqualToString:prev.prev.link._id]) {
             temp = prev;
             break;
         }

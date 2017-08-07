@@ -265,7 +265,7 @@
             if (!isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_HANDLE_LOCATION_UNKNOWN object:self];
             return;
         case UIEventSubtypeRemoteControlBeginSeekingForward: // 108
-            if (!isDialogActive) [[DialogManager sharedManager] start];
+            if (!isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:self];
             return;
         case UIEventSubtypeRemoteControlEndSeekingBackward: // 107
         case UIEventSubtypeRemoteControlEndSeekingForward: // 109

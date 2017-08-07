@@ -58,7 +58,7 @@
     NavDataStore *nds = [NavDataStore sharedDataStore];
     
     NSMutableString *str = [@"" mutableCopy];
-    [str appendFormat:@"Preview is started. "];
+    [str appendFormat:@"Preview is started... "];
     if (nds.hasRoute) {
         double d = 0;
         for(HLPObject *o in nds.route) {
@@ -67,7 +67,7 @@
             }
         }
         NSString *distString = [self distanceString:d];
-        [str appendFormat:@"%@ to %@. ", distString, nds.to.namePron];
+        [str appendFormat:@"%@ to %@... ", distString, nds.to.namePron];
         next = current.nextAction;
         [str appendString:[self nextActionString:next noDistance:NO]];
     }
@@ -677,13 +677,10 @@
     [self addBlock:^(void(^complete)(void)){
         if (weakself) {
             NSString *str = [NSString stringWithFormat:@"%.0f meters walked. ", distance];
-            [weakself.delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:^{
-                complete();
-            }];
             
             if (step_sound_for_jump == YES) {
                 int steps = MAX(round(distance / step_length), 2);
-                __block int n = MIN(steps, 20);
+                __block int n = MIN(steps, 10);
                 
                 [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
                     if (weakself) {
@@ -692,7 +689,14 @@
                     n--;
                     if (n <= 0) {
                         [timer invalidate];
+                        [weakself.delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:^{
+                            complete();
+                        }];
                     }
+                }];
+            } else {
+                [weakself.delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:^{
+                    complete();
                 }];
             }
         }

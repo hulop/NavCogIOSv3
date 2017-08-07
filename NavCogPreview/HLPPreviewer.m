@@ -215,7 +215,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     NavDataStore *nds = [NavDataStore sharedDataStore];
     
     return [nds hasRoute] && _link && _routeLink && [_link._id isEqualToString:_routeLink._id] &&
-    _orientation == _routeLink.initialBearingFromTarget;
+    fabs(_orientation - _routeLink.initialBearingFromTarget) < 0.1;
 }
 
 - (BOOL)isArrived
@@ -532,7 +532,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     NSString *name = nil;
     if ([obj isKindOfClass:HLPEntrance.class] && ((HLPEntrance*)obj).node.isLeaf) {
-        if ([[NavDataStore sharedDataStore] isOnDestination:obj._id] ||
+        if ([[NavDataStore sharedDataStore] isOnDestination:((HLPEntrance*)obj).node._id] ||
             (!_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_jump"]) ||
             (_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_walk"])) {
             name = ((HLPEntrance*)obj).facility.name;

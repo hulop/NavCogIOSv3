@@ -424,8 +424,8 @@ double stdev(double array[], long count) {
 {
     if (!locationTimer) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            locationTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-                double r = 0.8;
+            locationTimer = [NSTimer scheduledTimerWithTimeInterval:0.25 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                double r = 0.5;
                 [userLocation updateFloor:animLocation.floor];
                 [userLocation updateLat:userLocation.lat*r + animLocation.lat*(1-r)
                                     Lng:userLocation.lng*r + animLocation.lng*(1-r)];

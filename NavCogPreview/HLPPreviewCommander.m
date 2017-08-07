@@ -191,6 +191,21 @@
                         }
                     }
                 }
+                
+                if (current.target == prev.target && current.orientation == prev.orientation) {
+                    if (current.isArrived) {
+                        [_delegate playSuccess];
+                        [str appendString:@"You have arrived. "];
+                        [str appendString:[self poisString:current]];
+                    }
+                    else if (current.isGoingToBeOffRoute) {
+                        [str appendString:@"You need to "];
+                        [str appendString:[self turnPoiString:current]];
+                    }
+                    else {
+                        [str appendString:@"You need to proceed. "];
+                    }
+                }
             }
         }
     } else {

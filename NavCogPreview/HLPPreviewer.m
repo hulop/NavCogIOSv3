@@ -924,6 +924,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }
     
     HLPPreviewEvent *next = [current next];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"prevent_offroute"] && !next.isOnRoute) {
+        return 0;
+    }
     if (next.distanceMoved > 0.1) {
         [history addObject:current];
         current = next;
@@ -985,6 +988,24 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         [self fireUserMoved:0];
     }
 }
+- (void)_faceTo:(HLPPreviewEvent*)temp
+{
+    if (temp) {
+        BOOL preventOffroute = [[NSUserDefaults standardUserDefaults] boolForKey:@"prevent_offroute"];
+        if (preventOffroute && temp.isGoingToBeOffRoute) {
+            [self fireUserMoved:0];
+            [self firePreviewUpdated];
+        } else if (preventOffroute && temp.isGoingBackward) {
+            [self fireUserMoved:0];
+        } else {
+            [temp setPrev:current];
+            current = temp;
+            [self firePreviewUpdated];
+        }
+    } else {
+        [self fireUserMoved:0];
+    }
+}
 
 - (void)faceRight
 {
@@ -992,23 +1013,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     _isAutoProceed = NO;
     
     if ([[NavDataStore sharedDataStore] isElevatorNode:current.targetNode]) {
-        if (current.upFloor) {
-            HLPPreviewEvent *temp = current.upFloor;
-            [temp setPrev:current];
-            current = temp;
-            [self firePreviewUpdated];
-        } else {
-            [self fireUserMoved:0];
-        }
+        [self _faceTo:current.upFloor];
     } else {
-        if (current.right) {
-            HLPPreviewEvent *temp = current.right;
-            [temp setPrev:current];
-            current = temp;
-            [self firePreviewUpdated];
-        } else {
-            [self fireUserMoved:0];
-        }
+        [self _faceTo:current.right];
     }
 }
 
@@ -1018,23 +1025,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     _isAutoProceed = NO;
     
     if ([[NavDataStore sharedDataStore] isElevatorNode:current.targetNode]) {
-        if (current.downFloor) {
-            HLPPreviewEvent *temp = current.downFloor;
-            [temp setPrev:current];
-            current = temp;
-            [self firePreviewUpdated];
-        } else {
-            [self fireUserMoved:0];
-        }
+        [self _faceTo:current.downFloor];
     } else {
-        if (current.left) {
-            HLPPreviewEvent *temp = current.left;
-            [temp setPrev:current];
-            current = temp;
-            [self firePreviewUpdated];
-        } else {
-            [self fireUserMoved:0];
-        }
+        [self _faceTo:current.left];
     }
 }
 

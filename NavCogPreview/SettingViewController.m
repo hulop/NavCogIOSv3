@@ -221,13 +221,27 @@ static HLPSetting *idLabel;
         return;
     }
     for(NSDictionary *route in routes) {
-
         double limit = [route[@"limit"] doubleValue];
         double elapsed_time = 0;
         if (infos) {
             for(NSDictionary *info in infos) {
                 if ([route[@"name"] isEqualToString:info[@"name"]]) {
-                    elapsed_time = [info[@"elapsed_time"] doubleValue];
+                    if (info[@"lastday"]) {
+                        elapsed_time = [info[@"elapsed_time"] doubleValue];
+                        NSDate *lastday = [[NSDate alloc] initWithTimeIntervalSince1970:[info[@"lastday"] doubleValue]];
+                        NSDate *today = NSDate.date;
+                        
+                        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+                        NSUInteger lastdayOfYear = [gregorian ordinalityOfUnit:NSCalendarUnitDay
+                                                                        inUnit:NSCalendarUnitYear forDate:lastday];
+                        NSUInteger todayOfYear = [gregorian ordinalityOfUnit:NSCalendarUnitDay
+                                                                      inUnit:NSCalendarUnitYear forDate:today];
+                        if (lastdayOfYear != todayOfYear) {
+                            elapsed_time = 0;
+                        }
+                    } else {
+                        elapsed_time = 0;
+                    }
                 }
             }
         }

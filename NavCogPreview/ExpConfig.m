@@ -113,7 +113,23 @@ static ExpConfig *instance;
     for(NSDictionary *route in info[@"routes"]) {
         if ([route[@"name"] isEqualToString:routeName]) {
             NSMutableDictionary *temp = [route mutableCopy];
-            temp[@"elapsed_time"] = @([temp[@"elapsed_time"] doubleValue] + duration);
+            
+            double elapsed_time = [temp[@"elapsed_time"] doubleValue] + duration;
+            if (temp[@"lastday"]) {
+                NSDate *lastday = [[NSDate alloc] initWithTimeIntervalSince1970:[temp[@"lastday"] doubleValue]];
+                NSDate *today = NSDate.date;
+                
+                NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+                NSUInteger lastdayOfYear = [gregorian ordinalityOfUnit:NSCalendarUnitDay
+                                                                inUnit:NSCalendarUnitYear forDate:lastday];
+                NSUInteger todayOfYear = [gregorian ordinalityOfUnit:NSCalendarUnitDay
+                                                              inUnit:NSCalendarUnitYear forDate:today];
+                if (lastdayOfYear != todayOfYear) {
+                    elapsed_time = duration;
+                }
+            }
+            temp[@"lastday"] = @(NSDate.date.timeIntervalSince1970);
+            temp[@"elapsed_time"] = @(elapsed_time);
             if (!temp[@"activities"]) {
                 temp[@"activities"] = @[];
             }

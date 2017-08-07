@@ -811,6 +811,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         }
         if (minLink) {
             loc = [minLink nearestLocationTo:loc];
+            ori = minLink.initialBearingFromTarget;
         }
     }
 
@@ -924,7 +925,8 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }
     
     HLPPreviewEvent *next = [current next];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"prevent_offroute"] && !next.isOnRoute) {
+    if ([[NavDataStore sharedDataStore] hasRoute] &&
+        [[NSUserDefaults standardUserDefaults] boolForKey:@"prevent_offroute"] && !next.isOnRoute) {
         return 0;
     }
     if (next.distanceMoved > 0.1) {
@@ -991,7 +993,8 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 - (void)_faceTo:(HLPPreviewEvent*)temp
 {
     if (temp) {
-        BOOL preventOffroute = [[NSUserDefaults standardUserDefaults] boolForKey:@"prevent_offroute"];
+        BOOL preventOffroute = [[NavDataStore sharedDataStore] hasRoute] &&
+                               [[NSUserDefaults standardUserDefaults] boolForKey:@"prevent_offroute"];
         if (preventOffroute && temp.isGoingToBeOffRoute) {
             [self fireUserMoved:0];
             [self firePreviewUpdated];

@@ -74,6 +74,11 @@
         [NavUtil showModalWaitingWithMessage:@"Checking email address..."];
     });
     
+    [[NavDataStore sharedDataStore] reloadDestinations:YES];
+}
+
+- (void)loadUserInfo
+{
     NSString *user_id = self.emailInput.text;
     
     [[ExpConfig sharedConfig] requestUserInfo:user_id withComplete:^(NSDictionary * info) {
@@ -108,8 +113,10 @@
                 self.errorLabel.text = @"no routes info";
             } else {
                 self.errorLabel.text = @" ";
-                [[NavDataStore sharedDataStore] reloadDestinations:YES];
-                [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading...",@"")];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                });
             }
         });
     }];
@@ -137,9 +144,7 @@
             [self presentViewController:alert animated:YES completion:nil];
         });
     } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self dismissViewControllerAnimated:YES completion:nil];
-        });
+        [self loadUserInfo];
     }
 }
 

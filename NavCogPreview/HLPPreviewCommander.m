@@ -604,8 +604,8 @@
         return [self turnAngle:orientation toLink:link atNode:(HLPNode*)object];
     }
     
-    NSAssert(NO, @"turnAngle with object is not implemented");
-    return 0;
+    //NSAssert(NO, @"turnAngle with object is not implemented");
+    return [HLPLocation normalizeDegree:orientation + 180];
 }
 
 - (double)turnAngle:(double)orientation toLink:(HLPLink*)link atNode:(HLPNode*)node

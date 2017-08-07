@@ -135,7 +135,11 @@
         case NavDestinationTypeLandmarks:
             return [[[NavDataStore sharedDataStore] closestDestinationInLandmarks:_landmarks] location];
         case NavDestinationTypeLocation:
-            return _location;
+            if (_location) {
+                return _location;
+            } else {
+                return [[NavDataStore sharedDataStore] mapCenter];
+            }
         default:
             return nil;
     }
@@ -683,9 +687,9 @@ static NavDataStore* instance_ = nil;
     }
     NSDictionary *param = @{@"fromID":fromID, @"toID":toID, @"user":user, @"user_lang":lang, @"prefs":prefs};
     [Logging logType:@"showRoute" withParam:param];
-
-    [HLPDataUtil loadRouteFromNode:fromID toNode:toID forUser:user withLang:lang withPrefs:prefs withCallback:^(NSArray<HLPObject *> *result) {
-        routeCache = result;
+    
+    if ([fromID isEqualToString:toID]) {
+        routeCache = nil;
         if (useCache && featuresCache) {
             if (complete) {
                 complete();
@@ -712,8 +716,37 @@ static NavDataStore* instance_ = nil;
                 [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":routeCache?routeCache:@[]}];
             }];
         }];
-    }];
-    
+    } else {
+        [HLPDataUtil loadRouteFromNode:fromID toNode:toID forUser:user withLang:lang withPrefs:prefs withCallback:^(NSArray<HLPObject *> *result) {
+            routeCache = result;
+            if (useCache && featuresCache) {
+                if (complete) {
+                    complete();
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":routeCache?routeCache:@[]}];
+                return;
+            }
+            [HLPDataUtil loadNodeMapForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {
+                featuresCache = result;
+                [HLPDataUtil loadFeaturesForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {
+                    featuresCache = [featuresCache arrayByAddingObjectsFromArray: result];
+                    
+                    for(HLPObject* f in featuresCache) {
+                        [f updateWithLang:lang];
+                    }
+                    
+                    [self analyzeFeatures:featuresCache];
+                    [self updateRoute];
+                    
+                    if (complete) {
+                        complete();
+                    }
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":routeCache?routeCache:@[]}];
+                }];
+            }];
+        }];
+    }
 }
 
 - (void) updateRoute

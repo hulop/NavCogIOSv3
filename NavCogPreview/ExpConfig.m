@@ -90,6 +90,10 @@ static ExpConfig *instance;
     double endAt = [[NSDate date] timeIntervalSince1970];
     double duration = endAt - startAt;
     NSString *routeName = _currentRoute[@"name"];
+    if (routeName == nil) {
+        complete();
+        return;
+    }
     
     NSMutableDictionary *info = [_userInfo mutableCopy];
     if (info[@"_id"] == nil) {

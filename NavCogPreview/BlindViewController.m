@@ -112,6 +112,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeChanged:) name:ROUTE_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged:) name:UIAccessibilityVoiceOverStatusChanged object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:EXP_ROUTES_CHANGED_NOTIFICATION object:nil];
     
     motionManager = [[CMMotionManager alloc] init];
     motionManager.deviceMotionUpdateInterval = 0.1;
@@ -595,12 +596,13 @@ double stdev(double array[], long count) {
             self.searchButton.accessibilityLabel = @"Quit preview";
         } else {
             self.cover.hidden = YES;
+            /*
             if ([[ServerConfig sharedConfig] isExpMode]) {
                 self.searchButton.title = @"Select";
                 self.searchButton.accessibilityLabel = @"Select a route";
             } else {
-                self.searchButton.title = @"Search";
-            }
+            }*/
+            self.searchButton.title = @"Search";
         }
     });
 }
@@ -782,10 +784,21 @@ double stdev(double array[], long count) {
             return NO;
         }
         
+        [NavDataStore sharedDataStore].mapCenter = [helper getCenter];
+        
         UIViewController *vc = nil;
         if ([[ServerConfig sharedConfig] isExpMode]) {
-            vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"setting_view"];
-            vc.restorationIdentifier = @"exp_settings";
+            NSArray *routes = [[ExpConfig sharedConfig] expUserRoutes];
+            if (routes == nil ){
+                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"exp_view"];
+                [self presentViewController:vc animated:YES completion:nil];
+                return NO;
+            } else if (routes.count > 0) {
+                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"setting_view"];
+                vc.restorationIdentifier = @"exp_settings";
+            } else {
+                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
+            }
         } else {
             vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
         }
@@ -794,6 +807,13 @@ double stdev(double array[], long count) {
         return NO;
     }
     return YES;
+}
+
+- (void)configChanged:(NSNotification*)note
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self shouldPerformSegueWithIdentifier:@"show_search" sender:self];
+    });
 }
 
 @end

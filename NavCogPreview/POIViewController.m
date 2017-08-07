@@ -34,10 +34,10 @@
 
     if (_pois) {
         NSMutableString *str = [@"<html><body>" mutableCopy];
-        for(HLPFacility *poi in _pois) {
+        for(HLPEntrance *poi in _pois) {
             [str appendFormat:@"<h1>%@</h1>", [poi name]];
-            if (poi.longDescription) {
-                [str appendFormat:@"<div>%@</div>", poi.longDescription];
+            if (poi.facility.longDescription) {
+                [str appendFormat:@"<div>%@</div>", poi.facility.longDescription];
             }
         }
         [str appendString:@"</body></html>"];

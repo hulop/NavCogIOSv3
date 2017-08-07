@@ -102,6 +102,7 @@
 		7E27F9921EFBA92800FB3309 /* HLPPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E27F9911EFBA92800FB3309 /* HLPPreviewer.m */; };
 		7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E28479E1E024112006B1FB8 /* exercise-data.json */; };
 		7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */; };
+		7E2F43721F38A75500215E58 /* serverlist.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7E2F43711F38A75500215E58 /* serverlist.txt */; };
 		7E308BDB1DAF147600E525F6 /* BlindView.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
 		7E30F9AE1E813FFC00D542E5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9AD1E813FFC00D542E5 /* main.m */; };
 		7E30F9B11E813FFC00D542E5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E30F9B01E813FFC00D542E5 /* AppDelegate.m */; };
@@ -400,6 +401,7 @@
 		7E28479E1E024112006B1FB8 /* exercise-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "exercise-data.json"; path = "model/exercise-data.json"; sourceTree = "<group>"; };
 		7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
+		7E2F43711F38A75500215E58 /* serverlist.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = serverlist.txt; sourceTree = "<group>"; };
 		7E308BDC1DAF147600E525F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/BlindView.stringsdict; sourceTree = "<group>"; };
 		7E308BDE1DAF147B00E525F6 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ja; path = ja.lproj/BlindView.stringsdict; sourceTree = "<group>"; };
 		7E30F9AA1E813FFC00D542E5 /* NavCogFingerPrint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NavCogFingerPrint.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1028,6 +1030,7 @@
 		7EE8E60D1EF27541006EE7C3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				7E2F43711F38A75500215E58 /* serverlist.txt */,
 				7EE8E60E1EF27541006EE7C3 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -1379,6 +1382,7 @@
 				7E27F90F1EFA627700FB3309 /* Main.storyboard in Resources */,
 				7E27F9101EFA627700FB3309 /* LaunchScreen.storyboard in Resources */,
 				7E27F90E1EFA626D00FB3309 /* Assets.xcassets in Resources */,
+				7E2F43721F38A75500215E58 /* serverlist.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

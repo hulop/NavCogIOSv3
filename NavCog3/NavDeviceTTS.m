@@ -248,7 +248,7 @@ static NavDeviceTTS *instance = nil;
                 [self pause:0.1*keep];
                 text = [text substringFromIndex:i];
                 flag = NO;
-                start = i;
+                i = 0;
             }
             keep = 0;
         }

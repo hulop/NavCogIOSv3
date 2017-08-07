@@ -176,12 +176,6 @@ static HLPSetting *idLabel;
     [userSettingHelper addSettingWithType:BOOLEAN Label:@"Step sound for walk" Name:@"step_sound_for_walk" DefaultValue:@(YES) Accept:nil];
     [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info. for walk" Name:@"ignore_facility_for_walk" DefaultValue:@(NO) Accept:nil];
 
-    [userSettingHelper addSectionTitle:@"Gyro Turn"];
-    [userSettingHelper addSettingWithType:DOUBLE Label:@"Gyro average duration (1/10 sec)"
-                                     Name:@"gyro_average_duration" DefaultValue:@(30) Min:10 Max:100 Interval:5];
-    [userSettingHelper addSettingWithType:DOUBLE Label:@"Gyro motion threshold (degree)"
-                                     Name:@"gyro_motion_threshold" DefaultValue:@(40) Min:10 Max:90 Interval:5];
-    
     [[userSettingHelper addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
     [[userSettingHelper addSettingWithType:TEXTINPUT Label:@"Server Host" Name:@"hokoukukan_server" DefaultValue:@"" Accept:nil] setVisible:NO];
     [[userSettingHelper addSettingWithType:TEXTINPUT Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil] setVisible:NO];

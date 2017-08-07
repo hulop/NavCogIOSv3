@@ -61,10 +61,13 @@
     
     CMMotionManager *motionManager;
     NSOperationQueue *motionQueue;
+    
+    double baseYaw;
 #define YAWS_MAX 100
     double yaws[YAWS_MAX];
     long yawsMax;
     int yawsIndex;
+    NSTimeInterval lastGyroCommand;
     double prevDiff;
     
     double startAt;
@@ -128,6 +131,33 @@
     [self updateView];
 }
 
+- (void) resetMotionAverage
+{
+    [motionQueue addOperationWithBlock:^{
+        yawsIndex = 0;
+        lastGyroCommand = 0;
+    }];
+}
+
+double average(double array[], long count) {
+    double x = 0;
+    double y = 0;
+    for(int i = 0; i < count; i++) {
+        x += cos(array[i]);
+        y += sin(array[i]);
+    }
+    return atan2(y, x);
+}
+
+double stdev(double array[], long count) {
+    double ave = average(array, count);
+    double dev = 0;
+    for(int i = 0; i < count; i++) {
+        dev += (array[i] - ave) * (array[i] - ave);
+    }
+    return sqrt(dev);
+}
+
 - (void) routeChanged:(NSNotification*)note
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
@@ -135,9 +165,8 @@
     NavDataStore *nds = [NavDataStore sharedDataStore];
     [previewer startAt:nds.from.location];
     
-    prevDiff = NAN;
-    yawsIndex = 0;
-    yawsMax = [[NSUserDefaults standardUserDefaults] integerForKey:@"gyro_average_duration"];
+    yawsMax = 20;
+    [self resetMotionAverage];
     [motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
         if (previewer == nil || previewer.isActive == NO) {
             return;
@@ -145,15 +174,39 @@
         
         yaws[yawsIndex] = motion.attitude.yaw;
         yawsIndex = (yawsIndex+1)%yawsMax;
-        double x = 0;
-        double y = 0;
-        double ave = 0;
-        for(int i = 0; i < yawsMax; i++) {
-            x += cos(yaws[i]);
-            y += sin(yaws[i]);
+        
+        if (stdev(yaws, yawsMax) < M_PI * 2.5 / 180.0) {
+            baseYaw = average(yaws, yawsMax);
         }
-        ave = atan2(y, x);
-        double diff = [HLPLocation normalizeDegree:(ave - motion.attitude.yaw)/M_PI*180];
+        
+        double diff = [HLPLocation normalizeDegree:(baseYaw - motion.attitude.yaw)/M_PI*180];
+        HLPPreviewEvent *right = current.right;
+        HLPPreviewEvent *left = current.left;
+        if (fabs(diff) > 20 &&  lastGyroCommand + 3 < NSDate.date.timeIntervalSince1970) {
+            if (right && diff > right.turnedAngle - 20) {
+                if (isnan(prevDiff) || prevDiff < 0) {
+                    NSLog(@"gyro,right,%f,%f,%f",right.turnedAngle,diff,NSDate.date.timeIntervalSince1970);
+                    [self faceRight];
+                    prevDiff = diff;
+                    yawsIndex = 0;
+                    lastGyroCommand = NSDate.date.timeIntervalSince1970;
+                }
+            }
+            else if (left && diff < left.turnedAngle + 20) {
+                if (isnan(prevDiff) || prevDiff > 0) {
+                    NSLog(@"gyro,left,%f,%f,%f",left.turnedAngle,diff,NSDate.date.timeIntervalSince1970);
+                    [self faceLeft];
+                    prevDiff = diff;
+                    yawsIndex = 0;
+                    lastGyroCommand = NSDate.date.timeIntervalSince1970;
+                }
+            }
+        }
+        else {
+            prevDiff = NAN;
+        }
+        
+        /*
         if (fabs(diff) > [[NSUserDefaults standardUserDefaults] integerForKey:@"gyro_motion_threshold"]) {
             if (isnan(prevDiff)) {
                 if (diff > 0) { // right
@@ -168,6 +221,7 @@
         } else {
             prevDiff = NAN;
         }
+         */
     }];
     
     [self updateView];
@@ -467,31 +521,37 @@
 
 - (void)gotoBegin
 {
+    [self resetMotionAverage];
     [previewer gotoBegin];
 }
 
 - (void)gotoEnd
 {
+    [self resetMotionAverage];
     [previewer gotoEnd];
 }
 
 - (void)stepForward
 {
+    [self resetMotionAverage];
     [previewer stepForward];
 }
 
 - (void)stepBackward
 {
+    [self resetMotionAverage];
     [previewer stepBackward];
 }
 
 - (void)jumpForward
 {
+    [self resetMotionAverage];
     [previewer jumpForward];
 }
 
 - (void)jumpBackward
 {
+    [self resetMotionAverage];
     [previewer jumpBackward];
 }
 
@@ -507,6 +567,7 @@
 
 - (void)autoStepForwardUp
 {
+    [self resetMotionAverage];
     [[NavSound sharedInstance] playStep:nil];
     [previewer autoStepForwardUp];
 }

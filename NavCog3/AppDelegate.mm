@@ -31,6 +31,7 @@
 #import <Speech/Speech.h> // for Swift header
 #import <HLPDialog/HLPDialog.h>
 #import <AVFoundation/AVFoundation.h>
+#import <CoreMotion/CoreMotion.h>
 
 @interface AppDelegate ()
 
@@ -79,7 +80,23 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(serverConfigChanged:) name:SERVER_CONFIG_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(buildingChanged:) name:BUILDING_CHANGED_NOTIFICATION object:nil];
-    
+
+    if (![CMAltimeter isRelativeAltitudeAvailable]) {
+        NSString *title = NSLocalizedString(@"NoAltimeterAlertTitle", @"");
+        NSString *message = NSLocalizedString(@"NoAltimeterAlertMessage", @"");
+        NSString *ok = NSLocalizedString(@"I_Understand", @"");
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:ok
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  }]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self topMostController] presentViewController:alert animated:YES completion:nil];
+        });
+    }
     return YES;
 }
 
@@ -213,52 +230,30 @@ void uncaughtExceptionHandler(NSException *exception)
                                                         object:self
                                                       userInfo:@{@"status":@(status)}];
 }
-- (void)locationManager:(HLPLocationManager *)manager didLocationAllowAlert:(BOOL)allowed
-{
-    if (allowed) {
-        return;
-    }
-    NSString *title = NSLocalizedString(@"LocationNotAllowedTitle", @"");
-    NSString *message = NSLocalizedString(@"LocationNotAllowedMessage", @"");
-    NSString *setting = NSLocalizedString(@"SETTING", @"");
-    NSString *cancel = NSLocalizedString(@"CANCEL", @"");
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
-                                                                   message:message
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:setting
-                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                  NSURL *url = [NSURL URLWithString:@"App-Prefs:root=Privacy"];
-                                                  [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
-                                              }]];
-    [alert addAction:[UIAlertAction actionWithTitle:cancel
-                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                              }]];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[self topMostController] presentViewController:alert animated:YES completion:nil];
-    });
-}
 
-- (void)locationManager:(HLPLocationManager *)manager hasAltimeter:(BOOL)exists
+- (void)locationManager:(HLPLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
-    if (exists) {
-        return;
+    if (status == kCLAuthorizationStatusDenied) {
+        NSString *title = NSLocalizedString(@"LocationNotAllowedTitle", @"");
+        NSString *message = NSLocalizedString(@"LocationNotAllowedMessage", @"");
+        NSString *setting = NSLocalizedString(@"SETTING", @"");
+        NSString *cancel = NSLocalizedString(@"CANCEL", @"");
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:setting
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                      NSURL *url = [NSURL URLWithString:@"App-Prefs:root=Privacy"];
+                                                      [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+                                                  }]];
+        [alert addAction:[UIAlertAction actionWithTitle:cancel
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  }]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self topMostController] presentViewController:alert animated:YES completion:nil];
+        });
     }
-    
-    NSString *title = NSLocalizedString(@"NoAltimeterAlertTitle", @"");
-    NSString *message = NSLocalizedString(@"NoAltimeterAlertMessage", @"");
-    NSString *ok = NSLocalizedString(@"I_Understand", @"");
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
-                                                                   message:message
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:ok
-                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                              }]];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[self topMostController] presentViewController:alert animated:YES completion:nil];
-    });
 }
 
 - (void)locationManager:(HLPLocationManager *)manager didUpdateOrientation:(double)orientation withAccuracy:(double)accuracy
@@ -269,16 +264,6 @@ void uncaughtExceptionHandler(NSException *exception)
                           };
 
     [[NSNotificationCenter defaultCenter] postNotificationName:ORIENTATION_CHANGED_NOTIFICATION object:self userInfo:dic];
-}
-
-- (void)locationManager:(HLPLocationManager *)manager didDebugInfoUpdate:(NSDictionary *)debugInfo
-{
-    
-}
-
-- (void)locationManager:(HLPLocationManager *)manager didRangeBeacons:(NSArray<CLBeacon *> *)beacons inRegion:(CLBeaconRegion *)region
-{
-    // nop
 }
 
 - (void)locationManager:(HLPLocationManager*)manager didLogText:(NSString *)text

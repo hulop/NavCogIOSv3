@@ -1078,18 +1078,19 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             return;
         }
         
-        HLPLocation *nearest = [link nearestLocationTo:loc];
-        
+        HLPLocation *nearest = nil;
         if (onlyEnd) {
-            double sd = [link.sourceLocation distanceTo:loc];
-            double td = [link.targetLocation distanceTo:loc];
+            double sd = [link.sourceLocation fastDistanceTo:loc];
+            double td = [link.targetLocation fastDistanceTo:loc];
             if (sd > td) {
                 nearest = link.targetLocation;
             } else {
                 nearest = link.sourceLocation;
             }
+        } else {
+            nearest = [link nearestLocationTo:loc];
         }
-        double distance = [loc distanceTo:nearest];
+        double distance = [loc fastDistanceTo:nearest];
         
         if (distance < minDistance && (linkType == 0 || link.linkType == linkType)) {
             minDistance = distance;
@@ -1107,17 +1108,19 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             return;
         }
         
-        HLPLocation *nearest = [link nearestLocationTo:loc];
+        HLPLocation *nearest = nil;
         if (onlyEnd) {
-            double sd = [link.sourceLocation distanceTo:loc];
-            double td = [link.targetLocation distanceTo:loc];
+            double sd = [link.sourceLocation fastDistanceTo:loc];
+            double td = [link.targetLocation fastDistanceTo:loc];
             if (sd > td) {
                 nearest = link.targetLocation;
             } else {
                 nearest = link.sourceLocation;
             }
+        } else {
+            nearest = [link nearestLocationTo:loc];
         }
-        double distance = [loc distanceTo:nearest];
+        double distance = [loc fastDistanceTo:nearest];
         
         if (fabs(distance - minDistance) < 0.5 && (linkType == 0 || link.linkType == linkType)) {
             [nearestLinks addObject:link];

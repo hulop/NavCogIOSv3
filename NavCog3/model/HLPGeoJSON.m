@@ -205,6 +205,11 @@
     return [__id hash];
 }
 
+- (BOOL)isEqual:(HLPObject*)object
+{
+    return [__id isEqualToString:object._id];
+}
+
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
     self = [super initWithDictionary:dictionaryValue error:error];
     if (self == nil) return nil;

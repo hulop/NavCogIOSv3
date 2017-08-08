@@ -45,10 +45,12 @@
 - (void) updateParams:(NSDictionary*)params;
 
 - (double)distanceTo:(HLPLocation*)to;
+- (double)fastDistanceTo:(HLPLocation*)to;
 - (double)distanceToLat:(double)lat Lng:(double)lng;
 - (double)bearingTo:(HLPLocation*)to;
 - (double)bearingToLat:(double)lat Lng:(double)lng;
 + (double)distanceFromLat:(double)lat1 Lng:(double)lng1 toLat:(double)lat2 Lng:(double)lng2;
++ (double)fastDistanceFromLat:(double)lat1 Lng:(double)lng1 toLat:(double)lat2 Lng:(double)lng2;
 + (double)bearingFromLat:(double)lat1 Lng:(double)lng1 toLat:(double)lat2 Lng:(double)lng2;
 + (double)normalizeDegree:(double)degree;
 - (double)distanceToLineFromLocation:(HLPLocation*)location1 ToLocation:(HLPLocation*)location2;

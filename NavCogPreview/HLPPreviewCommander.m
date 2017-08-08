@@ -657,6 +657,11 @@
     [self clearBlock];
     
     NSLog(@"%@ %f", NSStringFromSelector(_cmd), distance);
+    
+    if (isnan(distance)) {
+        return;
+    }
+    
     __weak HLPPreviewCommander* weakself = self;
 
     if (distance == 0) {
@@ -710,6 +715,7 @@
 -(void) clearBlock
 {
     [playBlocks removeAllObjects];
+    playingBlock = nil;
 }
 
 -(void) addBlock:(void (^)(void(^complete)(void)))block

@@ -86,8 +86,8 @@
             self.errorLabel.hidden = (info != nil);
             
             if (info == nil) { // error
-                [NavUtil hideModalWaiting];
                 self.errorLabel.text = @"invalid email address";
+                [NavUtil hideModalWaiting];
             } else {
                 self.errorLabel.text = @" ";
                 [[NSUserDefaults standardUserDefaults] setObject:user_id forKey:@"exp_user_id"];
@@ -101,16 +101,18 @@
 {
     [[ExpConfig sharedConfig] requestRoutesConfig:^(NSDictionary * routes) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [NavUtil hideModalWaiting];
             self.errorLabel.hidden = (routes != nil);
             
             if (routes == nil) {
                 self.errorLabel.text = @"no routes info";
+                [NavUtil hideModalWaiting];
             } else {
                 self.errorLabel.text = @" ";
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self dismissViewControllerAnimated:YES completion:nil];
+                    [self dismissViewControllerAnimated:YES completion:^{
+                        [NavUtil hideModalWaiting];                        
+                    }];
                 });
             }
         });
@@ -119,11 +121,10 @@
 }
 
 - (void) destinationsChanged:(NSNotification*)note
-{
-    [NavUtil hideModalWaiting];
-    
+{    
     NavDataStore *nds = [NavDataStore sharedDataStore];
     if ([[nds destinations] count] == 0) {
+        [NavUtil hideModalWaiting];
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error"
                                                                        message:@"No destinations"
                                                                 preferredStyle:UIAlertControllerStyleAlert];

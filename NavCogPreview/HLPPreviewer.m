@@ -832,7 +832,8 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 - (void)stop
 {
     _isActive = NO;
-    
+    _isWaitingAction = NO;
+    _isAutoProceed = NO;
     current = nil;
     [self fireUserLocation:current.location];
     [_delegate previewStopped:current];
@@ -840,12 +841,17 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)firePreviewUpdated
 {
-    if (current.isOnRoute && current.isGoingToBeOffRoute) {
+    if (current.isArrived) {
         _isAutoProceed = NO;
     }
-    if (current.targetNode && [[NavDataStore sharedDataStore] isElevatorNode:current.targetNode]) {
-        _isAutoProceed = NO;
+    if ((current.isOnRoute && current.isGoingToBeOffRoute) ||
+        (current.targetNode && [[NavDataStore sharedDataStore] isElevatorNode:current.targetNode] && current.isGoingBackward)) {
+        if (_isAutoProceed) {
+            _isAutoProceed = NO;
+            _isWaitingAction = YES;
+        }
     }
+
     remainingDistanceToNextStep = current.next.distanceMoved;
     remainingDistanceToNextAction = current.nextAction.distanceMoved;
     [self fireRemainingDistance:remainingDistanceToNextAction];    
@@ -857,9 +863,6 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     if (_isAutoProceed == NO) {
         [_delegate userMoved:distance];
-    }
-    if (distance == 0) {
-        _isAutoProceed = NO;
     }
 }
 
@@ -922,6 +925,10 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             }
             current = temp;
         }
+        if (_isWaitingAction) {
+            _isWaitingAction = NO;
+            [self autoStepForwardUp];
+        }
         return 0;
     }
     
@@ -933,8 +940,6 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     if (next.distanceMoved > 0.1) {
         [history addObject:current];
         current = next;
-    } else {
-        _isAutoProceed = NO;
     }
     return next.distanceMoved;
 }
@@ -1014,7 +1019,12 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 - (void)faceRight
 {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
-    _isAutoProceed = NO;
+    if (_isWaitingAction) {
+        _isWaitingAction = NO;
+        [self autoStepForwardUp];
+    } else {
+        _isAutoProceed = NO;
+    }
     
     if ([[NavDataStore sharedDataStore] isElevatorNode:current.targetNode]) {
         [self _faceTo:current.upFloor];
@@ -1026,7 +1036,12 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 - (void)faceLeft
 {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
-    _isAutoProceed = NO;
+    if (_isWaitingAction) {
+        _isWaitingAction = NO;
+        [self autoStepForwardUp];
+    } else {
+        _isAutoProceed = NO;
+    }
     
     if ([[NavDataStore sharedDataStore] isElevatorNode:current.targetNode]) {
         [self _faceTo:current.downFloor];
@@ -1049,6 +1064,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }
     
     _isAutoProceed = YES;
+    _isWaitingAction = NO;
     
     remainingDistanceToNextStep = current.next.distanceMoved;
     remainingDistanceToNextAction = current.nextAction.distanceMoved;
@@ -1080,6 +1096,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)autoStep:(NSTimer*)timer
 {
+    if (_isWaitingAction) {
+        return;
+    }
     if (_isAutoProceed == NO) {
         [autoTimer invalidate];
         autoTimer = nil;
@@ -1102,6 +1121,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             remainingDistanceToNextAction -= step_length;
             [self fireRemainingDistance:remainingDistanceToNextAction];
             if (remainingDistanceToNextStep < step_length) {
+                [_delegate userMoved:NAN];
                 [self _stepForward];
                 [self firePreviewUpdated];
             }

@@ -77,6 +77,7 @@
 @property (weak) id<HLPPreviewerDelegate> delegate;
 @property (readonly) BOOL isActive;
 @property (readonly) BOOL isAutoProceed;
+@property (readonly) BOOL isWaitingAction;
 
 - (void)startAt:(HLPLocation*)loc;
 - (void)stop;

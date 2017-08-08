@@ -533,6 +533,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     NSString *name = nil;
     if ([obj isKindOfClass:HLPEntrance.class] && ((HLPEntrance*)obj).node.isLeaf) {
         if ([[NavDataStore sharedDataStore] isOnDestination:((HLPEntrance*)obj).node._id] ||
+            [[NavDataStore sharedDataStore] isOnStart:((HLPEntrance*)obj).node._id] ||
             (!_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_jump"]) ||
             (_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_walk"])) {
             name = ((HLPEntrance*)obj).facility.name;
@@ -785,7 +786,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     
     // with route
     if ([nds hasRoute]) {
-        HLPLink *first = [nds firstRouteLink];
+        HLPLink *first = [nds firstRouteLink:3];
         // route HLPLink is different instance from linksMap so need to get by link id
         routeLink = first;
         minLink = nds.linksMap[first._id];
@@ -947,7 +948,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         current = [history lastObject];
         [history removeLastObject];
         
-        [self fireUserMoved:distance];
+        [self fireUserMoved:-distance];
         [self firePreviewUpdated];
     } else {
         [self fireUserMoved:0];
@@ -984,7 +985,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
                 break;
             }
         }
-        [self fireUserMoved:distance];
+        [self fireUserMoved:-distance];
         [self firePreviewUpdated];
     } else {
         [self fireUserMoved:0];

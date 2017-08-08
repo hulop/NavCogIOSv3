@@ -1008,13 +1008,14 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     
     for(HLPEntrance *ent in features) {
         if ([ent isKindOfClass:HLPEntrance.class]) {
-            
+            /*
             if ([startNode.forFacilityID isEqualToString:ent.forFacilityID]) {
-                continue;
+                //continue;
             }
             if ([destinationNode.forFacilityID isEqualToString:ent.forFacilityID]) {
                 //NSLog(@"%@", ent);
             }
+             */
             if (!ent.node) { // special door tag
                 continue;
             }
@@ -1023,6 +1024,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             BOOL isLeaf = ent.node.isLeaf;
             NSMutableDictionary *opt = [isLeaf?@{@"onlyEnd":@(YES)}:@{} mutableCopy];
             opt[@"POI_DISTANCE_MIN_THRESHOLD"] = @(5);
+
             NSArray *links = [self nearestLinksAt:ent.node.location withOptions:opt];
             for(HLPLink* nearestLink in links) {
                 if ([nearestLink.sourceNodeID isEqualToString:ent.node._id] ||
@@ -1446,29 +1448,35 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
 
 - (BOOL)isOnDestination:(NSString *)nodeID
 {
-    HLPLink *link = [self lastRouteLink];
+    HLPLink *link = [self lastRouteLink:0];
     return [link.targetNodeID isEqualToString:nodeID];
 }
 
-- (HLPLink *)firstRouteLink
+- (BOOL)isOnStart:(NSString *)nodeID
+{
+    HLPLink *link = [self firstRouteLink:0];
+    return [link.sourceNodeID isEqualToString:nodeID];
+}
+
+- (HLPLink *)firstRouteLink:(double)ignoreDistance
 {
     if (![self hasRoute]) {
         return nil;
     }
     HLPLink* first = self.route[1];
-    if (first.length < 3 && self.route.count >= 4) {
+    if (first.length < ignoreDistance && self.route.count >= 4) {
         first = self.route[2];
     }
     return first;
 }
 
-- (HLPLink*)lastRouteLink
+- (HLPLink*)lastRouteLink:(double)ignoreDistance
 {
     if (![self hasRoute]) {
         return nil;
     }
     HLPLink* last = self.route[self.route.count-2];
-    if (last.length < 3 && self.route.count >= 4) {
+    if (last.length < ignoreDistance && self.route.count >= 4) {
         last = self.route[self.route.count-3];
     }
     return last;

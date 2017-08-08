@@ -58,7 +58,7 @@
     NavDataStore *nds = [NavDataStore sharedDataStore];
     
     NSMutableString *str = [@"" mutableCopy];
-    [str appendFormat:@"Preview is started... "];
+    [str appendFormat:@"Preview is starting... "];
     if (nds.hasRoute) {
         double d = 0;
         for(HLPObject *o in nds.route) {
@@ -112,7 +112,7 @@
         //NSLog(@"isArrived:%d", current.isArrived);
         //NSLog(@"isGoingBackward:%d", current.isGoingBackward);
         
-        if (prev != nil) {
+        if (prev != nil) {        
             if (current.isOnElevator) {
                 if (prev.isOnElevator) {
                     if (current.isGoingToBeOffRoute || current.isGoingBackward) {
@@ -147,6 +147,9 @@
                             [_delegate playSuccess];
                             BOOL noDistance = next.isOnElevator && (next.distanceMoved < 5);
                             [str appendString:[self nextActionString:next noDistance:noDistance]];
+                        }
+                        else if (current.prev == nil) { // start point
+                            [str appendString:@"You are at the starting point... "];
                         }
                         [str appendString:[self poisString:current]];
                     }
@@ -394,7 +397,7 @@
                 [str appendFormat:@"%@ is on your left. ", name];
             }
             else {
-                [str appendFormat:@"%@ is in your front. ", name];
+                [str appendFormat:@"%@ is in front of you. ", name];
             }
         }
     }
@@ -651,11 +654,9 @@
 
 -(void)userMoved:(double)distance
 {
-    NSLog(@"playBlocks.count = %ld", [playBlocks count]);
     [self clearBlock];
-    NSLog(@"playBlocks.count = %ld", [playBlocks count]);
     
-    //NSLog(@"%@ %f", NSStringFromSelector(_cmd), distance);
+    NSLog(@"%@ %f", NSStringFromSelector(_cmd), distance);
     __weak HLPPreviewCommander* weakself = self;
 
     if (distance == 0) {
@@ -677,9 +678,12 @@
     [self addBlock:^(void(^complete)(void)){
         if (weakself) {
             NSString *str = [NSString stringWithFormat:@"%.0f meters walked. ", distance];
+            if (distance < 0) {
+                str = [NSString stringWithFormat:@"%.0f meters walked back. ", -distance];
+            }
             
             if (step_sound_for_jump == YES) {
-                int steps = MAX(round(distance / step_length), 2);
+                int steps = MAX(round(fabs(distance) / step_length), 2);
                 __block int n = MIN(steps, 10);
                 
                 [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {

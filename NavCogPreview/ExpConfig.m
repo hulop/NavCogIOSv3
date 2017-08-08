@@ -197,6 +197,34 @@ static ExpConfig *instance;
      }];
 }
 
+- (double)elapsedTimeForRoute:(NSDictionary *)route
+{
+    NSArray *infos = [[ExpConfig sharedConfig] expUserRouteInfo];
+    double elapsed_time = 0;
+    if (infos) {
+        for(NSDictionary *info in infos) {
+            if ([route[@"name"] isEqualToString:info[@"name"]]) {
+                if (info[@"lastday"]) {
+                    elapsed_time = [info[@"elapsed_time"] doubleValue];
+                    NSDate *lastday = [[NSDate alloc] initWithTimeIntervalSince1970:[info[@"lastday"] doubleValue]];
+                    NSDate *today = NSDate.date;
+                    
+                    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+                    NSUInteger lastdayOfYear = [gregorian ordinalityOfUnit:NSCalendarUnitDay
+                                                                    inUnit:NSCalendarUnitYear forDate:lastday];
+                    NSUInteger todayOfYear = [gregorian ordinalityOfUnit:NSCalendarUnitDay
+                                                                  inUnit:NSCalendarUnitYear forDate:today];
+                    if (lastdayOfYear != todayOfYear) {
+                        elapsed_time = 0;
+                    }
+                } else {
+                    elapsed_time = 0;
+                }
+            }
+        }
+    }
+    return elapsed_time;
+}
 
 - (NSArray*)expUserRoutes
 {

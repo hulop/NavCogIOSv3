@@ -65,6 +65,7 @@ static HLPSetting *idLabel;
     if ([self.restorationIdentifier isEqualToString:@"exp_settings"]) {
         [SettingViewController setupExpSettings];
         helper = expSettingHelper;
+        self.navigationItem.title = @"Select a route";
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:EXP_ROUTES_CHANGED_NOTIFICATION object:nil];
@@ -217,39 +218,16 @@ static HLPSetting *idLabel;
     [expSettingHelper removeAllSetting];
     
     NSArray *routes = [[ExpConfig sharedConfig] expUserRoutes];
-    NSArray *infos = [[ExpConfig sharedConfig] expUserRouteInfo];
     if (routes == nil) {
         return;
     }
     for(NSDictionary *route in routes) {
         double limit = [route[@"limit"] doubleValue];
-        double elapsed_time = 0;
-        if (infos) {
-            for(NSDictionary *info in infos) {
-                if ([route[@"name"] isEqualToString:info[@"name"]]) {
-                    if (info[@"lastday"]) {
-                        elapsed_time = [info[@"elapsed_time"] doubleValue];
-                        NSDate *lastday = [[NSDate alloc] initWithTimeIntervalSince1970:[info[@"lastday"] doubleValue]];
-                        NSDate *today = NSDate.date;
-                        
-                        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-                        NSUInteger lastdayOfYear = [gregorian ordinalityOfUnit:NSCalendarUnitDay
-                                                                        inUnit:NSCalendarUnitYear forDate:lastday];
-                        NSUInteger todayOfYear = [gregorian ordinalityOfUnit:NSCalendarUnitDay
-                                                                      inUnit:NSCalendarUnitYear forDate:today];
-                        if (lastdayOfYear != todayOfYear) {
-                            elapsed_time = 0;
-                        }
-                    } else {
-                        elapsed_time = 0;
-                    }
-                }
-            }
-        }
+        double elapsed_time = [[ExpConfig sharedConfig] elapsedTimeForRoute:route];
+        
         NSString *title = [NSString stringWithFormat:@"%@  [%.0f / %.0f minutes]", route[@"name"], floor(elapsed_time / 60), round(limit / 60)];
         
-        HLPSetting *setting = [expSettingHelper addActionTitle:title Name:route[@"name"]];
-        
+        HLPSetting *setting = [expSettingHelper addActionTitle:title Name:route[@"name"]];        
         setting.disabled = (elapsed_time > limit);
     }
 }

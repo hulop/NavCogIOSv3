@@ -83,10 +83,10 @@
     
     [[ExpConfig sharedConfig] requestUserInfo:user_id withComplete:^(NSDictionary * info) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [NavUtil hideModalWaiting];
             self.errorLabel.hidden = (info != nil);
             
             if (info == nil) { // error
+                [NavUtil hideModalWaiting];
                 self.errorLabel.text = @"invalid email address";
             } else {
                 self.errorLabel.text = @" ";
@@ -99,11 +99,6 @@
 
 - (void)loadRoutes
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.errorLabel.text = @" ";
-        [NavUtil showModalWaitingWithMessage:@"Loading..."];
-    });
-        
     [[ExpConfig sharedConfig] requestRoutesConfig:^(NSDictionary * routes) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [NavUtil hideModalWaiting];

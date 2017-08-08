@@ -56,7 +56,7 @@
 
 - (NSString *)accessibilityLabel
 {
-    return @"Test";
+    return nil;
 }
 
 - (BOOL)isUserInteractionEnabled

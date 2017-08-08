@@ -38,7 +38,7 @@
 - (void)requestRoutesConfig:(void(^)(NSDictionary*))complete;
 
 - (void)endExpStartAt:(double)startAt withLogFile:(NSString*)logFile withComplete:(void(^)())complete;
-
+- (double)elapsedTimeForRoute:(NSDictionary*)route;
 - (NSArray*)expUserRoutes;
 - (NSArray*)expUserRouteInfo;
 - (NSDictionary*)expUserCurrentRouteInfo;

@@ -114,8 +114,9 @@ typedef enum {
 - (BOOL) hasRoute;
 - (BOOL) isOnRoute:(NSString*)objID;
 - (BOOL) isOnDestination:(NSString*)nodeID;
-- (HLPLink*) firstRouteLink;
-- (HLPLink*) lastRouteLink;
+- (BOOL) isOnStart:(NSString*)nodeID;
+- (HLPLink*) firstRouteLink:(double)ignoreDistance;
+- (HLPLink*) lastRouteLink:(double)ignoreDistance;
 - (HLPLink*) routeLinkById:(NSString*)linkID;
 - (NSArray*) nearestLinksAt:(HLPLocation*)loc withOptions:(NSDictionary*)option;
 

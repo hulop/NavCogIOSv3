@@ -334,14 +334,11 @@ double stdev(double array[], long count) {
     startAt = [[NSDate date] timeIntervalSince1970];
     
     if ([[ServerConfig sharedConfig] isExpMode]) {
-        NSDictionary *info = [[ExpConfig sharedConfig] expUserCurrentRouteInfo];
         NSDictionary *route = [[ExpConfig sharedConfig] currentRoute];
         if (route) {
             double limit = [route[@"limit"] doubleValue];
-            double elapsed_time = 0;
-            if (info && info[@"elapsed_time"]) {
-                elapsed_time = [info[@"elapsed_time"] doubleValue];
-            }
+            double elapsed_time = [[ExpConfig sharedConfig] elapsedTimeForRoute:route];
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 timeout = [NSTimer scheduledTimerWithTimeInterval:(limit - elapsed_time) repeats:NO block:^(NSTimer * _Nonnull timer) {
                     [previewer stop];
@@ -603,6 +600,7 @@ double stdev(double array[], long count) {
             } else {
             }*/
             self.searchButton.title = @"Search";
+            self.searchButton.accessibilityLabel = @"Search";
         }
     });
 }

@@ -119,6 +119,13 @@ static HLPSetting *idLabel;
             }
         }
     }
+
+    if ([setting.name isEqualToString:@"help_preview"]) {
+        NSString *lang = [@"-" stringByAppendingString:[[NavDataStore sharedDataStore] userLanguage]];
+        if ([lang isEqualToString:@"-en"]) { lang = @""; }
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://hulop.github.io/help_preview%@", lang]];
+        [NavUtil openURL:url onViewController:self];
+    }
 }
 
 - (void)requestRoute:(NSDictionary*)route
@@ -159,6 +166,9 @@ static HLPSetting *idLabel;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
   
+    [userSettingHelper addSectionTitle:@"Help"];
+    [userSettingHelper addActionTitle:@"Help" Name:@"help_preview"];
+    
     [userSettingHelper addSectionTitle:@"Forward Direction"];
     [userSettingHelper addSettingWithType:OPTION Label:@"Up - Forward" Name:@"UpForward" Group:@"forwardDirection" DefaultValue:@(YES) Accept:nil];
     [userSettingHelper addSettingWithType:OPTION Label:@"Down - Forward" Name:@"DownForward" Group:@"forwardDirection" DefaultValue:@(YES) Accept:nil];

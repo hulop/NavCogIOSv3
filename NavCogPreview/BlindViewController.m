@@ -70,7 +70,8 @@
     NSTimeInterval lastGyroCommand;
     double prevDiff;
     
-    double startAt;
+    double duration;
+    int activeCount;
     NSString *logFile;
     NSTimer *timeout;
 }
@@ -328,24 +329,38 @@ double stdev(double array[], long count) {
 
 #pragma mark - HLPPreviewerDelegate
 
+-(void)_active
+{
+    activeCount = 10;
+}
+
 -(void)previewStarted:(HLPPreviewEvent*)event
 {
     logFile = [Logging startLog];
-    startAt = [[NSDate date] timeIntervalSince1970];
+    duration = 0;
+    [self _active];
     
     if ([[ServerConfig sharedConfig] isExpMode]) {
-        NSDictionary *route = [[ExpConfig sharedConfig] currentRoute];
-        if (route) {
-            double limit = [route[@"limit"] doubleValue];
-            double elapsed_time = [[ExpConfig sharedConfig] elapsedTimeForRoute:route];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                timeout = [NSTimer scheduledTimerWithTimeInterval:(limit - elapsed_time) repeats:NO block:^(NSTimer * _Nonnull timer) {
-                    [previewer stop];
-                    [self speak:@"Time is up." withOptions:@{@"force":@(NO)} completionHandler:nil];
-                }];
-            });
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            timeout = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                if (activeCount > 0) {
+                    duration += 1;
+                    NSLog(@"Duration:%f",duration);
+                    NSDictionary *route = [[ExpConfig sharedConfig] currentRoute];
+                    if (route) {
+                        double limit = [route[@"limit"] doubleValue];
+                        double elapsed_time = [[ExpConfig sharedConfig] elapsedTimeForRoute:route];
+                        
+                        if (elapsed_time + duration >= limit) {
+                            [previewer stop];
+                            [self speak:@"Time is up." withOptions:@{@"force":@(NO)} completionHandler:nil];
+                            [timer invalidate];
+                        }
+                    }
+                }
+                activeCount--;
+            }];
+        });
     }
     
     [commander previewStarted:event];
@@ -381,7 +396,7 @@ double stdev(double array[], long count) {
         [Logging stopLog];
         if ([[ServerConfig sharedConfig] isExpMode]) {
             [NavUtil showModalWaitingWithMessage:@"Saving log..."];
-            [[ExpConfig sharedConfig] endExpStartAt:startAt withLogFile:logFile withComplete:^{
+            [[ExpConfig sharedConfig] endExpDuration:duration withLogFile:logFile withComplete:^{
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [NavUtil hideModalWaiting];
                 });
@@ -467,24 +482,28 @@ double stdev(double array[], long count) {
 
 - (void)speakAtPoint:(CGPoint)point
 {
+    [self _active];
     // not implemented
     [self stopSpeaking];
 }
 
 - (void)stopSpeaking
 {
+    [self _active];
     [previewer autoStepForwardStop];
     [[NavDeviceTTS sharedTTS] stop:NO];
 }
 
 - (void)speakCurrentPOI
 {
+    [self _active];
     [previewer autoStepForwardStop];
     [commander previewCurrentFull];
 }
 
 - (void)selectCurrentPOI
 {
+    [self _active];
     [previewer autoStepForwardStop];
     if (current && current.targetPOIs) {
         POIViewController *vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"poi_view"];
@@ -519,52 +538,61 @@ double stdev(double array[], long count) {
 
 - (void)gotoBegin
 {
+    [self _active];
     [self resetMotionAverage];
     [previewer gotoBegin];
 }
 
 - (void)gotoEnd
 {
+    [self _active];
     [self resetMotionAverage];
     [previewer gotoEnd];
 }
 
 - (void)stepForward
 {
+    [self _active];
     [self resetMotionAverage];
     [previewer stepForward];
 }
 
 - (void)stepBackward
 {
+    [self _active];
     [self resetMotionAverage];
     [previewer stepBackward];
 }
 
 - (void)jumpForward
 {
+    [self _active];
     [self resetMotionAverage];
     [previewer jumpForward];
 }
 
 - (void)jumpBackward
 {
+    [self _active];
     [self resetMotionAverage];
     [previewer jumpBackward];
 }
 
 - (void)faceRight
 {
+    [self _active];
     [previewer faceRight];
 }
 
 - (void)faceLeft
 {
+    [self _active];
     [previewer faceLeft];
 }
 
 - (void)autoStepForwardUp
 {
+    [self _active];
     [self resetMotionAverage];
     [[NavSound sharedInstance] playStep:nil];
     [previewer autoStepForwardUp];
@@ -572,6 +600,7 @@ double stdev(double array[], long count) {
 
 - (void)autoStepForwardDown
 {
+    [self _active];
     [[NavSound sharedInstance] playStep:nil];
     [previewer autoStepForwardDown];
 }

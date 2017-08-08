@@ -37,7 +37,7 @@
 - (void)saveUserInfo:(NSString*)user_id withInfo:(NSDictionary*)info withComplete:(void(^)())complete;
 - (void)requestRoutesConfig:(void(^)(NSDictionary*))complete;
 
-- (void)endExpStartAt:(double)startAt withLogFile:(NSString*)logFile withComplete:(void(^)())complete;
+- (void)endExpDuration:(double)duration withLogFile:(NSString*)logFile withComplete:(void(^)())complete;
 - (double)elapsedTimeForRoute:(NSDictionary*)route;
 - (NSArray*)expUserRoutes;
 - (NSArray*)expUserRouteInfo;

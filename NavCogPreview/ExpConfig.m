@@ -79,7 +79,7 @@ static ExpConfig *instance;
     }];
 }
 
-- (void)endExpStartAt:(double)startAt withLogFile:(NSString *)logFile withComplete:(void (^)())complete
+- (void)endExpDuration:(double)duration withLogFile:(NSString *)logFile withComplete:(void (^)())complete
 {
     NSError *error;
     
@@ -88,7 +88,6 @@ static ExpConfig *instance;
     NSString *logContent = [NSString stringWithContentsOfFile:logFile encoding:NSUTF8StringEncoding error:&error];
     
     double endAt = [[NSDate date] timeIntervalSince1970];
-    double duration = endAt - startAt;
     NSString *routeName = _currentRoute[@"name"];
     if (routeName == nil) {
         complete();
@@ -139,7 +138,6 @@ static ExpConfig *instance;
             }
             temp[@"activities"] = [temp[@"activities"] arrayByAddingObject:
                                    @{
-                                     @"start_at": @(startAt),
                                      @"end_at": @(endAt),
                                      @"duration": @(duration),
                                      @"log_file": logFileId
@@ -158,7 +156,7 @@ static ExpConfig *instance;
     NSDictionary *logdic = @{
                               @"_id": logFileId,
                               @"user_id": _user_id,
-                              @"created_at": @(startAt),
+                              @"created_at": @(endAt),
                               @"log": logContent
                               };
     

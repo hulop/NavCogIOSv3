@@ -738,23 +738,42 @@
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeLocation:(NSDictionary *)locationInfo
+- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:locationInfo];
+    NSDictionary *loc =
+    @{
+      @"lat": @(lat),
+      @"lng": @(lng),
+      @"floor": @(floor),
+      @"sync": @(sync),
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:loc];
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeBuilding:(NSDictionary *)buildingInfo
+- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeBuilding:(NSString *)building
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:buildingInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:@{@"building": building}];
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeUIState:(NSDictionary *)uiState
+- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeUIPage:(NSString *)page inNavigation:(BOOL)inNavigation
 {
+    NSDictionary *uiState =
+    @{
+      @"page": page,
+      @"navigation": @(inNavigation),
+      };
     [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:uiState];
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didFinishNavigation:(NSDictionary *)navigationInfo
+- (void)webviewHelper:(HLPWebviewHelper *)helper didFinishNavigationStart:(NSTimeInterval)start end:(NSTimeInterval)end from:(NSString *)from to:(NSString *)to
 {
+    NSDictionary *navigationInfo =
+    @{
+      @"start": @(start),
+      @"end": @(end),
+      @"from": from,
+      @"to": to,
+      };
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:navigationInfo];
 }
 

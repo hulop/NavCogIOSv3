@@ -29,6 +29,7 @@
     BOOL stepLR;
     NSMutableArray *playBlocks;
     void (^playingBlock)(void (^complete)());
+    NSTimeInterval playingSince;
     HLPPreviewEvent *current;
     HLPPreviewEvent *next;
     HLPPreviewEvent *prev;
@@ -698,13 +699,13 @@
                     n--;
                     if (n <= 0) {
                         [timer invalidate];
-                        [weakself.delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:^{
+                        [weakself.delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:^{
                             complete();
                         }];
                     }
                 }];
             } else {
-                [weakself.delegate speak:str withOptions:@{@"force":@(NO)} completionHandler:^{
+                [weakself.delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:^{
                     complete();
                 }];
             }
@@ -715,7 +716,6 @@
 -(void) clearBlock
 {
     [playBlocks removeAllObjects];
-    playingBlock = nil;
 }
 
 -(void) addBlock:(void (^)(void(^complete)(void)))block
@@ -730,10 +730,12 @@
 
 - (void) processNextBlock
 {
-    if (playingBlock || playBlocks.count == 0) {
+    NSTimeInterval now = NSDate.date.timeIntervalSince1970;
+    if ((playingBlock && (now-playingSince) < 10) || playBlocks.count == 0) {
         return;
     }
     playingBlock = [playBlocks firstObject];
+    playingSince = now;
     [playBlocks removeObjectAtIndex:0];
     
     playingBlock(^() { // complete
@@ -764,12 +766,21 @@
     double target = MAX(floor(distance/15)*15, 5);
     
     if (distance > target && target > distance - step_length) {
-        if (target <= 5.0) {
-            [_delegate speak:@"approaching. " withOptions:@{@"force":@(YES)} completionHandler:nil];
-        } else {
-            NSString *distStr = [self distanceString:distance];
-            [_delegate speak:distStr withOptions:@{@"force":@(YES)} completionHandler:nil];
-        }
+        __weak HLPPreviewCommander *weakself = self;
+        [self addBlock:^(void (^complete)(void)) {
+            if (weakself) {
+                if (target <= 5.0) {
+                    [weakself.delegate speak:@"approaching. " withOptions:@{@"force":@(YES)} completionHandler:^{
+                        complete();
+                    }];
+                } else {
+                    NSString *distStr = [weakself distanceString:distance];
+                    [weakself.delegate speak:distStr withOptions:@{@"force":@(YES)} completionHandler:^{
+                        complete();
+                    }];
+                }
+            }
+        }];
     }
 }
 

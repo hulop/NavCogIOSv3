@@ -528,6 +528,26 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     return nil;
 }
 
+- (HLPNode *)targetCorner
+{
+    if (self.targetNode == nil) {
+        return nil;
+    }
+    
+    if ([[NavDataStore sharedDataStore] isElevatorNode:self.targetNode]) {
+        return self.targetNode;
+    }
+    
+    NSArray<HLPLink*> *links = [self intersectionLinks];
+    if (links.count == 2) {
+        double diff = [HLPLocation normalizeDegree:links[0].initialBearingFromSource - links[1].initialBearingFromSource];
+        if (20 <= fabs(diff) || fabs(diff) <= 160) {
+            return self.targetNode;
+        }
+    }
+    return nil;
+}
+
 - (BOOL) isEffective:(HLPLocationObject*)obj
 {
     NSString *name = nil;
@@ -968,7 +988,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     while(true) {
         double d = [self _stepForward];
         distance += d;
-        if (current.targetIntersection || d == 0) {
+        if (current.targetIntersection || current.targetCorner) {
             break;
         }
     }
@@ -986,7 +1006,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             distance += current.distanceMoved;
             current = [history lastObject];
             [history removeLastObject];
-            if (current.targetIntersection) {
+            if (current.targetIntersection || current.targetCorner) {
                 break;
             }
         }

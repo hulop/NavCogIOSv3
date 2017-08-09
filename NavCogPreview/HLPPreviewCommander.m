@@ -277,6 +277,7 @@
 
 #pragma mark - string functions
 
+/*
 - (NSString*)distanceString:(double)distance
 {
     distance = round(distance);
@@ -288,6 +289,33 @@
     }
     return [NSString stringWithFormat:@"%.0f meters", distance];
 }
+ */
+
+- (NSString*)distanceString:(double)distance
+{
+    if (round(distance) == 0) {
+        return nil;
+    }
+    NSString *distance_unit = [[NSUserDefaults standardUserDefaults] stringForKey:@"distance_unit"];
+    
+    BOOL isFeet = [distance_unit isEqualToString:@"unit_feet"];
+    const double FEET_UNIT = 0.3024;
+    
+    if (isFeet) {
+        distance /= FEET_UNIT;
+    }
+    
+    if (distance > 50) {
+        distance = floor(distance / 10.0) * 10.0;
+    }
+    if (distance > 10) {
+        distance = floor(distance / 5.0) * 5.0;
+    }
+    NSString *unit = isFeet?@"unit_feet":@"unit_meter";
+    return [NSString stringWithFormat:NSLocalizedStringFromTable(unit, @"BlindView", @""), (int)round(distance)];
+}
+
+
 
 - (NSString*)nextActionString:(HLPPreviewEvent*)event noDistance:(BOOL)noDistance
 {
@@ -683,9 +711,9 @@
     // always speak distance
     [self addBlock:^(void(^complete)(void)){
         if (weakself) {
-            NSString *str = [NSString stringWithFormat:@"%.0f meters walked. ", distance];
+            NSString *str = [NSString stringWithFormat:@"%@ walked. ", [weakself distanceString:distance]];
             if (distance < 0) {
-                str = [NSString stringWithFormat:@"%.0f meters walked back. ", -distance];
+                str = [NSString stringWithFormat:@"%@ walked back. ", [weakself distanceString:-distance]];
             }
             
             if (step_sound_for_jump == YES) {

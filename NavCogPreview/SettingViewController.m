@@ -169,15 +169,22 @@ static HLPSetting *idLabel;
     [userSettingHelper addSectionTitle:@"Help"];
     [userSettingHelper addActionTitle:@"Help" Name:@"help_preview"];
     
-    [userSettingHelper addSectionTitle:@"Forward Direction"];
-    [userSettingHelper addSettingWithType:OPTION Label:@"Up - Forward" Name:@"UpForward" Group:@"forwardDirection" DefaultValue:@(YES) Accept:nil];
-    [userSettingHelper addSettingWithType:OPTION Label:@"Down - Forward" Name:@"DownForward" Group:@"forwardDirection" DefaultValue:@(YES) Accept:nil];
+    [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];
+    [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Meter", @"meter distance unit label")
+                                     Name:@"unit_meter" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
+    [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
+                                     Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(YES) Accept:nil];
+
+    
+    [[userSettingHelper addSectionTitle:@"Forward Direction"] setVisible:NO];
+    [[userSettingHelper addSettingWithType:OPTION Label:@"Up - Forward" Name:@"UpForward" Group:@"forwardDirection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
+    [[userSettingHelper addSettingWithType:OPTION Label:@"Down - Forward" Name:@"DownForward" Group:@"forwardDirection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
 
     [userSettingHelper addSectionTitle:@"Preview Parameters"];
     [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
                                      Name:@"speech_speed" DefaultValue:@(0.55) Min:0.1 Max:1 Interval:0.05];
 
-    [userSettingHelper addSettingWithType:DOUBLE Label:@"Step Length" Name:@"preview_step_length" DefaultValue:@(0.75)Min:0.25 Max:1.5 Interval:0.05];
+    [[userSettingHelper addSettingWithType:DOUBLE Label:@"Step Length" Name:@"preview_step_length" DefaultValue:@(0.75)Min:0.25 Max:1.5 Interval:0.05] setVisible:NO];
     [userSettingHelper addSettingWithType:BOOLEAN Label:@"Prevent Offroute" Name:@"prevent_offroute" DefaultValue:@(YES) Accept:nil];
     
     [userSettingHelper addSectionTitle:@"Preview Jump"];

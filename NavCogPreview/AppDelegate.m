@@ -30,9 +30,7 @@
 
 @end
 
-@implementation AppDelegate {    
-    CBCentralManager *bluetoothManager;
-}
+@implementation AppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -50,8 +48,6 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:def];
     
     [NavSound sharedInstance];
-    
-    [self detectBluetooth];
     
     return YES;
 }
@@ -93,42 +89,5 @@
     
     return topController;
 }
-
-- (void)detectBluetooth
-{
-    if(!bluetoothManager)
-    {
-        bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue() options:@{CBCentralManagerOptionShowPowerAlertKey: @NO}];
-    }
-    [self centralManagerDidUpdateState:bluetoothManager];
-}
-
-- (void)centralManagerDidUpdateState:(CBCentralManager *)central
-{
-    if (bluetoothManager.state == CBManagerStatePoweredOff) {
-        NSString *title = NSLocalizedString(@"BluetoothOffAlertTitle", @"");
-        NSString *message = NSLocalizedString(@"BluetoothOffAlertMessage", @"");
-        NSString *setting = NSLocalizedString(@"SETTING", @"");
-        NSString *cancel = NSLocalizedString(@"CANCEL", @"");
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
-                                                                       message:message
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:setting
-                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                      NSURL *url = [NSURL URLWithString:@"App-Prefs:root=Bluetooth"];
-                                                      [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
-                                                  }]];
-        [alert addAction:[UIAlertAction actionWithTitle:cancel
-                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                  }]];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[self topMostController] presentViewController:alert animated:YES completion:nil];
-        });
-        
-    }
-}
-
-
 
 @end

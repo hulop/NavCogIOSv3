@@ -118,6 +118,7 @@ typedef enum {
 - (HLPLink*) firstRouteLink:(double)ignoreDistance;
 - (HLPLink*) lastRouteLink:(double)ignoreDistance;
 - (HLPLink*) routeLinkById:(NSString*)linkID;
+- (HLPLink*) findElevatorLink:(HLPLink*)link;
 - (NSArray*) nearestLinksAt:(HLPLocation*)loc withOptions:(NSDictionary*)option;
 
 + (NavDestination*) destinationForCurrentLocation;

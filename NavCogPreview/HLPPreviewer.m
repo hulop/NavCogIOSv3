@@ -154,13 +154,14 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
                 min = d;
                 nextLink = l;
             }
+            
             // special for elevator
-            
             if ([nds isElevatorNode:self.targetNode]) {
-                d = 0;
+                if (l.linkType != LINK_TYPE_ELEVATOR) {
+                    nextRouteLink = [nds findElevatorLink:l];
+                }
             }
-            
-            if (d < min2 && [nds isOnRoute:l._id] && l.linkType != LINK_TYPE_ELEVATOR) {
+            else if (d < min2 && [nds isOnRoute:l._id]) {
                 min2 = d;
                 nextRouteLink = [nds routeLinkById:l._id];
             }

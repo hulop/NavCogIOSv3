@@ -1500,5 +1500,29 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     return nil;
 }
 
+- (HLPLink*)findElevatorLink:(HLPLink *)link
+{
+    if (self.route == nil) {
+        return nil;
+    }
+    BOOL found = NO;
+    for(HLPObject *o in self.route) {
+        if ([o isKindOfClass:HLPLink.class]) {
+            HLPLink *l = (HLPLink*)o;
+            if ([l._id isEqualToString:link._id]) {
+                return l;
+            }
+            if ([l.sourceNodeID isEqualToString:link.sourceNodeID] ||
+                [l.sourceNodeID isEqualToString:link.targetNodeID]) {
+                found = YES;
+            }
+            if (found && l.linkType != LINK_TYPE_ELEVATOR) {
+                return l;
+            }
+        }
+    }
+    return nil;
+}
+
 @end
 

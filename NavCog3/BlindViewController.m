@@ -449,11 +449,6 @@
     _indicator.hidden = YES;
 }
 
-
-- (void)webviewHelperDidInsertBridge:(HLPWebviewHelper *)helper
-{
-}
-
 - (void)webviewHelperWillCheckConnection:(HLPWebviewHelper *)helper
 {
     [_indicator stopAnimating];

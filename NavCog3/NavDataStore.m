@@ -1451,14 +1451,16 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
 
 - (BOOL)isOnDestination:(NSString *)nodeID
 {
-    HLPLink *link = [self lastRouteLink:0];
-    return [link.targetNodeID isEqualToString:nodeID];
+    HLPLink *link1 = [self lastRouteLink:0];
+    HLPLink *link2 = [self lastRouteLink:3];
+    return [link1.targetNodeID isEqualToString:nodeID] || [link2.targetNodeID isEqualToString:nodeID];
 }
 
 - (BOOL)isOnStart:(NSString *)nodeID
 {
-    HLPLink *link = [self firstRouteLink:0];
-    return [link.sourceNodeID isEqualToString:nodeID];
+    HLPLink *link1 = [self firstRouteLink:0];
+    HLPLink *link2 = [self firstRouteLink:3];
+    return [link1.sourceNodeID isEqualToString:nodeID] || [link2.sourceNodeID isEqualToString:nodeID];
 }
 
 - (HLPLink *)firstRouteLink:(double)ignoreDistance

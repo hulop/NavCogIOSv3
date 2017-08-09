@@ -106,7 +106,7 @@
     NavDataStore *nds = [NavDataStore sharedDataStore];
     
     if (nds.from == nil && nds.to == nil) {
-        nds.from = [NavDataStore destinationForCurrentLocation];
+        nds.from = [NavDestination selectStart];
         nds.to = [NavDestination selectDestination];
     }
     self.useDestination.on = !(nds.to == nil || nds.to._id == nil);

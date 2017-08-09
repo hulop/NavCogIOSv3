@@ -107,13 +107,9 @@
                 self.errorLabel.text = @"no routes info";
                 [NavUtil hideModalWaiting];
             } else {
-                self.errorLabel.text = @" ";
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self dismissViewControllerAnimated:YES completion:^{
-                        [NavUtil hideModalWaiting];                        
-                    }];
-                });
+                self.errorLabel.text = @" ";                
+                [NavUtil hideModalWaiting];
+                [self dismissViewControllerAnimated:YES completion:nil];
             }
         });
     }];

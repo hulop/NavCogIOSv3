@@ -49,7 +49,8 @@
     if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
         if (!source.filter) {
             self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
-            source.showCurrentLocation = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"];
+            source.showCurrentLocation = NO;
+            source.showDialog = NO;
             source.showNearShops = YES;
             source.showBuilding = YES;
             source.showShopBuilding = YES;
@@ -59,8 +60,9 @@
     if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
         if (!source.filter) {
             self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
+            source.showCurrentLocation = NO;
             source.showDialog = NO;
-            source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
+            source.showFacility = YES;
             source.showBuilding = YES;
             source.showShopBuilding = YES;
             source.showShopFloor = YES;

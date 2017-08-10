@@ -606,15 +606,15 @@ static HLPSetting *advancedLabel, *advancedMenu;
 {
     NSString *id = [[tableView cellForRowAtIndexPath:indexPath] reuseIdentifier];
     if ([id isEqualToString:@"search_option"]) {
-        [self.webViewHelper triggerWebviewControl:WebviewControlRouteSearchOptionButton];
+        [self.webViewHelper triggerWebviewControl:HLPWebviewControlRouteSearchOptionButton];
         [self.navigationController popViewControllerAnimated:YES];
     }
     if ([id isEqualToString:@"search_route"]) {
-        [self.webViewHelper triggerWebviewControl:WebviewControlRouteSearchButton];
+        [self.webViewHelper triggerWebviewControl:HLPWebviewControlRouteSearchButton];
         [self.navigationController popViewControllerAnimated:YES];
     }
     if ([id isEqualToString:@"end_navigation"]) {
-        [self.webViewHelper triggerWebviewControl:WebviewControlEndNavigation];
+        [self.webViewHelper triggerWebviewControl:HLPWebviewControlEndNavigation];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }

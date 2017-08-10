@@ -207,32 +207,32 @@ typedef NS_ENUM(NSInteger, ViewState) {
 - (IBAction)doSearch:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [helper triggerWebviewControl:WebviewControlRouteSearchButton];
+    [helper triggerWebviewControl:HLPWebviewControlRouteSearchButton];
 }
 
 - (IBAction)stopNavigation:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [helper triggerWebviewControl:WebviewControlNone];
+    [helper triggerWebviewControl:HLPWebviewControlNone];
 }
 
 - (IBAction)doCancel:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [helper triggerWebviewControl:WebviewControlNone];
+    [helper triggerWebviewControl:HLPWebviewControlNone];
 }
 
 - (IBAction)doDone:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [helper triggerWebviewControl:WebviewControlDoneButton];
+    [helper triggerWebviewControl:HLPWebviewControlDoneButton];
 }
 
 - (IBAction)doBack:(id)sender {
     if (state == ViewStateSearchDetail) {
         //state = ViewStateTransition;
         //[self updateView];
-        [helper triggerWebviewControl:WebviewControlBackToControl];
+        [helper triggerWebviewControl:HLPWebviewControlBackToControl];
     }
 }
 
@@ -457,7 +457,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     if ([identifier isEqualToString:@"user_settings"] && state == ViewStateSearch) {
         state = ViewStateTransition;
         [self updateView];
-        [helper triggerWebviewControl:WebviewControlRouteSearchOptionButton];
+        [helper triggerWebviewControl:HLPWebviewControlRouteSearchOptionButton];
     }
     
     return NO;

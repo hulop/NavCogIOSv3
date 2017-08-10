@@ -35,7 +35,6 @@
 
 @interface BlindViewController () {
     NavBlindWebviewHelper *helper;
-    ViewState state;
     FPMode fpMode;
     
     int x, y;
@@ -139,8 +138,6 @@
 
     [self.view addConstraints:@[layoutLeft, layoutRight, layoutBottom, layoutHeight, layoutBottom2]];
     [self.view layoutIfNeeded];
-    
-    state = ViewStateLoading;
 
     [self.devUp setTitle:@"Up" forState:UIControlStateNormal];
     [self.devDown setTitle:@"Down" forState:UIControlStateNormal];

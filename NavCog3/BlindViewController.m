@@ -68,7 +68,6 @@
     DialogViewHelper *dialogHelper;
     
     NSTimeInterval lastShake;
-    ViewState state;
     
     NSTimeInterval lastLocationSent;
     NSTimeInterval lastOrientationSent;
@@ -96,8 +95,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    state = ViewStateLoading;
-
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
     helper = [[NavBlindWebviewHelper alloc] initWithWebview:self.webView server:server];
     helper.developerMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);

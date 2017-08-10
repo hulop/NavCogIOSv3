@@ -33,6 +33,18 @@
 #import <HLPLocationManager/HLPLocationManager.h>
 #import "DefaultTTS.h"
 
+typedef NS_ENUM(NSInteger, ViewState) {
+    ViewStateMap,
+    ViewStateSearch,
+    ViewStateSearchDetail,
+    ViewStateSearchSetting,
+    ViewStateRouteConfirm,
+    ViewStateNavigation,
+    ViewStateTransition,
+    ViewStateRouteCheck,
+    ViewStateLoading,
+};
+
 @interface ViewController () {
     HLPWebviewHelper *helper;
     UISwipeGestureRecognizer *recognizer;

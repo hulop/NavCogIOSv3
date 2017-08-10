@@ -231,7 +231,7 @@ void uncaughtExceptionHandler(NSException *exception)
                                                       userInfo:@{@"status":@(status)}];
 }
 
-- (void)locationManager:(HLPLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
     if (status == kCLAuthorizationStatusDenied) {
         NSString *title = NSLocalizedString(@"LocationNotAllowedTitle", @"");

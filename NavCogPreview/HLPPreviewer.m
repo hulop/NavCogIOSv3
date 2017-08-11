@@ -555,8 +555,8 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     if ([obj isKindOfClass:HLPEntrance.class] && ((HLPEntrance*)obj).node.isLeaf) {
         if ([[NavDataStore sharedDataStore] isOnDestination:((HLPEntrance*)obj).node._id] ||
             [[NavDataStore sharedDataStore] isOnStart:((HLPEntrance*)obj).node._id] ||
-            (!_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_jump"]) ||
-            (_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_walk"])) {
+            (!_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_jump2"]) ||
+            (_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_walk2"])) {
             name = ((HLPEntrance*)obj).facility.name;
         }
     }

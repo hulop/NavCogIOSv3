@@ -147,7 +147,8 @@
         }
         
         if (config.selectedServerConfig) {
-            NSArray *files = [config checkDownloadFiles];
+            /*
+             NSArray *files = [config checkDownloadFiles];
             if ([files count] > 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self performSegueWithIdentifier:@"show_download" sender:self];
@@ -192,7 +193,7 @@
 
                 //[Logging stopLog];
                 //[Logging startLog];
-                
+                */
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *hostname = config.selected[@"hostname"];
                     [[NSUserDefaults standardUserDefaults] setObject:hostname forKey:@"selected_hokoukukan_server"];
@@ -201,7 +202,7 @@
                     
                     [self presentViewController:vc animated:YES completion:nil];
                 });
-            }
+            //}
         } else {
             self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
             [[ServerConfig sharedConfig] requestServerConfig:^(NSDictionary *config) {

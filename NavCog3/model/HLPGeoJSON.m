@@ -207,7 +207,10 @@
 
 - (BOOL)isEqual:(HLPObject*)object
 {
-    return [__id isEqualToString:object._id];
+    if ([object isKindOfClass:HLPObject.class]) {
+        return [__id isEqualToString:object._id];
+    }
+    return NO;
 }
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {

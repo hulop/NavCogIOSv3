@@ -72,7 +72,7 @@
         next = current.nextAction;
         [str appendString:[self nextActionString:next noDistance:NO]];
     }
-    [str appendString:[self poisString:event]];
+    //[str appendString:[self poisString:event]];
 
     [_delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:nil];
 }

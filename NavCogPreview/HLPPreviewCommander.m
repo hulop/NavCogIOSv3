@@ -149,6 +149,10 @@
                             BOOL noDistance = next.isOnElevator && (next.distanceMoved < 5);
                             [str appendString:[self nextActionString:next noDistance:noDistance]];
                         }
+                        else if (current.isInFrontOfElevator) {
+                            next = current.nextAction;
+                            [str appendString:[self nextActionString:next noDistance:YES]];
+                        }
                         else if (current.prev == nil) { // start point
                             [str appendString:@"You are at the starting point... "];
                         }
@@ -340,8 +344,10 @@
                 actionStr = [NSString stringWithFormat:@"go down to %@ by elevator. ", [self floorString:temp.location.floor]];
             }
             
-            HLPPOI *poi = event.elevatorPOI;
-            actionStr = [actionStr stringByAppendingString:poi.elevatorButtons.description];
+            if (event.distanceMoved < 5) {
+                HLPPOI *poi = event.elevatorPOI;
+                actionStr = [actionStr stringByAppendingString:poi.elevatorButtons.description];
+            }
         } else {
             actionStr = [self turnPoiString:event];
         }

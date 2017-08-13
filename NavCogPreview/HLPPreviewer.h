@@ -60,6 +60,7 @@
 - (BOOL) isGoingBackward;
 - (BOOL) isArrived;
 - (BOOL) isOnElevator;
+- (BOOL) isInFrontOfElevator;
 
 @end
 

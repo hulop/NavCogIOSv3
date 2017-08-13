@@ -233,6 +233,20 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     return self.targetNode && [[NavDataStore sharedDataStore] isElevatorNode:self.targetNode];
 }
 
+- (BOOL)isInFrontOfElevator
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    if (_link.length < 5) {
+        if ([nds isElevatorNode:_link.sourceNode]) {
+            return [_link.targetNode isEqual:self.targetNode];
+        }
+        else if ([nds isElevatorNode:_link.targetNode]) {
+            return [_link.sourceNode isEqual:self.targetNode];
+        }
+    }
+    return NO;
+}
+
 
 - (HLPLocation*)location
 {
@@ -384,6 +398,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
                 break;
             }
             if (self.isOnRoute && temp.targetIntersection && temp.isGoingToBeOffRoute) {
+                break;
+            }
+            if (self.isOnRoute && temp.isInFrontOfElevator) {
                 break;
             }
             if (!self.isOnRoute && (temp.targetPOIs || temp.targetIntersection)) {

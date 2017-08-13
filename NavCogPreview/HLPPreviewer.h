@@ -37,6 +37,7 @@
 - (HLPNode*) targetIntersection;
 - (HLPNode*) targetCorner;
 - (NSArray<HLPLocationObject*>*) targetPOIs;
+- (NSArray<HLPEntrance*>*) targetFacilityPOIs;
 - (HLPPOI*) cornerPOI;
 - (HLPPOI*) elevatorPOI;
 - (HLPPOI*) elevatorEquipmentsPOI;

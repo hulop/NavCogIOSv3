@@ -505,9 +505,9 @@ double stdev(double array[], long count) {
 {
     [self _active];
     [previewer autoStepForwardStop];
-    if (current && current.targetPOIs) {
+    if (current && current.targetFacilityPOIs) {
         POIViewController *vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"poi_view"];
-        vc.pois = current.targetPOIs;
+        vc.pois = current.targetFacilityPOIs;
         [self.navigationController pushViewController:vc animated:YES];
     }
 }

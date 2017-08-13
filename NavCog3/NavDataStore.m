@@ -585,7 +585,7 @@ static NavDataStore* instance_ = nil;
     if (isnan(lat) || isnan(lng) || user == nil || user_lang == nil) {
         return NO;
     }
-    int dist = 500;
+    int dist = 1000;
     
     _loadLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
     if (destinationCacheLocation && [destinationCacheLocation distanceTo:_loadLocation] < dist/2) {

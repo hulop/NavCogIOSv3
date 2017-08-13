@@ -575,7 +575,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     return name && name.length > 0;
 }
 
-- (NSArray<HLPFacility *> *)targetPOIs
+- (NSArray<HLPLocationObject *> *)targetPOIs
 {
     if (self._linkPois == nil) {
         return nil;
@@ -594,6 +594,29 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     }
     return nil;
 }
+
+- (NSArray<HLPEntrance *> *)targetFacilityPOIs
+{
+    if (self._linkPois == nil) {
+        return nil;
+    }
+    
+    NSMutableArray *temp = [@[] mutableCopy];
+    for(HLPLocationObject *obj in self._linkPois) {
+        if ([obj isKindOfClass:HLPEntrance.class]) {
+            if ([[_link nearestLocationTo:obj.location] distanceTo:_location] < 0.5) {
+                if ([self isEffective:obj]) {
+                    [temp addObject:obj];
+                }
+            }
+        }
+    }
+    if ([temp count] > 0) {
+        return temp;
+    }
+    return nil;
+}
+
 
 - (HLPPOI*) cornerPOI
 {

@@ -26,7 +26,7 @@
 #import <HLPWebView/HLPWebView.h>
 #import <HLPLocationManager/HLPLocation.h>
 
-@interface NavBlindWebviewHelper : HLPWebviewHelper
+@interface NavBlindWebView : HLPWebView
 
 - (void)initTarget:(NSArray *)landmarks;
 - (void)clearRoute;

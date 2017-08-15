@@ -29,6 +29,6 @@
 
 +(void)setup;
 @property (weak, nonatomic) IBOutlet UITableViewCell *dialogSearchCell;
-@property HLPWebviewHelper *webViewHelper;
+@property HLPWebView *webView;
 
 @end

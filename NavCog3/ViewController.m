@@ -46,7 +46,6 @@ typedef NS_ENUM(NSInteger, ViewState) {
 };
 
 @interface ViewController () {
-    HLPWebviewHelper *helper;
     UISwipeGestureRecognizer *recognizer;
     NSDictionary *uiState;
     DialogViewHelper *dialogHelper;
@@ -65,9 +64,9 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
 - (void)dealloc
 {
-    [helper prepareForDealloc];
-    helper.delegate = nil;
-    helper = nil;
+    //[_webView prepareForDealloc];
+    _webView.delegate = nil;
+    //_webView = nil;
     recognizer = nil;
     
     [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"developer_mode"];
@@ -80,11 +79,24 @@ typedef NS_ENUM(NSInteger, ViewState) {
     
     state = ViewStateLoading;
     
-    NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
+    _webView.userMode = [ud stringForKey:@"user_mode"];
+    _webView.config = @{
+                        @"serverHost":[ud stringForKey:@"selected_hokoukukan_server"],
+                        @"serverContext":[ud stringForKey:@"hokoukukan_server_context"],
+                        @"usesHttps":@([ud boolForKey:@"https_connection"])
+                        };
+    _webView.delegate = self;
+    _webView.tts = self;
+    
+    /*
+    NSString *server = ;
     helper = [[HLPWebviewHelper alloc] initWithWebview:self.webView server:server];
     helper.developerMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);
     helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
     helper.delegate = self;
+     */
     
     recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
     recognizer.delegate = self;
@@ -141,7 +153,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     }
     NSLog(@"checkState");
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSDictionary *json = [helper getState];
+        NSDictionary *json = [_webView getState];
         [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:json];
     });
 }
@@ -207,32 +219,32 @@ typedef NS_ENUM(NSInteger, ViewState) {
 - (IBAction)doSearch:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [helper triggerWebviewControl:HLPWebviewControlRouteSearchButton];
+    [_webView triggerWebviewControl:HLPWebviewControlRouteSearchButton];
 }
 
 - (IBAction)stopNavigation:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [helper triggerWebviewControl:HLPWebviewControlNone];
+    [_webView triggerWebviewControl:HLPWebviewControlNone];
 }
 
 - (IBAction)doCancel:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [helper triggerWebviewControl:HLPWebviewControlNone];
+    [_webView triggerWebviewControl:HLPWebviewControlNone];
 }
 
 - (IBAction)doDone:(id)sender {
     state = ViewStateTransition;
     [self updateView];
-    [helper triggerWebviewControl:HLPWebviewControlDoneButton];
+    [_webView triggerWebviewControl:HLPWebviewControlDoneButton];
 }
 
 - (IBAction)doBack:(id)sender {
     if (state == ViewStateSearchDetail) {
         //state = ViewStateTransition;
         //[self updateView];
-        [helper triggerWebviewControl:HLPWebviewControlBackToControl];
+        [_webView triggerWebviewControl:HLPWebviewControlBackToControl];
     }
 }
 
@@ -309,39 +321,40 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
 #pragma mark - HLPWebviewHelperDelegate
 
-- (void)webviewHelperWillLoad:(HLPWebviewHelper *)helper
+- (void)webViewDidStartLoad:(UIWebView *)webView
 {
     [_indicator startAnimating];
 }
 
-- (void)webviewHelperDidLoad:(HLPWebviewHelper *)helper
+- (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
 }
 
-- (void)webviewHelperWillCheckConnection:(HLPWebviewHelper *)helper
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
     _errorMessage.hidden = NO;
     _retryButton.hidden = NO;
+    
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper speak:(NSString *)text force:(BOOL)isForce
+- (void)speak:(NSString *)text force:(BOOL)isForce
 {
     [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:nil];
 }
 
-- (BOOL)webviewHelperIsSpeaking:(HLPWebviewHelper *)helper
+- (BOOL)isSpeaking
 {
     return [[NavDeviceTTS sharedTTS] isSpeaking];
 }
 
-- (void)webviewHelperVibrate:(HLPWebviewHelper *)helper
+- (void)vibrate
 {
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
+- (void)webView:(HLPWebView *)webView didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
 {
     NSDictionary *loc =
     @{
@@ -353,12 +366,12 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:loc];
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeBuilding:(NSString *)building
+- (void)webView:(HLPWebView *)webView didChangeBuilding:(NSString *)building
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:@{@"building": building}];
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeUIPage:(NSString *)page inNavigation:(BOOL)inNavigation
+- (void)webView:(HLPWebView *)webView didChangeUIPage:(NSString *)page inNavigation:(BOOL)inNavigation
 {
     NSDictionary *uiState_ =
     @{
@@ -368,7 +381,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:uiState_];
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didFinishNavigationStart:(NSTimeInterval)start end:(NSTimeInterval)end from:(NSString *)from to:(NSString *)to
+- (void)webView:(HLPWebView *)webView didFinishNavigationStart:(NSTimeInterval)start end:(NSTimeInterval)end from:(NSString *)from to:(NSString *)to
 {
     NSDictionary *navigationInfo =
     @{
@@ -380,7 +393,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:navigationInfo];
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper openURL:(NSURL *)url
+- (void)webView:(HLPWebView *)webView openURL:(NSURL *)url
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
 }
@@ -434,19 +447,19 @@ typedef NS_ENUM(NSInteger, ViewState) {
     
     NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f%@%@%@", options[@"toID"],
                       [[NSDate date] timeIntervalSince1970], elv, stairs, esc];
-    [helper setBrowserHash: hash];
+    [_webView setBrowserHash: hash];
 }
 
 - (void)startNavigationWithOptions:(NSDictionary *)options
 {
     NSString *hash = [NSString stringWithFormat:@"navigate=%@&elv=%d&stairs=%d", options[@"node_id"], [options[@"no_elevator"] boolValue]?1:9, [options[@"no_stairs"] boolValue]?1:9];
     
-    [helper setBrowserHash: hash];
+    [_webView setBrowserHash: hash];
 }
 
 - (NSString *)getCurrentFloor
 {
-    return [helper evalScript:@"(function() {return $hulop.indoor.getCurrentFloor();})()"];
+    return [_webView stringByEvaluatingJavaScriptFromString:@"(function() {return $hulop.indoor.getCurrentFloor();})()"];
 }
 
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
@@ -457,7 +470,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     if ([identifier isEqualToString:@"user_settings"] && state == ViewStateSearch) {
         state = ViewStateTransition;
         [self updateView];
-        [helper triggerWebviewControl:HLPWebviewControlRouteSearchOptionButton];
+        [_webView triggerWebviewControl:HLPWebviewControlRouteSearchOptionButton];
     }
     
     return NO;
@@ -469,7 +482,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     
     if ([segue.identifier isEqualToString:@"user_settings"]) {
         SettingViewController *sv = (SettingViewController*)segue.destinationViewController;
-        sv.webViewHelper = helper;
+        sv.webView = _webView;
     }
     if ([segue.identifier isEqualToString:@"show_rating"] && ratingInfo) {
         RatingViewController *rv = (RatingViewController*)segue.destinationViewController;
@@ -488,7 +501,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 }
 
 - (IBAction)retry:(id)sender {
-    [helper retry];
+    [_webView reload];
     _errorMessage.hidden = YES;
     _retryButton.hidden = YES;
 }
@@ -529,7 +542,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     double orientation = -location.orientation / 180 * M_PI;
     
     if (lastOrientationSent + 0.2 < now) {
-        [helper sendData:@[@{
+        [_webView sendData:@[@{
                                @"type":@"ORIENTATION",
                                @"z":@(orientation)
                                }]
@@ -558,7 +571,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     
     double floor = location.floor;
     
-    [helper sendData:@{
+    [_webView sendData:@{
                        @"lat":@(location.lat),
                        @"lng":@(location.lng),
                        @"floor":@(floor),
@@ -576,7 +589,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"developer_mode"]) {
-        helper.developerMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);
+        _webView.isDeveloperMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);
     }
 }
 

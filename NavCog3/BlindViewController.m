@@ -43,7 +43,6 @@
 
 
 @interface BlindViewController () {
-    NavBlindWebviewHelper *helper;
     NavNavigator *navigator;
     NavCommander *commander;
     NavPreviewer *previewer;
@@ -79,9 +78,13 @@
 
 - (void)dealloc
 {
+    /*
     [helper prepareForDealloc];
     helper.delegate = nil;
     helper = nil;
+     */
+    
+    _webView.delegate = nil;
     
     [navigator stop];
     navigator.delegate = nil;
@@ -95,11 +98,25 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    /*
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
     helper = [[NavBlindWebviewHelper alloc] initWithWebview:self.webView server:server];
     helper.developerMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);
     helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
     helper.delegate = self;
+     */
+
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
+    _webView.userMode = [ud stringForKey:@"user_mode"];
+    _webView.config = @{
+                        @"serverHost":[ud stringForKey:@"selected_hokoukukan_server"],
+                        @"serverContext":[ud stringForKey:@"hokoukukan_server_context"],
+                        @"usesHttps":@([ud boolForKey:@"https_connection"])
+                        };
+
+    _webView.delegate = self;
+    _webView.tts = self;
     
     navigator = [[NavNavigator alloc] init];
     commander = [[NavCommander alloc] init];
@@ -157,7 +174,7 @@
 - (void) checkMapCenter:(NSTimer*)timer
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        HLPLocation *loc = [helper getCenter];
+        HLPLocation *loc = [_webView getCenter];
         if (loc != nil) {
             [NavDataStore sharedDataStore].mapCenter = loc;
             HLPLocation *cloc = [NavDataStore sharedDataStore].currentLocation;
@@ -432,21 +449,21 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY_STOP object:self];
 }
 
-#pragma mark - HLPWebviewHelperDelegate
+#pragma mark - UIWebViewDelegate
 
-- (void)webviewHelperWillLoad:(HLPWebviewHelper *)helper
+- (void)webViewDidStartLoad:(UIWebView *)webView
 {
     [_indicator startAnimating];
     _indicator.hidden = NO;
 }
 
-- (void)webviewHelperDidLoad:(HLPWebviewHelper *)helper
+- (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
 }
 
-- (void)webviewHelperWillCheckConnection:(HLPWebviewHelper *)helper
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
@@ -454,22 +471,36 @@
     _errorMessage.hidden = NO;
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper speak:(NSString *)text force:(BOOL)isForce
+#pragma mark - HLPWebViewCoreDelegate
+
+- (void)webView:(HLPWebView *)webView openURL:(NSURL *)url
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
+}
+
+
+#pragma mark - HLPTTSProtocol
+
+- (void)speak:(NSString *)text force:(BOOL)isForce
 {
     [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:nil];
 }
 
-- (BOOL)webviewHelperIsSpeaking:(HLPWebviewHelper *)helper
+- (BOOL)isSpeaking
 {
     return [[NavDeviceTTS sharedTTS] isSpeaking];
 }
 
-- (void)webviewHelperVibrate:(HLPWebviewHelper *)helper
+/*
+- (void)vibrate
 {
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
+ */
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
+#pragma mark - HLPWebViewDelegate
+
+- (void)webView:(HLPWebView *)webView didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
 {
     NSDictionary *loc =
     @{
@@ -481,12 +512,12 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:loc];
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeBuilding:(NSString *)building
+- (void)webView:(HLPWebView *)webView didChangeBuilding:(NSString *)building
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:@{@"building": building}];
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didChangeUIPage:(NSString *)page inNavigation:(BOOL)inNavigation
+- (void)webView:(HLPWebView *)webView didChangeUIPage:(NSString *)page inNavigation:(BOOL)inNavigation
 {
     NSDictionary *uiState =
     @{
@@ -496,7 +527,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:uiState];
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper didFinishNavigationStart:(NSTimeInterval)start end:(NSTimeInterval)end from:(NSString *)from to:(NSString *)to
+- (void)webView:(HLPWebView *)webView didFinishNavigationStart:(NSTimeInterval)start end:(NSTimeInterval)end from:(NSString *)from to:(NSString *)to
 {
     NSDictionary *navigationInfo =
     @{
@@ -508,10 +539,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:navigationInfo];
 }
 
-- (void)webviewHelper:(HLPWebviewHelper *)helper openURL:(NSURL *)url
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
-}
 
 
 #pragma mark - notification handlers
@@ -520,7 +547,7 @@
 {
     HLPLocation* loc = [note userInfo][@"location"];
     BOOL sync = [[note userInfo][@"sync"] boolValue];
-    [helper manualLocation:loc withSync:sync];
+    [_webView manualLocation:loc withSync:sync];
 }
 
 - (void) locationChanged: (NSNotification*) note
@@ -544,7 +571,7 @@
     double orientation = -location.orientation / 180 * M_PI;
     
     if (lastOrientationSent + 0.2 < now) {
-        [helper sendData:@[@{
+        [_webView sendData:@[@{
                              @"type":@"ORIENTATION",
                              @"z":@(orientation)
                              }]
@@ -573,7 +600,7 @@
     
     double floor = location.floor;
     
-    [helper sendData:@{
+    [_webView sendData:@{
                      @"lat":@(location.lat),
                      @"lng":@(location.lng),
                      @"floor":@(floor),
@@ -590,24 +617,24 @@
 
 - (void) destinationChanged: (NSNotification*) note
 {
-    [helper initTarget:[note userInfo][@"destinations"]];
+    [_webView initTarget:[note userInfo][@"destinations"]];
 }
 
 - (void) routeCleared: (NSNotification*) note
 {
-    [helper clearRoute];
+    [_webView clearRoute];
 }
 
 - (void)requestShowRoute:(NSNotification*)note
 {
     NSArray *route = [note userInfo][@"route"];
-    [helper showRoute:route];
+    [_webView showRoute:route];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"developer_mode"]) {
-        helper.developerMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);
+        _webView.isDeveloperMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);
     }
 }
 
@@ -681,7 +708,7 @@
 }
 
 - (IBAction)retry:(id)sender {
-    [helper retry];
+    [_webView reload];
     _retryButton.hidden = YES;
     _errorMessage.hidden = YES;
 }
@@ -777,12 +804,12 @@
 {
     NSString *hash = [NSString stringWithFormat:@"navigate=%@&elv=%d&stairs=%d", options[@"node_id"], [options[@"no_elevator"] boolValue]?1:9, [options[@"no_stairs"] boolValue]?1:9];
     
-    [helper setBrowserHash: hash];
+    [_webView setBrowserHash: hash];
 }
 
 - (NSString *)getCurrentFloor
 {
-    return [helper evalScript:@"(function() {return $hulop.indoor.getCurrentFloor();})()"];
+    return [_webView stringByEvaluatingJavaScriptFromString:@"(function() {return $hulop.indoor.getCurrentFloor();})()"];
 }
 
 #pragma mark - NavNavigator actions
@@ -830,7 +857,7 @@
     if ([properties[@"isActive"] boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
-                [helper evalScript:@"$hulop.map.setSync(true);"];
+                [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.setSync(true);"];
             }
         });
             
@@ -880,7 +907,7 @@
     }
     [NavDataStore sharedDataStore].start = [[NSDate date] timeIntervalSince1970];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
+        [_webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
 
         //_cover.preventCurrentStatus = YES;
         [NavUtil hideModalWaiting];
@@ -1152,7 +1179,7 @@
     
     if ([segue.identifier isEqualToString:@"blind_settings"]) {
         SettingViewController *sv = (SettingViewController*)segue.destinationViewController;
-        sv.webViewHelper = helper;
+        sv.webView = _webView;
     }
     if ([segue.identifier isEqualToString:@"show_rating"]) {
         RatingViewController *rv = (RatingViewController*)segue.destinationViewController;

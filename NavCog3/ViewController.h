@@ -26,7 +26,7 @@
 #import "SettingViewController.h"
 #import <HLPDialog/HLPDialog.h>
 
-@interface ViewController : UIViewController <UIGestureRecognizerDelegate, HLPWebviewHelperDelegate, DialogViewDelegate>
+@interface ViewController : UIViewController <UIGestureRecognizerDelegate, HLPWebViewDelegate, HLPTTSProtocol, DialogViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *doneButton;
@@ -34,7 +34,7 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *stopButton;
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (weak, nonatomic) IBOutlet HLPWebView *webView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *micButton;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (weak, nonatomic) IBOutlet UILabel *errorMessage;

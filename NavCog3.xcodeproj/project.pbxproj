@@ -87,7 +87,8 @@
 		7E9866CE1D5174780073CB49 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
 		7EA018FE1E2F54A3005E65ED /* nosound.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7EA018FD1E2F54A3005E65ED /* nosound.aiff */; };
 		7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EA019001E2F54E7005E65ED /* InitViewController.mm */; };
-		7EAE6F0D1D2642D600614C35 /* NavBlindWebviewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebviewHelper.m */; };
+		7EA5E50C1F418C47008470D9 /* NavBlindWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */; };
+		7EAE6F0D1D2642D600614C35 /* NavBlindWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */; };
 		7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */; };
 		7EBE0AE01F0E291C001D2169 /* HLPLocationManager+Player.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE0ADF1F0E291C001D2169 /* HLPLocationManager+Player.mm */; };
 		7EBE397A1E8298C5002A7BF9 /* HLPBeaconSample.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE39791E8298C5002A7BF9 /* HLPBeaconSample.m */; };
@@ -108,7 +109,6 @@
 		7EE8E5DC1EE68449006EE7C3 /* poi_template.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE8E5DB1EE68449006EE7C3 /* poi_template.json */; };
 		7EE8E5E11EE93D1C006EE7C3 /* icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EE8E5E01EE93D1C006EE7C3 /* icons.xcassets */; };
 		7EE8E5E71EE94857006EE7C3 /* WelcomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E5E61EE94857006EE7C3 /* WelcomViewController.m */; };
-		7EE8E5EA1EEE3968006EE7C3 /* NavBlindWebviewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E5E91EEE3968006EE7C3 /* NavBlindWebviewHelper.m */; };
 		7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */; };
 		7EF45E321E3F1E3700208042 /* AgreementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2A1E3F1E3700208042 /* AgreementViewController.m */; };
 		7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */; };
@@ -300,8 +300,8 @@
 		7EA018FD1E2F54A3005E65ED /* nosound.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = nosound.aiff; sourceTree = "<group>"; };
 		7EA018FF1E2F54E7005E65ED /* InitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitViewController.h; sourceTree = "<group>"; };
 		7EA019001E2F54E7005E65ED /* InitViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InitViewController.mm; sourceTree = "<group>"; };
-		7EAE6F0B1D2642D600614C35 /* NavBlindWebviewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavBlindWebviewHelper.h; sourceTree = "<group>"; };
-		7EAE6F0C1D2642D600614C35 /* NavBlindWebviewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavBlindWebviewHelper.m; sourceTree = "<group>"; };
+		7EAE6F0B1D2642D600614C35 /* NavBlindWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavBlindWebView.h; sourceTree = "<group>"; };
+		7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavBlindWebView.m; sourceTree = "<group>"; };
 		7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		7EBE0ADE1F0E291C001D2169 /* HLPLocationManager+Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HLPLocationManager+Player.h"; sourceTree = "<group>"; };
 		7EBE0ADF1F0E291C001D2169 /* HLPLocationManager+Player.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "HLPLocationManager+Player.mm"; sourceTree = "<group>"; };
@@ -746,8 +746,8 @@
 				7EF7F7AD1DD1949C000A625A /* NavDataSource.m */,
 				7E433DD21D6E84D300C6C993 /* NavUtil.h */,
 				7E433DD31D6E84D300C6C993 /* NavUtil.m */,
-				7EAE6F0B1D2642D600614C35 /* NavBlindWebviewHelper.h */,
-				7EAE6F0C1D2642D600614C35 /* NavBlindWebviewHelper.m */,
+				7EAE6F0B1D2642D600614C35 /* NavBlindWebView.h */,
+				7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */,
 				7EF7F7701DCC1E08000A625A /* NavCoverView.h */,
 				7EF7F7711DCC1E08000A625A /* NavCoverView.m */,
 			);
@@ -1151,6 +1151,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EA5E50C1F418C47008470D9 /* NavBlindWebView.m in Sources */,
 				7E30F9FC1E8149C800D542E5 /* NavSound.m in Sources */,
 				7E30F9CE1E8142B200D542E5 /* AuthManager.m in Sources */,
 				7E30F9E51E8144D000D542E5 /* DownloadViewController.m in Sources */,
@@ -1173,7 +1174,6 @@
 				7EE8E5DA1EE67E08006EE7C3 /* POIAddTableViewController.m in Sources */,
 				7E30F9CB1E81429700D542E5 /* ServerConfig.m in Sources */,
 				7E30FA471E81650D00D542E5 /* HLPFingerprint.m in Sources */,
-				7EE8E5EA1EEE3968006EE7C3 /* NavBlindWebviewHelper.m in Sources */,
 				7E30FA431E81567B00D542E5 /* ServerConfig+FingerPrint.m in Sources */,
 				7E30F9DA1E81440100D542E5 /* HLPDataUtil.m in Sources */,
 				7E30F9DB1E81440100D542E5 /* HLPGeoJSON.m in Sources */,
@@ -1198,7 +1198,7 @@
 				7E683DF61E42DE8100D04037 /* StarRatingView.m in Sources */,
 				7EF45E341E3F1E3700208042 /* ServerSelectionViewController.m in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,
-				7EAE6F0D1D2642D600614C35 /* NavBlindWebviewHelper.m in Sources */,
+				7EAE6F0D1D2642D600614C35 /* NavBlindWebView.m in Sources */,
 				7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */,
 				7EBE0AE01F0E291C001D2169 /* HLPLocationManager+Player.mm in Sources */,
 				7EF7F7721DCC1E08000A625A /* NavCoverView.m in Sources */,

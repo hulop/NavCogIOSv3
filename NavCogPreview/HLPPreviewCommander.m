@@ -318,11 +318,11 @@
         distance /= FEET_UNIT;
     }
     
-    if (distance > 50) {
-        distance = floor(distance / 10.0) * 10.0;
+    if (distance > 100) {
+        distance = round(distance / 10.0) * 10.0;
     }
     if (distance > 10) {
-        distance = floor(distance / 5.0) * 5.0;
+        distance = round(distance / 5.0) * 5.0;
     }
     NSString *unit = isFeet?@"unit_feet":@"unit_meter";
     return [NSString stringWithFormat:NSLocalizedStringFromTable(unit, @"BlindView", @""), (int)round(distance)];

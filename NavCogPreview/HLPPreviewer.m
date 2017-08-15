@@ -53,6 +53,7 @@
     HLPLocation *_location;
     NSArray *_linkPoisCache;
     HLPPreviewer *_previewer;
+    BOOL _isSteppingBackward;
 }
 
 typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
@@ -60,6 +61,19 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     HLPPreviewHeadingTypeBackward,
     HLPPreviewHeadingTypeOther,
 };
+
+- (BOOL)isEqual:(id)object
+{
+    if ([object isKindOfClass:HLPPreviewEvent.class]) {
+        HLPPreviewEvent* target = (HLPPreviewEvent*)object;
+        if ([self.link isEqual:target.link] &&
+            [self.target isEqual:target.target] &&
+            [self.routeLink isEqual:target.routeLink]) {
+            return YES;
+        }
+    }
+    return NO;
+}
 
 - (id)copyWithZone:(NSZone*)zone
 {
@@ -245,6 +259,16 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         }
     }
     return NO;
+}
+
+- (void)setIsSteppingBackward:(BOOL)isSteppingBackward
+{
+    _isSteppingBackward = isSteppingBackward;
+}
+
+- (BOOL)isSteppingBackward
+{
+    return _isSteppingBackward;
 }
 
 
@@ -884,16 +908,14 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         //[_delegate errorWithMessage:@"closest link is not found"];
     }
     
-    remainingDistanceToNextStep = current.next.distanceMoved;
-    remainingDistanceToNextAction = current.nextAction.distanceMoved;
-    [self fireUserLocation:current.location];
-    [_delegate previewStarted:current];
+    [self firePreviewStarted];
 }
 
 - (void)stop
 {
     _isActive = NO;
     current = nil;
+    [history removeAllObjects];
     [self _autoStepStop];
     [self fireUserLocation:current.location];
     [_delegate previewStopped:current];
@@ -916,6 +938,14 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     [self fireRemainingDistance:remainingDistanceToNextAction];    
     [self fireUserLocation:current.location];
     [_delegate previewUpdated:current];
+}
+
+- (void)firePreviewStarted
+{
+    remainingDistanceToNextStep = current.next.distanceMoved;
+    remainingDistanceToNextAction = current.nextAction.distanceMoved;
+    [self fireUserLocation:current.location];
+    [_delegate previewStarted:current];
 }
 
 - (void)fireUserMoved:(double)distance
@@ -948,7 +978,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     [self _autoStepStop];
     current = history[0];
-    [self firePreviewUpdated];
+    [history removeAllObjects];
+    current.isSteppingBackward = YES;
+    [self firePreviewStarted];
 }
 
 - (void)gotoEnd
@@ -1009,6 +1041,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     if (history.count > 0) {
         double distance = current.distanceMoved;
         current = [history lastObject];
+        current.isSteppingBackward = YES;
         [history removeLastObject];
         
         [self fireUserMoved:-distance];

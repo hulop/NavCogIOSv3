@@ -59,7 +59,11 @@
     NavDataStore *nds = [NavDataStore sharedDataStore];
     
     NSMutableString *str = [@"" mutableCopy];
-    [str appendFormat:@"Preview is starting... "];
+    if (current.isSteppingBackward) {
+        [str appendFormat:@"Restart preview... "];
+    } else {
+        [str appendFormat:@"Preview is starting... "];
+    }
     if (nds.hasRoute) {
         double d = 0;
         for(HLPObject *o in nds.route) {
@@ -149,12 +153,17 @@
                             BOOL noDistance = next.isOnElevator && (next.distanceMoved < 5);
                             [str appendString:[self nextActionString:next noDistance:noDistance]];
                         }
+                        else if (current.isSteppingBackward) {
+                            if (current.prev == nil) { // start point
+                                [str appendString:@"You are at the starting point... "];
+                            }
+                            next = current.nextAction;
+                            BOOL noDistance = next.isOnElevator && (next.distanceMoved < 5);
+                            [str appendString:[self nextActionString:next noDistance:noDistance]];
+                        }
                         else if (current.isInFrontOfElevator) {
                             next = current.nextAction;
                             [str appendString:[self nextActionString:next noDistance:YES]];
-                        }
-                        else if (current.prev == nil) { // start point
-                            [str appendString:@"You are at the starting point... "];
                         }
                         [str appendString:[self poisString:current]];
                     }

@@ -136,7 +136,7 @@ void uncaughtExceptionHandler(NSException *exception)
 {
     NSMutableDictionary *config = [note.userInfo mutableCopy];
     config[@"conv_client_id"] = [NavDataStore sharedDataStore].userID;
-    [[DialogManager sharedManager] checkServerConfigWithConfig:config];
+    [[DialogManager sharedManager] setServerConfig:config];
 }
 
 - (void)locationChanged:(NSNotification*)note

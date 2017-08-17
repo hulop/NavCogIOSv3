@@ -107,7 +107,6 @@ typedef NS_ENUM(NSInteger, ViewState) {
     double size = (113*scale)/2;
     double x = size+8;
     double y = self.view.bounds.size.height - (size+8) - 63;
-    dialogHelper.transparentBack = YES;
     dialogHelper.layerScale = scale;
     [dialogHelper inactive];
     [dialogHelper setup:self.view position:CGPointMake(x, y)];
@@ -447,19 +446,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     
     NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f%@%@%@", options[@"toID"],
                       [[NSDate date] timeIntervalSince1970], elv, stairs, esc];
-    [_webView setBrowserHash: hash];
-}
-
-- (void)startNavigationWithOptions:(NSDictionary *)options
-{
-    NSString *hash = [NSString stringWithFormat:@"navigate=%@&elv=%d&stairs=%d", options[@"node_id"], [options[@"no_elevator"] boolValue]?1:9, [options[@"no_stairs"] boolValue]?1:9];
-    
-    [_webView setBrowserHash: hash];
-}
-
-- (NSString *)getCurrentFloor
-{
-    return [_webView stringByEvaluatingJavaScriptFromString:@"(function() {return $hulop.indoor.getCurrentFloor();})()"];
+    [_webView setLocationHash:hash];
 }
 
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender

@@ -136,7 +136,6 @@
     double size = (113*scale)/2;
     double x = size+8;
     double y = self.view.bounds.size.height - (size+8) - 63;
-    dialogHelper.transparentBack = YES;
     dialogHelper.layerScale = scale;
     [dialogHelper inactive];
     [dialogHelper setup:self.view position:CGPointMake(x, y)];
@@ -795,21 +794,6 @@
         }];
         
     }
-
-}
-
-#pragma mark - DialogViewControllerDelegate
-
-- (void)startNavigationWithOptions:(NSDictionary *)options
-{
-    NSString *hash = [NSString stringWithFormat:@"navigate=%@&elv=%d&stairs=%d", options[@"node_id"], [options[@"no_elevator"] boolValue]?1:9, [options[@"no_stairs"] boolValue]?1:9];
-    
-    [_webView setBrowserHash: hash];
-}
-
-- (NSString *)getCurrentFloor
-{
-    return [_webView stringByEvaluatingJavaScriptFromString:@"(function() {return $hulop.indoor.getCurrentFloor();})()"];
 }
 
 #pragma mark - NavNavigator actions

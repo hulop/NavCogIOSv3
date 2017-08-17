@@ -59,12 +59,6 @@ static NavNavigatorConstants *_instance;
     
     for(NSString *propertyName in propertyNames) {
         NSArray *vals = defaults[propertyName];
-        if ([vals count] == 5) {
-            if ([vals[4] boolValue]) { // FIXED
-                [self setValue:vals[0] forKey:propertyName];
-                continue;
-            }
-        }
         if ([ud valueForKey:propertyName]) {
             [self setValue:[ud valueForKey:propertyName] forKey:propertyName];
         } else {

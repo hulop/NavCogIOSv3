@@ -355,6 +355,12 @@ double stdev(double array[], long count) {
                             [previewer stop];
                             [self speak:@"Time is up." withOptions:@{@"force":@(NO)} completionHandler:nil];
                             [timer invalidate];
+                        } else {
+                            if (round(duration) >= 10) {
+                                [[ExpConfig sharedConfig] endExpDuration:duration withLogFile:logFile withComplete:^{
+                                    duration -= 10;
+                                }];
+                            }
                         }
                     }
                 }

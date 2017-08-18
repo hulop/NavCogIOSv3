@@ -136,12 +136,29 @@ static ExpConfig *instance;
             if (!temp[@"activities"]) {
                 temp[@"activities"] = @[];
             }
-            temp[@"activities"] = [temp[@"activities"] arrayByAddingObject:
-                                   @{
-                                     @"end_at": @(endAt),
-                                     @"duration": @(duration),
-                                     @"log_file": logFileId
-                                     }];
+            
+            NSMutableArray *temp2 = [@[] mutableCopy];
+            BOOL flag2 = YES;
+            for(NSDictionary *a in temp[@"activities"]) {
+                if ([a[@"log_file"] isEqualToString:logFileId]) {
+                    [temp2 addObject:@{
+                                      @"end_at": @(endAt),
+                                      @"duration": @([a[@"duration"] doubleValue]+duration),
+                                      @"log_file": logFileId
+                                      }];
+                    flag2 = NO;
+                } else {
+                    [temp2 addObject:a];
+                }
+            }
+            if (flag2) {
+                [temp2 addObject:@{
+                                   @"end_at": @(endAt),
+                                   @"duration": @(duration),
+                                   @"log_file": logFileId
+                                   }];
+            }
+            temp[@"activities"] = temp2;
             [routes addObject:temp];
         } else {
             [routes addObject:route];

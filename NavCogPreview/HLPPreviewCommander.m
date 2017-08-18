@@ -722,6 +722,8 @@
     
     double step_length = [[NSUserDefaults standardUserDefaults] doubleForKey:@"preview_step_length"];
     BOOL step_sound_for_jump = [[NSUserDefaults standardUserDefaults] doubleForKey:@"step_sound_for_jump"];
+    
+    BOOL noSpeak = current.isInFrontOfElevator && distance > 0;
 
     // always speak distance
     [self addBlock:^(void(^complete)(void)){
@@ -742,15 +744,23 @@
                     n--;
                     if (n <= 0) {
                         [timer invalidate];
-                        [weakself.delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:^{
+                        if (noSpeak) {
                             complete();
-                        }];
+                        } else {
+                            [weakself.delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:^{
+                                complete();
+                            }];
+                        }
                     }
                 }];
             } else {
-                [weakself.delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:^{
+                if (noSpeak) {
                     complete();
-                }];
+                } else {
+                    [weakself.delegate speak:str withOptions:@{@"force":@(YES)} completionHandler:^{
+                        complete();
+                    }];
+                }
             }
         }
     }];

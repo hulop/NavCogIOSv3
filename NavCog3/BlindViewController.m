@@ -136,7 +136,7 @@
     double size = (113*scale)/2;
     double x = size+8;
     double y = self.view.bounds.size.height - (size+8) - 63;
-    dialogHelper.layerScale = scale;
+    dialogHelper.scale = scale;
     [dialogHelper inactive];
     [dialogHelper setup:self.view position:CGPointMake(x, y)];
     dialogHelper.delegate = self;

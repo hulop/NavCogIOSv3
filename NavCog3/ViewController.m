@@ -163,7 +163,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 }
 
 
-- (void)tapped
+- (void)dialogViewTapped
 {
     [dialogHelper inactive];
     dialogHelper.helperView.hidden = YES;
@@ -293,7 +293,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     }
     
     if (state == ViewStateMap) {
-        if ([[DialogManager sharedManager] isDialogAvailable]) {
+        if ([[DialogManager sharedManager] isAvailable]) {
             if (dialogHelper.helperView.hidden) {
                 dialogHelper.helperView.hidden = NO;
                 [dialogHelper recognize];

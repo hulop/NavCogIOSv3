@@ -149,7 +149,7 @@ static HLPSetting *advancedLabel, *advancedMenu;
 {
     [self.tableView reloadData];
     
-    BOOL dialog = [[DialogManager sharedManager] isDialogAvailable];
+    BOOL dialog = [[DialogManager sharedManager] isAvailable];
     if (self.dialogSearchCell) {
         self.dialogSearchCell.selectionStyle = dialog?UITableViewCellSelectionStyleGray:UITableViewCellSelectionStyleNone;
         self.dialogSearchCell.textLabel.enabled = dialog;
@@ -623,7 +623,7 @@ static HLPSetting *advancedLabel, *advancedMenu;
 {
     NSString *id = [[tableView cellForRowAtIndexPath:indexPath] reuseIdentifier];
     if ([id isEqualToString:@"dialog_search"]) {
-        return [[DialogManager sharedManager] isDialogAvailable];
+        return [[DialogManager sharedManager] isAvailable];
     }
     return YES;
 }
@@ -663,7 +663,7 @@ static HLPSetting *advancedLabel, *advancedMenu;
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
     if ([identifier isEqualToString:@"show_dialog_wc"]) {
-        return [[DialogManager sharedManager] isDialogAvailable];
+        return [[DialogManager sharedManager] isAvailable];
     }
     return YES;
 }

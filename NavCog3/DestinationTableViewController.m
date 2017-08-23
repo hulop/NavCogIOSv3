@@ -117,7 +117,7 @@
     
     NavDestination *dest = [source destinationForRowAtIndexPath:indexPath];
     if (dest.type == NavDestinationTypeDialogSearch) {
-        BOOL dialog = [[DialogManager sharedManager] isDialogAvailable];
+        BOOL dialog = [[DialogManager sharedManager] isAvailable];
         cell.textLabel.enabled = dialog;
         cell.selectionStyle = dialog?UITableViewCellSelectionStyleGray:UITableViewCellSelectionStyleNone;
     }
@@ -135,7 +135,7 @@
         filterDest = dest;
         [self performSegueWithIdentifier:@"sub_category" sender:self];
     } else if (dest.type == NavDestinationTypeDialogSearch) {
-        if ([[DialogManager sharedManager] isDialogAvailable]) {
+        if ([[DialogManager sharedManager] isAvailable]) {
             [self performSegueWithIdentifier:@"show_dialog" sender:self];
         }
     } else {

@@ -210,7 +210,7 @@
     }
 }
 
-- (void)tapped
+- (void)dialogViewTapped
 {
     [dialogHelper inactive];
     dialogHelper.helperView.hidden = YES;
@@ -380,7 +380,7 @@
             self.navigationController.navigationBar.barTintColor = defaultColor;
         }
         
-        if ([[DialogManager sharedManager] isDialogAvailable] && !isActive && hasCenter) {
+        if ([[DialogManager sharedManager] isAvailable] && !isActive && hasCenter) {
             if (dialogHelper.helperView.hidden) {
                 dialogHelper.helperView.hidden = NO;
                 [dialogHelper recognize];

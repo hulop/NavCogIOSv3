@@ -22,7 +22,7 @@
 
 
 #import "WelcomViewController.h"
-#import "ServerConfig.h"
+#import "ServerConfig+FingerPrint.h"
 #import "AuthManager.h"
 #import "LocationEvent.h"
 #import "Logging.h"
@@ -196,9 +196,15 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *hostname = config.selected[@"hostname"];
                     [[NSUserDefaults standardUserDefaults] setObject:hostname forKey:@"selected_hokoukukan_server"];
-                    
+
+                    if (![[ServerConfig sharedConfig] isFingerPrintingAvailable]) {
+                        self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+                        config.selected = nil;
+                        [self checkConfig];
+                        return;
+                    }
+
                     vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"blind_ui_navigation"];
-                    
                     [self presentViewController:vc animated:YES completion:nil];
                 });
             }

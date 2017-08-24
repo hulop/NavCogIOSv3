@@ -399,6 +399,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [detailSettingHelper addSettingWithType:DOUBLE Label:@"Reset std dev" Name:@"reset_std_dev" DefaultValue:@(1.0) Min:0 Max:3 Interval:0.5];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset at elevator" Name:@"reset_at_elevator" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset at elevator continuously" Name:@"reset_at_elevator_continuously" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Stabilize localize on elevator" Name:@"stabilize_localize_on_elevator" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Current Location\"" Name:@"hide_current_location_from_start" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Facility\"" Name:@"hide_facility_from_to" DefaultValue:@(NO) Accept:nil];

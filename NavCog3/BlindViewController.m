@@ -877,6 +877,9 @@
 
 - (void)didNavigationFinished:(NSDictionary *)properties
 {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"stabilize_localize_on_elevator"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_STABILIZE_LOCALIZE object:self];
+    }
     [commander didNavigationFinished:properties];
     [previewer didNavigationFinished:properties];
 }

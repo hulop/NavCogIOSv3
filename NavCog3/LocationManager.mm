@@ -175,7 +175,10 @@ void functionCalledToLog(void *inUserData, string text)
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableAcceleration:) name:DISABLE_ACCELEARATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableAcceleration:) name:ENABLE_ACCELEARATION object:nil];
-    
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableStabilizeLocalize:) name:DISABLE_STABILIZE_LOCALIZE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableStabilizeLocalize:) name:ENABLE_STABILIZE_LOCALIZE object:nil];
+
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud addObserver:self forKeyPath:@"nSmooth" options:NSKeyValueObservingOptionNew context:nil];
     [ud addObserver:self forKeyPath:@"nStates" options:NSKeyValueObservingOptionNew context:nil];
@@ -216,6 +219,36 @@ void functionCalledToLog(void *inUserData, string text)
 {
     disableAcceleration = NO;
 }
+
+- (void)disableStabilizeLocalize:(NSNotification*) note
+{
+    disableAcceleration = NO;
+    
+    [processQueue addOperationWithBlock:^{
+        // set status monitoring interval as default
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        bool activatesDynamicStatusMonitoring = [ud boolForKey:@"activatesStatusMonitoring"];
+        LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
+        
+        if(activatesDynamicStatusMonitoring){
+            params->monitorIntervalMS([ud doubleForKey:@"statusMonitoringIntervalMS"]);
+        } else {
+            params->monitorIntervalMS(3600*1000*24);
+        }
+    }];
+}
+
+- (void)enableStabilizeLocalize:(NSNotification*) note
+{    
+    disableAcceleration = YES;
+
+    [processQueue addOperationWithBlock:^{
+        // set status monitoring interval inf
+        LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
+        params->monitorIntervalMS(3600*1000*24);
+    }];
+}
+
 
 - (void) requestLogReplayStop:(NSNotification*) note
 {
@@ -769,7 +802,7 @@ void functionCalledToLog(void *inUserData, string text)
         params->stdev2DExitStable(largeStdev);
         params->stdev2DEnterLocating(largeStdev);
         params->stdev2DExitLocating(largeStdev);
-        params->monitorIntervalMS(3600*1000);
+        params->monitorIntervalMS(3600*1000*24);
     }
     
     // to activate orientation initialization using

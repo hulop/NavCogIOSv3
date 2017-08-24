@@ -1527,6 +1527,10 @@ static NavNavigatorConstants *_instance;
                 if (linkInfo.nextLink.linkType == LINK_TYPE_ELEVATOR ||
                     (navIndex == 1 && linkInfo.link.linkType == LINK_TYPE_ELEVATOR)) {
                     navIndex++;
+                    
+                    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"stabilize_localize_on_elevator"]) {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_STABILIZE_LOCALIZE object:self];
+                    }
                 }
                 else if (fabs(linkInfo.diffNextBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
                     if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
@@ -1585,6 +1589,10 @@ static NavNavigatorConstants *_instance;
                             
                             [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:self userInfo:@{@"location":loc}];
                             lastElevatorResetTime = NAN;
+                        }
+                        
+                        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"stabilize_localize_on_elevator"]) {
+                            [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_STABILIZE_LOCALIZE object:self];
                         }
                     }
                 } else {

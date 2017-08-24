@@ -242,7 +242,7 @@ static HLPSetting *idLabel;
         double limit = [route[@"limit"] doubleValue];
         double elapsed_time = [[ExpConfig sharedConfig] elapsedTimeForRoute:route];
         
-        NSString *title = [NSString stringWithFormat:@"%@  [%.0f / %.0f minutes]", route[@"name"], floor(elapsed_time / 60), round(limit / 60)];
+        NSString *title = [NSString stringWithFormat:@"%@  [%.0f of %.0f minutes]", route[@"name"], floor(elapsed_time / 60), round(limit / 60)];
         
         HLPSetting *setting = [expSettingHelper addActionTitle:title Name:route[@"name"]];        
         setting.disabled = (elapsed_time > limit);

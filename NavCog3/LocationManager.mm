@@ -391,6 +391,11 @@ void functionCalledToLog(void *inUserData, string text)
                             std::cout << "LogReplay:" << acc.timestamp() << ",Acc," << acc << std::endl;
                         }
                         timestamp = acc.timestamp();
+                        if (disableAcceleration) {
+                            acc.ax(0);
+                            acc.ay(0);
+                            acc.az(0);
+                        }
                         localizer->putAcceleration(acc);
                     }
                     // Parsing motion values
@@ -658,11 +663,13 @@ void functionCalledToLog(void *inUserData, string text)
         }
     }];
     [motionManager startAccelerometerUpdatesToQueue: processQueue withHandler:^(CMAccelerometerData * _Nullable acc, NSError * _Nullable error) {
-        if (!_isActive || isLogReplaying || disableAcceleration) {
+        if (!_isActive || isLogReplaying) {
             return;
         }
         Acceleration acceleration((uptime+acc.timestamp)*1000,
-                                  acc.acceleration.x, acc.acceleration.y, acc.acceleration.z);
+                                  disableAcceleration?0:acc.acceleration.x,
+                                  disableAcceleration?0:acc.acceleration.y,
+                                  disableAcceleration?0:acc.acceleration.z);
         try {
             localizer->putAcceleration(acceleration);
         } catch(const std::exception& ex) {

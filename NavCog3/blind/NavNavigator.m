@@ -1337,7 +1337,9 @@ static NavNavigatorConstants *_instance;
                 if (linkInfo_.link.linkType == LINK_TYPE_ESCALATOR || linkInfo_.link.linkType == LINK_TYPE_STAIRWAY) {
                     return C.APPROACHED_DISTANCE_THRESHOLD;
                 } else {
-                    return MAX(MIN(C.APPROACHED_DISTANCE_THRESHOLD, linkInfo_.link.length/4), 1.0);
+                    // quick fix: adjust approached distance with user's walaking speed
+                    double distance = (isnan(location.speed) ? 1 : location.speed) * C.APPROACHED_DISTANCE_THRESHOLD;
+                    return MAX(MIN(distance, linkInfo_.link.length/4), 0.6);
                 }
             };
             

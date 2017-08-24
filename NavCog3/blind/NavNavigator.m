@@ -829,6 +829,9 @@ static NavNavigatorConstants *_instance;
     
     BOOL alertForHeadingAccuracy;
     HLPLocation *prevLocation;
+    
+    NSMutableArray *walkedDistances;
+    double walkingSpeed;
 }
 
 - (instancetype)init
@@ -1222,6 +1225,28 @@ static NavNavigatorConstants *_instance;
             return;
         }
         
+        if (!prevLocation) {
+            prevLocation = location;
+        } else {
+            double d = [prevLocation distanceTo:location];
+            if (!walkedDistances) {
+                walkedDistances = [@[] mutableCopy];
+            }
+            [walkedDistances insertObject:@(d) atIndex:0];
+            int MAX_WD = 30;
+            if (walkedDistances.count > MAX_WD) {
+                [walkedDistances removeLastObject];
+                
+                double ave = 0;
+                for(NSNumber *wd in walkedDistances) {
+                    ave += [wd doubleValue];
+                }
+                walkingSpeed = MAX(ave / MAX_WD * 10, 2.0);
+            }
+            prevLocation = location;
+        }
+        
+        
         // fine closest link in the next N
         int minIndex = -1;
         double minDistance = DBL_MAX;
@@ -1330,7 +1355,8 @@ static NavNavigatorConstants *_instance;
                 if (linkInfo.link.linkType == LINK_TYPE_ESCALATOR || linkInfo.link.linkType == LINK_TYPE_STAIRWAY) {
                     return 3.0;
                 } else {
-                    return MIN(C.APPROACHING_DISTANCE_THRESHOLD, linkInfo.link.length/2);
+                    double distance = MAX((walkingSpeed-1) * C.APPROACHED_DISTANCE_THRESHOLD, 0);
+                    return MIN(C.APPROACHING_DISTANCE_THRESHOLD + distance, linkInfo.link.length/2);
                 }
             };
             double(^approachedDistance)(NavLinkInfo*) = ^(NavLinkInfo* linkInfo_){
@@ -1338,10 +1364,11 @@ static NavNavigatorConstants *_instance;
                     return C.APPROACHED_DISTANCE_THRESHOLD;
                 } else {
                     // quick fix: adjust approached distance with user's walaking speed
-                    double distance = (isnan(location.speed) ? 1 : location.speed) * C.APPROACHED_DISTANCE_THRESHOLD;
+                    double distance = walkingSpeed * C.APPROACHED_DISTANCE_THRESHOLD;
                     return MAX(MIN(distance, linkInfo_.link.length/4), 0.6);
                 }
             };
+            NSLog(@"ApproachDistance,%.2f,%.2f,%.2f,%.2f",linkInfo.distanceToTargetFromSnappedLocationOnLink,walkingSpeed,approachingDistance(),approachedDistance(linkInfo));
             
             if (linkInfo.link.linkType != LINK_TYPE_ELEVATOR) {
                 
@@ -2008,7 +2035,7 @@ static NavNavigatorConstants *_instance;
                     } else {
                         linkInfo.lastBearingDetected = 0;
                     }
-                } else { 
+                } else if (walkingSpeed > 0) {
                     double BEARING_TARGET_DISTANCE = 20;
                     double BEARING_DIFF_THRETHOLD = 2.0;
                     double BEARING_DURATION_FACTOR = 0.1;
@@ -2021,7 +2048,7 @@ static NavNavigatorConstants *_instance;
                     HLPLocation *predicted = [linkInfo.userLocation offsetLocationByDistance:distance Bearing:linkInfo.userLocation.orientation];
                     
                     double diffBearingDistance = [bearingTarget distanceTo:predicted];
-                    double bearingThreshold = BEARING_DIFF_THRETHOLD + distance / linkInfo.userLocation.speed * BEARING_DURATION_FACTOR;
+                    double bearingThreshold = BEARING_DIFF_THRETHOLD + distance / walkingSpeed * BEARING_DURATION_FACTOR;
                     if (diffBearingDistance > bearingThreshold) {
                         if (linkInfo.lastBearingDetected == 0) {
                             linkInfo.lastBearingDetected = now;

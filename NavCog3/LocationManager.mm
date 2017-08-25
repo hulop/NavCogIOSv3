@@ -749,6 +749,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->prwBuildingProperty->probabilityUpElevator(0.0).probabilityDownElevator(0.0).probabilityStayElevator(1.0);
     // set parameters for weighting and mixing in transition areas
     localizer->pfFloorTransParams->weightTransitionArea([ud doubleForKey:@"weightFloorTransArea"]).mixtureProbaTransArea([ud doubleForKey:@"mixtureProbabilityFloorTransArea"]);
+    localizer->pfFloorTransParams->rejectDistance([ud doubleForKey:@"rejectDistanceFloorTrans"]);
     
     // set parameters for location status monitoring
     bool activatesDynamicStatusMonitoring = [ud boolForKey:@"activatesStatusMonitoring"];
@@ -761,6 +762,7 @@ void functionCalledToLog(void *inUserData, string text)
         params->stdev2DEnterLocating([ud doubleForKey:@"enterLocating"]);
         params->stdev2DExitLocating([ud doubleForKey:@"exitLocating"]);
         params->monitorIntervalMS([ud doubleForKey:@"statusMonitoringIntervalMS"]);
+        params->unstableLoop([ud doubleForKey:@"minUnstableLoop"]);
     }else{
         LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
         params->minimumWeightStable(0.0);
@@ -770,6 +772,7 @@ void functionCalledToLog(void *inUserData, string text)
         params->stdev2DEnterLocating(largeStdev);
         params->stdev2DExitLocating(largeStdev);
         params->monitorIntervalMS(3600*1000);
+        params->unstableLoop([ud doubleForKey:@"minUnstableLoop"]);
     }
     
     // to activate orientation initialization using
@@ -911,10 +914,11 @@ void functionCalledToLog(void *inUserData, string text)
 - (loc::Heading) convertCLHeading:(CLHeading*) clheading
 {
     long timestamp = static_cast<long>([clheading.timestamp timeIntervalSince1970]*1000);
-    loc::Heading locheading(timestamp, clheading.magneticHeading, clheading.trueHeading, clheading.headingAccuracy);
+    loc::Heading locheading(timestamp, clheading.magneticHeading, clheading.trueHeading, clheading.headingAccuracy, clheading.x, clheading.y, clheading.z);
     return locheading;
 }
 
+/*
 - (std::string) logStringFrom:(CLHeading*)heading
 {
     //"Heading",magneticHeading,trueHeading,headingAccuracy,timestamp
@@ -923,6 +927,7 @@ void functionCalledToLog(void *inUserData, string text)
     << heading.headingAccuracy << "," << (long) ([heading.timestamp timeIntervalSince1970]*1000);
     return ss.str();
 }
+*/
 
 - (BOOL)checkCalibrationBeacon:(CLBeacon *)beacon
 {

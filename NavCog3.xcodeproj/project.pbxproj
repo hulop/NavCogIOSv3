@@ -135,6 +135,13 @@
 		7EF7F7B41DD1BC2B000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
 		7EF7F7B51DD1BC2B000A625A /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7EF7F7B71DD1C138000A625A /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
+		A91EA2E51F550ECF00548203 /* FormatterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2E41F550ECF00548203 /* FormatterKit.framework */; };
+		A91EA2E81F550EF800548203 /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5150EA1D8D75C400ED25FB /* Mantle.framework */; };
+		A91EA2EE1F550F7200548203 /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5150EA1D8D75C400ED25FB /* Mantle.framework */; };
+		A91EA2FB1F552CE500548203 /* FormatterKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A91EA2EB1F550F3700548203 /* FormatterKit.framework */; };
+		A91EA2FC1F552CF600548203 /* Mantle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A91EA2E91F550F2800548203 /* Mantle.framework */; };
+		A91EA2FD1F552D1C00548203 /* FormatterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2EB1F550F3700548203 /* FormatterKit.framework */; };
+		A91EA2FE1F552D2600548203 /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2E91F550F2800548203 /* Mantle.framework */; };
 		A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A923DA091F26DBF60002E3CB /* DefaultTTS.m */; };
 		A9C94C321F283E1C00B60A46 /* HLPDialog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */; };
 /* End PBXBuildFile section */
@@ -146,6 +153,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				A91EA2FC1F552CF600548203 /* Mantle.framework in CopyFiles */,
+				A91EA2FB1F552CE500548203 /* FormatterKit.framework in CopyFiles */,
 				7EC20B5A1DDAC9C900818E33 /* HLPGeoJSON.strings in CopyFiles */,
 				7EC20B5B1DDAC9C900818E33 /* BlindView.strings in CopyFiles */,
 				7EC20B5C1DDAC9C900818E33 /* BlindView.stringsdict in CopyFiles */,
@@ -363,6 +372,9 @@
 		7EF7F7AD1DD1949C000A625A /* NavDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavDataSource.m; path = blind/NavDataSource.m; sourceTree = "<group>"; };
 		8DDC99F4D9772DC8C3D1284B /* Pods-NavCogTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.release.xcconfig"; sourceTree = "<group>"; };
 		A8BCABBA91517640CB17D3D9 /* libPods-NavCogTool.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogTool.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A91EA2E41F550ECF00548203 /* FormatterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FormatterKit.framework; path = Carthage/Build/iOS/FormatterKit.framework; sourceTree = "<group>"; };
+		A91EA2E91F550F2800548203 /* Mantle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mantle.framework; path = Carthage/Build/Mac/Mantle.framework; sourceTree = "<group>"; };
+		A91EA2EB1F550F3700548203 /* FormatterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FormatterKit.framework; path = Carthage/Build/Mac/FormatterKit.framework; sourceTree = "<group>"; };
 		A923DA081F26DBF60002E3CB /* DefaultTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultTTS.h; path = dialog/DefaultTTS.h; sourceTree = "<group>"; };
 		A923DA091F26DBF60002E3CB /* DefaultTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DefaultTTS.m; path = dialog/DefaultTTS.m; sourceTree = "<group>"; };
 		A93ED2731ED2DBA900B75760 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -380,6 +392,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E30FA3D1E81551900D542E5 /* CoreBluetooth.framework in Frameworks */,
+				A91EA2EE1F550F7200548203 /* Mantle.framework in Frameworks */,
 				36517BDCBA7EC763A7A14A05 /* libPods-NavCogFingerPrint.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -391,7 +404,9 @@
 				7EF45E491E3F42AB00208042 /* ConversationV1.framework in Frameworks */,
 				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
+				A91EA2E51F550ECF00548203 /* FormatterKit.framework in Frameworks */,
 				A9C94C321F283E1C00B60A46 /* HLPDialog.framework in Frameworks */,
+				A91EA2E81F550EF800548203 /* Mantle.framework in Frameworks */,
 				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
 				7EF45E4C1E3F42AB00208042 /* RestKit.framework in Frameworks */,
 				12CE60FFF66333BF27326795 /* libPods-NavCog3.a in Frameworks */,
@@ -402,6 +417,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A91EA2FE1F552D2600548203 /* Mantle.framework in Frameworks */,
+				A91EA2FD1F552D1C00548203 /* FormatterKit.framework in Frameworks */,
 				7EF45E4F1E3F53FF00208042 /* Security.framework in Frameworks */,
 				4D5913145F8F9F8919F39900 /* libPods-NavCogTool.a in Frameworks */,
 			);
@@ -418,8 +435,11 @@
 				7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */,
 				7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */,
 				A93ED2751ED2DBB000B75760 /* Foundation.framework */,
+				A91EA2E41F550ECF00548203 /* FormatterKit.framework */,
+				A91EA2EB1F550F3700548203 /* FormatterKit.framework */,
 				7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */,
 				7E5150EA1D8D75C400ED25FB /* Mantle.framework */,
+				A91EA2E91F550F2800548203 /* Mantle.framework */,
 				A93ED2801ED2DE3200B75760 /* MapKit.framework */,
 				7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */,
 				7EF45E471E3F42AB00208042 /* RestKit.framework */,
@@ -844,6 +864,7 @@
 				7E30F9A81E813FFC00D542E5 /* Resources */,
 				E53336C306D5DD2723B19B3B /* [CP] Embed Pods Frameworks */,
 				71E58B5CDD9F8FC574FAC157 /* [CP] Copy Pods Resources */,
+				A91EA2E31F550DE100548203 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -883,6 +904,7 @@
 				7EF7F7991DD178F7000A625A /* Sources */,
 				7EF7F79A1DD178F7000A625A /* Frameworks */,
 				7EF7F79B1DD178F7000A625A /* CopyFiles */,
+				A91EA2E11F550D4200548203 /* ShellScript */,
 				46C40777C2A019F41E953B02 /* [CP] Copy Pods Resources */,
 				7E9EF43A1DE3C61500F694FB /* Resources */,
 			);
@@ -1050,7 +1072,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh\"\n\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh\"";
 			showEnvVarsInLog = 0;
 		};
 		49102E36951DE683B790438B /* [CP] Check Pods Manifest.lock */ = {
@@ -1107,6 +1129,36 @@
 				"$(SRCROOT)/Carthage/Build/iOS/ConversationV1.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RestKit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/HLPDialog.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Mantle.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/FormatterKit.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+		A91EA2E11F550D4200548203 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-frameworks.sh\"";
+			showEnvVarsInLog = 0;
+		};
+		A91EA2E31F550DE100548203 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Mantle.framework",
 			);
 			outputPaths = (
 			);
@@ -1403,6 +1455,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = NavCogFingerPrint/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1421,6 +1477,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = NavCogFingerPrint/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1541,10 +1601,8 @@
 					"\"${PODS_ROOT}/boost\"",
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
-					"\"${PODS_ROOT}/Headers/Public/FormatterKit\"",
 					"\"${PODS_ROOT}/Headers/Public/HLPLocationManager\"",
 					"\"${PODS_ROOT}/Headers/Public/HLPWebView\"",
-					"\"${PODS_ROOT}/Headers/Public/Mantle\"",
 					"\"${PODS_ROOT}/Headers/Public/bleloc\"",
 					"\"${PODS_ROOT}/Headers/Public/boost\"",
 				);
@@ -1585,10 +1643,8 @@
 					"\"${PODS_ROOT}/boost\"",
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
-					"\"${PODS_ROOT}/Headers/Public/FormatterKit\"",
 					"\"${PODS_ROOT}/Headers/Public/HLPLocationManager\"",
 					"\"${PODS_ROOT}/Headers/Public/HLPWebView\"",
-					"\"${PODS_ROOT}/Headers/Public/Mantle\"",
 					"\"${PODS_ROOT}/Headers/Public/bleloc\"",
 					"\"${PODS_ROOT}/Headers/Public/boost\"",
 				);
@@ -1615,6 +1671,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				DEVELOPMENT_TEAM = PETKK2G752;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1629,6 +1689,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				DEVELOPMENT_TEAM = PETKK2G752;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

@@ -21,7 +21,7 @@
  *******************************************************************************/
 
 #import "NavCommander.h"
-#import "TTTOrdinalNumberFormatter.h"
+#import <FormatterKit/TTTOrdinalNumberFormatter.h>
 #import "NavDataStore.h"
 #import "LocationEvent.h"
 

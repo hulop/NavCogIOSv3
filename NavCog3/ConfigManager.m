@@ -21,7 +21,7 @@
  *******************************************************************************/
 
 #import "ConfigManager.h"
-#import "Mantle.h"
+#import <Mantle/Mantle.h>
 
 @implementation ConfigManager
 

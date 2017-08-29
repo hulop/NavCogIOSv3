@@ -5,7 +5,7 @@ target 'NavCog3' do
   platform :ios, '8.4'
   pod 'OpenCV', '2.4.9'
   pod 'eigen', '3.2.5'
-  pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.2.6/bleloc.podspec"
+  pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.2.7/bleloc.podspec"
 #  pod 'bleloc', :path => "../blelocpp"
   pod 'boost', :podspec => './podspecs/boost.podspec.json'
   pod 'cereal', :podspec => './podspecs/cereal.podspec'

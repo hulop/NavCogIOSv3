@@ -142,6 +142,8 @@
 		A91EA2FC1F552CF600548203 /* Mantle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A91EA2E91F550F2800548203 /* Mantle.framework */; };
 		A91EA2FD1F552D1C00548203 /* FormatterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2EB1F550F3700548203 /* FormatterKit.framework */; };
 		A91EA2FE1F552D2600548203 /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2E91F550F2800548203 /* Mantle.framework */; };
+		A91EA3001F55376200548203 /* HLPWebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2FF1F55376200548203 /* HLPWebView.framework */; };
+		A91EA3011F55377E00548203 /* HLPWebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2FF1F55376200548203 /* HLPWebView.framework */; };
 		A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A923DA091F26DBF60002E3CB /* DefaultTTS.m */; };
 		A9C94C321F283E1C00B60A46 /* HLPDialog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */; };
 /* End PBXBuildFile section */
@@ -375,6 +377,7 @@
 		A91EA2E41F550ECF00548203 /* FormatterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FormatterKit.framework; path = Carthage/Build/iOS/FormatterKit.framework; sourceTree = "<group>"; };
 		A91EA2E91F550F2800548203 /* Mantle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mantle.framework; path = Carthage/Build/Mac/Mantle.framework; sourceTree = "<group>"; };
 		A91EA2EB1F550F3700548203 /* FormatterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FormatterKit.framework; path = Carthage/Build/Mac/FormatterKit.framework; sourceTree = "<group>"; };
+		A91EA2FF1F55376200548203 /* HLPWebView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HLPWebView.framework; path = Carthage/Build/iOS/HLPWebView.framework; sourceTree = "<group>"; };
 		A923DA081F26DBF60002E3CB /* DefaultTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultTTS.h; path = dialog/DefaultTTS.h; sourceTree = "<group>"; };
 		A923DA091F26DBF60002E3CB /* DefaultTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DefaultTTS.m; path = dialog/DefaultTTS.m; sourceTree = "<group>"; };
 		A93ED2731ED2DBA900B75760 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -392,6 +395,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E30FA3D1E81551900D542E5 /* CoreBluetooth.framework in Frameworks */,
+				A91EA3011F55377E00548203 /* HLPWebView.framework in Frameworks */,
 				A91EA2EE1F550F7200548203 /* Mantle.framework in Frameworks */,
 				36517BDCBA7EC763A7A14A05 /* libPods-NavCogFingerPrint.a in Frameworks */,
 			);
@@ -406,6 +410,7 @@
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
 				A91EA2E51F550ECF00548203 /* FormatterKit.framework in Frameworks */,
 				A9C94C321F283E1C00B60A46 /* HLPDialog.framework in Frameworks */,
+				A91EA3001F55376200548203 /* HLPWebView.framework in Frameworks */,
 				A91EA2E81F550EF800548203 /* Mantle.framework in Frameworks */,
 				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
 				7EF45E4C1E3F42AB00208042 /* RestKit.framework in Frameworks */,
@@ -438,6 +443,7 @@
 				A91EA2E41F550ECF00548203 /* FormatterKit.framework */,
 				A91EA2EB1F550F3700548203 /* FormatterKit.framework */,
 				7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */,
+				A91EA2FF1F55376200548203 /* HLPWebView.framework */,
 				7E5150EA1D8D75C400ED25FB /* Mantle.framework */,
 				A91EA2E91F550F2800548203 /* Mantle.framework */,
 				A93ED2801ED2DE3200B75760 /* MapKit.framework */,
@@ -1131,6 +1137,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/HLPDialog.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Mantle.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/FormatterKit.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/HLPWebView.framework",
 			);
 			outputPaths = (
 			);
@@ -1159,6 +1166,7 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/Mantle.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/HLPWebView.framework",
 			);
 			outputPaths = (
 			);
@@ -1457,6 +1465,7 @@
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"${PODS_ROOT}/../../HLPLocationManager/build\"",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = NavCogFingerPrint/Info.plist;
@@ -1479,6 +1488,7 @@
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"${PODS_ROOT}/../../HLPLocationManager/build\"",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = NavCogFingerPrint/Info.plist;
@@ -1594,18 +1604,12 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"${PODS_ROOT}/../../HLPLocationManager/build\"",
+					"\"${PODS_ROOT}/OpenCV\"",
+					"\"${PODS_ROOT}/bleloc\"",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
-				HEADER_SEARCH_PATHS = (
-					"\"${PODS_ROOT}/boost\"",
-					"$(inherited)",
-					"\"${PODS_ROOT}/Headers/Public\"",
-					"\"${PODS_ROOT}/Headers/Public/HLPLocationManager\"",
-					"\"${PODS_ROOT}/Headers/Public/HLPWebView\"",
-					"\"${PODS_ROOT}/Headers/Public/bleloc\"",
-					"\"${PODS_ROOT}/Headers/Public/boost\"",
-				);
 				INFOPLIST_FILE = NavCog3/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1636,18 +1640,12 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"${PODS_ROOT}/../../HLPLocationManager/build\"",
+					"\"${PODS_ROOT}/OpenCV\"",
+					"\"${PODS_ROOT}/bleloc\"",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_OPTIMIZATION_LEVEL = s;
-				HEADER_SEARCH_PATHS = (
-					"\"${PODS_ROOT}/boost\"",
-					"$(inherited)",
-					"\"${PODS_ROOT}/Headers/Public\"",
-					"\"${PODS_ROOT}/Headers/Public/HLPLocationManager\"",
-					"\"${PODS_ROOT}/Headers/Public/HLPWebView\"",
-					"\"${PODS_ROOT}/Headers/Public/bleloc\"",
-					"\"${PODS_ROOT}/Headers/Public/boost\"",
-				);
 				INFOPLIST_FILE = NavCog3/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1673,6 +1671,7 @@
 				DEVELOPMENT_TEAM = PETKK2G752;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"${PODS_ROOT}/../../HLPLocationManager/build/macOS\"",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
@@ -1691,6 +1690,7 @@
 				DEVELOPMENT_TEAM = PETKK2G752;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"${PODS_ROOT}/../../HLPLocationManager/build/macOS\"",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;

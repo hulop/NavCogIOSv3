@@ -10,7 +10,6 @@ target 'NavCog3' do
   pod 'boost', :podspec => './podspecs/boost.podspec.json'
   pod 'cereal', :podspec => './podspecs/cereal.podspec'
   pod 'picojson', :podspec => './podspecs/picojson.podspec'
-  pod 'HLPWebView', :path => '../HLPWebView'
   pod 'HLPLocationManager', :path => '../HLPLocationManager'
 end
 
@@ -21,6 +20,5 @@ end
 
 target 'NavCogFingerPrint' do
   platform :ios, '8.4'
-  pod 'HLPWebView', :path => '../HLPWebView'
   pod 'HLPLocationManager', :path => '../HLPLocationManager'
 end

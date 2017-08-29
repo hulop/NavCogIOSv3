@@ -1,2 +1,5 @@
+git "./../HLPDialog" "0.0.1"
+git "./../HLPWebView" "2.0.0"
+github "Mantle/Mantle" "2.0.7"
+github "mattt/FormatterKit" "1.8.2"
 github "watson-developer-cloud/swift-sdk" "v0.16.0"
-git "./../HLPDialog" "b06e064b3ce7f6ef35f2dd5a6425e9761c3e4e6b"

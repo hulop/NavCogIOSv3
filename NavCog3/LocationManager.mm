@@ -777,6 +777,9 @@ void functionCalledToLog(void *inUserData, string text)
     
     // to activate orientation initialization using
     localizer->headingConfidenceForOrientationInit([ud doubleForKey:@"headingConfidenceInit"]);
+    
+    // yaw drift adjuster
+    localizer->applysYawDriftAdjust =  [ud boolForKey:@"applysYawDriftAdjust"];
 }
 
 - (void) dealloc

@@ -467,6 +467,8 @@ static HLPSetting *poiLabel, *ignoreFacility;
     
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Confidence of heading for initialization" Name:@"headingConfidenceInit" DefaultValue:@(0.0) Min:0.0 Max:1.0 Interval:0.05];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Orientation accuracy threshold for reliable orientation [degree]" Name:@"oriAccThreshold" DefaultValue:@(22.5) Min:0.0 Max:120 Interval:2.5];
+    [[blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Apply yaw drift smoothing" Name:@"applysYawDriftAdjust" DefaultValue:@(NO) Accept:nil] setVisible: YES];
+
     
     // Parameters for status monitoring
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (location status monitoring)"];

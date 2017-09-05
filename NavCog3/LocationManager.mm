@@ -391,10 +391,10 @@ void functionCalledToLog(void *inUserData, string text)
                             std::cout << "LogReplay:" << acc.timestamp() << ",Acc," << acc << std::endl;
                         }
                         timestamp = acc.timestamp();
-                        if (disableAcceleration) {
-                            acc.ax(0);
-                            acc.ay(0);
-                            acc.az(0);
+                        if(disableAcceleration) {
+                            localizer->disableAcceleration(true);
+                        }else{
+                            localizer->disableAcceleration(false);
                         }
                         localizer->putAcceleration(acc);
                     }
@@ -667,10 +667,15 @@ void functionCalledToLog(void *inUserData, string text)
             return;
         }
         Acceleration acceleration((uptime+acc.timestamp)*1000,
-                                  disableAcceleration?0:acc.acceleration.x,
-                                  disableAcceleration?0:acc.acceleration.y,
-                                  disableAcceleration?0:acc.acceleration.z);
-        try {
+                                  acc.acceleration.x,
+                                  acc.acceleration.y,
+                                  acc.acceleration.z);
+        try{
+            if(disableAcceleration){
+                localizer->disableAcceleration(true);
+            }else{
+                localizer->disableAcceleration(false);
+            }
             localizer->putAcceleration(acceleration);
         } catch(const std::exception& ex) {
             std::cout << ex.what() << std::endl;

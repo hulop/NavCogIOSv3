@@ -468,6 +468,8 @@ static HLPSetting *poiLabel, *ignoreFacility;
     
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Confidence of heading for initialization" Name:@"headingConfidenceInit" DefaultValue:@(0.0) Min:0.0 Max:1.0 Interval:0.05];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Orientation accuracy threshold for reliable orientation [degree]" Name:@"oriAccThreshold" DefaultValue:@(22.5) Min:0.0 Max:120 Interval:2.5];
+    [[blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Apply yaw drift smoothing" Name:@"applysYawDriftAdjust" DefaultValue:@(NO) Accept:nil] setVisible: YES];
+
     
     // Parameters for status monitoring
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (location status monitoring)"];
@@ -478,11 +480,13 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter stable radius [m]" Name:@"enterStable" DefaultValue:@(3.5) Min:0 Max:20 Interval:0.5] setVisible:YES];
     [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit stable radius [m]" Name:@"exitStable" DefaultValue:@(5.0) Min:0 Max:20 Interval:0.5] setVisible:YES];
     [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exponent n of minimum weight stable (w=10^n)" Name:@"exponentMinWeightStable" DefaultValue:@(-4) Min:-9 Max:-1 Interval:1] setVisible:YES];
-
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Min unstable loop" Name:@"minUnstableLoop" DefaultValue:@(5) Min:1 Max:10 Interval:1] setVisible:YES];
+    
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (floor transition)"];
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use altimeter for floor trans support" Name:@"use_altimeter" DefaultValue:@(YES) Accept:nil];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability for floor trans area" Name:@"mixtureProbabilityFloorTransArea" DefaultValue:@(0.25) Min:0.0 Max:1.0 Interval:0.05];
     [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Weight multiplier for floor trans area" Name:@"weightFloorTransArea" DefaultValue:@(4) Min:1 Max:5 Interval:0.1] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Reject distance for floor trans area" Name:@"rejectDistanceFloorTrans" DefaultValue:@(10) Min:0.0 Max:25.0 Interval:1] setVisible:YES];
     
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (prediction)"];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Sigma stop for random walker" Name:@"sigmaStopRW" DefaultValue:@(0.2) Min:0.0 Max:1.0 Interval:0.1];

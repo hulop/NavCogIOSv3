@@ -326,13 +326,16 @@ static HLPSetting *poiLabel, *ignoreFacility;
         [NavUtil showModalWaitingWithMessage:@"creating zip file..."];
         dispatch_async(dispatch_get_main_queue(), ^{
             [SSZipArchive createZipFileAtPath:zpath withContentsOfDirectory:dir keepParentDirectory:YES withPassword:nil andProgressHandler:^(NSUInteger entryNumber, NSUInteger total) {
-                dispatch_async(dispatch_get_main_queue(), ^{                [NavUtil showModalWaitingWithMessage:[NSString stringWithFormat:@"creating zip file... %ld%%",entryNumber*100/total]];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [NavUtil showModalWaitingWithMessage:[NSString stringWithFormat:@"creating zip file... %ld%%",entryNumber*100/total]];
                     fprintf(stdout, "%ld/%ld\n", entryNumber, total);
                     if (entryNumber == total) {
                         [NavUtil hideModalWaiting];
                         [fm removeItemAtPath:dir error:nil];
                         
-                        [self composeEmailBody:description withAttachment:zpath];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self composeEmailBody:description withAttachment:zpath];
+                        });
                     }
                 });
             }];

@@ -31,6 +31,7 @@
 #import <Speech/Speech.h> // for Swift header
 #import "NavCog3-Swift.h"
 #import <AVFoundation/AVFoundation.h>
+#import "ScreenshotHelper.h"
 
 @interface AppDelegate ()
 
@@ -69,6 +70,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noAltimeterAlert:) name:NO_ALTIMETER_ALERT object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationNotAllowedAlert:) name:LOCATION_NOT_ALLOWED_ALERT object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:HLPSettingChanged object:nil];
     
     [self detectBluetooth];
     
@@ -117,6 +119,36 @@
     });
 }
 
+- (void)settingChanged:(NSNotification*)note
+{
+    if ([note.object isKindOfClass:HLPSetting.class]) {
+        HLPSetting* setting = note.object;
+        if ([setting.name isEqualToString:@"record_screenshots"]) {
+            [self checkRecordScreenshots];
+        }
+    }
+}
+
+- (void)checkRecordScreenshots
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"record_screenshots"]) {
+        [self startRecordScreenshots];
+    } else {
+        [self stopRecordScreenshots];
+    }
+}
+
+- (void)startRecordScreenshots
+{
+    [[ScreenshotHelper sharedHelper] startRecording:^(){
+        return [self topMostController].view;
+    }];
+}
+
+- (void)stopRecordScreenshots
+{
+    [[ScreenshotHelper sharedHelper] stopRecording];
+}
 
 - (UIViewController*) topMostController
 {
@@ -174,6 +206,7 @@ void uncaughtExceptionHandler(NSException *exception)
             [Logging startLog];
         }
     }
+    [self checkRecordScreenshots];
     secondOrLater = YES;
     
     [self beginReceivingRemoteControlEvents];

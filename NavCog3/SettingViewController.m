@@ -31,6 +31,9 @@
 #import "NavDataStore.h"
 #import "AuthManager.h"
 #import "NavUtil.h"
+#import "Logging.h"
+#import "ScreenshotHelper.h"
+#import "SSZipArchive.h"
 
 @interface SettingViewController ()
 
@@ -47,6 +50,7 @@ static HLPSettingHelper *mapSettingHelper;
 static HLPSettingHelper *configSettingHelper;
 static HLPSettingHelper *logSettingHelper;
 static HLPSettingHelper *routeOptionsSettingHelper;
+static HLPSettingHelper *reportIssueSettingHelper;
 
 static HLPSetting *speechLabel, *speechSpeedSetting, *vibrateSetting, *soundEffectSetting;
 static HLPSetting *previewSpeedSetting, *previewWithActionSetting;
@@ -100,6 +104,10 @@ static HLPSetting *poiLabel, *ignoreFacility;
     }
     if ([self.restorationIdentifier isEqualToString:@"route_options_setting"]) {
         helper = routeOptionsSettingHelper;
+    }
+    if ([self.restorationIdentifier isEqualToString:@"report_issue"]) {
+        [SettingViewController setupReportIssueSettingHelper];
+        helper = reportIssueSettingHelper;
     }
 
     
@@ -159,8 +167,43 @@ static HLPSetting *poiLabel, *ignoreFacility;
 
 -(void)actionPerformed:(HLPSetting*)setting
 {
-    if ([setting.name isEqualToString:@"save_setting"]) {
+    if ([setting.name isEqualToString:@"report_issue"]) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"] == NO) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Report Issue" message:@"\"Record log\" setting should be on for reporting issue." preferredStyle:UIAlertControllerStyleAlert];
+            
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"Cancel",@"HLPSettingView",@"cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            }]];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"Turn On",@"HLPSettingView",@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSUserDefaults standardUserDefaults] setObject:@(YES) forKey:@"logging_to_file"];
+                    [self updateView];
+                });
+            }]];
+            [self presentViewController:alert animated:YES completion:nil];
+            
+            return;
+        }
+        [self performSegueWithIdentifier:setting.name sender:self];
+    } else if ([setting.name hasPrefix:@"report_issue_"]) {
+        NSString *log = [setting.name stringByReplacingOccurrencesOfString:@"report_issue_" withString:@""];
         
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Report Issue"
+                                                                       message:@"Please describe issue"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        }];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"Cancel", @"BlindView", @"")
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  }]];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                      NSString *desc = alert.textFields[0].text;
+                                                      [self sendReportWithLog:log description:desc];
+                                                  }]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
+    } else if ([setting.name isEqualToString:@"save_setting"]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Save setting" message:@"Input setting name" preferredStyle:UIAlertControllerStyleAlert];
         [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
             if([configSettingHelper.settings count] > 3) {
@@ -238,6 +281,84 @@ static HLPSetting *poiLabel, *ignoreFacility;
         [self performSegueWithIdentifier:setting.name sender:self];
     }
 }
+
+- (void) sendReportWithLog:(NSString*)log description:(NSString*)description
+{
+    NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *dir = [documentsPath stringByAppendingPathComponent:[log stringByDeletingPathExtension]];
+    [fm createDirectoryAtPath:dir withIntermediateDirectories:NO attributes:nil error:nil];
+
+    NSString* plist = [[log stringByDeletingPathExtension] stringByAppendingPathExtension:@"plist"];
+    NSString* zip = [[log stringByDeletingPathExtension] stringByAppendingPathExtension:@"zip"];
+    NSString* mapName = [[NSUserDefaults standardUserDefaults] stringForKey:@"bleloc_map_data"];
+    NSString* desc = [[log stringByDeletingPathExtension] stringByAppendingPathExtension:@"txt"];
+    
+    NSMutableDictionary *dic = [@{} mutableCopy];
+    [userSettingHelper exportSetting:dic];
+    [detailSettingHelper exportSetting:dic];
+    [blelocppSettingHelper exportSetting:dic];
+    [blindnaviSettingHelper exportSetting:dic];
+    [mapSettingHelper exportSetting:dic];
+    [routeOptionsSettingHelper exportSetting:dic];
+    [ConfigManager saveConfig:dic withName:[log stringByDeletingPathExtension] Force:YES];
+
+    NSString* lpath = [documentsPath stringByAppendingPathComponent:log];
+    NSString* ppath = [documentsPath stringByAppendingPathComponent:plist];
+    NSString* mpath = [documentsPath stringByAppendingPathComponent:mapName];
+    NSString* dpath = [dir stringByAppendingPathComponent:desc];
+    [description writeToFile:dpath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    
+    NSArray* screenshots = [[ScreenshotHelper sharedHelper] screenshotsFromLog:lpath];
+    NSArray* files = [screenshots arrayByAddingObjectsFromArray:@[lpath,ppath,mpath]];
+    NSString* zpath = [documentsPath stringByAppendingPathComponent:zip];
+
+    for(NSString *file in files) {
+        NSError *error;
+        NSString *dest = [dir stringByAppendingPathComponent:[file lastPathComponent]];
+        [fm copyItemAtPath:file toPath:dest error:&error];
+        if (error) {
+            fprintf(stdout, "%s", error.description.UTF8String);
+        }
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NavUtil showModalWaitingWithMessage:@"creating zip file..."];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [SSZipArchive createZipFileAtPath:zpath withContentsOfDirectory:dir keepParentDirectory:YES withPassword:nil andProgressHandler:^(NSUInteger entryNumber, NSUInteger total) {
+                dispatch_async(dispatch_get_main_queue(), ^{                [NavUtil showModalWaitingWithMessage:[NSString stringWithFormat:@"creating zip file... %ld%%",entryNumber*100/total]];
+                    fprintf(stdout, "%ld/%ld\n", entryNumber, total);
+                    if (entryNumber == total) {
+                        [NavUtil hideModalWaiting];
+                        [fm removeItemAtPath:dir error:nil];
+                        
+                        [self composeEmailBody:description withAttachment:zpath];
+                    }
+                });
+            }];
+        });
+    });
+}
+
+- (void)composeEmailBody:(NSString*)body withAttachment:(NSString*)path
+{
+    if([MFMailComposeViewController canSendMail]) {
+        MFMailComposeViewController *mailCont = [[MFMailComposeViewController alloc] init];
+        mailCont.mailComposeDelegate = self;
+        
+        [mailCont setSubject:[NSString stringWithFormat:@"Report Issue (%@)", [[path lastPathComponent] stringByDeletingPathExtension]]];
+        [mailCont setToRecipients:[NSArray arrayWithObject:@"hulop.contact@gmail.com"]];
+        [mailCont setMessageBody:body isHTML:NO];
+        [mailCont addAttachmentData:[NSData dataWithContentsOfFile:path] mimeType:@"application/zip" fileName:[path lastPathComponent]];
+        
+        [self presentViewController:mailCont animated:YES completion:nil];
+    }
+}
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 - (BOOL)browserViewController:(MCBrowserViewController *)browserViewController
       shouldPresentNearbyPeer:(MCPeerID *)peerID
@@ -361,6 +482,11 @@ static HLPSetting *poiLabel, *ignoreFacility;
     
     detailSettingHelper = [[HLPSettingHelper alloc] init];
     
+    [detailSettingHelper addSectionTitle:@"Report Issue"];
+    [detailSettingHelper addActionTitle:@"Report Issue" Name:@"report_issue"];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Record logs" Name:@"logging_to_file" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Record screenshots" Name:@"record_screenshots" DefaultValue:@(NO) Accept:nil];
+    
     [detailSettingHelper addSectionTitle:@"Setting Preset"];
     [detailSettingHelper addActionTitle:@"Setting Preset" Name:@"choose_config"];
     
@@ -370,17 +496,16 @@ static HLPSetting *poiLabel, *ignoreFacility;
     
     
     [detailSettingHelper addSectionTitle:@"Developer mode"];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Developer mode" Name:@"developer_mode" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:ACTION Label:@"P2P Debug" Name:@"p2p_debug" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"P2P Debug Follower" Name:@"p2p_debug_follower" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Developer mode" Name:@"developer_mode" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:100 Interval:1];
-
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Record logs" Name:@"logging_to_file" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Cache clear for next launch" Name:@"cache_clear" DefaultValue:@(NO) Accept:nil];
+    
+    [detailSettingHelper addSectionTitle:@"Detail Settings"];
     [detailSettingHelper addActionTitle:@"Adjust blelocpp" Name:@"adjust_blelocpp"];
     [detailSettingHelper addActionTitle:@"Adjust blind navi" Name:@"adjust_blind_navi"];
 
     [detailSettingHelper addSectionTitle:@"Navigation server"];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Cache clear for next launch" Name:@"cache_clear" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil];
     [detailSettingHelper addSettingWithType:HOST_PORT Label:@"Server" Name:@"hokoukukan_server" DefaultValue:@[@""] Accept:nil];
     [detailSettingHelper addSettingWithType:SUBTITLE Label:@"Server" Name:@"selected_hokoukukan_server" DefaultValue:@"" Accept:nil];
@@ -608,6 +733,37 @@ static HLPSetting *poiLabel, *ignoreFacility;
                                              Name:@"route_use_escalator" DefaultValue:@(NO) Accept:nil];
     [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Stairs", @"")
                                              Name:@"route_use_stairs" DefaultValue:@(YES) Accept:nil];
+}
+
++ (void)setupReportIssueSettingHelper {
+    if (!reportIssueSettingHelper) {
+        reportIssueSettingHelper = [[HLPSettingHelper alloc] init];
+    }
+    
+    [reportIssueSettingHelper removeAllSetting];
+    
+    [reportIssueSettingHelper addSectionTitle:@"Choose Log"];
+    NSArray *dirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    
+    NSString* documentsPath = [dirs objectAtIndex:0];
+    NSArray *logs = [ConfigManager filenamesWithSuffix:@"log"];
+    logs = [logs sortedArrayUsingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
+        return [obj2 compare:obj1 options:0];
+    }];
+    int count = 0;
+    for(NSString *log in logs) {
+        NSString* path = [documentsPath stringByAppendingPathComponent:log];
+        
+        unsigned long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil] fileSize];
+        
+        NSString *label = [NSString stringWithFormat:@"%@ %.1fMB", [log stringByDeletingPathExtension], fileSize/1024.0/1024.0];
+        NSString *name = [NSString stringWithFormat:@"report_issue_%@", log];
+        [reportIssueSettingHelper addActionTitle:label Name:name];
+        count++;
+        if (count >= 5) {
+            break;
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning {

@@ -25,6 +25,7 @@
 @interface Logging : NSObject
 
 + (NSString*)startLog;
++ (NSString*)logFilePath;
 + (void)stopLog;
 + (BOOL)isLogging;
 + (void)logType:(NSString*)type withParam:(NSDictionary*)param;

@@ -40,6 +40,7 @@ void NavNSLog(NSString* fmt, ...) {
 @implementation Logging
 
 static int stderrSave = 0;
+static NSString *logFilePath = nil;
 
 + (NSString*)startLog {
     if (stderrSave != 0) {
@@ -53,12 +54,17 @@ static int stderrSave = 0;
     }
     NSString *fileName = [formatter stringFromDate:[NSDate date]];
     NSString *dir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *path = [dir stringByAppendingPathComponent:fileName];
-    NSLog(@"Start log to %@", path);
+    logFilePath = [dir stringByAppendingPathComponent:fileName];
+    NSLog(@"Start log to %@", logFilePath);
     
     stderrSave = dup(STDERR_FILENO);
-    freopen([path UTF8String],"a+",stderr);
-    return path;
+    freopen([logFilePath UTF8String],"a+",stderr);
+    return logFilePath;
+}
+
++(NSString *)logFilePath
+{
+    return logFilePath;
 }
 
 +(void)stopLog {

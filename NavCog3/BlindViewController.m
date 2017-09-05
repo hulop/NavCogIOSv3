@@ -373,7 +373,9 @@
         } else {
             dialogHelper.helperView.hidden = YES;
         }
-
+        
+        NSString *cn = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"lastcommit" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
+        [self.commitLabel setText:cn];
     });
 }
 

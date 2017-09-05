@@ -131,6 +131,8 @@
 		7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */; };
 		7E6E42E01D90C7A3006B6899 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7E6E42DF1D90C7A3006B6899 /* Settings.bundle */; };
 		7E6E42E91D90FD1B006B6899 /* BlindViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42E81D90FD1B006B6899 /* BlindViewController.m */; };
+		7E7ED5A51F5E67BC0033814B /* ScreenshotHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */; };
+		7E7ED5A81F5EDFC90033814B /* lastcommit.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7E7ED5A71F5EDFC90033814B /* lastcommit.txt */; };
 		7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */; };
 		7E8A33C61D92D13400D20CD5 /* HLPLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33C51D92D13400D20CD5 /* HLPLocation.m */; };
 		7E8D8F361E8A92F9006DB46D /* BeaconAddTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8D8F341E8A92F9006DB46D /* BeaconAddTableViewController.m */; };
@@ -457,6 +459,9 @@
 		7E6E42E71D90FD1B006B6899 /* BlindViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlindViewController.h; sourceTree = "<group>"; };
 		7E6E42E81D90FD1B006B6899 /* BlindViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlindViewController.m; sourceTree = "<group>"; };
 		7E6E42EC1D911236006B6899 /* LocationEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationEvent.h; sourceTree = "<group>"; };
+		7E7ED5A31F5E67BC0033814B /* ScreenshotHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotHelper.h; sourceTree = "<group>"; };
+		7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenshotHelper.m; sourceTree = "<group>"; };
+		7E7ED5A71F5EDFC90033814B /* lastcommit.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lastcommit.txt; sourceTree = SOURCE_ROOT; };
 		7E8A33BB1D917D5200D20CD5 /* HLPDataUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPDataUtil.h; path = model/HLPDataUtil.h; sourceTree = "<group>"; };
 		7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = HLPDataUtil.m; path = model/HLPDataUtil.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		7E8A33C41D92D13400D20CD5 /* HLPLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPLocation.h; path = model/HLPLocation.h; sourceTree = "<group>"; };
@@ -876,6 +881,8 @@
 				7E9866CD1D5174780073CB49 /* Logging.m */,
 				7E1F9F281DEEB1D3003E1B23 /* NavDebugHelper.h */,
 				7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */,
+				7E7ED5A31F5E67BC0033814B /* ScreenshotHelper.h */,
+				7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */,
 			);
 			name = helper;
 			sourceTree = "<group>";
@@ -966,6 +973,7 @@
 		7EDEDC1F1D1E0C6800AC111A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				7E7ED5A71F5EDFC90033814B /* lastcommit.txt */,
 				7EA018FD1E2F54A3005E65ED /* nosound.aiff */,
 				7E96D92F1DACC56200D57C8C /* HLPGeoJSON.strings */,
 				7E96D9291DAC916C00D57C8C /* BlindView.strings */,
@@ -1141,6 +1149,7 @@
 				5F71D1C14A5EA1F4F8125B8B /* [CP] Copy Pods Resources */,
 				7EF45E4D1E3F42BD00208042 /* ShellScript */,
 				A94F90EE1EDBD46C003908A7 /* Embed Frameworks */,
+				7E7ED5A61F5EDF620033814B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1352,6 +1361,7 @@
 				7E9238ED1D5189F100875766 /* HLPSettingViewSwitchCell.xib in Resources */,
 				7EDEDC2C1D1E0C6800AC111A /* Assets.xcassets in Resources */,
 				7E96D92D1DACC56200D57C8C /* HLPGeoJSON.strings in Resources */,
+				7E7ED5A81F5EDFC90033814B /* lastcommit.txt in Resources */,
 				7EDEDC2A1D1E0C6800AC111A /* Main.storyboard in Resources */,
 				7E17F1A31D9A226100DB1F34 /* Localizable.strings in Resources */,
 				7E9238F11D5189FF00875766 /* HLPSettingView.strings in Resources */,
@@ -1555,6 +1565,19 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogFingerPrint/Pods-NavCogFingerPrint-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		7E7ED5A61F5EDF620033814B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git log --oneline | head -n 1 | cut -f 1 -d' ' > $SRCROOT/lastcommit.txt";
+		};
 		7EF45E4D1E3F42BD00208042 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1732,6 +1755,7 @@
 				7E5150A41D8BF32800ED25FB /* NavNavigator.m in Sources */,
 				7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */,
 				7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */,
+				7E7ED5A51F5E67BC0033814B /* ScreenshotHelper.m in Sources */,
 				7E1F9F451DF01AA5003E1B23 /* DialogViewController.swift in Sources */,
 				7E1F9F3C1DF01AA5003E1B23 /* CustomArrow.swift in Sources */,
 				7EF45E351E3F1E3700208042 /* WelcomViewController.m in Sources */,

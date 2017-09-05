@@ -20,16 +20,16 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "HLPSettingHelper.h"
-#import <NavWebView/NavWebView.h>
-#import <MultipeerConnectivity/MultipeerConnectivity.h>
-#import <MessageUI/MessageUI.h>
 
-@interface SettingViewController : UITableViewController <HLPSettingHelperDelegate, MCBrowserViewControllerDelegate, MFMailComposeViewControllerDelegate>
+@interface ScreenshotHelper : NSObject
 
-+(void)setup;
-@property (weak, nonatomic) IBOutlet UITableViewCell *dialogSearchCell;
-@property NavWebviewHelper *webViewHelper;
+- (instancetype) init NS_UNAVAILABLE;
++ (instancetype) sharedHelper;
+- (NSArray*) screenshotsFromLog:(NSString*)logPath;
 
+- (void) startRecording:(UIView* (^)(void))handler;
+- (void) stopRecording;
 @end

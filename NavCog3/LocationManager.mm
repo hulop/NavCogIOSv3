@@ -213,16 +213,19 @@ void functionCalledToLog(void *inUserData, string text)
 - (void)disableAcceleration:(NSNotification*) note
 {
     disableAcceleration = YES;
+    NSLog(@"DisableAcceleration,1");
 }
 
 - (void)enableAcceleration:(NSNotification*) note
 {
     disableAcceleration = NO;
+    NSLog(@"DisableAcceleration,0");
 }
 
 - (void)disableStabilizeLocalize:(NSNotification*) note
 {
     disableAcceleration = NO;
+    NSLog(@"DisableAcceleration,0");
     
     [processQueue addOperationWithBlock:^{
         // set status monitoring interval as default
@@ -241,6 +244,7 @@ void functionCalledToLog(void *inUserData, string text)
 - (void)enableStabilizeLocalize:(NSNotification*) note
 {    
     disableAcceleration = YES;
+    NSLog(@"DisableAcceleration,1");
 
     [processQueue addOperationWithBlock:^{
         // set status monitoring interval inf

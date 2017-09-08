@@ -1144,12 +1144,12 @@
 				36AFE6E71E5E98123D26EB46 /* [CP] Check Pods Manifest.lock */,
 				7EDEDC181D1E0C6800AC111A /* Sources */,
 				7EDEDC191D1E0C6800AC111A /* Frameworks */,
+				7E7ED5A61F5EDF620033814B /* ShellScript */,
 				7EDEDC1A1D1E0C6800AC111A /* Resources */,
 				3AD4AA683ED6D64EDE1BF2E8 /* [CP] Embed Pods Frameworks */,
 				5F71D1C14A5EA1F4F8125B8B /* [CP] Copy Pods Resources */,
 				7EF45E4D1E3F42BD00208042 /* ShellScript */,
 				A94F90EE1EDBD46C003908A7 /* Embed Frameworks */,
-				7E7ED5A61F5EDF620033814B /* ShellScript */,
 			);
 			buildRules = (
 			);

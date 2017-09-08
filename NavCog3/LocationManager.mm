@@ -178,7 +178,9 @@ void functionCalledToLog(void *inUserData, string text)
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableStabilizeLocalize:) name:DISABLE_STABILIZE_LOCALIZE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableStabilizeLocalize:) name:ENABLE_STABILIZE_LOCALIZE object:nil];
-
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestSerialize:) name:REQUEST_SERIALIZE object:nil];
+    
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud addObserver:self forKeyPath:@"nSmooth" options:NSKeyValueObservingOptionNew context:nil];
     [ud addObserver:self forKeyPath:@"nStates" options:NSKeyValueObservingOptionNew context:nil];
@@ -253,6 +255,20 @@ void functionCalledToLog(void *inUserData, string text)
     }];
 }
 
+- (void)requestSerialize:(NSNotification*)note
+{
+    if ([note userInfo]) {
+        NSDictionary *dic = [note userInfo];
+        
+        std::string strPath = [dic[@"filePath"] cStringUsingEncoding:NSUTF8StringEncoding];
+        std::ofstream ofs(strPath);
+        if(ofs.is_open()){
+            cereal::JSONOutputArchive oarchive(ofs);
+            auto p = std::dynamic_pointer_cast<BasicLocalizerParameters>(localizer);
+            oarchive(*p);
+        }
+    }
+}
 
 - (void) requestLogReplayStop:(NSNotification*) note
 {

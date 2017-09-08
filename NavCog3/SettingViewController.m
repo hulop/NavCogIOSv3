@@ -290,6 +290,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [fm createDirectoryAtPath:dir withIntermediateDirectories:NO attributes:nil error:nil];
 
     NSString* plist = [[log stringByDeletingPathExtension] stringByAppendingPathExtension:@"plist"];
+    NSString* cereal = [[log stringByDeletingPathExtension] stringByAppendingPathExtension:@"cereal"];
     NSString* zip = [[log stringByDeletingPathExtension] stringByAppendingPathExtension:@"zip"];
     NSString* mapName = [[NSUserDefaults standardUserDefaults] stringForKey:@"bleloc_map_data"];
     NSString* desc = [[log stringByDeletingPathExtension] stringByAppendingPathExtension:@"txt"];
@@ -305,12 +306,15 @@ static HLPSetting *poiLabel, *ignoreFacility;
 
     NSString* lpath = [documentsPath stringByAppendingPathComponent:log];
     NSString* ppath = [documentsPath stringByAppendingPathComponent:plist];
+    NSString* cpath = [documentsPath stringByAppendingPathComponent:cereal];
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_SERIALIZE object:self userInfo:@{@"filePath":cpath}];
+
     NSString* mpath = [documentsPath stringByAppendingPathComponent:mapName];
     NSString* dpath = [dir stringByAppendingPathComponent:desc];
     [description writeToFile:dpath atomically:YES encoding:NSUTF8StringEncoding error:nil];
     
     NSArray* screenshots = [[ScreenshotHelper sharedHelper] screenshotsFromLog:lpath];
-    NSArray* files = [screenshots arrayByAddingObjectsFromArray:@[lpath,ppath,mpath]];
+    NSArray* files = [screenshots arrayByAddingObjectsFromArray:@[lpath,ppath,mpath,cpath]];
     NSString* zpath = [documentsPath stringByAppendingPathComponent:zip];
 
     for(NSString *file in files) {

@@ -11,7 +11,7 @@ target 'NavCog3' do
   pod 'cereal', :podspec => './podspecs/cereal.podspec'
   pod 'picojson', :podspec => './podspecs/picojson.podspec'
   pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
-  pod 'SSZipArchive'
+  pod 'SSZipArchive', '2.0.4'
 end
 
 target 'NavCogTool' do

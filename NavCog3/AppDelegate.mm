@@ -140,9 +140,7 @@
 
 - (void)startRecordScreenshots
 {
-    [[ScreenshotHelper sharedHelper] startRecording:^(){
-        return [self topMostController].view;
-    }];
+    [[ScreenshotHelper sharedHelper] startRecording];
 }
 
 - (void)stopRecordScreenshots

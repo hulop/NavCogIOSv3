@@ -69,7 +69,7 @@ static ScreenshotHelper *instance;
     return temp;
 }
 
-- (void)startRecording:(UIView *(^)(void))handler
+- (void)startRecording
 {
     if (!timer) {
         NSString *docPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
@@ -92,8 +92,8 @@ static ScreenshotHelper *instance;
         
         timer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                UIView *view = handler();
-                UIImage *image = [self screenshotImageWithView:view];
+                
+                UIImage *image = [self screenshotImage];
             
                 [queue addOperationWithBlock:^{
                     
@@ -142,7 +142,7 @@ static ScreenshotHelper *instance;
     }
 }
 
-- (UIImage*)screenshotImageWithView:(UIView*)view
+- (UIImage*)screenshotImage
 {
     CGFloat scale = 1.0;
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
@@ -154,7 +154,9 @@ static ScreenshotHelper *instance;
     CGContextTranslateCTM(ctx, 0.0, screenSize.height);
     CGContextScaleCTM(ctx, scale, -scale);
     
-    [(CALayer*)view.layer renderInContext:ctx];
+    for (UIView *view in [UIApplication sharedApplication].keyWindow.subviews) {
+        [(CALayer*)view.layer renderInContext:ctx];
+    }
     
     CGImageRef cgImage = CGBitmapContextCreateImage(ctx);
     UIImage *image = [UIImage imageWithCGImage:cgImage];

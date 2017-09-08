@@ -30,6 +30,6 @@
 + (instancetype) sharedHelper;
 - (NSArray*) screenshotsFromLog:(NSString*)logPath;
 
-- (void) startRecording:(UIView* (^)(void))handler;
+- (void) startRecording;
 - (void) stopRecording;
 @end

@@ -84,7 +84,6 @@
 		7E9866CE1D5174780073CB49 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
 		7EA018FE1E2F54A3005E65ED /* nosound.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7EA018FD1E2F54A3005E65ED /* nosound.aiff */; };
 		7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EA019001E2F54E7005E65ED /* InitViewController.mm */; };
-		7EA5E50C1F418C47008470D9 /* NavBlindWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */; };
 		7EAE6F0D1D2642D600614C35 /* NavBlindWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */; };
 		7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */; };
 		7EBE397A1E8298C5002A7BF9 /* HLPBeaconSample.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE39791E8298C5002A7BF9 /* HLPBeaconSample.m */; };
@@ -145,6 +144,7 @@
 		A91EA3001F55376200548203 /* HLPWebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2FF1F55376200548203 /* HLPWebView.framework */; };
 		A91EA3011F55377E00548203 /* HLPWebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2FF1F55376200548203 /* HLPWebView.framework */; };
 		A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A923DA091F26DBF60002E3CB /* DefaultTTS.m */; };
+		A98364E91F666C3F0044BBBD /* NavBlindWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = A98364E71F666A1D0044BBBD /* NavBlindWebView.m */; };
 		A9C94C321F283E1C00B60A46 /* HLPDialog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */; };
 /* End PBXBuildFile section */
 
@@ -334,8 +334,6 @@
 		7EE8E5E01EE93D1C006EE7C3 /* icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = icons.xcassets; sourceTree = "<group>"; };
 		7EE8E5E51EE94857006EE7C3 /* WelcomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomViewController.h; sourceTree = "<group>"; };
 		7EE8E5E61EE94857006EE7C3 /* WelcomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomViewController.m; sourceTree = "<group>"; };
-		7EE8E5E81EEE3968006EE7C3 /* NavBlindWebviewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavBlindWebviewHelper.h; path = NavCog3/NavBlindWebviewHelper.h; sourceTree = SOURCE_ROOT; };
-		7EE8E5E91EEE3968006EE7C3 /* NavBlindWebviewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavBlindWebviewHelper.m; path = NavCog3/NavBlindWebviewHelper.m; sourceTree = SOURCE_ROOT; };
 		7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		7EF45E2A1E3F1E3700208042 /* AgreementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AgreementViewController.m; sourceTree = "<group>"; };
 		7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadViewController.m; sourceTree = "<group>"; };
@@ -379,6 +377,8 @@
 		A93ED2751ED2DBB000B75760 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A93ED2771ED2DBB800B75760 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A93ED2801ED2DE3200B75760 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		A98364E61F666A1D0044BBBD /* NavBlindWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavBlindWebView.h; path = NavCog3/NavBlindWebView.h; sourceTree = SOURCE_ROOT; };
+		A98364E71F666A1D0044BBBD /* NavBlindWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavBlindWebView.m; path = NavCog3/NavBlindWebView.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -577,8 +577,8 @@
 				7E30F9FB1E8149C800D542E5 /* NavSound.m */,
 				7E30F9FD1E8149EF00D542E5 /* NavDeviceTTS.h */,
 				7E30F9FE1E8149EF00D542E5 /* NavDeviceTTS.m */,
-				7EE8E5E81EEE3968006EE7C3 /* NavBlindWebviewHelper.h */,
-				7EE8E5E91EEE3968006EE7C3 /* NavBlindWebviewHelper.m */,
+				A98364E61F666A1D0044BBBD /* NavBlindWebView.h */,
+				A98364E71F666A1D0044BBBD /* NavBlindWebView.m */,
 			);
 			name = navigation;
 			sourceTree = "<group>";
@@ -1045,7 +1045,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7EA5E50C1F418C47008470D9 /* NavBlindWebView.m in Sources */,
+				A98364E91F666C3F0044BBBD /* NavBlindWebView.m in Sources */,
 				7E30F9FC1E8149C800D542E5 /* NavSound.m in Sources */,
 				7E30F9CE1E8142B200D542E5 /* AuthManager.m in Sources */,
 				7E30F9E51E8144D000D542E5 /* DownloadViewController.m in Sources */,
@@ -1295,6 +1295,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -1316,6 +1317,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",

@@ -215,19 +215,19 @@ void functionCalledToLog(void *inUserData, string text)
 - (void)disableAcceleration:(NSNotification*) note
 {
     disableAcceleration = YES;
-    NSLog(@"DisableAcceleration,1");
+    NSLog(@"DisableAcceleration,1,%ld", (long)([[NSDate date] timeIntervalSince1970]*1000));
 }
 
 - (void)enableAcceleration:(NSNotification*) note
 {
     disableAcceleration = NO;
-    NSLog(@"DisableAcceleration,0");
+    NSLog(@"DisableAcceleration,0,%ld", (long)([[NSDate date] timeIntervalSince1970]*1000));
 }
 
 - (void)disableStabilizeLocalize:(NSNotification*) note
 {
     disableAcceleration = NO;
-    NSLog(@"DisableAcceleration,0");
+    NSLog(@"DisableAcceleration,0,%ld", (long)([[NSDate date] timeIntervalSince1970]*1000));
     
     [processQueue addOperationWithBlock:^{
         // set status monitoring interval as default
@@ -246,7 +246,7 @@ void functionCalledToLog(void *inUserData, string text)
 - (void)enableStabilizeLocalize:(NSNotification*) note
 {    
     disableAcceleration = YES;
-    NSLog(@"DisableAcceleration,1");
+    NSLog(@"DisableAcceleration,1,%ld", (long)([[NSDate date] timeIntervalSince1970]*1000));
 
     [processQueue addOperationWithBlock:^{
         // set status monitoring interval inf
@@ -440,6 +440,17 @@ void functionCalledToLog(void *inUserData, string text)
                         if (bShowSensorLog) {
                             std::cout << "LogReplay:" << alt.timestamp() << ",Altimeter," << alt.relativeAltitude() << "," << alt.pressure() << std::endl;
                         }
+                    }
+                    else if (logString.compare(0, 19, "DisableAcceleration") == 0){
+                        std::vector<std::string> values;
+                        boost::split(values, logString, boost::is_any_of(","));
+                        int da = stoi(values.at(1));
+                        if(da==1){
+                            self->disableAcceleration = YES;
+                        }else{
+                            self->disableAcceleration = NO;
+                        }
+                        std::cout << "LogReplay:" << logString << std::endl;
                     }
                     // Parsing reset
                     else if (logString.compare(0, 5, "Reset") == 0) {
@@ -844,7 +855,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->headingConfidenceForOrientationInit([ud doubleForKey:@"headingConfidenceInit"]);
     
     // yaw drift adjuster
-    localizer->applysYawDriftAdjust =  [ud boolForKey:@"applysYawDriftAdjust"];
+    localizer->applysYawDriftAdjust =  [ud boolForKey:@"applyYawDriftSmoothing"];
 }
 
 - (void) dealloc

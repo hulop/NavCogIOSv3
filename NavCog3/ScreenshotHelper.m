@@ -133,9 +133,8 @@ static ScreenshotHelper *instance;
 
             NSError *error;
             [fm removeItemAtPath:path error:&error];
-            if (!error ) {
-                [images removeObjectAtIndex:0];
-            } else {
+            [images removeObjectAtIndex:0];
+            if (error ) {
                 NSLog(@"error removing file %@, (%@)", path, error);
             }
         }

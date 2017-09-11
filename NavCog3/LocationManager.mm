@@ -855,7 +855,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->headingConfidenceForOrientationInit([ud doubleForKey:@"headingConfidenceInit"]);
     
     // yaw drift adjuster
-    localizer->applysYawDriftAdjust =  [ud boolForKey:@"applysYawDriftAdjust"];
+    localizer->applysYawDriftAdjust =  [ud boolForKey:@"applyYawDriftSmoothing"];
 }
 
 - (void) dealloc

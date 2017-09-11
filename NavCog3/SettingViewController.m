@@ -183,9 +183,21 @@ static HLPSetting *poiLabel, *ignoreFacility;
             
             return;
         }
+        if([MFMailComposeViewController canSendMail] == NO) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Need email setting"
+                                                                           message:@"Please set up email account"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK",@"HLPSettingView",@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-Prefs:root=ACCOUNT_SETTINGS&path=ADD_ACCOUNT"] options:@{} completionHandler:nil];
+            }]];
+            [self presentViewController:alert animated:YES completion:nil];
+            return;
+        }
+        
         [self performSegueWithIdentifier:setting.name sender:self];
     } else if ([setting.name hasPrefix:@"report_issue_"]) {
         NSString *log = [setting.name stringByReplacingOccurrencesOfString:@"report_issue_" withString:@""];
+        [Logging stopLog];
         
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Report Issue"
                                                                        message:@"Please describe issue"
@@ -359,11 +371,23 @@ static HLPSetting *poiLabel, *ignoreFacility;
         [mailCont addAttachmentData:[NSData dataWithContentsOfFile:path] mimeType:@"application/zip" fileName:[path lastPathComponent]];
         
         [self presentViewController:mailCont animated:YES completion:nil];
+    } else {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Need email setting"
+                                                                       message:@"Please set up email account"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK",@"HLPSettingView",@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-Prefs:root=ACCOUNT_SETTINGS&path=ADD_ACCOUNT"] options:@{} completionHandler:nil];            
+        }]];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
     [self dismissViewControllerAnimated:YES completion:nil];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
+        [Logging startLog];
+    }
 }
 
 

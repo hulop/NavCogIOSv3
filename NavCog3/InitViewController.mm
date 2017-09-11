@@ -178,19 +178,19 @@
         if ([from isEqualToString:@"location_tracking"]) {
             NSString *location_tracking = [ud stringForKey:from];
             if ([location_tracking isEqualToString:@"tracking"]) {
-                value = @(loc::RANDOM_WALK_ACC_ATT);
+                value = @(HLPRandomWalkAccAtt);
             } else if([location_tracking isEqualToString:@"oneshot"]) {
-                value = @(loc::ONESHOT);
+                value = @(HLPOneshot);
             } else if([location_tracking isEqualToString:@"randomwalker"]) {
-                value = @(loc::RANDOM_WALK_ACC);
+                value = @(HLPRandomWalkAcc);
             } else if([location_tracking isEqualToString:@"weak_pose_random_walker"]) {
-                value = @(loc::WEAK_POSE_RANDOM_WALKER);
+                value = @(HLPWeakPoseRandomWalker);
             }
         }
         else if ([from isEqualToString:@"activatesStatusMonitoring"]) {
             bool activatesDynamicStatusMonitoring = [ud boolForKey:@"activatesStatusMonitoring"];
             if(activatesDynamicStatusMonitoring){
-                double minWeightStable = std::pow(10.0, [ud doubleForKey:@"exponentMinWeightStable"]);
+                double minWeightStable = pow(10.0, [ud doubleForKey:@"exponentMinWeightStable"]);
                 params[@"locationStatusMonitorParameters.minimumWeightStable"] = @(minWeightStable);
                 params[@"locationStatusMonitorParameters.stdev2DEnterStable"] = ([ud valueForKey:@"enterStable"]);
                 params[@"locationStatusMonitorParameters.stdev2DExitStable"] = ([ud valueForKey:@"exitStable"]);

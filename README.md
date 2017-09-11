@@ -10,30 +10,25 @@ You need to provide a [model file](https://github.com/hulop/NavCogIOSv3/wiki/Pre
 - **Wheel Chair / General Pedestrian Mode**: This mode is mainly for wheel chair users and also all sighted users.
 
 ## NavCog3 Tools
-The workspace also includes the following tools.
+The project also includes the following tools.
 
 - **NavCogFingerPrint**: For fingerprinting
 - **NavCogTool**: For simulate blind user navigation commands
 
 ## Pre-Requisites
-- [HLPWebView](https://github.com/hulop/HLPWebView) (MIT License)
+- [FormatterKit](https://github.com/mattt/FormatterKit) (MIT License)
 - [HLPDialog](https://github.com/hulop/HLPDialog) (MIT License)
 - [HLPLocationManager](https://github.com/hulop/HLPLocationManager) (MIT License)
-- [blelocpp (BLE localization library)](https://github.com/hulop/blelocpp) (MIT License)
+- [HLPWebView](https://github.com/hulop/HLPWebView) (MIT License)
 - [Mantle](https://github.com/Mantle/Mantle) (MIT License)
-- [FormatterKit](https://github.com/mattt/FormatterKit) (MIT License)
 
 ## Build
-
-1. Install [CocoaPods](https://cocoapods.org/).
-2. In the project directory, run `pod install`.
-3. install [Carthage](https://github.com/Carthage/Carthage).
-4. In the project directory, run `carthage bootstrap --platform iOS,macOS`.
-5. Open NavCog3.xcworkspace
-6. Build NavCog3 project with Xcode.
+1. install [Carthage](https://github.com/Carthage/Carthage).
+2. In the project directory, run `carthage bootstrap --platform iOS,macOS`.
+3. Open NavCog3.xcodeproj
+4. Build NavCog3 project with Xcode.
 
 ## Setup
-
 See [wiki](https://github.com/hulop/NavCogIOSv3/wiki) for set up servers and data.
 
 ----

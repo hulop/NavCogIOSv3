@@ -35,7 +35,7 @@
 //#import "SettingViewController.h"
 
 #import "ServerConfig.h"
-#import "HLPLocationManager+Player.h"
+#import <HLPLocationManager/HLPLocationManager+Player.h>
 #import "DefaultTTS.h"
 
 @import JavaScriptCore;

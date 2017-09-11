@@ -23,7 +23,7 @@
 #import "AppDelegate.h"
 #import "Logging.h"
 #import "SettingViewController.h"
-#import "HLPLocationManager+Player.h"
+#import <HLPLocationManager/HLPLocationManager+Player.h>
 #import "LocationEvent.h"
 #import "NavDataStore.h"
 #import "NavDeviceTTS.h"
@@ -289,7 +289,6 @@ void uncaughtExceptionHandler(NSException *exception)
     [UIApplication.sharedApplication endBackgroundTask:_backgroundID];
     
     HLPLocationManager *manager = [HLPLocationManager sharedManager];
-    [manager prepareForPlayer];
     manager.delegate = self;
     if (secondOrLater) {
         if (!manager.isActive) {

@@ -1138,6 +1138,11 @@
         rv.to = nds.to._id;
         rv.device_id = [nds userID];
     }
+    if ([segue.identifier isEqualToString:@"show_search"]) {
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
+            [helper evalScript:@"$hulop.map.setSync(true);"];
+        }
+    }
 }
 
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender

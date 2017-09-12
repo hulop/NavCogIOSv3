@@ -389,8 +389,12 @@ static NavDataStore* instance_ = nil;
         [currentLocation updateParams:obj];
     }
     
-    if (!isManualLocation) {
+    BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+    if (!(isManualLocation && devMode)) {
         [self postLocationNotification];
+    }
+    if (!isManualLocation) {
+        _mapCenter = currentLocation;
     }
 }
 
@@ -400,7 +404,7 @@ static NavDataStore* instance_ = nil;
     HLPLocation *loc = [self currentLocation];
     if (loc && [Logging isLogging]) {
         long now = (long)([[NSDate date] timeIntervalSince1970]*1000);
-        NSLog(@"Pose,%f,%f,%f,%f,%f,%f,%ld",loc.lat,loc.lng,loc.floor,loc.accuracy,loc.orientation,loc.orientationAccuracy,now);
+        NSLog(@"Pose,%f,%f,%f,%f,%f,%f,%ld,%f",loc.lat,loc.lng,loc.floor,loc.accuracy,loc.orientation,loc.orientationAccuracy,now,loc.speed);
     }
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NAV_LOCATION_CHANGED_NOTIFICATION
@@ -588,7 +592,8 @@ static NavDataStore* instance_ = nil;
     int dist = 1000;
     
     _loadLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
-    if (destinationCacheLocation && [destinationCacheLocation distanceTo:_loadLocation] < dist/2) {
+    if (destinationCacheLocation && [destinationCacheLocation distanceTo:_loadLocation] < dist/2 &&
+        destinationCache && destinationCache.count > 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
         });

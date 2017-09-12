@@ -87,7 +87,7 @@
             _landmark = [aDecoder decodeObjectForKey:@"landmark"];
             break;
         case NavDestinationTypeLocation:
-            //_location = [aDecoder decodeObjectForKey:@"location"];
+            _location = [aDecoder decodeObjectForKey:@"location"];
             break;
         default:
             break;
@@ -99,7 +99,7 @@
 {
     self = [super init];
     _type = NavDestinationTypeLocation;
-    //_location = location;
+    _location = location;
     return self;
 }
 

@@ -27,6 +27,8 @@
 #import "ServerConfig.h"
 #import "AuthManager.h"
 #import <HLPLocationManager/HLPLocationManagerParameters.h>
+#import <Speech/Speech.h>
+#import <HLPDialog/HLPDialog.h>
 
 @interface InitViewController ()
 
@@ -87,6 +89,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    [DialogManager sharedManager].userMode = segue.identifier;
     if ([segue.identifier isEqualToString:@"user_blind"]) {
         [[NSUserDefaults standardUserDefaults] setObject:@"UI_BLIND" forKey:@"ui_mode"];
         [ConfigManager loadConfig:@"presets/blind.plist"];

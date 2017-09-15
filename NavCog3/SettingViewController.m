@@ -26,14 +26,14 @@
 #import "ConfigManager.h"
 #import "LocationEvent.h"
 #import "NavDebugHelper.h"
-#import "NavCog3-Swift.h"
+#import <HLPDialog/HLPDialog.h>
 #import "NavDeviceTTS.h"
 #import "NavDataStore.h"
 #import "AuthManager.h"
 #import "NavUtil.h"
 #import "Logging.h"
 #import "ScreenshotHelper.h"
-#import "SSZipArchive.h"
+#import <ZipArchive/SSZipArchive.h>
 
 @interface SettingViewController ()
 
@@ -119,7 +119,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     }
     [self updateView];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DialogManager.DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
 
     
     // Uncomment the following line to preserve selection between presentations.
@@ -158,7 +158,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
 {
     [self.tableView reloadData];
     
-    BOOL dialog = [[DialogManager sharedManager] isDialogAvailable];
+    BOOL dialog = [[DialogManager sharedManager] isAvailable];
     if (self.dialogSearchCell) {
         self.dialogSearchCell.selectionStyle = dialog?UITableViewCellSelectionStyleGray:UITableViewCellSelectionStyleNone;
         self.dialogSearchCell.textLabel.enabled = dialog;
@@ -806,15 +806,15 @@ static HLPSetting *poiLabel, *ignoreFacility;
 {
     NSString *id = [[tableView cellForRowAtIndexPath:indexPath] reuseIdentifier];
     if ([id isEqualToString:@"search_option"]) {
-        [self.webViewHelper triggerWebviewControl:WebviewControlRouteSearchOptionButton];
+        [self.webView triggerWebviewControl:HLPWebviewControlRouteSearchOptionButton];
         [self.navigationController popViewControllerAnimated:YES];
     }
     if ([id isEqualToString:@"search_route"]) {
-        [self.webViewHelper triggerWebviewControl:WebviewControlRouteSearchButton];
+        [self.webView triggerWebviewControl:HLPWebviewControlRouteSearchButton];
         [self.navigationController popViewControllerAnimated:YES];
     }
     if ([id isEqualToString:@"end_navigation"]) {
-        [self.webViewHelper triggerWebviewControl:WebviewControlEndNavigation];
+        [self.webView triggerWebviewControl:HLPWebviewControlEndNavigation];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
@@ -823,7 +823,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
 {
     NSString *id = [[tableView cellForRowAtIndexPath:indexPath] reuseIdentifier];
     if ([id isEqualToString:@"dialog_search"]) {
-        return [[DialogManager sharedManager] isDialogAvailable];
+        return [[DialogManager sharedManager] isAvailable];
     }
     return YES;
 }
@@ -863,7 +863,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
     if ([identifier isEqualToString:@"show_dialog_wc"]) {
-        return [[DialogManager sharedManager] isDialogAvailable];
+        return [[DialogManager sharedManager] isAvailable];
     }
     return YES;
 }

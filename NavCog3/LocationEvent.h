@@ -37,16 +37,6 @@
 
 #define REQUEST_NAVIGATION_STATUS @"REQUEST_NAVIGATION_STATUS"
 #define REQUEST_DIALOG_START @"REQUEST_DIALOG_START"
-#define REQUEST_DIALOG_END @"REQUEST_DIALOG_END"
-#define REQUEST_DIALOG_ACTION @"REQUEST_DIALOG_ACTION"
-
-typedef NS_ENUM(NSUInteger, NavLocationStatus) {
-    NavLocationStatusStable,
-    NavLocationStatusLocating,
-    NavLocationStatusLost,
-    NavLocationStatusBackground,
-    NavLocationStatusUnknown
-};
 
 #define DESTINATIONS_CHANGED_NOTIFICATION @"destinations_changed_notification"
 #define ROUTE_CHANGED_NOTIFICATION @"route_changed_notification"
@@ -88,7 +78,6 @@ typedef NS_ENUM(NSUInteger, NavLocationStatus) {
 #define REQUEST_SERIALIZE @"REQUEST_SERIALIZE"
 
 #define SERVER_CONFIG_CHANGED_NOTIFICATION @"SERVER_CONFIG_CHANGED_NOTIFICATION"
-#define DIALOG_AVAILABILITY_CHANGED_NOTIFICATION @"DIALOG_AVAILABILITY_CHANGED_NOTIFICATION"
 
 
 #define DEBUG_PEER_STATE_CHANGE @"DEBUG_PEER_STATE_CHANGE"

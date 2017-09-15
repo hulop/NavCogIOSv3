@@ -23,8 +23,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#define LOG_REPLAY_PROGRESS @"log_replay_progress"
-
 @interface UIMessageView :UIView
 @property UILabel *message;
 @property UIButton *action;

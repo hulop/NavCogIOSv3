@@ -22,7 +22,7 @@
 
 #import <UIKit/UIKit.h>
 #import "HLPSettingHelper.h"
-#import <NavWebView/NavWebView.h>
+#import <HLPWebView/HLPWebView.h>
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <MessageUI/MessageUI.h>
 
@@ -30,6 +30,6 @@
 
 +(void)setup;
 @property (weak, nonatomic) IBOutlet UITableViewCell *dialogSearchCell;
-@property NavWebviewHelper *webViewHelper;
+@property HLPWebView *webView;
 
 @end

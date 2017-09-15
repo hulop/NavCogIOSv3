@@ -24,7 +24,7 @@
 
 #import "HLPGeoJSON.h"
 #import <Mantle/Mantle.h>
-#import "HLPLocation.h"
+#import <HLPLocationManager/HLPLocation.h>
 
 @interface HLPDBObject : MTLModel<MTLJSONSerializing, NSCoding>
 @property (nonatomic, readonly) NSDictionary *_id;

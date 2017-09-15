@@ -21,19 +21,18 @@
  *******************************************************************************/
 
 #import <UIKit/UIKit.h>
-#import "NavBlindWebviewHelper.h"
+#import "NavBlindWebView.h"
 #import "NavCoverView.h"
 #import "NavNavigator.h"
 #import "NavCommander.h"
 #import "NavPreviewer.h"
-// ???: HLPSetting.h:43:5: Expected identifier
 #import "SettingViewController.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
-#import "NavCog3-Swift.h"
+#import <HLPDialog/HLPDialog.h>
 
-@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, NavNavigatorDelegate, NavCommanderDelegate, NavPreviewerDelegate, MCBrowserViewControllerDelegate, DialogViewDelegate>
+@interface BlindViewController : UIViewController <HLPWebViewDelegate, HLPTTSProtocol, NavNavigatorDelegate, NavCommanderDelegate, NavPreviewerDelegate, MCBrowserViewControllerDelegate, DialogViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (weak, nonatomic) IBOutlet NavBlindWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;

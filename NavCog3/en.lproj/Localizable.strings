@@ -77,14 +77,6 @@
 /* (No Commment) */
 "checkNetworkConnection" = "Check network connection";
 
-"SPEAK_NOW" = "<Speak Now!>";
-
-"PAUSING" = "<Pausing>";
-
-"DialogStart" = "Restart";
-
-"DialogStartHint" = "Double tap to start voice recognition";
-
 "SPEECH_SPEED_CHECK" = "Speech speed is %.2f";
 
 "Exercise" = "Exercise";
@@ -98,8 +90,6 @@
 "soundEffectSetting" = "Use Sound Effect";
 
 "for_bone_conduction_headset" = "Sound Effect for Bone Conduction Headset";
-
-"Error" = "Error";
 
 "Reset_Location" = "Re-init Localization";
 
@@ -136,18 +126,3 @@ Feedback is sending...";
 "NeedToUpdateAppTitle" = "App Update";
 "NeedToUpdateAppMessage" = "App is required to be updated";
 "OpenAppStore" = "Open App Store";
-
-"WAIT_ACTION" = "Waiting for your question. Tap the microphone button to restart.";
-
-"NoAudioAccessAlertTitle" = "Microphone not allowed";
-"NoAudioAccessAlertMessage" = "You need to allow access to microphone to enable conversation function.
-From privacy settigs, please turn on
-Microphone　→　NavCog";
-
-"NoSpeechRecoAccessAlertTitle" = "Speech Recognition not allowed";
-"NoSpeechRecoAccessAlertMessage" = "You need to allow access to speech recognition to enable conversation function.
-From privacy settigs, please turn on
-Speech Recognition　→　NavCog";
-
-"unknownError0" = "Voice recognition could not be started. Please try again.";
-"unknownError1" = "Voice recognition is not available. Please try again later.";

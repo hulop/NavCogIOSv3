@@ -23,7 +23,7 @@
 #import "HLPPreviewCommander.h"
 #import "HLPWalker.h"
 #import "NavDataStore.h"
-#import "TTTOrdinalNumberFormatter.h"
+#import <FormatterKit/TTTOrdinalNumberFormatter.h>
 
 @implementation HLPPreviewCommander {    
     BOOL stepLR;

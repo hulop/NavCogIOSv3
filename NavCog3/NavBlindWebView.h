@@ -21,15 +21,17 @@
  *******************************************************************************/
 
 
-
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <CoreBluetooth/CoreBluetooth.h>
+#import <HLPWebView/HLPWebView.h>
+#import <HLPLocationManager/HLPLocation.h>
 
+@interface NavBlindWebView : HLPWebView
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, CBCentralManagerDelegate>
-
-@property (strong, nonatomic) UIWindow *window;
-@property UIBackgroundTaskIdentifier backgroundID;
+- (void)initTarget:(NSArray *)landmarks;
+- (void)clearRoute;
+- (void)showRoute:(NSArray*)route;
+- (HLPLocation*) getCenter;
+- (void) manualLocation: (HLPLocation*) loc withSync:(BOOL)sync;
 
 @end
-

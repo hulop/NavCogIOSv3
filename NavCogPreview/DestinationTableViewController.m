@@ -24,6 +24,8 @@
 #import "NavDataSource.h"
 #import "LocationEvent.h"
 
+@import HLPDialog;
+
 @interface DestinationTableViewController ()
 
 @end
@@ -72,7 +74,7 @@
     
     [self.tableView reloadData];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DialogManager.DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     

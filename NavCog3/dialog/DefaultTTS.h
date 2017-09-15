@@ -20,14 +20,10 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+#import <Foundation/Foundation.h>
 
-#import <UIKit/UIKit.h>
+@import HLPDialog;
 
-//! Project version number for NavWebView.
-FOUNDATION_EXPORT double NavWebViewVersionNumber;
+@interface DefaultTTS: NSObject <TTSProtocol>
 
-//! Project version string for NavWebView.
-FOUNDATION_EXPORT const unsigned char NavWebViewVersionString[];
-
-
-#import <NavWebView/NavWebviewHelper.h>
+@end

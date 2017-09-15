@@ -20,24 +20,37 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-import Foundation
-import AVFoundation
-import UIKit
+#import "DefaultTTS.h"
+#import <AVFoundation/AVFoundation.h>
+#import <UIKit/UIKit.h>
+#import "NavDeviceTTS.h"
+#import "NavSound.h"
 
-protocol TTSProtocol {
-    func speak(_ text:String?, callback: @escaping (Void)->Void)
-    func stop()
-    func stop(_ immediate: Bool)
+@implementation DefaultTTS
+
+- (void)speak:(NSString * _Nullable)text callback:(void (^ _Nonnull)(void))callback
+{
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"selfspeak": @YES, @"quickAnswer": @NO} completionHandler:callback];
 }
 
-class DefaultTTS: TTSProtocol {
-    func speak(_ text: String?, callback: @escaping (Void) -> Void) {
-        NavDeviceTTS.shared().speak(text, withOptions:["selfspeak":true,"quickAnswer":false], completionHandler: callback)
-    }
-    func stop() {
-        self.stop(false)
-    }
-    func stop(_ immediate: Bool) {
-        NavDeviceTTS.shared().stop(immediate)
-    }
+- (void)stop
+{
+    [self stop:NO];
 }
+
+- (void)stop:(BOOL)immediate
+{
+    [[NavDeviceTTS sharedTTS] stop:immediate];
+}
+
+- (void)vibrate
+{
+    [[NavSound sharedInstance] vibrate:nil];
+}
+
+- (void)playVoiceRecoStart
+{
+    [[NavSound sharedInstance] playVoiceRecoStart];
+}
+
+@end

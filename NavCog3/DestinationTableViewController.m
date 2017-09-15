@@ -23,7 +23,8 @@
 #import "DestinationTableViewController.h"
 #import "NavDataSource.h"
 #import "LocationEvent.h"
-#import "NavCog3-Swift.h"
+#import <HLPDialog/HLPDialog.h>
+#import "DefaultTTS.h"
 
 @interface DestinationTableViewController ()
 
@@ -71,7 +72,7 @@
     
     [self.tableView reloadData];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DialogManager.DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -116,7 +117,7 @@
     
     NavDestination *dest = [source destinationForRowAtIndexPath:indexPath];
     if (dest.type == NavDestinationTypeDialogSearch) {
-        BOOL dialog = [[DialogManager sharedManager] isDialogAvailable];
+        BOOL dialog = [[DialogManager sharedManager] isAvailable];
         cell.textLabel.enabled = dialog;
         cell.selectionStyle = dialog?UITableViewCellSelectionStyleGray:UITableViewCellSelectionStyleNone;
     }
@@ -134,7 +135,7 @@
         filterDest = dest;
         [self performSegueWithIdentifier:@"sub_category" sender:self];
     } else if (dest.type == NavDestinationTypeDialogSearch) {
-        if ([[DialogManager sharedManager] isDialogAvailable]) {
+        if ([[DialogManager sharedManager] isAvailable]) {
             [self performSegueWithIdentifier:@"show_dialog" sender:self];
         }
     } else {
@@ -166,6 +167,7 @@
     if ([segue.destinationViewController isKindOfClass:DialogViewController.class]){
         DialogViewController* dView = (DialogViewController*)segue.destinationViewController;
         dView.root = _root;
+        dView.tts = [DefaultTTS new];
     }
 }
 

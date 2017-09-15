@@ -21,10 +21,10 @@
  *******************************************************************************/
 
 
-#import "NavBlindWebviewHelper.h"
+#import "NavBlindWebView.h"
 #import <Mantle/Mantle.h>
 
-@implementation NavBlindWebviewHelper
+@implementation NavBlindWebView
 
 # pragma mark - public methods
 
@@ -47,14 +47,14 @@
     NSString *script = [NSString stringWithFormat:@"$hulop.map.initTarget(%@, null)", dataStr];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self evalScript:script];
+        [self stringByEvaluatingJavaScriptFromString:script];
     });
 }
 
 - (void)clearRoute
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self evalScript:@"$hulop.map.clearRoute()"];
+        [self stringByEvaluatingJavaScriptFromString:@"$hulop.map.clearRoute()"];
     });
 }
 
@@ -77,14 +77,14 @@
     NSString *script = [NSString stringWithFormat:@"$hulop.map.showRoute(%@, null, true, true);/*$hulop.map.showResult(true);*/$('#map-page').trigger('resize');", dataStr];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self evalScript:script];
+        [self stringByEvaluatingJavaScriptFromString:script];
     });
 }
 
 - (HLPLocation *)getCenter
 {
     NSString *script = @"(function(){var a=$hulop.map.getCenter();var f=$hulop.indoor.getCurrentFloor();f=f>0?f-1:f;return JSON.stringify({lat:a[1],lng:a[0],floor:f});})()";
-    NSString *state = [self evalScript:script];
+    NSString *state = [self stringByEvaluatingJavaScriptFromString:script];
     NSError *error = nil;
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[state dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
     if (json) {
@@ -117,7 +117,7 @@
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self evalScript:script];
+        [self stringByEvaluatingJavaScriptFromString:script];
     });
 }
 

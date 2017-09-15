@@ -536,9 +536,9 @@ static NavDataStore* instance_ = nil;
     NSDictionary *param = [NSJSONSerialization JSONObjectWithData:[s2 dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     double lat = [param[@"lat"] doubleValue];
     double lng = [param[@"lng"] doubleValue];
-    NSString *user = param[@"user"];
+    //NSString *user = param[@"user"];
     NSString *lang = param[@"user_lang"];
-    [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:lang];
+    [self reloadDestinationsAtLat:lat Lng:lng forUser:self.userID withUserLang:lang];
 }
 
 - (void)processShowRouteLog:(NSNotification*)note
@@ -552,10 +552,12 @@ static NavDataStore* instance_ = nil;
     NSDictionary *param = [NSJSONSerialization JSONObjectWithData:[s2 dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     NSString *fromID = param[@"fromID"];
     NSString *toID = param[@"toID"];
-    NSString *user = param[@"user"];
+    //NSString *user = param[@"user"];
     NSString *lang = param[@"user_lang"];
     NSDictionary *prefs = param[@"prefs"];
-    [self requestRouteFrom:fromID To:toID forUser:user withLang:lang useCache:NO withPreferences:prefs complete:nil];
+    self.from = [self destinationByID:fromID];
+    self.to = [self destinationByID:toID];
+    [self requestRouteFrom:fromID To:toID forUser:self.userID withLang:lang useCache:NO withPreferences:prefs complete:nil];
 }
 
 

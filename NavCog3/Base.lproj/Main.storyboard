@@ -4,6 +4,7 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
@@ -22,7 +23,7 @@
                         <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wNX-E7-1MH">
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wNX-E7-1MH" customClass="HLPWebView">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                                 <color key="backgroundColor" red="0.28958413004875183" green="0.31462949514389038" blue="0.32950475811958313" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </webView>
@@ -327,7 +328,7 @@
                         <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tBq-Mg-lUf" customClass="NavWebView">
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tBq-Mg-lUf" customClass="NavBlindWebView">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </webView>
@@ -955,7 +956,7 @@
         <!--Dialog View Controller-->
         <scene sceneID="7vw-Hj-Rkg">
             <objects>
-                <viewController id="YRz-sv-vaW" customClass="DialogViewController" customModule="NavCog3" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="YRz-sv-vaW" customClass="DialogViewController" customModule="HLPDialog" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ckh-WA-6CF"/>
                         <viewControllerLayoutGuide type="bottom" id="h1Z-UX-Seu"/>
@@ -1459,5 +1460,6 @@
         <segue reference="GK1-dG-XDF"/>
         <segue reference="y9t-k8-dBv"/>
         <segue reference="Uqw-3g-GCM"/>
+        <segue reference="Goq-2Z-Z6n"/>
     </inferredMetricsTieBreakers>
 </document>

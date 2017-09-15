@@ -23,8 +23,7 @@
 
 #import "NavDataSource.h"
 #import "LocationEvent.h"
-#import "TTTOrdinalNumberFormatter.h"
-
+#import <FormatterKit/TTTOrdinalNumberFormatter.h>
 
 #pragma mark - Destination Data Source
 

@@ -189,12 +189,12 @@ static NavDeviceTTS *instance = nil;
     BOOL selfspeak = [options[@"selfspeak"] boolValue];
     BOOL nohistory = [options[@"nohistory"] boolValue];
     BOOL quickAnswer = [options[@"quickAnswer"] boolValue];
-    AVSpeechSynthesisVoice *voice = nil;
+    AVSpeechSynthesisVoice *aVoice = nil;
     if (options[@"lang"]) {
-        voice = [NavDeviceTTS getVoiceOfLang:options[@"lang"]];
+        aVoice = [NavDeviceTTS getVoiceOfLang:options[@"lang"]];
     }
     
-    return [self _speak:text force:force selfvoicing:selfspeak nohistory:nohistory quickAnswer:quickAnswer voice:voice completionHandler:handler];
+    return [self _speak:text force:force selfvoicing:selfspeak nohistory:nohistory quickAnswer:quickAnswer voice:aVoice completionHandler:handler];
 }
 
 - (AVSpeechUtterance *)selfspeak:(NSString *)text completionHandler:(void (^)())handler

@@ -27,7 +27,7 @@
 #import "NavUtil.h"
 #import "NavDataStore.h"
 #import "SettingViewController.h"
-#import "NavBlindWebviewHelper.h"
+#import "NavBlindWebView.h"
 #import "POIViewController.h"
 #import "ServerConfig+Preview.h"
 #import "ExpConfig.h"
@@ -44,7 +44,6 @@
 
 
 @implementation BlindViewController {
-    NavBlindWebviewHelper *helper;
     HLPPreviewer *previewer;
     HLPPreviewCommander *commander;
     NSTimer *locationTimer;
@@ -78,9 +77,8 @@
 
 - (void)dealloc
 {
-    [helper prepareForDealloc];
-    helper.delegate = nil;
-    helper = nil;
+    _webView.delegate = nil;
+    _webView = nil;
     
     _settingButton = nil;
     
@@ -100,10 +98,12 @@
     [self.devLeft setTitle:@"Left" forState:UIControlStateNormal];
     [self.devRight setTitle:@"Right" forState:UIControlStateNormal];
     
-    NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
-    helper = [[NavBlindWebviewHelper alloc] initWithWebview:self.webView server:server];
-    helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
-    helper.delegate = self;
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _webView.config = @{
+                        @"serverHost":[ud stringForKey:@"selected_hokoukukan_server"],
+                        };
+    _webView.userMode = [ud stringForKey:@"user_mode"];
+    _webView.delegate = self;
     
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
@@ -244,13 +244,13 @@ double stdev(double array[], long count) {
             return NO;
         }]];
     }
-    [helper showRoute:route];
+    [_webView showRoute:route];
 }
 
 - (void) checkMapCenter:(NSTimer*)timer
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        HLPLocation *loc = [helper getCenter];
+        HLPLocation *loc = [_webView getCenter];
         if (loc != nil) {
             [NavDataStore sharedDataStore].mapCenter = loc;
             HLPLocation *cloc = [NavDataStore sharedDataStore].currentLocation;
@@ -390,7 +390,7 @@ double stdev(double array[], long count) {
     [motionManager stopDeviceMotionUpdates];
     
     [commander previewStopped:event];
-    [helper clearRoute];
+    [_webView clearRoute];
     current = nil;
     userLocation = nil;
     animLocation = nil;
@@ -465,13 +465,13 @@ double stdev(double array[], long count) {
 {
     double orientation = -userLocation.orientation / 180 * M_PI;
     
-    [helper sendData:@[@{
+    [_webView sendData:@[@{
                            @"type":@"ORIENTATION",
                            @"z":@(orientation)
                            }]
             withName:@"Sensor"];
     
-    [helper sendData:@{
+    [_webView sendData:@{
                        @"lat":@(userLocation.lat),
                        @"lng":@(userLocation.lng),
                        @"floor":@(userLocation.floor),
@@ -662,13 +662,13 @@ double stdev(double array[], long count) {
 {
     NSString *jspath = [[NSBundle mainBundle] pathForResource:@"fingerprint" ofType:@"js"];
     NSString *js = [[NSString alloc] initWithContentsOfFile:jspath encoding:NSUTF8StringEncoding error:nil];
-    [helper evalScript:js];
+    [_webView stringByEvaluatingJavaScriptFromString:js];
 }
 
 - (void) showPOIs:(NSArray<HLPObject*>*)pois
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:@"$hulop.map.clearRoute()"];
+        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.clearRoute()"];
         NSArray *route = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
             if ([evaluatedObject isKindOfClass:HLPLink.class]) {
                 HLPLink *link = (HLPLink*)evaluatedObject;
@@ -677,7 +677,7 @@ double stdev(double array[], long count) {
             return NO;
         }]];
         
-        [helper showRoute:route];
+        [_webView showRoute:route];
     });
     
     [self showFeatures:pois withStyle:^NSDictionary *(NSObject *obj) {
@@ -723,7 +723,7 @@ double stdev(double array[], long count) {
     selectedFeature = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:@"$hulop.fp.showFingerprints([]);"];
+        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.fp.showFingerprints([]);"];
     });
 }
 
@@ -745,7 +745,7 @@ double stdev(double array[], long count) {
     NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
     //NSLog(@"%@", script);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:script];
+        [_webView stringByEvaluatingJavaScriptFromString:script];
     });
 }
 
@@ -762,38 +762,51 @@ double stdev(double array[], long count) {
 }
 
 
-#pragma mark - NavWebviewHelperDelegate
+#pragma mark - HLPWebViewDelegate
 
-- (void) speak:(NSString*)text withOptions:(NSDictionary*)options {
-    //[[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:nil];
+- (void)webView:(HLPWebView *)webView didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
+{
+    NSDictionary *loc =
+    @{
+      @"lat": @(lat),
+      @"lng": @(lng),
+      @"floor": @(floor),
+      @"sync": @(sync),
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:loc];
 }
 
-- (BOOL) isSpeaking {
-    //return [[NavDeviceTTS sharedTTS] isSpeaking];
-    return NO;
+- (void)webView:(HLPWebView *)webView didChangeBuilding:(NSString *)building
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:@{@"building": building}];
 }
 
-- (void) vibrateOnAudioServices {
-    //AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+- (void)webView:(HLPWebView *)webView didChangeUIPage:(NSString *)page inNavigation:(BOOL)inNavigation
+{
+    NSDictionary *uiState =
+    @{
+      @"page": page,
+      @"navigation": @(inNavigation),
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:uiState];
 }
 
-- (void) manualLocationChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:options];
+- (void)webView:(HLPWebView *)webView didFinishNavigationStart:(NSTimeInterval)start end:(NSTimeInterval)end from:(NSString *)from to:(NSString *)to
+{
+    NSDictionary *navigationInfo =
+    @{
+      @"start": @(start),
+      @"end": @(end),
+      @"from": from,
+      @"to": to,
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:navigationInfo];
 }
 
-- (void) buildingChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:options];
-}
+#pragma mark - HLPWebViewCoreDelegate
 
-- (void) wcuiStateChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:options];
-}
-
-- (void) requestRatingWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:options];
-}
-
-- (void) requestOpenURL:(NSURL*)url {
+- (void)webView:(HLPWebView *)webView openURL:(NSURL *)url
+{
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
 }
 
@@ -817,7 +830,7 @@ double stdev(double array[], long count) {
             return NO;
         }
         
-        [NavDataStore sharedDataStore].mapCenter = [helper getCenter];
+        [NavDataStore sharedDataStore].mapCenter = [_webView getCenter];
         
         UIViewController *vc = nil;
         if ([[ServerConfig sharedConfig] isExpMode]) {

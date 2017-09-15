@@ -1,1 +1,7 @@
-github "watson-developer-cloud/swift-sdk" == 0.15.0
+github "Mantle/Mantle" == 2.0.7
+github "mattt/FormatterKit" == 1.8.2
+github "ZipArchive/ZipArchive" == 2.0.4
+
+github "hulop/HLPWebView"
+github "hulop/HLPDialog"
+github "hulop/HLPLocationManager"

@@ -30,12 +30,10 @@
 #import "POIAddTableViewController.h"
 #import "SettingViewController.h"
 #import "NavDeviceTTS.h"
-#import "NavBlindWebviewHelper.h"
+#import "NavBlindWebView.h"
 
 
 @interface BlindViewController () {
-    NavBlindWebviewHelper *helper;
-    ViewState state;
     FPMode fpMode;
     
     int x, y;
@@ -61,9 +59,7 @@
 
 - (void)dealloc
 {
-    [helper prepareForDealloc];
-    helper.delegate = nil;
-    helper = nil;
+    _webView.delegate = nil;
     
     _settingButton = nil;
     
@@ -139,18 +135,23 @@
 
     [self.view addConstraints:@[layoutLeft, layoutRight, layoutBottom, layoutHeight, layoutBottom2]];
     [self.view layoutIfNeeded];
-    
-    state = ViewStateLoading;
 
     [self.devUp setTitle:@"Up" forState:UIControlStateNormal];
     [self.devDown setTitle:@"Down" forState:UIControlStateNormal];
     [self.devLeft setTitle:@"Left" forState:UIControlStateNormal];
     [self.devRight setTitle:@"Right" forState:UIControlStateNormal];
     
-    NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
-    helper = [[NavBlindWebviewHelper alloc] initWithWebview:self.webView server:server];
-    helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
-    helper.delegate = self;
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
+    _webView.userMode = [ud stringForKey:@"user_mode"];
+    _webView.config = @{
+                        @"serverHost":[ud stringForKey:@"selected_hokoukukan_server"],
+                        @"serverContext":[ud stringForKey:@"hokoukukan_server_context"],
+                        @"usesHttps":@([ud boolForKey:@"https_connection"])
+                        };
+    
+    _webView.delegate = self;
+    _webView.tts = self;
     
     UITapGestureRecognizer *webViewTapped = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapAction:)];
     webViewTapped.numberOfTapsRequired = 1;
@@ -194,7 +195,7 @@
 - (void)tapAction:(UITapGestureRecognizer *)sender
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSString *result = [helper evalScript:@"(function(){return $hulop.indoor.getCurrentFloor()})()"];
+        NSString *result = [_webView stringByEvaluatingJavaScriptFromString:@"(function(){return $hulop.indoor.getCurrentFloor()})()"];
         NSLog(@"touched %@", result);
         double height = [result doubleValue];
         height = height<1?height:height-1;
@@ -227,7 +228,7 @@
     if (currentRp == rp) return;
     
     HLPLocation* loc = [[HLPLocation alloc] initWithLat:rp.anchor_lat Lng:rp.anchor_lng Floor:rp.floor_num];
-    [helper manualLocation:loc withSync:NO];
+    [_webView manualLocation:loc withSync:NO];
     currentRp = rp;
 }
 
@@ -356,7 +357,7 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"developer_mode"]) {
-        helper.developerMode = @(YES);
+        _webView.isDeveloperMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);
     }
 }
 
@@ -419,7 +420,6 @@
             self.navigationItem.rightBarButtonItem = _searchButton;
             self.navigationItem.leftBarButtonItem = _settingButton;
 
-            
             if (isSampling) {
                 long count = [ud integerForKey:@"finger_printing_duration"];
                 self.navigationItem.title = [NSString stringWithFormat:@"%@ - %ld/%ld (%ld)",
@@ -505,7 +505,7 @@
             self.navigationItem.title = @"POI";
         }
         if (fpMode != FPModePOI) {
-            [helper evalScript:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();"];
+            [_webView stringByEvaluatingJavaScriptFromString:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();"];
         }
     });
 }
@@ -538,7 +538,7 @@
 {
     NSString *jspath = [[NSBundle mainBundle] pathForResource:@"fingerprint" ofType:@"js"];
     NSString *js = [[NSString alloc] initWithContentsOfFile:jspath encoding:NSUTF8StringEncoding error:nil];
-    [helper evalScript:js];
+    [_webView stringByEvaluatingJavaScriptFromString:js];
 }
 
 - (void) reload
@@ -592,7 +592,7 @@
 - (void) showPOIs:(NSArray<HLPObject*>*)pois
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:@"$hulop.map.clearRoute()"];
+        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.clearRoute()"];
         BOOL showRoute = [[NSUserDefaults standardUserDefaults] boolForKey:@"finger_printing_show_route"];
         if (showRoute) {
             NSArray *route = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
@@ -603,7 +603,7 @@
                 return NO;
             }]];
             
-            [helper showRoute:route];
+            [_webView showRoute:route];
         }
     });
     if (fpMode == FPModePOI) {
@@ -649,7 +649,7 @@
     selectedFeature = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:@"$hulop.fp.showFingerprints([]);"];
+        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.fp.showFingerprints([]);"];
     });
 }
 
@@ -675,7 +675,7 @@
     NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
     //NSLog(@"%@", script);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:script];
+        [_webView stringByEvaluatingJavaScriptFromString:script];
     });
 }
 
@@ -695,7 +695,7 @@
             }
         }
     }
-    double zoom = [[helper evalScript:@"(function(){return $hulop.map.getMap().getView().getZoom();})()"] doubleValue];
+    double zoom = [[_webView stringByEvaluatingJavaScriptFromString:@"(function(){return $hulop.map.getMap().getView().getZoom();})()"] doubleValue];
     
     if (min < pow(2, 20-zoom)) {
         return mino;
@@ -721,37 +721,65 @@
     [[NavSound sharedInstance] vibrate:nil];
 }
 
-#pragma mark - NavWebviewHelperDelegate
+#pragma mark - HLPWebviewHelperDelegate
 
-- (void) speak:(NSString*)text withOptions:(NSDictionary*)options {
-    [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:nil];
+- (void)speak:(NSString *)text force:(BOOL)isForce
+{
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:nil];
 }
 
-- (BOOL) isSpeaking {
+- (BOOL)isSpeaking
+{
     return [[NavDeviceTTS sharedTTS] isSpeaking];
 }
-
-- (void) vibrateOnAudioServices {
+/*
+- (void)vibrate
+{
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
+*/
 
-- (void) manualLocationChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:options];
+- (void)webView:(HLPWebView *)webView didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
+{
+    NSDictionary *loc =
+    @{
+      @"lat": @(lat),
+      @"lng": @(lng),
+      @"floor": @(floor),
+      @"sync": @(sync),
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:loc];
 }
 
-- (void) buildingChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:options];
+- (void)webView:(HLPWebView *)webView didChangeBuilding:(NSString *)building
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:@{@"building": building}];
 }
 
-- (void) wcuiStateChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:options];
+- (void)webView:(HLPWebView *)webView didChangeUIPage:(NSString *)page inNavigation:(BOOL)inNavigation
+{
+    NSDictionary *uiState =
+    @{
+      @"page": page,
+      @"navigation": @(inNavigation),
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:uiState];
 }
 
-- (void) requestRatingWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:options];
+- (void)webView:(HLPWebView *)webView didFinishNavigationStart:(NSTimeInterval)start end:(NSTimeInterval)end from:(NSString *)from to:(NSString *)to
+{
+    NSDictionary *navigationInfo =
+    @{
+      @"start": @(start),
+      @"end": @(end),
+      @"from": from,
+      @"to": to,
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:navigationInfo];
 }
 
-- (void) requestOpenURL:(NSURL*)url {
+- (void)webView:(HLPWebView *)webView openURL:(NSURL *)url
+{
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
 }
 
@@ -878,7 +906,7 @@
     fy = y;
     HLPLocation *loc = [[HLPLocation alloc] initWithLat:global.latitude Lng:global.longitude Floor:rp.floor_num];
     
-    [helper manualLocation:loc withSync:NO];
+    [_webView manualLocation:loc withSync:NO];
 }
 
 - (IBAction)turnLeftBit:(id)sender

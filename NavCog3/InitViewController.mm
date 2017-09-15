@@ -163,6 +163,7 @@
       @"weightFloorTransArea":@"pfFloorTransParams.weightTransitionArea",
       @"mixtureProbabilityFloorTransArea":@"pfFloorTransParams.mixtureProbaTransArea",
       @"headingConfidenceInit":@"headingConfidenceForOrientationInit",
+      @"applyYawDriftSmoothing": @"applysYawDriftAdjust",
       
       @"accuracy_for_demo": @"accuracyForDemo",
       @"use_blelocpp_acc":  @"usesBlelocppAcc",
@@ -207,8 +208,9 @@
                 params[@"locationStatusMonitorParameters.stdev2DExitStable"] = largeStdev;
                 params[@"locationStatusMonitorParameters.stdev2DEnterLocating"] = largeStdev;
                 params[@"locationStatusMonitorParameters.stdev2DExitLocating"] = largeStdev;
-                params[@"locationStatusMonitorParameters.monitorIntervalMS"] = @(3600*1000);
+                params[@"locationStatusMonitorParameters.monitorIntervalMS"] = @(3600*1000*24);
             }
+            params[@"locationStatusMonitorParameters.unstableLoop"] = ([ud valueForKey:@"minUnstableLoop"]);
             return;
         }
         else if ([from isEqualToString:@"wheelchair_pdr"]) {

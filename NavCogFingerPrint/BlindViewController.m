@@ -510,12 +510,14 @@
     });
 }
 
-- (void) startLoading {
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
     [_indicator startAnimating];
     _indicator.hidden = NO;
 }
 
-- (void) loaded {
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
     [_indicator stopAnimating];
     _indicator.hidden = YES;
 
@@ -524,7 +526,7 @@
     });
 }
 
-- (void)bridgeInserted
+- (void)webViewDidInsertBridge:(UIWebView *)webView
 {
     item1.enabled = item2.enabled = YES;
     item3.enabled = [[ServerConfig sharedConfig] isMapEditorKeyAvailable];

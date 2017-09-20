@@ -640,22 +640,20 @@ double stdev(double array[], long count) {
     });
 }
 
-- (void) startLoading {
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
     [_indicator startAnimating];
     _indicator.hidden = NO;
 }
 
-- (void) loaded {
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
     [_indicator stopAnimating];
     _indicator.hidden = YES;
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [self insertScript];
     });
-}
-
-- (void)bridgeInserted
-{
 }
 
 - (void) insertScript

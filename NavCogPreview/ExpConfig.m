@@ -45,7 +45,7 @@ static ExpConfig *instance;
 {
     _user_id = user_id;
     NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
-    NSString *https = [[[ServerConfig sharedConfig].selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/user?id=%@",https, server_host, user_id]];
     
@@ -63,7 +63,7 @@ static ExpConfig *instance;
 - (void)requestRoutesConfig:(void(^)(NSDictionary*))complete
 {
     NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
-    NSString *https = [[[ServerConfig sharedConfig].selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
     NSString *routes_file_name = @"exp_routes.json";
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/%@",https, server_host, routes_file_name]];
@@ -167,7 +167,7 @@ static ExpConfig *instance;
     info[@"routes"] = routes;
 
     NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
-    NSString *https = [[[ServerConfig sharedConfig].selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
     
     NSURL *logurl = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/log?id=%@",https, server_host, logFileId]];
     NSDictionary *logdic = @{

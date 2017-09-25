@@ -122,7 +122,8 @@ static ServerConfig *instance;
 {
     NSString *server_host = [self.selected objectForKey:@"hostname"];
     NSString *config_file_name = [self.selected objectForKey:@"config_file_name"];
-    NSString *https = [[self.selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
+
     config_file_name = config_file_name?config_file_name:@"server_config.json";
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/config/%@",https, server_host, config_file_name]];
     
@@ -139,7 +140,7 @@ static ServerConfig *instance;
 - (NSArray*) checkDownloadFiles
 {
     NSString *server_host = [self.selected objectForKey:@"hostname"];
-    NSString *https = [[self.selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
     NSDictionary *json = _selectedServerConfig;
 
     NSLog(@"server_config.json: %@", json);

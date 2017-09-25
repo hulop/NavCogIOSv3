@@ -26,8 +26,7 @@
 #import "NavUtil.h"
 #import "NavDataStore.h"
 #import "RatingViewController.h"
-// ???: HLPSetting.h:43:5: Expected identifier
-//#import "SettingViewController.h"
+#import "SettingViewController.h"
 #import "ServerConfig.h"
 #import "NavDeviceTTS.h"
 #import <HLPLocationManager/HLPLocationManager.h>
@@ -349,7 +348,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     }
 }
 
-#pragma mark - HLPWebviewHelperDelegate
+#pragma mark - HLPWebView
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {

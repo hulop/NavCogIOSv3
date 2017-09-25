@@ -33,6 +33,8 @@
 
 #import "RatingViewController.h"
 
+#import "SettingViewController.h"
+
 #import "ServerConfig.h"
 #import <HLPLocationManager/HLPLocationManager+Player.h>
 #import "DefaultTTS.h"
@@ -466,7 +468,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY_STOP object:self];
 }
 
-#pragma mark - UIWebViewDelegate
+#pragma mark - HLPWebView
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
@@ -488,15 +490,10 @@
     _errorMessage.hidden = NO;
 }
 
-#pragma mark - HLPWebViewCoreDelegate
-
 - (void)webView:(HLPWebView *)webView openURL:(NSURL *)url
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
 }
-
-
-#pragma mark - HLPTTSProtocol
 
 - (void)speak:(NSString *)text force:(BOOL)isForce
 {
@@ -514,8 +511,6 @@
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
  */
-
-#pragma mark - HLPWebViewDelegate
 
 - (void)webView:(HLPWebView *)webView didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
 {

@@ -26,7 +26,6 @@
 #import "NavNavigator.h"
 #import "NavCommander.h"
 #import "NavPreviewer.h"
-#import "SettingViewController.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <HLPDialog/HLPDialog.h>
 

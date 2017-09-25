@@ -747,7 +747,7 @@ double stdev(double array[], long count) {
     });
 }
 
-- (void)checkConnection {
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
     _retryButton.hidden = NO;
@@ -759,8 +759,7 @@ double stdev(double array[], long count) {
     // Dispose of any resources that can be recreated.
 }
 
-
-#pragma mark - HLPWebViewDelegate
+#pragma mark - HLPWebView
 
 - (void)webView:(HLPWebView *)webView didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
 {
@@ -800,8 +799,6 @@ double stdev(double array[], long count) {
       };
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:navigationInfo];
 }
-
-#pragma mark - HLPWebViewCoreDelegate
 
 - (void)webView:(HLPWebView *)webView openURL:(NSURL *)url
 {

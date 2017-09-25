@@ -22,7 +22,6 @@
 
 #import <UIKit/UIKit.h>
 #import <HLPWebView/HLPWebView.h>
-#import "SettingViewController.h"
 #import <HLPDialog/HLPDialog.h>
 
 @interface ViewController : UIViewController <UIGestureRecognizerDelegate, HLPWebViewDelegate, HLPTTSProtocol, DialogViewDelegate>

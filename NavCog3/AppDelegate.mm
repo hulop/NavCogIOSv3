@@ -31,7 +31,6 @@
 #import <Speech/Speech.h> // for Swift header
 #import <HLPDialog/HLPDialog.h>
 #import <AVFoundation/AVFoundation.h>
-#import <CoreMotion/CoreMotion.h>
 #import "ScreenshotHelper.h"
 
 @interface AppDelegate ()
@@ -84,22 +83,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(buildingChanged:) name:BUILDING_CHANGED_NOTIFICATION object:nil];
 
-    if (![CMAltimeter isRelativeAltitudeAvailable]) {
-        NSString *title = NSLocalizedString(@"NoAltimeterAlertTitle", @"");
-        NSString *message = NSLocalizedString(@"NoAltimeterAlertMessage", @"");
-        NSString *ok = NSLocalizedString(@"I_Understand", @"");
-        
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
-                                                                       message:message
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:ok
-                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                  }]];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[self topMostController] presentViewController:alert animated:YES completion:nil];
-        });
-    }
     return YES;
 }
 

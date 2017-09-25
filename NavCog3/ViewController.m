@@ -32,6 +32,7 @@
 #import "NavDeviceTTS.h"
 #import <HLPLocationManager/HLPLocationManager.h>
 #import "DefaultTTS.h"
+#import <CoreMotion/CoreMotion.h>
 
 typedef NS_ENUM(NSInteger, ViewState) {
     ViewStateMap,
@@ -132,6 +133,36 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestRating:) name:REQUEST_RATING object:nil];
     
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
+    
+    BOOL checked = [ud boolForKey:@"checked_altimeter"];
+    if (!checked && ![CMAltimeter isRelativeAltitudeAvailable]) {
+        NSString *title = NSLocalizedString(@"NoAltimeterAlertTitle", @"");
+        NSString *message = NSLocalizedString(@"NoAltimeterAlertMessage", @"");
+        NSString *ok = NSLocalizedString(@"I_Understand", @"");
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:ok
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  }]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self topMostController] presentViewController:alert animated:YES completion:nil];
+        });
+        [ud setBool:YES forKey:@"checked_altimeter"];
+    }
+}
+
+- (UIViewController*) topMostController
+{
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
 }
 
 - (void) requestRating:(NSNotification*)note

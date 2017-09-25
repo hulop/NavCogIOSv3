@@ -36,6 +36,7 @@
 #import "ServerConfig.h"
 #import <HLPLocationManager/HLPLocationManager+Player.h>
 #import "DefaultTTS.h"
+#import <CoreMotion/CoreMotion.h>
 
 @import JavaScriptCore;
 @import CoreMotion;
@@ -153,6 +154,36 @@
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
     
     [self updateView];
+    
+    BOOL checked = [ud boolForKey:@"checked_altimeter"];
+    if (!checked && ![CMAltimeter isRelativeAltitudeAvailable]) {
+        NSString *title = NSLocalizedString(@"NoAltimeterAlertTitle", @"");
+        NSString *message = NSLocalizedString(@"NoAltimeterAlertMessage", @"");
+        NSString *ok = NSLocalizedString(@"I_Understand", @"");
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:ok
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  }]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self topMostController] presentViewController:alert animated:YES completion:nil];
+        });
+        [ud setBool:YES forKey:@"checked_altimeter"];
+    }
+}
+
+- (UIViewController*) topMostController
+{
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
 }
 
 - (void) checkMapCenter:(NSTimer*)timer

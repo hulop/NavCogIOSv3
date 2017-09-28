@@ -21,6 +21,7 @@ The project also includes the following tools.
 - [HLPLocationManager](https://github.com/hulop/HLPLocationManager) (MIT License)
 - [HLPWebView](https://github.com/hulop/HLPWebView) (MIT License)
 - [Mantle](https://github.com/Mantle/Mantle) (MIT License)
+- [ZipArchive](https://github.com/ZipArchive/ZipArchive) (MIT License)
 
 ## Build
 1. install [Carthage](https://github.com/Carthage/Carthage).

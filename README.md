@@ -1,5 +1,10 @@
 # NavCog3
 
+## Yanda's change
+
+- Added dependency `RBManager`, a library for communication with ROS bridge.
+- Send `{x, y, z}` in `navigation/NavDataStore.m`, specifically, in `postLocationNotification`
+
 ## Example of localization
 This app uses BasicLocalizer in [blelocpp](http://github.com/hulop/blelocpp) library to localize user's location by observing bluetooth LE beacons signals.
 

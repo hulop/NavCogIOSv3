@@ -307,6 +307,13 @@ static NavDataStore* instance_ = nil;
 {
     self = [super init];
     
+    if (self) {
+        // Custom initialization
+        [[RBManager defaultManager] connect:@"ws://192.168.0.102:9090"];
+        self.ROSLocationPublisher = [[RBManager defaultManager] addPublisher:@"/blind/location" messageType:@"geometry_msgs/Point"];
+        self.ROSLocationPublisher.label = @"Turtle Controller";
+    }
+    
     [self reset];
     
     userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
@@ -399,6 +406,7 @@ static NavDataStore* instance_ = nil;
 }
 
 
+
 -(void) postLocationNotification
 {
     HLPLocation *loc = [self currentLocation];
@@ -418,6 +426,14 @@ static NavDataStore* instance_ = nil;
        //@"actual":(isnan(currentLocation.lat)||isnan(currentLocation.lng))?[NSNull null]:currentLocation
        @"actual":currentLocation
        }];
+    // Send info to ROS
+    
+    PointMessage * ROS_loc = [[PointMessage alloc] init];
+    ROS_loc.x = [NSNumber numberWithFloat:loc.lat];
+    ROS_loc.y = [NSNumber numberWithFloat:loc.lng];
+    ROS_loc.z = [NSNumber numberWithFloat:loc.floor];
+    [self.ROSLocationPublisher publish:ROS_loc];
+    NSLog(@"Sent the location to ROS");
 }
 
 - (void) orientationChanged: (NSNotification*) note

@@ -24,6 +24,8 @@
 #import <Foundation/Foundation.h>
 #import "HLPLocation.h"
 #import "HLPGeoJson.h"
+#import "RBManager.h"
+#import "RBPublisher.h"
 
 typedef enum {
     NavDestinationTypeLandmark = 1,
@@ -123,6 +125,7 @@ typedef enum {
 
 + (NavDestination*) destinationForCurrentLocation;
 
+@property RBPublisher * ROSLocationPublisher;
+
+
 @end
-
-

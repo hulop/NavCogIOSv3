@@ -10,6 +10,12 @@
 		12CE60FFF66333BF27326795 /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 77240D9B05BCD8D34D286665 /* libPods-NavCog3.a */; };
 		36517BDCBA7EC763A7A14A05 /* libPods-NavCogFingerPrint.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1300F8739DF4323F5D1B0435 /* libPods-NavCogFingerPrint.a */; };
 		4D5913145F8F9F8919F39900 /* libPods-NavCogTool.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A8BCABBA91517640CB17D3D9 /* libPods-NavCogTool.a */; };
+		6BD782311F7C8DF500DB96C0 /* RBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6BD782221F7C8BE000DB96C0 /* RBManager.m */; };
+		6BD782321F7C8DF500DB96C0 /* RBMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6BD782241F7C8BE000DB96C0 /* RBMessage.m */; };
+		6BD782331F7C8DF500DB96C0 /* RBPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = 6BD782261F7C8BE000DB96C0 /* RBPublisher.m */; };
+		6BD782341F7C8E2200DB96C0 /* RBServiceCall.m in Sources */ = {isa = PBXBuildFile; fileRef = 6BD782281F7C8BE000DB96C0 /* RBServiceCall.m */; };
+		6BD782351F7C8E2200DB96C0 /* RBSubscriber.m in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7822A1F7C8BE000DB96C0 /* RBSubscriber.m */; };
+		6BD782361F7C964600DB96C0 /* PointMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6BD781F21F7C8BE000DB96C0 /* PointMessage.m */; };
 		7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E08DB571DB9F08E00E82161 /* ConfigManager.m */; };
 		7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7E17F19E1D9A225A00DB1F34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A01D9A225A00DB1F34 /* InfoPlist.strings */; };
@@ -364,6 +370,60 @@
 		63422CB55D010237E5DABE7B /* Pods-NavCogPreview.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogPreview.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview.release.xcconfig"; sourceTree = "<group>"; };
 		69E6FDF365B59B61C887636A /* libPods-NavCogPreview.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogPreview.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B1C2274ED5639001C0B2B15 /* Pods-NavCogFingerPrint.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFingerPrint.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFingerPrint/Pods-NavCogFingerPrint.release.xcconfig"; sourceTree = "<group>"; };
+		6BD781F11F7C8BE000DB96C0 /* PointMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PointMessage.h; sourceTree = "<group>"; };
+		6BD781F21F7C8BE000DB96C0 /* PointMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PointMessage.m; sourceTree = "<group>"; };
+		6BD781F31F7C8BE000DB96C0 /* PoseMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PoseMessage.h; sourceTree = "<group>"; };
+		6BD781F41F7C8BE000DB96C0 /* PoseMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PoseMessage.m; sourceTree = "<group>"; };
+		6BD781F51F7C8BE000DB96C0 /* QuaternionMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QuaternionMessage.h; sourceTree = "<group>"; };
+		6BD781F61F7C8BE000DB96C0 /* QuaternionMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QuaternionMessage.m; sourceTree = "<group>"; };
+		6BD781F71F7C8BE000DB96C0 /* TwistMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TwistMessage.h; sourceTree = "<group>"; };
+		6BD781F81F7C8BE000DB96C0 /* TwistMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwistMessage.m; sourceTree = "<group>"; };
+		6BD781F91F7C8BE000DB96C0 /* VectorMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VectorMessage.h; sourceTree = "<group>"; };
+		6BD781FA1F7C8BE000DB96C0 /* VectorMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VectorMessage.m; sourceTree = "<group>"; };
+		6BD781FB1F7C8BE000DB96C0 /* WrenchMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WrenchMessage.h; sourceTree = "<group>"; };
+		6BD781FC1F7C8BE000DB96C0 /* WrenchMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WrenchMessage.m; sourceTree = "<group>"; };
+		6BD781FE1F7C8BE000DB96C0 /* LoggerMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoggerMessage.h; sourceTree = "<group>"; };
+		6BD781FF1F7C8BE000DB96C0 /* LoggerMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoggerMessage.m; sourceTree = "<group>"; };
+		6BD782011F7C8BE000DB96C0 /* LogMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LogMessage.h; sourceTree = "<group>"; };
+		6BD782021F7C8BE000DB96C0 /* LogMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LogMessage.m; sourceTree = "<group>"; };
+		6BD782041F7C8BE000DB96C0 /* HumidityMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HumidityMessage.h; sourceTree = "<group>"; };
+		6BD782051F7C8BE000DB96C0 /* HumidityMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HumidityMessage.m; sourceTree = "<group>"; };
+		6BD782061F7C8BE000DB96C0 /* IMUMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMUMessage.h; sourceTree = "<group>"; };
+		6BD782071F7C8BE000DB96C0 /* IMUMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMUMessage.m; sourceTree = "<group>"; };
+		6BD782081F7C8BE000DB96C0 /* NavSatFixMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NavSatFixMessage.h; sourceTree = "<group>"; };
+		6BD782091F7C8BE000DB96C0 /* NavSatFixMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NavSatFixMessage.m; sourceTree = "<group>"; };
+		6BD7820A1F7C8BE000DB96C0 /* NavSatStatusMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NavSatStatusMessage.h; sourceTree = "<group>"; };
+		6BD7820B1F7C8BE000DB96C0 /* NavSatStatusMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NavSatStatusMessage.m; sourceTree = "<group>"; };
+		6BD7820C1F7C8BE000DB96C0 /* TemperatureMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TemperatureMessage.h; sourceTree = "<group>"; };
+		6BD7820D1F7C8BE000DB96C0 /* TemperatureMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TemperatureMessage.m; sourceTree = "<group>"; };
+		6BD7820F1F7C8BE000DB96C0 /* BoolMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BoolMessage.h; sourceTree = "<group>"; };
+		6BD782101F7C8BE000DB96C0 /* BoolMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BoolMessage.m; sourceTree = "<group>"; };
+		6BD782111F7C8BE000DB96C0 /* DurationMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DurationMessage.h; sourceTree = "<group>"; };
+		6BD782121F7C8BE000DB96C0 /* DurationMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DurationMessage.m; sourceTree = "<group>"; };
+		6BD782131F7C8BE000DB96C0 /* EmptyMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EmptyMessage.h; sourceTree = "<group>"; };
+		6BD782141F7C8BE000DB96C0 /* EmptyMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EmptyMessage.m; sourceTree = "<group>"; };
+		6BD782151F7C8BE000DB96C0 /* FloatMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FloatMessage.h; sourceTree = "<group>"; };
+		6BD782161F7C8BE000DB96C0 /* FloatMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FloatMessage.m; sourceTree = "<group>"; };
+		6BD782171F7C8BE000DB96C0 /* HeaderMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HeaderMessage.h; sourceTree = "<group>"; };
+		6BD782181F7C8BE000DB96C0 /* HeaderMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HeaderMessage.m; sourceTree = "<group>"; };
+		6BD782191F7C8BE000DB96C0 /* IntMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntMessage.h; sourceTree = "<group>"; };
+		6BD7821A1F7C8BE000DB96C0 /* IntMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IntMessage.m; sourceTree = "<group>"; };
+		6BD7821B1F7C8BE000DB96C0 /* StampMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StampMessage.h; sourceTree = "<group>"; };
+		6BD7821C1F7C8BE000DB96C0 /* StampMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StampMessage.m; sourceTree = "<group>"; };
+		6BD7821D1F7C8BE000DB96C0 /* StringMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringMessage.h; sourceTree = "<group>"; };
+		6BD7821E1F7C8BE000DB96C0 /* StringMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StringMessage.m; sourceTree = "<group>"; };
+		6BD7821F1F7C8BE000DB96C0 /* TimeMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeMessage.h; sourceTree = "<group>"; };
+		6BD782201F7C8BE000DB96C0 /* TimeMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimeMessage.m; sourceTree = "<group>"; };
+		6BD782211F7C8BE000DB96C0 /* RBManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RBManager.h; sourceTree = "<group>"; };
+		6BD782221F7C8BE000DB96C0 /* RBManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RBManager.m; sourceTree = "<group>"; };
+		6BD782231F7C8BE000DB96C0 /* RBMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RBMessage.h; sourceTree = "<group>"; };
+		6BD782241F7C8BE000DB96C0 /* RBMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RBMessage.m; sourceTree = "<group>"; };
+		6BD782251F7C8BE000DB96C0 /* RBPublisher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RBPublisher.h; sourceTree = "<group>"; };
+		6BD782261F7C8BE000DB96C0 /* RBPublisher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RBPublisher.m; sourceTree = "<group>"; };
+		6BD782271F7C8BE000DB96C0 /* RBServiceCall.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RBServiceCall.h; sourceTree = "<group>"; };
+		6BD782281F7C8BE000DB96C0 /* RBServiceCall.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RBServiceCall.m; sourceTree = "<group>"; };
+		6BD782291F7C8BE000DB96C0 /* RBSubscriber.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RBSubscriber.h; sourceTree = "<group>"; };
+		6BD7822A1F7C8BE000DB96C0 /* RBSubscriber.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RBSubscriber.m; sourceTree = "<group>"; };
 		77240D9B05BCD8D34D286665 /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CEE64C9196CFAB7C16E2046 /* Pods-NavCogPreview.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogPreview.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview.debug.xcconfig"; sourceTree = "<group>"; };
 		7E08DB561DB9F08E00E82161 /* ConfigManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigManager.h; sourceTree = "<group>"; };
@@ -721,6 +781,115 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		6BD781EE1F7C8BE000DB96C0 /* RBManager */ = {
+			isa = PBXGroup;
+			children = (
+				6BD781EF1F7C8BE000DB96C0 /* Message Types */,
+				6BD782211F7C8BE000DB96C0 /* RBManager.h */,
+				6BD782221F7C8BE000DB96C0 /* RBManager.m */,
+				6BD782231F7C8BE000DB96C0 /* RBMessage.h */,
+				6BD782241F7C8BE000DB96C0 /* RBMessage.m */,
+				6BD782251F7C8BE000DB96C0 /* RBPublisher.h */,
+				6BD782261F7C8BE000DB96C0 /* RBPublisher.m */,
+				6BD782271F7C8BE000DB96C0 /* RBServiceCall.h */,
+				6BD782281F7C8BE000DB96C0 /* RBServiceCall.m */,
+				6BD782291F7C8BE000DB96C0 /* RBSubscriber.h */,
+				6BD7822A1F7C8BE000DB96C0 /* RBSubscriber.m */,
+			);
+			path = RBManager;
+			sourceTree = SOURCE_ROOT;
+		};
+		6BD781EF1F7C8BE000DB96C0 /* Message Types */ = {
+			isa = PBXGroup;
+			children = (
+				6BD781F01F7C8BE000DB96C0 /* geometry_msgs */,
+				6BD781FD1F7C8BE000DB96C0 /* roscpp */,
+				6BD782001F7C8BE000DB96C0 /* rosgraph_msgs */,
+				6BD782031F7C8BE000DB96C0 /* sensor_msgs */,
+				6BD7820E1F7C8BE000DB96C0 /* std_msgs */,
+			);
+			path = "Message Types";
+			sourceTree = "<group>";
+		};
+		6BD781F01F7C8BE000DB96C0 /* geometry_msgs */ = {
+			isa = PBXGroup;
+			children = (
+				6BD781F11F7C8BE000DB96C0 /* PointMessage.h */,
+				6BD781F21F7C8BE000DB96C0 /* PointMessage.m */,
+				6BD781F31F7C8BE000DB96C0 /* PoseMessage.h */,
+				6BD781F41F7C8BE000DB96C0 /* PoseMessage.m */,
+				6BD781F51F7C8BE000DB96C0 /* QuaternionMessage.h */,
+				6BD781F61F7C8BE000DB96C0 /* QuaternionMessage.m */,
+				6BD781F71F7C8BE000DB96C0 /* TwistMessage.h */,
+				6BD781F81F7C8BE000DB96C0 /* TwistMessage.m */,
+				6BD781F91F7C8BE000DB96C0 /* VectorMessage.h */,
+				6BD781FA1F7C8BE000DB96C0 /* VectorMessage.m */,
+				6BD781FB1F7C8BE000DB96C0 /* WrenchMessage.h */,
+				6BD781FC1F7C8BE000DB96C0 /* WrenchMessage.m */,
+			);
+			path = geometry_msgs;
+			sourceTree = "<group>";
+		};
+		6BD781FD1F7C8BE000DB96C0 /* roscpp */ = {
+			isa = PBXGroup;
+			children = (
+				6BD781FE1F7C8BE000DB96C0 /* LoggerMessage.h */,
+				6BD781FF1F7C8BE000DB96C0 /* LoggerMessage.m */,
+			);
+			path = roscpp;
+			sourceTree = "<group>";
+		};
+		6BD782001F7C8BE000DB96C0 /* rosgraph_msgs */ = {
+			isa = PBXGroup;
+			children = (
+				6BD782011F7C8BE000DB96C0 /* LogMessage.h */,
+				6BD782021F7C8BE000DB96C0 /* LogMessage.m */,
+			);
+			path = rosgraph_msgs;
+			sourceTree = "<group>";
+		};
+		6BD782031F7C8BE000DB96C0 /* sensor_msgs */ = {
+			isa = PBXGroup;
+			children = (
+				6BD782041F7C8BE000DB96C0 /* HumidityMessage.h */,
+				6BD782051F7C8BE000DB96C0 /* HumidityMessage.m */,
+				6BD782061F7C8BE000DB96C0 /* IMUMessage.h */,
+				6BD782071F7C8BE000DB96C0 /* IMUMessage.m */,
+				6BD782081F7C8BE000DB96C0 /* NavSatFixMessage.h */,
+				6BD782091F7C8BE000DB96C0 /* NavSatFixMessage.m */,
+				6BD7820A1F7C8BE000DB96C0 /* NavSatStatusMessage.h */,
+				6BD7820B1F7C8BE000DB96C0 /* NavSatStatusMessage.m */,
+				6BD7820C1F7C8BE000DB96C0 /* TemperatureMessage.h */,
+				6BD7820D1F7C8BE000DB96C0 /* TemperatureMessage.m */,
+			);
+			path = sensor_msgs;
+			sourceTree = "<group>";
+		};
+		6BD7820E1F7C8BE000DB96C0 /* std_msgs */ = {
+			isa = PBXGroup;
+			children = (
+				6BD7820F1F7C8BE000DB96C0 /* BoolMessage.h */,
+				6BD782101F7C8BE000DB96C0 /* BoolMessage.m */,
+				6BD782111F7C8BE000DB96C0 /* DurationMessage.h */,
+				6BD782121F7C8BE000DB96C0 /* DurationMessage.m */,
+				6BD782131F7C8BE000DB96C0 /* EmptyMessage.h */,
+				6BD782141F7C8BE000DB96C0 /* EmptyMessage.m */,
+				6BD782151F7C8BE000DB96C0 /* FloatMessage.h */,
+				6BD782161F7C8BE000DB96C0 /* FloatMessage.m */,
+				6BD782171F7C8BE000DB96C0 /* HeaderMessage.h */,
+				6BD782181F7C8BE000DB96C0 /* HeaderMessage.m */,
+				6BD782191F7C8BE000DB96C0 /* IntMessage.h */,
+				6BD7821A1F7C8BE000DB96C0 /* IntMessage.m */,
+				6BD7821B1F7C8BE000DB96C0 /* StampMessage.h */,
+				6BD7821C1F7C8BE000DB96C0 /* StampMessage.m */,
+				6BD7821D1F7C8BE000DB96C0 /* StringMessage.h */,
+				6BD7821E1F7C8BE000DB96C0 /* StringMessage.m */,
+				6BD7821F1F7C8BE000DB96C0 /* TimeMessage.h */,
+				6BD782201F7C8BE000DB96C0 /* TimeMessage.m */,
+			);
+			path = std_msgs;
+			sourceTree = "<group>";
+		};
 		7E1F9F2D1DF0190F003E1B23 /* dialog */ = {
 			isa = PBXGroup;
 			children = (
@@ -959,6 +1128,7 @@
 		7EDEDC1E1D1E0C6800AC111A /* NavCog3 */ = {
 			isa = PBXGroup;
 			children = (
+				6BD781EE1F7C8BE000DB96C0 /* RBManager */,
 				7E1F9F2D1DF0190F003E1B23 /* dialog */,
 				7E5150EC1D8D75D100ED25FB /* model */,
 				7E5150A11D8BF2C500ED25FB /* navigation */,
@@ -1259,7 +1429,7 @@
 					};
 					7EDEDC1B1D1E0C6800AC111A = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 76CMF53Q35;
+						DevelopmentTeam = D9NP3C453S;
 						LastSwiftMigration = 0820;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -1451,13 +1621,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NavCogSimple-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		36AFE6E71E5E98123D26EB46 /* [CP] Check Pods Manifest.lock */ = {
@@ -1466,13 +1639,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NavCog3-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		3AD4AA683ED6D64EDE1BF2E8 /* [CP] Embed Pods Frameworks */ = {
@@ -1496,9 +1672,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview-resources.sh",
+				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1511,9 +1690,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh",
+				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1526,13 +1708,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NavCogTool-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		5F71D1C14A5EA1F4F8125B8B /* [CP] Copy Pods Resources */ = {
@@ -1541,9 +1726,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3-resources.sh",
+				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1599,13 +1787,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NavCogPreview-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A9037BA11ECD4276003FD719 /* ShellScript */ = {
@@ -1642,9 +1833,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogSimple/Pods-NavCogSimple-resources.sh",
+				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1672,13 +1866,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NavCogFingerPrint-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1728,6 +1925,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6BD782361F7C964600DB96C0 /* PointMessage.m in Sources */,
+				6BD782341F7C8E2200DB96C0 /* RBServiceCall.m in Sources */,
+				6BD782351F7C8E2200DB96C0 /* RBSubscriber.m in Sources */,
+				6BD782311F7C8DF500DB96C0 /* RBManager.m in Sources */,
+				6BD782321F7C8DF500DB96C0 /* RBMessage.m in Sources */,
+				6BD782331F7C8DF500DB96C0 /* RBPublisher.m in Sources */,
 				7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */,
 				7E1F9F3B1DF01AA5003E1B23 /* ConversationEx.swift in Sources */,
 				7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */,
@@ -2129,17 +2332,34 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = D9NP3C453S;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					"\"${PROJECT_DIR}/RBManager\"/**",
+					"\"${PODS_ROOT}/boost\"",
+					"\"${PODS_ROOT}/cereal/include\"",
+					"$(PODS_ROOT)/eigen",
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/FormatterKit\"",
+					"\"${PODS_ROOT}/Headers/Public/Mantle\"",
+					"\"${PODS_ROOT}/Headers/Public/OpenCV\"",
+					"\"${PODS_ROOT}/Headers/Public/SSZipArchive\"",
+					"\"${PODS_ROOT}/Headers/Public/bleloc\"",
+					"\"${PODS_ROOT}/Headers/Public/boost\"",
+					"\"${PODS_ROOT}/Headers/Public/cereal\"",
+					"\"${PODS_ROOT}/Headers/Public/eigen\"",
+					"\"${PODS_ROOT}/Headers/Public/picojson\"",
+				);
 				INFOPLIST_FILE = NavCog3/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCog3;
+				PRODUCT_BUNDLE_IDENTIFIER = org.yanda.NavCog3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2158,17 +2378,34 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = D9NP3C453S;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_OPTIMIZATION_LEVEL = s;
+				HEADER_SEARCH_PATHS = (
+					"\"${PROJECT_DIR}/RBManager\"/**",
+					"\"${PODS_ROOT}/boost\"",
+					"\"${PODS_ROOT}/cereal/include\"",
+					"$(PODS_ROOT)/eigen",
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/FormatterKit\"",
+					"\"${PODS_ROOT}/Headers/Public/Mantle\"",
+					"\"${PODS_ROOT}/Headers/Public/OpenCV\"",
+					"\"${PODS_ROOT}/Headers/Public/SSZipArchive\"",
+					"\"${PODS_ROOT}/Headers/Public/bleloc\"",
+					"\"${PODS_ROOT}/Headers/Public/boost\"",
+					"\"${PODS_ROOT}/Headers/Public/cereal\"",
+					"\"${PODS_ROOT}/Headers/Public/eigen\"",
+					"\"${PODS_ROOT}/Headers/Public/picojson\"",
+				);
 				INFOPLIST_FILE = NavCog3/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCog3;
+				PRODUCT_BUNDLE_IDENTIFIER = org.yanda.NavCog3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;

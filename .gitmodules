@@ -1,0 +1,3 @@
+[submodule "RBManager"]
+	path = RBManager
+	url = git@github.com:wesgood/RBManager.git

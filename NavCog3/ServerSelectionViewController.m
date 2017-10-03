@@ -1,5 +1,3 @@
-//
-//  ServerSelectionViewController.m
 /*******************************************************************************
  * Copyright (c) 2014, 2016  IBM Corporation, Carnegie Mellon University and others
  *

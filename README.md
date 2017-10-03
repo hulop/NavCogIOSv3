@@ -31,8 +31,9 @@ The workspace also includes the following tools.
 2. In the project directory, run `pod install`.
 3. install [Carthage](https://github.com/Carthage/Carthage).
 4. In the project directory, run `carthage bootstrap --platform iOS`.
-5. Open NavCog3.xcworkspace
-6. Build NavCog3 project with Xcode.
+5. Run `git submodule update --init --recursive`
+6. Open NavCog3.xcworkspace
+7. Build NavCog3 project with Xcode.
 
 ## Setup
 

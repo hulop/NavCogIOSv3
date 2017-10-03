@@ -257,7 +257,7 @@
 		7E2F43711F38A75500215E58 /* serverlist.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = serverlist.txt; sourceTree = "<group>"; };
 		7E308BDC1DAF147600E525F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/BlindView.stringsdict; sourceTree = "<group>"; };
 		7E308BDE1DAF147B00E525F6 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ja; path = ja.lproj/BlindView.stringsdict; sourceTree = "<group>"; };
-		7E30F9AA1E813FFC00D542E5 /* NavCogFingerPrint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NavCogFingerPrint.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E30F9AA1E813FFC00D542E5 /* NavCogFP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NavCogFP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E30F9AD1E813FFC00D542E5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7E30F9AF1E813FFC00D542E5 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		7E30F9B01E813FFC00D542E5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -526,7 +526,7 @@
 			name = exercise;
 			sourceTree = "<group>";
 		};
-		7E30F9AB1E813FFC00D542E5 /* NavCogFingerPrint */ = {
+		7E30F9AB1E813FFC00D542E5 /* NavCogFP */ = {
 			isa = PBXGroup;
 			children = (
 				7EE8E5E51EE94857006EE7C3 /* WelcomViewController.h */,
@@ -554,7 +554,7 @@
 				7EBE39811E83FFD1002A7BF9 /* fingerprint.js */,
 				7EE8E5DB1EE68449006EE7C3 /* poi_template.json */,
 			);
-			path = NavCogFingerPrint;
+			path = NavCogFP;
 			sourceTree = "<group>";
 		};
 		7E30F9AC1E813FFC00D542E5 /* Supporting Files */ = {
@@ -698,7 +698,7 @@
 			children = (
 				7EDEDC1E1D1E0C6800AC111A /* NavCog3 */,
 				7EF7F79E1DD178F7000A625A /* NavCogTool */,
-				7E30F9AB1E813FFC00D542E5 /* NavCogFingerPrint */,
+				7E30F9AB1E813FFC00D542E5 /* NavCogFP */,
 				7EE8E60C1EF27541006EE7C3 /* NavCogPreview */,
 				7EDEDC1D1D1E0C6800AC111A /* Products */,
 				0F5EA397BCF0C5EEF08F5111 /* Frameworks */,
@@ -710,7 +710,7 @@
 			children = (
 				7EDEDC1C1D1E0C6800AC111A /* NavCog3.app */,
 				7EF7F79D1DD178F7000A625A /* NavCogTool */,
-				7E30F9AA1E813FFC00D542E5 /* NavCogFingerPrint.app */,
+				7E30F9AA1E813FFC00D542E5 /* NavCogFP.app */,
 				7EE8E60B1EF27541006EE7C3 /* NavCogPreview.app */,
 			);
 			name = Products;
@@ -815,9 +815,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7E30F9A91E813FFC00D542E5 /* NavCogFingerPrint */ = {
+		7E30F9A91E813FFC00D542E5 /* NavCogFP */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7E30F9BE1E813FFC00D542E5 /* Build configuration list for PBXNativeTarget "NavCogFingerPrint" */;
+			buildConfigurationList = 7E30F9BE1E813FFC00D542E5 /* Build configuration list for PBXNativeTarget "NavCogFP" */;
 			buildPhases = (
 				7E30F9A61E813FFC00D542E5 /* Sources */,
 				7E30F9A71E813FFC00D542E5 /* Frameworks */,
@@ -828,9 +828,9 @@
 			);
 			dependencies = (
 			);
-			name = NavCogFingerPrint;
-			productName = NavCogFingerPrint;
-			productReference = 7E30F9AA1E813FFC00D542E5 /* NavCogFingerPrint.app */;
+			name = NavCogFP;
+			productName = NavCogFP;
+			productReference = 7E30F9AA1E813FFC00D542E5 /* NavCogFP.app */;
 			productType = "com.apple.product-type.application";
 		};
 		7EDEDC1B1D1E0C6800AC111A /* NavCog3 */ = {
@@ -938,7 +938,7 @@
 			targets = (
 				7EDEDC1B1D1E0C6800AC111A /* NavCog3 */,
 				7EF7F79C1DD178F7000A625A /* NavCogTool */,
-				7E30F9A91E813FFC00D542E5 /* NavCogFingerPrint */,
+				7E30F9A91E813FFC00D542E5 /* NavCogFP */,
 				7EE8E60A1EF27541006EE7C3 /* NavCogPreview */,
 			);
 		};
@@ -1339,10 +1339,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = NavCogFingerPrint/Info.plist;
+				INFOPLIST_FILE = NavCogFP/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogFingerPrint;
+				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogFP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -1361,10 +1361,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = NavCogFingerPrint/Info.plist;
+				INFOPLIST_FILE = NavCogFP/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogFingerPrint;
+				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogFP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -1624,7 +1624,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7E30F9BE1E813FFC00D542E5 /* Build configuration list for PBXNativeTarget "NavCogFingerPrint" */ = {
+		7E30F9BE1E813FFC00D542E5 /* Build configuration list for PBXNativeTarget "NavCogFP" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E30F9BF1E813FFC00D542E5 /* Debug */,

@@ -12,7 +12,7 @@ You need to provide a [model file](https://github.com/hulop/NavCogIOSv3/wiki/Pre
 ## NavCog3 Tools
 The project also includes the following tools.
 
-- **NavCogFingerPrint**: For fingerprinting
+- **NavCogFP**: For fingerprinting
 - **NavCogTool**: For simulate blind user navigation commands
 
 ## Pre-Requisites
@@ -37,7 +37,7 @@ See [wiki](https://github.com/hulop/NavCogIOSv3/wiki) for set up servers and dat
 [About HULOP](https://github.com/hulop/00Readme)
 
 ## Icons
-Icons in NavCogFingerPrint are from [https://github.com/IBM-Design/icons](https://github.com/IBM-Design/icons)
+Icons in NavCogFP are from [https://github.com/IBM-Design/icons](https://github.com/IBM-Design/icons)
 
 ## License
 [MIT](https://opensource.org/licenses/MIT)

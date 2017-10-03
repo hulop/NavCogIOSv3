@@ -166,7 +166,6 @@
 		7EF45E3B1E3F1E5600208042 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E391E3F1E5600208042 /* AuthManager.m */; };
 		7EF45E491E3F42AB00208042 /* ConversationV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E441E3F42AB00208042 /* ConversationV1.framework */; };
 		7EF45E4C1E3F42AB00208042 /* RestKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E471E3F42AB00208042 /* RestKit.framework */; };
-		7EF45E4F1E3F53FF00208042 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E4E1E3F53FF00208042 /* Security.framework */; };
 		7EF45E501E3F541C00208042 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E391E3F1E5600208042 /* AuthManager.m */; };
 		7EF45E541E3F58D200208042 /* dev.hashfile in Resources */ = {isa = PBXBuildFile; fileRef = 7EF45E531E3F58D200208042 /* dev.hashfile */; };
 		7EF562CA1EE6356B004053DA /* POIManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF562C91EE6356B004053DA /* POIManager.m */; };
@@ -398,7 +397,6 @@
 		7EF45E391E3F1E5600208042 /* AuthManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthManager.m; sourceTree = "<group>"; };
 		7EF45E441E3F42AB00208042 /* ConversationV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ConversationV1.framework; path = Carthage/Build/iOS/ConversationV1.framework; sourceTree = "<group>"; };
 		7EF45E471E3F42AB00208042 /* RestKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RestKit.framework; path = Carthage/Build/iOS/RestKit.framework; sourceTree = "<group>"; };
-		7EF45E4E1E3F53FF00208042 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
 		7EF45E531E3F58D200208042 /* dev.hashfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dev.hashfile; sourceTree = "<group>"; };
 		7EF562C81EE6356B004053DA /* POIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POIManager.h; sourceTree = "<group>"; };
 		7EF562C91EE6356B004053DA /* POIManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POIManager.m; sourceTree = "<group>"; };
@@ -480,7 +478,6 @@
 				A91D384E1F628161008A34D1 /* HLPLocationManager.framework in Frameworks */,
 				A91EA2FE1F552D2600548203 /* Mantle.framework in Frameworks */,
 				A91EA2FD1F552D1C00548203 /* FormatterKit.framework in Frameworks */,
-				7EF45E4F1E3F53FF00208042 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,7 +503,6 @@
 				A93ED2801ED2DE3200B75760 /* MapKit.framework */,
 				7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */,
 				7EF45E471E3F42AB00208042 /* RestKit.framework */,
-				7EF45E4E1E3F53FF00208042 /* Security.framework */,
 				A93ED2731ED2DBA900B75760 /* UIKit.framework */,
 				A91AAE5D1F6A786300B5F903 /* ZipArchive.framework */,
 			);
@@ -921,8 +917,7 @@
 					};
 					7EF7F79C1DD178F7000A625A = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = PETKK2G752;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -1485,6 +1480,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
@@ -1517,6 +1513,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
@@ -1592,13 +1589,15 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_IDENTITY = "-";
-				DEVELOPMENT_TEAM = PETKK2G752;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -1609,13 +1608,15 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_IDENTITY = "-";
-				DEVELOPMENT_TEAM = PETKK2G752;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Release;

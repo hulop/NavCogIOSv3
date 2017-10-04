@@ -8,3 +8,4 @@ Podfile.lock
 /.settings/
 Carthage/
 lastcommit.txt
+project.xcworkspace/

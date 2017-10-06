@@ -115,7 +115,9 @@
                 [self performSegueWithIdentifier:@"show_server_selection" sender:self];
             });
         } else {
-            self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
+            });
             [[ServerConfig sharedConfig] requestServerList:@"" withComplete:^(NSDictionary *config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }
@@ -138,7 +140,9 @@
                 return;
             }
         } else {
-            self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
+            });
             [[ServerConfig sharedConfig] checkAgreement:^(NSDictionary* config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }
@@ -190,26 +194,35 @@
                                                                     object:self
                                                                   userInfo:config.selectedServerConfig];
 
-                [Logging stopLog];
-                [Logging startLog];
+                //[Logging stopLog];
+                //[Logging startLog];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *hostname = config.selected[@"hostname"];
                     [[NSUserDefaults standardUserDefaults] setObject:hostname forKey:@"selected_hokoukukan_server"];
 
                     if (![[ServerConfig sharedConfig] isFingerPrintingAvailable]) {
-                        self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+                        });
                         config.selected = nil;
                         [self checkConfig];
                         return;
                     }
 
-                    vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"blind_ui_navigation"];
-                    [self presentViewController:vc animated:YES completion:nil];
+                    @try {
+                        vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"blind_ui_navigation"];
+                        NSLog(@"%@", vc);
+                        [self presentViewController:vc animated:YES completion:nil];
+                    } @catch (NSException *ex){
+                        NSLog(@"error(%@)",ex);
+                    }
                 });
             }
         } else {
-            self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+            });
             [[ServerConfig sharedConfig] requestServerConfig:^(NSDictionary *config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }

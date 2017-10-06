@@ -28,9 +28,9 @@
 #import <sys/types.h>
 #import <sys/sysctl.h>
 
-#define SAMPLINGS_API_URL @"%@://%@/LocationService/data/samplings%@"
-#define FLOORPLANS_API_URL @"%@://%@/LocationService/data/floorplans%@"
-#define REFPOINTS_API_URL @"%@://%@/LocationService/data/refpoints%@"
+#define SAMPLINGS_API_URL @"%@://%@/data/samplings%@"
+#define FLOORPLANS_API_URL @"%@://%@/data/floorplans%@"
+#define REFPOINTS_API_URL @"%@://%@/data/refpoints%@"
 
 @implementation FingerprintManager {
     double lat,lng,x,y;

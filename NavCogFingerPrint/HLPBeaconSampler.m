@@ -136,6 +136,9 @@ static HLPBeaconSampler *sharedData_ = nil;
 # pragma mark - private
 - (void) startSensor
 {
+    for(CLRegion *r in locationManager.rangedRegions) {
+        [locationManager stopRangingBeaconsInRegion:r];
+    }
     [locationManager startRangingBeaconsInRegion:allBeacons];
 }
 

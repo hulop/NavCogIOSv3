@@ -30,6 +30,8 @@
 
 - (void) updateCoordinates:(NSArray*)coordinates;
 - (instancetype)initWithLocations:(NSArray*) locations;
+- (HLPLocation*)point;
+- (NSArray<HLPLocation*>*)points;
 @end
 
 
@@ -89,13 +91,16 @@ typedef enum {
 - (BOOL) isFacility;
 @end
 
-@interface HLPNode : HLPObject
-@property (nonatomic, readonly) NSArray<NSString*> *connectedLinkIDs;
+@interface HLPLocationObject : HLPObject
 @property (nonatomic, readonly) double lat;
 @property (nonatomic, readonly) double lng;
 @property (nonatomic, readonly) double height;
-
 - (HLPLocation*) location;
+@end
+
+@interface HLPNode : HLPLocationObject
+@property (nonatomic, readonly) NSArray<NSString*> *connectedLinkIDs;
+
 - (BOOL) isLeaf;
 @end
 
@@ -204,10 +209,16 @@ typedef enum: int {
 @property (nonatomic, readonly) HLPBrailleBlockType brailleBlockType;
 @property (nonatomic, readonly) BOOL isLeaf;
 @property NSArray<HLPPOIEscalatorFlags*>* escalatorFlags;
+@property (nonatomic, readonly) HLPNode *sourceNode;
+@property (nonatomic, readonly) HLPNode *targetNode;
 
 + (NSString*) nameOfLinkType:(HLPLinkType)type;
 - (double) initialBearingFromSource;
 - (double) lastBearingForTarget;
+- (double) initialBearingFromTarget;
+- (double) lastBearingForSource;
+- (double) initialBearingFrom:(HLPNode*)node;
+- (double) bearingAtLocation:(HLPLocation*)loc;
 - (void) updateLastBearingForTarget:(double)bearing;
 - (HLPLocation*) sourceLocation;
 - (HLPLocation*) targetLocation;
@@ -231,18 +242,15 @@ typedef enum: int {
 
 @end
 
-@interface HLPFacility : HLPObject
-@property (nonatomic, readonly) double lat;
-@property (nonatomic, readonly) double lng;
-@property (nonatomic, readonly) double height;
+@interface HLPFacility : HLPLocationObject
 @property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly) NSString *namePron;
 @property (nonatomic, readonly) NSString *longDescription;
 @property (nonatomic, readonly) NSString *longDescriptionPron;
 @property (nonatomic, readonly) NSString *lang;
 @property (nonatomic, readonly) NSString *addr;
+@property (nonatomic, readonly) NSArray *entrances;
 
-- (HLPLocation*) location;
 @end
 
 typedef NS_ENUM(NSInteger, HLPPOICategory) {
@@ -281,9 +289,11 @@ static const char* HLPPOICategoryStrings[] = {
 @property (nonatomic, readonly) HLPPOIElevatorEquipments *elevatorEquipments;
 - (BOOL) allowsNoFloor;
 - (NSString*) poiCategoryString;
+- (BOOL) isOnFront:(HLPLocation*)location;
+- (BOOL) isOnSide:(HLPLocation*)location;
 @end
 
-@interface HLPEntrance : HLPObject
+@interface HLPEntrance : HLPLocationObject
 @property (nonatomic, readonly) NSString *forNodeID;
 @property (nonatomic, readonly) NSString *forFacilityID;
 @property (nonatomic, readonly) NSString *name;

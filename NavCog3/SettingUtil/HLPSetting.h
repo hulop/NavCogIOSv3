@@ -80,5 +80,6 @@ typedef NS_ENUM (NSUInteger, NavCogSettingType) {
 @property float max;
 @property float interval;
 @property BOOL visible;
+@property BOOL disabled;
 
 @end

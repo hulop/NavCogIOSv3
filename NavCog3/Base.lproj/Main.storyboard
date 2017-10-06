@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="rPX-gt-o07">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="rPX-gt-o07">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -294,6 +293,17 @@
                                     <segue destination="5By-Wf-lM7" kind="show" identifier="choose_log" id="hfv-ZU-lVW"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="dummy_cell6" selectionStyle="default" indentationWidth="10" reuseIdentifier="dummy_cell6" id="a7R-f1-W9V">
+                                <rect key="frame" x="0.0" y="319.5" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="a7R-f1-W9V" id="j7n-k6-Vmb">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="5By-Wf-lM7" kind="show" identifier="report_issue" id="yVh-yW-df8"/>
+                                </connections>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="5By-Wf-lM7" id="tPj-li-QHb"/>
@@ -321,6 +331,20 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </webView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y9o-wo-eu0">
+                                <rect key="frame" x="275" y="593" width="100" height="10"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" notEnabled="YES"/>
+                                    <bool key="isElement" value="NO"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="10" id="vI0-n0-pW3"/>
+                                    <constraint firstAttribute="width" constant="100" id="xe7-rY-Ygr"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="8"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <view hidden="YES" userInteractionEnabled="NO" alpha="0.20000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aGM-ZR-uTt" customClass="NavCoverView">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -594,9 +618,11 @@
                             <constraint firstAttribute="trailing" secondItem="aGM-ZR-uTt" secondAttribute="trailing" id="ear-N3-Vux"/>
                             <constraint firstItem="7Cs-ZC-ieK" firstAttribute="top" secondItem="o5u-Kq-7q4" secondAttribute="bottom" id="f2q-MH-gdN"/>
                             <constraint firstItem="3qj-Dh-1lE" firstAttribute="top" secondItem="o5u-Kq-7q4" secondAttribute="bottom" id="goa-Lq-5kq"/>
+                            <constraint firstAttribute="bottom" secondItem="Y9o-wo-eu0" secondAttribute="bottom" id="ms1-R7-SjH"/>
                             <constraint firstItem="7Cs-ZC-ieK" firstAttribute="leading" secondItem="t9O-hh-LqB" secondAttribute="trailing" constant="8" id="o1o-2W-GDo"/>
                             <constraint firstItem="rXg-ft-RDc" firstAttribute="top" secondItem="ckT-Tm-n01" secondAttribute="bottom" constant="20" id="o7j-TP-8C2"/>
                             <constraint firstItem="t9O-hh-LqB" firstAttribute="top" secondItem="o5u-Kq-7q4" secondAttribute="bottom" id="pA7-rN-vtI"/>
+                            <constraint firstAttribute="trailing" secondItem="Y9o-wo-eu0" secondAttribute="trailing" id="plM-zu-gyO"/>
                             <constraint firstItem="c9d-DM-4vK" firstAttribute="leading" secondItem="Vhx-Qg-XmL" secondAttribute="leading" constant="16" id="rCx-zF-wXi"/>
                             <constraint firstItem="rXg-ft-RDc" firstAttribute="top" secondItem="t8J-sc-MUY" secondAttribute="bottom" constant="20" id="rs8-bm-MPX"/>
                             <constraint firstItem="LpH-RC-RJy" firstAttribute="centerY" secondItem="Vhx-Qg-XmL" secondAttribute="centerY" id="scM-KE-qB2"/>
@@ -621,6 +647,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="commitLabel" destination="Y9o-wo-eu0" id="hvi-o7-Dwf"/>
                         <outlet property="cover" destination="aGM-ZR-uTt" id="nW2-Rw-1xj"/>
                         <outlet property="devAuto" destination="ckT-Tm-n01" id="81r-QU-h0h"/>
                         <outlet property="devDown" destination="8Qc-Ae-cih" id="pCM-eV-94E"/>
@@ -928,7 +955,7 @@
         <!--Dialog View Controller-->
         <scene sceneID="7vw-Hj-Rkg">
             <objects>
-                <viewController id="YRz-sv-vaW" customClass="DialogViewController" customModule="NavCogFingerPrint" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="YRz-sv-vaW" customClass="DialogViewController" customModule="NavCog3" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ckh-WA-6CF"/>
                         <viewControllerLayoutGuide type="bottom" id="h1Z-UX-Seu"/>
@@ -1427,10 +1454,10 @@
         <image name="Menu" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Uqw-3g-GCM"/>
-        <segue reference="y9t-k8-dBv"/>
         <segue reference="x9Q-EB-G1d"/>
-        <segue reference="GK1-dG-XDF"/>
         <segue reference="XlC-wp-uNx"/>
+        <segue reference="GK1-dG-XDF"/>
+        <segue reference="y9t-k8-dBv"/>
+        <segue reference="Uqw-3g-GCM"/>
     </inferredMetricsTieBreakers>
 </document>

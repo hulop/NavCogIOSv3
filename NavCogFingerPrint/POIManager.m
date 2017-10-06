@@ -81,7 +81,11 @@ static POIManager *instance;
         for(HLPObject* o in cachedFeatures) {
             if ([o isKindOfClass:HLPEntrance.class]) {
                 HLPEntrance* e = (HLPEntrance*)o;
-                facilityNodeMap[e.forFacilityID] = nodeMap[e.forNodeID];
+                if (e.forFacilityID) {
+                    facilityNodeMap[e.forFacilityID] = nodeMap[e.forNodeID];
+                } else {
+                    NSLog(@"forFacilityID is null: %@", e);
+                }
             }
             if ([o isKindOfClass:HLPLink.class]) {
                 HLPLink* l = (HLPLink*)o;

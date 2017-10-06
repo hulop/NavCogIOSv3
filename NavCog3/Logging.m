@@ -23,16 +23,28 @@
 
 #import "Logging.h"
 
+void NavNSLog(NSString* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    NSString *msg = [[NSString alloc] initWithFormat:fmt arguments:args];
+    va_end(args);
+    if (!isatty(STDERR_FILENO))
+    {
+        fprintf(stdout, "%s\n", [msg UTF8String]);
+    }
+    va_start(args, fmt);
+    NSLogv(fmt, args);
+    va_end(args);
+}
+
 @implementation Logging
 
 static int stderrSave = 0;
+static NSString *logFilePath = nil;
 
-+ (void)startLog {
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
-        return;
-    }
++ (NSString*)startLog {
     if (stderrSave != 0) {
-        return;
+        return nil;
     }
     static NSDateFormatter *formatter;
     if (!formatter) {
@@ -42,11 +54,17 @@ static int stderrSave = 0;
     }
     NSString *fileName = [formatter stringFromDate:[NSDate date]];
     NSString *dir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *path = [dir stringByAppendingPathComponent:fileName];
-    NSLog(@"Start log to %@", path);
+    logFilePath = [dir stringByAppendingPathComponent:fileName];
+    NSLog(@"Start log to %@", logFilePath);
     
     stderrSave = dup(STDERR_FILENO);
-    freopen([path UTF8String],"a+",stderr);
+    freopen([logFilePath UTF8String],"a+",stderr);
+    return logFilePath;
+}
+
++(NSString *)logFilePath
+{
+    return logFilePath;
 }
 
 +(void)stopLog {
@@ -74,5 +92,6 @@ static int stderrSave = 0;
     long timestamp = (long)([[NSDate date] timeIntervalSince1970]*1000);
     NSLog(@"%@,%ld,%@", type, timestamp, paramStr);
 }
+
 
 @end

@@ -187,6 +187,11 @@ double(^normalize)(double) = ^(double deg) {
     return [HLPLocation distanceFromLat:self.lat Lng:self.lng toLat:to.lat Lng:to.lng];
 }
 
+- (double)fastDistanceTo:(HLPLocation *)to
+{
+    return [HLPLocation fastDistanceFromLat:self.lat Lng:self.lng toLat:to.lat Lng:to.lng];
+}
+
 - (double)distanceToLat:(double)lat Lng:(double)lng
 {
     return [HLPLocation distanceFromLat:self.lat Lng:self.lng toLat:lat Lng:lng];
@@ -207,9 +212,27 @@ double(^normalize)(double) = ^(double deg) {
     if (lat1 == lat2 && lng1 == lng2) {
         return 0;
     }
+
     CLLocation *l1 = [[CLLocation alloc] initWithLatitude:lat1 longitude:lng1];
     CLLocation *l2 = [[CLLocation alloc] initWithLatitude:lat2 longitude:lng2];
     return [l1 distanceFromLocation:l2];
+}
+    
++(double)fastDistanceFromLat:(double)lat1 Lng:(double)lng1 toLat:(double)lat2 Lng:(double)lng2
+{
+    // Haversine Formula
+    const double d2r = M_PI / 180;
+    const double P = (lat1 + lat2) / 2 * d2r;
+    const double dP = (lat1 - lat2) * d2r;
+    const double dR = (lng1 - lng2) * d2r;
+    const double sinP = sin(P);
+    const double PP = 1 - 0.006674 * sinP * sinP;
+    const double sqrtPP = sqrt(PP);
+    const double M = 6334834.0 / (sqrtPP * PP);
+    const double N = 6377397.0 / sqrtPP;
+    const double a = M * dP;
+    const double b = N * cos(P) * dR;
+    return sqrt(a*a + b*b);
 }
 
 + (double)bearingFromLat:(double)lat1 Lng:(double)lng1 toLat:(double)lat2 Lng:(double)lng2

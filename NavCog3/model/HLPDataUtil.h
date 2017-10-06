@@ -36,6 +36,7 @@
 + (void) getJSON:(NSURL*)url withCallback:(void(^)(NSObject* result))callback;
 
 +(void)postRequest:(NSURL*) url withData:(NSDictionary*) data callback:(void(^)(NSData* response))callback;
++(void)postRequest:(NSURL*) url contentType:(NSString*)type withData:(NSData*) data callback:(void(^)(NSData* response))callback;
 +(void)deleteRequest:(NSURL*) url withData:(NSDictionary*) data callback:(void(^)(NSData* response))callback;
 
 @end

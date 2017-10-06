@@ -183,10 +183,8 @@
 - (void) locationChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NavDataStore *nds = [NavDataStore sharedDataStore];
-        HLPLocation *loc = [nds currentLocation];
-        BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
-        self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation && actionEnabled);
+        [self.historyView reloadData];
+        [self updateViewWithFlag:NO];
     });
 }
 

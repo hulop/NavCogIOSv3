@@ -126,7 +126,7 @@ static NavSound *instance;
 -(BOOL)playSuccess
 {
     if ([self _playSystemSound:successSoundID]) {
-        NSLog(@"%@", NSStringFromSelector(_cmd));
+        NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
         [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
                                                             object:self userInfo:@{@"sound":@"playSuccess"}];
         return YES;
@@ -137,7 +137,7 @@ static NavSound *instance;
 - (BOOL)playFail
 {
     if ([self _playSystemSound:failSoundID]) {
-        NSLog(@"%@", NSStringFromSelector(_cmd));
+        NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
         [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
                                                             object:self userInfo:@{@"sound":@"playFail"}];
         return YES;
@@ -148,7 +148,7 @@ static NavSound *instance;
 -(BOOL)playAnnounceNotification
 {
     if ([self _playSystemSound:AnnounceNotificationSoundID]) {
-        NSLog(@"%@", NSStringFromSelector(_cmd));
+        NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
         [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
                                                             object:self userInfo:@{@"sound":@"playAnnounceNotification"}];
         return YES;
@@ -159,7 +159,7 @@ static NavSound *instance;
 - (BOOL)playVoiceRecoStart
 {
     if ([self _playSystemSound:VoiceRecoStartSoundID]) {
-        NSLog(@"%@", NSStringFromSelector(_cmd));
+        NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
         [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
                                                             object:self userInfo:@{@"sound":@"playVoiceRecoStart"}];
         return YES;
@@ -170,7 +170,7 @@ static NavSound *instance;
 - (BOOL)playVoiceRecoEnd
 {
     if ([self _playSystemSound:VoiceRecoEndSoundID]) {
-        NSLog(@"%@", NSStringFromSelector(_cmd));
+        NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
         [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
                                                             object:self userInfo:@{@"sound":@"playVoiceRecoEnd"}];
         return YES;
@@ -181,7 +181,7 @@ static NavSound *instance;
 - (BOOL)playVoiceRecoPause
 {
     if ([self _playSystemSound:VoiceRecoPauseSoundID]) {
-        NSLog(@"%@", NSStringFromSelector(_cmd));
+        NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
         [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
                                                             object:self userInfo:@{@"sound":@"playVoiceRecoPause"}];
         return YES;
@@ -196,7 +196,7 @@ static NavSound *instance;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             [self _playSystemSound:VoiceRecoStartSoundID];
-            NSLog(@"%@", NSStringFromSelector(_cmd));
+            NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
         });
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:PLAY_SYSTEM_SOUND
@@ -208,7 +208,7 @@ static NavSound *instance;
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"vibrate"]) {
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-        NSLog(@"%@", NSStringFromSelector(_cmd));
+        NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
         if (param) {
             int repeat = [param[@"repeat"] intValue];
             if (repeat > 1) {

@@ -175,6 +175,11 @@ void functionCalledToLog(void *inUserData, string text)
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableAcceleration:) name:DISABLE_ACCELEARATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableAcceleration:) name:ENABLE_ACCELEARATION object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableStabilizeLocalize:) name:DISABLE_STABILIZE_LOCALIZE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableStabilizeLocalize:) name:ENABLE_STABILIZE_LOCALIZE object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestSerialize:) name:REQUEST_SERIALIZE object:nil];
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud addObserver:self forKeyPath:@"nSmooth" options:NSKeyValueObservingOptionNew context:nil];
@@ -210,11 +215,59 @@ void functionCalledToLog(void *inUserData, string text)
 - (void)disableAcceleration:(NSNotification*) note
 {
     disableAcceleration = YES;
+    NSLog(@"DisableAcceleration,1,%ld", (long)([[NSDate date] timeIntervalSince1970]*1000));
 }
 
 - (void)enableAcceleration:(NSNotification*) note
 {
     disableAcceleration = NO;
+    NSLog(@"DisableAcceleration,0,%ld", (long)([[NSDate date] timeIntervalSince1970]*1000));
+}
+
+- (void)disableStabilizeLocalize:(NSNotification*) note
+{
+    disableAcceleration = NO;
+    NSLog(@"DisableAcceleration,0,%ld", (long)([[NSDate date] timeIntervalSince1970]*1000));
+    
+    [processQueue addOperationWithBlock:^{
+        // set status monitoring interval as default
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        bool activatesDynamicStatusMonitoring = [ud boolForKey:@"activatesStatusMonitoring"];
+        LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
+        
+        if(activatesDynamicStatusMonitoring){
+            params->monitorIntervalMS([ud doubleForKey:@"statusMonitoringIntervalMS"]);
+        } else {
+            params->monitorIntervalMS(3600*1000*24);
+        }
+    }];
+}
+
+- (void)enableStabilizeLocalize:(NSNotification*) note
+{    
+    disableAcceleration = YES;
+    NSLog(@"DisableAcceleration,1,%ld", (long)([[NSDate date] timeIntervalSince1970]*1000));
+
+    [processQueue addOperationWithBlock:^{
+        // set status monitoring interval inf
+        LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
+        params->monitorIntervalMS(3600*1000*24);
+    }];
+}
+
+- (void)requestSerialize:(NSNotification*)note
+{
+    if ([note userInfo]) {
+        NSDictionary *dic = [note userInfo];
+        
+        std::string strPath = [dic[@"filePath"] cStringUsingEncoding:NSUTF8StringEncoding];
+        std::ofstream ofs(strPath);
+        if(ofs.is_open()){
+            cereal::JSONOutputArchive oarchive(ofs);
+            auto p = std::dynamic_pointer_cast<BasicLocalizerParameters>(localizer);
+            oarchive(*p);
+        }
+    }
 }
 
 - (void) requestLogReplayStop:(NSNotification*) note
@@ -358,6 +411,11 @@ void functionCalledToLog(void *inUserData, string text)
                             std::cout << "LogReplay:" << acc.timestamp() << ",Acc," << acc << std::endl;
                         }
                         timestamp = acc.timestamp();
+                        if(disableAcceleration) {
+                            localizer->disableAcceleration(true);
+                        }else{
+                            localizer->disableAcceleration(false);
+                        }
                         localizer->putAcceleration(acc);
                     }
                     // Parsing motion values
@@ -382,6 +440,17 @@ void functionCalledToLog(void *inUserData, string text)
                         if (bShowSensorLog) {
                             std::cout << "LogReplay:" << alt.timestamp() << ",Altimeter," << alt.relativeAltitude() << "," << alt.pressure() << std::endl;
                         }
+                    }
+                    else if (logString.compare(0, 19, "DisableAcceleration") == 0){
+                        std::vector<std::string> values;
+                        boost::split(values, logString, boost::is_any_of(","));
+                        int da = stoi(values.at(1));
+                        if(da==1){
+                            self->disableAcceleration = YES;
+                        }else{
+                            self->disableAcceleration = NO;
+                        }
+                        std::cout << "LogReplay:" << logString << std::endl;
                     }
                     // Parsing reset
                     else if (logString.compare(0, 5, "Reset") == 0) {
@@ -625,12 +694,19 @@ void functionCalledToLog(void *inUserData, string text)
         }
     }];
     [motionManager startAccelerometerUpdatesToQueue: processQueue withHandler:^(CMAccelerometerData * _Nullable acc, NSError * _Nullable error) {
-        if (!_isActive || isLogReplaying || disableAcceleration) {
+        if (!_isActive || isLogReplaying) {
             return;
         }
         Acceleration acceleration((uptime+acc.timestamp)*1000,
-                                  acc.acceleration.x, acc.acceleration.y, acc.acceleration.z);
-        try {
+                                  acc.acceleration.x,
+                                  acc.acceleration.y,
+                                  acc.acceleration.z);
+        try{
+            if(disableAcceleration){
+                localizer->disableAcceleration(true);
+            }else{
+                localizer->disableAcceleration(false);
+            }
             localizer->putAcceleration(acceleration);
         } catch(const std::exception& ex) {
             std::cout << ex.what() << std::endl;
@@ -749,6 +825,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->prwBuildingProperty->probabilityUpElevator(0.0).probabilityDownElevator(0.0).probabilityStayElevator(1.0);
     // set parameters for weighting and mixing in transition areas
     localizer->pfFloorTransParams->weightTransitionArea([ud doubleForKey:@"weightFloorTransArea"]).mixtureProbaTransArea([ud doubleForKey:@"mixtureProbabilityFloorTransArea"]);
+    localizer->pfFloorTransParams->rejectDistance([ud doubleForKey:@"rejectDistanceFloorTrans"]);
     
     // set parameters for location status monitoring
     bool activatesDynamicStatusMonitoring = [ud boolForKey:@"activatesStatusMonitoring"];
@@ -761,6 +838,7 @@ void functionCalledToLog(void *inUserData, string text)
         params->stdev2DEnterLocating([ud doubleForKey:@"enterLocating"]);
         params->stdev2DExitLocating([ud doubleForKey:@"exitLocating"]);
         params->monitorIntervalMS([ud doubleForKey:@"statusMonitoringIntervalMS"]);
+        params->unstableLoop([ud doubleForKey:@"minUnstableLoop"]);
     }else{
         LocationStatusMonitorParameters::Ptr & params = localizer->locationStatusMonitorParameters;
         params->minimumWeightStable(0.0);
@@ -769,11 +847,15 @@ void functionCalledToLog(void *inUserData, string text)
         params->stdev2DExitStable(largeStdev);
         params->stdev2DEnterLocating(largeStdev);
         params->stdev2DExitLocating(largeStdev);
-        params->monitorIntervalMS(3600*1000);
+        params->monitorIntervalMS(3600*1000*24);
+        params->unstableLoop([ud doubleForKey:@"minUnstableLoop"]);
     }
     
     // to activate orientation initialization using
     localizer->headingConfidenceForOrientationInit([ud doubleForKey:@"headingConfidenceInit"]);
+    
+    // yaw drift adjuster
+    localizer->applysYawDriftAdjust =  [ud boolForKey:@"applyYawDriftSmoothing"];
 }
 
 - (void) dealloc
@@ -911,10 +993,11 @@ void functionCalledToLog(void *inUserData, string text)
 - (loc::Heading) convertCLHeading:(CLHeading*) clheading
 {
     long timestamp = static_cast<long>([clheading.timestamp timeIntervalSince1970]*1000);
-    loc::Heading locheading(timestamp, clheading.magneticHeading, clheading.trueHeading, clheading.headingAccuracy);
+    loc::Heading locheading(timestamp, clheading.magneticHeading, clheading.trueHeading, clheading.headingAccuracy, clheading.x, clheading.y, clheading.z);
     return locheading;
 }
 
+/*
 - (std::string) logStringFrom:(CLHeading*)heading
 {
     //"Heading",magneticHeading,trueHeading,headingAccuracy,timestamp
@@ -923,6 +1006,7 @@ void functionCalledToLog(void *inUserData, string text)
     << heading.headingAccuracy << "," << (long) ([heading.timestamp timeIntervalSince1970]*1000);
     return ss.str();
 }
+*/
 
 - (BOOL)checkCalibrationBeacon:(CLBeacon *)beacon
 {

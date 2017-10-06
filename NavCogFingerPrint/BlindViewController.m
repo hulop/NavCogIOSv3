@@ -711,6 +711,12 @@
     _errorMessage.hidden = NO;
 }
 
+- (IBAction)retry:(id)sender {
+    [helper retry];
+    _retryButton.hidden = YES;
+    _errorMessage.hidden = YES;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

@@ -87,6 +87,14 @@ static ServerConfig *instance;
         }
     }
     NSString *serverlist = SERVERLIST_URL;
+    
+    NSURL *serverListURL = [[NSBundle mainBundle] URLForResource:@"serverlist" withExtension:@"txt"];
+    if (serverListURL) {
+        NSError *error;
+        serverlist = [NSString stringWithContentsOfURL:serverListURL encoding:NSUTF8StringEncoding error:&error];
+        serverlist = [serverlist stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    }
+    
     NSString* serverListURLPath = [documentsPath stringByAppendingPathComponent:@"serverlist.txt"];
     if ([fm fileExistsAtPath:serverListURLPath]) {
         NSError *error;

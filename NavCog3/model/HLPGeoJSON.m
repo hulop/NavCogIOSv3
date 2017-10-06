@@ -100,6 +100,26 @@
     return self;
 }
 
+- (HLPLocation *)point
+{
+    if ([_coordinates[0] isKindOfClass:NSArray.class]) {
+        return nil;
+    }
+    return [[HLPLocation alloc] initWithLat:[_coordinates[1] doubleValue] Lng:[_coordinates[0] doubleValue]];
+}
+
+- (NSArray<HLPLocation *> *)points
+{
+    NSMutableArray *temp = [@[] mutableCopy];
+    for(NSArray* a in _coordinates) {
+        if ([a isKindOfClass:NSArray.class]) {
+            [temp addObject:[[HLPLocation alloc] initWithLat:[a[1] doubleValue] Lng:[a[0] doubleValue]]];
+        } else {
+            return nil;
+        }
+    }
+    return temp;
+}
 
 @end
 
@@ -179,6 +199,19 @@
 @end
 
 @implementation HLPObject
+
+- (NSUInteger)hash
+{
+    return [__id hash];
+}
+
+- (BOOL)isEqual:(HLPObject*)object
+{
+    if ([object isKindOfClass:HLPObject.class]) {
+        return [__id isEqualToString:object._id];
+    }
+    return NO;
+}
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
     self = [super initWithDictionary:dictionaryValue error:error];
@@ -319,10 +352,21 @@
               }];
 }
 
++ (NSValueTransformer *)nodeHeightJSONTransformer {
+    return [MTLValueTransformer transformerUsingForwardBlock:^id(NSString *height, BOOL *success, NSError *__autoreleasing *error) {
+        double h = [height doubleValue];
+        return @((h >= 1)?h-1:h);
+    } reverseBlock:^id(NSNumber *height, BOOL *success, NSError *__autoreleasing *error) {
+        double h = [height doubleValue];
+        h = (h >= 0)?h+1:h;
+        return [NSString stringWithFormat:@"%.0f",h];
+    }];
+}
+
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError *__autoreleasing *)error
 {
     self = [super initWithDictionary:dictionaryValue error:error];
-    _nodeHeight = (_nodeHeight >= 1)?_nodeHeight-1:_nodeHeight;
+    //_nodeHeight = (_nodeHeight >= 1)?_nodeHeight-1:_nodeHeight;
     
     if(dictionaryValue[@"nodeCoordinates"]) {
         double lat = [dictionaryValue[@"nodeCoordinates"][1] doubleValue];
@@ -390,16 +434,18 @@
     [self isToilet];
 }
 
+
+
 @end
 
-@implementation HLPNode {
+@implementation HLPLocationObject {
     HLPLocation *_location;
 }
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
     self = [super initWithDictionary:dictionaryValue error:error];
     if (self == nil) return nil;
-
+    
     _lat = [self.geometry.coordinates[1] doubleValue];
     _lng = [self.geometry.coordinates[0] doubleValue];
     
@@ -408,8 +454,38 @@
         _height = [self.properties[PROPKEY_HEIGHT] doubleValue];
         _height = (_height >= 1)?_height-1:_height;
     }
+    else if (self.properties[PROPKEY_EXT_HEIGHT]) {
+        _height = [self.properties[PROPKEY_EXT_HEIGHT] doubleValue];
+        if (_height == 0) {
+            _height = NAN;
+        } else {
+            _height = (_height >= 1)?_height-1:_height;
+        }
+    }
     
-    _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];    
+    _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];
+    
+    return self;
+}
+
+- (HLPLocation*) location
+{
+    return _location;
+}
+
+- (void) updateHeight:(double)height
+{
+    _height = height;
+    [_location updateFloor:_height];
+}
+
+@end
+
+@implementation HLPNode
+
+- (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError **)error {
+    self = [super initWithDictionary:dictionaryValue error:error];
+    if (self == nil) return nil;
 
     NSMutableArray* temp = [@[] mutableCopy];
     for(NSString *key in [self.properties allKeys]) {
@@ -420,11 +496,6 @@
     _connectedLinkIDs = temp;
     
     return self;
-}
-
-- (HLPLocation*) location
-{
-    return _location;
 }
 
 - (BOOL) isLeaf
@@ -441,14 +512,20 @@
     @protected
     BOOL _flagPlural;
 }
+
+static NSRegularExpression *patternHLPPOIFlags;
+
 - (instancetype)initWithString:(NSString *)str
 {
     self = [super init];
     
+    if (!patternHLPPOIFlags) {
+        patternHLPPOIFlags = [NSRegularExpression regularExpressionWithPattern:@"([A-Z])" options:0 error:nil];
+    }
+    
     if (str) {
         NSString*(^camelToDash)(NSString*) = ^(NSString* str) {
-            NSRegularExpression *p = [NSRegularExpression regularExpressionWithPattern:@"([A-Z])" options:0 error:nil];
-            NSString *temp = [p stringByReplacingMatchesInString:str options:0 range:NSMakeRange(0, str.length) withTemplate:@"_$1"];
+            NSString *temp = [patternHLPPOIFlags stringByReplacingMatchesInString:str options:0 range:NSMakeRange(0, str.length) withTemplate:@"_$1"];
             return [NSString stringWithFormat:@"_%@_", [temp lowercaseString]];
         };
         
@@ -575,7 +652,9 @@
 @implementation HLPLink {
 @protected
     double initialBearingFromSource;
+    double initialBearingFromTarget;
     double lastBearingForTarget;
+    double lastBearingForSource;
 }
 
 + (NSString *)nameOfLinkType:(HLPLinkType)type
@@ -649,16 +728,22 @@
             NSArray *secondLast = self.geometry.coordinates[!_backward?[self.geometry.coordinates count]-2:1];
             
             sourceLocation = [[HLPLocation alloc] initWithLat:[first[1] doubleValue] Lng:[first[0] doubleValue] Floor:_sourceHeight];
+            targetLocation = [[HLPLocation alloc] initWithLat:[last[1] doubleValue] Lng:[last[0] doubleValue] Floor:_targetHeight];
             
             initialBearingFromSource = [sourceLocation bearingToLat:[second[1] doubleValue]
                                                                Lng:[second[0] doubleValue]];
-            
-            targetLocation = [[HLPLocation alloc] initWithLat:[last[1] doubleValue] Lng:[last[0] doubleValue] Floor:_targetHeight];
+            initialBearingFromTarget = [targetLocation bearingToLat:[secondLast[1] doubleValue]
+                                                                Lng:[secondLast[0] doubleValue]];
             
             lastBearingForTarget = [HLPLocation bearingFromLat:[secondLast[1] doubleValue]
                                                            Lng:[secondLast[0] doubleValue]
                                                          toLat:[last[1] doubleValue]
                                                            Lng:[last[0] doubleValue]];
+            lastBearingForSource = [HLPLocation bearingFromLat:[second[1] doubleValue]
+                                                           Lng:[second[0] doubleValue]
+                                                         toLat:[first[1] doubleValue]
+                                                           Lng:[first[0] doubleValue]];
+            
         } else if ([self.geometry.type isEqualToString:@"Point"] && [self.geometry.coordinates count] == 2) {
             double lat = [self.geometry.coordinates[1] doubleValue];
             double lng = [self.geometry.coordinates[0] doubleValue];
@@ -667,6 +752,7 @@
             targetLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng Floor:_targetHeight];
             
             initialBearingFromSource = lastBearingForTarget = NAN;
+            initialBearingFromTarget = lastBearingForSource = NAN;
         }
     }
 }
@@ -676,6 +762,7 @@
     _sourceNodeID = self.properties[_backward?PROPKEY_TARGET_NODE_ID:PROPKEY_SOURCE_NODE_ID];
     HLPNode *snode = nodesMap[_sourceNodeID];
     if (snode) {
+        _sourceNode = snode;
         _sourceHeight = snode.height;
         [sourceLocation updateFloor:_sourceHeight];
     }
@@ -683,6 +770,7 @@
     _targetNodeID = self.properties[!_backward?PROPKEY_TARGET_NODE_ID:PROPKEY_SOURCE_NODE_ID];
     HLPNode *tnode = nodesMap[_targetNodeID];
     if (tnode) {
+        _targetNode = tnode;
         _targetHeight = tnode.height;
         [targetLocation updateFloor:_targetHeight];
     }
@@ -701,6 +789,48 @@
 - (double)lastBearingForTarget
 {
     return lastBearingForTarget;
+}
+
+- (double)initialBearingFromTarget;
+{
+    return initialBearingFromTarget;
+}
+
+- (double)lastBearingForSource;
+{
+    return lastBearingForSource;
+}
+
+- (double) initialBearingFrom:(HLPNode *)node
+{
+    if (_sourceNode == node) {
+        return self.initialBearingFromSource;
+    }
+    if (_targetNode == node) {
+        return self.initialBearingFromTarget;
+    }
+    return NAN;
+}
+
+
+- (double)bearingAtLocation:(HLPLocation *)loc
+{
+    int i = 0;
+    double orientation = 0;
+    double min = DBL_MAX;
+    NSArray *points = _geometry.points;
+    for(;i<[points count]-1; i++) {
+        HLPLocation *a = points[i];
+        HLPLocation *b = points[i+1];
+        
+        HLPLocation *c = [loc nearestLocationToLineFromLocation:a ToLocation:b];
+        double d = [c distanceTo:loc];
+        if (d < min) {
+            min = d;
+            orientation = [c bearingTo:b];
+        }
+    }
+    return orientation;
 }
 
 - (void) updateLastBearingForTarget:(double)bearing
@@ -839,6 +969,7 @@
     _sourceHeight = source.floor;
     _targetHeight = target.floor;
     lastBearingForTarget = initialBearingFromSource = [source bearingTo:target];
+    initialBearingFromTarget = lastBearingForSource = [target bearingTo:source];
     _length = [source distanceTo:target];
     _backward = NO;
     _geometry = [[HLPGeometry alloc] initWithLocations:@[source, target]];
@@ -955,7 +1086,9 @@
     
     _backward = NO;
     initialBearingFromSource = link1.initialBearingFromSource;
+    initialBearingFromTarget = link2.initialBearingFromTarget;
     lastBearingForTarget = link2.lastBearingForTarget;
+    lastBearingForSource = link1.lastBearingForSource;
     sourceLocation = [link1 sourceLocation];
     targetLocation = [link2 targetLocation];
     
@@ -1026,10 +1159,38 @@
     return temp;
 }
 
+- (BOOL)isOnFront:(HLPLocation *)location
+{
+    double distance = [location distanceTo:self.location];
+    
+    if (distance > 5) {
+        return NO;
+    }
+    
+    double hInitial = [HLPLocation normalizeDegree:location.orientation - 180];
+    BOOL inAngleInitial = fabs([HLPLocation normalizeDegree:hInitial - self.heading]) <= self.angle;
+    
+    return inAngleInitial;
+}
+
+- (BOOL)isOnSide:(HLPLocation*)location
+{
+    double distance = [location distanceTo:self.location];
+    
+    if (distance > 5) {
+        return NO;
+    }
+    
+    double hLocToNearest = [self.location bearingTo:location];
+    BOOL inAngleAtNearest = fabs([HLPLocation normalizeDegree:hLocToNearest - self.heading]) < self.angle;
+    
+    return inAngleAtNearest;
+}
+
 @end
 
 @implementation HLPFacility{
-    HLPLocation *_location;
+    NSMutableArray *entrances;
 }
 
 
@@ -1041,29 +1202,11 @@
     _namePron = _name = self.properties[PROPKEY_NAME];
     _longDescriptionPron = _longDescription = self.properties[PROPKEY_EXT_LONG_DESCRIPTION];
     
-    _lat = [self.geometry.coordinates[1] doubleValue];
-    _lng = [self.geometry.coordinates[0] doubleValue];
-    _height = NAN;
-    if (self.properties[PROPKEY_EXT_HEIGHT]) {
-        _height = [self.properties[PROPKEY_EXT_HEIGHT] doubleValue];
-        if (_height == 0) {
-            _height = NAN;
-        } else {
-            _height = (_height >= 1)?_height-1:_height;
-        }
-    }
-    
-    _location = [[HLPLocation alloc] initWithLat:_lat Lng:_lng Floor:_height];
     if (self.properties[PROPKEY_ADDR]) {
         _addr = self.properties[PROPKEY_ADDR];
     }
     
     return self;
-}
-
-- (HLPLocation *)location
-{
-    return _location;
 }
 
 
@@ -1075,11 +1218,45 @@
     if (_namePron == nil) {
         _namePron = _name;
     }
+    
+    if(self.category == HLP_OBJECT_CATEGORY_TOILET) {
+        NSMutableString *temp = [[NSMutableString alloc] init];
+        if (self.properties) {
+            NSString *sex = self.properties[PROPKEY_MALE_OR_FEMALE];
+            if ([sex isEqualToString:@"1"]) {
+                [temp appendString:NSLocalizedString(@"FOR_MALE",@"Toilet for male")];
+            }
+            else if ([sex isEqualToString:@"2"]) {
+                [temp appendString:NSLocalizedString(@"FOR_FEMALE",@"Toilet for female")];
+            }
+            NSString *multi = self.properties[PROPKEY_MULTI_PURPOSE_TOILET];
+            
+            if ([multi isEqualToString:@"1"] || [multi isEqualToString:@"2"]) {
+                [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
+            }
+        }
+        _namePron = _name = temp;
+    }
+    
+    
     _longDescription = [self getI18nAttribute:PROPKEY_EXT_LONG_DESCRIPTION Lang:_lang];
     _longDescriptionPron = [self getI18nPronAttribute:PROPKEY_EXT_LONG_DESCRIPTION Lang:lang];
     if (_longDescriptionPron == nil) {
         _longDescriptionPron = _longDescription;
     }
+}
+
+- (void)addEntrance:(HLPEntrance*)ent
+{
+    if (!entrances) {
+        entrances = [[NSMutableArray alloc] init];
+    }
+    [entrances addObject:ent];
+}
+
+- (NSArray *)entrances
+{
+    return entrances;
 }
 
 @end
@@ -1100,7 +1277,9 @@
 - (void)updateNode:(HLPNode *)node andFacility:(HLPFacility *)facility
 {
     _node = node;
+    [self updateHeight:_node.height];
     _facility = facility;
+    [_facility addEntrance:self];
 }
 
 - (void)updateWithLang:(NSString *)lang

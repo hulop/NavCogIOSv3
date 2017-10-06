@@ -5,12 +5,13 @@ target 'NavCog3' do
   pod 'OpenCV', '2.4.9'
   pod 'FormatterKit'
   pod 'eigen'
-  pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.2.4/bleloc.podspec"
+  pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.2.8/bleloc.podspec"
 #  pod 'bleloc', :path => "../blelocpp"
   pod 'boost', :podspec => './podspecs/boost.podspec.json'
   pod 'cereal', :podspec => './podspecs/cereal.podspec'
   pod 'picojson', :podspec => './podspecs/picojson.podspec'
   pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
+  pod 'SSZipArchive', '2.0.4'
 end
 
 target 'NavCogTool' do
@@ -24,12 +25,18 @@ target 'NavCogFingerPrint' do
   pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
 end
 
+target 'NavCogPreview' do
+  platform :ios, '8.4'
+  pod 'Mantle', :podspec => './podspecs/Mantle.podspec.json'
+  pod 'FormatterKit'
+end
+
 target 'NavCogSimple' do
   platform :ios, '8.4'
   pod 'OpenCV', '2.4.9'
   pod 'FormatterKit'
   pod 'eigen'
-  pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.2.4/bleloc.podspec"
+  pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.2.8/bleloc.podspec"
 #  pod 'bleloc', :path => "../blelocpp"
   pod 'boost', :podspec => './podspecs/boost.podspec.json'
   pod 'cereal', :podspec => './podspecs/cereal.podspec'

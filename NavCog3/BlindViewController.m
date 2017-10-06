@@ -373,7 +373,9 @@
         } else {
             dialogHelper.helperView.hidden = YES;
         }
-
+        
+        NSString *cn = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"lastcommit" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
+        [self.commitLabel setText:cn];
     });
 }
 
@@ -877,6 +879,9 @@
 
 - (void)didNavigationFinished:(NSDictionary *)properties
 {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"stabilize_localize_on_elevator"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_STABILIZE_LOCALIZE object:self];
+    }
     [commander didNavigationFinished:properties];
     [previewer didNavigationFinished:properties];
 }
@@ -1132,6 +1137,11 @@
         rv.from = nds.from._id;
         rv.to = nds.to._id;
         rv.device_id = [nds userID];
+    }
+    if ([segue.identifier isEqualToString:@"show_search"]) {
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
+            [helper evalScript:@"$hulop.map.setSync(true);"];
+        }
     }
 }
 

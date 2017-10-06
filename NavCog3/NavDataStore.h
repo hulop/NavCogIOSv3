@@ -50,6 +50,7 @@ typedef enum {
 -(instancetype)initWithLocation:(HLPLocation*)location;
 -(instancetype)initWithLabel:(NSString*)label Filter:(NSDictionary*)filter;
 -(void)addLandmark:(HLPLandmark*)landmark;
+-(HLPLocation*)location;
 +(instancetype)selectStart;
 +(instancetype)selectDestination;
 +(instancetype)dialogSearch;
@@ -66,6 +67,18 @@ typedef enum {
 @property HLPLocation *mapCenter;
 @property (readonly) NSDictionary *buildingInfo;
 @property HLPLocation *loadLocation;
+
+
+@property (readonly) NSDictionary *idMap;
+@property (readonly) NSDictionary<NSString*, HLPEntrance*> *entranceMap;
+@property (readonly) NSDictionary *poiMap;
+@property (readonly) NSDictionary *nodesMap;
+@property (readonly) NSDictionary *linksMap;
+@property (readonly) NSDictionary *nodeLinksMap;
+@property (readonly) NSDictionary *linkPoiMap;
+@property (readonly) NSArray *pois;
+@property (readonly) NSArray *escalatorLinks;
+
 
 @property NSTimeInterval start;
 
@@ -96,6 +109,17 @@ typedef enum {
 - (void) clearSearchHistory;
 - (BOOL) isKnownDestination:(NavDestination*)dest;
 - (void) startExercise;
+
+- (BOOL) isElevatorNode:(HLPNode*)node;
+- (BOOL) hasRoute;
+- (BOOL) isOnRoute:(NSString*)objID;
+- (BOOL) isOnDestination:(NSString*)nodeID;
+- (BOOL) isOnStart:(NSString*)nodeID;
+- (HLPLink*) firstRouteLink:(double)ignoreDistance;
+- (HLPLink*) lastRouteLink:(double)ignoreDistance;
+- (HLPLink*) routeLinkById:(NSString*)linkID;
+- (HLPLink*) findElevatorLink:(HLPLink*)link;
+- (NSArray*) nearestLinksAt:(HLPLocation*)loc withOptions:(NSDictionary*)option;
 
 + (NavDestination*) destinationForCurrentLocation;
 

@@ -105,9 +105,12 @@
         } else {
             NSError *error;
             NSArray *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+            
             if (error) {
                 NSLog(@"%@", error);
                 NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+                callback(nil);
+            } else if ([json isKindOfClass:NSDictionary.class]) { // error json
                 callback(nil);
             } else {
                 NSMutableArray *array = [@[] mutableCopy];
@@ -211,6 +214,11 @@
     [HLPDataUtil method:@"POST" request:url withData:data callback:callback];
 }
 
++(void)postRequest:(NSURL*) url contentType:(NSString*)type withData:(NSData*) data callback:(void(^)(NSData* response))callback
+{
+    [HLPDataUtil method:@"POST" request:url contentType:type withData:data callback:callback];
+}
+
 +(void)deleteRequest:(NSURL*) url withData:(NSDictionary*) data callback:(void(^)(NSData* response))callback
 {
     [HLPDataUtil method:@"DELETE" request:url withData:data callback:callback];
@@ -218,26 +226,34 @@
 
 +(void)method:(NSString*)method request:(NSURL*) url withData:(NSDictionary*) data callback:(void(^)(NSData* response))callback
 {
-    @try {
+    NSMutableString *temp = [[NSMutableString alloc] init];
+    for(NSString *key in [data allKeys]) {
+        [temp appendFormat:@"%@=%@&", key, data[key]];
+    }
+    NSString *temp2 = [temp stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSData *query = [temp2 dataUsingEncoding:NSUTF8StringEncoding];
+    
+    [HLPDataUtil method:method
+                request:url
+            contentType:@"application/x-www-form-urlencoded; charset=UTF-8"
+               withData:query
+               callback:callback];
+}
+
++(void)method:(NSString*)method request:(NSURL*) url contentType:(NSString*)type withData:(NSData*) data callback:(void(^)(NSData* response))callback
+{
+    @try{
         NSMutableURLRequest *request = [NSMutableURLRequest
-                                        requestWithURL: url
-                                        cachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                        timeoutInterval: 60.0];
-        
-        NSMutableString *temp = [[NSMutableString alloc] init];
-        for(NSString *key in [data allKeys]) {
-            [temp appendFormat:@"%@=%@&", key, data[key]];
-        }
-        NSString *temp2 = [temp stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-        NSData *query = [temp2 dataUsingEncoding:NSUTF8StringEncoding];
-        
-        
+                                             requestWithURL: url
+                                             cachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                             timeoutInterval: 60.0];
+
         //NSLog(@"Requesting %@ \n%@", url, temp2);
         
         [request setHTTPMethod: method];
-        [request setValue: @"application/x-www-form-urlencoded; charset=UTF-8"  forHTTPHeaderField: @"Content-Type"];
-        [request setValue: [NSString stringWithFormat: @"%lu", (unsigned long)[query length]]  forHTTPHeaderField: @"Content-Length"];
-        [request setHTTPBody: query];
+        [request setValue:type forHTTPHeaderField: @"Content-Type"];
+        [request setValue:[NSString stringWithFormat: @"%lu", (unsigned long)[data length]]  forHTTPHeaderField: @"Content-Length"];
+        [request setHTTPBody: data];
         
         NSURLSession *session = [NSURLSession sharedSession];
         

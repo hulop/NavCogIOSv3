@@ -24,8 +24,9 @@
 #import "HLPSettingHelper.h"
 #import <NavWebView/NavWebView.h>
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
+#import <MessageUI/MessageUI.h>
 
-@interface SettingViewController : UITableViewController <HLPSettingHelperDelegate, MCBrowserViewControllerDelegate>
+@interface SettingViewController : UITableViewController <HLPSettingHelperDelegate, MCBrowserViewControllerDelegate, MFMailComposeViewControllerDelegate>
 
 +(void)setup;
 @property (weak, nonatomic) IBOutlet UITableViewCell *dialogSearchCell;

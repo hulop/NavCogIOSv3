@@ -116,7 +116,9 @@
             });
         } else {
             NSLog(@"loading serverlist.json");
-            self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
+            });
             [[ServerConfig sharedConfig] requestServerList:@"" withComplete:^(NSDictionary *config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }
@@ -141,8 +143,9 @@
             }
         } else {
             NSLog(@"check agreement");
-            
-            self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
+            });
             [[ServerConfig sharedConfig] checkAgreement:^(NSDictionary* config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }
@@ -209,7 +212,9 @@
             }
         } else {
             NSLog(@"check server config");
-            self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+            });
             [[ServerConfig sharedConfig] requestServerConfig:^(NSDictionary *config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }

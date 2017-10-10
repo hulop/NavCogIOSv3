@@ -112,6 +112,7 @@
 		7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */; };
 		7E6E42E01D90C7A3006B6899 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7E6E42DF1D90C7A3006B6899 /* Settings.bundle */; };
 		7E6E42E91D90FD1B006B6899 /* BlindViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42E81D90FD1B006B6899 /* BlindViewController.m */; };
+		7E7C54FD1F87670D0007D01A /* NavCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E27F8F41EFA5FFE00FB3309 /* NavCoverView.m */; };
 		7E7ED5A51F5E67BC0033814B /* ScreenshotHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */; };
 		7E7ED5A81F5EDFC90033814B /* lastcommit.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7E7ED5A71F5EDFC90033814B /* lastcommit.txt */; };
 		7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */; };
@@ -127,6 +128,7 @@
 		7E9238ED1D5189F100875766 /* HLPSettingViewSwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E41D5189F100875766 /* HLPSettingViewSwitchCell.xib */; };
 		7E9238EE1D5189F100875766 /* HLPSettingViewTextCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E51D5189F100875766 /* HLPSettingViewTextCell.xib */; };
 		7E9238F11D5189FF00875766 /* HLPSettingView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238EF1D5189FF00875766 /* HLPSettingView.strings */; };
+		7E9657F01F619B9300A6B489 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9657EF1F619B9300A6B489 /* AssetsLibrary.framework */; };
 		7E96D9271DAC916C00D57C8C /* BlindView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E96D9291DAC916C00D57C8C /* BlindView.strings */; };
 		7E96D92D1DACC56200D57C8C /* HLPGeoJSON.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E96D92F1DACC56200D57C8C /* HLPGeoJSON.strings */; };
 		7E96D9331DACD0C700D57C8C /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E96D9321DACD0C700D57C8C /* SearchViewController.m */; };
@@ -333,6 +335,7 @@
 		7E9238E51D5189F100875766 /* HLPSettingViewTextCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = HLPSettingViewTextCell.xib; path = SettingUtil/HLPSettingViewTextCell.xib; sourceTree = "<group>"; };
 		7E9238F01D5189FF00875766 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = SettingUtil/Base.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
 		7E9238F21D518A1400875766 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = SettingUtil/en.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
+		7E9657EF1F619B9300A6B489 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		7E96D8F81DA7594B00D57C8C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7E96D9281DAC916C00D57C8C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/BlindView.strings; sourceTree = "<group>"; };
 		7E96D92A1DAC917800D57C8C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/BlindView.strings; sourceTree = "<group>"; };
@@ -395,6 +398,7 @@
 		7EF45E371E3F1E5600208042 /* ServerConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerConfig.m; sourceTree = "<group>"; };
 		7EF45E381E3F1E5600208042 /* AuthManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthManager.h; sourceTree = "<group>"; };
 		7EF45E391E3F1E5600208042 /* AuthManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthManager.m; sourceTree = "<group>"; };
+		7EF45E3C1E3F426F00208042 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		7EF45E441E3F42AB00208042 /* ConversationV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ConversationV1.framework; path = Carthage/Build/iOS/ConversationV1.framework; sourceTree = "<group>"; };
 		7EF45E471E3F42AB00208042 /* RestKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RestKit.framework; path = Carthage/Build/iOS/RestKit.framework; sourceTree = "<group>"; };
 		7EF45E531E3F58D200208042 /* dev.hashfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dev.hashfile; sourceTree = "<group>"; };
@@ -443,6 +447,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E9657F01F619B9300A6B489 /* AssetsLibrary.framework in Frameworks */,
+				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EF45E491E3F42AB00208042 /* ConversationV1.framework in Frameworks */,
 				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
@@ -487,9 +493,11 @@
 		0F5EA397BCF0C5EEF08F5111 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7E9657EF1F619B9300A6B489 /* AssetsLibrary.framework */,
 				A93ED2771ED2DBB800B75760 /* AVFoundation.framework */,
 				7EF45E441E3F42AB00208042 /* ConversationV1.framework */,
 				7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */,
+				7EF45E3C1E3F426F00208042 /* Security.framework */,
 				7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */,
 				A93ED2751ED2DBB000B75760 /* Foundation.framework */,
 				A91EA2E41F550ECF00548203 /* FormatterKit.framework */,
@@ -1110,6 +1118,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A91AAE611F6A7C1B00B5F903 /* NavBlindWebView.m in Sources */,
+				7E7C54FD1F87670D0007D01A /* NavCoverView.m in Sources */,
 				7E27F9391EFA642500FB3309 /* AuthManager.m in Sources */,
 				7E27F92C1EFA63EC00FB3309 /* DownloadViewController.m in Sources */,
 				7E27F93A1EFA642B00FB3309 /* NavDebugHelper.m in Sources */,

@@ -48,4 +48,5 @@
 @property (weak, nonatomic) IBOutlet UIButton *devNote;
 @property (weak, nonatomic) IBOutlet UIButton *devRestart;
 
+@property (weak, nonatomic) IBOutlet UILabel *commitLabel;
 @end

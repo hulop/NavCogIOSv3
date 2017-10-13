@@ -27,5 +27,6 @@
 
 - (BOOL) isExpMode;
 - (NSString*) expServerHost;
+- (BOOL) useDeviceId;
 
 @end

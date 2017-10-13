@@ -823,8 +823,44 @@ double stdev(double array[], long count) {
         if ([[ServerConfig sharedConfig] isExpMode]) {
             NSArray *routes = [[ExpConfig sharedConfig] expUserRoutes];
             if (routes == nil ){
-                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"exp_view"];
-                [self presentViewController:vc animated:YES completion:nil];
+                if ([[ServerConfig sharedConfig] useDeviceId] == NO) {
+                    vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"exp_view"];
+                    [self presentViewController:vc animated:YES completion:nil];
+                } else {
+                    [NavUtil showModalWaitingWithMessage:@"loading..."];
+                    NSString *uuid = [UIDevice currentDevice].identifierForVendor.UUIDString;
+                    [[ExpConfig sharedConfig] requestUserInfo:uuid withComplete:^(NSDictionary *dic) {
+                        if (dic == nil) {
+                            [[ExpConfig sharedConfig] saveUserInfo:uuid withInfo:@{@"group":@"anonymous"} withComplete:^{
+                                [[ExpConfig sharedConfig] requestUserInfo:uuid withComplete:^(NSDictionary *dic) {
+                                    if (dic) {
+                                        [[ExpConfig sharedConfig] requestRoutesConfig:^(NSDictionary *dic) {
+                                            if (dic) {
+                                            } else {
+                                            }
+                                            [NavUtil hideModalWaiting];
+                                        }];
+                                    } else {
+                                        [NavUtil hideModalWaiting];
+                                    }
+                                }];
+                            }];
+                        } else {
+                            [[ExpConfig sharedConfig] requestUserInfo:uuid withComplete:^(NSDictionary *dic) {
+                                if (dic) {
+                                    [[ExpConfig sharedConfig] requestRoutesConfig:^(NSDictionary *dic) {
+                                        if (dic) {
+                                        } else {
+                                        }
+                                        [NavUtil hideModalWaiting];
+                                    }];
+                                } else {
+                                    [NavUtil hideModalWaiting];
+                                }
+                            }];
+                        }
+                    }];
+                }
                 return NO;
             } else if (routes.count > 0) {
                 vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"setting_view"];

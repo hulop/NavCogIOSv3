@@ -25,6 +25,7 @@
 #import "NavUtil.h"
 #import "LocationEvent.h"
 #import "DestinationTableViewController.h"
+#import "ExpConfig.h"
 @import AVFoundation;
 
 @interface NavSearchHistoryDataSource2: NavSearchHistoryDataSource
@@ -316,6 +317,14 @@
 - (void) _startNavigation:(NSDictionary*)override
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
+    
+    [ExpConfig sharedConfig].currentRoute = @{
+                                              @"name":[NSString stringWithFormat:@"%@ -> %@", nds.from.name, nds.to.name],
+                                              @"from_id":nds.from.singleId,
+                                              @"to_id":nds.to._id,
+                                              @"limit":@(24*3600*365)
+                                              };
+    
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     __block NSMutableDictionary *prefs = [@{
                             @"dist":@"500",

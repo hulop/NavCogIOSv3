@@ -204,7 +204,9 @@
                 });
             //}
         } else {
-            self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+            });
             [[ServerConfig sharedConfig] requestServerConfig:^(NSDictionary *config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }

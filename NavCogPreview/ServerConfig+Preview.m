@@ -40,4 +40,12 @@
     return nil;
 }
 
+- (BOOL) useDeviceId
+{
+    if (self.selectedServerConfig) {
+        return [self.selectedServerConfig[@"exp_use_device_id"] boolValue];
+    }
+    return NO;
+}
+
 @end

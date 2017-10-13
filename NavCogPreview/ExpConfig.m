@@ -60,6 +60,37 @@ static ExpConfig *instance;
 }
 
 
+- (void)saveUserInfo:(NSString*)user_id withInfo:(NSDictionary*)info withComplete:(void(^)(void))complete;
+{
+    _user_id = user_id;
+    NSError *error;
+    
+    NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
+    
+    NSURL *userurl = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/user?id=%@",https, server_host, _user_id]];
+    NSData *userdata = [NSJSONSerialization dataWithJSONObject:info options:0 error:&error];
+    
+    [HLPDataUtil postRequest:userurl
+                 contentType:@"application/json; charset=UTF-8"
+                    withData:userdata
+                    callback:^(NSData *response)
+     {
+         NSError *error;
+         [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+         if (error) {
+             NSString *res = [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding];
+             NSLog(@"%@", res);
+         } else {
+             _userInfo = info;
+             complete();
+         }
+     }];
+
+}
+
+
+
 - (void)requestRoutesConfig:(void(^)(NSDictionary*))complete
 {
     NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
@@ -79,7 +110,7 @@ static ExpConfig *instance;
     }];
 }
 
-- (void)endExpDuration:(double)duration withLogFile:(NSString *)logFile withComplete:(void (^)())complete
+- (void)endExpDuration:(double)duration withLogFile:(NSString *)logFile withComplete:(void (^)(void))complete
 {
     NSError *error;
     
@@ -252,7 +283,7 @@ static ExpConfig *instance;
     }
     NSArray *routes = _expRoutes[group][@"routes"];
     
-    return routes;
+    return routes == nil ? @[] : routes;
 }
 
 - (NSArray*)expUserRouteInfo

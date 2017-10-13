@@ -791,7 +791,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
         NSString *name = [NSString stringWithFormat:@"report_issue_%@", log];
         [reportIssueSettingHelper addActionTitle:label Name:name];
         count++;
-        if (count >= 5) {
+        if (count >= 10) {
             break;
         }
     }

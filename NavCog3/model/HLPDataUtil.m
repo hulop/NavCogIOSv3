@@ -248,7 +248,7 @@
                                              cachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                              timeoutInterval: 60.0];
 
-        //NSLog(@"Requesting %@ \n%@", url, temp2);
+        NSLog(@"Requesting %@", url);
         
         [request setHTTPMethod: method];
         [request setValue:type forHTTPHeaderField: @"Content-Type"];
@@ -280,29 +280,19 @@
 
 + (void)getJSON:(NSURL *)url withCallback:(void (^)(NSObject *))callback
 {
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest
-                                    requestWithURL: url
-                                    cachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                    timeoutInterval: 60.0];
-    [request setHTTPMethod: @"GET"];
-    
-    NSURLSession *session = [NSURLSession sharedSession];
-    
-    [[session dataTaskWithRequest: request  completionHandler: ^(NSData *data, NSURLResponse *response, NSError *error) {
+    [HLPDataUtil method:@"GET" request:url contentType:@"" withData:[[NSData alloc] init] callback:^(NSData *response) {
         @try {
-            if (response && ! error) {
+            if (response) {
                 NSError *error2;
-                NSObject *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error2];
+                NSObject *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error2];
                 if (json && !error2) {
                     callback(json);
                 } else {
                     NSLog(@"Error2: %@", [error2 localizedDescription]);
-                    NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                    NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
                     callback(nil);
                 }
             } else {
-                NSLog(@"Error: %@", [error localizedDescription]);
                 callback(nil);
             }
         }
@@ -310,6 +300,6 @@
             NSLog(@"%@", [e debugDescription]);
             callback(nil);
         }
-    }] resume];
+    }];
 }
 @end

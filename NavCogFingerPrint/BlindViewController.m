@@ -148,7 +148,10 @@
     [self.devRight setTitle:@"Right" forState:UIControlStateNormal];
     
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
-    helper = [[NavBlindWebviewHelper alloc] initWithWebview:self.webView server:server];
+    BOOL useHttps = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"];
+    BOOL clearsCache = [[NSUserDefaults standardUserDefaults] boolForKey:@"cache_clear"];
+    helper = [[NavBlindWebviewHelper alloc] initWithWebview:self.webView server:server context:@""
+                                                  usesHttps:useHttps clearsCache:clearsCache];
     helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
     helper.delegate = self;
     
@@ -408,7 +411,7 @@
         
         if (fpMode == FPModeFingerprint) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
-            self.settingButton.enabled = fpm.isReady;
+            self.settingButton.enabled = fpm.isReady || !_retryButton.hidden;
             
             if (selectedFeature) {
                 self.searchButton.title = NSLocalizedStringFromTable(@"Delete", @"Fingerprint", @"");
@@ -440,7 +443,7 @@
             }
         } else if (fpMode == FPModeBeacon) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
-            self.settingButton.enabled = fpm.isReady;
+            self.settingButton.enabled = fpm.isReady || !_retryButton.hidden;
             
             if (selectedFeature) {
                 self.searchButton.title = NSLocalizedStringFromTable(@"Delete", @"Fingerprint", @"");
@@ -709,6 +712,7 @@
     _indicator.hidden = YES;
     _retryButton.hidden = NO;
     _errorMessage.hidden = NO;
+    [self updateView];
 }
 
 - (IBAction)retry:(id)sender {

@@ -213,7 +213,8 @@ static ServerConfig *instance;
     
     NSString *server_host = [[ServerConfig sharedConfig].selected objectForKey:@"hostname"];
     NSString *device_id = [[UIDevice currentDevice].identifierForVendor UUIDString];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/api/check_agreement?id=%@",server_host, device_id]];
+    NSString *https = [[self.selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/api/check_agreement?id=%@",https,server_host, device_id]];
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {

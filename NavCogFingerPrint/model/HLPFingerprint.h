@@ -58,6 +58,7 @@
 @property (nonatomic, readonly) double x;
 @property (nonatomic, readonly) double y;
 @property (nonatomic, readonly) double rotate;
+- (void) updateWithFloorplan:(HLPFloorplan*) floorplan;
 @end
 
 @interface HLPSamplingInfo : MTLModel<MTLJSONSerializing, NSCoding>

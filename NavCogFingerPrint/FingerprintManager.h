@@ -49,6 +49,7 @@
 @property NSArray *floorplans;
 @property NSArray *refpoints;
 @property NSMutableDictionary *floorplanRefpointMap;
+@property NSMutableDictionary *floorplanMap;
 @property NSArray *samplings;
 @property (readonly) HLPRefpoint *selectedRefpoint;
 @property (readonly) HLPFloorplan *selectedFloorplan;

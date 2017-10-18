@@ -283,6 +283,10 @@ static FingerprintManager *instance;
     x = local.x;
     y = local.y;
     
+    [self startSampling];
+}
+
+- (void)startSampling {
     NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_finger_printing_beacon_uuid"];
     if (!uuid) {
         return;
@@ -463,6 +467,25 @@ static FingerprintManager *instance;
     NSDictionary *update = @{@"$set" : @{@"beacons" : beacons}};
     
     [self requestUpdate:update withQuery:query];
+}
+
+- (CLBeacon*)strongestBeacon
+{
+    CLBeacon *strongest = nil;
+    for(CLBeacon *beacon in sampler.visibleBeacons) {
+        if (beacon.rssi == 0) {
+            continue;
+        }
+        if (strongest == nil || strongest.rssi < beacon.rssi) {
+            strongest = beacon;
+        }
+    }
+    return strongest;
+}
+
+- (void)reset
+{
+    [sampler reset];
 }
 
 - (void)removeBeacon:(HLPGeoJSONFeature *)beacon

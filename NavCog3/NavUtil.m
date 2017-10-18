@@ -105,31 +105,40 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
 
 +(UIMessageView*)showMessageView:(UIView *)view
 {
+    NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
+    
+    if (!messageViewMap) {
+        messageViewMap = [@{} mutableCopy];
+    }
+    if (messageViewMap[address]) {
+        return (UIMessageView*)messageViewMap[address];
+    }
+    
     CGFloat w = view.frame.size.width;
     CGFloat size = 60;
     
     UIMessageView *overlay = [[UIMessageView alloc]initWithFrame:CGRectMake(0, 0, w, size)];
-    
+
     UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, w-size, size)];
     label.text = @"Log Replaying";
     label.font = [UIFont fontWithName:@"Courier" size:14];
     label.numberOfLines = 0;
+    [label setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(w-size, 0, size, size)];
     [btn setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
-    
+    [btn setTranslatesAutoresizingMaskIntoConstraints:NO];
+
     [overlay setBackgroundColor:
      [UIColor colorWithRed:1 green:1 blue:1 alpha:0.75]];
     [overlay addSubview:label];
     [overlay addSubview:btn];
     
-    [view addSubview:overlay];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [view addSubview:overlay];
+    });
     
-    if (!messageViewMap) {
-        messageViewMap = [@{} mutableCopy];
-    }
-    
-    [messageViewMap setObject:overlay forKey:[NSString stringWithFormat:@"%ld", (long) view]];
+    [messageViewMap setObject:overlay forKey:address];
     
     overlay.message = label;
     overlay.action = btn;
@@ -141,6 +150,7 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
         id overlay = messageViewMap[address];
+        [messageViewMap removeObjectForKey:address];
         [overlay removeFromSuperview];
     });
 }

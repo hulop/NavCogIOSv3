@@ -205,7 +205,7 @@ Option parseArguments(int argc, char * argv[]){
     NSLog(@"User,%@", userID);
     
     dataStore.userID = userID;
-    [dataStore reloadDestinationsAtLat:opt.lat Lng:opt.lng forUser:dataStore.userID withUserLang:dataStore.userLanguage];
+    [dataStore reloadDestinationsAtLat:opt.lat Lng:opt.lng Dist:(int)opt.dist forUser:dataStore.userID withUserLang:dataStore.userLanguage];
 }
 
 - (void)destinationChanged:(NSNotification*)note
@@ -393,7 +393,7 @@ Option parseArguments(int argc, char * argv[]){
     }
 
     NSDictionary *prefs = @{
-                            @"dist":@"500",
+                            @"dist":@(opt.dist),
                             @"preset":@"9",
                             @"min_width":@"8",
                             @"slope":@"9",

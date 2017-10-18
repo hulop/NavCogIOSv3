@@ -586,10 +586,14 @@ static NavDataStore* instance_ = nil;
 
 - (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
 {
+    return [self reloadDestinationsAtLat:lat Lng:lng Dist:1000 forUser:user withUserLang:user_lang];
+}
+
+- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang
+{
     if (isnan(lat) || isnan(lng) || user == nil || user_lang == nil) {
         return NO;
     }
-    int dist = 1000;
     
     _loadLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
     if (destinationCacheLocation && [destinationCacheLocation distanceTo:_loadLocation] < dist/2 &&
@@ -601,7 +605,7 @@ static NavDataStore* instance_ = nil;
         return NO;
     }
     
-    NSDictionary *param = @{@"lat":@(lat), @"lng":@(lng), @"user":user, @"user_lang":user_lang};
+    NSDictionary *param = @{@"lat":@(lat), @"lng":@(lng), @"dist": @(dist), @"user":user, @"user_lang":user_lang};
     [Logging logType:@"initTarget" withParam:param];
     
     [HLPDataUtil loadLandmarksAtLat:lat Lng:lng inDist:dist forUser:user withLang:user_lang withCallback:^(NSArray<HLPObject *> *result) {

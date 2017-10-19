@@ -22,6 +22,7 @@
 
 #import "POIViewController.h"
 #import "NavDataStore.h"
+#import "HLPGeoJSON+External.h"
 
 @interface POIViewController ()
 
@@ -35,6 +36,13 @@
     if (_pois) {
         NSMutableString *str = [@"<html><body>" mutableCopy];
         for(HLPEntrance *poi in _pois) {
+            if (poi.facility.isExternalPOI) {
+                NSURL *url = poi.facility.externalPOIWebpage;
+                if (url) {
+                    [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
+                    return;
+                }
+            }            
             [str appendFormat:@"<h1>%@</h1>", [poi name]];
             if (poi.facility.longDescription) {
                 [str appendFormat:@"<div>%@</div>", poi.facility.longDescription];

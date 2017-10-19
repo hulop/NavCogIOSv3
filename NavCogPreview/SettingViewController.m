@@ -26,6 +26,7 @@
 #import "AuthManager.h"
 #import "NavUtil.h"
 #import "NavDataStore.h"
+#import "NavDataSource.h"
 #import "HLPFingerprint.h"
 #import "BlindViewController.h"
 #import "ServerConfig+Preview.h"
@@ -41,6 +42,9 @@
 static HLPSettingHelper *userSettingHelper;
 static HLPSettingHelper *routeOptionsSettingHelper;
 static HLPSettingHelper *expSettingHelper;
+static NavDestinationDataSource *destSource;
+static HLPSettingHelper *areaSettingHelper;
+static NSDictionary<NSString*, NavDestination*> *destMap;
 
 static HLPSetting *idLabel;
 
@@ -67,6 +71,14 @@ static HLPSetting *idLabel;
         helper = expSettingHelper;
         self.navigationItem.title = @"Select a route";
     }
+    if ([self.restorationIdentifier isEqualToString:@"area_selection"]) {
+        destSource = [[NavDestinationDataSource alloc] init];
+        destSource.showBuilding = YES;
+        [destSource update:nil];
+        [SettingViewController setupAreaSettings];
+        helper = areaSettingHelper;
+        self.navigationItem.title = @"Select an area";
+    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:EXP_ROUTES_CHANGED_NOTIFICATION object:nil];
     
@@ -75,7 +87,6 @@ static HLPSetting *idLabel;
         self.tableView.delegate = helper;
         self.tableView.dataSource = helper;
     }
-    
     [self updateView];
 }
 
@@ -99,7 +110,6 @@ static HLPSetting *idLabel;
 - (void) updateView
 {
     [self.tableView reloadData];
-    
 }
 
 - (void)dealloc
@@ -125,6 +135,11 @@ static HLPSetting *idLabel;
         if ([lang isEqualToString:@"-en"]) { lang = @""; }
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://hulop.github.io/help_preview%@", lang]];
         [NavUtil openURL:url onViewController:self];
+    }
+    
+    if ([self.restorationIdentifier isEqualToString:@"area_selection"]) {
+        [[NSUserDefaults standardUserDefaults] setObject:destMap[setting.name].filter forKey:PREVIEW_SELECTED_FILTER];
+        [self performSegueWithIdentifier:@"unwind_to_search" sender:self];
     }
 }
 
@@ -247,6 +262,27 @@ static HLPSetting *idLabel;
         HLPSetting *setting = [expSettingHelper addActionTitle:title Name:route[@"name"]];        
         setting.disabled = (elapsed_time > limit);
     }
+}
+
++ (void)setupAreaSettings
+{
+    if (!areaSettingHelper) {
+        areaSettingHelper = [[HLPSettingHelper alloc] init];
+    }
+    [areaSettingHelper removeAllSetting];
+    [areaSettingHelper addSectionTitle:@"Select an area"];
+    
+    UITableView *view = [[UITableView alloc] init];
+    NSInteger rows = [destSource tableView:view numberOfRowsInSection:0];
+    NSMutableDictionary *temp = [@{} mutableCopy];
+    for(long i = 0; i < rows; i++) {
+        NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
+        NavDestination *dest = [destSource destinationForRowAtIndexPath:index];
+        NSString *title = dest.filter[@"building"];
+        [areaSettingHelper addActionTitle:title Name:title];
+        temp[title] = dest;
+    }
+    destMap = temp;
 }
 
 - (void)didReceiveMemoryWarning {

@@ -283,6 +283,7 @@
     // cached data
     NSArray* destinationCache;
     HLPLocation* destinationCacheLocation;
+    double destinationDistCache;
     
     BOOL destinationRequesting;
     NSArray* routeCache;
@@ -310,6 +311,7 @@ static NavDataStore* instance_ = nil;
     [self reset];
     
     userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
+    destinationDistCache = 1000;
     
     // prevent problem on server cache
     
@@ -558,8 +560,12 @@ static NavDataStore* instance_ = nil;
     [self requestRouteFrom:fromID To:toID forUser:user withLang:lang useCache:NO withPreferences:prefs complete:nil];
 }
 
-
 - (BOOL)reloadDestinations:(BOOL)force;
+{
+    return [self reloadDestinations:force withComplete:nil];
+}
+
+- (BOOL)reloadDestinations:(BOOL)force withComplete:(void(^)(NSArray*))complete
 {
     if (destinationRequesting) {
         return NO;
@@ -574,7 +580,7 @@ static NavDataStore* instance_ = nil;
     NSString *user = [self userID];
     NSString *user_lang = [self userLanguage];
     
-    return [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang];
+    return [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang withComplete:complete];
 }
 
 - (NSString*)normalizePron:(NSString*)str
@@ -584,17 +590,26 @@ static NavDataStore* instance_ = nil;
     return retStr;
 }
 
-- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
+- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang {
+    return [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang withComplete:nil];
+}
+
+- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*))complete
 {
-    return [self reloadDestinationsAtLat:lat Lng:lng Dist:1000 forUser:user withUserLang:user_lang];
+    return [self reloadDestinationsAtLat:lat Lng:lng Dist:destinationDistCache forUser:user withUserLang:user_lang withComplete:complete];
 }
 
 - (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang
 {
+    return [self reloadDestinationsAtLat:lat Lng:lng Dist:dist forUser:user withUserLang:user_lang withComplete:nil];
+}
+
+- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*))complete
+{
     if (isnan(lat) || isnan(lng) || user == nil || user_lang == nil) {
         return NO;
     }
-    
+    destinationDistCache = dist;
     _loadLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
     if (destinationCacheLocation && [destinationCacheLocation distanceTo:_loadLocation] < dist/2 &&
         destinationCache && destinationCache.count > 0) {
@@ -634,6 +649,9 @@ static NavDataStore* instance_ = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
         });
+        if (complete) {
+            complete(destinationCache);
+        }
 
         destinationRequesting = NO;
     }];

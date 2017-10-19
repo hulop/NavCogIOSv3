@@ -24,46 +24,6 @@
 #import "HLPLocation.h"
 #import "objc/runtime.h"
 
-#define PROPKEY_NODE_ID @"ノードID"
-#define PROPKEY_NODE_FOR_ID @"対応ノードID"
-#define PROPKEY_LINK_ID @"リンクID"
-#define PROPKEY_FACILITY_ID @"施設ID"
-#define PROPKEY_FACILITY_FOR_ID @"対応施設ID"
-#define PROPKEY_ENTRANCE_ID @"出入口ID"
-#define PROPKEY_HEIGHT @"高さ"
-#define PROPKEY_CONNECTED_LINK_ID_PREFIX @"接続リンクID"
-#define PROPKEY_LINK_LENGTH @"リンク延長"
-#define PROPKEY_LINK_DIRECTION @"方向性"
-#define PROPKEY_LINK_TYPE @"経路の種類"
-#define PROPKEY_TARGET_NODE_ID @"終点ノードID"
-#define PROPKEY_SOURCE_NODE_ID @"起点ノードID"
-#define PROPKEY_NAME @"名称"
-#define PROPKEY_ENTRANCE_NAME @"出入口の名称"
-#define PROPKEY_MALE_OR_FEMALE @"男女別"
-#define PROPKEY_MULTI_PURPOSE_TOILET @"多目的トイレ"
-#define PROPKEY_EFFECTIVE_WIDTH @"有効幅員"
-#define PROPKEY_ELEVATOR_EQUIPMENTS @"elevator_equipments"
-#define PROPKEY_BRAILLE_BLOCK @"視覚障害者誘導用ブロック"
-#define PROPKEY_ADDR @"所在地"
-
-// for extension
-#define PROPKEY_EXT_MAJOR_CATEGORY @"major_category"
-#define PROPKEY_EXT_SUB_CATEGORY @"sub_category"
-#define PROPKEY_EXT_MINOR_CATEGORY @"minor_category"
-#define PROPKEY_EXT_LONG_DESCRIPTION @"long_description"
-#define PROPKEY_EXT_HEADING @"heading"
-#define PROPKEY_EXT_ANGLE @"angle"
-#define PROPKEY_EXT_HEIGHT @"height"
-
-
-#define CATEGORY_LINK @"リンクの情報"
-#define CATEGORY_NODE @"ノード情報"
-#define CATEGORY_PUBLIC_FACILITY @"公共施設の情報"
-#define CATEGORY_ENTRANCE @"出入口情報"
-#define CATEGORY_TOILET @"公共用トイレの情報"
-
-#define NAV_POI @"_nav_poi_"
-
 @implementation HLPGeometry
 + (NSDictionary *)JSONKeyPathsByPropertyKey
 {
@@ -355,9 +315,10 @@
 + (NSValueTransformer *)nodeHeightJSONTransformer {
     return [MTLValueTransformer transformerUsingForwardBlock:^id(NSString *height, BOOL *success, NSError *__autoreleasing *error) {
         double h = [height doubleValue];
-        return @((h >= 1)?h-1:h);
+        return @((h==0)?h=-999:(h >= 1)?h-1:h);
     } reverseBlock:^id(NSNumber *height, BOOL *success, NSError *__autoreleasing *error) {
         double h = [height doubleValue];
+        if (h == -999) { return @""; }
         h = (h >= 0)?h+1:h;
         return [NSString stringWithFormat:@"%.0f",h];
     }];
@@ -699,6 +660,8 @@ static NSRegularExpression *patternHLPPOIFlags;
     }
     
     _brailleBlockType = [self.properties[PROPKEY_BRAILLE_BLOCK] intValue];
+    
+    _streetName = self.properties[PROPKEY_LINK_STREET_NAME];
     
     _minimumWidth = 3.0;
     if (self.properties[PROPKEY_EFFECTIVE_WIDTH]) {

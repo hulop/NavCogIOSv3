@@ -50,7 +50,10 @@
         
         floor = round(floor*2.0)/2.0;
         
-        if (floor < 0) {
+        if (floor == -999) {
+            return NSLocalizedStringFromTable(@"ground floor", @"BlindView", @"");
+        }
+        else if (floor < 0) {
             NSString *ordinalNumber = [ordinalNumberFormatter stringFromNumber:@(fabs(floor))];
             
             return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorBasementD", @"BlindView", @"basement floor"), ordinalNumber];
@@ -62,7 +65,10 @@
     } else {
         floor = round(floor*2.0)/2.0;
         
-        if (floor < 0) {
+        if (floor == -999) {
+            return NSLocalizedStringFromTable(@"ground floor", @"BlindView", @"");
+        }
+        else if (floor < 0) {
             return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorBasementD", @"BlindView", @"basement floor"), @(fabs(floor))];
         } else {
             return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorD", @"BlindView", @"floor"), @(floor+1)];

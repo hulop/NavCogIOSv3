@@ -102,7 +102,9 @@
     
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
     BOOL useHttps = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"];
-    BOOL clearsCache = [[NSUserDefaults standardUserDefaults] boolForKey:@"cache_clear"];
+    BOOL clearsCache = [[NSUserDefaults standardUserDefaults] boolForKey:@"cache_clear"];    
+    helper = [[NavBlindWebviewHelper alloc] initWithWebview:self.webView server:server context:@""
+                                                  usesHttps:useHttps clearsCache:clearsCache];
     helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
     helper.delegate = self;
     
@@ -821,59 +823,42 @@ double stdev(double array[], long count) {
         [NavDataStore sharedDataStore].mapCenter = [helper getCenter];
         
         UIViewController *vc = nil;
-        if ([[ServerConfig sharedConfig] isExpMode]) {
-            NSArray *routes = [[ExpConfig sharedConfig] expUserRoutes];
-            if (routes == nil ){
-                if ([[ServerConfig sharedConfig] useDeviceId] == NO) {
-                    vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"exp_view"];
-                    [self presentViewController:vc animated:YES completion:nil];
-                } else {
+        
+        BOOL isExpMode = [[ServerConfig sharedConfig] isExpMode];
+        BOOL useDeviceId = [[ServerConfig sharedConfig] useDeviceId];
+        NSArray *routes = [[ExpConfig sharedConfig] expUserRoutes];
+        
+        if (isExpMode) {
+            if (!routes) { // require authentication
+                if (useDeviceId) {
                     [NavUtil showModalWaitingWithMessage:@"loading..."];
                     NSString *uuid = [UIDevice currentDevice].identifierForVendor.UUIDString;
                     [[ExpConfig sharedConfig] requestUserInfo:uuid withComplete:^(NSDictionary *dic) {
-                        if (dic == nil) {
-                            [[ExpConfig sharedConfig] saveUserInfo:uuid withInfo:@{@"group":@"anonymous"} withComplete:^{
-                                [[ExpConfig sharedConfig] requestUserInfo:uuid withComplete:^(NSDictionary *dic) {
-                                    if (dic) {
-                                        [[ExpConfig sharedConfig] requestRoutesConfig:^(NSDictionary *dic) {
-                                            if (dic) {
-                                            } else {
-                                            }
-                                            [NavUtil hideModalWaiting];
-                                        }];
-                                    } else {
-                                        [NavUtil hideModalWaiting];
-                                    }
-                                }];
+                        if (dic) {
+                            [[ExpConfig sharedConfig] requestRoutesConfig:^(NSDictionary *routes) {
+                                // noop
                             }];
                         } else {
-                            [[ExpConfig sharedConfig] requestUserInfo:uuid withComplete:^(NSDictionary *dic) {
-                                if (dic) {
-                                    [[ExpConfig sharedConfig] requestRoutesConfig:^(NSDictionary *dic) {
-                                        if (dic) {
-                                        } else {
-                                        }
-                                        [NavUtil hideModalWaiting];
-                                    }];
-                                } else {
-                                    [NavUtil hideModalWaiting];
-                                }
-                            }];
+                            //error
                         }
                     }];
+                } else { // require login
+                    vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"exp_view"];
                 }
-                return NO;
-            } else if (routes.count > 0) {
-                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"setting_view"];
-                vc.restorationIdentifier = @"exp_settings";
             } else {
-                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
+                if (routes.count > 0) { // with route
+                    vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"setting_view"];
+                    vc.restorationIdentifier = @"exp_settings";
+                } else { // no route                    
+                    vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
+                }
             }
         } else {
             vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
         }
-        [self.navigationController pushViewController:vc animated:YES];
-        
+        if (vc) {
+            [self.navigationController pushViewController:vc animated:YES];
+        }
         return NO;
     }
     return YES;

@@ -22,6 +22,7 @@
 #import "ExpConfig.h"
 #import "HLPDataUtil.h"
 #import "ServerConfig+Preview.h"
+#import "NavDataStore.h"
 
 @implementation ExpConfig
 
@@ -46,6 +47,7 @@ static ExpConfig *instance;
     _user_id = user_id;
     NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
     NSString *https = [[[ServerConfig sharedConfig].selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    BOOL useDeviceID = [[ServerConfig sharedConfig] useDeviceId];
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/user?id=%@",https, server_host, user_id]];
     
@@ -54,7 +56,15 @@ static ExpConfig *instance;
             _userInfo = (NSDictionary*)result;
             complete(self.userInfo);
         } else {
-            complete(nil);
+            if (useDeviceID) {
+                [[ExpConfig sharedConfig] saveUserInfo:user_id withInfo:@{@"group":@"anonymous"} withComplete:^{
+                    [[ExpConfig sharedConfig] requestUserInfo:user_id withComplete:^(NSDictionary *dic) {
+                        complete(dic);
+                    }];
+                }];
+            } else {
+                complete(nil);
+            }
         }
     }];
 }
@@ -86,13 +96,27 @@ static ExpConfig *instance;
              complete();
          }
      }];
-
 }
-
-
 
 - (void)requestRoutesConfig:(void(^)(NSDictionary*))complete
 {
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    HLPLocation *center = [nds mapCenter];
+    
+    if (![[NavDataStore sharedDataStore] reloadDestinationsAtLat:center.lat Lng:center.lng Dist:100000 forUser:nds.userID withUserLang:nds.userLanguage withComplete:^(NSArray* dest){
+        [self _requestRoutesConfig:complete];
+    }]) {
+        [self _requestRoutesConfig:complete];
+    }
+}
+
+- (void)_requestRoutesConfig:(void(^)(NSDictionary*))complete
+{
+    if ([NavDataStore sharedDataStore].destinations == nil ||
+        [NavDataStore sharedDataStore].destinations.count == 0) {
+        complete(nil);
+        return;
+    }
     NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
     NSString *https = [[[ServerConfig sharedConfig].selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
     NSString *routes_file_name = @"exp_routes.json";

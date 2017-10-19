@@ -20,17 +20,21 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+#import "HLPGeoJSON.h"
 #import <Foundation/Foundation.h>
-#import "ServerConfig.h"
 
-#define PREVIEW_SELECTED_FILTER @"PREVIEW_SELECTED_FILTER"
+@interface HLPFacility (External)
 
-@interface ServerConfig (Exp)
+- (BOOL) isExternalPOI;
+- (NSURL*) externalPOIWebpage;
+- (NSString*) externalAttribution;
 
-- (BOOL) isExpMode;
-- (NSString*) expServerHost;
-- (BOOL) useDeviceId;
-- (BOOL) useAreaSelection;
-- (BOOL) onlyRoutePreview;
+@end
+
+@interface HLPLandmark (External)
+
+- (BOOL) isExternalPOI;
+- (NSURL*) externalPOIWebpage;
+- (NSString*) externalAttribution;
 
 @end

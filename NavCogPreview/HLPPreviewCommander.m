@@ -165,6 +165,9 @@
                             next = current.nextAction;
                             [str appendString:[self nextActionString:next noDistance:YES]];
                         }
+                        else if (current.hasIntersectionName) {                            
+                            [str appendString:[self intersectionString:current]];
+                        }
                         [str appendString:[self poisString:current]];
                     }
                     else if (current.isGoingBackward) {
@@ -200,7 +203,7 @@
                     } else {
                         [_delegate playFail];
                         if (current.target == prev.target && current.orientation != prev.orientation) {
-                            double heading = [self turnAngle:prev.orientation toLink:current.link at:current.target];
+                            double heading = [prev turnAngleToLink:current.link at:current.target];
                             if (fabs(heading) > 20) {
                                 [str appendString:[self turnString:heading]];
                                 [str appendString:@". "];
@@ -262,7 +265,7 @@
                 }
                 // turned
                 if (current.target == prev.target && current.orientation != prev.orientation) {
-                    double heading = [self turnAngle:prev.orientation toLink:current.link at:current.target];
+                    double heading = [prev turnAngleToLink:current.link at:current.target];
                     if (fabs(heading) > 20) {
                         [str appendString:[self turnString:heading]];
                         [str appendString:@". "];
@@ -462,7 +465,11 @@
         
         floor = round(floor*2.0)/2.0;
         
-        if (floor < 0) {
+        
+        if (floor == -999) {
+            return NSLocalizedStringFromTable(@"ground floor", @"BlindView", @"");
+        }
+        else if (floor < 0) {
             NSString *ordinalNumber = [ordinalNumberFormatter stringFromNumber:@(fabs(floor))];
             
             return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorBasementD", @"BlindView", @"basement floor"), ordinalNumber];
@@ -474,7 +481,10 @@
     } else {
         floor = round(floor*2.0)/2.0;
         
-        if (floor < 0) {
+        if (floor == -999) {
+            return NSLocalizedStringFromTable(@"ground floor", @"BlindView", @"");
+        }
+        else if (floor < 0) {
             return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorBasementD", @"BlindView", @"basement floor"), @(fabs(floor))];
         } else {
             return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorD", @"BlindView", @"floor"), @(floor+1)];
@@ -493,10 +503,7 @@
     NSMutableString *str = [@"" mutableCopy];
     
     HLPPreviewEvent *next = event.next;
-    NSArray<HLPLink*> *remains = [links filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLink* link, NSDictionary<NSString *,id> * _Nullable bindings) {
-        double heading = [self turnAngle:event.orientation toLink:link atNode:node];
-        return 20 < fabs(heading) && fabs(heading) < 180-20;
-    }]];
+    NSArray<HLPLink*> *remains = [event intersectionConnectionLinks];
     
     if (event.target == next.target) {
         // end
@@ -504,7 +511,7 @@
             [str appendString:@"Here is dead end. You need to turn around."];
         }
         else if (remains.count == 1) {
-            double heading = [self turnAngle:event.orientation toLink:remains[0] atNode:node];
+            double heading = [event turnAngleToLink:remains[0] atNode:node];
             NSString *turn = [self turnString:heading];
             [str appendFormat:@"You need to %@. ", turn];
         }
@@ -517,17 +524,23 @@
                     [str appendString:@", "];
                 }
                 HLPLink *link = remains[i];
-                double heading = [self turnAngle:event.orientation toLink:link atNode:node];
+                double heading = [event turnAngleToLink:link atNode:node];
                 NSString *turn = [self turnString:heading];
                 [str appendString:turn];
             }
             [str appendString:@". "];
         }
     } else if (remains.count > 0){
+        NSString *intersectionName = [event intersectionName];
+        if (intersectionName) {
+            [str appendString:intersectionName];
+            [str appendString:@". "];
+        }
+        
         [str appendString:@"You can "];
         for(int i = 0; i < remains.count; i++) {
             HLPLink *link = remains[i];
-            double heading = [self turnAngle:event.orientation toLink:link atNode:node];
+            double heading = [event turnAngleToLink:link atNode:node];
             if (remains.count >= 2 && i == remains.count-1) {
                 [str appendString:@", and "];
             } else if (i > 0) {
@@ -554,7 +567,7 @@
     
     HLPPreviewEvent *next = event.next;
     NSArray<HLPLink*> *remains = [links filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLink* link, NSDictionary<NSString *,id> * _Nullable bindings) {
-        double heading = [self turnAngle:event.orientation toLink:link atNode:node];
+        double heading = [event turnAngleToLink:link atNode:node];
         return fabs(heading) < 180-20;
     }]];
 
@@ -563,7 +576,7 @@
     
     for(int i = 0; i < remains.count; i++) {
         HLPLink *link = remains[i];
-        double heading = [self turnAngle:event.orientation toLink:link atNode:node];
+        double heading = [event turnAngleToLink:link atNode:node];
         
         [walker reset];
         HLPWalkerPointer *root = [[HLPWalkerPointer alloc] initWithNode:node Link:link];
@@ -629,7 +642,7 @@
 
 - (NSString*)turnPoiString:(HLPPreviewEvent*)event
 {
-    double angle = [self turnAngle:event.orientation toLink:event.routeLink at:event.target];
+    double angle = [event turnAngleToLink:event.routeLink at:event.target];
     NSString *actionStr = [self turnString:angle];
     HLPPOI *poi = event.cornerPOI;
     if (poi) {
@@ -643,31 +656,6 @@
         actionStr = [actionStr stringByAppendingString:@". "];
     }
     return actionStr;
-}
-
-- (double)turnAngle:(double)orientation toLink:(HLPLink*)link at:(HLPObject*)object
-{
-    if ([object isKindOfClass:HLPNode.class]) {
-        return [self turnAngle:orientation toLink:link atNode:(HLPNode*)object];
-    }
-    
-    //NSAssert(NO, @"turnAngle with object is not implemented");
-    return [HLPLocation normalizeDegree:orientation + 180];
-}
-
-- (double)turnAngle:(double)orientation toLink:(HLPLink*)link atNode:(HLPNode*)node
-{
-    double linkDir = NAN;
-    if (link.sourceNode == node) {
-        linkDir = link.initialBearingFromSource;
-    }
-    else if (link.targetNode == node) {
-        linkDir = link.initialBearingFromTarget;
-    }
-    else {
-        NSLog(@"%@ is not node of the link %@", node._id, link._id);
-    }
-    return [HLPLocation normalizeDegree:linkDir - orientation];
 }
 
 -(NSString*)turnString:(double)heading

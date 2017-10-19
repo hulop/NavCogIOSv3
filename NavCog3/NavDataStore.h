@@ -85,9 +85,12 @@ typedef enum {
 + (instancetype) sharedDataStore;
 
 - (void) reset;
+- (BOOL) reloadDestinations:(BOOL)force withComplete:(void(^)(NSArray*))complete;
 - (BOOL) reloadDestinations:(BOOL)force;
 - (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang;
+- (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*))complete;
 - (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang;
+- (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*))complete;
 - (void) requestRouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)())complete;
 - (void) requestRerouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)())complete;
 - (void) requestServerConfigWithComplete:(void(^)())complete;

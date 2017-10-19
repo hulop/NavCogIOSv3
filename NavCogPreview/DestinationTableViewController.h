@@ -21,10 +21,12 @@
  *******************************************************************************/
 
 #import <UIKit/UIKit.h>
+#import "NavDataSource.h"
 
 @interface DestinationTableViewController : UITableViewController
 
 @property UIViewController *root;
 @property UIView *voTarget;
+@property NavDestination *filterDest;
 
 @end

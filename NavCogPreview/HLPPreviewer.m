@@ -23,6 +23,7 @@
 #import "HLPPreviewer.h"
 #import "NavDataStore.h"
 #import "ServerConfig+Preview.h"
+#import "HLPGeoJSON+External.h"
 
 #define TIMER_INTERVAL (1.0/64.0)
 #define INITIAL_SPEED (2.0)
@@ -271,6 +272,55 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     return _isSteppingBackward;
 }
 
+- (BOOL)hasIntersectionName
+{
+    return [self intersectionName] != nil;
+}
+
+- (NSString*)intersectionName
+{
+    HLPNode *node = self.targetNode;
+    if (!node) {
+        return nil;
+    }
+    if (!self.link.streetName) {
+        return nil;
+    }
+    NSArray<HLPLink*>* links = [self intersectionConnectionLinks];
+    if (links.count == 0) {
+        return nil;
+    }
+    NSString *name = links.firstObject.streetName;
+    for(int i = 1; i < links.count; i++) {
+        if (![name isEqualToString:links[i].streetName]) {
+            return nil;
+        }
+    }
+    return [NSString stringWithFormat:@"%@ with %@", self.link.streetName, name];
+}
+
+- (double)turnAngleToLink:(HLPLink*)link at:(HLPObject*)object
+{
+    if ([object isKindOfClass:HLPNode.class]) {
+        return [self turnAngleToLink:link atNode:(HLPNode*)object];
+    }
+    return [HLPLocation normalizeDegree:self.orientation + 180];
+}
+
+- (double)turnAngleToLink:(HLPLink*)link atNode:(HLPNode*)node
+{
+    double linkDir = NAN;
+    if (link.sourceNode == node) {
+        linkDir = link.initialBearingFromSource;
+    }
+    else if (link.targetNode == node) {
+        linkDir = link.initialBearingFromTarget;
+    }
+    else {
+        NSLog(@"%@ is not node of the link %@", node._id, link._id);
+    }
+    return [HLPLocation normalizeDegree:linkDir - self.orientation];
+}
 
 - (HLPLocation*)location
 {
@@ -317,6 +367,22 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
             return (link.targetNode == node);
         }
         return link.isLeaf == NO || link.length >= 3;
+    }]];
+}
+
+- (NSArray<HLPLink*>*)intersectionConnectionLinks
+{
+    HLPNode *node = self.targetNode;
+    if (!node) {
+        return nil;
+    }
+    NSArray<HLPLink*>* links = self.intersectionLinks;
+    if (!links) {
+        return nil;
+    }
+    return [links filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLink* link, NSDictionary<NSString *,id> * _Nullable bindings) {
+        double heading = [self turnAngleToLink:link atNode:node];
+        return 20 < fabs(heading) && fabs(heading) < 180-20;
     }]];
 }
 
@@ -428,6 +494,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
                 break;
             }
             if (!self.isOnRoute && (temp.targetPOIs || temp.targetIntersection)) {
+                break;
+            }
+            if (temp.hasIntersectionName) {
                 break;
             }
         } else {
@@ -596,6 +665,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     if ([obj isKindOfClass:HLPEntrance.class] && ((HLPEntrance*)obj).node.isLeaf) {
         if ([[NavDataStore sharedDataStore] isOnDestination:((HLPEntrance*)obj).node._id] ||
             [[NavDataStore sharedDataStore] isOnStart:((HLPEntrance*)obj).node._id] ||
+            ((HLPEntrance*)obj).facility.isExternalPOI ||
             (!_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_jump2"]) ||
             (_previewer.isAutoProceed && ![[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility_for_walk2"])) {
             name = ((HLPEntrance*)obj).facility.name;

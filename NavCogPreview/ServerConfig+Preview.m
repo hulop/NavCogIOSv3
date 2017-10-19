@@ -48,4 +48,20 @@
     return NO;
 }
 
+- (BOOL)useAreaSelection
+{
+    if (self.selectedServerConfig) {
+        return [self.selectedServerConfig[@"exp_use_area_selection"] boolValue];
+    }
+    return NO;
+}
+
+- (BOOL)onlyRoutePreview
+{
+    if (self.selectedServerConfig) {
+        return [self.selectedServerConfig[@"exp_only_route_preview"] boolValue];
+    }
+    return NO;
+}
+
 @end

@@ -517,7 +517,12 @@ double stdev(double array[], long count) {
     if (current && current.targetFacilityPOIs) {
         POIViewController *vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"poi_view"];
         vc.pois = current.targetFacilityPOIs;
-        [self.navigationController pushViewController:vc animated:YES];
+        if ([vc isContentAvailable]) {
+            [self.navigationController pushViewController:vc animated:YES];
+        } else {
+            [[NavSound sharedInstance] playFail];
+            [self speak:@"No detail information. " withOptions:@{@"force":@(NO)} completionHandler:nil];
+        }
     }
 }
 

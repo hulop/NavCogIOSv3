@@ -34,23 +34,51 @@
     [super viewDidLoad];
 
     if (_pois) {
-        NSMutableString *str = [@"<html><body>" mutableCopy];
-        for(HLPEntrance *poi in _pois) {
-            if (poi.facility.isExternalPOI) {
-                NSURL *url = poi.facility.externalPOIWebpage;
-                if (url) {
-                    [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
-                    return;
-                }
-            }            
-            [str appendFormat:@"<h1>%@</h1>", [poi name]];
-            if (poi.facility.longDescription) {
-                [str appendFormat:@"<div>%@</div>", poi.facility.longDescription];
+        NSURL *url = [self findURL];
+        if (url) {
+            [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
+            return;
+        }
+        
+        NSString *content = [self extractContent];
+        [self.webView loadHTMLString:content baseURL:nil];
+    }
+}
+
+- (NSURL*) findURL
+{
+    for(HLPEntrance *poi in _pois) {
+        if (poi.facility.isExternalPOI) {
+            NSURL *url = poi.facility.externalPOIWebpage;
+            if (url) {
+                return url;
             }
         }
-        [str appendString:@"</body></html>"];
-        [self.webView loadHTMLString:str baseURL:nil];
     }
+    return nil;
+}
+
+- (NSString*) extractContent
+{
+    NSMutableString *str = [@"<html><body>" mutableCopy];
+    for(HLPEntrance *poi in _pois) {
+        [str appendFormat:@"<h1>%@</h1>", [poi name]];
+        if (poi.facility.longDescription) {
+            [str appendFormat:@"<div>%@</div>", poi.facility.longDescription];
+        }
+    }
+    [str appendString:@"</body></html>"];
+    return str;
+}
+
+- (BOOL)isContentAvailable
+{
+    for(HLPEntrance *poi in _pois) {
+        if (poi.facility.longDescription && poi.facility.longDescription.length > 0) {
+            return YES;
+        }
+    }
+    return NO;    
 }
 
 - (void)didReceiveMemoryWarning {

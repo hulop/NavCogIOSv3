@@ -56,7 +56,7 @@
 {
     // TODO: arrow only our content
     NSURL *url = [NSURL URLWithString:[[[request URL] standardizedURL] absoluteString]];
-    if ([[url path] isEqualToString:@"/finish_agreement.jsp"]) { // check if finish page is tryed to be loaded
+    if ([[url path] hasSuffix:@"/finish_agreement.jsp"]) { // check if finish page is tryed to be loaded
         [[ServerConfig sharedConfig] checkAgreement:^(NSDictionary* config) {
             BOOL agreed = [config[@"agreed"] boolValue];
             if (agreed) {

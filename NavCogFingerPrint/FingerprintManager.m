@@ -263,10 +263,7 @@ static FingerprintManager *instance;
 
 - (NSString*) floorString:(double)floor
 {
-    if (floor == -999) {
-        return @"G";
-    }
-    else if (floor < 0) {
+    if (floor < 0) {
         return [NSString stringWithFormat:@"B%dF", -(int)round(floor)];
     } else {
         return [NSString stringWithFormat:@"%dF", (int)round(floor+1)];

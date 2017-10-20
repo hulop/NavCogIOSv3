@@ -296,7 +296,9 @@
 
 @end
 
-@implementation HLPLandmark
+@implementation HLPLandmark {
+    BOOL _isGround;
+}
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey
 {
@@ -328,7 +330,11 @@
 {
     self = [super initWithDictionary:dictionaryValue error:error];
     //_nodeHeight = (_nodeHeight >= 1)?_nodeHeight-1:_nodeHeight;
-    
+    if (_nodeHeight == -999) {
+        _nodeHeight = 0;
+        _isGround = YES;
+    }
+
     if(dictionaryValue[@"nodeCoordinates"]) {
         double lat = [dictionaryValue[@"nodeCoordinates"][1] doubleValue];
         double lng = [dictionaryValue[@"nodeCoordinates"][0] doubleValue];
@@ -395,7 +401,10 @@
     [self isToilet];
 }
 
-
+- (BOOL)isGround
+{
+    return _isGround;
+}
 
 @end
 

@@ -63,6 +63,10 @@
                     if (filter[@"$not"]) {
                         flag = flag && ![landmark.properties[key] isEqual:filter[@"$not"]];
                     }
+                } else if ([_filter[key] isKindOfClass:NSString.class]) {
+                    flag = flag && ([_filter[key] isEqualToString:landmark.properties[key]] ||
+                                    ([_filter[key] isEqualToString:@""] &&
+                                     landmark.properties[key] == nil));
                 } else {
                     flag = flag && [landmark.properties[key] isEqual:_filter[key]];
                 }
@@ -303,8 +307,8 @@
             floor = [floor stringByAppendingString:@" "];
             floorPron = [floorPron stringByAppendingString:@" "];
         }
-        floor = [floor stringByAppendingString:[self floorString:dest.landmark.nodeHeight]];
-        floorPron = [floorPron stringByAppendingString:[self floorStringPron:dest.landmark.nodeHeight]];
+        floor = [floor stringByAppendingString:[self floorString:dest.landmark]];
+        floorPron = [floorPron stringByAppendingString:[self floorStringPron:dest.landmark]];
     }
     
     cell.accessoryType = UITableViewCellAccessoryNone;
@@ -320,13 +324,14 @@
     return cell;
 }
 
-- (NSString*) floorString:(double) floor
+- (NSString*) floorString:(HLPLandmark*) landmark
 {
+    double floor = landmark.nodeHeight;
     floor = round(floor*2.0)/2.0;
     
     floor = (floor >= 0)?floor+1:floor;
     
-    if (floor == -999) {
+    if (landmark.isGround) {
         return @"G";
     } else if (floor < 0) {
         return [NSString stringWithFormat:@"B%dF", (int)fabs(floor)];
@@ -335,11 +340,12 @@
     }
 }
 
-- (NSString*) floorStringPron:(double) floor
+- (NSString*) floorStringPron:(HLPLandmark*) landmark
 {
+    double floor = landmark.nodeHeight;
     NSString *type = NSLocalizedStringFromTable(@"FloorNumType", @"BlindView", @"floor num type");
     
-    if (floor == -999) {
+    if (landmark.isGround) {
         return NSLocalizedStringFromTable(@"ground floor", @"BlindView", @"");
     }
     else if ([type isEqualToString:@"ordinal"]) {
@@ -364,7 +370,7 @@
     } else {
         floor = round(floor*2.0)/2.0;
         
-        if (floor == -999) {
+        if (landmark.isGround) {
             return NSLocalizedStringFromTable(@"ground floor", @"BlindView", @"");
         }
         else if (floor < 0) {

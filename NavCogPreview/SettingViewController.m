@@ -138,7 +138,11 @@ static HLPSetting *idLabel;
     }
     
     if ([self.restorationIdentifier isEqualToString:@"area_selection"]) {
-        [[NSUserDefaults standardUserDefaults] setObject:destMap[setting.name].filter forKey:PREVIEW_SELECTED_FILTER];
+        NSDictionary* filter = destMap[setting.name].filter;
+        if ([filter[@"building"] isEqual:[NSNull null]]) {
+            filter = @{@"building":@""};
+        }
+        [[NSUserDefaults standardUserDefaults] setObject:filter forKey:PREVIEW_SELECTED_FILTER];
         [self performSegueWithIdentifier:@"unwind_to_search" sender:self];
     }
 }
@@ -279,6 +283,9 @@ static HLPSetting *idLabel;
         NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
         NavDestination *dest = [destSource destinationForRowAtIndexPath:index];
         NSString *title = dest.filter[@"building"];
+        if ([title isEqual:[NSNull null]]) {
+            title = @"NOAREA";
+        }
         [areaSettingHelper addActionTitle:title Name:title];
         temp[title] = dest;
     }

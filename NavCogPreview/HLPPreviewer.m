@@ -822,19 +822,26 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     HLPNode *node = self.targetNode;
     NavDataStore *nds = [NavDataStore sharedDataStore];
-    double floor = round(node.height + (up?1:-1));
+    
+    HLPLink *minLink = nil;
+    double target = round(node.height)+(up?1:-1);
+    double floor = up?INT_MAX:INT_MIN;
     for(HLPLink *l in nds.nodeLinksMap[node._id]) {
         if (l.linkType == LINK_TYPE_ELEVATOR) {
             if (l.sourceNode == node) {
-                if (l.targetNode.height == floor) {
+                if ((up && target < l.targetNode.height && l.targetNode.height < floor) ||
+                    (!up && target > l.targetNode.height && l.targetNode.height > floor)) {
+                    minLink = l;
+                    floor = l.targetNode.height;
                     node = l.targetNode;
-                    break;
                 }
             }
             else if (l.targetNode == node) {
-                if (l.sourceNode.height == floor) {
+                if ((up && target < l.sourceNode.height && l.sourceNode.height < floor) ||
+                    (!up && target > l.sourceNode.height && l.sourceNode.height > floor)) {
+                    minLink = l;
+                    floor = l.sourceNode.height;
                     node = l.sourceNode;
-                    break;
                 }
             }
         }
@@ -1061,8 +1068,30 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 - (void)gotoEnd
 {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
+    
+    if (![[NavDataStore sharedDataStore] hasRoute]) {
+        [self fireUserMoved:0];
+        return;
+    }
     [self _autoStepStop];
-    [self fireUserMoved:0];
+    double distance = 0;
+    int count = 0;
+    while(true) {
+        double d = [self _stepForward];
+        distance += d;
+        if (d == 0) {
+            if ([[NavDataStore sharedDataStore] isOnDestination:current.targetNode._id]) {
+                break;
+            }
+            [current turnToLink:current.routeLink];
+        }
+        count++;
+        if (count > 10000) {
+            break;
+        }
+    }
+    [self fireUserMoved:distance];
+    [self firePreviewUpdated];
 }
 
 - (void)stepForward

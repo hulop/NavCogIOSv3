@@ -1163,7 +1163,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
     while(true) {
         double d = [self _stepForward];
         distance += d;
-        if (current.targetIntersection || current.targetCorner) {
+        if (current.targetIntersection || current.targetCorner || current.isArrived) {
             break;
         }
     }

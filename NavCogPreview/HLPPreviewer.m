@@ -938,8 +938,6 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 
 - (void)startAt:(HLPLocation *)loc
 {
-    _isActive = YES;
-    
     nds = [NavDataStore sharedDataStore];
     route = nds.route;
     
@@ -960,6 +958,11 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         
     // without route
     } else {
+        if (nds.to._id != nil) {
+            [_delegate routeNotFound];
+            return;
+        }
+        
         for(NSObject *key in nds.linksMap) {
             HLPLink *link = nds.linksMap[key];
             if (link.isLeaf) {
@@ -988,6 +991,7 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         //[_delegate errorWithMessage:@"closest link is not found"];
     }
     
+    _isActive = YES;
     [self firePreviewStarted];
 }
 

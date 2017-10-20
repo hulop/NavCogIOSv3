@@ -487,6 +487,12 @@ double stdev(double array[], long count) {
             withName:@"XYZ"];
 }
 
+- (void)routeNotFound
+{
+    [self speak:@"Route not found" withOptions:@{@"force":@(NO)} completionHandler:nil];
+    [[NavSound sharedInstance] playFail];
+}
+
 #pragma mark - PreviewCommandDelegate
 
 - (void)speakAtPoint:(CGPoint)point

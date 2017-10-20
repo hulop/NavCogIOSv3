@@ -80,6 +80,7 @@
 -(void)userLocation:(HLPLocation*)location;
 -(void)remainingDistance:(double)distance;
 -(void)previewStopped:(HLPPreviewEvent*)event;
+-(void)routeNotFound;
 @end
 
 @interface HLPPreviewer : NSObject

@@ -287,6 +287,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
         return nil;
     }
     NSArray<HLPLink*>* links = [self intersectionConnectionLinks];
+    links = [links filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLink* link, NSDictionary<NSString *,id> * _Nullable bindings) {
+        return link.streetName != nil && link.streetName.length > 0;
+    }]];
     if (links.count == 0) {
         return nil;
     }
@@ -1047,7 +1050,9 @@ typedef NS_ENUM(NSUInteger, HLPPreviewHeadingType) {
 {
     NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
     [self _autoStepStop];
-    current = history[0];
+    if (history.count > 0) {
+        current = history[0];
+    }
     [history removeAllObjects];
     current.isSteppingBackward = YES;
     [self firePreviewStarted];

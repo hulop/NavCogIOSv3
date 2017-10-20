@@ -142,6 +142,12 @@ static ExpConfig *instance;
     NSString *logFileId = [NSString stringWithFormat:@"%@/%@", _user_id, logFileName];
     NSString *logContent = [NSString stringWithContentsOfFile:logFile encoding:NSUTF8StringEncoding error:&error];
     
+    if (logContent == nil) {
+        NSLog(@"logContent is nil (%@)", logFile);
+        complete();
+        return;
+    }
+    
     double endAt = [[NSDate date] timeIntervalSince1970];
     NSString *routeName = _currentRoute[@"name"];
     if (routeName == nil) {

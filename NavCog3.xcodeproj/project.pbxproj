@@ -156,6 +156,7 @@
 		7E9866CE1D5174780073CB49 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
 		7EA018FE1E2F54A3005E65ED /* nosound.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7EA018FD1E2F54A3005E65ED /* nosound.aiff */; };
 		7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EA019001E2F54E7005E65ED /* InitViewController.mm */; };
+		7EA49A2E1F98EE4A00E1369B /* HLPGeoJSON+External.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA49A2D1F98EE4A00E1369B /* HLPGeoJSON+External.m */; };
 		7EAE6F0D1D2642D600614C35 /* NavBlindWebviewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebviewHelper.m */; };
 		7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */; };
 		7EBE397A1E8298C5002A7BF9 /* HLPBeaconSample.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE39791E8298C5002A7BF9 /* HLPBeaconSample.m */; };
@@ -499,6 +500,8 @@
 		7EA018FD1E2F54A3005E65ED /* nosound.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = nosound.aiff; sourceTree = "<group>"; };
 		7EA018FF1E2F54E7005E65ED /* InitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitViewController.h; sourceTree = "<group>"; };
 		7EA019001E2F54E7005E65ED /* InitViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InitViewController.mm; sourceTree = "<group>"; };
+		7EA49A2C1F98EE4A00E1369B /* HLPGeoJSON+External.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HLPGeoJSON+External.h"; sourceTree = "<group>"; };
+		7EA49A2D1F98EE4A00E1369B /* HLPGeoJSON+External.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "HLPGeoJSON+External.m"; sourceTree = "<group>"; };
 		7EAE6F0B1D2642D600614C35 /* NavBlindWebviewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavBlindWebviewHelper.h; sourceTree = "<group>"; };
 		7EAE6F0C1D2642D600614C35 /* NavBlindWebviewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavBlindWebviewHelper.m; sourceTree = "<group>"; };
 		7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -1022,6 +1025,8 @@
 				7E5739F11EF27AFA00BA3601 /* AppDelegate.m */,
 				7EE8E61E1EF27541006EE7C3 /* Info.plist */,
 				7EE8E60D1EF27541006EE7C3 /* Supporting Files */,
+				7EA49A2C1F98EE4A00E1369B /* HLPGeoJSON+External.h */,
+				7EA49A2D1F98EE4A00E1369B /* HLPGeoJSON+External.m */,
 			);
 			path = NavCogPreview;
 			sourceTree = "<group>";
@@ -1777,6 +1782,7 @@
 			files = (
 				7EDAFE911F3054A200368058 /* ExpViewController.m in Sources */,
 				7E27F9171EFA629300FB3309 /* AuthManager.m in Sources */,
+				7EA49A2E1F98EE4A00E1369B /* HLPGeoJSON+External.m in Sources */,
 				7E27F90B1EFA623100FB3309 /* AgreementViewController.m in Sources */,
 				7E27F90C1EFA623100FB3309 /* DownloadViewController.m in Sources */,
 				7E27F90D1EFA623100FB3309 /* ServerSelectionViewController.m in Sources */,

@@ -34,10 +34,14 @@
     [super viewDidLoad];
 
     if (_pois) {
-        NSURL *url = [self findURL];
-        if (url) {
-            [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
-            return;
+        HLPFacility *external = [self findExternal];
+        if (external) {
+            NSURL *url = external.externalPOIWebpage;
+            if (url) {
+                self.navigationItem.title = [NSString stringWithFormat:@"%@ webpage", external.externalSourceTitle];
+                [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
+                return;
+            }
         }
         
         NSString *content = [self extractContent];
@@ -45,14 +49,11 @@
     }
 }
 
-- (NSURL*) findURL
+- (HLPFacility*) findExternal
 {
     for(HLPEntrance *poi in _pois) {
         if (poi.facility.isExternalPOI) {
-            NSURL *url = poi.facility.externalPOIWebpage;
-            if (url) {
-                return url;
-            }
+            return poi.facility;
         }
     }
     return nil;
@@ -73,7 +74,7 @@
 
 - (BOOL)isContentAvailable
 {
-    if ([self findURL]) {
+    if ([self findExternal]) {
         return YES;
     }
     for(HLPEntrance *poi in _pois) {

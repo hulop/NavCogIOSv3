@@ -28,6 +28,7 @@
 - (BOOL) isExternalPOI;
 - (NSURL*) externalPOIWebpage;
 - (NSString*) externalAttribution;
+- (NSString*) externalSourceTitle;
 
 @end
 
@@ -36,5 +37,6 @@
 - (BOOL) isExternalPOI;
 - (NSURL*) externalPOIWebpage;
 - (NSString*) externalAttribution;
+- (NSString*) externalSourceTitle;
 
 @end

@@ -53,6 +53,15 @@
     }
     return nil;
 }
+
+- (NSString *)externalSourceTitle
+{
+    NSString *maj = self.properties[PROPKEY_EXT_MAJOR_CATEGORY];
+    if ([maj isEqualToString:@"_4Square_poi_"]) {
+        return @"Foursquare";
+    }
+    return nil;
+}
 @end
 
 @implementation HLPLandmark (External)
@@ -83,6 +92,15 @@
     NSString *maj = self.properties[PROPKEY_EXT_MAJOR_CATEGORY];
     if ([maj isEqualToString:@"_4Square_poi_"]) {
         return @"powered by Foursquare®";
+    }
+    return nil;
+}
+
+- (NSString *)externalSourceTitle
+{
+    NSString *maj = self.properties[PROPKEY_EXT_MAJOR_CATEGORY];
+    if ([maj isEqualToString:@"_4Square_poi_"]) {
+        return @"Foursquare";
     }
     return nil;
 }

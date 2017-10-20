@@ -167,6 +167,8 @@
                         }
                         else if (current.hasIntersectionName) {                            
                             [str appendString:[self intersectionString:current]];
+                            next = current.nextAction;
+                            [str appendString:[self nextActionString:next noDistance:NO]];
                         }
                         [str appendString:[self poisString:current]];
                     }
@@ -367,7 +369,11 @@
     if (noDistance) {
         return actionStr;
     }
-    return [NSString stringWithFormat:@"proceed %@ and %@. ", distStr, actionStr];
+    if (actionStr.length > 0) {
+        return [NSString stringWithFormat:@"proceed %@ and %@. ", distStr, actionStr];
+    } else {
+        return [NSString stringWithFormat:@"proceed %@. ", distStr];
+    }
 }
 
 /*
@@ -544,7 +550,7 @@
             [str appendString:turn];
         }
     }
-    [str appendString:@". "];
+    [str appendString:@"... "];
     
     return str;
 }

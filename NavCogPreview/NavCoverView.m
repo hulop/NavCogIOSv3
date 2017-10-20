@@ -67,7 +67,21 @@
 
 - (UIAccessibilityTraits)accessibilityTraits
 {
-    return UIAccessibilityTraitAllowsDirectInteraction | UIAccessibilityTraitUpdatesFrequently;
+    if (self.accessibilityElementIsFocused) {
+        return UIAccessibilityTraitAllowsDirectInteraction | UIAccessibilityTraitUpdatesFrequently;
+    } else {
+        return UIAccessibilityTraitNone;
+    }
+}
+
+- (void)accessibilityElementDidBecomeFocused
+{
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+}
+
+- (void)accessibilityElementDidLoseFocus
+{
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 
 #pragma mark - main

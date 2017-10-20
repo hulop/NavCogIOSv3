@@ -73,6 +73,9 @@
 
 - (BOOL)isContentAvailable
 {
+    if ([self findURL]) {
+        return YES;
+    }
     for(HLPEntrance *poi in _pois) {
         if (poi.facility.longDescription && poi.facility.longDescription.length > 0) {
             return YES;

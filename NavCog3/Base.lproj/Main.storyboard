@@ -671,6 +671,7 @@
                         <outlet property="settingButton" destination="ATn-7d-y1j" id="IdR-7G-Xa9"/>
                         <outlet property="webView" destination="tBq-Mg-lUf" id="vsV-kl-Rxx"/>
                         <segue destination="hk9-wr-WOW" kind="show" identifier="show_rating" id="XlC-wp-uNx"/>
+                        <segue destination="ime-J0-f14" kind="show" identifier="show_help" id="eGf-KW-tIa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Egf-ai-ccT" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -974,6 +975,39 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Zx-qB-zaI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3606" y="1782"/>
+        </scene>
+        <!--Help View Controller-->
+        <scene sceneID="whE-3r-Ub6">
+            <objects>
+                <viewController storyboardIdentifier="help_view" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ime-J0-f14" customClass="HelpViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="rRO-Qx-alZ"/>
+                        <viewControllerLayoutGuide type="bottom" id="xPy-uk-eb5"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="MMp-LF-02e">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BTn-QD-3s6">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="BTn-QD-3s6" firstAttribute="top" secondItem="rRO-Qx-alZ" secondAttribute="bottom" id="OLi-x8-Cvp"/>
+                            <constraint firstItem="xPy-uk-eb5" firstAttribute="top" secondItem="BTn-QD-3s6" secondAttribute="bottom" id="WUW-Wh-8xY"/>
+                            <constraint firstItem="BTn-QD-3s6" firstAttribute="leading" secondItem="MMp-LF-02e" secondAttribute="leading" id="ehB-oU-HUj"/>
+                            <constraint firstAttribute="trailing" secondItem="BTn-QD-3s6" secondAttribute="trailing" id="fUH-ch-bxe"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="webview" destination="BTn-QD-3s6" id="YnE-fT-D6G"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2c6-pk-yxE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5107" y="1108"/>
         </scene>
         <!--Welcom View Controller-->
         <scene sceneID="YEL-k9-N4f">

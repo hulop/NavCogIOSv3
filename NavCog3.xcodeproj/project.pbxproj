@@ -157,6 +157,8 @@
 		7EA018FE1E2F54A3005E65ED /* nosound.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7EA018FD1E2F54A3005E65ED /* nosound.aiff */; };
 		7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EA019001E2F54E7005E65ED /* InitViewController.mm */; };
 		7EA49A2E1F98EE4A00E1369B /* HLPGeoJSON+External.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA49A2D1F98EE4A00E1369B /* HLPGeoJSON+External.m */; };
+		7EA49A351F9AE21900E1369B /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA49A341F9AE21900E1369B /* HelpViewController.m */; };
+		7EA49A361F9AE52B00E1369B /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA49A341F9AE21900E1369B /* HelpViewController.m */; };
 		7EAE6F0D1D2642D600614C35 /* NavBlindWebviewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebviewHelper.m */; };
 		7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */; };
 		7EBE397A1E8298C5002A7BF9 /* HLPBeaconSample.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE39791E8298C5002A7BF9 /* HLPBeaconSample.m */; };
@@ -502,6 +504,8 @@
 		7EA019001E2F54E7005E65ED /* InitViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InitViewController.mm; sourceTree = "<group>"; };
 		7EA49A2C1F98EE4A00E1369B /* HLPGeoJSON+External.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HLPGeoJSON+External.h"; sourceTree = "<group>"; };
 		7EA49A2D1F98EE4A00E1369B /* HLPGeoJSON+External.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "HLPGeoJSON+External.m"; sourceTree = "<group>"; };
+		7EA49A331F9AE21900E1369B /* HelpViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
+		7EA49A341F9AE21900E1369B /* HelpViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelpViewController.m; sourceTree = "<group>"; };
 		7EAE6F0B1D2642D600614C35 /* NavBlindWebviewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavBlindWebviewHelper.h; sourceTree = "<group>"; };
 		7EAE6F0C1D2642D600614C35 /* NavBlindWebviewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavBlindWebviewHelper.m; sourceTree = "<group>"; };
 		7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -835,6 +839,8 @@
 				7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */,
 				7EF45E2D1E3F1E3700208042 /* WelcomViewController.h */,
 				7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */,
+				7EA49A331F9AE21900E1369B /* HelpViewController.h */,
+				7EA49A341F9AE21900E1369B /* HelpViewController.m */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -1771,6 +1777,7 @@
 				7E9238E91D5189F100875766 /* HLPSettingViewCell.m in Sources */,
 				7E8A33C61D92D13400D20CD5 /* HLPLocation.m in Sources */,
 				7E9866CE1D5174780073CB49 /* Logging.m in Sources */,
+				7EA49A351F9AE21900E1369B /* HelpViewController.m in Sources */,
 				7EF6FBB21DA4DD8200382F76 /* NavSound.m in Sources */,
 				7EF45E3B1E3F1E5600208042 /* AuthManager.m in Sources */,
 			);
@@ -1780,6 +1787,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EA49A361F9AE52B00E1369B /* HelpViewController.m in Sources */,
 				7EDAFE911F3054A200368058 /* ExpViewController.m in Sources */,
 				7E27F9171EFA629300FB3309 /* AuthManager.m in Sources */,
 				7EA49A2E1F98EE4A00E1369B /* HLPGeoJSON+External.m in Sources */,

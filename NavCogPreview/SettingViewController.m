@@ -31,6 +31,7 @@
 #import "BlindViewController.h"
 #import "ServerConfig+Preview.h"
 #import "ExpConfig.h"
+#import "HelpViewController.h"
 
 @interface SettingViewController ()
 
@@ -131,10 +132,14 @@ static HLPSetting *idLabel;
     }
 
     if ([setting.name isEqualToString:@"help_preview"]) {
-        NSString *lang = [@"-" stringByAppendingString:[[NavDataStore sharedDataStore] userLanguage]];
-        if ([lang isEqualToString:@"-en"]) { lang = @""; }
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://hulop.github.io/help_preview%@", lang]];
-        [NavUtil openURL:url onViewController:self];
+        HelpViewController *vc = [HelpViewController getInstance];
+        [self.navigationController showViewController:vc sender:self];
+    }
+    if ([setting.name isEqualToString:@"first_launch_preview"]) {
+        HelpViewController *vc = [HelpViewController getInstance];
+        vc.helpType = @"first_launch";
+        vc.helpTitle = @"Instructions";
+        [self.navigationController showViewController:vc sender:self];
     }
     
     if ([self.restorationIdentifier isEqualToString:@"area_selection"]) {
@@ -186,6 +191,7 @@ static HLPSetting *idLabel;
     userSettingHelper = [[HLPSettingHelper alloc] init];
   
     [userSettingHelper addSectionTitle:@"Help"];
+    [userSettingHelper addActionTitle:@"Instructions" Name:@"first_launch_preview"];
     [userSettingHelper addActionTitle:@"Help" Name:@"help_preview"];
     
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];

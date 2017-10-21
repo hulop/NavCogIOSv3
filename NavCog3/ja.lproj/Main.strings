@@ -74,7 +74,7 @@
 /* Class = "UIButton"; normalTitle = "Blind user"; ObjectID = "581-28-Nvd"; */
 "581-28-Nvd.normalTitle" = "視覚障がい者";
 
-/* Class = "UIBarButtonItem"; title = "Setting"; ObjectID = "ATn-7d-y1j"; */
+/* Class = "UIBarButtonItem"; title = "Settings"; ObjectID = "ATn-7d-y1j"; */
 "ATn-7d-y1j.title" = "設定";
 
 /* Class = "UILabel"; text = "Mode Selection"; ObjectID = "BEl-Il-x1b"; */

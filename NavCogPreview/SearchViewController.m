@@ -272,10 +272,10 @@
         
         if (filter) {
             self.navigationItem.title = filter[@"building"];
-            self.navigationItem.rightBarButtonItem.accessibilityHint = @"Select to choose another area";
+            self.navigationItem.rightBarButtonItem.accessibilityLabel = @"Change area";
         } else {
             self.navigationItem.title = @"Route";
-            self.navigationItem.rightBarButtonItem.accessibilityHint = @"";
+            self.navigationItem.rightBarButtonItem.accessibilityLabel = @"Refresh";
         }
         
         self.navigationItem.hidesBackButton = !updated || !actionEnabled;

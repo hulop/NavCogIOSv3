@@ -210,11 +210,13 @@ static ServerConfig *instance;
         complete(_agreementConfig);
         return;
     }
-    
+
+    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
+    NSLog(@"AppName: %@",appName);
     NSString *server_host = [[ServerConfig sharedConfig].selected objectForKey:@"hostname"];
     NSString *device_id = [[UIDevice currentDevice].identifierForVendor UUIDString];
     NSString *https = [[self.selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/api/check_agreement?id=%@",https,server_host, device_id]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/api/check_agreement?id=%@&appname=%@",https,server_host, device_id, appName]];
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {

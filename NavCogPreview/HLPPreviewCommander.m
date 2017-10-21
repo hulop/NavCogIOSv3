@@ -315,22 +315,18 @@
         return nil;
     }
     NSString *distance_unit = [[NSUserDefaults standardUserDefaults] stringForKey:@"distance_unit"];
-    
     BOOL isFeet = [distance_unit isEqualToString:@"unit_feet"];
-    const double FEET_UNIT = 0.3024;
-    
-    if (isFeet) {
-        distance /= FEET_UNIT;
-    }
-    
-    if (distance > 100) {
-        distance = round(distance / 10.0) * 10.0;
-    }
-    if (distance > 10) {
-        distance = round(distance / 5.0) * 5.0;
+    double UNIT = isFeet?0.3024:1.0;
+    double udistance = distance/UNIT;
+    double steps[] = {1,10,50,100,500,1000,5000};
+    double target = 5.0/UNIT;
+    for(int i = (isFeet?2:1); i < (isFeet?5:4); i++) {
+        if (udistance > steps[i]) {
+            target = floor(udistance/steps[i-1])*steps[i-1];
+        }
     }
     NSString *unit = isFeet?@"unit_feet":@"unit_meter";
-    return [NSString stringWithFormat:NSLocalizedStringFromTable(unit, @"BlindView", @""), (int)round(distance)];
+    return [NSString stringWithFormat:NSLocalizedStringFromTable(unit, @"BlindView", @""), (int)round(target)];
 }
 
 
@@ -534,20 +530,37 @@
         NSString *intersectionName = [event intersectionName];
         if (intersectionName) {
             [str appendString:intersectionName];
-            [str appendString:@". "];
+            [str appendString:@"... "];
         }
         
-        [str appendString:@"You can "];
-        for(int i = 0; i < remains.count; i++) {
-            HLPLink *link = remains[i];
-            double heading = [event turnAngleToLink:link atNode:node];
-            if (remains.count >= 2 && i == remains.count-1) {
-                [str appendString:@", and "];
-            } else if (i > 0) {
-                [str appendString:@", "];
+        BOOL prevent_offroute = [[NSUserDefaults standardUserDefaults] boolForKey:@"prevent_offroute"];
+        if (prevent_offroute) {
+            for(int i = 0; i < remains.count; i++) {
+                HLPLink *link = remains[i];
+                double heading = [event turnAngleToLink:link atNode:node];
+                if (remains.count >= 2 && i == remains.count-1) {
+                    [str appendString:@", and "];
+                } else if (i > 0) {
+                    [str appendString:@", "];
+                }
+                NSString *turn = [self directionString:heading];
+                [str appendString:turn];
             }
-            NSString *turn = [self turnString:heading];
-            [str appendString:turn];
+            
+            [str appendString:(remains.count>1)?@" turns available":@" turn available"];
+        } else {
+            [str appendString:@"You can "];
+            for(int i = 0; i < remains.count; i++) {
+                HLPLink *link = remains[i];
+                double heading = [event turnAngleToLink:link atNode:node];
+                if (remains.count >= 2 && i == remains.count-1) {
+                    [str appendString:@", and "];
+                } else if (i > 0) {
+                    [str appendString:@", "];
+                }
+                NSString *turn = [self turnString:heading];
+                [str appendString:turn];
+            }
         }
     }
     [str appendString:@"... "];
@@ -804,13 +817,24 @@
     }
     
     double step_length = [[NSUserDefaults standardUserDefaults] doubleForKey:@"preview_step_length"];
-    double target = MAX(floor(distance/15)*15, 5);
     
-    if (distance > target && target > distance - step_length) {
+    NSString *distance_unit = [[NSUserDefaults standardUserDefaults] stringForKey:@"distance_unit"];
+    BOOL isFeet = [distance_unit isEqualToString:@"unit_feet"];
+    double UNIT = isFeet?0.3024:1.0;
+    double udistance = distance/UNIT;
+    double steps[] = {1,10,50,100,500,1000,5000};
+    double target = 5.0/UNIT;
+    for(int i = (isFeet?2:1); i < (isFeet?5:4); i++) {
+        if (udistance > steps[i]) {
+            target = floor(udistance/steps[i])*steps[i];
+        }
+    }
+    
+    if (udistance > target && target > udistance - step_length/UNIT) {
         __weak HLPPreviewCommander *weakself = self;
         [self addBlock:^(void (^complete)(void)) {
             if (weakself) {
-                if (target <= 5.0) {
+                if (target <= 5.0/UNIT) {
                     [weakself.delegate speak:@"approaching. " withOptions:@{@"force":@(YES)} completionHandler:^{
                         complete();
                     }];

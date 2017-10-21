@@ -115,7 +115,9 @@
                 [self performSegueWithIdentifier:@"show_server_selection" sender:self];
             });
         } else {
-            self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
+            });
             [[ServerConfig sharedConfig] requestServerList:@"" withComplete:^(NSDictionary *config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }
@@ -138,7 +140,9 @@
                 return;
             }
         } else {
-            self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
+            });
             [[ServerConfig sharedConfig] checkAgreement:^(NSDictionary* config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }

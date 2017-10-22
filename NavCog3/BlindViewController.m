@@ -80,6 +80,11 @@
 
 - (void)dealloc
 {
+    NSLog(@"dealloc BlindViewController");
+}
+
+- (void)prepareForDealloc
+{
     [helper prepareForDealloc];
     helper.delegate = nil;
     helper = nil;
@@ -88,9 +93,20 @@
     navigator.delegate = nil;
     navigator = nil;
     
+    commander.delegate = nil;
+    commander = nil;
+    
+    previewer.delegate = nil;
+    previewer = nil;
+    
+    dialogHelper.delegate = nil;
+    dialogHelper = nil;
+    
     _settingButton = nil;
     
     [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"developer_mode"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_STOP object:self];
 }
 
 - (void)viewDidLoad {
@@ -153,6 +169,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(manualLocation:) name:MANUAL_LOCATION object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestShowRoute:) name:REQUEST_PROCESS_SHOW_ROUTE object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prepareForDealloc) name:REQUEST_UNLOAD_BLIND object:nil];
     
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
     

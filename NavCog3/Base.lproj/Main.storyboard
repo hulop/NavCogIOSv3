@@ -181,12 +181,21 @@
                                     <segue destination="S1z-Er-If2" kind="showDetail" identifier="user_general" id="x9Q-EB-G1d"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v9y-3H-Lol">
+                                <rect key="frame" x="170" y="617" width="34" height="30"/>
+                                <state key="normal" title="Back"/>
+                                <connections>
+                                    <action selector="backPerformed:" destination="2f7-Fh-er3" eventType="touchUpInside" id="R44-fD-Lvl"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Qjw-Mo-WPx" firstAttribute="centerX" secondItem="QAm-WL-1iA" secondAttribute="centerX" id="C2G-0H-HOX"/>
                             <constraint firstItem="NIc-nT-BkE" firstAttribute="centerX" secondItem="QAm-WL-1iA" secondAttribute="centerX" id="DIu-bJ-EGR"/>
                             <constraint firstItem="BEl-Il-x1b" firstAttribute="centerX" secondItem="QAm-WL-1iA" secondAttribute="centerX" id="JwU-Ua-Quh"/>
+                            <constraint firstItem="mPs-yF-iJu" firstAttribute="top" secondItem="v9y-3H-Lol" secondAttribute="bottom" constant="20" id="MET-VX-ZNL"/>
+                            <constraint firstItem="v9y-3H-Lol" firstAttribute="centerX" secondItem="QAm-WL-1iA" secondAttribute="centerX" id="Rlc-t3-FYU"/>
                             <constraint firstItem="581-28-Nvd" firstAttribute="top" secondItem="BEl-Il-x1b" secondAttribute="bottom" constant="100" id="WUO-d9-0aj"/>
                             <constraint firstItem="BEl-Il-x1b" firstAttribute="top" secondItem="WVG-xg-swS" secondAttribute="bottom" constant="8" id="c9T-Mo-aRJ"/>
                             <constraint firstItem="Qjw-Mo-WPx" firstAttribute="top" secondItem="NIc-nT-BkE" secondAttribute="bottom" constant="100" id="dWQ-pf-mig"/>

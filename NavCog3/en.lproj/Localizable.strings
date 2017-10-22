@@ -134,6 +134,7 @@ Feedback is sending...";
 "Instructions" = "Instructions";
 "OpenHelp" = "Open help page";
 "OpenInstructions" = "Open instructions page";
+"Back to mode selection" = "Back to mode selection";
 
 "NeedToUpdateAppTitle" = "App Update";
 "NeedToUpdateAppMessage" = "App is required to be updated";

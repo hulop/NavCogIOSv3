@@ -153,6 +153,7 @@ NavCog　→
 "Instructions" = "はじめに";
 "OpenHelp" = "ヘルプページを開く";
 "OpenInstructions" = "はじめにを開く";
+"Back to mode selection" = "モード選択に戻る";
 
 "NeedToUpdateAppTitle" = "アプリの更新";
 "NeedToUpdateAppMessage" = "アプリの更新が必要です";

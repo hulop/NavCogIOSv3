@@ -293,6 +293,9 @@ static HLPSetting *poiLabel, *ignoreFacility;
         vc.helpType = @"instructions";
         vc.helpTitle = NSLocalizedString(@"OpenInstructions", @"");
         [self.navigationController showViewController:vc sender:self];
+    } else if ([setting.name isEqualToString:@"back_to_mode_selection"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_UNLOAD_BLIND object:self];
+        [self dismissViewControllerAnimated:YES completion:nil];
     } else {
         [self performSegueWithIdentifier:setting.name sender:self];
     }
@@ -466,6 +469,9 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
     [userSettingHelper addActionTitle:NSLocalizedString(@"OpenInstructions", @"") Name:@"OpenInstructions"];
     [userSettingHelper addActionTitle:NSLocalizedString(@"OpenHelp", @"") Name:@"OpenHelp"];
+    
+    [userSettingHelper addSectionTitle:NSLocalizedString(@"Mode", @"")];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"Back to mode selection", @"") Name:@"back_to_mode_selection"];
     
     speechLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech_Sound", @"label for tts options")];
     speechSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")

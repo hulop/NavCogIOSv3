@@ -166,6 +166,7 @@ void functionCalledToLog(void *inUserData, string text)
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestRssiBias:) name:REQUEST_RSSI_BIAS object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationRestart:) name:REQUEST_LOCATION_RESTART object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationStop:) name:REQUEST_LOCATION_STOP object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationHeadingReset:) name:REQUEST_LOCATION_HEADING_RESET object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationReset:) name:REQUEST_LOCATION_RESET object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationUnknown:) name:REQUEST_LOCATION_UNKNOWN object:nil];
@@ -561,6 +562,13 @@ void functionCalledToLog(void *inUserData, string text)
     }];
 }
 
+- (void) requestLocationStop:(NSNotification*) note
+{
+    [processQueue addOperationWithBlock:^{
+        [self stop];
+    }];
+}
+
 - (void) requestLocationUnknown:(NSNotification*) note
 {
     [processQueue addOperationWithBlock:^{
@@ -892,7 +900,9 @@ void functionCalledToLog(void *inUserData, string text)
     
     if (authorized) {
         _isActive = YES;
-        [self buildLocalizer];
+        if (!localizer) {
+            [self buildLocalizer];
+        }
         [self startSensors];
         [self loadMaps];
         valid = YES;
@@ -919,7 +929,7 @@ void functionCalledToLog(void *inUserData, string text)
     [motionManager stopAccelerometerUpdates];
     [beaconManager stopUpdatingHeading];
     
-    localizer = nil;
+    //localizer = nil;
 }
 
 - (void)requestRssiBias:(NSNotification*) note

@@ -58,8 +58,10 @@ static ServerConfig *instance;
 
 - (void)clear
 {
+    _serverList = nil;
     _selectedServerConfig = nil;
     _agreementConfig = nil;
+    _downloadConfig = nil;
     _selected = nil;
 }
 

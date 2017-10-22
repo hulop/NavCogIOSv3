@@ -107,5 +107,9 @@
 
 }
 
+- (IBAction)backPerformed:(id)sender {
+    [[ServerConfig sharedConfig] clear];
+    [self performSegueWithIdentifier:@"unwind_init" sender:self];
+}
 
 @end

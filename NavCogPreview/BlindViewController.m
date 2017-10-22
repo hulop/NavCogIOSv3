@@ -287,8 +287,6 @@ double stdev(double array[], long count) {
 {
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"first_launch"]) {
         HelpViewController *vc = [HelpViewController getInstance];
-        vc.helpType = @"first_launch";
-        vc.helpTitle = @"Instructions";
         [self.navigationController showViewController:vc sender:self];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"first_launch"];
     }

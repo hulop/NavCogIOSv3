@@ -135,12 +135,6 @@ static HLPSetting *idLabel;
         HelpViewController *vc = [HelpViewController getInstance];
         [self.navigationController showViewController:vc sender:self];
     }
-    if ([setting.name isEqualToString:@"first_launch_preview"]) {
-        HelpViewController *vc = [HelpViewController getInstance];
-        vc.helpType = @"first_launch";
-        vc.helpTitle = @"Instructions";
-        [self.navigationController showViewController:vc sender:self];
-    }
     
     if ([self.restorationIdentifier isEqualToString:@"area_selection"]) {
         NSDictionary* filter = destMap[setting.name].filter;
@@ -191,7 +185,6 @@ static HLPSetting *idLabel;
     userSettingHelper = [[HLPSettingHelper alloc] init];
   
     [userSettingHelper addSectionTitle:@"Help"];
-    [userSettingHelper addActionTitle:@"Instructions" Name:@"first_launch_preview"];
     [userSettingHelper addActionTitle:@"Help" Name:@"help_preview"];
     
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];

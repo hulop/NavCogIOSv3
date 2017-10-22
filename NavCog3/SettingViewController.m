@@ -34,6 +34,7 @@
 #import "Logging.h"
 #import "ScreenshotHelper.h"
 #import "SSZipArchive.h"
+#import "HelpViewController.h"
 
 @interface SettingViewController ()
 
@@ -285,10 +286,13 @@ static HLPSetting *poiLabel, *ignoreFacility;
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
         [self.navigationController popToRootViewControllerAnimated:YES];
     } else if ([setting.name isEqualToString:@"OpenHelp"]) {
-        NSString *lang = [@"-" stringByAppendingString:[[NavDataStore sharedDataStore] userLanguage]];
-        if ([lang isEqualToString:@"-en"]) { lang = @""; }
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://hulop.github.io/help%@", lang]];
-        [NavUtil openURL:url onViewController:self];
+        HelpViewController *vc = [HelpViewController getInstance];
+        [self.navigationController showViewController:vc sender:self];
+    } else if ([setting.name isEqualToString:@"OpenInstructions"]) {
+        HelpViewController *vc = [HelpViewController getInstance];
+        vc.helpType = @"instructions";
+        vc.helpTitle = NSLocalizedString(@"OpenInstructions", @"");
+        [self.navigationController showViewController:vc sender:self];
     } else {
         [self performSegueWithIdentifier:setting.name sender:self];
     }
@@ -459,6 +463,9 @@ static HLPSetting *poiLabel, *ignoreFacility;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
 
+    [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenInstructions", @"") Name:@"OpenInstructions"];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenHelp", @"") Name:@"OpenHelp"];
     
     speechLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech_Sound", @"label for tts options")];
     speechSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
@@ -490,9 +497,6 @@ static HLPSetting *poiLabel, *ignoreFacility;
     unitFeet = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
                                      Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
     
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
-    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenHelp", @"") Name:@"OpenHelp"];
-
     NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     NSString *buildNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     

@@ -36,6 +36,7 @@
 //#import "SettingViewController.h"
 
 #import "ServerConfig.h"
+#import "HelpViewController.h"
 
 @import JavaScriptCore;
 @import CoreMotion;
@@ -156,6 +157,15 @@
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
     
     [self updateView];
+    
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"first_launch"]) {
+        HelpViewController *vc = [HelpViewController getInstance];
+        vc.helpType = @"instructions";
+        vc.helpTitle = @"Instructions";
+        [self.navigationController showViewController:vc sender:self];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"first_launch"];
+    }
 }
 
 - (void) checkMapCenter:(NSTimer*)timer

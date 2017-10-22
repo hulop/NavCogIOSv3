@@ -131,7 +131,9 @@ While Using the App";
 Feedback is sending...";
 
 "Help" = "Help";
+"Instructions" = "Instructions";
 "OpenHelp" = "Open help page";
+"OpenInstructions" = "Open instructions page";
 
 "NeedToUpdateAppTitle" = "App Update";
 "NeedToUpdateAppMessage" = "App is required to be updated";

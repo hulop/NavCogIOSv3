@@ -150,7 +150,9 @@ NavCog　→
 データを送信中です...";
 
 "Help" = "ヘルプ";
+"Instructions" = "はじめに";
 "OpenHelp" = "ヘルプページを開く";
+"OpenInstructions" = "はじめにを開く";
 
 "NeedToUpdateAppTitle" = "アプリの更新";
 "NeedToUpdateAppMessage" = "アプリの更新が必要です";

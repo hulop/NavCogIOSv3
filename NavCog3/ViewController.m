@@ -69,7 +69,7 @@
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
     BOOL useHttps = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"];
     BOOL clearsCache = [[NSUserDefaults standardUserDefaults] boolForKey:@"cache_clear"];
-    helper = [[NavBlindWebviewHelper alloc] initWithWebview:self.webView server:server context:@""
+    helper = [[NavWebviewHelper alloc] initWithWebview:self.webView server:server context:@""
                                                   usesHttps:useHttps clearsCache:clearsCache];
     helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
     helper.delegate = self;

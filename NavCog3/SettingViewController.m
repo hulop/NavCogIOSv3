@@ -522,6 +522,9 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Record logs" Name:@"logging_to_file" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Record screenshots" Name:@"record_screenshots" DefaultValue:@(NO) Accept:nil];
     
+    [detailSettingHelper addSectionTitle:@"Background"];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Background Mode" Name:@"background_mode" DefaultValue:@(NO) Accept:nil];
+    
     [detailSettingHelper addSectionTitle:@"Setting Preset"];
     [detailSettingHelper addActionTitle:@"Setting Preset" Name:@"choose_config"];
     

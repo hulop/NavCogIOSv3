@@ -190,7 +190,7 @@ void functionCalledToLog(void *inUserData, string text)
     [ud addObserver:self forKeyPath:@"rejectDistance" options:NSKeyValueObservingOptionNew context:nil];
     [ud addObserver:self forKeyPath:@"diffusionOrientationBias" options:NSKeyValueObservingOptionNew context:nil];
     [ud addObserver:self forKeyPath:@"location_tracking" options:NSKeyValueObservingOptionNew context:nil];
-    
+    [ud addObserver:self forKeyPath:@"background_mode" options:NSKeyValueObservingOptionNew context:nil];
     
     smoothedLocationAcc = -1;
     smootingLocationRate = 0.1;
@@ -651,7 +651,10 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void)requestBackgroundLocation:(NSNotification*)note
 {
-    beaconManager.allowsBackgroundLocationUpdates = [[note userInfo][@"value"] boolValue];
+    BOOL backgroundMode = (note && [[note userInfo][@"value"] boolValue]) ||
+    [[NSUserDefaults standardUserDefaults] boolForKey:@"background_mode"];
+    
+    beaconManager.allowsBackgroundLocationUpdates = backgroundMode;
     if (beaconManager.allowsBackgroundLocationUpdates) {
         [beaconManager startUpdatingLocation];
     } else {
@@ -932,7 +935,11 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
-    valid = NO;
+    if ([keyPath isEqualToString:@"background_mode"]) {
+        [self requestBackgroundLocation:nil];
+    } else {
+        valid = NO;
+    }
 }
 
 - (void) updateStatus:(Status*) status

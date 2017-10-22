@@ -513,67 +513,69 @@
 
 - (void) locationChanged: (NSNotification*) note
 {
-    UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-    if (appState == UIApplicationStateBackground || appState == UIApplicationStateInactive) {
-        return;
-    }
-    
-    NSDictionary *locations = [note userInfo];
-    if (!locations) {
-        return;
-    }
-    HLPLocation *location = locations[@"current"];
-    if (!location || [location isEqual:[NSNull null]]) {
-        return;
-    }
-    
-    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-    
-    double orientation = -location.orientation / 180 * M_PI;
-    
-    if (lastOrientationSent + 0.2 < now) {
-        [helper sendData:@[@{
-                             @"type":@"ORIENTATION",
-                             @"z":@(orientation)
-                             }]
-              withName:@"Sensor"];
-        lastOrientationSent = now;
-    }
-    
-    
-    location = locations[@"actual"];
-    if (!location || [location isEqual:[NSNull null]]) {
-        return;
-    }
-    
-    /*
-     if (isnan(location.lat) || isnan(location.lng)) {
-     return;
-     }
-     */
-    
-    if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
-        if (!location.params) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+        if (appState == UIApplicationStateBackground || appState == UIApplicationStateInactive) {
             return;
         }
-        //return; // prevent too much send location info
-    }
-    
-    double floor = location.floor;
-    
-    [helper sendData:@{
-                     @"lat":@(location.lat),
-                     @"lng":@(location.lng),
-                     @"floor":@(floor),
-                     @"accuracy":@(location.accuracy),
-                     @"rotate":@(0), // dummy
-                     @"orientation":@(999), //dummy
-                     @"debug_info":location.params?location.params[@"debug_info"]:[NSNull null],
-                     @"debug_latlng":location.params?location.params[@"debug_latlng"]:[NSNull null]
-                     }
-          withName:@"XYZ"];
-    
-    lastLocationSent = now;
+        
+        NSDictionary *locations = [note userInfo];
+        if (!locations) {
+            return;
+        }
+        HLPLocation *location = locations[@"current"];
+        if (!location || [location isEqual:[NSNull null]]) {
+            return;
+        }
+        
+        NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+        
+        double orientation = -location.orientation / 180 * M_PI;
+        
+        if (lastOrientationSent + 0.2 < now) {
+            [helper sendData:@[@{
+                                   @"type":@"ORIENTATION",
+                                   @"z":@(orientation)
+                                   }]
+                    withName:@"Sensor"];
+            lastOrientationSent = now;
+        }
+        
+        
+        location = locations[@"actual"];
+        if (!location || [location isEqual:[NSNull null]]) {
+            return;
+        }
+        
+        /*
+         if (isnan(location.lat) || isnan(location.lng)) {
+         return;
+         }
+         */
+        
+        if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
+            if (!location.params) {
+                return;
+            }
+            //return; // prevent too much send location info
+        }
+        
+        double floor = location.floor;
+        
+        [helper sendData:@{
+                           @"lat":@(location.lat),
+                           @"lng":@(location.lng),
+                           @"floor":@(floor),
+                           @"accuracy":@(location.accuracy),
+                           @"rotate":@(0), // dummy
+                           @"orientation":@(999), //dummy
+                           @"debug_info":location.params?location.params[@"debug_info"]:[NSNull null],
+                           @"debug_latlng":location.params?location.params[@"debug_latlng"]:[NSNull null]
+                           }
+                withName:@"XYZ"];
+        
+        lastLocationSent = now;
+    });
 }
 
 - (void) destinationChanged: (NSNotification*) note
@@ -874,6 +876,8 @@
         [NavUtil hideModalWaiting];
     });
     
+    [helper logToServer:@{@"event": @"navigation", @"status": @"start"}];
+    
     //double delayInSeconds = 1.0;
     //dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     //dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -895,6 +899,13 @@
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"stabilize_localize_on_elevator"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_STABILIZE_LOCALIZE object:self];
     }
+    
+    if (properties[@"isEndOfLink"] && [properties[@"isEndOfLink"] boolValue] == YES) {
+        [helper logToServer:@{@"event": @"navigation", @"status": @"start"}];
+    } else {
+        [helper logToServer:@{@"event": @"navigation", @"status": @"cancel"}];
+    }
+
     [commander didNavigationFinished:properties];
     [previewer didNavigationFinished:properties];
 }

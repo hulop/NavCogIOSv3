@@ -87,16 +87,16 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     if ([segue.identifier isEqualToString:@"user_blind"]) {
-        [[NSUserDefaults standardUserDefaults] setObject:@"UI_BLIND" forKey:@"ui_mode"];
         [ConfigManager loadConfig:@"presets/blind.plist"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"UI_BLIND" forKey:@"ui_mode"];
     }
     else if ([segue.identifier isEqualToString:@"user_wheelchair"]) {
-        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
         [ConfigManager loadConfig:@"presets/wheelchair.plist"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
     }
     else if ([segue.identifier isEqualToString:@"user_general"]) {
-        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
         [ConfigManager loadConfig:@"presets/general.plist"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
     }
     
     [[NSUserDefaults standardUserDefaults] setObject:segue.identifier forKey:@"user_mode"];

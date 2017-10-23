@@ -291,7 +291,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     } else if ([setting.name isEqualToString:@"OpenInstructions"]) {
         HelpViewController *vc = [HelpViewController getInstance];
         vc.helpType = @"instructions";
-        vc.helpTitle = NSLocalizedString(@"OpenInstructions", @"");
+        vc.helpTitle = NSLocalizedString(@"Instructions", @"");
         [self.navigationController showViewController:vc sender:self];
     } else if ([setting.name isEqualToString:@"back_to_mode_selection"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_UNLOAD_BLIND object:self];
@@ -436,14 +436,15 @@ static HLPSetting *poiLabel, *ignoreFacility;
 {
     if (userSettingHelper) {
         BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_BLIND"];
+        BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
         //[speechLabel setVisible:blindMode];
         //[speechSpeedSetting setVisible:blindMode];
         
         [poiLabel setVisible:blindMode];
         [ignoreFacility setVisible:blindMode];
         
-        [previewSpeedSetting setVisible:blindMode];
-        [previewWithActionSetting setVisible:blindMode];
+        [previewSpeedSetting setVisible:blindMode && devMode];
+        [previewWithActionSetting setVisible:blindMode && devMode];
         [vibrateSetting setVisible:blindMode];
         [soundEffectSetting setVisible:blindMode];
         [boneConductionSetting setVisible:blindMode];

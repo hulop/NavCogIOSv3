@@ -25,6 +25,7 @@
 #import "NavUtil.h"
 #import "LocationEvent.h"
 #import "DestinationTableViewController.h"
+#import "ServerConfig.h"
 @import AVFoundation;
 
 @interface SearchViewController () {
@@ -199,6 +200,7 @@
         NavDataStore *nds = [NavDataStore sharedDataStore];
         HLPLocation *loc = [nds currentLocation];
         BOOL isDevMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+        BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
         BOOL isNotManual = ![nds isManualLocation] || isDevMode;
         BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
         
@@ -209,7 +211,7 @@
         
         self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
         self.previewButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
-        self.previewButton.hidden = !isDevMode;
+        self.previewButton.hidden = !isDevMode && isPreviewDisabled;
         self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation && actionEnabled && isNotManual) || isDevMode;
         
         

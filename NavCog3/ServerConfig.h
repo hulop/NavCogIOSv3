@@ -45,5 +45,6 @@
 
 - (BOOL) shouldAskRating;
 - (void) completeRating;
+- (BOOL) isPreviewDisabled;
 
 @end

@@ -265,4 +265,8 @@ static ServerConfig *instance;
     [ud setObject:@(0) forKey:[NSString stringWithFormat:@"%@_enquete_ask_count", identifier]];
 }
 
+- (BOOL)isPreviewDisabled
+{
+    return _selectedServerConfig[@"navcog_disable_preview"] && [_selectedServerConfig[@"navcog_disable_preview"] boolValue];
+}
 @end

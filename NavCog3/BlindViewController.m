@@ -180,7 +180,7 @@
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"first_launch"]) {
         HelpViewController *vc = [HelpViewController getInstance];
         vc.helpType = @"instructions";
-        vc.helpTitle = @"Instructions";
+        vc.helpTitle = NSLocalizedString(@"Instructions", @"");
         [self.navigationController showViewController:vc sender:self];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"first_launch"];
     }
@@ -341,6 +341,10 @@
         self.searchButton.title = NSLocalizedStringFromTable([navigator isActive]?@"Stop":@"Search", @"BlindView", @"");
         [self.searchButton setAccessibilityLabel:NSLocalizedStringFromTable([navigator isActive]?@"Stop Navigation":@"Search Route", @"BlindView", @"")];
         
+        NavDataStore *nds = [NavDataStore sharedDataStore];
+        HLPLocation *loc = [nds currentLocation];
+        BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
+        BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
         BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
         BOOL debugFollower = [[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"];
         BOOL hasCenter = [[NavDataStore sharedDataStore] mapCenter] != nil;
@@ -396,7 +400,8 @@
             self.navigationController.navigationBar.barTintColor = defaultColor;
         }
         
-        if ([[DialogManager sharedManager] isDialogAvailable] && !isActive && hasCenter) {
+        if ([[DialogManager sharedManager] isDialogAvailable] && !isActive && hasCenter &&
+            (!isPreviewDisabled || devMode || validLocation)) {
             if (dialogHelper.helperView.hidden) {
                 dialogHelper.helperView.hidden = NO;
                 [dialogHelper recognize];

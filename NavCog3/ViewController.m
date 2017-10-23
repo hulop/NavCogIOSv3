@@ -226,6 +226,11 @@
 
 - (void)updateView
 {
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    HLPLocation *loc = [nds currentLocation];
+    BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
+    BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+    BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
     BOOL debugFollower = [[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"];
     BOOL peerExists = [[[NavDebugHelper sharedHelper] peers] count] > 0;
 
@@ -269,7 +274,7 @@
     }
     
     if (state == ViewStateMap) {
-        if ([[DialogManager sharedManager] isDialogAvailable]) {
+        if ([[DialogManager sharedManager] isDialogAvailable] && (!isPreviewDisabled || devMode || validLocation)) {
             if (dialogHelper.helperView.hidden) {
                 dialogHelper.helperView.hidden = NO;
                 [dialogHelper recognize];

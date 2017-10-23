@@ -1115,23 +1115,20 @@
                                 </prototypes>
                             </tableView>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eJ4-NM-Vm6">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="64" id="YyM-wM-OJi"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                                 <items>
                                     <navigationItem title="Server Selection" id="tYX-Uz-Xz9"/>
                                 </items>
                             </navigationBar>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.97244364023208618" green="0.97260981798171997" blue="0.97243314981460571" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="TEY-bS-wTk" firstAttribute="leading" secondItem="Pj4-8I-hnQ" secondAttribute="leading" id="AB0-Ir-syQ"/>
+                            <constraint firstItem="eJ4-NM-Vm6" firstAttribute="top" secondItem="Ly6-bO-New" secondAttribute="bottom" id="APL-Vz-Iaq"/>
                             <constraint firstItem="TEY-bS-wTk" firstAttribute="top" secondItem="eJ4-NM-Vm6" secondAttribute="bottom" id="DRg-Re-DVT"/>
                             <constraint firstAttribute="trailing" secondItem="eJ4-NM-Vm6" secondAttribute="trailing" id="R7t-nu-4Sp"/>
                             <constraint firstItem="FRx-My-lEG" firstAttribute="top" secondItem="TEY-bS-wTk" secondAttribute="bottom" id="maL-pI-tP3"/>
                             <constraint firstAttribute="trailing" secondItem="TEY-bS-wTk" secondAttribute="trailing" id="tzc-hx-8Co"/>
-                            <constraint firstItem="eJ4-NM-Vm6" firstAttribute="top" secondItem="Pj4-8I-hnQ" secondAttribute="top" id="wDw-xj-YzB"/>
                             <constraint firstItem="eJ4-NM-Vm6" firstAttribute="leading" secondItem="Pj4-8I-hnQ" secondAttribute="leading" id="wuW-7B-ezf"/>
                         </constraints>
                     </view>
@@ -1231,10 +1228,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dxZ-do-Mny">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="64" id="7hR-Jn-YWK"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                                 <items>
                                     <navigationItem title="Download" id="nc7-od-aTQ"/>
                                 </items>
@@ -1261,16 +1255,16 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.97244364019999996" green="0.97260981800000001" blue="0.97243314979999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="dD4-16-dlh" secondAttribute="trailing" constant="18" id="6Se-88-BPS"/>
+                            <constraint firstItem="dxZ-do-Mny" firstAttribute="top" secondItem="ugf-29-A3E" secondAttribute="bottom" id="7eA-le-I3u"/>
                             <constraint firstItem="dD4-16-dlh" firstAttribute="leading" secondItem="Xfi-Qd-XLF" secondAttribute="leadingMargin" constant="18" id="DtF-55-YL1"/>
                             <constraint firstItem="dD4-16-dlh" firstAttribute="top" secondItem="mnb-EZ-XdC" secondAttribute="bottom" constant="20" id="VGb-sk-3eo"/>
                             <constraint firstItem="dD4-16-dlh" firstAttribute="centerY" secondItem="Xfi-Qd-XLF" secondAttribute="centerY" id="ViW-ra-AcF"/>
                             <constraint firstAttribute="trailingMargin" secondItem="mnb-EZ-XdC" secondAttribute="trailing" id="b8M-sX-7hf"/>
                             <constraint firstAttribute="trailing" secondItem="dxZ-do-Mny" secondAttribute="trailing" id="dD1-PQ-mF8"/>
                             <constraint firstItem="mnb-EZ-XdC" firstAttribute="leading" secondItem="Xfi-Qd-XLF" secondAttribute="leadingMargin" id="da8-Py-PJq"/>
-                            <constraint firstItem="dxZ-do-Mny" firstAttribute="top" secondItem="Xfi-Qd-XLF" secondAttribute="top" id="iqy-SH-7aY"/>
                             <constraint firstItem="UIx-ie-bTk" firstAttribute="centerX" secondItem="Xfi-Qd-XLF" secondAttribute="centerX" id="kF4-ku-05g"/>
                             <constraint firstItem="dxZ-do-Mny" firstAttribute="leading" secondItem="Xfi-Qd-XLF" secondAttribute="leading" id="teI-V5-Sex"/>
                             <constraint firstItem="UIx-ie-bTk" firstAttribute="top" secondItem="dD4-16-dlh" secondAttribute="bottom" constant="20" id="yk3-QB-ZYl"/>

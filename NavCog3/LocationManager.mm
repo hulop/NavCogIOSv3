@@ -927,6 +927,7 @@ void functionCalledToLog(void *inUserData, string text)
     [motionManager stopAccelerometerUpdates];
     [beaconManager stopUpdatingHeading];
     
+    localizer.reset();
     localizer = nil;
 }
 

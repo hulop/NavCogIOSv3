@@ -154,6 +154,9 @@ NavCog　→
 "OpenHelp" = "ヘルプページを開く";
 "OpenInstructions" = "はじめにを開く";
 "Back to mode selection" = "モード選択に戻る";
+"Send Feedback" = "フィードバックを送信";
+"feedbackSubject" = "NavCog-フィードバック(%@)";
+"feedbackBody" = "フィードバック内容を記載してください";
 
 "NeedToUpdateAppTitle" = "アプリの更新";
 "NeedToUpdateAppMessage" = "アプリの更新が必要です";

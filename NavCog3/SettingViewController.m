@@ -35,6 +35,7 @@
 #import "ScreenshotHelper.h"
 #import "SSZipArchive.h"
 #import "HelpViewController.h"
+#import "ServerConfig.h"
 
 @interface SettingViewController ()
 
@@ -296,6 +297,10 @@ static HLPSetting *poiLabel, *ignoreFacility;
     } else if ([setting.name isEqualToString:@"back_to_mode_selection"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_UNLOAD_BLIND object:self];
         [self dismissViewControllerAnimated:YES completion:nil];
+    } else if ([setting.name isEqualToString:@"send_feedback"]) {
+        NSString *subject = [NSString stringWithFormat:NSLocalizedString(@"feedbackSubject", @""), [NavDataStore sharedDataStore].userID];
+        NSString *body = NSLocalizedString(@"feedbackBody", @"");
+        [self composeEmailSubject:subject Body:body withAttachment:nil];
     } else {
         [self performSegueWithIdentifier:setting.name sender:self];
     }
@@ -357,7 +362,8 @@ static HLPSetting *poiLabel, *ignoreFacility;
                         [fm removeItemAtPath:dir error:nil];
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self composeEmailBody:description withAttachment:zpath];
+                            NSString* subject = [NSString stringWithFormat:@"Report Issue (%@)", [[zpath lastPathComponent] stringByDeletingPathExtension]];
+                            [self composeEmailSubject:subject Body:description withAttachment:zpath];
                         });
                     }
                 });
@@ -366,16 +372,18 @@ static HLPSetting *poiLabel, *ignoreFacility;
     });
 }
 
-- (void)composeEmailBody:(NSString*)body withAttachment:(NSString*)path
+- (void)composeEmailSubject:(NSString*)subject Body:(NSString*)body withAttachment:(NSString*)path
 {
     if([MFMailComposeViewController canSendMail]) {
         MFMailComposeViewController *mailCont = [[MFMailComposeViewController alloc] init];
         mailCont.mailComposeDelegate = self;
         
-        [mailCont setSubject:[NSString stringWithFormat:@"Report Issue (%@)", [[path lastPathComponent] stringByDeletingPathExtension]]];
+        [mailCont setSubject:subject];
         [mailCont setToRecipients:[NSArray arrayWithObject:@"hulop.contact@gmail.com"]];
         [mailCont setMessageBody:body isHTML:NO];
-        [mailCont addAttachmentData:[NSData dataWithContentsOfFile:path] mimeType:@"application/zip" fileName:[path lastPathComponent]];
+        if (path) {
+            [mailCont addAttachmentData:[NSData dataWithContentsOfFile:path] mimeType:@"application/zip" fileName:[path lastPathComponent]];
+        }
         
         [self presentViewController:mailCont animated:YES completion:nil];
     } else {
@@ -437,25 +445,26 @@ static HLPSetting *poiLabel, *ignoreFacility;
     if (userSettingHelper) {
         BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_BLIND"];
         BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+        BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
         //[speechLabel setVisible:blindMode];
         //[speechSpeedSetting setVisible:blindMode];
         
-        [poiLabel setVisible:blindMode];
+        [previewSpeedSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
+        [previewWithActionSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
         [ignoreFacility setVisible:blindMode];
-        
-        [previewSpeedSetting setVisible:blindMode && devMode];
-        [previewWithActionSetting setVisible:blindMode && devMode];
         [vibrateSetting setVisible:blindMode];
         [soundEffectSetting setVisible:blindMode];
         [boneConductionSetting setVisible:blindMode];
+
+        [unitLabel setVisible:blindMode];
+        [unitMeter setVisible:blindMode];
+        [unitFeet setVisible:blindMode];
+
         [exerciseLabel setVisible:blindMode];
         [exerciseAction setVisible:blindMode];
         //[mapLabel setVisible:blindMode];
         //[initialZoomSetting setVisible:blindMode];
         [resetLocation setVisible:!blindMode];
-        [unitLabel setVisible:blindMode];
-        [unitMeter setVisible:blindMode];
-        [unitFeet setVisible:blindMode];
         
         idLabel.label = [NavDataStore sharedDataStore].userID;
         BOOL isDeveloperAuthorized = [[AuthManager sharedManager] isDeveloperAuthorized];
@@ -470,6 +479,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
     [userSettingHelper addActionTitle:NSLocalizedString(@"OpenInstructions", @"") Name:@"OpenInstructions"];
     [userSettingHelper addActionTitle:NSLocalizedString(@"OpenHelp", @"") Name:@"OpenHelp"];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"Send Feedback", @"") Name:@"send_feedback"];
     
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Mode", @"")];
     [userSettingHelper addActionTitle:NSLocalizedString(@"Back to mode selection", @"") Name:@"back_to_mode_selection"];
@@ -479,13 +489,16 @@ static HLPSetting *poiLabel, *ignoreFacility;
                                      Name:@"speech_speed" DefaultValue:@(0.55) Min:0.1 Max:1 Interval:0.05];
     previewSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
     previewWithActionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
+    ignoreFacility = [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info." Name:@"ignore_facility" DefaultValue:@(NO) Accept:nil];
     vibrateSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"vibrateSetting", @"") Name:@"vibrate" DefaultValue:@(YES) Accept:nil];
     soundEffectSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"soundEffectSetting", @"") Name:@"sound_effect" DefaultValue:@(YES) Accept:nil];
     boneConductionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"for_bone_conduction_headset",@"") Name:@"for_bone_conduction_headset" DefaultValue:@(NO) Accept:nil];
 
-    poiLabel = [userSettingHelper addSectionTitle:@"POI"];
-    ignoreFacility = [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info." Name:@"ignore_facility" DefaultValue:@(NO) Accept:nil];
-    
+    unitLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];
+    unitMeter = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Meter", @"meter distance unit label")
+                                                 Name:@"unit_meter" Group:@"distance_unit" DefaultValue:@(YES) Accept:nil];
+    unitFeet = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
+                                                Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
     
     exerciseLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
     exerciseAction = [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];
@@ -496,13 +509,6 @@ static HLPSetting *poiLabel, *ignoreFacility;
     initialZoomSetting.visible = NO;
     
     resetLocation = [userSettingHelper addActionTitle:NSLocalizedString(@"Reset_Location", @"") Name:@"Reset_Location"];
-    
-
-    unitLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];
-    unitMeter = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Meter", @"meter distance unit label")
-                                     Name:@"unit_meter" Group:@"distance_unit" DefaultValue:@(YES) Accept:nil];
-    unitFeet = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
-                                     Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
     
     NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     NSString *buildNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];

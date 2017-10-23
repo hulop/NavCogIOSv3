@@ -135,6 +135,9 @@ Feedback is sending...";
 "OpenHelp" = "Open help page";
 "OpenInstructions" = "Open instructions page";
 "Back to mode selection" = "Back to mode selection";
+"Send Feedback" = "Send Feedback";
+"feedbackSubject" = "NavCog-Feedback(%@)";
+"feedbackBody" = "Please input your feedback here.";
 
 "NeedToUpdateAppTitle" = "App Update";
 "NeedToUpdateAppMessage" = "App is required to be updated";

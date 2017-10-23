@@ -33,6 +33,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import "ScreenshotHelper.h"
 
+#define IS_IOS11orHIGHER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)
+
 @interface AppDelegate ()
 
 @end
@@ -72,7 +74,9 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:HLPSettingChanged object:nil];
     
-    [self detectBluetooth];
+    if (!IS_IOS11orHIGHER) {
+        [self detectBluetooth];
+    }
     
     return YES;
 }

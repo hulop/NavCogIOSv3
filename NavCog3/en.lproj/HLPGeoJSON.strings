@@ -27,10 +27,10 @@
 "ElvButtonLeftPlural" = "Elevator buttons are left side of the door";
 
 /* (No Commment) */
-"ElvButtonMiddle" = "Elevator button is middle of the doors";
+"ElvButtonMiddle" = "Elevator button is between the doors";
 
 /* (No Commment) */
-"ElvButtonMiddlePlural" = "Elevator buttons are middle of the doors";
+"ElvButtonMiddlePlural" = "Elevator buttons are between the doors";
 
 /* (No Commment) */
 "ElvButtonRight" = "Elevator button is right side of the door";
@@ -45,10 +45,10 @@
 "ElvButtonLeftPluralLower" = "Elevator buttons are lower left side of the door";
 
 /* (No Commment) */
-"ElvButtonMiddleLower" = "Elevator button is lower middle of the doors";
+"ElvButtonMiddleLower" = "Elevator button is lower between of the doors";
 
 /* (No Commment) */
-"ElvButtonMiddlePluralLower" = "Elevator buttons are lower middle of the doors";
+"ElvButtonMiddlePluralLower" = "Elevator buttons are lower between of the doors";
 
 /* (No Commment) */
 "ElvButtonRightLower" = "Elevator button is lower right side of the door";

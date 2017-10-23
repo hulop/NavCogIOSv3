@@ -900,9 +900,7 @@ void functionCalledToLog(void *inUserData, string text)
     
     if (authorized) {
         _isActive = YES;
-        if (!localizer) {
-            [self buildLocalizer];
-        }
+        [self buildLocalizer];
         [self startSensors];
         [self loadMaps];
         valid = YES;
@@ -929,7 +927,7 @@ void functionCalledToLog(void *inUserData, string text)
     [motionManager stopAccelerometerUpdates];
     [beaconManager stopUpdatingHeading];
     
-    //localizer = nil;
+    localizer = nil;
 }
 
 - (void)requestRssiBias:(NSNotification*) note

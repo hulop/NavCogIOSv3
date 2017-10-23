@@ -32,10 +32,12 @@
 @end
 
 @implementation InitViewController {
+    BOOL first;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    first = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -62,7 +64,8 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     NSDictionary *config = [ServerConfig sharedConfig].selectedServerConfig;
-    if (config[@"default_mode"]) {
+    if (config[@"default_mode"] && first) {
+        first = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self performSegueWithIdentifier:config[@"default_mode"] sender:self];
         });

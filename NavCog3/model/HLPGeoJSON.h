@@ -64,6 +64,7 @@
 #define CATEGORY_TOILET @"公共用トイレの情報"
 
 #define NAV_POI @"_nav_poi_"
+#define POI_IS_NOT_READ_FLAG @"_no_read_"
 
 
 @interface HLPGeometry : MTLModel<MTLJSONSerializing, NSCoding>
@@ -295,6 +296,8 @@ typedef enum: int {
 @property (nonatomic, readonly) NSString *lang;
 @property (nonatomic, readonly) NSString *addr;
 @property (nonatomic, readonly) NSArray *entrances;
+
+- (BOOL)isNotRead;
 
 @end
 

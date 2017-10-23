@@ -1231,6 +1231,14 @@ static NSRegularExpression *patternHLPPOIFlags;
     return entrances;
 }
 
+- (BOOL) isNotRead
+{
+    if (self.properties[PROPKEY_EXT_MINOR_CATEGORY]) {
+        return [self.properties[PROPKEY_EXT_MINOR_CATEGORY] containsString:POI_IS_NOT_READ_FLAG];
+    }
+    return NO;
+}
+
 @end
 
 @implementation HLPEntrance

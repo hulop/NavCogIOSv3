@@ -35,7 +35,7 @@
 
 - (instancetype) init {
     self = [super init];
-    defaultFilter = @{@"minor_category":@{@"$not":@"_preview_no_destination_"}};
+    defaultFilter = @{@"minor_category":@{@"$not_contains":@"_preview_no_destination_"}};
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
     return self;
 }
@@ -62,6 +62,9 @@
                     NSDictionary *filter = _filter[key];
                     if (filter[@"$not"]) {
                         flag = flag && ![landmark.properties[key] isEqual:filter[@"$not"]];
+                    }
+                    if (filter[@"$not_contains"]) {
+                        flag = flag && ![landmark.properties[key] containsString:filter[@"$not_contains"]];
                     }
                 } else if ([_filter[key] isKindOfClass:NSString.class]) {
                     flag = flag && ([_filter[key] isEqualToString:landmark.properties[key]] ||

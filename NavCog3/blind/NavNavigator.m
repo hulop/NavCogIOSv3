@@ -422,6 +422,9 @@ static NavNavigatorConstants *_instance;
             } else {
                 // mid in route
                 HLPLocation *nearest = [_link nearestLocationTo:ent.node.location];
+                if (ent.facility && ent.facility.isNotRead) {
+                    return; // skip no read flag facility
+                }
                 if ((!_isFirst && !_isNextDestination) ||
                     (_isFirst && [_link.sourceLocation distanceTo:nearest] > C.POI_ANNOUNCE_DISTANCE) ||
                     (_isNextDestination && [_link.targetLocation distanceTo:nearest] > C.POI_ANNOUNCE_DISTANCE)) {

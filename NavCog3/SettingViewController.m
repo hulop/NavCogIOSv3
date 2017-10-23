@@ -663,6 +663,8 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability for floor trans area" Name:@"mixtureProbabilityFloorTransArea" DefaultValue:@(0.25) Min:0.0 Max:1.0 Interval:0.05];
     [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Weight multiplier for floor trans area" Name:@"weightFloorTransArea" DefaultValue:@(4) Min:1 Max:5 Interval:0.1] setVisible:YES];
     [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Reject distance for floor trans area" Name:@"rejectDistanceFloorTrans" DefaultValue:@(10) Min:0.0 Max:25.0 Interval:1] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Duration allowing force floor update" Name:@"durationAllowForceFloorUpdate" DefaultValue:@(1) Min:1 Max:20 Interval:1] setVisible:YES];
+    
     [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Window for altimeter manager" Name:@"windowAltitudeManager" DefaultValue:@(3) Min:1 Max:10 Interval:1] setVisible:YES];
     [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev threshold for altimeter manager" Name:@"stdThresholdAltitudeManager" DefaultValue:@(0.15) Min:0.0 Max:2.0 Interval:0.05] setVisible:YES];
     

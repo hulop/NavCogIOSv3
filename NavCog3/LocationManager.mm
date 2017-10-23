@@ -846,6 +846,7 @@ void functionCalledToLog(void *inUserData, string text)
     // set parameters for weighting and mixing in transition areas
     localizer->pfFloorTransParams->weightTransitionArea([ud doubleForKey:@"weightFloorTransArea"]).mixtureProbaTransArea([ud doubleForKey:@"mixtureProbabilityFloorTransArea"]);
     localizer->pfFloorTransParams->rejectDistance([ud doubleForKey:@"rejectDistanceFloorTrans"]);
+    localizer->pfFloorTransParams->durationAllowForceFloorUpdate([ud doubleForKey:@"durationAllowForceFloorUpdate"]);
     
     // set parameters for location status monitoring
     bool activatesDynamicStatusMonitoring = [ud boolForKey:@"activatesStatusMonitoring"];

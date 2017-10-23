@@ -399,6 +399,9 @@ void functionCalledToLog(void *inUserData, string text)
                         Beacons beacons = DataUtils::parseLogBeaconsCSV(logString);
                         std::cout << "LogReplay:" << beacons.timestamp() << ",Beacon," << beacons.size();
                         for(auto& b : beacons){
+                            if(b.rssi()==0.0){
+                                b.rssi(-100);
+                            }
                             std::cout << "," << b.major() << "," << b.minor() << "," << b.rssi();
                         }
                         std::cout << std::endl;
@@ -828,9 +831,15 @@ void functionCalledToLog(void *inUserData, string text)
     
     localizer->coeffDiffFloorStdev = [ud doubleForKey:@"coeffDiffFloorStdev"];
     
+#if TARGET_IPHONE_SIMULATOR
+    localizer->usesAltimeterForFloorTransCheck = [ud boolForKey:@"use_altimeter"];
+#else
     if(altimeter){
         localizer->usesAltimeterForFloorTransCheck = [ud boolForKey:@"use_altimeter"];
     }
+#endif
+    localizer->altimeterManagerParameters->window([ud doubleForKey:@"windowAltitudeManager"]);
+    localizer->altimeterManagerParameters->stdThreshold([ud doubleForKey:@"stdThresholdAltitudeManager"]);
     
     // deactivate elevator transition in system model
     localizer->prwBuildingProperty->probabilityUpElevator(0.0).probabilityDownElevator(0.0).probabilityStayElevator(1.0);

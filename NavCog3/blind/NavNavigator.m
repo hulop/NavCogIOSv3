@@ -189,7 +189,8 @@ static NavNavigatorConstants *_instance;
     _expirationTimeOfPreventRemainingDistanceEvent = NAN;
     _backDetectedLocation = nil;
     _distanceFromBackDetectedLocationToLocation = NAN;
-    _noBearing = (_link.minimumWidth <= 2.0);
+    //_noBearing = (_link.minimumWidth <= 2.0);
+    _noBearing = YES;
     
     _isComplex = fabs([HLPLocation normalizeDegree:_link.initialBearingFromSource - _link.lastBearingForTarget]) > 10;
     

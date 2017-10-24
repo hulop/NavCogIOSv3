@@ -36,6 +36,7 @@
     [super viewDidLoad];
 
     source = [[NavDestinationDataSource alloc] init];
+    source.defaultFilter = @{@"minor_category":@{@"$not_contains":@"_preview_no_destination_"}};
     source.filter = _filterDest.filter;
     if (source.filter) {
         self.navigationItem.title = _filterDest.label;

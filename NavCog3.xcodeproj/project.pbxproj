@@ -2150,6 +2150,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
+				VALID_ARCHS = arm64;
 				WARNING_CFLAGS = (
 					"-Wno-inconsistent-missing-override",
 					"-Wno-redeclared-class-member",
@@ -2178,6 +2179,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
+				VALID_ARCHS = arm64;
 				WARNING_CFLAGS = (
 					"-Wno-inconsistent-missing-override",
 					"-Wno-redeclared-class-member",

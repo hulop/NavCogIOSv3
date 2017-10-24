@@ -75,6 +75,7 @@ static HLPSetting *idLabel;
     if ([self.restorationIdentifier isEqualToString:@"area_selection"]) {
         destSource = [[NavDestinationDataSource alloc] init];
         destSource.showBuilding = YES;
+        destSource.defaultFilter = @{@"minor_category":@{@"$not_contains":@"_preview_no_destination_"}};
         [destSource update:nil];
         [SettingViewController setupAreaSettings];
         helper = areaSettingHelper;

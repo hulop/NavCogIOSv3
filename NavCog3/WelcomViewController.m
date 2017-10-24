@@ -227,7 +227,7 @@
 
 - (IBAction)returnActionForSegue:(UIStoryboardSegue *)segue
 {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5f*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0f*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self checkConfig];
     });
     //[self checkConfig];

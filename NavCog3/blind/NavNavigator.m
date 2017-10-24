@@ -1376,7 +1376,7 @@ static NavNavigatorConstants *_instance;
                     return MAX(MIN(distance, linkInfo_.link.length/4), 0.6);
                 }
             };
-            NSLog(@"ApproachDistance,%.2f,%.2f,%.2f,%.2f",linkInfo.distanceToTargetFromSnappedLocationOnLink,walkingSpeed,approachingDistance(),approachedDistance(linkInfo));
+            //NSLog(@"ApproachDistance,%.2f,%.2f,%.2f,%.2f",linkInfo.distanceToTargetFromSnappedLocationOnLink,walkingSpeed,approachingDistance(),approachedDistance(linkInfo));
             
             if (linkInfo.link.linkType != LINK_TYPE_ELEVATOR) {
                 

@@ -26,14 +26,22 @@
 /* label for exercise options */
 "Exercise" = "練習";
 
+"RESTROOM" = "トイレ";
+
 /* Toilet for people with disability */
-"FOR_DISABLED" = "多目的トイレ";
+"FOR_DISABLEDRESTROOM" = "多目的トイレ";
 
 /* Toilet for female */
-"FOR_FEMALE" = "女性用トイレ";
+"FOR_FEMALEFOR_DISABLEDRESTROOM" = "女性用多目的トイレ";
 
 /* Toilet for male */
-"FOR_MALE" = "男性用トイレ";
+"FOR_MALEFOR_DISABLEDRESTROOM" = "男性用多目的トイレ";
+
+/* Toilet for female */
+"FOR_FEMALERESTROOM" = "女性用トイレ";
+
+/* Toilet for male */
+"FOR_MALERESTROOM" = "男性用トイレ";
 
 /* feet distance unit label */
 "Feet" = "フィート";

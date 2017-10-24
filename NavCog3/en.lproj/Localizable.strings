@@ -23,14 +23,22 @@
 /* label for distance unit option */
 "Distance unit" = "Distance unit";
 
+"RESTROOM" = "Restroom";
+
 /* Toilet for people with disability */
-"FOR_DISABLED" = "Multi purpose toilet";
+"FOR_DISABLEDRESTROOM" = "Wheelchair accessible restroom";
 
 /* Toilet for female */
-"FOR_FEMALE" = "Toilet for female";
+"FOR_FEMALEFOR_DISABLEDRESTROOM" = "Female accessible restroom";
 
 /* Toilet for male */
-"FOR_MALE" = "Toilet for male";
+"FOR_MALEFOR_DISABLEDRESTROOM" = "Male accessible restroom";
+
+/* Toilet for female */
+"FOR_FEMALERESTROOM" = "Female restroom";
+
+/* Toilet for male */
+"FOR_MALERESTROOM" = "Male restroom";
 
 /* feet distance unit label */
 "Feet" = "Feet";

@@ -229,7 +229,7 @@
 - (void)tapped
 {
     [dialogHelper inactive];
-    dialogHelper.helperView.hidden = YES;
+    dialogHelper.helperView.disabled = YES;
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:nil];
 }
 
@@ -341,10 +341,6 @@
         self.searchButton.title = NSLocalizedStringFromTable([navigator isActive]?@"Stop":@"Search", @"BlindView", @"");
         [self.searchButton setAccessibilityLabel:NSLocalizedStringFromTable([navigator isActive]?@"Stop Navigation":@"Search Route", @"BlindView", @"")];
         
-        NavDataStore *nds = [NavDataStore sharedDataStore];
-        HLPLocation *loc = [nds currentLocation];
-        BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
-        BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
         BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
         BOOL debugFollower = [[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"];
         BOOL hasCenter = [[NavDataStore sharedDataStore] mapCenter] != nil;
@@ -400,19 +396,32 @@
             self.navigationController.navigationBar.barTintColor = defaultColor;
         }
         
-        if ([[DialogManager sharedManager] isDialogAvailable] && !isActive && hasCenter &&
-            (!isPreviewDisabled || devMode || validLocation)) {
-            if (dialogHelper.helperView.hidden) {
-                dialogHelper.helperView.hidden = NO;
-                [dialogHelper recognize];
-            }
-        } else {
-            dialogHelper.helperView.hidden = YES;
-        }
+        [self dialogHelperUpdate];
         
         NSString *cn = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"lastcommit" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
         [self.commitLabel setText:cn];
     });
+}
+
+- (void) dialogHelperUpdate
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    HLPLocation *loc = [nds currentLocation];
+    BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
+    BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
+    BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+    BOOL hasCenter = [[NavDataStore sharedDataStore] mapCenter] != nil;
+    BOOL isActive = [navigator isActive];
+
+    if ([[DialogManager sharedManager] isDialogAvailable] && !isActive) {
+        if (dialogHelper.helperView.hidden) {
+            dialogHelper.helperView.hidden = NO;
+            [dialogHelper recognize];
+        }
+        dialogHelper.helperView.disabled = !(hasCenter && (!isPreviewDisabled || devMode || validLocation));
+    } else {
+        dialogHelper.helperView.hidden = YES;
+    }
 }
 
 
@@ -598,6 +607,7 @@
                 withName:@"XYZ"];
         
         lastLocationSent = now;
+        [self dialogHelperUpdate];
     });
 }
 

@@ -74,9 +74,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:HLPSettingChanged object:nil];
     
-    if (!IS_IOS11orHIGHER) {
-        [self detectBluetooth];
-    }
+    [self detectBluetooth];
     
     return YES;
 }

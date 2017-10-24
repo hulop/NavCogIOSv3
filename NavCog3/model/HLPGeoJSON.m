@@ -243,19 +243,22 @@
     else if(self.category == HLP_OBJECT_CATEGORY_TOILET) {
         temp = [[NSMutableString alloc] init];
         if (properties) {
-            NSString *sex = properties[PROPKEY_MALE_OR_FEMALE];
+            NSString *sex = self.properties[PROPKEY_MALE_OR_FEMALE];
             if ([sex isEqualToString:@"1"]) {
-                [temp appendString:NSLocalizedString(@"FOR_MALE",@"Toilet for male")];
+                [temp appendString:@"FOR_MALE"];
             }
             else if ([sex isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_FEMALE",@"Toilet for female")];
+                [temp appendString:@"FOR_FEMALE"];
             }
-            NSString *multi = properties[PROPKEY_MULTI_PURPOSE_TOILET];
+            
+            NSString *multi = self.properties[PROPKEY_MULTI_PURPOSE_TOILET];
             
             if ([multi isEqualToString:@"1"] || [multi isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
+                [temp appendString:@"FOR_DISABLED"];
             }
+            [temp appendString:@"RESTROOM"];
         }
+        temp = [NSLocalizedString(temp, @"") mutableCopy];
     }
     
     return [temp stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
@@ -369,19 +372,22 @@
     if ((!name || [name length] == 0) && [category isEqualToString:CATEGORY_TOILET]) {
         temp = [[NSMutableString alloc] init];
         if (properties) {
-            NSString *sex = properties[PROPKEY_MALE_OR_FEMALE];
+            NSString *sex = self.properties[PROPKEY_MALE_OR_FEMALE];
             if ([sex isEqualToString:@"1"]) {
-                [temp appendString:NSLocalizedString(@"FOR_MALE",@"Toilet for male")];
+                [temp appendString:@"FOR_MALE"];
             }
             else if ([sex isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_FEMALE",@"Toilet for female")];
+                [temp appendString:@"FOR_FEMALE"];
             }
-            NSString *multi = properties[PROPKEY_MULTI_PURPOSE_TOILET];
+            
+            NSString *multi = self.properties[PROPKEY_MULTI_PURPOSE_TOILET];
             
             if ([multi isEqualToString:@"1"] || [multi isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
+                [temp appendString:@"FOR_DISABLED"];
             }
+            [temp appendString:@"RESTROOM"];
         }
+        temp = [NSLocalizedString(temp, @"") mutableCopy];
     }
     
     return [temp stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
@@ -398,6 +404,7 @@
     [_properties[@"sub_category"] isEqualToString:@"SMOK"] ||
     [_properties[@"sub_category"] isEqualToString:@"ATM"] ||
     [_properties[@"sub_category"] isEqualToString:@"RE_L"] ||
+    [_properties[@"sub_category"] containsString:@"_facility_"] ||
     [self isToilet];
 }
 
@@ -1196,18 +1203,20 @@ static NSRegularExpression *patternHLPPOIFlags;
         if (self.properties) {
             NSString *sex = self.properties[PROPKEY_MALE_OR_FEMALE];
             if ([sex isEqualToString:@"1"]) {
-                [temp appendString:NSLocalizedString(@"FOR_MALE",@"Toilet for male")];
+                [temp appendString:@"FOR_MALE"];
             }
             else if ([sex isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_FEMALE",@"Toilet for female")];
+                [temp appendString:@"FOR_FEMALE"];
             }
+            
             NSString *multi = self.properties[PROPKEY_MULTI_PURPOSE_TOILET];
             
             if ([multi isEqualToString:@"1"] || [multi isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
+                [temp appendString:@"FOR_DISABLED"];
             }
+            [temp appendString:@"RESTROOM"];
         }
-        _namePron = _name = temp;
+        _namePron = _name = NSLocalizedString(temp, @"");;
     }
     
     

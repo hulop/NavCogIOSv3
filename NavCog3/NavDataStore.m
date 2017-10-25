@@ -87,7 +87,7 @@
             _landmark = [aDecoder decodeObjectForKey:@"landmark"];
             break;
         case NavDestinationTypeLocation:
-            _location = [aDecoder decodeObjectForKey:@"location"];
+            //_location = [aDecoder decodeObjectForKey:@"location"];
             break;
         default:
             break;
@@ -255,6 +255,11 @@
             return [self name];
     }
     return nil;
+}
+
+-(BOOL)isCurrentLocation
+{
+    return _type == NavDestinationTypeLocation && _location == nil;
 }
 @end
 
@@ -587,7 +592,10 @@ static NavDataStore* instance_ = nil;
 {
     NSMutableString* retStr = [[NSMutableString alloc] initWithString:str];
     CFStringTransform((CFMutableStringRef)retStr, NULL, kCFStringTransformHiraganaKatakana, YES);
-    return retStr;
+    
+    NSRange range = [retStr rangeOfString:@"^[0-9]" options:NSRegularExpressionSearch];
+    BOOL matches = range.location != NSNotFound;
+    return matches?[NSString stringWithFormat:@"ZZZZZZ%@",retStr]:retStr;
 }
 
 - (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang {

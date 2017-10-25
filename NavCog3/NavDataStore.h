@@ -51,6 +51,7 @@ typedef enum {
 -(instancetype)initWithLabel:(NSString*)label Filter:(NSDictionary*)filter;
 -(void)addLandmark:(HLPLandmark*)landmark;
 -(HLPLocation*)location;
+-(BOOL)isCurrentLocation;
 +(instancetype)selectStart;
 +(instancetype)selectDestination;
 +(instancetype)dialogSearch;

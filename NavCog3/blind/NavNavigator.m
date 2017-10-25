@@ -1337,6 +1337,20 @@ static NavNavigatorConstants *_instance;
                 }
             }
             
+            
+            HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
+            if ( loc.orientationAccuracy > 22.5) {
+                if ([self.delegate respondsToSelector:@selector(requiresHeadingCalibration:)]) {
+                    [self.delegate requiresHeadingCalibration:@{
+                                                                @"accuracy": @(loc.orientationAccuracy),
+                                                                @"silenceIfCalibrated": @(YES),
+                                                                @"noLocation": @(NO)
+                                                                }];
+                    firstLinkInfo.hasBeenBearing = YES;
+                    firstLinkInfo.bearingTargetThreshold = C.CHANGE_HEADING_THRESHOLD;
+                }
+            }
+            
             isFirst = NO;
         }
         
@@ -1815,7 +1829,8 @@ static NavNavigatorConstants *_instance;
                 // return;
             }
             
-            if (!linkInfo.hasBeenActivated && linkInfo.distanceToUserLocationFromLink < C.OFF_ROUTE_THRESHOLD) {
+            if (!linkInfo.hasBeenActivated && !linkInfo.hasBeenBearing &&
+                linkInfo.distanceToUserLocationFromLink < C.OFF_ROUTE_THRESHOLD) {
                 
                 linkInfo.hasBeenActivated = YES;
                 if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {

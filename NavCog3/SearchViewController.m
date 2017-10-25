@@ -184,7 +184,7 @@
 - (void) locationChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.historyView reloadData];
+        //[self.historyView reloadData];
         [self updateViewWithFlag:NO];
     });
 }
@@ -209,7 +209,7 @@
         self.refreshButton.enabled = updated && actionEnabled;
         self.routeOptionsButton.enabled = updated && actionEnabled;
         
-        self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
+        self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled && !nds.from.isCurrentLocation);
         self.previewButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
         self.previewButton.hidden = !isDevMode && isPreviewDisabled;
         self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation && actionEnabled && isNotManual) || isDevMode;

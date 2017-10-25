@@ -377,9 +377,9 @@ Head to the correct orientation
 
 "Always_Background" = "Always run in background";
 
-"HEADING_CALIBRATION" = "In order to adjust heading, please walk about 5 meters with attention";
-"HEADING_CALIBRATION2" = "If you want to improve heading, please walk more";
-"HEADING_CALIBRATION3" = "Heading is adjusted.";
+"HEADING_CALIBRATION" = "Please take several steps to confirm your orientation.";
+"HEADING_CALIBRATION2" = "Please walk more";
+"HEADING_CALIBRATION3" = "Orientation is adjusted.";
 
 "NO_AVAILABLE_LOCATION" = "Location information is not available";
 

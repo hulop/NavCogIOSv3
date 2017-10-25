@@ -982,7 +982,7 @@
 
         return;
     }
-    
+    BOOL silenceIfCalibrated = properties[@"silenceIfCalibrated"] != nil && [properties[@"silenceIfCalibrated"] boolValue];
     double acc = [properties[@"accuracy"] doubleValue];
     NSString *string;
     if (acc > 45) {
@@ -991,7 +991,7 @@
     else if (acc > 22.5) {
         string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION2", @"BlindView", @"");
     }
-    else {
+    else if (!silenceIfCalibrated){
         string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION3", @"BlindView", @"");
     }
     [self.delegate vibrate];

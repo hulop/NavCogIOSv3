@@ -400,6 +400,11 @@
         
         NSString *cn = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"lastcommit" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
         [self.commitLabel setText:cn];
+        
+        NSMutableArray *elements = [@[self.navigationItem] mutableCopy];
+        if (!dialogHelper.helperView.hidden) { [elements addObject:dialogHelper.helperView]; }
+        [elements addObject:_cover];
+        self.view.accessibilityElements = elements;
     });
 }
 

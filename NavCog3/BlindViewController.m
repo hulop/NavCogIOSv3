@@ -402,7 +402,9 @@
         [self.commitLabel setText:cn];
         
         NSMutableArray *elements = [@[self.navigationItem] mutableCopy];
-        if (!dialogHelper.helperView.hidden) { [elements addObject:dialogHelper.helperView]; }
+        if (dialogHelper && dialogHelper.helperView && !dialogHelper.helperView.hidden) {
+            [elements addObject:dialogHelper.helperView];
+        }
         [elements addObject:_cover];
         self.view.accessibilityElements = elements;
     });

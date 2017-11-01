@@ -47,7 +47,11 @@ typedef struct {
     LocationManager *locationManager;
 } LocalUserData;
 
-@implementation LocationManager
+
+@implementation encoderMessage
+@end
+
+@implementation LocationManager // object's methods
 {
     shared_ptr<BasicLocalizer> localizer;
     CLLocationManager *beaconManager;
@@ -128,6 +132,20 @@ void functionCalledToLog(void *inUserData, string text)
 - (instancetype) initPrivate
 {
     self = [super init];
+    
+    //put in initialization for RB manager
+    //need a subsriber to encoder
+    
+    if (self) {
+        // Custom initialization
+        [[RBManager defaultManager] connect:@"ws://192.168.0.102:9090"];
+        self.ROSEncoderSubscriber = [[RBManager defaultManager] addSubscriber:@"/encoder" responseTarget:self selector:@selector(EncoderUpdate:) messageClass:[encoderMessage class]];
+        
+        
+    }
+    
+  
+    
     
     _isActive = NO;
     isMapLoaded = NO;
@@ -416,7 +434,7 @@ void functionCalledToLog(void *inUserData, string text)
                         }else{
                             localizer->disableAcceleration(false);
                         }
-                        localizer->putAcceleration(acc);
+                        //localizer->putAcceleration(acc);
                     }
                     // Parsing motion values
                     else if (logString.compare(0, 6, "Motion") == 0) {
@@ -621,7 +639,7 @@ void functionCalledToLog(void *inUserData, string text)
         global.lat(loc.lat);
         global.lng(loc.lng);
         
-        location = projection->globalToLocal(global);
+        location = projection->globalToLocal(global);  // to converts to GPS
         
         loc::Pose newPose(location);
         if(isnan(loc.floor)){
@@ -670,7 +688,26 @@ void functionCalledToLog(void *inUserData, string text)
     }
 }
 
-- (void) startSensors
+//Start encoder stuff
+
+- (void) EncoderUpdate:(encoderMessage*)encoder
+{
+    
+    long *timestamp=encoder.header.time.sec;
+    float *velocity= encoder.speed;
+    float position=0;
+    
+    NSLog(@"TimeStamp %li",*timestamp);
+    NSLog(@"Velocity %f",*velocity);
+    
+    
+    EncoderInfo enc(*timestamp,position,*velocity);
+    
+    
+    localizer->putAcceleration(enc);
+}
+
+- (void) startSensors  //start sensors put in encoder stuff in here?
 {
     [beaconManager startUpdatingHeading];
     
@@ -707,12 +744,14 @@ void functionCalledToLog(void *inUserData, string text)
             }else{
                 localizer->disableAcceleration(false);
             }
-            localizer->putAcceleration(acceleration);
+            //localizer->putAcceleration(acceleration);
         } catch(const std::exception& ex) {
             std::cout << ex.what() << std::endl;
         }
         
     }];
+    
+   
     
     if(altimeter){
         [altimeter startRelativeAltitudeUpdatesToQueue: processQueue withHandler:^(CMAltitudeData *altitudeData, NSError *error) {
@@ -1041,7 +1080,7 @@ void functionCalledToLog(void *inUserData, string text)
     [processQueue addOperationWithBlock:^{
         std::shared_ptr<loc::Pose> pose = localizer->getStatus()->meanPose();
         
-        loc::Pose newPose(*pose);
+        loc::Pose newPose(*pose); // all the good stuff is in Pose
         newPose.floor(round(newPose.floor()));
         newPose.orientation(orientation);
 

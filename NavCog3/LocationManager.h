@@ -28,8 +28,50 @@
 #import <bleloc/BLEBeacon.hpp>
 #import <bleloc/LatLngConverter.hpp>
 #import "LocationEvent.h"
+#import "RBManager.h"
+#import "RBSubscriber.h"
+
+
+//encoder from ROS encoder.msg
+
+@interface encoderTime : RBMessage {
+    long * sec;
+    long * nsec;
+}
+
+@property (nonatomic) long* sec;
+@property (nonatomic) long* nsec;
+
+@end
+
+@interface encoderHeader : RBMessage {
+    int * seq;
+    encoderTime * time;
+    NSString * frameid;
+    
+}
+
+@property (nonatomic) int * seq;
+@property (nonatomic) encoderTime * time;
+@property (nonatomic) NSString * frameid;
+
+@end
+
+@interface encoderMessage : RBMessage {
+    float * speed;
+    encoderHeader * header;
+}
+
+@property (nonatomic) float * speed;
+@property (nonatomic) encoderHeader * header;
+
+@end
+
+
+//END encoder from ROS encoder.msg
 
 @interface LocationManager : NSObject < CLLocationManagerDelegate >
+
 
 @property BOOL isReadyToStart;
 @property BOOL isActive;
@@ -37,7 +79,6 @@
 
 - (instancetype) init NS_UNAVAILABLE;
 + (instancetype) sharedManager;
-
 - (void) start;
 // - (void) stop; // no need to stop anymore
 - (void) setModelAtPath:(NSString*) path withWorkingDir:(NSString*) dir;
@@ -45,4 +86,10 @@
 - (loc::LatLngConverter::Ptr) getProjection;
 
 
+@property RBSubscriber * ROSEncoderSubscriber; //Rbmanager encoder
+//-(void)EncoderUpdate:(encoderMessage*)encoder; //will send the encoder info to localizer
+
 @end
+
+
+

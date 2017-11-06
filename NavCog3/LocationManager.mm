@@ -22,10 +22,10 @@
 
 
 #import "LocationManager.h"
-#import <bleloc/bleloc.h>
-#import <bleloc/BasicLocalizer.hpp>
-#import <bleloc/LocException.hpp>
-#import <bleloc/LogUtil.hpp>
+#import "core/bleloc.h"
+#import "localizer/BasicLocalizer.hpp"
+#import "core/LocException.hpp"
+#import "utils/LogUtil.hpp"
 #import "Logging.h"
 #import <sys/sysctl.h>
 #import <UIKit/UIKit.h>
@@ -35,6 +35,8 @@
 #import "ConfigManager.h"
 #import "NavUtil.h"
 #include <iomanip>
+
+//#include "EncoderInfo.hpp"
 
 #define CALIBRATION_BEACON_UUID @"00000000-30A4-1001-B000-001C4D1E8637"
 #define CALIBRATION_BEACON_MAJOR 9999
@@ -141,7 +143,6 @@ void functionCalledToLog(void *inUserData, string text)
         [[RBManager defaultManager] connect:@"ws://192.168.0.102:9090"];
         self.ROSEncoderSubscriber = [[RBManager defaultManager] addSubscriber:@"/encoder" responseTarget:self selector:@selector(EncoderUpdate:) messageClass:[encoderMessage class]];
         
-        
     }
     
   
@@ -208,7 +209,6 @@ void functionCalledToLog(void *inUserData, string text)
     [ud addObserver:self forKeyPath:@"rejectDistance" options:NSKeyValueObservingOptionNew context:nil];
     [ud addObserver:self forKeyPath:@"diffusionOrientationBias" options:NSKeyValueObservingOptionNew context:nil];
     [ud addObserver:self forKeyPath:@"location_tracking" options:NSKeyValueObservingOptionNew context:nil];
-    
     
     smoothedLocationAcc = -1;
     smootingLocationRate = 0.1;
@@ -434,7 +434,12 @@ void functionCalledToLog(void *inUserData, string text)
                         }else{
                             localizer->disableAcceleration(false);
                         }
-                        //localizer->putAcceleration(acc);
+                        
+                        // added by Chris
+                        EncoderInfo enc(acc.timestamp(), 0, 1.0); // bad fix
+                        // end
+                        
+                        localizer->putAcceleration(enc);  // uncommented by Chris
                     }
                     // Parsing motion values
                     else if (logString.compare(0, 6, "Motion") == 0) {
@@ -692,19 +697,16 @@ void functionCalledToLog(void *inUserData, string text)
 
 - (void) EncoderUpdate:(encoderMessage*)encoder
 {
-    
-    long *timestamp=encoder.header.time.sec;
-    float *velocity= encoder.speed;
-    float position=0;
+    long *timestamp = encoder.header.time.sec;
+    float *velocity = encoder.speed;
+    float position = 0;
     
     NSLog(@"TimeStamp %li",*timestamp);
     NSLog(@"Velocity %f",*velocity);
     
+    EncoderInfo enc(*timestamp, position, *velocity);
     
-    EncoderInfo enc(*timestamp,position,*velocity);
-    
-    
-    localizer->putAcceleration(enc);
+    localizer->putAcceleration(enc);  // changed by Chris
 }
 
 - (void) startSensors  //start sensors put in encoder stuff in here?
@@ -744,7 +746,13 @@ void functionCalledToLog(void *inUserData, string text)
             }else{
                 localizer->disableAcceleration(false);
             }
-            //localizer->putAcceleration(acceleration);
+            
+            // added by Chris
+            EncoderInfo enc(acc.timestamp, 0, 1.0);
+            //EncoderUpdate:(encoderMessage*)enc;
+            // end added by Chris
+            
+            localizer->putAcceleration(enc);  // was originally there
         } catch(const std::exception& ex) {
             std::cout << ex.what() << std::endl;
         }
@@ -1168,7 +1176,8 @@ void functionCalledToLog(void *inUserData, string text)
         } else {
             double s = [[NSDate date] timeIntervalSince1970];
             try {
-                flagPutBeacon = YES;
+                flagPutBeacon = YES;  // problems before
+                
                 localizer->putBeacons(cbeacons);
                 putBeaconsCount++;
                 flagPutBeacon = NO;

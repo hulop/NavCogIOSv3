@@ -208,7 +208,7 @@
             }
         } else {
             NSLog(@"check server config");
-            self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+            //self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");   // changed by Dragan I think ...
             [[ServerConfig sharedConfig] requestServerConfig:^(NSDictionary *config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }

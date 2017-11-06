@@ -24,9 +24,9 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import <CoreMotion/CoreMotion.h>
-#import <bleloc/Status.hpp>
-#import <bleloc/BLEBeacon.hpp>
-#import <bleloc/LatLngConverter.hpp>
+#import "core/Status.hpp"
+#import "core/BLEBeacon.hpp"
+#import "core/LatLngConverter.hpp"
 #import "LocationEvent.h"
 #import "RBManager.h"
 #import "RBSubscriber.h"

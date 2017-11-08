@@ -2,7 +2,7 @@ project 'NavCog3'
 
 target 'NavCog3' do
   platform :ios, '8.4'
-  pod 'OpenCV', '2.4.9'
+  pod 'OpenCV', '3.2'
   pod 'FormatterKit'
   pod 'eigen'
   #pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.2.8/bleloc.podspec"
@@ -37,7 +37,7 @@ end
 
 target 'NavCogSimple' do
   platform :ios, '8.4'
-  pod 'OpenCV', '2.4.9'
+  pod 'OpenCV', '3.2'
   pod 'FormatterKit'
   pod 'eigen'
   #pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.2.8/bleloc.podspec"

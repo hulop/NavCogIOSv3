@@ -36,6 +36,8 @@
 #import "NavUtil.h"
 #include <iomanip>
 
+
+
 //#include "EncoderInfo.hpp"
 
 #define CALIBRATION_BEACON_UUID @"00000000-30A4-1001-B000-001C4D1E8637"
@@ -140,14 +142,13 @@ void functionCalledToLog(void *inUserData, string text)
     
     if (self) {
         // Custom initialization
-        [[RBManager defaultManager] connect:@"ws://192.168.0.102:9090"];
+        [[RBManager defaultManager] connect:@"ws://192.168.0.105:9090"];
         self.ROSEncoderSubscriber = [[RBManager defaultManager] addSubscriber:@"/encoder" responseTarget:self selector:@selector(EncoderUpdate:) messageClass:[encoderMessage class]];
+        self.ROSEncoderSubscriber.throttleRate = 100;
         
     }
     
-  
-    
-    
+
     _isActive = NO;
     isMapLoaded = NO;
     valid = NO;
@@ -436,7 +437,7 @@ void functionCalledToLog(void *inUserData, string text)
                         }
                         
                         // added by Chris
-                        EncoderInfo enc(acc.timestamp(), 0, 1.0); // bad fix
+                        EncoderInfo enc(acc.timestamp(), 0, 0.4); // bad fix
                         // end
                         
                         localizer->putAcceleration(enc);  // uncommented by Chris
@@ -694,17 +695,22 @@ void functionCalledToLog(void *inUserData, string text)
 }
 
 //Start encoder stuff
-
+// divya
 - (void) EncoderUpdate:(encoderMessage*)encoder
 {
-    long *timestamp = encoder.header.time.sec;
-    float *velocity = encoder.speed;
+    //long *timestamp = encoder.header.stamp.time.secs;
+    NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
+    // NSTimeInterval is defined as double
+    NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
+    long timestamp = [timeStampObj longValue];
+    
     float position = 0;
+    float velocity = [encoder.speed floatValue];
     
-    NSLog(@"TimeStamp %li",*timestamp);
-    NSLog(@"Velocity %f",*velocity);
+    NSLog(@"TimeStamp %li",timestamp);
+    // NSLog(@"Velocity %f",velocity);
     
-    EncoderInfo enc(*timestamp, position, *velocity);
+    EncoderInfo enc(timestamp, position, 0.4);
     
     localizer->putAcceleration(enc);  // changed by Chris
 }
@@ -748,8 +754,7 @@ void functionCalledToLog(void *inUserData, string text)
             }
             
             // added by Chris
-            EncoderInfo enc(acc.timestamp, 0, 1.0);
-            //EncoderUpdate:(encoderMessage*)enc;
+            EncoderInfo enc((uptime+acc.timestamp)*1000, 0, 0.5);  //the time stamp is done right!!!
             // end added by Chris
             
             localizer->putAcceleration(enc);  // was originally there

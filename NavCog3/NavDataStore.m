@@ -307,12 +307,12 @@ static NavDataStore* instance_ = nil;
 {
     self = [super init];
     
-    if (self) {
-        // Custom initialization
-        [[RBManager defaultManager] connect:@"ws://192.168.0.105:9090"];
-        self.ROSLocationPublisher = [[RBManager defaultManager] addPublisher:@"/blind/location" messageType:@"geometry_msgs/Point"];
-        self.ROSLocationPublisher.label = @"Turtle Controller";
-    }
+//    if (self) {
+//        // Custom initialization
+//        [[RBManager defaultManager] connect:@"ws://192.168.0.105:9090"];
+//        self.ROSLocationPublisher = [[RBManager defaultManager] addPublisher:@"/blind/location" messageType:@"geometry_msgs/Point"];
+//        self.ROSLocationPublisher.label = @"Turtle Controller";
+//    }
     
     [self reset];
     

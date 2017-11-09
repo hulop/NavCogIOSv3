@@ -31,10 +31,13 @@
 #import "RBManager.h"
 #import "RBSubscriber.h"
 
+#import "HeaderMessage.h"
+
+#import "encoderMessage.h"
 
 //encoder from ROS encoder.msg
 
-@interface encoderTime : RBMessage {
+/*@interface encoderTime : RBMessage {
     long * sec;
     long * nsec;
 }
@@ -55,17 +58,17 @@
 @property (nonatomic) encoderTime * time;
 @property (nonatomic) NSString * frameid;
 
-@end
+@end*/
 
-@interface encoderMessage : RBMessage {
-    float * speed;
-    encoderHeader * header;
+/*@interface encoderMessage : RBMessage {
+    NSNumber * speed;
+    HeaderMessage * header;
 }
 
-@property (nonatomic) float * speed;
-@property (nonatomic) encoderHeader * header;
+@property (nonatomic, strong) NSNumber * speed;
+@property (nonatomic, strong) HeaderMessage * header;
 
-@end
+@end*/
 
 
 //END encoder from ROS encoder.msg
@@ -87,7 +90,7 @@
 
 
 @property RBSubscriber * ROSEncoderSubscriber; //Rbmanager encoder
-//-(void)EncoderUpdate:(encoderMessage*)encoder; //will send the encoder info to localizer
+-(void)EncoderUpdate:(encoderMessage*)encoder; //will send the encoder info to localizer
 
 @end
 

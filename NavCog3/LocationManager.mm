@@ -36,7 +36,7 @@
 #import "NavUtil.h"
 #include <iomanip>
 
-
+float velocityGlobal = 0;
 
 //#include "EncoderInfo.hpp"
 
@@ -140,14 +140,13 @@ void functionCalledToLog(void *inUserData, string text)
     //put in initialization for RB manager
     //need a subsriber to encoder
     
+    // divya1
     if (self) {
         // Custom initialization
         [[RBManager defaultManager] connect:@"ws://192.168.0.105:9090"];
         self.ROSEncoderSubscriber = [[RBManager defaultManager] addSubscriber:@"/encoder" responseTarget:self selector:@selector(EncoderUpdate:) messageClass:[encoderMessage class]];
         self.ROSEncoderSubscriber.throttleRate = 100;
-        
     }
-    
 
     _isActive = NO;
     isMapLoaded = NO;
@@ -437,7 +436,7 @@ void functionCalledToLog(void *inUserData, string text)
                         }
                         
                         // added by Chris
-                        EncoderInfo enc(acc.timestamp(), 0, 0.4); // bad fix
+                        EncoderInfo enc(acc.timestamp(), 0, 0.3); // bad fix
                         // end
                         
                         localizer->putAcceleration(enc);  // uncommented by Chris
@@ -695,10 +694,10 @@ void functionCalledToLog(void *inUserData, string text)
 }
 
 //Start encoder stuff
-// divya
+// divya2
 - (void) EncoderUpdate:(encoderMessage*)encoder
 {
-    //long *timestamp = encoder.header.stamp.time.secs;
+    //long *timestamp = encoder.header.stamp.secs;
     NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
     // NSTimeInterval is defined as double
     NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
@@ -707,12 +706,21 @@ void functionCalledToLog(void *inUserData, string text)
     float position = 0;
     float velocity = [encoder.speed floatValue];
     
+    velocityGlobal = velocity*10000;
+    
     NSLog(@"TimeStamp %li",timestamp);
-    // NSLog(@"Velocity %f",velocity);
+    NSLog(@"Velocity %f",velocity);
+    NSLog(@"global speed: %f", velocityGlobal);
+    if (velocityGlobal > 0)
+    {
+        NSLog(@"updated global speed!");
+    }
     
-    EncoderInfo enc(timestamp, position, 0.4);
+    // EncoderInfo enc(timestamp, position, velocity*10000);
+    EncoderInfo enc(timestamp, position, 0.3);
     
-    localizer->putAcceleration(enc);  // changed by Chris
+    // this probably have no effect
+    localizer->putAcceleration(enc);
 }
 
 - (void) startSensors  //start sensors put in encoder stuff in here?
@@ -753,11 +761,13 @@ void functionCalledToLog(void *inUserData, string text)
                 localizer->disableAcceleration(false);
             }
             
-            // added by Chris
-            EncoderInfo enc((uptime+acc.timestamp)*1000, 0, 0.5);  //the time stamp is done right!!!
+            // added by Chris, important
+            // EncoderInfo enc((uptime+acc.timestamp)*1000, 0, velocityGlobal);  //the time stamp is done right!!!
+            EncoderInfo enc((uptime+acc.timestamp)*1000, 0, 0.3);
             // end added by Chris
             
             localizer->putAcceleration(enc);  // was originally there
+            
         } catch(const std::exception& ex) {
             std::cout << ex.what() << std::endl;
         }
@@ -1181,7 +1191,7 @@ void functionCalledToLog(void *inUserData, string text)
         } else {
             double s = [[NSDate date] timeIntervalSince1970];
             try {
-                flagPutBeacon = YES;  // problems before
+                flagPutBeacon = YES;  
                 
                 localizer->putBeacons(cbeacons);
                 putBeaconsCount++;

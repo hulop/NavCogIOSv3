@@ -366,6 +366,7 @@
 		1D2D1F9E421ADDB0FC1A851C /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		28E89CC83F0D37E90FA16F2F /* Pods-NavCogSimple.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogSimple.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogSimple/Pods-NavCogSimple.debug.xcconfig"; sourceTree = "<group>"; };
 		322C46A01FAD1B0B00E22B2B /* dev.hashfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dev.hashfile; path = ../../../Desktop/dev.hashfile; sourceTree = "<group>"; };
+		32EB7B1D1FB4E9E400E5CB13 /* encoderMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = encoderMessage.h; sourceTree = "<group>"; };
 		532767560556F4EF6118B463 /* Pods-NavCogFingerPrint.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFingerPrint.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFingerPrint/Pods-NavCogFingerPrint.debug.xcconfig"; sourceTree = "<group>"; };
 		6BD7823B1F83010200DB96C0 /* PointMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PointMessage.h; sourceTree = "<group>"; };
 		6BD7823C1F83010200DB96C0 /* PointMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PointMessage.m; sourceTree = "<group>"; };
@@ -1053,6 +1054,7 @@
 				7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */,
 				7E7ED5A31F5E67BC0033814B /* ScreenshotHelper.h */,
 				7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */,
+				32EB7B1D1FB4E9E400E5CB13 /* encoderMessage.h */,
 			);
 			name = helper;
 			sourceTree = "<group>";

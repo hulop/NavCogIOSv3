@@ -706,7 +706,7 @@ void functionCalledToLog(void *inUserData, string text)
     float position = 0;
     float velocity = [encoder.speed floatValue];
     
-    velocityGlobal = velocity*10000;
+    velocityGlobal = velocity*1000;
     
     NSLog(@"TimeStamp %li",timestamp);
     NSLog(@"Velocity %f",velocity);
@@ -716,8 +716,7 @@ void functionCalledToLog(void *inUserData, string text)
         NSLog(@"updated global speed!");
     }
     
-    // EncoderInfo enc(timestamp, position, velocity*10000);
-    EncoderInfo enc(timestamp, position, 0.3);
+    EncoderInfo enc(timestamp, position, velocity*1000);
     
     // this probably have no effect
     localizer->putAcceleration(enc);
@@ -762,8 +761,7 @@ void functionCalledToLog(void *inUserData, string text)
             }
             
             // added by Chris, important
-            // EncoderInfo enc((uptime+acc.timestamp)*1000, 0, velocityGlobal);  //the time stamp is done right!!!
-            EncoderInfo enc((uptime+acc.timestamp)*1000, 0, 0.3);
+            EncoderInfo enc((uptime+acc.timestamp)*1000, 0, velocityGlobal);  //the time stamp is done right!!!
             // end added by Chris
             
             localizer->putAcceleration(enc);  // was originally there
@@ -774,7 +772,6 @@ void functionCalledToLog(void *inUserData, string text)
         
     }];
     
-   
     
     if(altimeter){
         [altimeter startRelativeAltitudeUpdatesToQueue: processQueue withHandler:^(CMAltitudeData *altitudeData, NSError *error) {

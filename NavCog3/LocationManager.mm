@@ -701,14 +701,15 @@ void functionCalledToLog(void *inUserData, string text)
     NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
     // NSTimeInterval is defined as double
     NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
-    long timestamp = [timeStampObj longValue];
+    double timestamp = [timeStampObj doubleValue];
+    timestamp = timestamp;  // times by 1000 for precision purposes
     
     float position = 0;
     float velocity = [encoder.speed floatValue];
     
-    velocityGlobal = velocity*1000;
+    velocityGlobal = velocity*100;
     
-    NSLog(@"TimeStamp %li",timestamp);
+    NSLog(@"TimeStamp %f",timestamp);
     NSLog(@"Velocity %f",velocity);
     NSLog(@"global speed: %f", velocityGlobal);
     if (velocityGlobal > 0)
@@ -719,7 +720,7 @@ void functionCalledToLog(void *inUserData, string text)
     EncoderInfo enc(timestamp, position, velocity*1000);
     
     // this probably have no effect
-    localizer->putAcceleration(enc);
+    // localizer->putAcceleration(enc);
 }
 
 - (void) startSensors  //start sensors put in encoder stuff in here?
@@ -760,9 +761,21 @@ void functionCalledToLog(void *inUserData, string text)
                 localizer->disableAcceleration(false);
             }
             
+            
+            
+            //long *timestamp = encoder.header.stamp.secs;
+            NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
+            // NSTimeInterval is defined as double
+            NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
+            long timestamp = [timeStampObj longValue];
+            // EncoderInfo enc(timestamp, 0, velocityGlobal);  //the time stamp is done right!!!
+            
+            timestamp = (uptime+acc.timestamp)*1000;
             // added by Chris, important
-            EncoderInfo enc((uptime+acc.timestamp)*1000, 0, velocityGlobal);  //the time stamp is done right!!!
+            EncoderInfo enc(timestamp, 0, velocityGlobal);  //the time stamp is done right!!!
+
             // end added by Chris
+            //NSLog (@ "HEY: %li", timestamp);
             
             localizer->putAcceleration(enc);  // was originally there
             

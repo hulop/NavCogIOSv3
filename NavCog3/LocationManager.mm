@@ -808,7 +808,7 @@ void functionCalledToLog(void *inUserData, string text)
     localizer->relativeVelocityEscalator = [ud doubleForKey:@"relativeVelocityEscalator"]; 
     
     localizer->nBurnIn = [ud doubleForKey:@"nStates"];
-    localizer->burnInRadius2D = 5; // default 10
+    localizer->burnInRadius2D = [ud doubleForKey:@"initialSearchRadius2D"]; // default 10
     localizer->burnInInterval = 1;
     localizer->burnInInitType = INIT_WITH_SAMPLE_LOCATIONS;
     

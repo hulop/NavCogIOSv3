@@ -5,7 +5,7 @@ target 'NavCog3' do
   pod 'OpenCV/Dynamic', '3.2.0'
   pod 'FormatterKit'
   pod 'eigen'
-  pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.3.1-alpha/bleloc.podspec"
+  pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.3.1/bleloc.podspec"
 #  pod 'bleloc', :path => "../blelocpp"
   pod 'boost', :podspec => './podspecs/boost.podspec.json'
   pod 'cereal', :podspec => './podspecs/cereal.podspec'
@@ -36,7 +36,7 @@ target 'NavCogSimple' do
   pod 'OpenCV/Dynamic', '3.2.0'
   pod 'FormatterKit'
   pod 'eigen'
-  pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.3.1-alpha/bleloc.podspec"
+  pod 'bleloc', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.3.1/bleloc.podspec"
 #  pod 'bleloc', :path => "../blelocpp"
   pod 'boost', :podspec => './podspecs/boost.podspec.json'
   pod 'cereal', :podspec => './podspecs/cereal.podspec'

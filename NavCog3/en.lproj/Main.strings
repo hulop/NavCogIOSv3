@@ -23,8 +23,8 @@
 /* Class = "UITableViewSection"; headerTitle = "設定"; ObjectID = "2FQ-fL-pff"; */
 "2FQ-fL-pff.headerTitle" = "Settings";
 
-/* Class = "UIBarButtonItem"; title = "Setting"; ObjectID = "ATn-7d-y1j"; */
-"ATn-7d-y1j.title" = "Setting";
+/* Class = "UIBarButtonItem"; title = "Settings"; ObjectID = "ATn-7d-y1j"; */
+"ATn-7d-y1j.title" = "Settings";
 
 /* Class = "UILabel"; text = "ナビゲーション終了"; ObjectID = "EeT-mO-dhE"; */
 "EeT-mO-dhE.text" = "Stop navigation";

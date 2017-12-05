@@ -189,7 +189,8 @@ static NavNavigatorConstants *_instance;
     _expirationTimeOfPreventRemainingDistanceEvent = NAN;
     _backDetectedLocation = nil;
     _distanceFromBackDetectedLocationToLocation = NAN;
-    _noBearing = (_link.minimumWidth <= 2.0);
+    //_noBearing = (_link.minimumWidth <= 2.0);
+    _noBearing = YES;
     
     _isComplex = fabs([HLPLocation normalizeDegree:_link.initialBearingFromSource - _link.lastBearingForTarget]) > 10;
     
@@ -422,6 +423,9 @@ static NavNavigatorConstants *_instance;
             } else {
                 // mid in route
                 HLPLocation *nearest = [_link nearestLocationTo:ent.node.location];
+                if (ent.facility && ent.facility.isNotRead) {
+                    return; // skip no read flag facility
+                }
                 if ((!_isFirst && !_isNextDestination) ||
                     (_isFirst && [_link.sourceLocation distanceTo:nearest] > C.POI_ANNOUNCE_DISTANCE) ||
                     (_isNextDestination && [_link.targetLocation distanceTo:nearest] > C.POI_ANNOUNCE_DISTANCE)) {
@@ -1333,6 +1337,20 @@ static NavNavigatorConstants *_instance;
                 }
             }
             
+            
+            HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
+            if ( loc.orientationAccuracy > 22.5) {
+                if ([self.delegate respondsToSelector:@selector(requiresHeadingCalibration:)]) {
+                    [self.delegate requiresHeadingCalibration:@{
+                                                                @"accuracy": @(loc.orientationAccuracy),
+                                                                @"silenceIfCalibrated": @(YES),
+                                                                @"noLocation": @(NO)
+                                                                }];
+                    firstLinkInfo.hasBeenBearing = YES;
+                    firstLinkInfo.bearingTargetThreshold = C.CHANGE_HEADING_THRESHOLD;
+                }
+            }
+            
             isFirst = NO;
         }
         
@@ -1372,7 +1390,7 @@ static NavNavigatorConstants *_instance;
                     return MAX(MIN(distance, linkInfo_.link.length/4), 0.6);
                 }
             };
-            NSLog(@"ApproachDistance,%.2f,%.2f,%.2f,%.2f",linkInfo.distanceToTargetFromSnappedLocationOnLink,walkingSpeed,approachingDistance(),approachedDistance(linkInfo));
+            //NSLog(@"ApproachDistance,%.2f,%.2f,%.2f,%.2f",linkInfo.distanceToTargetFromSnappedLocationOnLink,walkingSpeed,approachingDistance(),approachedDistance(linkInfo));
             
             if (linkInfo.link.linkType != LINK_TYPE_ELEVATOR) {
                 
@@ -1811,7 +1829,8 @@ static NavNavigatorConstants *_instance;
                 // return;
             }
             
-            if (!linkInfo.hasBeenActivated && linkInfo.distanceToUserLocationFromLink < C.OFF_ROUTE_THRESHOLD) {
+            if (!linkInfo.hasBeenActivated && !linkInfo.hasBeenBearing &&
+                linkInfo.distanceToUserLocationFromLink < C.OFF_ROUTE_THRESHOLD) {
                 
                 linkInfo.hasBeenActivated = YES;
                 if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {

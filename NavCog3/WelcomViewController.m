@@ -85,6 +85,7 @@
 
 - (void) checkConfig
 {
+    /*
     if (self.presentedViewController) {
         //NSLog(@"Presenting: %@", self.presentedViewController);
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1f*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
@@ -92,6 +93,7 @@
         });
         return;
     }
+     */
     
     [[NSUserDefaults standardUserDefaults] setBool:[[AuthManager sharedManager] isDeveloperAuthorized] forKey:@"developer_mode"];
     /*
@@ -226,7 +228,10 @@
 
 - (IBAction)returnActionForSegue:(UIStoryboardSegue *)segue
 {
-    [self checkConfig];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0f*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self checkConfig];
+    });
+    //[self checkConfig];
 }
 
 - (void)didReceiveMemoryWarning {

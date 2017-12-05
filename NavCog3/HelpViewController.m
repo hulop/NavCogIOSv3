@@ -20,69 +20,41 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import "POIViewController.h"
+#import "HelpViewController.h"
 #import "NavDataStore.h"
-#import "HLPGeoJSON+External.h"
 
-@interface POIViewController ()
+@interface HelpViewController ()
 
 @end
 
-@implementation POIViewController
+@implementation HelpViewController
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    _helpType = @"help";
+    _helpTitle = @"Help";
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    if (_pois) {
-        HLPFacility *external = [self findExternal];
-        if (external) {
-            NSURL *url = external.externalPOIWebpage;
-            if (url) {
-                self.navigationItem.title = [NSString stringWithFormat:@"%@ webpage", external.externalSourceTitle];
-                [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
-                return;
-            }
-        }
-        
-        NSString *content = [self extractContent];
-        [self.webView loadHTMLString:content baseURL:nil];
+    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
+    
+    NSString *lang = [@"-" stringByAppendingString:[[NavDataStore sharedDataStore] userLanguage]];
+    if ([lang isEqualToString:@"-en"]) { lang = @""; }
+    NSString *base = @"https://hulop.github.io/";
+    NSString *url = nil;
+    if ([appName isEqualToString:@"NavCog3"]) {
+        url = [NSString stringWithFormat:@"%@%@%@",base, _helpType, lang];
+    } else if ([appName isEqualToString:@"NavCogPreview"]) {
+        url = [NSString stringWithFormat:@"%@%@_preview%@",base, _helpType, lang];
     }
-}
-
-- (HLPFacility*) findExternal
-{
-    for(HLPEntrance *poi in _pois) {
-        if (poi.facility.isExternalPOI) {
-            return poi.facility;
-        }
-    }
-    return nil;
-}
-
-- (NSString*) extractContent
-{
-    NSMutableString *str = [@"<html><body>" mutableCopy];
-    for(HLPEntrance *poi in _pois) {
-        [str appendFormat:@"<h1>%@</h1>", [poi name]];
-        if (poi.facility.longDescription) {
-            [str appendFormat:@"<div>%@</div>", poi.facility.longDescription];
-        }
-    }
-    [str appendString:@"</body></html>"];
-    return str;
-}
-
-- (BOOL)isContentAvailable
-{
-    if ([self findExternal]) {
-        return YES;
-    }
-    for(HLPEntrance *poi in _pois) {
-        if (poi.facility.longDescription && poi.facility.longDescription.length > 0) {
-            return YES;
-        }
-    }
-    return NO;    
+    NSLog(@"%@", url);
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+    [self.webview loadRequest:request];
+    
+    self.navigationItem.title = self.helpTitle;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -99,5 +71,11 @@
     // Pass the selected object to the new view controller.
 }
 */
+
++ (instancetype)getInstance
+{
+    HelpViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"help_view"];
+    return vc;
+}
 
 @end

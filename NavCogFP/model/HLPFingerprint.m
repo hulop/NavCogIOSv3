@@ -96,6 +96,15 @@ static NSValueTransformer *transformer;
              }];
 }
 
+- (void) updateWithFloorplan:(HLPFloorplan*) floorplan
+{
+    _anchor_lat = floorplan.lat;
+    _anchor_lng = floorplan.lng;
+    _anchor_rotate = floorplan.rotate;
+    _floor_num = floorplan.floor;
+    _filename = floorplan.filename;
+}
+
 + (NSValueTransformer *)rotateEntityAttributeTransformer {
     return [MTLValueTransformer transformerUsingForwardBlock:^id(id value, BOOL *success, NSError *__autoreleasing *error) {
         if ([value isKindOfClass:NSString.class]) {

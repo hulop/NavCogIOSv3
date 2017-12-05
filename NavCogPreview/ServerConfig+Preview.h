@@ -23,9 +23,14 @@
 #import <Foundation/Foundation.h>
 #import "ServerConfig.h"
 
+#define PREVIEW_SELECTED_FILTER @"PREVIEW_SELECTED_FILTER"
+
 @interface ServerConfig (Exp)
 
 - (BOOL) isExpMode;
 - (NSString*) expServerHost;
+- (BOOL) useDeviceId;
+- (BOOL) useAreaSelection;
+- (BOOL) onlyRoutePreview;
 
 @end

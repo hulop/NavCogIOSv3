@@ -54,7 +54,7 @@
     BOOL loaded;
     HLPRefpoint* currentRp;
     UITabBar *tabbar;
-    UITabBarItem *item1, *item2, *item3;
+    UITabBarItem *item1, *item2, *item3, *item4;
 }
 
 - (void)dealloc
@@ -79,10 +79,11 @@
     
     item1 = [[UITabBarItem alloc]initWithTitle:@"FingerPrint" image:[UIImage imageNamed:@"fingerprint"] tag:0];
     item2 = [[UITabBarItem alloc]initWithTitle:@"Beacon" image:[UIImage imageNamed:@"beacon"] tag:1];
-    item3 = [[UITabBarItem alloc]initWithTitle:@"POI" image:[UIImage imageNamed:@"poi"] tag:2];
-    item1.enabled = item2.enabled = item3.enabled = NO;
+    item3 = [[UITabBarItem alloc]initWithTitle:@"ID" image:[UIImage imageNamed:@"id"] tag:2];
+    item4 = [[UITabBarItem alloc]initWithTitle:@"POI" image:[UIImage imageNamed:@"poi"] tag:3];
+    item1.enabled = item2.enabled = item3.enabled = item4.enabled = NO;
     
-    tabbar.items = @[item1, item2, item3];
+    tabbar.items = @[item1, item2, item3, item4];
     tabbar.selectedItem = item1;
     tabbar.delegate = self;
     
@@ -173,8 +174,20 @@
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
-    FPMode modes[3] = {FPModeFingerprint, FPModeBeacon, FPModePOI};
+    FPMode modes[4] = {FPModeFingerprint, FPModeBeacon, FPModeID, FPModePOI};
     fpMode = modes[item.tag];
+    
+    if (fpMode == FPModeID) {
+        if (!fpm.isSampling) {
+            [fpm startSampling];
+        }
+    } else {
+        if (fpm.isSampling) {
+            [NavUtil hideMessageView:self.view];
+            [fpm cancel];
+        }
+    }
+    
     [self clearFeatures];
     [self updateView];
     [self reload];
@@ -258,13 +271,36 @@
 
 - (BOOL)manager:(FingerprintManager *)manager didObservedBeacons:(int)beaconCount atSample:(int)sampleCount
 {
-    [self updateView];
-    long count = [[NSUserDefaults standardUserDefaults] integerForKey:@"finger_printing_duration"];
-    if (sampleCount >= count) {
-        [fpm sendData];
-        return NO;
+    if (fpMode == FPModeID) {
+        CLBeacon *b = [fpm strongestBeacon];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (b) {
+                UIMessageView *mv = [NavUtil showMessageView:self.view];
+
+                mv.action.hidden = YES;
+                mv.message.font = [UIFont fontWithName:@"Courier" size:32];
+                mv.message.numberOfLines = 2;
+                mv.message.preferredMaxLayoutWidth = mv.bounds.size.width;
+                mv.message.text = [NSString stringWithFormat:@"Major:%5d Minor:%5d\nRSSI=%4ld",[b.major intValue],[b.minor intValue],b.rssi];
+                mv.message.adjustsFontSizeToFitWidth = YES;
+
+            } else {
+                [NavUtil hideMessageView:self.view];
+            }
+        });
+            
+        [fpm reset];
+        return YES;
+    } else {
+        [self updateView];
+        long count = [[NSUserDefaults standardUserDefaults] integerForKey:@"finger_printing_duration"];
+        if (sampleCount >= count) {
+            [fpm sendData];
+            return NO;
+        }
+        return YES;
     }
-    return YES;
 }
 
 - (void)manager:(FingerprintManager *)manager didSamplingsLoaded:(NSArray *)samplings
@@ -409,7 +445,7 @@
         
         if (fpMode == FPModeFingerprint) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
-            self.settingButton.enabled = fpm.isReady;
+            self.settingButton.enabled = fpm.isReady || !_retryButton.hidden;
             
             if (selectedFeature) {
                 self.searchButton.title = NSLocalizedStringFromTable(@"Delete", @"Fingerprint", @"");
@@ -440,7 +476,7 @@
             }
         } else if (fpMode == FPModeBeacon) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
-            self.settingButton.enabled = fpm.isReady;
+            self.settingButton.enabled = fpm.isReady || !_retryButton.hidden;
             
             if (selectedFeature) {
                 self.searchButton.title = NSLocalizedStringFromTable(@"Delete", @"Fingerprint", @"");
@@ -468,6 +504,14 @@
                 self.navigationItem.title = @"No Reference Point";
             }
 
+        } else if (fpMode == FPModeID) {
+            self.settingButton.enabled =  YES;
+            [NavUtil hideMessageView:self.view];
+            
+            self.navigationItem.rightBarButtonItem = nil;
+            self.navigationItem.leftBarButtonItem = _settingButton;
+            
+            self.navigationItem.title = @"ID";
         } else if (fpMode == FPModePOI) {
             self.searchButton.enabled = nds.isManualLocation;
             self.settingButton.enabled =  YES;
@@ -476,6 +520,8 @@
             if (selectedFeature) {
                 self.searchButton.title = NSLocalizedStringFromTable(@"Delete", @"Fingerprint", @"");
                 UIMessageView *view = [NavUtil showMessageView:self.view];
+                view.action.hidden = YES;
+                view.message.preferredMaxLayoutWidth = view.bounds.size.width;
                 NSString *name = @"";
                 NSString *category = @"";
                 if ([selectedFeature isKindOfClass:HLPFacility.class]) {
@@ -528,11 +574,10 @@
 
 - (void)webViewDidInsertBridge:(UIWebView *)webView
 {
-    item1.enabled = item2.enabled = YES;
-    item3.enabled = [[ServerConfig sharedConfig] isMapEditorKeyAvailable];
-
     [NSTimer scheduledTimerWithTimeInterval:2 repeats:NO block:^(NSTimer * _Nonnull timer) {
         [self reload];
+        item1.enabled = item2.enabled = item3.enabled = YES;
+        item4.enabled = [[ServerConfig sharedConfig] isMapEditorKeyAvailable];
     }];
 }
 
@@ -547,11 +592,11 @@
 {
     BOOL showRoute = [[NSUserDefaults standardUserDefaults] boolForKey:@"finger_printing_show_route"];
     
-    [NavUtil showWaitingForView:self.view withMessage:@"Loading..."];
     if (fpMode == FPModePOI || showRoute) {
         [poim initCenter:center];
     }
     if (fpMode == FPModeFingerprint || fpMode == FPModeBeacon) {
+        [NavUtil showWaitingForView:self.view withMessage:@"Loading..."];
         [fpm load];
     }
 }
@@ -711,6 +756,7 @@
     _indicator.hidden = YES;
     _retryButton.hidden = NO;
     _errorMessage.hidden = NO;
+    [self updateView];
 }
 
 - (IBAction)retry:(id)sender {

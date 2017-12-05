@@ -32,6 +32,7 @@
 #import "ServerConfig+Preview.h"
 #import "ExpConfig.h"
 #import "Logging.h"
+#import "HelpViewController.h"
 
 
 #import <CoreMotion/CoreMotion.h>
@@ -281,6 +282,12 @@ double stdev(double array[], long count) {
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"first_launch"]) {
+        HelpViewController *vc = [HelpViewController getInstance];
+        [self.navigationController showViewController:vc sender:self];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"first_launch"];
+    }
+    
     [self updateView];
 }
 
@@ -484,6 +491,12 @@ double stdev(double array[], long count) {
             withName:@"XYZ"];
 }
 
+- (void)routeNotFound
+{
+    [self speak:@"Route not found" withOptions:@{@"force":@(NO)} completionHandler:nil];
+    [[NavSound sharedInstance] playFail];
+}
+
 #pragma mark - PreviewCommandDelegate
 
 - (void)speakAtPoint:(CGPoint)point
@@ -514,7 +527,12 @@ double stdev(double array[], long count) {
     if (current && current.targetFacilityPOIs) {
         POIViewController *vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"poi_view"];
         vc.pois = current.targetFacilityPOIs;
-        [self.navigationController pushViewController:vc animated:YES];
+        if ([vc isContentAvailable]) {
+            [self.navigationController pushViewController:vc animated:YES];
+        } else {
+            [[NavSound sharedInstance] playFail];
+            [self speak:@"No detail information. " withOptions:@{@"force":@(NO)} completionHandler:nil];
+        }
     }
 }
 
@@ -828,23 +846,42 @@ double stdev(double array[], long count) {
         [NavDataStore sharedDataStore].mapCenter = [_webView getCenter];
         
         UIViewController *vc = nil;
-        if ([[ServerConfig sharedConfig] isExpMode]) {
-            NSArray *routes = [[ExpConfig sharedConfig] expUserRoutes];
-            if (routes == nil ){
-                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"exp_view"];
-                [self presentViewController:vc animated:YES completion:nil];
-                return NO;
-            } else if (routes.count > 0) {
-                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"setting_view"];
-                vc.restorationIdentifier = @"exp_settings";
+        
+        BOOL isExpMode = [[ServerConfig sharedConfig] isExpMode];
+        BOOL useDeviceId = [[ServerConfig sharedConfig] useDeviceId];
+        NSArray *routes = [[ExpConfig sharedConfig] expUserRoutes];
+        
+        if (isExpMode) {
+            if (!routes) { // require authentication
+                if (useDeviceId) {
+                    [NavUtil showModalWaitingWithMessage:@"loading..."];
+                    NSString *uuid = [UIDevice currentDevice].identifierForVendor.UUIDString;
+                    [[ExpConfig sharedConfig] requestUserInfo:uuid withComplete:^(NSDictionary *dic) {
+                        if (dic) {
+                            [[ExpConfig sharedConfig] requestRoutesConfig:^(NSDictionary *routes) {
+                                // noop
+                            }];
+                        } else {
+                            //error
+                        }
+                    }];
+                } else { // require login
+                    vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"exp_view"];
+                }
             } else {
-                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
+                if (routes.count > 0) { // with route
+                    vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"setting_view"];
+                    vc.restorationIdentifier = @"exp_settings";
+                } else { // no route                    
+                    vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
+                }
             }
         } else {
             vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
         }
-        [self.navigationController pushViewController:vc animated:YES];
-        
+        if (vc) {
+            [self.navigationController pushViewController:vc animated:YES];
+        }
         return NO;
     }
     return YES;

@@ -34,94 +34,111 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
 
 +(void)showModalWaitingWithMessage:(NSString *)message
 {
-    NSArray *subViews = [[[[UIApplication sharedApplication] delegate] window] subviews];    
-    UIView *view = [subViews lastObject];
-    [NavUtil showWaitingForView:view withMessage:message];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray *subViews = [[[[UIApplication sharedApplication] delegate] window] subviews];
+        UIView *view = [subViews lastObject];
+        [NavUtil showWaitingForView:view withMessage:message];
+    });
 }
 
 +(void)hideModalWaiting
 {
-    NSArray *subViews = [[[[UIApplication sharedApplication] delegate] window] subviews];    
-    UIView *view = [subViews lastObject];
-    [NavUtil hideWaitingForView:view];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray *subViews = [[[[UIApplication sharedApplication] delegate] window] subviews];
+        UIView *view = [subViews lastObject];
+        [NavUtil hideWaitingForView:view];
+    });
 }
 
 +(void)showWaitingForView:(UIView*)view withMessage:(NSString *)message
 {
-    NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
-    if (waitingViewMap && waitingViewMap[address]) {
-        [waitingViewMap[address].subviews[1] setText:message];
-        return;
-    }
-    CGRect frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
-    UIView *overlay = [[UIView alloc]initWithFrame:frame];
-    
-    CGFloat w = view.frame.size.width;
-    CGFloat h = view.frame.size.height;
-    CGFloat size = 30;
-    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((w-size)/2, (h-size)/2, size, size)];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, (h+size)/2+size, w, size*5)];
-    label.text = message;
-    label.textAlignment = NSTextAlignmentCenter;
-    label.textColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
-    label.numberOfLines = 0;
-    
-    [overlay setBackgroundColor:
-     [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]];
-    [overlay addSubview:indicator];
-    [overlay addSubview:label];
-    [indicator startAnimating];
-
-    [view addSubview:overlay];
-    
-    [overlay setIsAccessibilityElement:YES];
-    [overlay setAccessibilityLabel:message];
-    
-    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, message);
-    
-    if (!waitingViewMap) {
-        waitingViewMap = [@{} mutableCopy];
-    }
-    [waitingViewMap setObject:overlay forKey:address];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
+        if (waitingViewMap && waitingViewMap[address]) {
+            [waitingViewMap[address].subviews[1] setText:message];
+            return;
+        }
+        CGRect frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
+        UIView *overlay = [[UIView alloc]initWithFrame:frame];
+        
+        CGFloat w = view.frame.size.width;
+        CGFloat h = view.frame.size.height;
+        CGFloat size = 30;
+        UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((w-size)/2, (h-size)/2, size, size)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, (h+size)/2+size, w, size*5)];
+        label.text = message;
+        label.textAlignment = NSTextAlignmentCenter;
+        label.textColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
+        label.numberOfLines = 0;
+        
+        [overlay setBackgroundColor:
+         [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]];
+        [overlay addSubview:indicator];
+        [overlay addSubview:label];
+        [indicator startAnimating];
+        
+        [view addSubview:overlay];
+        
+        [overlay setIsAccessibilityElement:YES];
+        [overlay setAccessibilityLabel:message];
+        
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, message);
+        
+        if (!waitingViewMap) {
+            waitingViewMap = [@{} mutableCopy];
+        }
+        [waitingViewMap setObject:overlay forKey:address];
+    });
 }
 
 +(void)hideWaitingForView:(UIView*)view
 {
-    NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
-    UIView *overlay = waitingViewMap[address];
-    if (overlay) {
-        [overlay removeFromSuperview];
-        [waitingViewMap removeObjectForKey:address];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
+        UIView *overlay = waitingViewMap[address];
+        if (overlay) {
+            [overlay removeFromSuperview];
+            [waitingViewMap removeObjectForKey:address];
+        }
+    });
 }
 
 +(UIMessageView*)showMessageView:(UIView *)view
 {
+    NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
+    
+    if (!messageViewMap) {
+        messageViewMap = [@{} mutableCopy];
+    }
+    if (messageViewMap[address]) {
+        return (UIMessageView*)messageViewMap[address];
+    }
+    
     CGFloat w = view.frame.size.width;
     CGFloat size = 60;
     
     UIMessageView *overlay = [[UIMessageView alloc]initWithFrame:CGRectMake(0, 0, w, size)];
-    
+
     UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, w-size, size)];
     label.text = @"Log Replaying";
     label.font = [UIFont fontWithName:@"Courier" size:14];
     label.numberOfLines = 0;
+    [label setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(w-size, 0, size, size)];
     [btn setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
-    
+    [btn setTranslatesAutoresizingMaskIntoConstraints:NO];
+
     [overlay setBackgroundColor:
      [UIColor colorWithRed:1 green:1 blue:1 alpha:0.75]];
     [overlay addSubview:label];
     [overlay addSubview:btn];
     
-    [view addSubview:overlay];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [view addSubview:overlay];
+    });
     
-    if (!messageViewMap) {
-        messageViewMap = [@{} mutableCopy];
-    }
-
-    [messageViewMap setObject:overlay forKey:[NSString stringWithFormat:@"%ld", (long) view]];
+    [messageViewMap setObject:overlay forKey:address];
     
     overlay.message = label;
     overlay.action = btn;
@@ -130,9 +147,12 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
 
 +(void)hideMessageView:(UIView *)view
 {
-    NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
-    id overlay = messageViewMap[address];
-    [overlay removeFromSuperview];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *address = [NSString stringWithFormat:@"%ld", (long) view];
+        id overlay = messageViewMap[address];
+        [messageViewMap removeObjectForKey:address];
+        [overlay removeFromSuperview];
+    });
 }
 
 +(void)openURL:(NSURL*) url onViewController:(UIViewController*)controller

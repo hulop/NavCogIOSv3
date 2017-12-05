@@ -20,19 +20,23 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-
+#import "HLPGeoJSON.h"
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import <HLPWebView/HLPWebView.h>
-#import <HLPLocationManager/HLPLocation.h>
 
-@interface NavBlindWebView : HLPWebView
+@interface HLPFacility (External)
 
-- (void)initTarget:(NSArray *)landmarks;
-- (void)clearRoute;
-- (void)showRoute:(NSArray*)route;
-- (HLPLocation*) getCenter;
-- (void) manualLocation: (HLPLocation*) loc withSync:(BOOL)sync;
-- (void) logToServer: (NSDictionary*) content;
+- (BOOL) isExternalPOI;
+- (NSURL*) externalPOIWebpage;
+- (NSString*) externalAttribution;
+- (NSString*) externalSourceTitle;
+
+@end
+
+@interface HLPLandmark (External)
+
+- (BOOL) isExternalPOI;
+- (NSURL*) externalPOIWebpage;
+- (NSString*) externalAttribution;
+- (NSString*) externalSourceTitle;
 
 @end

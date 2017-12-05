@@ -36,6 +36,8 @@
 #import "SettingViewController.h"
 
 #import "ServerConfig.h"
+#import "HelpViewController.h"
+
 #import <HLPLocationManager/HLPLocationManager+Player.h>
 #import "DefaultTTS.h"
 #import <CoreMotion/CoreMotion.h>
@@ -80,15 +82,31 @@
 
 - (void)dealloc
 {
+    NSLog(@"dealloc BlindViewController");
+}
+
+- (void)prepareForDealloc
+{
     _webView.delegate = nil;
     
     [navigator stop];
     navigator.delegate = nil;
     navigator = nil;
     
+    commander.delegate = nil;
+    commander = nil;
+    
+    previewer.delegate = nil;
+    previewer = nil;
+    
+    dialogHelper.delegate = nil;
+    dialogHelper = nil;
+    
     _settingButton = nil;
     
     [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"developer_mode"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_STOP object:self];
 }
 
 - (void)viewDidLoad {
@@ -153,9 +171,20 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestShowRoute:) name:REQUEST_PROCESS_SHOW_ROUTE object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prepareForDealloc) name:REQUEST_UNLOAD_BLIND object:nil];
+    
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
     
     [self updateView];
+    
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"first_launch"]) {
+        HelpViewController *vc = [HelpViewController getInstance];
+        vc.helpType = @"instructions";
+        vc.helpTitle = NSLocalizedString(@"Instructions", @"");
+        [self.navigationController showViewController:vc sender:self];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"first_launch"];
+    }
     
     BOOL checked = [ud boolForKey:@"checked_altimeter"];
     if (!checked && ![CMAltimeter isRelativeAltitudeAvailable]) {
@@ -231,7 +260,7 @@
 - (void)dialogViewTapped
 {
     [dialogHelper inactive];
-    dialogHelper.helperView.hidden = YES;
+    dialogHelper.helperView.disabled = YES;
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_START object:self];
 }
 
@@ -398,18 +427,39 @@
             self.navigationController.navigationBar.barTintColor = defaultColor;
         }
         
-        if ([[DialogManager sharedManager] isAvailable] && !isActive && hasCenter) {
-            if (dialogHelper.helperView.hidden) {
-                dialogHelper.helperView.hidden = NO;
-                [dialogHelper recognize];
-            }
-        } else {
-            dialogHelper.helperView.hidden = YES;
-        }
+        [self dialogHelperUpdate];
         
         NSString *cn = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"lastcommit" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
         [self.commitLabel setText:cn];
+        
+        NSMutableArray *elements = [@[self.navigationItem] mutableCopy];
+        if (dialogHelper && dialogHelper.helperView && !dialogHelper.helperView.hidden) {
+            [elements addObject:dialogHelper.helperView];
+        }
+        [elements addObject:_cover];
+        self.view.accessibilityElements = elements;
     });
+}
+
+- (void) dialogHelperUpdate
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    HLPLocation *loc = [nds currentLocation];
+    BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
+    BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
+    BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+    BOOL hasCenter = [[NavDataStore sharedDataStore] mapCenter] != nil;
+    BOOL isActive = [navigator isActive];
+
+    if ([[DialogManager sharedManager] isAvailable] && !isActive) {
+        if (dialogHelper.helperView.hidden) {
+            dialogHelper.helperView.hidden = NO;
+            [dialogHelper recognize];
+        }
+        dialogHelper.helperView.disabled = !(hasCenter && (!isPreviewDisabled || devMode || validLocation));
+    } else {
+        dialogHelper.helperView.hidden = YES;
+    }
 }
 
 
@@ -564,67 +614,70 @@
 
 - (void) locationChanged: (NSNotification*) note
 {
-    UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-    if (appState == UIApplicationStateBackground || appState == UIApplicationStateInactive) {
-        return;
-    }
-    
-    NSDictionary *locations = [note userInfo];
-    if (!locations) {
-        return;
-    }
-    HLPLocation *location = locations[@"current"];
-    if (!location || [location isEqual:[NSNull null]]) {
-        return;
-    }
-    
-    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-    
-    double orientation = -location.orientation / 180 * M_PI;
-    
-    if (lastOrientationSent + 0.2 < now) {
-        [_webView sendData:@[@{
-                             @"type":@"ORIENTATION",
-                             @"z":@(orientation)
-                             }]
-              withName:@"Sensor"];
-        lastOrientationSent = now;
-    }
-    
-    
-    location = locations[@"actual"];
-    if (!location || [location isEqual:[NSNull null]]) {
-        return;
-    }
-    
-    /*
-     if (isnan(location.lat) || isnan(location.lng)) {
-     return;
-     }
-     */
-    
-    if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
-        if (!location.params) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+        if (appState == UIApplicationStateBackground || appState == UIApplicationStateInactive) {
             return;
         }
-        //return; // prevent too much send location info
-    }
-    
-    double floor = location.floor;
-    
-    [_webView sendData:@{
-                     @"lat":@(location.lat),
-                     @"lng":@(location.lng),
-                     @"floor":@(floor),
-                     @"accuracy":@(location.accuracy),
-                     @"rotate":@(0), // dummy
-                     @"orientation":@(999), //dummy
-                     @"debug_info":location.params?location.params[@"debug_info"]:[NSNull null],
-                     @"debug_latlng":location.params?location.params[@"debug_latlng"]:[NSNull null]
-                     }
-          withName:@"XYZ"];
-    
-    lastLocationSent = now;
+        
+        NSDictionary *locations = [note userInfo];
+        if (!locations) {
+            return;
+        }
+        HLPLocation *location = locations[@"current"];
+        if (!location || [location isEqual:[NSNull null]]) {
+            return;
+        }
+        
+        NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+        
+        double orientation = -location.orientation / 180 * M_PI;
+        
+        if (lastOrientationSent + 0.2 < now) {
+            [_webView sendData:@[@{
+                                   @"type":@"ORIENTATION",
+                                   @"z":@(orientation)
+                                   }]
+                    withName:@"Sensor"];
+            lastOrientationSent = now;
+        }
+        
+        
+        location = locations[@"actual"];
+        if (!location || [location isEqual:[NSNull null]]) {
+            return;
+        }
+        
+        /*
+         if (isnan(location.lat) || isnan(location.lng)) {
+         return;
+         }
+         */
+        
+        if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
+            if (!location.params) {
+                return;
+            }
+            //return; // prevent too much send location info
+        }
+        
+        double floor = location.floor;
+        
+        [_webView sendData:@{
+                           @"lat":@(location.lat),
+                           @"lng":@(location.lng),
+                           @"floor":@(floor),
+                           @"accuracy":@(location.accuracy),
+                           @"rotate":@(0), // dummy
+                           @"orientation":@(999), //dummy
+                           @"debug_info":location.params?location.params[@"debug_info"]:[NSNull null],
+                           @"debug_latlng":location.params?location.params[@"debug_latlng"]:[NSNull null]
+                           }
+                withName:@"XYZ"];
+        
+        lastLocationSent = now;
+        [self dialogHelperUpdate];
+    });
 }
 
 - (void) destinationChanged: (NSNotification*) note
@@ -910,6 +963,8 @@
         [NavUtil hideModalWaiting];
     });
     
+    [_webView logToServer:@{@"event": @"navigation", @"status": @"start"}];
+    
     //double delayInSeconds = 1.0;
     //dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     //dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -931,6 +986,13 @@
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"stabilize_localize_on_elevator"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_STABILIZE_LOCALIZE object:self];
     }
+    
+    if (properties[@"isEndOfLink"] && [properties[@"isEndOfLink"] boolValue] == YES) {
+        [_webView logToServer:@{@"event": @"navigation", @"status": @"start"}];
+    } else {
+        [_webView logToServer:@{@"event": @"navigation", @"status": @"cancel"}];
+    }
+
     [commander didNavigationFinished:properties];
     [previewer didNavigationFinished:properties];
 }

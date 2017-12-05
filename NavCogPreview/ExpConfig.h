@@ -34,10 +34,10 @@
 @property NSDictionary *currentRoute;
 
 - (void)requestUserInfo:(NSString*)user_id withComplete:(void(^)(NSDictionary*))complete;
-- (void)saveUserInfo:(NSString*)user_id withInfo:(NSDictionary*)info withComplete:(void(^)())complete;
+- (void)saveUserInfo:(NSString*)user_id withInfo:(NSDictionary*)info withComplete:(void(^)(void))complete;
 - (void)requestRoutesConfig:(void(^)(NSDictionary*))complete;
 
-- (void)endExpDuration:(double)duration withLogFile:(NSString*)logFile withComplete:(void(^)())complete;
+- (void)endExpDuration:(double)duration withLogFile:(NSString*)logFile withComplete:(void(^)(void))complete;
 - (double)elapsedTimeForRoute:(NSDictionary*)route;
 - (NSArray*)expUserRoutes;
 - (NSArray*)expUserRouteInfo;

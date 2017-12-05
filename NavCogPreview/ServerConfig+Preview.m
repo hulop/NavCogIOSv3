@@ -40,4 +40,28 @@
     return nil;
 }
 
+- (BOOL) useDeviceId
+{
+    if (self.selectedServerConfig) {
+        return [self.selectedServerConfig[@"exp_use_device_id"] boolValue];
+    }
+    return NO;
+}
+
+- (BOOL)useAreaSelection
+{
+    if (self.selectedServerConfig) {
+        return [self.selectedServerConfig[@"exp_use_area_selection"] boolValue];
+    }
+    return NO;
+}
+
+- (BOOL)onlyRoutePreview
+{
+    if (self.selectedServerConfig) {
+        return [self.selectedServerConfig[@"exp_only_route_preview"] boolValue];
+    }
+    return NO;
+}
+
 @end

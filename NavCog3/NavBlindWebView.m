@@ -22,6 +22,7 @@
 
 
 #import "NavBlindWebView.h"
+#import "NavDataStore.h"
 #import <Mantle/Mantle.h>
 
 @implementation NavBlindWebView
@@ -115,6 +116,22 @@
         [script appendFormat:@"var c = map.getCenter();"];
         [script appendFormat:@"map.setCenter(c);"];
     }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self stringByEvaluatingJavaScriptFromString:script];
+    });
+}
+
+- (void)logToServer:(NSDictionary *)content
+{
+    long timestamp = [[NSDate date] timeIntervalSince1970]*1000;
+    NSDictionary *data = [content mtl_dictionaryByAddingEntriesFromDictionary:
+                          @{@"timestamp": @(timestamp),
+                            @"mode": @"blind"}];
+    
+    NSString *jsonstr = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:data options:0 error:nil]encoding:NSUTF8StringEncoding];
+    
+    NSString *script = [NSString stringWithFormat:@"$hulop.logging && $hulop.logging.onData(%@);",jsonstr];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self stringByEvaluatingJavaScriptFromString:script];

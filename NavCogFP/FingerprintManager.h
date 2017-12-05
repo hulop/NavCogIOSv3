@@ -49,6 +49,7 @@
 @property NSArray *floorplans;
 @property NSArray *refpoints;
 @property NSMutableDictionary *floorplanRefpointMap;
+@property NSMutableDictionary *floorplanMap;
 @property NSArray *samplings;
 @property (readonly) HLPRefpoint *selectedRefpoint;
 @property (readonly) HLPFloorplan *selectedFloorplan;
@@ -59,12 +60,15 @@
 -(void)loadSamplings:(void(^)(void))complete;
 -(void)select:(HLPRefpoint*)rp;
 -(void)startSamplingAtLat:(double)lat Lng:(double)lng;
+-(void)startSampling;
 -(void)cancel;
 -(void)sendData;
 -(void)deleteFingerprint:(NSString*)idString;
 -(long)beaconsCount;
 -(void)addBeacon:(CLBeacon*)beacon atLat:(double)lat Lng:(double)lng;
 -(void)removeBeacon:(HLPGeoJSONFeature*)beacon;
+-(CLBeacon*)strongestBeacon;
+-(void)reset;
 -(NSArray<CLBeacon*>*)visibleBeacons;
 
 + (MKMapPoint) convertFromGlobal:(CLLocationCoordinate2D)global ToLocalWithRefpoint:(HLPRefpoint*)rp;

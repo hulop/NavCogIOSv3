@@ -48,6 +48,7 @@
 #define REQUEST_LOCATION_HEADING_RESET @"request_location_heading_reset_notification"
 #define REQUEST_LOCATION_RESET @"request_location_reset_notification"
 #define REQUEST_LOCATION_RESTART @"request_location_restart"
+#define REQUEST_LOCATION_STOP @"REQUEST_LOCATION_STOP"
 #define REQUEST_LOCATION_UNKNOWN @"REQUEST_LOCATION_UNKNOWN"
 #define REQUEST_HANDLE_LOCATION_UNKNOWN @"REQUEST_HANDLE_LOCATION_UNKNOWN"
 #define REQUEST_LOCATION_SAVE @"request_location_save"
@@ -92,5 +93,7 @@
 #define LOCATION_NOT_ALLOWED_ALERT @"LOCATION_NOT_ALLOWED_ALERT"
 
 #define REQUEST_RATING @"REQUEST_RATING"
+
+#define REQUEST_UNLOAD_BLIND @"REQUEST_UNLOAD_BLIND"
 
 #endif /* LocationEvent_h */

@@ -33,7 +33,7 @@
 
 - (instancetype) init {
     self = [super init];
-    
+    _defaultFilter = @{};
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
     return self;
 }
@@ -44,12 +44,30 @@
 }
 
 - (void) update:(NSNotification*)note {
+    if (!_filter) {
+        _filter = _defaultFilter;
+    } else {
+        _filter = [_filter mtl_dictionaryByAddingEntriesFromDictionary:_defaultFilter];
+    }
+    
     NSArray *all = [[[NavDataStore sharedDataStore] destinations] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLandmark *landmark, NSDictionary<NSString *,id> * _Nullable bindings) {
         BOOL flag = YES;
         if (_filter) {
             for(NSString *key in _filter.allKeys) {
                 if ([[NSNull null] isEqual:_filter[key]]) {
                     flag = flag && landmark.properties[key] == nil;
+                } else if ([_filter[key] isKindOfClass:NSDictionary.class]) {
+                    NSDictionary *filter = _filter[key];
+                    if (filter[@"$not"]) {
+                        flag = flag && ![landmark.properties[key] isEqual:filter[@"$not"]];
+                    }
+                    if (filter[@"$not_contains"]) {
+                        flag = flag && ![landmark.properties[key] containsString:filter[@"$not_contains"]];
+                    }
+                } else if ([_filter[key] isKindOfClass:NSString.class]) {
+                    flag = flag && ([_filter[key] isEqualToString:landmark.properties[key]] ||
+                                    ([_filter[key] isEqualToString:@""] &&
+                                     landmark.properties[key] == nil));
                 } else {
                     flag = flag && [landmark.properties[key] isEqual:_filter[key]];
                 }
@@ -130,16 +148,17 @@
         }] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [temp addObject:buildings[obj]];
         }];
-        if ([buildings count] > 0) {
+        if ([buildings count] > 1) {
             [tempSections addObject:@{@"key":NSLocalizedStringFromTable(@"_nav_building",@"BlindView",@""), @"rows":temp}];
             
             if (noBuilding) {
                 [temp addObject:[[NavDestination alloc] initWithLabel:NSLocalizedStringFromTable(@"Others", @"BlindView", @"") Filter:@{@"building":[NSNull null]}]];
             }
         } else {
-            if (noBuilding) {
+            if (noBuilding || [buildings count] == 1) {
                 _showBuilding = NO;
                 _showShops = YES;
+                _showSectionIndex = YES;
             }
         }
     }
@@ -185,10 +204,7 @@
                 return;
             }
             
-            NSString *first = [[name substringWithRange:NSMakeRange(0, 1)] uppercaseString];
-            NSMutableString* retStr = [[NSMutableString alloc] initWithString:first];
-            CFStringTransform((CFMutableStringRef)retStr, NULL, kCFStringTransformHiraganaKatakana, YES);
-            first = retStr;
+            NSString *first = [self firstLetter:name];
             
             if (![first isEqualToString:lastFirst]) {
                 temp = [@[] mutableCopy];
@@ -202,6 +218,15 @@
     }
     
     sections = tempSections;
+}
+
+- (NSString*)firstLetter:(NSString*)string
+{
+    NSString *first = [[string substringWithRange:NSMakeRange(0, 1)] uppercaseString];
+    NSMutableString* retStr = [[NSMutableString alloc] initWithString:first];
+    CFStringTransform((CFMutableStringRef)retStr, NULL, kCFStringTransformHiraganaKatakana, YES);
+    first = retStr;
+    return first;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -226,7 +251,7 @@
     if (_showSectionIndex) {
         NSMutableArray *titles = [@[] mutableCopy];
         [sections enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [titles addObject:obj[@"key"]];
+            [titles addObject:[self firstLetter:obj[@"key"]]];
         }];
         return titles;
     }
@@ -290,8 +315,8 @@
             floor = [floor stringByAppendingString:@" "];
             floorPron = [floorPron stringByAppendingString:@" "];
         }
-        floor = [floor stringByAppendingString:[self floorString:dest.landmark.nodeHeight]];
-        floorPron = [floorPron stringByAppendingString:[self floorStringPron:dest.landmark.nodeHeight]];
+        floor = [floor stringByAppendingString:[self floorString:dest.landmark]];
+        floorPron = [floorPron stringByAppendingString:[self floorStringPron:dest.landmark]];
     }
     
     cell.accessoryType = UITableViewCellAccessoryNone;
@@ -307,24 +332,31 @@
     return cell;
 }
 
-- (NSString*) floorString:(double) floor
+- (NSString*) floorString:(HLPLandmark*) landmark
 {
+    double floor = landmark.nodeHeight;
     floor = round(floor*2.0)/2.0;
     
     floor = (floor >= 0)?floor+1:floor;
-        
-    if (floor < 0) {
+    
+    if (landmark.isGround) {
+        return @"G";
+    } else if (floor < 0) {
         return [NSString stringWithFormat:@"B%dF", (int)fabs(floor)];
     } else {
         return [NSString stringWithFormat:@"%dF", (int)fabs(floor)];
     }
 }
 
-- (NSString*) floorStringPron:(double) floor
+- (NSString*) floorStringPron:(HLPLandmark*) landmark
 {
+    double floor = landmark.nodeHeight;
     NSString *type = NSLocalizedStringFromTable(@"FloorNumType", @"BlindView", @"floor num type");
     
-    if ([type isEqualToString:@"ordinal"]) {
+    if (landmark.isGround) {
+        return NSLocalizedStringFromTable(@"ground floor", @"BlindView", @"");
+    }
+    else if ([type isEqualToString:@"ordinal"]) {
         TTTOrdinalNumberFormatter*ordinalNumberFormatter = [[TTTOrdinalNumberFormatter alloc] init];
         
         NSString *localeStr = [[NSUserDefaults standardUserDefaults] stringForKey:@"AppleLocale"];
@@ -346,7 +378,10 @@
     } else {
         floor = round(floor*2.0)/2.0;
         
-        if (floor < 0) {
+        if (landmark.isGround) {
+            return NSLocalizedStringFromTable(@"ground floor", @"BlindView", @"");
+        }
+        else if (floor < 0) {
             return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorBasementD", @"BlindView", @"basement floor"), @(fabs(floor))];
         } else {
             return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorD", @"BlindView", @"floor"), @(floor+1)];

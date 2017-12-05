@@ -35,10 +35,12 @@
 @end
 
 @implementation InitViewController {
+    BOOL first;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    first = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -65,7 +67,8 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     NSDictionary *config = [ServerConfig sharedConfig].selectedServerConfig;
-    if (config[@"default_mode"]) {
+    if (config[@"default_mode"] && first) {
+        first = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self performSegueWithIdentifier:config[@"default_mode"] sender:self];
         });
@@ -91,16 +94,16 @@
     // Pass the selected object to the new view controller.
     [DialogManager sharedManager].userMode = segue.identifier;
     if ([segue.identifier isEqualToString:@"user_blind"]) {
-        [[NSUserDefaults standardUserDefaults] setObject:@"UI_BLIND" forKey:@"ui_mode"];
         [ConfigManager loadConfig:@"presets/blind.plist"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"UI_BLIND" forKey:@"ui_mode"];
     }
     else if ([segue.identifier isEqualToString:@"user_wheelchair"]) {
-        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
         [ConfigManager loadConfig:@"presets/wheelchair.plist"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
     }
     else if ([segue.identifier isEqualToString:@"user_general"]) {
-        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
         [ConfigManager loadConfig:@"presets/general.plist"];
+        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
     }
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
@@ -160,8 +163,13 @@
       @"floorLB":           @"locLB.floor",
       @"coeffDiffFloorStdev":@"coeffDiffFloorStdev",
       @"use_altimeter":     @"usesAltimeterForFloorTransCheck",
+      // TODO: enable properties
+//      @"windowAltitudeManager":@"altimeterManagerParameters.window",
+//      @"stdThresholdAltitudeManager":@"altimeterManagerParameters.stdThreshold",
       @"weightFloorTransArea":@"pfFloorTransParams.weightTransitionArea",
       @"mixtureProbabilityFloorTransArea":@"pfFloorTransParams.mixtureProbaTransArea",
+//      @"rejectDistanceFloorTrans":@"pfFloorTransParams.rejectDistance",
+      @"durationAllowForceFloorUpdate":@"pfFloorTransParams.durationAllowForceFloorUpdate",
       @"headingConfidenceInit":@"headingConfidenceForOrientationInit",
       @"applyYawDriftSmoothing": @"applysYawDriftAdjust",
       
@@ -256,5 +264,9 @@
     return params;
 }
 
+- (IBAction)backPerformed:(id)sender {
+    [[ServerConfig sharedConfig] clear];
+    [self performSegueWithIdentifier:@"unwind_init" sender:self];
+}
 
 @end

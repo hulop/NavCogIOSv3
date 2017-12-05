@@ -26,6 +26,7 @@
 
 @interface NavDestinationDataSource : NSObject <UITableViewDataSource>
 @property NSInteger selectedRow;
+@property NSDictionary *defaultFilter;
 
 @property BOOL showCurrentLocation;
 @property BOOL showBuilding;

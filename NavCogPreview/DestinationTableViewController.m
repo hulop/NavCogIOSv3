@@ -21,8 +21,8 @@
  *******************************************************************************/
 
 #import "DestinationTableViewController.h"
-#import "NavDataSource.h"
 #import "LocationEvent.h"
+#import "HLPGeoJSON+External.h"
 
 @import HLPDialog;
 
@@ -32,16 +32,16 @@
 
 @implementation DestinationTableViewController {
     NavDestinationDataSource *source;
-    NavDestination *filterDest;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     source = [[NavDestinationDataSource alloc] init];
-    source.filter = filterDest.filter;
+    source.defaultFilter = @{@"minor_category":@{@"$not_contains":@"_preview_no_destination_"}};
+    source.filter = _filterDest.filter;
     if (source.filter) {
-        self.navigationItem.title = filterDest.label;
+        self.navigationItem.title = _filterDest.label;
         source.showShops = YES;
         source.showSectionIndex = YES;
         source.showShopBuilding = NO;
@@ -127,7 +127,7 @@
     NavDestination *dest = [source destinationForRowAtIndexPath:indexPath];
     
     if (dest.type == NavDestinationTypeFilter) {
-        filterDest = dest;
+        _filterDest = dest;
         [self performSegueWithIdentifier:@"sub_category" sender:self];
     } else {
         if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {            
@@ -151,7 +151,7 @@
         if ([segue.destinationViewController isKindOfClass:DestinationTableViewController.class]) {
             DestinationTableViewController *dView = (DestinationTableViewController*)segue.destinationViewController;
             dView.restorationIdentifier = self.restorationIdentifier;
-            dView->filterDest = filterDest;
+            dView.filterDest = _filterDest;
             dView.root = _root;
         }
     }

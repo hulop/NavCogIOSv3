@@ -115,6 +115,7 @@ static FingerprintManager *instance;
         if ([result isKindOfClass:NSArray.class]) {
             NSArray *fs = (NSArray*)result;
             NSMutableArray *temp = [@[] mutableCopy];
+            _floorplanMap = [@{} mutableCopy];
             for (NSDictionary *dic in fs) {
                 NSError *error;
                 HLPFloorplan *fp = [MTLJSONAdapter modelOfClass:HLPFloorplan.class fromJSONDictionary:dic error:&error];
@@ -123,6 +124,10 @@ static FingerprintManager *instance;
                     NSLog(@"%@", dic);
                 } else {
                     [temp addObject:fp];
+                    NSString *idstr = fp._id[@"$oid"];
+                    if (idstr) {
+                        _floorplanMap[idstr] = fp;
+                    }
                 }
             }
             _floorplans = temp;
@@ -158,6 +163,9 @@ static FingerprintManager *instance;
                         if (rp.x == 0 && rp.y == 0 && rp.rotate == 0) {
                             _floorplanRefpointMap[refid] = rp;
                         }
+                    }
+                    if (_floorplanMap[refid]) {
+                        [rp updateWithFloorplan:_floorplanMap[refid]];
                     }
                 }
             }
@@ -283,6 +291,10 @@ static FingerprintManager *instance;
     x = local.x;
     y = local.y;
     
+    [self startSampling];
+}
+
+- (void)startSampling {
     NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_finger_printing_beacon_uuid"];
     if (!uuid) {
         return;
@@ -463,6 +475,25 @@ static FingerprintManager *instance;
     NSDictionary *update = @{@"$set" : @{@"beacons" : beacons}};
     
     [self requestUpdate:update withQuery:query];
+}
+
+- (CLBeacon*)strongestBeacon
+{
+    CLBeacon *strongest = nil;
+    for(CLBeacon *beacon in sampler.visibleBeacons) {
+        if (beacon.rssi == 0) {
+            continue;
+        }
+        if (strongest == nil || strongest.rssi < beacon.rssi) {
+            strongest = beacon;
+        }
+    }
+    return strongest;
+}
+
+- (void)reset
+{
+    [sampler reset];
 }
 
 - (void)removeBeacon:(HLPGeoJSONFeature *)beacon

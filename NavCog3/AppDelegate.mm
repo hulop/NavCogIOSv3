@@ -33,6 +33,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import "ScreenshotHelper.h"
 
+#define IS_IOS11orHIGHER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)
+
 @interface AppDelegate ()
 
 @end
@@ -40,6 +42,7 @@
 @implementation AppDelegate {
     CBCentralManager *bluetoothManager;
     BOOL secondOrLater;
+    NSTimeInterval lastActiveTime;
 }
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -74,6 +77,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableAcceleration:) name:DISABLE_ACCELEARATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableAcceleration:) name:ENABLE_ACCELEARATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationRestart:) name:REQUEST_LOCATION_RESTART object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationStop:) name:REQUEST_LOCATION_STOP object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationHeadingReset:) name:REQUEST_LOCATION_HEADING_RESET object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationReset:) name:REQUEST_LOCATION_RESET object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationUnknown:) name:REQUEST_LOCATION_UNKNOWN object:nil];
@@ -137,6 +141,8 @@ void uncaughtExceptionHandler(NSException *exception)
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 
+    lastActiveTime = [[NSDate date] timeIntervalSince1970];
+
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_SAVE object:self];
     [[DialogManager sharedManager] pause];
 
@@ -179,6 +185,11 @@ void uncaughtExceptionHandler(NSException *exception)
 - (void) requestLocationRestart:(NSNotification*) note
 {
     [[HLPLocationManager sharedManager] restart];    
+}
+
+- (void) requestLocationStop:(NSNotification*) note
+{
+    [[HLPLocationManager sharedManager] stop];
 }
 
 - (void) requestLocationUnknown:(NSNotification*) note
@@ -308,6 +319,9 @@ void uncaughtExceptionHandler(NSException *exception)
     if (secondOrLater) {
         if (!manager.isActive) {
             [manager start];
+        }
+        if ([[NSDate date] timeIntervalSince1970] - lastActiveTime > 30) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESTART object:self];
         }
         [Logging stopLog];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {

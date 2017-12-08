@@ -86,7 +86,19 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(serverConfigChanged:) name:SERVER_CONFIG_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(buildingChanged:) name:BUILDING_CHANGED_NOTIFICATION object:nil];
-
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    [ud addObserver:self forKeyPath:@"nSmooth" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"nStates" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"rssi_bias" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"wheelchair_pdr" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"mixProba" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"rejectDistance" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"diffusionOrientationBias" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"location_tracking" options:NSKeyValueObservingOptionNew context:nil];
+    
+    [ud addObserver:self forKeyPath:@"background_mode" options:NSKeyValueObservingOptionNew context:nil];
+    
     return YES;
 }
 
@@ -218,8 +230,9 @@ void uncaughtExceptionHandler(NSException *exception)
 
 - (void) requestBackgroundLocation:(NSNotification*) note
 {
-    BOOL background = [[note userInfo][@"value"] boolValue];
-    [HLPLocationManager sharedManager].isBackground = background;
+    BOOL backgroundMode = (note && [[note userInfo][@"value"] boolValue]) ||
+    [[NSUserDefaults standardUserDefaults] boolForKey:@"background_mode"];
+    [HLPLocationManager sharedManager].isBackground = backgroundMode;
 }
 
 
@@ -416,5 +429,13 @@ void uncaughtExceptionHandler(NSException *exception)
     }
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"background_mode"]) {
+        [self requestBackgroundLocation:nil];
+    } else {
+        [[HLPLocationManager sharedManager] invalidate];
+    }
+}
 
 @end

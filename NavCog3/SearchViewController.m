@@ -273,6 +273,7 @@
                             @"stairs":[ud boolForKey:@"route_use_stairs"]?@"9":@"1",
                             @"esc":[ud boolForKey:@"route_use_escalator"]?@"9":@"1",
                             @"elv":[ud boolForKey:@"route_use_elevator"]?@"9":@"1",
+                            @"mvw":[ud boolForKey:@"route_use_moving_walkway"]?@"9":@"1",                            
                             @"tactile_paving":[ud boolForKey:@"route_tactile_paving"]?@"1":@"",
                             } mutableCopy];
     // override

@@ -79,6 +79,7 @@
     networkError = NO;
     retryCount = 0;
     agreementCount = 0;
+    [[ServerConfig sharedConfig] clear];
     [self updateView];
     [self checkConfig];
 }

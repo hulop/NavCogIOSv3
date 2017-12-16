@@ -25,7 +25,7 @@
 
 @interface ServerConfig : NSObject
 
-@property (readonly) NSDictionary *serverList;
+@property NSDictionary *serverList;
 
 @property NSDictionary *selected;
 @property (readonly) NSDictionary *selectedServerConfig;

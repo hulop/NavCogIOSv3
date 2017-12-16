@@ -169,6 +169,11 @@
     return cell;
 }
 
+- (IBAction)refreshServerlist:(id)sender {
+    [ServerConfig sharedConfig].serverList = nil;
+    [ServerConfig sharedConfig].selected = nil;
+    [self performSegueWithIdentifier:@"unwind_server_selection" sender:self];
+}
 
 
 /*

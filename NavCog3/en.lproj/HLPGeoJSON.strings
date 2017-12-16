@@ -106,7 +106,7 @@
 "garden walk" = "garden walk";
 
 /* 動く歩道 */
-"pedestrian conveyer" = "pedestrian conveyer";
+"pedestrian conveyer" = "moving walkway";
 
 /* 歩行者専用道路 */
 "pedestrian road" = "pedestrian road";

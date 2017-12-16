@@ -306,10 +306,10 @@ Head to the correct orientation
 "turn right" = "turn right";
 
 /* head to the diagonally backward left direction */
-"turn to the backward left" = "turn to the backward left";
+"turn to the backward left" = "turn around";
 
 /* head to the diagonally backward right direction */
-"turn to the backward right" = "turn to the backward right";
+"turn to the backward right" = "turn around";
 
 /* head to the left direction */
 "turn to the left" = "turn to the left";

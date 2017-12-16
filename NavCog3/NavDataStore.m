@@ -913,18 +913,15 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
         }
         BOOL dir1 = (link1.direction == DIRECTION_TYPE_SOURCE_TO_TARGET);
         HLPLocation *source1 = dir1?link1.sourceLocation:link1.targetLocation;
-        double bearing1 = [source1 bearingTo:dir1?link1.targetLocation:link1.sourceLocation];
+        //HLPLocation *source1 = link1.sourceLocation;
+        double bearing1 = link1.initialBearingFromSource;
         
         HLPPOIEscalatorFlags*(^isSideBySideEscalator)(HLPLink*) = ^(HLPLink* link2) {
             BOOL dir2 = (link2.direction == DIRECTION_TYPE_SOURCE_TO_TARGET);
-            HLPLocation *source2 = nil, *target2 = nil;
-            if (source1.floor == link2.sourceHeight) {
-                source2 = link2.sourceLocation;
-                target2 = link2.targetLocation;
-            }
-            else if (source1.floor == link2.targetHeight) {
-                source2 = link2.targetLocation;
-                target2 = link2.sourceLocation;
+            HLPLocation *source2 = dir2?link2.sourceLocation:link2.targetLocation;
+            HLPLocation *target2 = dir2?link2.targetLocation:link2.sourceLocation;
+            if (source1.floor != source2.floor && source1.floor != target2.floor) {
+                source2 = target2 = nil;
             }
             if (!source2) {
                 return (HLPPOIEscalatorFlags*)nil;
@@ -1060,7 +1057,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             
             BOOL isLeaf = ent.node.isLeaf;
             NSMutableDictionary *opt = [isLeaf?@{@"onlyEnd":@(YES)}:@{} mutableCopy];
-            opt[@"POI_DISTANCE_MIN_THRESHOLD"] = @(5);
+            opt[@"POI_DISTANCE_MIN_THRESHOLD"] = @(10);
 
             NSArray *links = [self nearestLinksAt:ent.node.location withOptions:opt];
             for(HLPLink* nearestLink in links) {

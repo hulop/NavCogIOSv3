@@ -1073,6 +1073,7 @@ static NSRegularExpression *patternHLPPOIFlags;
     
     _brailleBlockType = link1.brailleBlockType;
     _escalatorFlags = link1.escalatorFlags;
+    _minimumWidth = MIN(link1.minimumWidth,  link2.minimumWidth);
     
     return self;
 }

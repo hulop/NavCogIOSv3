@@ -1025,7 +1025,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
         }
         NSArray *links = [self nearestLinksAt:poiLoc withOptions:
                           @{@"linkType":@(linkType),
-                            @"POI_DISTANCE_MIN_THRESHOLD":@(5)}];
+                            @"POI_DISTANCE_MIN_THRESHOLD":@(10)}];
         
         for(HLPLink* nearestLink in links) {
             NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
@@ -1108,7 +1108,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
             return;
         }
-        if (link.isLeaf && link.length < 3) {
+        if (link.isLeaf) {
             return;
         }
         
@@ -1138,7 +1138,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
             return;
         }
-        if (link.isLeaf && link.length < 3) {
+        if (link.isLeaf) {
             return;
         }
         

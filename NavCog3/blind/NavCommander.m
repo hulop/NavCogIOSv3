@@ -657,7 +657,7 @@
     BOOL isNextDestination = [properties[@"isNextDestination"] boolValue];
     double noAndTurnMinDistance = [properties[@"noAndTurnMinDistance"] doubleValue];
     
-    NSString *action = [self actionString:properties];
+    NSString *action = [self actionString:[properties mtl_dictionaryByRemovingValuesForKeys:@[@"isCrossingCorridor"]]];
     NSMutableString *string = [@"" mutableCopy];
     
     NSArray *pois = properties[@"pois"];
@@ -682,13 +682,16 @@
         NSString *proceedString = @"proceed distance";
         NSString *nextActionString = @"and action";
         
+        if ([properties[@"isCrossingCorridor"] boolValue]) {
+            proceedString = [proceedString stringByAppendingString:@" across the corridor"];
+        }
         if (floorInfo) {
             proceedString = [proceedString stringByAppendingString:@" on floor"];
         }
         if ((noAndTurnMinDistance < distance && distance < 50) || isnan(noAndTurnMinDistance)) {
             proceedString = [proceedString stringByAppendingString:@" ..."];
         }
-        
+
         proceedString = NSLocalizedStringFromTable(proceedString, @"BlindView", @"");
         proceedString = [NSString stringWithFormat:proceedString, dist, floorInfo];
         nextActionString = NSLocalizedStringFromTable(nextActionString, @"BlindView", @"");
@@ -827,7 +830,7 @@
         NSArray *result = [self checkCommand:string];
         
         [_delegate speak:result[0] withOptions:properties completionHandler:^{
-            if (poi.isDestination) {
+            if (isDestinationPOI) {
                 [[NavDataStore sharedDataStore] clearRoute];
                 [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:nil];
             }

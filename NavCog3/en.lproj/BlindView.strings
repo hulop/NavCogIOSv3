@@ -293,6 +293,19 @@ Head to the correct orientation
 /* (No Commment) */
 "proceed distance on floor ..." = "proceed %1$@... %2$@, ";
 
+/* (No Commment) */
+"proceed distance across the corridor" = "proceed %1$@ across the corridor";
+
+/* (No Commment) */
+"proceed distance across the corridor ..." = "proceed %1$@ across the corridor, ";
+
+/* (No Commment) */
+"proceed distance across the corridor on floor" = "proceed %1$@ across the corridor %2$@";
+
+/* (No Commment) */
+"proceed distance across the corridor on floor ..." = "proceed %1$@ across the corridor... %2$@, ";
+
+
 /* No comment provided by engineer. */
 "remaining distance" = "%@";
 
@@ -378,7 +391,7 @@ Head to the correct orientation
 "Always_Background" = "Always run in background";
 
 "HEADING_CALIBRATION" = "Please take several steps to confirm your orientation.";
-"HEADING_CALIBRATION2" = "Please walk more";
+"HEADING_CALIBRATION2" = "Please take a couple of steps to confirm your orientation.";
 "HEADING_CALIBRATION3" = "Orientation is adjusted.";
 
 "NO_AVAILABLE_LOCATION" = "Location information is not available";

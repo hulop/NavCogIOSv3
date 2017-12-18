@@ -944,46 +944,6 @@ static NavNavigatorConstants *_instance;
     
     
     // optimize links for navigation
-        
-    // remove crank
-    NSArray*(^removeCrank)(NSArray*) = ^(NSArray *array) {
-        NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
-        for(int i = 0; i < [temp count]-2; i++) {
-            HLPObject* obj1 = temp[i];
-            HLPObject* obj2 = temp[i+1];
-            HLPObject* obj3 = temp[i+2];
-            if ([obj1 isKindOfClass:HLPLink.class] &&
-                [obj2 isKindOfClass:HLPLink.class] &&
-                [obj3 isKindOfClass:HLPLink.class]
-                ) {
-                HLPLink* link1 = (HLPLink*) obj1;
-                HLPLink* link2 = (HLPLink*) obj2;
-                HLPLink* link3 = (HLPLink*) obj3;
-                
-                if (![HLPCombinedLink link:link1 shouldBeCombinedWithLink:link2] &&
-                    ![HLPCombinedLink link:link2 shouldBeCombinedWithLink:link3] &&
-                    [HLPCombinedLink link:link1 shouldBeCombinedWithLink:link3]
-                    ) {
-                    double mw1 = link1.minimumWidth;
-                    double mw3 = link3.minimumWidth;
-                    if (link2.length < (mw1 + mw3) / 2 * C.CRANK_REMOVE_SAFE_RATE) {
-                        
-                        // need to update links
-                        // TODO: tricky update
-                        [link2 offsetTarget:-link2.length];
-                        [link2 updateLastBearingForTarget:link1.lastBearingForTarget];
-                        HLPLink* link12 = [[HLPCombinedLink alloc] initWithLink1:link1 andLink2:link2];
-                        [temp setObject:link12 atIndexedSubscript:i];
-                        [temp removeObjectAtIndex:i+1];
-                        
-                        i--;
-                    }
-                }
-            }
-        }
-        return temp;
-    };
-    route = removeCrank(route);
     
     // combine links
     NSArray*(^combineLinks)(NSArray*) = ^(NSArray *array) {
@@ -1029,8 +989,53 @@ static NavNavigatorConstants *_instance;
         }
         return temp;
     };
-    route = combineLinks(route);
     
+    // remove crank
+    NSArray*(^removeCrank)(NSArray*) = ^(NSArray *array) {
+        NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
+        for(int i = 0; i < [temp count]-2; i++) {
+            HLPObject* obj1 = temp[i];
+            HLPObject* obj2 = temp[i+1];
+            HLPObject* obj3 = temp[i+2];
+            if ([obj1 isKindOfClass:HLPLink.class] &&
+                [obj2 isKindOfClass:HLPLink.class] &&
+                [obj3 isKindOfClass:HLPLink.class]
+                ) {
+                HLPLink* link1 = (HLPLink*) obj1;
+                HLPLink* link2 = (HLPLink*) obj2;
+                HLPLink* link3 = (HLPLink*) obj3;
+                
+                if (![HLPCombinedLink link:link1 shouldBeCombinedWithLink:link2] &&
+                    ![HLPCombinedLink link:link2 shouldBeCombinedWithLink:link3] &&
+                    [HLPCombinedLink link:link1 shouldBeCombinedWithLink:link3]
+                    ) {
+                    double mw1 = link1.minimumWidth;
+                    double mw3 = link3.minimumWidth;
+                    if (link2.length < (mw1 + mw3) / 2 * C.CRANK_REMOVE_SAFE_RATE) {
+                        if (link2.length < 1) {
+                            // need to update links
+                            // TODO: tricky update
+                            [link2 offsetTarget:-link2.length];
+                            [link2 updateLastBearingForTarget:link1.lastBearingForTarget];
+                            HLPLink* link12 = [[HLPCombinedLink alloc] initWithLink1:link1 andLink2:link2];
+                            [temp setObject:link12 atIndexedSubscript:i];
+                            [temp removeObjectAtIndex:i+1];
+                            i--;
+                        } else {
+                            link2.isCrossingCorridor = YES;
+                        }
+                        
+                    }
+                }
+            }
+        }
+        return temp;
+    };
+    
+    route = combineLinks(route); // combine first
+    route = removeCrank(route);  // remove crank
+    route = combineLinks(route); // do combine again
+
     // shorten link before elevator, set bearing after elevator
     NSArray*(^shortenLinkBeforeElevator)(NSArray*) = ^(NSArray *array) {
         NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
@@ -1869,8 +1874,8 @@ static NavNavigatorConstants *_instance;
                        @"targetHeight": @(linkInfo.link.targetHeight),
                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                        @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
-                       @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[]
-                       
+                       @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
+                       @"isCrossingCorridor": @(linkInfo.link.isCrossingCorridor)
                        }];
                 }
                 linkInfo.nextTargetRemainingDistance = nextTargetRemainingDistance(linkInfo.link.length, linkInfo.link.length);
@@ -1940,7 +1945,8 @@ static NavNavigatorConstants *_instance;
                                @"nextLinkType": @(linkInfo.nextLink.linkType),
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                                @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
-                               @"fullAction": @(YES)
+                               @"fullAction": @(YES),
+                               @"isCrossingCorridor": @(linkInfo.nextLink.isCrossingCorridor)
                                }];
                         }
                         linkInfo.hasBeenWaitingAction = YES;
@@ -2063,8 +2069,8 @@ static NavNavigatorConstants *_instance;
                         linkInfo.lastBearingDetected = 0;
                     }
                 } else if (walkingSpeed > 0) {
-                    double currentWidth = 5.0;
-                    double nextWidth = 5.0;
+                    double currentWidth = 3.0;
+                    double nextWidth = 3.0;
                     if (linkInfo.nextLink.minimumWidth <= 2.0 ||
                         linkInfo.nextLink.linkType == LINK_TYPE_STAIRWAY ||
                         linkInfo.nextLink.linkType == LINK_TYPE_ESCALATOR ||
@@ -2073,10 +2079,7 @@ static NavNavigatorConstants *_instance;
                     }
                         
                     BOOL doBearing = NO;
-                    //double BEARING_TARGET_DISTANCE = 20;
-                    //double BEARING_DIFF_THRETHOLD = 2.0;
-                    //double BEARING_DURATION_FACTOR = 0.1;
-                    double BEARING_NOTIFY_WAIT = 0.0; // 3.0;
+                    double BEARING_NOTIFY_WAIT = 0.0;
                     
                     HLPLocation *loc0 = linkInfo.snappedLocationOnLink;
                     HLPLocation *loc1 = linkInfo.userLocation;
@@ -2100,9 +2103,12 @@ static NavNavigatorConstants *_instance;
                     
                     double e1 = d3 / (r1*currentWidth + (1-r1)*nextWidth);
                     double e2 = d6 / (r2*currentWidth + (1-r2)*nextWidth);
-                    doBearing = (e1 > 1.0) && e1 < e2;
+                    double threshold = 1.0;
+                    doBearing = ((e2 > threshold) && e1 < e2) ||
+                    (e1 > threshold && e2 > threshold);
+
                     
-                    NSLog(@"doBearing ws=%f, acc=%f, d0=%f, d3=%f, d6=%f, e1=%f, e2=%f", walkingSpeed, acc, d0, d3, d6, e1, e2);
+                    NSLog(@"doBearing %d: ws=%f, acc=%f, d0=%f, d3=%f, d6=%f, e1=%f, e2=%f", doBearing, walkingSpeed, acc, d0, d3, d6, e1, e2);
 
                     if (doBearing) {
                         if (linkInfo.lastBearingDetected == 0) {

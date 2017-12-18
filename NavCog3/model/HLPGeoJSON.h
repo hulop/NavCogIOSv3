@@ -257,6 +257,7 @@ typedef enum: int {
 @property (nonatomic, readonly) HLPNode *sourceNode;
 @property (nonatomic, readonly) HLPNode *targetNode;
 @property (nonatomic, readonly) NSString *streetName;
+@property (nonatomic) BOOL isCrossingCorridor;
 
 + (NSString*) nameOfLinkType:(HLPLinkType)type;
 - (double) initialBearingFromSource;

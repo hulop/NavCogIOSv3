@@ -390,6 +390,18 @@
 /* (No Commment) */
 "proceed distance on floor ..." = "%2$@。。。%1$@進み、";
 
+/* (No Commment) */
+"proceed distance across the corridor" = "通路を横切って%1$@進む";
+
+/* (No Commment) */
+"proceed distance across the corridor ..." = "通路を横切って%1$@進み、";
+
+/* (No Commment) */
+"proceed distance across the corridor on floor" = "%2$@。。。通路を横切って%1$@進む";
+
+/* (No Commment) */
+"proceed distance across the corridor on floor ..." = "%2$@。。。通路を横切って%1$@進み、";
+
 /* No comment provided by engineer. */
 "remaining distance" = "残り%@";
 

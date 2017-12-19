@@ -2086,7 +2086,7 @@ static NavNavigatorConstants *_instance;
                     double b0 = [loc1 bearingTo:loc0];
                     double d0 = [loc1 distanceTo:loc0];
                     double acc = linkInfo.userLocation.accuracy;
-                    HLPLocation *loc2 = [loc1 offsetLocationByDistance:MAX(0,d0-acc/2) Bearing:b0];
+                    HLPLocation *loc2 = [loc1 offsetLocationByDistance:MIN(d0, acc/2) Bearing:b0];
                     HLPLocation *loc3 = [loc2 offsetLocationByDistance:walkingSpeed Bearing:linkInfo.userLocation.orientation];
                     
                     HLPLocation *loc4 = [loc2 nearestLocationToLineFromLocation:linkInfo.sourceLocation ToLocation:linkInfo.targetLocation];
@@ -2116,7 +2116,8 @@ static NavNavigatorConstants *_instance;
                         }
                         
                         if (now - linkInfo.lastBearingDetected > BEARING_NOTIFY_WAIT &&
-                            linkInfo.diffBearingAtUserLocation < 60
+                            fabs(linkInfo.diffBearingAtUserLocation) >= 20 &&
+                            fabs(linkInfo.diffBearingAtUserLocation) <= 60
                             ) {
                             //NSLog(@"needs to bearing: %f degree", linkInfo.diffBearingAtUserLocation);
                             if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {

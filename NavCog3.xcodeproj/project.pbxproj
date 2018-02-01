@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		341B73DAD151025E2A79374B /* libPods-NavCogFP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BA9F07AEB733BB60BE0E8A9 /* libPods-NavCogFP.a */; };
 		7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E08DB571DB9F08E00E82161 /* ConfigManager.m */; };
 		7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7E17F19E1D9A225A00DB1F34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A01D9A225A00DB1F34 /* InfoPlist.strings */; };
@@ -232,6 +233,8 @@
 /* Begin PBXFileReference section */
 		0D18A95F063007726536010A /* Pods-NavCog3.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.debug.xcconfig"; sourceTree = "<group>"; };
 		236A8A941827481A63E3CAD2 /* Pods-NavCogTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.release.xcconfig"; sourceTree = "<group>"; };
+		3AF7CE4FA37DA8CC1D99A442 /* Pods-NavCogFP.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFP.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP.debug.xcconfig"; sourceTree = "<group>"; };
+		40D977CBB37A56EF684BDB52 /* Pods-NavCogFP.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFP.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP.release.xcconfig"; sourceTree = "<group>"; };
 		6AFAE1C3CB403E5BB2703A0E /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E08DB561DB9F08E00E82161 /* ConfigManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigManager.h; sourceTree = "<group>"; };
 		7E08DB571DB9F08E00E82161 /* ConfigManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigManager.m; sourceTree = "<group>"; };
@@ -425,6 +428,7 @@
 		7EF7F7AD1DD1949C000A625A /* NavDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavDataSource.m; path = blind/NavDataSource.m; sourceTree = "<group>"; };
 		80D51D6F63C288B12DC6754E /* libPods-NavCogTool.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogTool.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E3BEBAB18357F1E1596477F /* Pods-NavCogTool.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.debug.xcconfig"; sourceTree = "<group>"; };
+		9BA9F07AEB733BB60BE0E8A9 /* libPods-NavCogFP.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogFP.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91AAE5D1F6A786300B5F903 /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = Carthage/Build/iOS/ZipArchive.framework; sourceTree = "<group>"; };
 		A91D384B1F628107008A34D1 /* HLPLocationManager.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HLPLocationManager.framework; path = Carthage/Build/iOS/HLPLocationManager.framework; sourceTree = "<group>"; };
 		A91D384D1F628161008A34D1 /* HLPLocationManager.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HLPLocationManager.framework; path = Carthage/Build/Mac/HLPLocationManager.framework; sourceTree = "<group>"; };
@@ -448,6 +452,7 @@
 				A91D384F1F628185008A34D1 /* HLPLocationManager.framework in Frameworks */,
 				A91EA3011F55377E00548203 /* HLPWebView.framework in Frameworks */,
 				A91EA2EE1F550F7200548203 /* Mantle.framework in Frameworks */,
+				341B73DAD151025E2A79374B /* libPods-NavCogFP.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -520,6 +525,7 @@
 				A91AAE5D1F6A786300B5F903 /* ZipArchive.framework */,
 				6AFAE1C3CB403E5BB2703A0E /* libPods-NavCog3.a */,
 				80D51D6F63C288B12DC6754E /* libPods-NavCogTool.a */,
+				9BA9F07AEB733BB60BE0E8A9 /* libPods-NavCogFP.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -531,6 +537,8 @@
 				EBE9F8032158D7532B8BFC20 /* Pods-NavCog3.release.xcconfig */,
 				8E3BEBAB18357F1E1596477F /* Pods-NavCogTool.debug.xcconfig */,
 				236A8A941827481A63E3CAD2 /* Pods-NavCogTool.release.xcconfig */,
+				3AF7CE4FA37DA8CC1D99A442 /* Pods-NavCogFP.debug.xcconfig */,
+				40D977CBB37A56EF684BDB52 /* Pods-NavCogFP.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -620,7 +628,6 @@
 				7EDEDC261D1E0C6800AC111A /* ViewController.m */,
 				7E2D71341D4EE85F00FDCA66 /* SettingViewController.h */,
 				7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */,
-				7E6E42E71D90FD1B006B6899 /* BlindViewController.h */,
 				7E6E42E81D90FD1B006B6899 /* BlindViewController.m */,
 				7E96D9311DACD0C700D57C8C /* SearchViewController.h */,
 				7E96D9321DACD0C700D57C8C /* SearchViewController.m */,
@@ -631,6 +638,7 @@
 				7EF45E2F1E3F1E3700208042 /* AgreementViewController.h */,
 				7EF45E2A1E3F1E3700208042 /* AgreementViewController.m */,
 				7EF45E301E3F1E3700208042 /* DownloadViewController.h */,
+				7E6E42E71D90FD1B006B6899 /* BlindViewController.h */,
 				7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */,
 				7EF45E311E3F1E3700208042 /* ServerSelectionViewController.h */,
 				7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */,
@@ -850,10 +858,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7E30F9BE1E813FFC00D542E5 /* Build configuration list for PBXNativeTarget "NavCogFP" */;
 			buildPhases = (
+				64345F8FA9B5423FF8FFA563 /* [CP] Check Pods Manifest.lock */,
 				7E30F9A61E813FFC00D542E5 /* Sources */,
 				7E30F9A71E813FFC00D542E5 /* Frameworks */,
 				7E30F9A81E813FFC00D542E5 /* Resources */,
 				A91EA2E31F550DE100548203 /* ShellScript */,
+				22BE0151B3145215692085A2 /* [CP] Embed Pods Frameworks */,
+				AE2ADB1F1433ECD3FB4A9856 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1097,6 +1108,21 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		22BE0151B3145215692085A2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		3CB98F53EB42ACE8E61D6511 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1113,6 +1139,21 @@
 			showEnvVarsInLog = 0;
 		};
 		411E67F404EF85208367F33F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		64345F8FA9B5423FF8FFA563 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1211,6 +1252,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+		AE2ADB1F1433ECD3FB4A9856 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1442,6 +1498,7 @@
 /* Begin XCBuildConfiguration section */
 		7E30F9BF1E813FFC00D542E5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AF7CE4FA37DA8CC1D99A442 /* Pods-NavCogFP.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -1459,11 +1516,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogFP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				VALID_ARCHS = arm64;
 			};
 			name = Debug;
 		};
 		7E30F9C01E813FFC00D542E5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 40D977CBB37A56EF684BDB52 /* Pods-NavCogFP.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -1481,6 +1540,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogFP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				VALID_ARCHS = arm64;
 			};
 			name = Release;
 		};
@@ -1588,6 +1648,7 @@
 		};
 		7EDEDC341D1E0C6800AC111A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0D18A95F063007726536010A /* Pods-NavCog3.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -1622,6 +1683,7 @@
 		};
 		7EDEDC351D1E0C6800AC111A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EBE9F8032158D7532B8BFC20 /* Pods-NavCog3.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -1673,6 +1735,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ibm.research.tokyo.NavCogPreview;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				VALID_ARCHS = arm64;
 			};
 			name = Debug;
 		};
@@ -1709,10 +1772,12 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
+				LD_RUNPATH_SEARCH_PATHS = ./;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1729,10 +1794,12 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
+				LD_RUNPATH_SEARCH_PATHS = ./;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

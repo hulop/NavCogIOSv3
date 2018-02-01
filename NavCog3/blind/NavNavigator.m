@@ -2108,7 +2108,7 @@ static NavNavigatorConstants *_instance;
                     (e1 > threshold && e2 > threshold);
 
                     
-                    NSLog(@"doBearing %d: ws=%f, acc=%f, d0=%f, d3=%f, d6=%f, e1=%f, e2=%f", doBearing, walkingSpeed, acc, d0, d3, d6, e1, e2);
+                    NSLog(@"doBearing %d: ws=%.2f, acc=%.2f, d0=%.2f, d3=%.2f, d6=%.2f, e1=%.2f, e2=%.2f, diff=%.2f", doBearing, walkingSpeed, acc, d0, d3, d6, e1, e2, linkInfo.diffBearingAtUserLocation);
 
                     if (doBearing) {
                         if (linkInfo.lastBearingDetected == 0) {

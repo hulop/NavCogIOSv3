@@ -445,7 +445,7 @@
         
         if (fpMode == FPModeFingerprint) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
-            self.settingButton.enabled = fpm.isReady || !_retryButton.hidden;
+            self.settingButton.enabled = true;//fpm.isReady || !_retryButton.hidden;
             
             if (selectedFeature) {
                 self.searchButton.title = NSLocalizedStringFromTable(@"Delete", @"Fingerprint", @"");

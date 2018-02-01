@@ -43,9 +43,10 @@ typedef struct {
     double lat;
     double lng;
     double dist = 500;
-    BOOL useStairs = NO;
+    BOOL useStairs = YES;
     BOOL useEscalator = NO;
     BOOL useElevator = YES;
+    BOOL useMovingWalk = NO;
     BOOL tactilePaving = YES;
     BOOL listDestinations = NO;
     BOOL checkRemote = NO;
@@ -68,12 +69,13 @@ void printHelp() {
     std::cout << "-l <string>            set user language" << std::endl;
     std::cout << "-c <string>            config file name" << std::endl;
     std::cout << "-o <string>            set output file path" << std::endl;
-    std::cout << "-k <string>            key string" << std::endl;
+    std::cout << "-k <string>            print MD5 stirng for the key string" << std::endl;
     std::cout << "--useStairs [1|0]      set useStairs" << std::endl;
     std::cout << "--useEscalator [1|0]   set useEscalator" << std::endl;
     std::cout << "--useElevator [1|0]    set useElevator" << std::endl;
+    std::cout << "--useMovingWalk [1|0]  set useMovingWalk" << std::endl;
     std::cout << "--tactilePaving [1|0]  set tactilePaving" << std::endl;
-    std::cout << "--checkRemote [1|0]    setcheckRemote" << std::endl;
+    std::cout << "--checkRemote [1|0]    set flag to check behavior of remote every step" << std::endl;
     std::cout << "--timeout <number>     set timeout default is 60(sec)" << std::endl;
 }
 
@@ -90,6 +92,7 @@ Option parseArguments(int argc, char * argv[]){
         {"useStairs",     required_argument, NULL,  0 },
         {"useEscalator",  required_argument, NULL,  0 },
         {"useElevator",   required_argument, NULL,  0 },
+        {"useMovingWalk",   required_argument, NULL,  0 },
         {"tactilePaving",   required_argument, NULL,  0 },
         {"checkRemote",   required_argument, NULL,  0 },
         {"timeout",   required_argument, NULL,  0 },
@@ -112,6 +115,10 @@ Option parseArguments(int argc, char * argv[]){
             if (strcmp(long_options[option_index].name, "useElevator") == 0){
                 sscanf(optarg, "%d", &boolean);
                 opt.useElevator = boolean;
+            }
+            if (strcmp(long_options[option_index].name, "useMovingWalk") == 0){
+                sscanf(optarg, "%d", &boolean);
+                opt.useMovingWalk = boolean;
             }
             if (strcmp(long_options[option_index].name, "tactilePaving") == 0){
                 sscanf(optarg, "%d", &boolean);
@@ -416,6 +423,7 @@ Option parseArguments(int argc, char * argv[]){
                             @"stairs":opt.useStairs?@"9":@"1",
                             @"esc":opt.useEscalator?@"9":@"1",
                             @"elv":opt.useElevator?@"9":@"1",
+                            @"mvw":opt.useMovingWalk?@"9":@"1",
                             @"tactile_paving":opt.tactilePaving?@"1":@""
                             };
 

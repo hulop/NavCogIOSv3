@@ -241,6 +241,8 @@ static HLPSetting *idLabel;
                                              Name:@"route_use_elevator" DefaultValue:@(YES) Accept:nil];
     [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Escalator", @"")
                                              Name:@"route_use_escalator" DefaultValue:@(NO) Accept:nil];
+    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Moving Walkway", @"")
+                                             Name:@"route_use_moving_walkway" DefaultValue:@(NO) Accept:nil];
     [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Stairs", @"")
                                              Name:@"route_use_stairs" DefaultValue:@(YES) Accept:nil];
 }

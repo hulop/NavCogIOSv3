@@ -24,6 +24,7 @@
 #import <Foundation/Foundation.h>
 #import <HLPLocationManager/HLPLocation.h>
 #import "HLPGeoJson.h"
+#import "HLPDirectory.h"
 
 typedef enum {
     NavDestinationTypeLandmark = 1,
@@ -32,7 +33,8 @@ typedef enum {
     NavDestinationTypeSelectDestination,
     NavDestinationTypeFilter,
     NavDestinationTypeLandmarks,
-    NavDestinationTypeDialogSearch
+    NavDestinationTypeDialogSearch,
+    NavDestinationTypeDirectoryItem
 } NavDestinationType;
 
 @interface NavDestination : NSObject <NSCoding>
@@ -46,11 +48,13 @@ typedef enum {
 @property (readonly) HLPLandmark* landmark;
 @property (readonly) NSArray<HLPLandmark*>* landmarks;
 
+-(instancetype)initWithDirectoryItem:(HLPDirectoryItem*)item;
 -(instancetype)initWithLandmark:(HLPLandmark*)landmark;
 -(instancetype)initWithLocation:(HLPLocation*)location;
 -(instancetype)initWithLabel:(NSString*)label Filter:(NSDictionary*)filter;
 -(void)addLandmark:(HLPLandmark*)landmark;
 -(HLPLocation*)location;
+-(HLPDirectoryItem*)item;
 -(BOOL)isCurrentLocation;
 +(instancetype)selectStart;
 +(instancetype)selectDestination;
@@ -86,17 +90,18 @@ typedef enum {
 + (instancetype) sharedDataStore;
 
 - (void) reset;
-- (BOOL) reloadDestinations:(BOOL)force withComplete:(void(^)(NSArray*))complete;
+- (BOOL) reloadDestinations:(BOOL)force withComplete:(void(^)(NSArray*, HLPDirectory*))complete;
 - (BOOL) reloadDestinations:(BOOL)force;
 - (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang;
-- (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*))complete;
+- (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*, HLPDirectory*))complete;
 - (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang;
-- (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*))complete;
+- (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*,  HLPDirectory*))complete;
 - (void) requestRouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)())complete;
 - (void) requestRerouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)())complete;
 - (void) requestServerConfigWithComplete:(void(^)())complete;
 - (void) clearRoute;
 - (NSArray*) destinations;
+- (HLPDirectory*) directory;
 - (HLPLocation*) currentLocation;
 - (NSArray*) route;
 - (NSArray*) features;

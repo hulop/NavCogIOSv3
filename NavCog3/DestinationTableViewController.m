@@ -31,44 +31,57 @@
 @end
 
 @implementation DestinationTableViewController {
-    NavDestinationDataSource *source;
+    NavTableDataSource *_source;
     NavDestination *filterDest;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    source = [[NavDestinationDataSource alloc] init];
-    source.filter = filterDest.filter;
-    if (source.filter) {
-        self.navigationItem.title = filterDest.label;
-        source.showShops = YES;
-        source.showSectionIndex = YES;
-        source.showShopBuilding = NO;
-        source.showShopFloor = YES;
-    }
-    
-    if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
-        if (!source.filter) {
-            self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
-            source.showCurrentLocation = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"];
-            source.showNearShops = YES;
-            source.showBuilding = YES;
-            source.showShopBuilding = YES;
+    if ([[NavDataStore sharedDataStore] directory]) {
+        NavDirectoryDataSource *source = [[NavDirectoryDataSource alloc] init];
+        if (filterDest) {
+            source.directory = filterDest.item.content;
+        } else {
+            source.directory = [[NavDataStore sharedDataStore] directory];
+        }
+        _source = source;
+    } else {
+        NavDestinationDataSource *source = [[NavDestinationDataSource alloc] init];
+
+        source.filter = filterDest.filter;
+        
+        if (source.filter) {
+            self.navigationItem.title = filterDest.label;
+            source.showShops = YES;
+            source.showSectionIndex = YES;
+            source.showShopBuilding = NO;
             source.showShopFloor = YES;
         }
-    }
-    if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
-        if (!source.filter) {
-            self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
-            source.showDialog = YES;
-            source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
-            source.showBuilding = YES;
-            source.showShopBuilding = YES;
-            source.showShopFloor = YES;
+        
+        if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
+            if (!source.filter) {
+                self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
+                source.showCurrentLocation = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"];
+                source.showNearShops = YES;
+                source.showBuilding = YES;
+                source.showShopBuilding = YES;
+                source.showShopFloor = YES;
+            }
         }
+        if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
+            if (!source.filter) {
+                self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
+                source.showDialog = YES;
+                source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
+                source.showBuilding = YES;
+                source.showShopBuilding = YES;
+                source.showShopFloor = YES;
+            }
+        }
+        [source update:nil];
+        _source = source;
     }
-    [source update:nil];
     
     [self.tableView reloadData];
     
@@ -92,30 +105,30 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [source numberOfSectionsInTableView:tableView];
+    return [_source numberOfSectionsInTableView:tableView];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [source tableView:tableView numberOfRowsInSection:section];
+    return [_source tableView:tableView numberOfRowsInSection:section];
 }
 
 - (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
-    return [source sectionIndexTitlesForTableView:tableView];
+    return [_source sectionIndexTitlesForTableView:tableView];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return [source tableView:tableView titleForHeaderInSection:section];
+    return [_source tableView:tableView titleForHeaderInSection:section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [source tableView:tableView cellForRowAtIndexPath:indexPath];
+    UITableViewCell *cell = [_source tableView:tableView cellForRowAtIndexPath:indexPath];
     
     cell.textLabel.text = NSLocalizedStringFromTable(cell.textLabel.text, @"BlindView", @"");
     
-    NavDestination *dest = [source destinationForRowAtIndexPath:indexPath];
+    NavDestination *dest = [_source destinationForRowAtIndexPath:indexPath];
     if (dest.type == NavDestinationTypeDialogSearch) {
         BOOL dialog = [[DialogManager sharedManager] isAvailable];
         cell.textLabel.enabled = dialog;
@@ -129,7 +142,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NavDestination *dest = [source destinationForRowAtIndexPath:indexPath];
+    NavDestination *dest = [_source destinationForRowAtIndexPath:indexPath];
     
     if (dest.type == NavDestinationTypeFilter) {
         filterDest = dest;

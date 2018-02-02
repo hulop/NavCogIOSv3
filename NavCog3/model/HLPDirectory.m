@@ -20,44 +20,53 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import "NavDataStore.h"
 #import "HLPDirectory.h"
 
-@interface NavTableDataSource: NSObject <UITableViewDataSource>{
-    @protected NSObject *_filter;
+@implementation HLPDirectoryItem
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"title": @"title",
+             @"pron": @"pron",
+             @"subtitle": @"subtitle",
+             @"nodeID": @"nodeID",
+             @"content": @"content"
+             };
 }
-@property NSObject *filter;
-- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
+
 @end
 
-@interface NavDirectoryDataSource : NavTableDataSource
-@property BOOL showCurrentLocation;
-@property HLPDirectory *directory;
-- (void)update:(NSNotification*)note;
+@implementation HLPDirectorySection
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey
+{
+    return @{
+             @"title": @"title",
+             @"pron": @"pron",
+             @"indexTitle": @"indexTitle",
+             @"items": @"items"
+             };
+}
+
++ (NSValueTransformer *)itemsJSONTransformer
+{
+    return [MTLJSONAdapter arrayTransformerWithModelClass:HLPDirectoryItem.class];
+}
+
 @end
 
-@interface NavDestinationDataSource : NavTableDataSource
-@property NSInteger selectedRow;
-@property NSDictionary *defaultFilter;
-@property HLPDirectory *directory;
+@implementation HLPDirectory
 
-@property BOOL showCurrentLocation;
-@property BOOL showBuilding;
-@property BOOL showShops;
-@property BOOL showFacility;
-@property BOOL showSectionIndex;
-@property BOOL showNearShops;
-@property BOOL showShopBuilding;
-@property BOOL showShopFloor;
-@property BOOL showDialog;
++ (NSDictionary *)JSONKeyPathsByPropertyKey
+{
+    return @{
+             @"sections": @"sections",
+             @"showSectionIndex": @"showSectionIndex"
+             };
+}
 
-- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
-- (void)update:(NSNotification*)note;
-@end
++ (NSValueTransformer *)sectionsJSONTransformer {
+    return [MTLJSONAdapter arrayTransformerWithModelClass:HLPDirectorySection.class];
+}
 
-@interface NavSearchHistoryDataSource : NSObject < UITableViewDataSource>
-- (NSDictionary*) historyAtIndexPath:(NSIndexPath*)indexPath;
-- (BOOL)isKnownHist:(NSDictionary*)hist;
 @end

@@ -27,8 +27,119 @@
 
 #pragma mark - Destination Data Source
 
+
+@implementation NavTableDataSource
+- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return nil;
+}
+@end
+
+@implementation NavDirectoryDataSource
+
+- (instancetype) init {
+    self = [super init];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
+    return self;
+}
+
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void) update:(NSNotification*)note {
+}
+
+- (NSString*)firstLetter:(NSString*)string
+{
+    if (!string) return @"";
+    NSString *first = [[string substringWithRange:NSMakeRange(0, 1)] uppercaseString];
+    NSMutableString* retStr = [[NSMutableString alloc] initWithString:first];
+    CFStringTransform((CFMutableStringRef)retStr, NULL, kCFStringTransformHiraganaKatakana, YES);
+    first = retStr;
+    return first;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return _directory.sections.count;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return _directory.sections[section].items.count;
+}
+
+- (HLPDirectoryItem*) itemForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return _directory.sections[indexPath.section].items[indexPath.row];
+}
+
+- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    HLPDirectoryItem *item = [self itemForRowAtIndexPath:indexPath];
+    return [[NavDestination alloc] initWithDirectoryItem:item];
+}
+
+- (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView
+{
+    NSMutableArray *titles = [@[] mutableCopy];
+    
+    if (_directory.showSectionIndex) {    
+        [_directory.sections enumerateObjectsUsingBlock:^(HLPDirectorySection*  _Nonnull section, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *index = section.indexTitle ? section.indexTitle : [self firstLetter:section.title];
+            [titles addObject:index];
+        }];
+    }
+    return titles;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return _directory.sections[section].title;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *CellIdentifier = @"NavDestinationDataSourceCell";
+    //UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if(!cell){
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+    }
+    
+    cell.textLabel.numberOfLines = 1;
+    cell.textLabel.adjustsFontSizeToFitWidth = YES;
+    cell.textLabel.lineBreakMode = NSLineBreakByClipping;
+    cell.textLabel.minimumScaleFactor = 0.5;
+    cell.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    cell.detailTextLabel.numberOfLines = 1;
+    cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
+    cell.detailTextLabel.lineBreakMode = NSLineBreakByClipping;
+    cell.detailTextLabel.minimumScaleFactor = 0.5;
+    cell.detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    HLPDirectoryItem *item = [self itemForRowAtIndexPath:indexPath];
+    NavDestination *dest = [[NavDataStore sharedDataStore] destinationByID:item.nodeID];
+
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    if (dest.filter) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    
+    cell.textLabel.text = item.title;
+    cell.detailTextLabel.text = item.subtitle;
+    cell.accessibilityLabel = [NSString stringWithFormat:@"%@ %@ %@",
+                               dest.namePron,NSLocalizedStringFromTable(@"PERIOD",@"BlindView",@""),item.pron];
+    cell.clipsToBounds = YES;
+    return cell;
+}
+@end
+
 @implementation NavDestinationDataSource {
     NSArray *sections;
+    NSDictionary *_filter;
 }
 
 - (instancetype) init {

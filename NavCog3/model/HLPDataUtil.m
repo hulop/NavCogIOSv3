@@ -21,8 +21,10 @@
  *******************************************************************************/
 
 #import "HLPDataUtil.h"
+#import "ServerConfig.h"
 
 #define ROUTE_SEARCH @"%@://%@/%@routesearch"
+#define DIRECTRY @"%@://%@/directory"
 
 @implementation HLPDataUtil
 
@@ -34,7 +36,66 @@
     NSString *https = [ud boolForKey:@"https_connection"]?@"https":@"http";
     return [NSURL URLWithString:[NSString stringWithFormat:ROUTE_SEARCH, https, server, context]];
 }
+    
++ (NSURL*) urlForDirectoryService {
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSDictionary *config = [[ServerConfig sharedConfig] selectedServerConfig];
+    NSString *server = config[@"query_server"];
+    NSString *https = [ud boolForKey:@"https_connection"]?@"https":@"http";
+    return [NSURL URLWithString:[NSString stringWithFormat:DIRECTRY, https, server]];
+}
 
++ (void) loadDirectoryAtLat:(double) lat Lng:(double) lng inDist:(int) dist forUser:(NSString*) user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result, HLPDirectory* directory))callback
+{
+    
+    NSDictionary *dic =
+    @{
+      @"lat": @(lat),
+      @"lng": @(lng),
+      @"dist": @(dist),
+      @"user": user,
+      @"lang": lang
+      };
+    
+    NSURL *url = [self urlForDirectoryService];
+    
+    [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
+        if (response == nil) {
+            callback(nil, nil);
+        } else {
+            NSError *error;
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+            if (error) {
+                NSLog(@"%@", error);
+                NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+                callback(nil, nil);
+            } else {
+                NSMutableArray *array = [@[] mutableCopy];
+                if (json[@"landmarks"] != nil) {
+                    for(NSDictionary* dic in json[@"landmarks"]) {
+                        NSError *error;
+                        HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
+                        if (error) {
+                            NSLog(@"%@", error);
+                            NSLog(@"%@", dic);
+                        } else {
+                            [array addObject:obj];
+                        }
+                    }
+                }
+                HLPDirectory *directory = [MTLJSONAdapter modelOfClass:HLPDirectory.class fromJSONDictionary:json error:&error];
+                if (error) {
+                    NSLog(@"%@", error);
+                    NSLog(@"%@", json[@"sections"]);
+                    callback(array, nil);                
+                } else {
+                    callback(array, directory);
+                }
+            }
+        }
+    }];
+}
+    
 + (void)loadLandmarksAtLat:(double)lat Lng:(double)lng inDist:(int)dist forUser:(NSString*)user withLang:(NSString *)lang withCallback:(void (^)(NSArray<HLPObject *> *))callback
 {
     NSDictionary *dic =

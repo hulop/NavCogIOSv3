@@ -20,44 +20,30 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import "NavDataStore.h"
-#import "HLPDirectory.h"
+#import <Mantle/Mantle.h>
+#import "HLPGeoJSON.h"
 
-@interface NavTableDataSource: NSObject <UITableViewDataSource>{
-    @protected NSObject *_filter;
-}
-@property NSObject *filter;
-- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
+@class HLPDirectory;
+
+@interface HLPDirectoryItem : MTLModel<MTLJSONSerializing, NSCoding>
+@property (nonatomic, readonly) NSString *title;
+@property (nonatomic, readonly) NSString *pron;
+@property (nonatomic, readonly) NSString *subtitle;
+@property (nonatomic, readonly) NSString *nodeID;
+@property (nonatomic, readonly) HLPDirectory *content;
 @end
 
-@interface NavDirectoryDataSource : NavTableDataSource
-@property BOOL showCurrentLocation;
-@property HLPDirectory *directory;
-- (void)update:(NSNotification*)note;
+@interface HLPDirectorySection : MTLModel<MTLJSONSerializing, NSCoding>
+@property (nonatomic, readonly) NSString *title;
+@property (nonatomic, readonly) NSString *pron;
+@property (nonatomic, readonly) NSString *indexTitle;
+@property (nonatomic, readonly) NSArray<HLPDirectoryItem*> *items;
 @end
 
-@interface NavDestinationDataSource : NavTableDataSource
-@property NSInteger selectedRow;
-@property NSDictionary *defaultFilter;
-@property HLPDirectory *directory;
-
-@property BOOL showCurrentLocation;
-@property BOOL showBuilding;
-@property BOOL showShops;
-@property BOOL showFacility;
-@property BOOL showSectionIndex;
-@property BOOL showNearShops;
-@property BOOL showShopBuilding;
-@property BOOL showShopFloor;
-@property BOOL showDialog;
-
-- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
-- (void)update:(NSNotification*)note;
+@interface HLPDirectory : MTLModel<MTLJSONSerializing, NSCoding>
+@property (nonatomic, readonly) BOOL showSectionIndex;
+@property (nonatomic, readonly) NSArray<HLPDirectorySection*> *sections;
 @end
 
-@interface NavSearchHistoryDataSource : NSObject < UITableViewDataSource>
-- (NSDictionary*) historyAtIndexPath:(NSIndexPath*)indexPath;
-- (BOOL)isKnownHist:(NSDictionary*)hist;
-@end

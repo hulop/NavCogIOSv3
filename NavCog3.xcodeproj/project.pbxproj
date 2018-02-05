@@ -164,6 +164,7 @@
 		7EDEDC2A1D1E0C6800AC111A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7EDEDC281D1E0C6800AC111A /* Main.storyboard */; };
 		7EDEDC2C1D1E0C6800AC111A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EDEDC2B1D1E0C6800AC111A /* Assets.xcassets */; };
 		7EDEDC2F1D1E0C6800AC111A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7EDEDC2D1D1E0C6800AC111A /* LaunchScreen.storyboard */; };
+		7EE207DB2022F7BA00160160 /* HLPDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE207DA2022F7BA00160160 /* HLPDirectory.m */; };
 		7EE8E5DA1EE67E08006EE7C3 /* POIAddTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E5D91EE67E08006EE7C3 /* POIAddTableViewController.m */; };
 		7EE8E5DC1EE68449006EE7C3 /* poi_template.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE8E5DB1EE68449006EE7C3 /* poi_template.json */; };
 		7EE8E5E11EE93D1C006EE7C3 /* icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EE8E5E01EE93D1C006EE7C3 /* icons.xcassets */; };
@@ -386,6 +387,8 @@
 		7EDEDC2B1D1E0C6800AC111A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7EDEDC2E1D1E0C6800AC111A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7EDEDC301D1E0C6800AC111A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7EE207D92022F7BA00160160 /* HLPDirectory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HLPDirectory.h; path = model/HLPDirectory.h; sourceTree = "<group>"; };
+		7EE207DA2022F7BA00160160 /* HLPDirectory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HLPDirectory.m; path = model/HLPDirectory.m; sourceTree = "<group>"; };
 		7EE8E5D81EE67E08006EE7C3 /* POIAddTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POIAddTableViewController.h; sourceTree = "<group>"; };
 		7EE8E5D91EE67E08006EE7C3 /* POIAddTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POIAddTableViewController.m; sourceTree = "<group>"; };
 		7EE8E5DB1EE68449006EE7C3 /* poi_template.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = poi_template.json; sourceTree = "<group>"; };
@@ -725,6 +728,8 @@
 				7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */,
 				7E8A33BB1D917D5200D20CD5 /* HLPDataUtil.h */,
 				7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */,
+				7EE207D92022F7BA00160160 /* HLPDirectory.h */,
+				7EE207DA2022F7BA00160160 /* HLPDirectory.m */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -760,8 +765,8 @@
 				7E5150EC1D8D75D100ED25FB /* model */,
 				7E5150A11D8BF2C500ED25FB /* navigation */,
 				7E5078C01D4A45C300F5A0F7 /* helper */,
-				7E5078BF1D4A45B700F5A0F7 /* setting */,
 				7E5078BE1D4A45B000F5A0F7 /* view */,
+				7E5078BF1D4A45B700F5A0F7 /* setting */,
 				7EDEDC1F1D1E0C6800AC111A /* Supporting Files */,
 			);
 			path = NavCog3;
@@ -1339,6 +1344,7 @@
 				7E7ED5A51F5E67BC0033814B /* ScreenshotHelper.m in Sources */,
 				7EF45E351E3F1E3700208042 /* WelcomViewController.m in Sources */,
 				7E9238E81D5189F100875766 /* HLPSettingTableView.m in Sources */,
+				7EE207DB2022F7BA00160160 /* HLPDirectory.m in Sources */,
 				7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */,
 				7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */,
 				A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */,

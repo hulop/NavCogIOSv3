@@ -34,12 +34,33 @@
 }
 @end
 
-@implementation NavDirectoryDataSource
+@implementation NavDirectoryDataSource {
+    HLPDirectory *_original;
+    HLPDirectory *_directory;
+}
 
 - (instancetype) init {
     self = [super init];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
     return self;
+}
+
+- (instancetype)initWithDirectory:(HLPDirectory *)directory
+{
+    self = [super init];
+    self.directory = directory;
+    return self;
+}
+
+- (void) setDirectory:(HLPDirectory *)directory
+{
+    _original = directory;
+    _directory = directory.copy;
+}
+
+- (HLPDirectory*) directory
+{
+    return _directory;
 }
 
 - (void) dealloc
@@ -48,6 +69,39 @@
 }
 
 - (void) update:(NSNotification*)note {
+    _directory = _original.copy;
+    
+    if (_showDialog) {
+        HLPDirectorySection *section = [[HLPDirectorySection alloc] init];
+        section.title = NSLocalizedStringFromTable(@"DialogSearch",@"BlindView",@"");
+        NSMutableArray *temp = [@[] mutableCopy];
+        [temp addObject:[NavDestination dialogSearch]];
+        section.items = temp;
+        [_directory addSection:section atIndex:0];
+    }
+    
+    if (_showCurrentLocation) {
+        HLPDirectorySection *section = [[HLPDirectorySection alloc] init];
+        section.title = NSLocalizedStringFromTable(@"_nav_latlng",@"BlindView",@"");
+        NSMutableArray *temp = [@[] mutableCopy];
+        [temp addObject:[[NavDestination alloc] initWithLocation:nil]];
+        section.items = temp;
+        [_directory addSection:section atIndex:0];
+    }
+    
+    if (!_showFacility) {
+        NSMutableArray *temp = [@[] mutableCopy];
+        for(HLPDirectorySection *section in _directory.sections) {
+            NSMutableArray *temp2 = [@[] mutableCopy];
+            [section walk:^BOOL(HLPDirectoryItem *item) {
+                return [[NavDestination alloc] initWithDirectoryItem:item].isMultiple;
+            } withBuffer:temp2];
+            if (temp2.count == 0) {
+                [temp addObject:section];
+            }
+        }
+        _directory.sections = temp;
+    }
 }
 
 - (NSString*)firstLetter:(NSString*)string
@@ -78,7 +132,10 @@
 - (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     HLPDirectoryItem *item = [self itemForRowAtIndexPath:indexPath];
-    return [[NavDestination alloc] initWithDirectoryItem:item];
+    if ([item isKindOfClass:HLPDirectoryItem.class]) {
+        return [[NavDestination alloc] initWithDirectoryItem:item];
+    }
+    return item;
 }
 
 - (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView
@@ -121,17 +178,24 @@
     cell.detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     HLPDirectoryItem *item = [self itemForRowAtIndexPath:indexPath];
-    NavDestination *dest = [[NavDataStore sharedDataStore] destinationByID:item.nodeID];
+    NavDestination *dest = [self destinationForRowAtIndexPath:indexPath];
 
     cell.accessoryType = UITableViewCellAccessoryNone;
     if (dest.filter) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
-    cell.textLabel.text = item.title;
-    cell.detailTextLabel.text = item.subtitle;
-    cell.accessibilityLabel = [NSString stringWithFormat:@"%@ %@ %@",
-                               dest.namePron,NSLocalizedStringFromTable(@"PERIOD",@"BlindView",@""),item.pron];
+    if ([item isKindOfClass:HLPDirectoryItem.class]) {
+        cell.textLabel.text = item.title;
+        cell.detailTextLabel.text = item.subtitle;
+        cell.accessibilityLabel = [NSString stringWithFormat:@"%@ %@ %@",
+                                   item.pron,NSLocalizedStringFromTable(@"PERIOD",@"BlindView",@""),item.subtitle];
+    } else {
+        cell.textLabel.text = dest.name;
+        cell.accessibilityLabel = [NSString stringWithFormat:@"%@ %@",
+                                   dest.namePron,NSLocalizedStringFromTable(@"PERIOD",@"BlindView",@"")];
+
+    }
     cell.clipsToBounds = YES;
     return cell;
 }

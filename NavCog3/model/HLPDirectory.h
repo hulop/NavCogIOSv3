@@ -33,17 +33,24 @@
 @property (nonatomic, readonly) NSString *subtitle;
 @property (nonatomic, readonly) NSString *nodeID;
 @property (nonatomic, readonly) HLPDirectory *content;
+
+- (void) walk:(BOOL(^)(HLPDirectoryItem*))func withBuffer:(NSMutableArray*)buffer;
 @end
 
 @interface HLPDirectorySection : MTLModel<MTLJSONSerializing, NSCoding>
-@property (nonatomic, readonly) NSString *title;
+@property (nonatomic) NSString *title;
 @property (nonatomic, readonly) NSString *pron;
 @property (nonatomic, readonly) NSString *indexTitle;
-@property (nonatomic, readonly) NSArray<HLPDirectoryItem*> *items;
+@property (nonatomic) NSArray<HLPDirectoryItem*> *items;
+
+- (void) walk:(BOOL(^)(HLPDirectoryItem*))func withBuffer:(NSMutableArray*)buffer;
 @end
 
 @interface HLPDirectory : MTLModel<MTLJSONSerializing, NSCoding>
 @property (nonatomic, readonly) BOOL showSectionIndex;
-@property (nonatomic, readonly) NSArray<HLPDirectorySection*> *sections;
+@property (nonatomic) NSArray<HLPDirectorySection*> *sections;
+
+- (void) walk:(BOOL(^)(HLPDirectoryItem*))func withBuffer:(NSMutableArray*)buffer;
+- (void) addSection:(HLPDirectorySection*)section atIndex:(NSUInteger)index;
 @end
 

@@ -235,6 +235,10 @@
         NavDestination *dest = [nds closestDestinationInLandmarks:_landmarks];
         return dest._id;
     }
+    if (_type == NavDestinationTypeDirectoryItem) {
+        NSArray *items = [self._id componentsSeparatedByString:@"|"];
+        return items[0];
+    }
     return self._id;
 }
 
@@ -244,7 +248,7 @@
     int floor;
     switch(_type) {
         case NavDestinationTypeDirectoryItem:
-            return _item.title;
+            return [NSString stringWithFormat:@"%@, %@", _item.title, _item.subtitle];
         case NavDestinationTypeLandmark:
         case NavDestinationTypeLandmarks:
             return [_landmark getLandmarkName];
@@ -295,6 +299,11 @@
 -(BOOL)isCurrentLocation
 {
     return _type == NavDestinationTypeLocation && _location == nil;
+}
+
+- (BOOL)isMultiple
+{
+    return ![[self _id] isEqualToString:[self singleId]];
 }
 @end
 
@@ -602,6 +611,14 @@ static NavDataStore* instance_ = nil;
     self.from = [self destinationByID:fromID];
     self.to = [self destinationByID:toID];
     [self requestRouteFrom:fromID To:toID forUser:self.userID withLang:lang useCache:NO withPreferences:prefs complete:nil];
+}
+
+- (void)searchDestinations:(NSString*) query withComplete:(void (^)(HLPDirectory *))complete
+{
+    NSString *user = [self userID];
+    [HLPDataUtil queryDirectoryForUser:user withQuery:query withCallback:^(HLPDirectory *directory) {
+        complete(directory);
+    }];
 }
 
 - (BOOL)reloadDestinations:(BOOL)force;

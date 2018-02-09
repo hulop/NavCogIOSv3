@@ -24,6 +24,17 @@
 
 @implementation HLPDirectoryItem
 
+-(id) copyWithZone:(NSZone *) zone
+{
+    HLPDirectoryItem *object = [super copyWithZone:zone];
+    object->_title = self.title;
+    object->_pron  = self.pron;
+    object->_subtitle = self.subtitle;
+    object->_nodeID = self.nodeID;
+    object->_content = [self.content copyWithZone:zone];
+    return object;
+}
+
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
              @"title": @"title",
@@ -34,9 +45,30 @@
              };
 }
 
+- (void)walk:(BOOL (^)(HLPDirectoryItem *))func withBuffer:(NSMutableArray *)buffer
+{
+    if (_content) {
+        [_content walk:func withBuffer:buffer];
+    } else {
+        if (func(self)) {
+            [buffer addObject:self];
+        }
+    }
+}
+
 @end
 
 @implementation HLPDirectorySection
+
+-(id) copyWithZone:(NSZone *) zone
+{
+    HLPDirectorySection *object = [super copyWithZone:zone];
+    object->_title = self.title;
+    object->_pron  = self.pron;
+    object->_indexTitle = self.indexTitle;
+    object->_items = [[self.items mutableCopy] copyWithZone:zone];
+    return object;
+}
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey
 {
@@ -53,9 +85,26 @@
     return [MTLJSONAdapter arrayTransformerWithModelClass:HLPDirectoryItem.class];
 }
 
+- (void)walk:(BOOL (^)(HLPDirectoryItem *))func withBuffer:(NSMutableArray *)buffer
+{
+    for(HLPDirectoryItem *item in _items) {
+        if ([item isKindOfClass:HLPDirectoryItem.class]){
+            [item walk:func withBuffer:buffer];
+        }
+    }
+}
+
 @end
 
 @implementation HLPDirectory
+
+-(id) copyWithZone:(NSZone *) zone
+{
+    HLPDirectory *object = [super copyWithZone:zone];
+    object->_showSectionIndex = self.showSectionIndex;
+    object->_sections = [[self.sections mutableCopy] copyWithZone:zone];
+    return object;
+}
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey
 {
@@ -67,6 +116,20 @@
 
 + (NSValueTransformer *)sectionsJSONTransformer {
     return [MTLJSONAdapter arrayTransformerWithModelClass:HLPDirectorySection.class];
+}
+
+- (void)walk:(BOOL (^)(HLPDirectoryItem *))func withBuffer:(NSMutableArray *)buffer
+{
+    for(HLPDirectorySection *section in _sections) {
+        [section walk:func withBuffer:buffer];
+    }
+}
+
+- (void)addSection:(HLPDirectorySection *)section atIndex:(NSUInteger)index
+{
+    NSMutableArray *temp = [_sections mutableCopy];
+    [temp insertObject:section atIndex:index];
+    _sections = temp;
 }
 
 @end

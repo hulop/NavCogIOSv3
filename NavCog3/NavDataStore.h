@@ -56,6 +56,7 @@ typedef enum {
 -(HLPLocation*)location;
 -(HLPDirectoryItem*)item;
 -(BOOL)isCurrentLocation;
+-(BOOL)isMultiple;
 +(instancetype)selectStart;
 +(instancetype)selectDestination;
 +(instancetype)dialogSearch;
@@ -90,15 +91,16 @@ typedef enum {
 + (instancetype) sharedDataStore;
 
 - (void) reset;
+- (void) searchDestinations:(NSString*)query withComplete:(void(^)(HLPDirectory*))complete;
 - (BOOL) reloadDestinations:(BOOL)force withComplete:(void(^)(NSArray*, HLPDirectory*))complete;
 - (BOOL) reloadDestinations:(BOOL)force;
 - (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang;
 - (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*, HLPDirectory*))complete;
 - (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang;
-- (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*,  HLPDirectory*))complete;
-- (void) requestRouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)())complete;
-- (void) requestRerouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)())complete;
-- (void) requestServerConfigWithComplete:(void(^)())complete;
+- (BOOL) reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*, HLPDirectory*))complete;
+- (void) requestRouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)(void))complete;
+- (void) requestRerouteFrom:(NSString*)fromID To:(NSString*)toID withPreferences:(NSDictionary*)prefs complete:(void(^)(void))complete;
+- (void) requestServerConfigWithComplete:(void(^)(void))complete;
 - (void) clearRoute;
 - (NSArray*) destinations;
 - (HLPDirectory*) directory;

@@ -22,7 +22,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DestinationTableViewController : UITableViewController
+@interface DestinationTableViewController : UITableViewController <UISearchResultsUpdating>
 
 @property UIViewController *root;
 @property UIView *voTarget;

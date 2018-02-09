@@ -24,7 +24,9 @@
 #import "ServerConfig.h"
 
 #define ROUTE_SEARCH @"%@://%@/%@routesearch"
-#define DIRECTRY @"%@://%@/directory"
+#define QUERY_SERVICE @"%@://%@/%@"
+#define QUERY_DIRECTRY @"directory"
+#define QUERY_SEARCH @"search"
 
 @implementation HLPDataUtil
 
@@ -36,13 +38,48 @@
     NSString *https = [ud boolForKey:@"https_connection"]?@"https":@"http";
     return [NSURL URLWithString:[NSString stringWithFormat:ROUTE_SEARCH, https, server, context]];
 }
-    
-+ (NSURL*) urlForDirectoryService {
+
++ (NSURL*) urlForQueryServiceWithAction:(NSString*)action {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSDictionary *config = [[ServerConfig sharedConfig] selectedServerConfig];
     NSString *server = config[@"query_server"];
     NSString *https = [ud boolForKey:@"https_connection"]?@"https":@"http";
-    return [NSURL URLWithString:[NSString stringWithFormat:DIRECTRY, https, server]];
+    return [NSURL URLWithString:[NSString stringWithFormat:QUERY_SERVICE, https, server, action]];
+}
+
+
++ (void)queryDirectoryForUser:(NSString *)user withQuery:(NSString *)query withCallback :(void (^)(HLPDirectory *))callback
+{
+    NSDictionary *dic =
+    @{
+      @"user": user,
+      @"q": query
+      };
+    
+    NSURL *url = [self urlForQueryServiceWithAction:QUERY_SEARCH];
+    
+    [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
+        if (response == nil) {
+            callback(nil);
+        } else {
+            NSError *error;
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+            if (error) {
+                NSLog(@"%@", error);
+                NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+                callback(nil);
+            } else {
+                HLPDirectory *directory = [MTLJSONAdapter modelOfClass:HLPDirectory.class fromJSONDictionary:json error:&error];
+                if (error) {
+                    NSLog(@"%@", error);
+                    NSLog(@"%@", json[@"sections"]);
+                    callback(nil);
+                } else {
+                    callback(directory);
+                }
+            }
+        }
+    }];
 }
 
 + (void) loadDirectoryAtLat:(double) lat Lng:(double) lng inDist:(int) dist forUser:(NSString*) user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result, HLPDirectory* directory))callback
@@ -57,7 +94,7 @@
       @"lang": lang
       };
     
-    NSURL *url = [self urlForDirectoryService];
+    NSURL *url = [self urlForQueryServiceWithAction:QUERY_DIRECTRY];
     
     [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
         if (response == nil) {

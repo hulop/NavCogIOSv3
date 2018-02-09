@@ -27,14 +27,20 @@
 
 @interface NavTableDataSource: NSObject <UITableViewDataSource>{
     @protected NSObject *_filter;
+    @protected BOOL _showCurrentLocation;
+    @protected BOOL _showFacility;
+    @protected BOOL _showDialog;
 }
 @property NSObject *filter;
+@property BOOL showCurrentLocation;
+@property BOOL showFacility;
+@property BOOL showDialog;
 - (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
 @end
 
 @interface NavDirectoryDataSource : NavTableDataSource
-@property BOOL showCurrentLocation;
 @property HLPDirectory *directory;
+- (instancetype)initWithDirectory:(HLPDirectory*)directory;
 - (void)update:(NSNotification*)note;
 @end
 
@@ -43,15 +49,12 @@
 @property NSDictionary *defaultFilter;
 @property HLPDirectory *directory;
 
-@property BOOL showCurrentLocation;
 @property BOOL showBuilding;
 @property BOOL showShops;
-@property BOOL showFacility;
 @property BOOL showSectionIndex;
 @property BOOL showNearShops;
 @property BOOL showShopBuilding;
 @property BOOL showShopFloor;
-@property BOOL showDialog;
 
 - (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath;
 - (void)update:(NSNotification*)note;

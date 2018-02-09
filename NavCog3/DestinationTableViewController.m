@@ -33,6 +33,22 @@
 @implementation DestinationTableViewController {
     NavTableDataSource *_source;
     NavDestination *filterDest;
+    UISearchController *searchController;
+}
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+{
+    NSString *query = searchController.searchBar.text;
+    if (query && query.length > 0) {
+        searchController.dimsBackgroundDuringPresentation = YES;
+        [[NavDataStore sharedDataStore] searchDestinations:query withComplete:^(HLPDirectory *directory) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                _source = [[NavDirectoryDataSource alloc] initWithDirectory:directory];
+                searchController.dimsBackgroundDuringPresentation = NO;
+                [self.tableView reloadData];
+            });
+        }];
+    }
 }
 
 - (void)viewDidLoad {
@@ -44,8 +60,34 @@
             source.directory = filterDest.item.content;
         } else {
             source.directory = [[NavDataStore sharedDataStore] directory];
+            
+            if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
+                self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
+                source.showDialog = NO;
+                source.showCurrentLocation = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"];
+                source.showFacility = NO;
+            }
+            if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
+                self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
+                source.showDialog = YES;
+                source.showCurrentLocation = NO;
+                source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
+            }
         }
+        [source update:nil];
         _source = source;
+        searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+        searchController.searchResultsUpdater = self;
+        searchController.obscuresBackgroundDuringPresentation = YES;
+        searchController.dimsBackgroundDuringPresentation = NO;
+        searchController.hidesNavigationBarDuringPresentation = NO;
+        searchController.searchBar.placeholder = @"Search";
+        //if (@available(iOS 11.0, *)) {
+        //    self.navigationItem.searchController = searchController;
+        //} else {
+            self.tableView.tableHeaderView = searchController.searchBar;
+        //}
+        self.definesPresentationContext = true;
     } else {
         NavDestinationDataSource *source = [[NavDestinationDataSource alloc] init];
 
@@ -91,6 +133,10 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [searchController setActive:YES];
 }
 
 - (void)didReceiveMemoryWarning {

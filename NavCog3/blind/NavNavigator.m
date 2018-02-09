@@ -396,6 +396,8 @@ static NavNavigatorConstants *_instance;
             HLPEntrance *ent = (HLPEntrance*)obj;
             NavPOI *navpoi = nil;
             
+            //NSLog(@"entrance-facility %@", ent.facility.name);
+            
             if ([_nextLink.targetNodeID isEqualToString:ent.node._id]) {
                 // destination with a leaf node, make second last link as last link
                 //_isNextDestination = YES;
@@ -1259,6 +1261,7 @@ static NavNavigatorConstants *_instance;
                 walkingSpeed = MIN(ave / MAX_WD * 10, 2.0);
                 walkingSpeed = walkingSpeed < zero_threthold ? 0 : walkingSpeed;
             }
+            NSLog(@"walkingSpeed = %f", walkingSpeed);
             prevLocation = location;
         }
         
@@ -1991,6 +1994,7 @@ static NavNavigatorConstants *_instance;
             for(int i = 0; i < [linkInfo.pois count]; i++) {
                 NavPOI *poi = linkInfo.pois[i];
                 
+                //NSLog(@"poi approaching - %@ %f",[[poi.origin facility] name], poi.distanceFromSnappedLocation);
                 if (poi.forBeforeStart || poi.forWelcome || poi.forCorner || poi.forFloor) {
                     continue;
                 }
@@ -1998,7 +2002,6 @@ static NavNavigatorConstants *_instance;
                 if (poi.forAfterEnd) {
                     continue;
                 }
-                
                 if (!poi.hasBeenApproached && (now - poi.lastApproached > C.POI_ANNOUNCE_MIN_INTERVAL)) {
                     if (poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
                         poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE &&
@@ -2038,7 +2041,7 @@ static NavNavigatorConstants *_instance;
             }
             
             
-            
+            //if (!linkInfo.hasBeenBearing && !linkInfo.noBearing) {
             if (!linkInfo.hasBeenBearing && !linkInfo.noBearing) {
                 
                 BOOL bearing_for_demo = [[NSUserDefaults standardUserDefaults] boolForKey:@"bearing_for_demo"];

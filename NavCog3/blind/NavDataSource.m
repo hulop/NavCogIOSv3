@@ -185,6 +185,7 @@
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
+    cell.accessoryType = UITableViewCellAccessoryNone;
     if ([item isKindOfClass:HLPDirectoryItem.class]) {
         cell.textLabel.text = [item getItemTitle];
         cell.detailTextLabel.text = item.subtitle;
@@ -194,11 +195,20 @@
         } else {
             cell.accessibilityLabel = [NSString stringWithFormat:@"%@", [item getItemTitlePron]];
         }
+        if (item.content) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
     } else {
         cell.textLabel.text = dest.name;
         cell.accessibilityLabel = [NSString stringWithFormat:@"%@", dest.namePron];
+        
+        if (dest.type == NavDestinationTypeDialogSearch) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
     }
     cell.clipsToBounds = YES;
+    
+    
     return cell;
 }
 @end
@@ -498,6 +508,9 @@
     
     cell.accessoryType = UITableViewCellAccessoryNone;
     if (dest.filter) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    if (dest.type == NavDestinationTypeDialogSearch) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     

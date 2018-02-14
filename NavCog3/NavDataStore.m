@@ -248,7 +248,11 @@
     int floor;
     switch(_type) {
         case NavDestinationTypeDirectoryItem:
-            return [NSString stringWithFormat:@"%@, %@", _item.title, _item.subtitle];
+            if (_item.subtitle) {
+                return [NSString stringWithFormat:@"%@, %@", _item.title, _item.subtitle];
+            } else {
+                return [NSString stringWithFormat:@"%@", _item.title];
+            }
         case NavDestinationTypeLandmark:
         case NavDestinationTypeLandmarks:
             return [_landmark getLandmarkName];
@@ -1406,10 +1410,10 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
         case NavDestinationTypeLocation:
             return YES;
         case NavDestinationTypeDirectoryItem:
-            return [destinationHash objectForKey:dest.item.nodeID] != nil;
         case NavDestinationTypeLandmark:
         case NavDestinationTypeLandmarks:
-            return [destinationHash objectForKey:dest.landmark.nodeID] != nil;
+            return [destinationHash objectForKey:dest.singleId] != nil;
+            //return [destinationHash objectForKey:dest.landmark.nodeID] != nil;
         default:
             return NO;
     }

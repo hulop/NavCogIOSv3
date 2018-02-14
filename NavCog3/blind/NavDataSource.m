@@ -186,15 +186,17 @@
     }
     
     if ([item isKindOfClass:HLPDirectoryItem.class]) {
-        cell.textLabel.text = item.title;
+        cell.textLabel.text = [item getItemTitle];
         cell.detailTextLabel.text = item.subtitle;
-        cell.accessibilityLabel = [NSString stringWithFormat:@"%@ %@ %@",
-                                   item.pron,NSLocalizedStringFromTable(@"PERIOD",@"BlindView",@""),item.subtitle];
+        if (item.subtitle) {
+            cell.accessibilityLabel = [NSString stringWithFormat:@"%@ %@ %@",
+                                       [item getItemTitlePron],NSLocalizedStringFromTable(@"PERIOD",@"BlindView",@""),[item getItemSubtitlePron]];
+        } else {
+            cell.accessibilityLabel = [NSString stringWithFormat:@"%@", [item getItemTitlePron]];
+        }
     } else {
         cell.textLabel.text = dest.name;
-        cell.accessibilityLabel = [NSString stringWithFormat:@"%@ %@",
-                                   dest.namePron,NSLocalizedStringFromTable(@"PERIOD",@"BlindView",@"")];
-
+        cell.accessibilityLabel = [NSString stringWithFormat:@"%@", dest.namePron];
     }
     cell.clipsToBounds = YES;
     return cell;

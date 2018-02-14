@@ -32,22 +32,32 @@
 
 @implementation DestinationTableViewController {
     NavTableDataSource *_source;
+    NavTableDataSource *_defaultSource;
     NavDestination *filterDest;
     UISearchController *searchController;
+    
+    NSString *lastSearchQuery;
 }
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
     NSString *query = searchController.searchBar.text;
     if (query && query.length > 0) {
+        lastSearchQuery = query;
         searchController.dimsBackgroundDuringPresentation = YES;
         [[NavDataStore sharedDataStore] searchDestinations:query withComplete:^(HLPDirectory *directory) {
+            if (![lastSearchQuery isEqualToString:query]) {
+                return;
+            }
             dispatch_async(dispatch_get_main_queue(), ^{
                 _source = [[NavDirectoryDataSource alloc] initWithDirectory:directory];
                 searchController.dimsBackgroundDuringPresentation = NO;
                 [self.tableView reloadData];
             });
         }];
+    } else {
+        _source = _defaultSource;
+        [self.tableView reloadData];
     }
 }
 
@@ -73,20 +83,21 @@
                 source.showCurrentLocation = NO;
                 source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
             }
+            
+            searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+            searchController.searchResultsUpdater = self;
+            searchController.obscuresBackgroundDuringPresentation = YES;
+            searchController.dimsBackgroundDuringPresentation = NO;
+            searchController.hidesNavigationBarDuringPresentation = NO;
+            searchController.searchBar.placeholder = @"Search";
+            if (@available(iOS 11.0, *)) {
+                self.navigationItem.searchController = searchController;
+            } else {
+                self.tableView.tableHeaderView = searchController.searchBar;
+            }
         }
         [source update:nil];
-        _source = source;
-        searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
-        searchController.searchResultsUpdater = self;
-        searchController.obscuresBackgroundDuringPresentation = YES;
-        searchController.dimsBackgroundDuringPresentation = NO;
-        searchController.hidesNavigationBarDuringPresentation = NO;
-        searchController.searchBar.placeholder = @"Search";
-        //if (@available(iOS 11.0, *)) {
-        //    self.navigationItem.searchController = searchController;
-        //} else {
-            self.tableView.tableHeaderView = searchController.searchBar;
-        //}
+        _source = _defaultSource = source;
         self.definesPresentationContext = true;
     } else {
         NavDestinationDataSource *source = [[NavDestinationDataSource alloc] init];
@@ -135,8 +146,19 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.hidesSearchBarWhenScrolling = NO;
+    }
+}
+
 - (void)viewDidAppear:(BOOL)animated {
-    [searchController setActive:YES];
+    [super viewDidAppear:animated];
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.hidesSearchBarWhenScrolling = YES;
+    }
 }
 
 - (void)didReceiveMemoryWarning {

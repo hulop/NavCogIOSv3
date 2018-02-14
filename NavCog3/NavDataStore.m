@@ -282,7 +282,7 @@
 {
     switch(_type) {
         case NavDestinationTypeDirectoryItem:
-            return _item.pron;
+            return [_item getItemTitlePron];
         case NavDestinationTypeLandmark:
         case NavDestinationTypeLandmarks:
             return [_landmark getLandmarkNamePron];
@@ -1405,6 +1405,8 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     switch(dest.type) {
         case NavDestinationTypeLocation:
             return YES;
+        case NavDestinationTypeDirectoryItem:
+            return [destinationHash objectForKey:dest.item.nodeID] != nil;
         case NavDestinationTypeLandmark:
         case NavDestinationTypeLandmarks:
             return [destinationHash objectForKey:dest.landmark.nodeID] != nil;

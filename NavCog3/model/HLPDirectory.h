@@ -29,12 +29,17 @@
 
 @interface HLPDirectoryItem : MTLModel<MTLJSONSerializing, NSCoding>
 @property (nonatomic, readonly) NSString *title;
-@property (nonatomic, readonly) NSString *pron;
+@property (nonatomic, readonly) NSString *titlePron;
 @property (nonatomic, readonly) NSString *subtitle;
+@property (nonatomic, readonly) NSString *subtitlePron;
 @property (nonatomic, readonly) NSString *nodeID;
 @property (nonatomic, readonly) HLPDirectory *content;
 
 - (void) walk:(BOOL(^)(HLPDirectoryItem*))func withBuffer:(NSMutableArray*)buffer;
+- (NSString*) getItemTitle;
+- (NSString*) getItemTitlePron;
+- (NSString*) getItemSubtitle;
+- (NSString*) getItemSubtitlePron;
 @end
 
 @interface HLPDirectorySection : MTLModel<MTLJSONSerializing, NSCoding>

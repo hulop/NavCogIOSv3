@@ -28,7 +28,7 @@
 {
     HLPDirectoryItem *object = [super copyWithZone:zone];
     object->_title = self.title;
-    object->_pron  = self.pron;
+    object->_titlePron  = self.titlePron;
     object->_subtitle = self.subtitle;
     object->_nodeID = self.nodeID;
     object->_content = [self.content copyWithZone:zone];
@@ -38,8 +38,9 @@
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
              @"title": @"title",
-             @"pron": @"pron",
+             @"titlePron": @"titlePron",
              @"subtitle": @"subtitle",
+             @"subtitlePron": @"subtitlePron",
              @"nodeID": @"nodeID",
              @"content": @"content"
              };
@@ -54,6 +55,28 @@
             [buffer addObject:self];
         }
     }
+}
+
+- (NSString*) getItemTitle {
+    return _title;
+}
+
+- (NSString *) getItemTitlePron {
+    if (_titlePron) {
+        return _titlePron;
+    }
+    return _title;
+}
+
+- (NSString *)getItemSubtitle {
+    return _subtitle;
+}
+
+- (NSString *)getItemSubtitlePron {
+    if (_subtitlePron) {
+        return _subtitlePron;
+    }
+    return _subtitle;
 }
 
 @end

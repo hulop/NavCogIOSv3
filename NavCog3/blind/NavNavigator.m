@@ -423,7 +423,7 @@ static NavNavigatorConstants *_instance;
                                                          @"isDestination": @(YES),
                                                          @"forAfterEnd": @(YES)
                                                          }];
-            } else {
+            } else if (![[NavDataStore sharedDataStore] isOnStart:ent.forNodeID]){
                 // mid in route
                 HLPLocation *nearest = [_link nearestLocationTo:ent.node.location];
                 if (ent.facility && ent.facility.isNotRead) {
@@ -765,7 +765,7 @@ static NavNavigatorConstants *_instance;
         }
         
         [_pois enumerateObjectsUsingBlock:^(NavPOI * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [obj updateWithLocation:_snappedLocationOnLink andUserLocation:location];
+            [obj updateWithLink:_link andUserLocation:location];
         }];
     }
 }
@@ -800,11 +800,17 @@ static NavNavigatorConstants *_instance;
     return self;
 }
 
-- (void)updateWithLocation:(HLPLocation *)location andUserLocation:(HLPLocation *)userLocation
+- (void)updateWithLink:(HLPLink *)link andUserLocation:(HLPLocation *)userLocation
 {
-    _snappedLocationOnLink = location;
-    _distanceFromSnappedLocation = [_snappedLocationOnLink distanceTo:_poiLocation];
-    _distanceFromUserLocation = [userLocation distanceTo:_poiLocation];
+    _link = link;
+    _userLocation = userLocation;
+    
+    _snappedPoiLocationOnLink = [_link nearestLocationTo:_poiLocation];
+    _snappedUserLocationOnLink = [_link nearestLocationTo:_userLocation];
+    _distanceFromSnappedPoiLocationAndSnappedUserLocation = [_snappedUserLocationOnLink distanceTo:_snappedPoiLocationOnLink];
+    
+    //_distanceFromSnappedLocation = [_snappedLocationOnLink distanceTo:_poiLocation];
+    //_distanceFromUserLocation = [userLocation distanceTo:_poiLocation];
     if (!isnan(_angleFromLocation)) {
         _diffAngleFromUserOrientation = [HLPLocation normalizeDegree:_angleFromLocation - userLocation.orientation];
     }
@@ -2003,8 +2009,9 @@ static NavNavigatorConstants *_instance;
                     continue;
                 }
                 if (!poi.hasBeenApproached && (now - poi.lastApproached > C.POI_ANNOUNCE_MIN_INTERVAL)) {
-                    if (poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
-                        poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE &&
+                    if (poi.distanceFromSnappedPoiLocationAndSnappedUserLocation < C.POI_ANNOUNCE_DISTANCE &&
+                        //poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
+                        //poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE &&
                         ([linkInfo.link.targetLocation distanceTo:poi.poiLocation] > C.POI_ANNOUNCE_DISTANCE ||
                          poi.forDoor || poi.forRamp || poi.forObstacle || poi.forBrailleBlock
                          )
@@ -2023,8 +2030,10 @@ static NavNavigatorConstants *_instance;
                     }
                 } else {
                     if (!poi.hasBeenLeft) {
-                        if (poi.distanceFromSnappedLocation > C.POI_ANNOUNCE_DISTANCE &&
-                            poi.distanceFromUserLocation > C.POI_ANNOUNCE_DISTANCE) {
+                        if (poi.distanceFromSnappedPoiLocationAndSnappedUserLocation > C.POI_ANNOUNCE_DISTANCE
+                            //poi.distanceFromSnappedLocation > C.POI_ANNOUNCE_DISTANCE &&
+                            //poi.distanceFromUserLocation > C.POI_ANNOUNCE_DISTANCE
+                            ) {
                             if ([self.delegate respondsToSelector:@selector(userIsLeavingFromPOI:)]) {
                                 [self.delegate userIsLeavingFromPOI:
                                  @{

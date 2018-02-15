@@ -37,7 +37,7 @@
 - (void) requestServerList:(NSString*)path withComplete:(void(^)(NSDictionary*))complete;
 - (void) requestServerConfig:(void(^)(NSDictionary* config))complete;
 - (NSArray*) checkDownloadFiles;
-- (void) checkAgreement:(void(^)(NSDictionary* config))complete;
+- (void) checkAgreementForIdentifier:(NSString*)identifier withCompletion:(void(^)(NSDictionary* config))complete;
 
 - (NSURL*) getDestLocation:(NSString*)path;
 

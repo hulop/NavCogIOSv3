@@ -103,7 +103,7 @@ static ExpConfig *instance;
     NavDataStore *nds = [NavDataStore sharedDataStore];
     HLPLocation *center = [nds mapCenter];
     
-    if (![[NavDataStore sharedDataStore] reloadDestinationsAtLat:center.lat Lng:center.lng Dist:100000 forUser:nds.userID withUserLang:nds.userLanguage withComplete:^(NSArray* dest){
+    if (![[NavDataStore sharedDataStore] reloadDestinationsAtLat:center.lat Lng:center.lng Dist:100000 forUser:nds.userID withUserLang:nds.userLanguage withComplete:^(NSArray* dest, HLPDirectory* directory){
         [self _requestRoutesConfig:complete];
     }]) {
         [self _requestRoutesConfig:complete];

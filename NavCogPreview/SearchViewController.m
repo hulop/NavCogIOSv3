@@ -203,7 +203,7 @@
 - (void) loadDestinations:(BOOL) force
 {
     if (!updated) {
-        if ([[NavDataStore sharedDataStore] reloadDestinations:force withComplete:^(NSArray *d) {
+        if ([[NavDataStore sharedDataStore] reloadDestinations:force withComplete:^(NSArray *d, HLPDirectory *directory) {
             NavDataStore *nds = [NavDataStore sharedDataStore];
             nds.from = [NavDestination selectStart];
             nds.to = [NavDestination selectDestination];

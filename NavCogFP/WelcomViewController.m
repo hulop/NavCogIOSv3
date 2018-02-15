@@ -26,6 +26,7 @@
 #import "AuthManager.h"
 #import "LocationEvent.h"
 #import "Logging.h"
+#import "NavDataStore.h"
 
 @interface WelcomViewController ()
 
@@ -144,7 +145,8 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
             });
-            [[ServerConfig sharedConfig] checkAgreement:^(NSDictionary* config) {
+            NSString *identifier = [[NavDataStore sharedDataStore] userID];
+            [[ServerConfig sharedConfig] checkAgreementForIdentifier:identifier withCompletion:^(NSDictionary* config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }
             }];

@@ -123,11 +123,11 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
     label.text = @"Log Replaying";
     label.font = [UIFont fontWithName:@"Courier" size:14];
     label.numberOfLines = 0;
-    [label setTranslatesAutoresizingMaskIntoConstraints:NO];
+    //[label setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(w-size, 0, size, size)];
     [btn setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
-    [btn setTranslatesAutoresizingMaskIntoConstraints:NO];
+    //[btn setTranslatesAutoresizingMaskIntoConstraints:NO];
 
     [overlay setBackgroundColor:
      [UIColor colorWithRed:1 green:1 blue:1 alpha:0.75]];

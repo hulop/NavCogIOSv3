@@ -82,7 +82,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationReset:) name:REQUEST_LOCATION_RESET object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationUnknown:) name:REQUEST_LOCATION_UNKNOWN object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestBackgroundLocation:) name:REQUEST_BACKGROUND_LOCATION object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplay:) name:REQUEST_LOG_REPLAY object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplayStop:) name:REQUEST_LOG_REPLAY_STOP object:nil];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(serverConfigChanged:) name:SERVER_CONFIG_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(buildingChanged:) name:BUILDING_CHANGED_NOTIFICATION object:nil];
@@ -235,7 +237,37 @@ void uncaughtExceptionHandler(NSException *exception)
     [HLPLocationManager sharedManager].isBackground = backgroundMode;
 }
 
+- (void) requestLogReplay:(NSNotification*) note
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSDictionary *option =
+    @{
+      @"replay_in_realtime": [ud valueForKey:@"replay_in_realtime"],
+      @"replay_sensor": [ud valueForKey:@"replay_sensor"],
+      @"replay_show_sensor_log": [ud valueForKey:@"replay_show_sensor_log"],
+      @"replay_with_reset": [ud valueForKey:@"replay_with_reset"],
+      };
+    BOOL bNavigation = [[NSUserDefaults standardUserDefaults] boolForKey:@"replay_navigation"];
+    [[HLPLocationManager sharedManager] startLogReplay:note.userInfo[@"path"] withOption:option withLogHandler:^(NSString *line) {
+        if (bNavigation) {
+            NSArray *v = [line componentsSeparatedByString:@" "];
+            if (v.count > 3 && [v[3] hasPrefix:@"initTarget"]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_INIT_TARGET_LOG object:self userInfo:@{@"text":line}];
+                });
+            }
+            if (v.count > 3 && [v[3] hasPrefix:@"showRoute"]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_SHOW_ROUTE_LOG object:self userInfo:@{@"text":line}];
+                });
+            }
+        }
+    }];
+}
 
+- (void)requestLogReplayStop:(NSNotification*) note {
+    [[HLPLocationManager sharedManager] stopLogReplay];
+}
 
 #pragma mark - HLPLocationManagerDelegate
 

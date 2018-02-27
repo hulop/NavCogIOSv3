@@ -14,8 +14,9 @@ The project also includes the following tools.
 
 - **NavCogFP**: For fingerprinting
 - **NavCogTool**: For simulate blind user navigation commands
+- **NavCogPreview**: For virtual preview
 
-## Pre-Requisites
+## Dependencies
 - [FormatterKit](https://github.com/mattt/FormatterKit) (MIT License)
 - [HLPDialog](https://github.com/hulop/HLPDialog) (MIT License)
 - [HLPLocationManager](https://github.com/hulop/HLPLocationManager) (MIT License)
@@ -25,9 +26,13 @@ The project also includes the following tools.
 
 ## Build
 1. install [Carthage](https://github.com/Carthage/Carthage).
-2. In the project directory, run `carthage bootstrap --platform iOS,macOS`.
-3. Open NavCog3.xcodeproj
-4. Build NavCog3 project with Xcode.
+2. In the project directory, run `carthage bootstrap --platform iOS`.
+3. install [Cocoapods](https://cocoapods.org/)
+4. In the project directory, run `pod install`
+5. Open NavCog3.xcworkspace
+6. Build NavCog3 target with Xcode.
+
+\# if you archive the app for AppStore, `Frameworks` directory in `Carthage/Build/iOS/HLPDialog.framework` should be removed.
 
 ## Setup
 See [wiki](https://github.com/hulop/NavCogIOSv3/wiki) for set up servers and data.
@@ -45,3 +50,4 @@ Icons in NavCogFP are from [https://github.com/IBM-Design/icons](https://github.
 ## README
 This Human Scale Localization Platform library is intended solely for use with an Apple iOS product and intended to be used in conjunction with officially licensed Apple development tools and further customized and distributed under the terms and conditions of your licensed Apple developer program.
 
+	

@@ -3,4 +3,4 @@ github "ZipArchive/ZipArchive" == 2.0.4
 
 github "hulop/HLPWebView" == 1.0
 github "hulop/HLPDialog" == 1.0.2
-github "hulop/HLPLocationManager" "v1.0.6"
+github "hulop/HLPLocationManager" "v1.0.7"

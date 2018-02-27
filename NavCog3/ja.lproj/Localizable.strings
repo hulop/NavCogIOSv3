@@ -26,14 +26,22 @@
 /* label for exercise options */
 "Exercise" = "練習";
 
+"RESTROOM" = "トイレ";
+
 /* Toilet for people with disability */
-"FOR_DISABLED" = "多目的トイレ";
+"FOR_DISABLEDRESTROOM" = "多目的トイレ";
 
 /* Toilet for female */
-"FOR_FEMALE" = "女性用トイレ";
+"FOR_FEMALEFOR_DISABLEDRESTROOM" = "女性用多目的トイレ";
 
 /* Toilet for male */
-"FOR_MALE" = "男性用トイレ";
+"FOR_MALEFOR_DISABLEDRESTROOM" = "男性用多目的トイレ";
+
+/* Toilet for female */
+"FOR_FEMALERESTROOM" = "女性用トイレ";
+
+/* Toilet for male */
+"FOR_MALERESTROOM" = "男性用トイレ";
 
 /* feet distance unit label */
 "Feet" = "フィート";
@@ -56,9 +64,6 @@
 /* No comment provided by engineer. */
 "Navigation" = "案内の履歴";
 
-/* Pausing */
-"PAUSING" = "<一時停止中>";
-
 /* No comment provided by engineer. */
 "Prefer Tactile Paving" = "点字ブロックを優先する";
 
@@ -67,9 +72,6 @@
 
 /* No comment provided by engineer. */
 "Preview with action" = "振ってプレビュー";
-
-/* Speak Now! */
-"SPEAK_NOW" = "<話しかけてください>";
 
 /* No comment provided by engineer. */
 "SPEECH_SPEED_CHECK" = "読み上げ速度:%.2f";
@@ -98,6 +100,8 @@
 /* No comment provided by engineer. */
 "Use Escalator" = "エスカレーターを使う";
 
+"Use Moving Walkway" = "動く歩道を使う";
+
 /* No comment provided by engineer. */
 "Use Stairs" = "階段を使う";
 
@@ -111,12 +115,6 @@
 "vibrateSetting" = "振動で通知";
 
 "for_bone_conduction_headset" = "骨伝導ヘッドフォン用の効果音";
-
-"Error" = "エラー";
-
-"DialogStart" = "再開";
-
-"DialogStartHint" = "対話を再開するにはダブルタップします";
 
 "Reset_Location" = "位置推定をやり直す";
 
@@ -150,25 +148,14 @@ NavCog　→
 データを送信中です...";
 
 "Help" = "ヘルプ";
+"Instructions" = "はじめに";
 "OpenHelp" = "ヘルプページを開く";
+"OpenInstructions" = "はじめにを開く";
+"Back to mode selection" = "モード選択に戻る";
+"Send Feedback" = "フィードバックを送信";
+"feedbackSubject" = "NavCog-フィードバック(%@)";
+"feedbackBody" = "フィードバック内容を記載してください";
 
 "NeedToUpdateAppTitle" = "アプリの更新";
 "NeedToUpdateAppMessage" = "アプリの更新が必要です";
 "OpenAppStore" = "App Storeを開く";
-
-"WAIT_ACTION" = "話しかけていただけるのを待っています。マイクボタンを押して再開してください。";
-
-"NoAudioAccessAlertTitle" = "マイクが許可されていません";
-"NoAudioAccessAlertMessage" = "対話検索の機能を使うためにはマイクを許可する必要があります。
-プライバシー設定画面から
-マイク　→　NavCog
-の設定をオンにします。";
-
-"NoSpeechRecoAccessAlertTitle" = "音声認識が許可されていません";
-"NoSpeechRecoAccessAlertMessage" = "対話検索の機能を使うためには音声認識を許可する必要があります。
-プライバシー設定画面から
-音声認識　→　NavCog
-の設定をオンにします。";
-
-"unknownError0" = "音声認識を開始できませんでした。もう一度お試しください";
-"unknownError1" = "現在、音声認識を行うことが出来ません。あとでもう一度お試しください";

@@ -22,9 +22,14 @@
 
 #import <Foundation/Foundation.h>
 #import "HLPGeoJSON.h"
+#import "HLPDirectory.h"
 
 @interface HLPDataUtil : NSObject
 
++ (void) queryDirectoryForUser:(NSString*) user withQuery:(NSString*)query withCallback:(void(^)(HLPDirectory* directory))callback;
+
++ (void) loadDirectoryAtLat:(double) lat Lng:(double) lng inDist:(int) dist forUser:(NSString*) user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result, HLPDirectory* directory))callback;
+    
 + (void) loadRouteFromNode:(NSString*)from toNode:(NSString*)to forUser:(NSString*) user withLang:(NSString*)lang withPrefs:(NSDictionary*) prefs withCallback:(void(^)(NSArray<HLPObject*>* result))callback;
 
 + (void) loadLandmarksAtLat:(double) lat Lng:(double) lng inDist:(int) dist forUser:(NSString*) user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result))callback;

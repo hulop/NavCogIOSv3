@@ -27,11 +27,12 @@
 #import "NavUtil.h"
 #import "NavDataStore.h"
 #import "SettingViewController.h"
-#import "NavBlindWebviewHelper.h"
+#import "NavBlindWebView.h"
 #import "POIViewController.h"
 #import "ServerConfig+Preview.h"
 #import "ExpConfig.h"
 #import "Logging.h"
+#import "HelpViewController.h"
 
 
 #import <CoreMotion/CoreMotion.h>
@@ -44,7 +45,6 @@
 
 
 @implementation BlindViewController {
-    NavBlindWebviewHelper *helper;
     HLPPreviewer *previewer;
     HLPPreviewCommander *commander;
     NSTimer *locationTimer;
@@ -78,9 +78,8 @@
 
 - (void)dealloc
 {
-    [helper prepareForDealloc];
-    helper.delegate = nil;
-    helper = nil;
+    _webView.delegate = nil;
+    _webView = nil;
     
     _settingButton = nil;
     
@@ -100,10 +99,12 @@
     [self.devLeft setTitle:@"Left" forState:UIControlStateNormal];
     [self.devRight setTitle:@"Right" forState:UIControlStateNormal];
     
-    NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
-    helper = [[NavBlindWebviewHelper alloc] initWithWebview:self.webView server:server];
-    helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
-    helper.delegate = self;
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _webView.config = @{
+                        @"serverHost":[ud stringForKey:@"selected_hokoukukan_server"],
+                        };
+    _webView.userMode = [ud stringForKey:@"user_mode"];
+    _webView.delegate = self;
     
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
@@ -244,13 +245,13 @@ double stdev(double array[], long count) {
             return NO;
         }]];
     }
-    [helper showRoute:route];
+    [_webView showRoute:route];
 }
 
 - (void) checkMapCenter:(NSTimer*)timer
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        HLPLocation *loc = [helper getCenter];
+        HLPLocation *loc = [_webView getCenter];
         if (loc != nil) {
             [NavDataStore sharedDataStore].mapCenter = loc;
             HLPLocation *cloc = [NavDataStore sharedDataStore].currentLocation;
@@ -281,6 +282,12 @@ double stdev(double array[], long count) {
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"first_launch"]) {
+        HelpViewController *vc = [HelpViewController getInstance];
+        [self.navigationController showViewController:vc sender:self];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"first_launch"];
+    }
+    
     [self updateView];
 }
 
@@ -390,7 +397,7 @@ double stdev(double array[], long count) {
     [motionManager stopDeviceMotionUpdates];
     
     [commander previewStopped:event];
-    [helper clearRoute];
+    [_webView clearRoute];
     current = nil;
     userLocation = nil;
     animLocation = nil;
@@ -465,13 +472,13 @@ double stdev(double array[], long count) {
 {
     double orientation = -userLocation.orientation / 180 * M_PI;
     
-    [helper sendData:@[@{
+    [_webView sendData:@[@{
                            @"type":@"ORIENTATION",
                            @"z":@(orientation)
                            }]
             withName:@"Sensor"];
     
-    [helper sendData:@{
+    [_webView sendData:@{
                        @"lat":@(userLocation.lat),
                        @"lng":@(userLocation.lng),
                        @"floor":@(userLocation.floor),
@@ -482,6 +489,12 @@ double stdev(double array[], long count) {
                        @"debug_latlng":[NSNull null]
                        }
             withName:@"XYZ"];
+}
+
+- (void)routeNotFound
+{
+    [self speak:@"Route not found" withOptions:@{@"force":@(NO)} completionHandler:nil];
+    [[NavSound sharedInstance] playFail];
 }
 
 #pragma mark - PreviewCommandDelegate
@@ -514,7 +527,12 @@ double stdev(double array[], long count) {
     if (current && current.targetFacilityPOIs) {
         POIViewController *vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"poi_view"];
         vc.pois = current.targetFacilityPOIs;
-        [self.navigationController pushViewController:vc animated:YES];
+        if ([vc isContentAvailable]) {
+            [self.navigationController pushViewController:vc animated:YES];
+        } else {
+            [[NavSound sharedInstance] playFail];
+            [self speak:@"No detail information. " withOptions:@{@"force":@(NO)} completionHandler:nil];
+        }
     }
 }
 
@@ -640,12 +658,14 @@ double stdev(double array[], long count) {
     });
 }
 
-- (void) startLoading {
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
     [_indicator startAnimating];
     _indicator.hidden = NO;
 }
 
-- (void) loaded {
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
     [_indicator stopAnimating];
     _indicator.hidden = YES;
 
@@ -654,21 +674,17 @@ double stdev(double array[], long count) {
     });
 }
 
-- (void)bridgeInserted
-{
-}
-
 - (void) insertScript
 {
     NSString *jspath = [[NSBundle mainBundle] pathForResource:@"fingerprint" ofType:@"js"];
     NSString *js = [[NSString alloc] initWithContentsOfFile:jspath encoding:NSUTF8StringEncoding error:nil];
-    [helper evalScript:js];
+    [_webView stringByEvaluatingJavaScriptFromString:js];
 }
 
 - (void) showPOIs:(NSArray<HLPObject*>*)pois
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:@"$hulop.map.clearRoute()"];
+        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.clearRoute()"];
         NSArray *route = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
             if ([evaluatedObject isKindOfClass:HLPLink.class]) {
                 HLPLink *link = (HLPLink*)evaluatedObject;
@@ -677,7 +693,7 @@ double stdev(double array[], long count) {
             return NO;
         }]];
         
-        [helper showRoute:route];
+        [_webView showRoute:route];
     });
     
     [self showFeatures:pois withStyle:^NSDictionary *(NSObject *obj) {
@@ -723,7 +739,7 @@ double stdev(double array[], long count) {
     selectedFeature = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:@"$hulop.fp.showFingerprints([]);"];
+        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.fp.showFingerprints([]);"];
     });
 }
 
@@ -745,11 +761,11 @@ double stdev(double array[], long count) {
     NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
     //NSLog(@"%@", script);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [helper evalScript:script];
+        [_webView stringByEvaluatingJavaScriptFromString:script];
     });
 }
 
-- (void)checkConnection {
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
     _retryButton.hidden = NO;
@@ -761,39 +777,49 @@ double stdev(double array[], long count) {
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - HLPWebView
 
-#pragma mark - NavWebviewHelperDelegate
-
-- (void) speak:(NSString*)text withOptions:(NSDictionary*)options {
-    //[[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:nil];
+- (void)webView:(HLPWebView *)webView didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
+{
+    NSDictionary *loc =
+    @{
+      @"lat": @(lat),
+      @"lng": @(lng),
+      @"floor": @(floor),
+      @"sync": @(sync),
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:loc];
 }
 
-- (BOOL) isSpeaking {
-    //return [[NavDeviceTTS sharedTTS] isSpeaking];
-    return NO;
+- (void)webView:(HLPWebView *)webView didChangeBuilding:(NSString *)building
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:@{@"building": building}];
 }
 
-- (void) vibrateOnAudioServices {
-    //AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+- (void)webView:(HLPWebView *)webView didChangeUIPage:(NSString *)page inNavigation:(BOOL)inNavigation
+{
+    NSDictionary *uiState =
+    @{
+      @"page": page,
+      @"navigation": @(inNavigation),
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:uiState];
 }
 
-- (void) manualLocationChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:options];
+- (void)webView:(HLPWebView *)webView didFinishNavigationStart:(NSTimeInterval)start end:(NSTimeInterval)end from:(NSString *)from to:(NSString *)to
+{
+    NSDictionary *navigationInfo =
+    @{
+      @"start": @(start),
+      @"end": @(end),
+      @"from": from,
+      @"to": to,
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:navigationInfo];
 }
 
-- (void) buildingChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:options];
-}
-
-- (void) wcuiStateChangedWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:options];
-}
-
-- (void) requestRatingWithOptions:(NSDictionary*)options {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:options];
-}
-
-- (void) requestOpenURL:(NSURL*)url {
+- (void)webView:(HLPWebView *)webView openURL:(NSURL *)url
+{
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
 }
 
@@ -817,26 +843,45 @@ double stdev(double array[], long count) {
             return NO;
         }
         
-        [NavDataStore sharedDataStore].mapCenter = [helper getCenter];
+        [NavDataStore sharedDataStore].mapCenter = [_webView getCenter];
         
         UIViewController *vc = nil;
-        if ([[ServerConfig sharedConfig] isExpMode]) {
-            NSArray *routes = [[ExpConfig sharedConfig] expUserRoutes];
-            if (routes == nil ){
-                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"exp_view"];
-                [self presentViewController:vc animated:YES completion:nil];
-                return NO;
-            } else if (routes.count > 0) {
-                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"setting_view"];
-                vc.restorationIdentifier = @"exp_settings";
+        
+        BOOL isExpMode = [[ServerConfig sharedConfig] isExpMode];
+        BOOL useDeviceId = [[ServerConfig sharedConfig] useDeviceId];
+        NSArray *routes = [[ExpConfig sharedConfig] expUserRoutes];
+        
+        if (isExpMode) {
+            if (!routes) { // require authentication
+                if (useDeviceId) {
+                    [NavUtil showModalWaitingWithMessage:@"loading..."];
+                    NSString *uuid = [UIDevice currentDevice].identifierForVendor.UUIDString;
+                    [[ExpConfig sharedConfig] requestUserInfo:uuid withComplete:^(NSDictionary *dic) {
+                        if (dic) {
+                            [[ExpConfig sharedConfig] requestRoutesConfig:^(NSDictionary *routes) {
+                                // noop
+                            }];
+                        } else {
+                            //error
+                        }
+                    }];
+                } else { // require login
+                    vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"exp_view"];
+                }
             } else {
-                vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
+                if (routes.count > 0) { // with route
+                    vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"setting_view"];
+                    vc.restorationIdentifier = @"exp_settings";
+                } else { // no route                    
+                    vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
+                }
             }
         } else {
             vc = [[UIStoryboard storyboardWithName:@"Preview" bundle:nil] instantiateViewControllerWithIdentifier:@"search_view"];
         }
-        [self.navigationController pushViewController:vc animated:YES];
-        
+        if (vc) {
+            [self.navigationController pushViewController:vc animated:YES];
+        }
         return NO;
     }
     return YES;

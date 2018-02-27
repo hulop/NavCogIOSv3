@@ -22,6 +22,7 @@
 
 #import "POIViewController.h"
 #import "NavDataStore.h"
+#import "HLPGeoJSON+External.h"
 
 @interface POIViewController ()
 
@@ -33,16 +34,55 @@
     [super viewDidLoad];
 
     if (_pois) {
-        NSMutableString *str = [@"<html><body>" mutableCopy];
-        for(HLPEntrance *poi in _pois) {
-            [str appendFormat:@"<h1>%@</h1>", [poi name]];
-            if (poi.facility.longDescription) {
-                [str appendFormat:@"<div>%@</div>", poi.facility.longDescription];
+        HLPFacility *external = [self findExternal];
+        if (external) {
+            NSURL *url = external.externalPOIWebpage;
+            if (url) {
+                self.navigationItem.title = [NSString stringWithFormat:@"%@ webpage", external.externalSourceTitle];
+                [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
+                return;
             }
         }
-        [str appendString:@"</body></html>"];
-        [self.webView loadHTMLString:str baseURL:nil];
+        
+        NSString *content = [self extractContent];
+        [self.webView loadHTMLString:content baseURL:nil];
     }
+}
+
+- (HLPFacility*) findExternal
+{
+    for(HLPEntrance *poi in _pois) {
+        if (poi.facility.isExternalPOI) {
+            return poi.facility;
+        }
+    }
+    return nil;
+}
+
+- (NSString*) extractContent
+{
+    NSMutableString *str = [@"<html><body>" mutableCopy];
+    for(HLPEntrance *poi in _pois) {
+        [str appendFormat:@"<h1>%@</h1>", [poi name]];
+        if (poi.facility.longDescription) {
+            [str appendFormat:@"<div>%@</div>", poi.facility.longDescription];
+        }
+    }
+    [str appendString:@"</body></html>"];
+    return str;
+}
+
+- (BOOL)isContentAvailable
+{
+    if ([self findExternal]) {
+        return YES;
+    }
+    for(HLPEntrance *poi in _pois) {
+        if (poi.facility.longDescription && poi.facility.longDescription.length > 0) {
+            return YES;
+        }
+    }
+    return NO;    
 }
 
 - (void)didReceiveMemoryWarning {

@@ -23,18 +23,204 @@
 
 #import "NavDataSource.h"
 #import "LocationEvent.h"
-#import "TTTOrdinalNumberFormatter.h"
-
+#import <FormatterKit/TTTOrdinalNumberFormatter.h>
 
 #pragma mark - Destination Data Source
 
-@implementation NavDestinationDataSource {
-    NSArray *sections;
+
+@implementation NavTableDataSource
+- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return nil;
+}
+@end
+
+@implementation NavDirectoryDataSource {
+    HLPDirectory *_original;
+    HLPDirectory *_directory;
 }
 
 - (instancetype) init {
     self = [super init];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
+    return self;
+}
+
+- (instancetype)initWithDirectory:(HLPDirectory *)directory
+{
+    self = [super init];
+    self.directory = directory;
+    return self;
+}
+
+- (void) setDirectory:(HLPDirectory *)directory
+{
+    _original = directory;
+    _directory = directory.copy;
+}
+
+- (HLPDirectory*) directory
+{
+    return _directory;
+}
+
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void) update:(NSNotification*)note {
+    _directory = _original.copy;
     
+    if (_showDialog) {
+        HLPDirectorySection *section = [[HLPDirectorySection alloc] init];
+        section.title = NSLocalizedStringFromTable(@"DialogSearch",@"BlindView",@"");
+        NSMutableArray *temp = [@[] mutableCopy];
+        [temp addObject:[NavDestination dialogSearch]];
+        section.items = temp;
+        [_directory addSection:section atIndex:0];
+    }
+    
+    if (_showCurrentLocation) {
+        HLPDirectorySection *section = [[HLPDirectorySection alloc] init];
+        section.title = NSLocalizedStringFromTable(@"_nav_latlng",@"BlindView",@"");
+        NSMutableArray *temp = [@[] mutableCopy];
+        [temp addObject:[[NavDestination alloc] initWithLocation:nil]];
+        section.items = temp;
+        [_directory addSection:section atIndex:0];
+    }
+    
+    if (!_showFacility) {
+        NSMutableArray *temp = [@[] mutableCopy];
+        for(HLPDirectorySection *section in _directory.sections) {
+            NSMutableArray *temp2 = [@[] mutableCopy];
+            [section walk:^BOOL(HLPDirectoryItem *item) {
+                return [[NavDestination alloc] initWithDirectoryItem:item].isMultiple;
+            } withBuffer:temp2];
+            if (temp2.count == 0) {
+                [temp addObject:section];
+            }
+        }
+        _directory.sections = temp;
+    }
+}
+
+- (NSString*)firstLetter:(NSString*)string
+{
+    if (!string) return @"";
+    NSString *first = [[string substringWithRange:NSMakeRange(0, 1)] uppercaseString];
+    NSMutableString* retStr = [[NSMutableString alloc] initWithString:first];
+    CFStringTransform((CFMutableStringRef)retStr, NULL, kCFStringTransformHiraganaKatakana, YES);
+    first = retStr;
+    return first;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return _directory.sections.count;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return _directory.sections[section].items.count;
+}
+
+- (HLPDirectoryItem*) itemForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return _directory.sections[indexPath.section].items[indexPath.row];
+}
+
+- (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    HLPDirectoryItem *item = [self itemForRowAtIndexPath:indexPath];
+    if ([item isKindOfClass:HLPDirectoryItem.class]) {
+        return [[NavDestination alloc] initWithDirectoryItem:item];
+    }
+    return item;
+}
+
+- (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView
+{
+    NSMutableArray *titles = [@[] mutableCopy];
+    
+    if (_directory.showSectionIndex) {    
+        [_directory.sections enumerateObjectsUsingBlock:^(HLPDirectorySection*  _Nonnull section, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *index = section.indexTitle ? section.indexTitle : [self firstLetter:section.title];
+            [titles addObject:index];
+        }];
+    }
+    return titles;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return _directory.sections[section].title;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *CellIdentifier = @"NavDestinationDataSourceCell";
+    //UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if(!cell){
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+    }
+    
+    cell.textLabel.numberOfLines = 1;
+    cell.textLabel.adjustsFontSizeToFitWidth = YES;
+    cell.textLabel.lineBreakMode = NSLineBreakByClipping;
+    cell.textLabel.minimumScaleFactor = 0.5;
+    cell.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    cell.detailTextLabel.numberOfLines = 1;
+    cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
+    cell.detailTextLabel.lineBreakMode = NSLineBreakByClipping;
+    cell.detailTextLabel.minimumScaleFactor = 0.5;
+    cell.detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    HLPDirectoryItem *item = [self itemForRowAtIndexPath:indexPath];
+    NavDestination *dest = [self destinationForRowAtIndexPath:indexPath];
+
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    if (dest.filter) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    if ([item isKindOfClass:HLPDirectoryItem.class]) {
+        cell.textLabel.text = [item getItemTitle];
+        cell.detailTextLabel.text = item.subtitle;
+        if (item.subtitle) {
+            cell.accessibilityLabel = [NSString stringWithFormat:@"%@ %@ %@",
+                                       [item getItemTitlePron],NSLocalizedStringFromTable(@"PERIOD",@"BlindView",@""),[item getItemSubtitlePron]];
+        } else {
+            cell.accessibilityLabel = [NSString stringWithFormat:@"%@", [item getItemTitlePron]];
+        }
+        if (item.content) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
+    } else {
+        cell.textLabel.text = dest.name;
+        cell.accessibilityLabel = [NSString stringWithFormat:@"%@", dest.namePron];
+        
+        if (dest.type == NavDestinationTypeDialogSearch) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
+    }
+    cell.clipsToBounds = YES;
+    
+    
+    return cell;
+}
+@end
+
+@implementation NavDestinationDataSource {
+    NSArray *sections;
+    NSDictionary *_filter;
+}
+
+- (instancetype) init {
+    self = [super init];
+    _defaultFilter = @{};
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
     return self;
 }
@@ -45,12 +231,30 @@
 }
 
 - (void) update:(NSNotification*)note {
+    if (!_filter) {
+        _filter = _defaultFilter;
+    } else {
+        _filter = [_filter mtl_dictionaryByAddingEntriesFromDictionary:_defaultFilter];
+    }
+    
     NSArray *all = [[[NavDataStore sharedDataStore] destinations] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLandmark *landmark, NSDictionary<NSString *,id> * _Nullable bindings) {
         BOOL flag = YES;
         if (_filter) {
             for(NSString *key in _filter.allKeys) {
                 if ([[NSNull null] isEqual:_filter[key]]) {
                     flag = flag && landmark.properties[key] == nil;
+                } else if ([_filter[key] isKindOfClass:NSDictionary.class]) {
+                    NSDictionary *filter = _filter[key];
+                    if (filter[@"$not"]) {
+                        flag = flag && ![landmark.properties[key] isEqual:filter[@"$not"]];
+                    }
+                    if (filter[@"$not_contains"]) {
+                        flag = flag && ![landmark.properties[key] containsString:filter[@"$not_contains"]];
+                    }
+                } else if ([_filter[key] isKindOfClass:NSString.class]) {
+                    flag = flag && ([_filter[key] isEqualToString:landmark.properties[key]] ||
+                                    ([_filter[key] isEqualToString:@""] &&
+                                     landmark.properties[key] == nil));
                 } else {
                     flag = flag && [landmark.properties[key] isEqual:_filter[key]];
                 }
@@ -131,16 +335,17 @@
         }] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [temp addObject:buildings[obj]];
         }];
-        if ([buildings count] > 0) {
+        if ([buildings count] > 1) {
             [tempSections addObject:@{@"key":NSLocalizedStringFromTable(@"_nav_building",@"BlindView",@""), @"rows":temp}];
             
             if (noBuilding) {
                 [temp addObject:[[NavDestination alloc] initWithLabel:NSLocalizedStringFromTable(@"Others", @"BlindView", @"") Filter:@{@"building":[NSNull null]}]];
             }
         } else {
-            if (noBuilding) {
+            if (noBuilding || [buildings count] == 1) {
                 _showBuilding = NO;
                 _showShops = YES;
+                _showSectionIndex = YES;
             }
         }
     }
@@ -186,10 +391,7 @@
                 return;
             }
             
-            NSString *first = [[name substringWithRange:NSMakeRange(0, 1)] uppercaseString];
-            NSMutableString* retStr = [[NSMutableString alloc] initWithString:first];
-            CFStringTransform((CFMutableStringRef)retStr, NULL, kCFStringTransformHiraganaKatakana, YES);
-            first = retStr;
+            NSString *first = [self firstLetter:name];
             
             if (![first isEqualToString:lastFirst]) {
                 temp = [@[] mutableCopy];
@@ -203,6 +405,15 @@
     }
     
     sections = tempSections;
+}
+
+- (NSString*)firstLetter:(NSString*)string
+{
+    NSString *first = [[string substringWithRange:NSMakeRange(0, 1)] uppercaseString];
+    NSMutableString* retStr = [[NSMutableString alloc] initWithString:first];
+    CFStringTransform((CFMutableStringRef)retStr, NULL, kCFStringTransformHiraganaKatakana, YES);
+    first = retStr;
+    return first;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -227,7 +438,7 @@
     if (_showSectionIndex) {
         NSMutableArray *titles = [@[] mutableCopy];
         [sections enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [titles addObject:obj[@"key"]];
+            [titles addObject:[self firstLetter:obj[@"key"]]];
         }];
         return titles;
     }
@@ -291,12 +502,15 @@
             floor = [floor stringByAppendingString:@" "];
             floorPron = [floorPron stringByAppendingString:@" "];
         }
-        floor = [floor stringByAppendingString:[self floorString:dest.landmark.nodeHeight]];
-        floorPron = [floorPron stringByAppendingString:[self floorStringPron:dest.landmark.nodeHeight]];
+        floor = [floor stringByAppendingString:[self floorString:dest.landmark]];
+        floorPron = [floorPron stringByAppendingString:[self floorStringPron:dest.landmark]];
     }
     
     cell.accessoryType = UITableViewCellAccessoryNone;
     if (dest.filter) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    if (dest.type == NavDestinationTypeDialogSearch) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
@@ -308,24 +522,31 @@
     return cell;
 }
 
-- (NSString*) floorString:(double) floor
+- (NSString*) floorString:(HLPLandmark*) landmark
 {
+    double floor = landmark.nodeHeight;
     floor = round(floor*2.0)/2.0;
     
     floor = (floor >= 0)?floor+1:floor;
-        
-    if (floor < 0) {
+    
+    if (landmark.isGround) {
+        return @"G";
+    } else if (floor < 0) {
         return [NSString stringWithFormat:@"B%dF", (int)fabs(floor)];
     } else {
         return [NSString stringWithFormat:@"%dF", (int)fabs(floor)];
     }
 }
 
-- (NSString*) floorStringPron:(double) floor
+- (NSString*) floorStringPron:(HLPLandmark*) landmark
 {
+    double floor = landmark.nodeHeight;
     NSString *type = NSLocalizedStringFromTable(@"FloorNumType", @"BlindView", @"floor num type");
     
-    if ([type isEqualToString:@"ordinal"]) {
+    if (landmark.isGround) {
+        return NSLocalizedStringFromTable(@"ground floor", @"BlindView", @"");
+    }
+    else if ([type isEqualToString:@"ordinal"]) {
         TTTOrdinalNumberFormatter*ordinalNumberFormatter = [[TTTOrdinalNumberFormatter alloc] init];
         
         NSString *localeStr = [[NSUserDefaults standardUserDefaults] stringForKey:@"AppleLocale"];
@@ -347,7 +568,10 @@
     } else {
         floor = round(floor*2.0)/2.0;
         
-        if (floor < 0) {
+        if (landmark.isGround) {
+            return NSLocalizedStringFromTable(@"ground floor", @"BlindView", @"");
+        }
+        else if (floor < 0) {
             return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorBasementD", @"BlindView", @"basement floor"), @(fabs(floor))];
         } else {
             return [NSString localizedStringWithFormat:NSLocalizedStringFromTable(@"FloorD", @"BlindView", @"floor"), @(floor+1)];

@@ -21,48 +21,8 @@
  *******************************************************************************/
 
 #import "HLPGeoJSON.h"
-#import "HLPLocation.h"
+#import <HLPLocationManager/HLPLocation.h>
 #import "objc/runtime.h"
-
-#define PROPKEY_NODE_ID @"ノードID"
-#define PROPKEY_NODE_FOR_ID @"対応ノードID"
-#define PROPKEY_LINK_ID @"リンクID"
-#define PROPKEY_FACILITY_ID @"施設ID"
-#define PROPKEY_FACILITY_FOR_ID @"対応施設ID"
-#define PROPKEY_ENTRANCE_ID @"出入口ID"
-#define PROPKEY_HEIGHT @"高さ"
-#define PROPKEY_CONNECTED_LINK_ID_PREFIX @"接続リンクID"
-#define PROPKEY_LINK_LENGTH @"リンク延長"
-#define PROPKEY_LINK_DIRECTION @"方向性"
-#define PROPKEY_LINK_TYPE @"経路の種類"
-#define PROPKEY_TARGET_NODE_ID @"終点ノードID"
-#define PROPKEY_SOURCE_NODE_ID @"起点ノードID"
-#define PROPKEY_NAME @"名称"
-#define PROPKEY_ENTRANCE_NAME @"出入口の名称"
-#define PROPKEY_MALE_OR_FEMALE @"男女別"
-#define PROPKEY_MULTI_PURPOSE_TOILET @"多目的トイレ"
-#define PROPKEY_EFFECTIVE_WIDTH @"有効幅員"
-#define PROPKEY_ELEVATOR_EQUIPMENTS @"elevator_equipments"
-#define PROPKEY_BRAILLE_BLOCK @"視覚障害者誘導用ブロック"
-#define PROPKEY_ADDR @"所在地"
-
-// for extension
-#define PROPKEY_EXT_MAJOR_CATEGORY @"major_category"
-#define PROPKEY_EXT_SUB_CATEGORY @"sub_category"
-#define PROPKEY_EXT_MINOR_CATEGORY @"minor_category"
-#define PROPKEY_EXT_LONG_DESCRIPTION @"long_description"
-#define PROPKEY_EXT_HEADING @"heading"
-#define PROPKEY_EXT_ANGLE @"angle"
-#define PROPKEY_EXT_HEIGHT @"height"
-
-
-#define CATEGORY_LINK @"リンクの情報"
-#define CATEGORY_NODE @"ノード情報"
-#define CATEGORY_PUBLIC_FACILITY @"公共施設の情報"
-#define CATEGORY_ENTRANCE @"出入口情報"
-#define CATEGORY_TOILET @"公共用トイレの情報"
-
-#define NAV_POI @"_nav_poi_"
 
 @implementation HLPGeometry
 + (NSDictionary *)JSONKeyPathsByPropertyKey
@@ -283,19 +243,22 @@
     else if(self.category == HLP_OBJECT_CATEGORY_TOILET) {
         temp = [[NSMutableString alloc] init];
         if (properties) {
-            NSString *sex = properties[PROPKEY_MALE_OR_FEMALE];
+            NSString *sex = self.properties[PROPKEY_MALE_OR_FEMALE];
             if ([sex isEqualToString:@"1"]) {
-                [temp appendString:NSLocalizedString(@"FOR_MALE",@"Toilet for male")];
+                [temp appendString:@"FOR_MALE"];
             }
             else if ([sex isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_FEMALE",@"Toilet for female")];
+                [temp appendString:@"FOR_FEMALE"];
             }
-            NSString *multi = properties[PROPKEY_MULTI_PURPOSE_TOILET];
+            
+            NSString *multi = self.properties[PROPKEY_MULTI_PURPOSE_TOILET];
             
             if ([multi isEqualToString:@"1"] || [multi isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
+                [temp appendString:@"FOR_DISABLED"];
             }
+            [temp appendString:@"RESTROOM"];
         }
+        temp = [NSLocalizedString(temp, @"") mutableCopy];
     }
     
     return [temp stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
@@ -336,7 +299,9 @@
 
 @end
 
-@implementation HLPLandmark
+@implementation HLPLandmark {
+    BOOL _isGround;
+}
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey
 {
@@ -355,9 +320,10 @@
 + (NSValueTransformer *)nodeHeightJSONTransformer {
     return [MTLValueTransformer transformerUsingForwardBlock:^id(NSString *height, BOOL *success, NSError *__autoreleasing *error) {
         double h = [height doubleValue];
-        return @((h >= 1)?h-1:h);
+        return @((h==0)?h=-999:(h >= 1)?h-1:h);
     } reverseBlock:^id(NSNumber *height, BOOL *success, NSError *__autoreleasing *error) {
         double h = [height doubleValue];
+        if (h == -999) { return @""; }
         h = (h >= 0)?h+1:h;
         return [NSString stringWithFormat:@"%.0f",h];
     }];
@@ -367,7 +333,11 @@
 {
     self = [super initWithDictionary:dictionaryValue error:error];
     //_nodeHeight = (_nodeHeight >= 1)?_nodeHeight-1:_nodeHeight;
-    
+    if (_nodeHeight == -999) {
+        _nodeHeight = 0;
+        _isGround = YES;
+    }
+
     if(dictionaryValue[@"nodeCoordinates"]) {
         double lat = [dictionaryValue[@"nodeCoordinates"][1] doubleValue];
         double lng = [dictionaryValue[@"nodeCoordinates"][0] doubleValue];
@@ -402,19 +372,22 @@
     if ((!name || [name length] == 0) && [category isEqualToString:CATEGORY_TOILET]) {
         temp = [[NSMutableString alloc] init];
         if (properties) {
-            NSString *sex = properties[PROPKEY_MALE_OR_FEMALE];
+            NSString *sex = self.properties[PROPKEY_MALE_OR_FEMALE];
             if ([sex isEqualToString:@"1"]) {
-                [temp appendString:NSLocalizedString(@"FOR_MALE",@"Toilet for male")];
+                [temp appendString:@"FOR_MALE"];
             }
             else if ([sex isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_FEMALE",@"Toilet for female")];
+                [temp appendString:@"FOR_FEMALE"];
             }
-            NSString *multi = properties[PROPKEY_MULTI_PURPOSE_TOILET];
+            
+            NSString *multi = self.properties[PROPKEY_MULTI_PURPOSE_TOILET];
             
             if ([multi isEqualToString:@"1"] || [multi isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
+                [temp appendString:@"FOR_DISABLED"];
             }
+            [temp appendString:@"RESTROOM"];
         }
+        temp = [NSLocalizedString(temp, @"") mutableCopy];
     }
     
     return [temp stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
@@ -431,10 +404,14 @@
     [_properties[@"sub_category"] isEqualToString:@"SMOK"] ||
     [_properties[@"sub_category"] isEqualToString:@"ATM"] ||
     [_properties[@"sub_category"] isEqualToString:@"RE_L"] ||
+    [_properties[@"sub_category"] containsString:@"_facility_"] ||
     [self isToilet];
 }
 
-
+- (BOOL)isGround
+{
+    return _isGround;
+}
 
 @end
 
@@ -697,8 +674,14 @@ static NSRegularExpression *patternHLPPOIFlags;
     if(_linkType == LINK_TYPE_ELEVATOR) {
         _length = 0;
     }
+    if(_linkType == 21) {
+        _linkType = LINK_TYPE_FREE_WALKWAY;
+        _isCrossingCorridor = YES;
+    }
     
     _brailleBlockType = [self.properties[PROPKEY_BRAILLE_BLOCK] intValue];
+    
+    _streetName = self.properties[PROPKEY_LINK_STREET_NAME];
     
     _minimumWidth = 3.0;
     if (self.properties[PROPKEY_EFFECTIVE_WIDTH]) {
@@ -707,7 +690,10 @@ static NSRegularExpression *patternHLPPOIFlags;
             case 1: _minimumWidth = 1.0; break;
             case 2: _minimumWidth = 1.5; break;
             case 3: _minimumWidth = 2.0; break;
-            case 9: _minimumWidth = 3.0; break;
+            //case 9: _minimumWidth = 3.0; break;
+            default:
+                // extension
+                _minimumWidth = [self.properties[PROPKEY_EFFECTIVE_WIDTH] intValue];
         }
     }
     
@@ -992,7 +978,7 @@ static NSRegularExpression *patternHLPPOIFlags;
     //if (link2.linkType == LINK_TYPE_ESCALATOR) {
     //    return link1.length < 5;
     //}
-    if (link1.linkType == LINK_TYPE_ESCALATOR) {
+    if (link1.linkType == LINK_TYPE_ESCALATOR && ![link1 isKindOfClass:HLPCombinedLink.class]) {
         return link2.length < 3;
     }
 
@@ -1002,7 +988,7 @@ static NSRegularExpression *patternHLPPOIFlags;
 
 + (BOOL) link:(HLPLink *)link1 canBeCombinedWithLink:(HLPLink *)link2
 {
-    return  fabs(link1.lastBearingForTarget - link2.initialBearingFromSource) < 15.0 &&
+    return  fabs(link1.lastBearingForTarget - link2.initialBearingFromSource) < 20.0 &&
     [link1.type isEqualToString:link2.type] &&
     link1.direction == link2.direction &&
     link1.sourceHeight == link1.targetHeight &&
@@ -1094,6 +1080,7 @@ static NSRegularExpression *patternHLPPOIFlags;
     
     _brailleBlockType = link1.brailleBlockType;
     _escalatorFlags = link1.escalatorFlags;
+    _minimumWidth = MIN(link1.minimumWidth,  link2.minimumWidth);
     
     return self;
 }
@@ -1224,18 +1211,20 @@ static NSRegularExpression *patternHLPPOIFlags;
         if (self.properties) {
             NSString *sex = self.properties[PROPKEY_MALE_OR_FEMALE];
             if ([sex isEqualToString:@"1"]) {
-                [temp appendString:NSLocalizedString(@"FOR_MALE",@"Toilet for male")];
+                [temp appendString:@"FOR_MALE"];
             }
             else if ([sex isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_FEMALE",@"Toilet for female")];
+                [temp appendString:@"FOR_FEMALE"];
             }
+            
             NSString *multi = self.properties[PROPKEY_MULTI_PURPOSE_TOILET];
             
             if ([multi isEqualToString:@"1"] || [multi isEqualToString:@"2"]) {
-                [temp appendString:NSLocalizedString(@"FOR_DISABLED", @"Toilet for people with disability")];
+                [temp appendString:@"FOR_DISABLED"];
             }
+            [temp appendString:@"RESTROOM"];
         }
-        _namePron = _name = temp;
+        _namePron = _name = NSLocalizedString(temp, @"");;
     }
     
     
@@ -1257,6 +1246,14 @@ static NSRegularExpression *patternHLPPOIFlags;
 - (NSArray *)entrances
 {
     return entrances;
+}
+
+- (BOOL) isNotRead
+{
+    if (self.properties[PROPKEY_EXT_MINOR_CATEGORY]) {
+        return [self.properties[PROPKEY_EXT_MINOR_CATEGORY] containsString:POI_IS_NOT_READ_FLAG];
+    }
+    return NO;
 }
 
 @end

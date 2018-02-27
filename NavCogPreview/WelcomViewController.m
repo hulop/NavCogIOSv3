@@ -26,6 +26,7 @@
 #import "AuthManager.h"
 #import "LocationEvent.h"
 #import "Logging.h"
+#import "NavDataStore.h"
 
 @interface WelcomViewController ()
 
@@ -115,7 +116,9 @@
                 [self performSegueWithIdentifier:@"show_server_selection" sender:self];
             });
         } else {
-            self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
+            });
             [[ServerConfig sharedConfig] requestServerList:@"" withComplete:^(NSDictionary *config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }
@@ -138,8 +141,11 @@
                 return;
             }
         } else {
-            self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
-            [[ServerConfig sharedConfig] checkAgreement:^(NSDictionary* config) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
+            });
+            NSString *identifier = [[NavDataStore sharedDataStore] userID];
+            [[ServerConfig sharedConfig] checkAgreementForIdentifier:identifier withCompletion:^(NSDictionary* config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }
             }];
@@ -204,7 +210,9 @@
                 });
             //}
         } else {
-            self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+            });
             [[ServerConfig sharedConfig] requestServerConfig:^(NSDictionary *config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }

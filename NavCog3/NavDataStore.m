@@ -26,12 +26,14 @@
 #import "HLPGeoJSON.h"
 #import "LocationEvent.h"
 #import "Logging.h"
+#import "ServerConfig.h"
 
 #import <GameplayKit/GameplayKit.h>
 #import <MapKit/MapKit.h>
 
 @implementation NavDestination {
     HLPLocation *_location;
+    HLPDirectoryItem *_item;
 }
 
 - (BOOL) isEqual:(NavDestination*)obj
@@ -41,6 +43,8 @@
     }
     
     switch(_type) {
+        case NavDestinationTypeDirectoryItem:
+            return [_item isEqual:obj->_item];
         case NavDestinationTypeLandmark:
             return [_landmark isEqual:obj->_landmark];
         case NavDestinationTypeLandmarks:
@@ -58,8 +62,12 @@
     [aCoder encodeObject:[NSNumber numberWithInt:_type] forKey:@"type"];
     HLPLocation *loc;
     switch(_type) {
+        case NavDestinationTypeDirectoryItem:
+            [aCoder encodeObject:_item forKey:@"item"];
+            break;
         case NavDestinationTypeLandmarks:
             [aCoder encodeObject:_landmarks forKey:@"landmarks"];
+            break;
         case NavDestinationTypeLandmark:
             [aCoder encodeObject:_landmark forKey:@"landmark"];
             break;
@@ -81,13 +89,15 @@
     self = [super init];
     _type = [[aDecoder decodeObjectForKey:@"type"] intValue];
     switch(_type) {
+        case NavDestinationTypeDirectoryItem:
+            _item = [aDecoder decodeObjectForKey:@"item"];
         case NavDestinationTypeLandmarks:
             _landmarks = [aDecoder decodeObjectForKey:@"landmarks"];
         case NavDestinationTypeLandmark:
             _landmark = [aDecoder decodeObjectForKey:@"landmark"];
             break;
         case NavDestinationTypeLocation:
-            _location = [aDecoder decodeObjectForKey:@"location"];
+            //_location = [aDecoder decodeObjectForKey:@"location"];
             break;
         default:
             break;
@@ -100,6 +110,18 @@
     self = [super init];
     _type = NavDestinationTypeLocation;
     _location = location;
+    return self;
+}
+
+- (instancetype)initWithDirectoryItem:(HLPDirectoryItem *)item
+{
+    self = [super init];
+    _item = item;
+    if (item.content) {
+        _type = NavDestinationTypeFilter;
+    } else {
+        _type = NavDestinationTypeDirectoryItem;
+    }
     return self;
 }
 
@@ -130,6 +152,9 @@
 - (HLPLocation *)location
 {
     switch(_type) {
+        case NavDestinationTypeDirectoryItem:
+            @throw @"Not implemented";
+            return nil;
         case NavDestinationTypeLandmark:
             return [_landmark nodeLocation];
         case NavDestinationTypeLandmarks:
@@ -143,6 +168,10 @@
         default:
             return nil;
     }
+}
+- (HLPDirectoryItem *)item
+{
+    return _item;
 }
 
 + (instancetype)selectStart
@@ -172,6 +201,8 @@
     int floor;
     NSMutableString* __block temp = [@"" mutableCopy];
     switch(_type) {
+        case NavDestinationTypeDirectoryItem:
+            return [_item nodeID];
         case NavDestinationTypeLandmark:
             return [_landmark nodeID];
         case NavDestinationTypeLandmarks:
@@ -204,6 +235,10 @@
         NavDestination *dest = [nds closestDestinationInLandmarks:_landmarks];
         return dest._id;
     }
+    if (_type == NavDestinationTypeDirectoryItem) {
+        NSArray *items = [self._id componentsSeparatedByString:@"|"];
+        return items[0];
+    }
     return self._id;
 }
 
@@ -212,6 +247,12 @@
     HLPLocation *loc;
     int floor;
     switch(_type) {
+        case NavDestinationTypeDirectoryItem:
+            if (_item.subtitle) {
+                return [NSString stringWithFormat:@"%@, %@", _item.title, _item.subtitle];
+            } else {
+                return [NSString stringWithFormat:@"%@", _item.title];
+            }
         case NavDestinationTypeLandmark:
         case NavDestinationTypeLandmarks:
             return [_landmark getLandmarkName];
@@ -244,6 +285,8 @@
 - (NSString*)namePron
 {
     switch(_type) {
+        case NavDestinationTypeDirectoryItem:
+            return [_item getItemTitlePron];
         case NavDestinationTypeLandmark:
         case NavDestinationTypeLandmarks:
             return [_landmark getLandmarkNamePron];
@@ -255,6 +298,16 @@
             return [self name];
     }
     return nil;
+}
+
+-(BOOL)isCurrentLocation
+{
+    return _type == NavDestinationTypeLocation && _location == nil;
+}
+
+- (BOOL)isMultiple
+{
+    return ![[self _id] isEqualToString:[self singleId]];
 }
 @end
 
@@ -283,6 +336,9 @@
     // cached data
     NSArray* destinationCache;
     HLPLocation* destinationCacheLocation;
+    double destinationDistCache;
+    
+    HLPDirectory* directoryCache;
     
     BOOL destinationRequesting;
     NSArray* routeCache;
@@ -310,6 +366,7 @@ static NavDataStore* instance_ = nil;
     [self reset];
     
     userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
+    destinationDistCache = 1000;
     
     // prevent problem on server cache
     
@@ -536,9 +593,9 @@ static NavDataStore* instance_ = nil;
     NSDictionary *param = [NSJSONSerialization JSONObjectWithData:[s2 dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     double lat = [param[@"lat"] doubleValue];
     double lng = [param[@"lng"] doubleValue];
-    NSString *user = param[@"user"];
+    //NSString *user = param[@"user"];
     NSString *lang = param[@"user_lang"];
-    [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:lang];
+    [self reloadDestinationsAtLat:lat Lng:lng forUser:self.userID withUserLang:lang];
 }
 
 - (void)processShowRouteLog:(NSNotification*)note
@@ -552,14 +609,28 @@ static NavDataStore* instance_ = nil;
     NSDictionary *param = [NSJSONSerialization JSONObjectWithData:[s2 dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     NSString *fromID = param[@"fromID"];
     NSString *toID = param[@"toID"];
-    NSString *user = param[@"user"];
+    //NSString *user = param[@"user"];
     NSString *lang = param[@"user_lang"];
     NSDictionary *prefs = param[@"prefs"];
-    [self requestRouteFrom:fromID To:toID forUser:user withLang:lang useCache:NO withPreferences:prefs complete:nil];
+    self.from = [self destinationByID:fromID];
+    self.to = [self destinationByID:toID];
+    [self requestRouteFrom:fromID To:toID forUser:self.userID withLang:lang useCache:NO withPreferences:prefs complete:nil];
 }
 
+- (void)searchDestinations:(NSString*) query withComplete:(void (^)(HLPDirectory *))complete
+{
+    NSString *user = [self userID];
+    [HLPDataUtil queryDirectoryForUser:user withQuery:query withCallback:^(HLPDirectory *directory) {
+        complete(directory);
+    }];
+}
 
 - (BOOL)reloadDestinations:(BOOL)force;
+{
+    return [self reloadDestinations:force withComplete:nil];
+}
+
+- (BOOL)reloadDestinations:(BOOL)force withComplete:(void(^)(NSArray*, HLPDirectory*))complete
 {
     if (destinationRequesting) {
         return NO;
@@ -574,23 +645,39 @@ static NavDataStore* instance_ = nil;
     NSString *user = [self userID];
     NSString *user_lang = [self userLanguage];
     
-    return [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang];
+    return [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang withComplete:complete];
 }
 
 - (NSString*)normalizePron:(NSString*)str
 {
     NSMutableString* retStr = [[NSMutableString alloc] initWithString:str];
     CFStringTransform((CFMutableStringRef)retStr, NULL, kCFStringTransformHiraganaKatakana, YES);
-    return retStr;
+    
+    NSRange range = [retStr rangeOfString:@"^[0-9]" options:NSRegularExpressionSearch];
+    BOOL matches = range.location != NSNotFound;
+    return matches?[NSString stringWithFormat:@"ZZZZZZ%@",retStr]:retStr;
 }
 
-- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang
+- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang {
+    return [self reloadDestinationsAtLat:lat Lng:lng forUser:user withUserLang:user_lang withComplete:nil];
+}
+
+- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*, HLPDirectory*))complete
+{
+    return [self reloadDestinationsAtLat:lat Lng:lng Dist:destinationDistCache forUser:user withUserLang:user_lang withComplete:complete];
+}
+
+- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang
+{
+    return [self reloadDestinationsAtLat:lat Lng:lng Dist:dist forUser:user withUserLang:user_lang withComplete:nil];
+}
+
+- (BOOL)reloadDestinationsAtLat:(double)lat Lng:(double)lng Dist:(int)dist forUser:(NSString*)user withUserLang:(NSString*)user_lang withComplete:(void(^)(NSArray*, HLPDirectory*))complete
 {
     if (isnan(lat) || isnan(lng) || user == nil || user_lang == nil) {
         return NO;
     }
-    int dist = 1000;
-    
+    destinationDistCache = dist;
     _loadLocation = [[HLPLocation alloc] initWithLat:lat Lng:lng];
     if (destinationCacheLocation && [destinationCacheLocation distanceTo:_loadLocation] < dist/2 &&
         destinationCache && destinationCache.count > 0) {
@@ -601,39 +688,54 @@ static NavDataStore* instance_ = nil;
         return NO;
     }
     
-    NSDictionary *param = @{@"lat":@(lat), @"lng":@(lng), @"user":user, @"user_lang":user_lang};
+    NSDictionary *param = @{@"lat":@(lat), @"lng":@(lng), @"dist": @(dist), @"user":user, @"user_lang":user_lang};
     [Logging logType:@"initTarget" withParam:param];
     
-    [HLPDataUtil loadLandmarksAtLat:lat Lng:lng inDist:dist forUser:user withLang:user_lang withCallback:^(NSArray<HLPObject *> *result) {
-        if (result == nil) {
-            destinationRequesting = NO;
-            destinationCache = nil;
-            destinationCacheLocation = nil;
-            destinationHash = nil;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
-            });
-            return;
-        }
-        NSLog(@"%ld landmarks are loaded", (unsigned long)[result count]);
-        destinationCache = [result sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
-            return [[self normalizePron:[obj1 getLandmarkNamePron]] compare:[self normalizePron:[obj2 getLandmarkNamePron]]];
+    NSString *query_server = [[ServerConfig sharedConfig] selectedServerConfig][@"query_server"];
+    if (query_server) {
+        [HLPDataUtil loadDirectoryAtLat:lat Lng:lng inDist:dist forUser:user withLang:user_lang withCallback:^(NSArray<HLPObject *> *result, HLPDirectory *directory) {
+            [self didLoadLandmarks:result andDirectory:directory withComplete:complete];
         }];
-        destinationCacheLocation = _loadLocation;
-                
-        NSMutableDictionary *temp = [@{} mutableCopy];
-        [destinationCache enumerateObjectsUsingBlock:^(HLPLandmark *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            temp[[obj nodeID]] = obj;
+    } else {
+        [HLPDataUtil loadLandmarksAtLat:lat Lng:lng inDist:dist forUser:user withLang:user_lang withCallback:^(NSArray<HLPObject *> *result) {
+            [self didLoadLandmarks:result andDirectory:nil withComplete:complete];
         }];
-        destinationHash = temp;
-        
+    }
+    return YES;
+}
+    
+- (void) didLoadLandmarks:(NSArray<HLPObject *>*) result andDirectory:(HLPDirectory*)directory withComplete:(void(^)(NSArray*, HLPDirectory*))complete{
+    if (result == nil) {
+        destinationRequesting = NO;
+        destinationCache = nil;
+        destinationCacheLocation = nil;
+        destinationHash = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
         });
-
-        destinationRequesting = NO;
+        return;
+    }
+    directoryCache = directory;
+    NSLog(@"%ld landmarks are loaded", (unsigned long)[result count]);
+    destinationCache = [result sortedArrayUsingComparator:^NSComparisonResult(HLPLandmark *obj1, HLPLandmark *obj2) {
+        return [[self normalizePron:[obj1 getLandmarkNamePron]] compare:[self normalizePron:[obj2 getLandmarkNamePron]]];
     }];
-    return YES;
+    destinationCacheLocation = _loadLocation;
+    
+    NSMutableDictionary *temp = [@{} mutableCopy];
+    [destinationCache enumerateObjectsUsingBlock:^(HLPLandmark *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        temp[[obj nodeID]] = obj;
+    }];
+    destinationHash = temp;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
+    });
+    if (complete) {
+        complete(destinationCache, directoryCache);
+    }
+    
+    destinationRequesting = NO;
 }
 
 - (void) saveHistory
@@ -881,18 +983,15 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
         }
         BOOL dir1 = (link1.direction == DIRECTION_TYPE_SOURCE_TO_TARGET);
         HLPLocation *source1 = dir1?link1.sourceLocation:link1.targetLocation;
-        double bearing1 = [source1 bearingTo:dir1?link1.targetLocation:link1.sourceLocation];
+        //HLPLocation *source1 = link1.sourceLocation;
+        double bearing1 = link1.initialBearingFromSource;
         
         HLPPOIEscalatorFlags*(^isSideBySideEscalator)(HLPLink*) = ^(HLPLink* link2) {
             BOOL dir2 = (link2.direction == DIRECTION_TYPE_SOURCE_TO_TARGET);
-            HLPLocation *source2 = nil, *target2 = nil;
-            if (source1.floor == link2.sourceHeight) {
-                source2 = link2.sourceLocation;
-                target2 = link2.targetLocation;
-            }
-            else if (source1.floor == link2.targetHeight) {
-                source2 = link2.targetLocation;
-                target2 = link2.sourceLocation;
+            HLPLocation *source2 = dir2?link2.sourceLocation:link2.targetLocation;
+            HLPLocation *target2 = dir2?link2.targetLocation:link2.sourceLocation;
+            if (source1.floor != source2.floor && source1.floor != target2.floor) {
+                source2 = target2 = nil;
             }
             if (!source2) {
                 return (HLPPOIEscalatorFlags*)nil;
@@ -996,7 +1095,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
         }
         NSArray *links = [self nearestLinksAt:poiLoc withOptions:
                           @{@"linkType":@(linkType),
-                            @"POI_DISTANCE_MIN_THRESHOLD":@(5)}];
+                            @"POI_DISTANCE_MIN_THRESHOLD":@(10)}];
         
         for(HLPLink* nearestLink in links) {
             NSMutableArray *linkPois = linkPoiMap[nearestLink._id];
@@ -1028,7 +1127,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             
             BOOL isLeaf = ent.node.isLeaf;
             NSMutableDictionary *opt = [isLeaf?@{@"onlyEnd":@(YES)}:@{} mutableCopy];
-            opt[@"POI_DISTANCE_MIN_THRESHOLD"] = @(5);
+            opt[@"POI_DISTANCE_MIN_THRESHOLD"] = @(10);
 
             NSArray *links = [self nearestLinksAt:ent.node.location withOptions:opt];
             for(HLPLink* nearestLink in links) {
@@ -1079,7 +1178,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
             return;
         }
-        if (link.isLeaf && link.length < 3) {
+        if (link.isLeaf) {
             return;
         }
         
@@ -1109,7 +1208,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
             (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
             return;
         }
-        if (link.isLeaf && link.length < 3) {
+        if (link.isLeaf) {
             return;
         }
         
@@ -1188,6 +1287,11 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
 - (NSArray*)destinations
 {
     return destinationCache;
+}
+    
+- (HLPDirectory *)directory
+{
+    return directoryCache;
 }
 
 - (NSString*) userLanguage
@@ -1305,9 +1409,11 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     switch(dest.type) {
         case NavDestinationTypeLocation:
             return YES;
+        case NavDestinationTypeDirectoryItem:
         case NavDestinationTypeLandmark:
         case NavDestinationTypeLandmarks:
-            return [destinationHash objectForKey:dest.landmark.nodeID] != nil;
+            return [destinationHash objectForKey:dest.singleId] != nil;
+            //return [destinationHash objectForKey:dest.landmark.nodeID] != nil;
         default:
             return NO;
     }

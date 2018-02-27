@@ -26,6 +26,7 @@
 #import "AuthManager.h"
 #import "LocationEvent.h"
 #import "Logging.h"
+#import "NavDataStore.h"
 
 @interface WelcomViewController ()
 
@@ -79,12 +80,14 @@
     networkError = NO;
     retryCount = 0;
     agreementCount = 0;
+    [[ServerConfig sharedConfig] clear];
     [self updateView];
     [self checkConfig];
 }
 
 - (void) checkConfig
 {
+    /*
     if (self.presentedViewController) {
         //NSLog(@"Presenting: %@", self.presentedViewController);
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1f*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
@@ -92,7 +95,9 @@
         });
         return;
     }
+     */
     
+    [[NSUserDefaults standardUserDefaults] setBool:[[AuthManager sharedManager] isDeveloperAuthorized] forKey:@"developer_mode"];
     /*
     if ([[AuthManager sharedManager] isDeveloperAuthorized]) {
         [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
@@ -145,7 +150,8 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
             });
-            [[ServerConfig sharedConfig] checkAgreement:^(NSDictionary* config) {
+            NSString *identifier = [[NavDataStore sharedDataStore] userID];
+            [[ServerConfig sharedConfig] checkAgreementForIdentifier:identifier withCompletion:^(NSDictionary* config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }
             }];
@@ -225,7 +231,10 @@
 
 - (IBAction)returnActionForSegue:(UIStoryboardSegue *)segue
 {
-    [self checkConfig];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0f*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self checkConfig];
+    });
+    //[self checkConfig];
 }
 
 - (void)didReceiveMemoryWarning {

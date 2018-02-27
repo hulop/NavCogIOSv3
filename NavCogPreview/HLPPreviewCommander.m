@@ -23,7 +23,7 @@
 #import "HLPPreviewCommander.h"
 #import "HLPWalker.h"
 #import "NavDataStore.h"
-#import "TTTOrdinalNumberFormatter.h"
+#import <FormatterKit/TTTOrdinalNumberFormatter.h>
 
 @implementation HLPPreviewCommander {    
     BOOL stepLR;
@@ -165,6 +165,11 @@
                             next = current.nextAction;
                             [str appendString:[self nextActionString:next noDistance:YES]];
                         }
+                        else if (current.hasIntersectionName) {                            
+                            [str appendString:[self intersectionString:current]];
+                            next = current.nextAction;
+                            [str appendString:[self nextActionString:next noDistance:NO]];
+                        }
                         [str appendString:[self poisString:current]];
                     }
                     else if (current.isGoingBackward) {
@@ -200,7 +205,7 @@
                     } else {
                         [_delegate playFail];
                         if (current.target == prev.target && current.orientation != prev.orientation) {
-                            double heading = [self turnAngle:prev.orientation toLink:current.link at:current.target];
+                            double heading = [prev turnAngleToLink:current.link at:current.target];
                             if (fabs(heading) > 20) {
                                 [str appendString:[self turnString:heading]];
                                 [str appendString:@". "];
@@ -262,7 +267,7 @@
                 }
                 // turned
                 if (current.target == prev.target && current.orientation != prev.orientation) {
-                    double heading = [self turnAngle:prev.orientation toLink:current.link at:current.target];
+                    double heading = [prev turnAngleToLink:current.link at:current.target];
                     if (fabs(heading) > 20) {
                         [str appendString:[self turnString:heading]];
                         [str appendString:@". "];
@@ -310,22 +315,18 @@
         return nil;
     }
     NSString *distance_unit = [[NSUserDefaults standardUserDefaults] stringForKey:@"distance_unit"];
-    
     BOOL isFeet = [distance_unit isEqualToString:@"unit_feet"];
-    const double FEET_UNIT = 0.3024;
-    
-    if (isFeet) {
-        distance /= FEET_UNIT;
-    }
-    
-    if (distance > 100) {
-        distance = round(distance / 10.0) * 10.0;
-    }
-    if (distance > 10) {
-        distance = round(distance / 5.0) * 5.0;
+    double UNIT = isFeet?0.3024:1.0;
+    double udistance = distance/UNIT;
+    double steps[] = {1,10,50,100,500,1000,5000};
+    double target = 5.0/UNIT;
+    for(int i = (isFeet?2:1); i < (isFeet?5:4); i++) {
+        if (udistance > steps[i]) {
+            target = floor(udistance/steps[i-1])*steps[i-1];
+        }
     }
     NSString *unit = isFeet?@"unit_feet":@"unit_meter";
-    return [NSString stringWithFormat:NSLocalizedStringFromTable(unit, @"BlindView", @""), (int)round(distance)];
+    return [NSString stringWithFormat:NSLocalizedStringFromTable(unit, @"BlindView", @""), (int)round(target)];
 }
 
 
@@ -364,7 +365,11 @@
     if (noDistance) {
         return actionStr;
     }
-    return [NSString stringWithFormat:@"proceed %@ and %@. ", distStr, actionStr];
+    if (actionStr.length > 0) {
+        return [NSString stringWithFormat:@"proceed %@ and %@. ", distStr, actionStr];
+    } else {
+        return [NSString stringWithFormat:@"proceed %@. ", distStr];
+    }
 }
 
 /*
@@ -462,6 +467,7 @@
         
         floor = round(floor*2.0)/2.0;
         
+        
         if (floor < 0) {
             NSString *ordinalNumber = [ordinalNumberFormatter stringFromNumber:@(fabs(floor))];
             
@@ -493,10 +499,7 @@
     NSMutableString *str = [@"" mutableCopy];
     
     HLPPreviewEvent *next = event.next;
-    NSArray<HLPLink*> *remains = [links filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLink* link, NSDictionary<NSString *,id> * _Nullable bindings) {
-        double heading = [self turnAngle:event.orientation toLink:link atNode:node];
-        return 20 < fabs(heading) && fabs(heading) < 180-20;
-    }]];
+    NSArray<HLPLink*> *remains = [event intersectionConnectionLinks];
     
     if (event.target == next.target) {
         // end
@@ -504,7 +507,7 @@
             [str appendString:@"Here is dead end. You need to turn around."];
         }
         else if (remains.count == 1) {
-            double heading = [self turnAngle:event.orientation toLink:remains[0] atNode:node];
+            double heading = [event turnAngleToLink:remains[0] atNode:node];
             NSString *turn = [self turnString:heading];
             [str appendFormat:@"You need to %@. ", turn];
         }
@@ -517,27 +520,50 @@
                     [str appendString:@", "];
                 }
                 HLPLink *link = remains[i];
-                double heading = [self turnAngle:event.orientation toLink:link atNode:node];
+                double heading = [event turnAngleToLink:link atNode:node];
                 NSString *turn = [self turnString:heading];
                 [str appendString:turn];
             }
             [str appendString:@". "];
         }
     } else if (remains.count > 0){
-        [str appendString:@"You can "];
-        for(int i = 0; i < remains.count; i++) {
-            HLPLink *link = remains[i];
-            double heading = [self turnAngle:event.orientation toLink:link atNode:node];
-            if (remains.count >= 2 && i == remains.count-1) {
-                [str appendString:@", and "];
-            } else if (i > 0) {
-                [str appendString:@", "];
+        NSString *intersectionName = [event intersectionName];
+        if (intersectionName) {
+            [str appendString:intersectionName];
+            [str appendString:@"... "];
+        }
+        
+        BOOL prevent_offroute = [[NSUserDefaults standardUserDefaults] boolForKey:@"prevent_offroute"];
+        if (prevent_offroute) {
+            for(int i = 0; i < remains.count; i++) {
+                HLPLink *link = remains[i];
+                double heading = [event turnAngleToLink:link atNode:node];
+                if (remains.count >= 2 && i == remains.count-1) {
+                    [str appendString:@", and "];
+                } else if (i > 0) {
+                    [str appendString:@", "];
+                }
+                NSString *turn = [self directionString:heading];
+                [str appendString:turn];
             }
-            NSString *turn = [self turnString:heading];
-            [str appendString:turn];
+            
+            [str appendString:(remains.count>1)?@" turns available":@" turn available"];
+        } else {
+            [str appendString:@"You can "];
+            for(int i = 0; i < remains.count; i++) {
+                HLPLink *link = remains[i];
+                double heading = [event turnAngleToLink:link atNode:node];
+                if (remains.count >= 2 && i == remains.count-1) {
+                    [str appendString:@", and "];
+                } else if (i > 0) {
+                    [str appendString:@", "];
+                }
+                NSString *turn = [self turnString:heading];
+                [str appendString:turn];
+            }
         }
     }
-    [str appendString:@". "];
+    [str appendString:@"... "];
     
     return str;
 }
@@ -554,7 +580,7 @@
     
     HLPPreviewEvent *next = event.next;
     NSArray<HLPLink*> *remains = [links filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLink* link, NSDictionary<NSString *,id> * _Nullable bindings) {
-        double heading = [self turnAngle:event.orientation toLink:link atNode:node];
+        double heading = [event turnAngleToLink:link atNode:node];
         return fabs(heading) < 180-20;
     }]];
 
@@ -563,7 +589,7 @@
     
     for(int i = 0; i < remains.count; i++) {
         HLPLink *link = remains[i];
-        double heading = [self turnAngle:event.orientation toLink:link atNode:node];
+        double heading = [event turnAngleToLink:link atNode:node];
         
         [walker reset];
         HLPWalkerPointer *root = [[HLPWalkerPointer alloc] initWithNode:node Link:link];
@@ -629,7 +655,7 @@
 
 - (NSString*)turnPoiString:(HLPPreviewEvent*)event
 {
-    double angle = [self turnAngle:event.orientation toLink:event.routeLink at:event.target];
+    double angle = [event turnAngleToLink:event.routeLink at:event.target];
     NSString *actionStr = [self turnString:angle];
     HLPPOI *poi = event.cornerPOI;
     if (poi) {
@@ -643,31 +669,6 @@
         actionStr = [actionStr stringByAppendingString:@". "];
     }
     return actionStr;
-}
-
-- (double)turnAngle:(double)orientation toLink:(HLPLink*)link at:(HLPObject*)object
-{
-    if ([object isKindOfClass:HLPNode.class]) {
-        return [self turnAngle:orientation toLink:link atNode:(HLPNode*)object];
-    }
-    
-    //NSAssert(NO, @"turnAngle with object is not implemented");
-    return [HLPLocation normalizeDegree:orientation + 180];
-}
-
-- (double)turnAngle:(double)orientation toLink:(HLPLink*)link atNode:(HLPNode*)node
-{
-    double linkDir = NAN;
-    if (link.sourceNode == node) {
-        linkDir = link.initialBearingFromSource;
-    }
-    else if (link.targetNode == node) {
-        linkDir = link.initialBearingFromTarget;
-    }
-    else {
-        NSLog(@"%@ is not node of the link %@", node._id, link._id);
-    }
-    return [HLPLocation normalizeDegree:linkDir - orientation];
 }
 
 -(NSString*)turnString:(double)heading
@@ -816,13 +817,24 @@
     }
     
     double step_length = [[NSUserDefaults standardUserDefaults] doubleForKey:@"preview_step_length"];
-    double target = MAX(floor(distance/15)*15, 5);
     
-    if (distance > target && target > distance - step_length) {
+    NSString *distance_unit = [[NSUserDefaults standardUserDefaults] stringForKey:@"distance_unit"];
+    BOOL isFeet = [distance_unit isEqualToString:@"unit_feet"];
+    double UNIT = isFeet?0.3024:1.0;
+    double udistance = distance/UNIT;
+    double steps[] = {1,10,50,100,500,1000,5000};
+    double target = 5.0/UNIT;
+    for(int i = (isFeet?2:1); i < (isFeet?5:4); i++) {
+        if (udistance > steps[i]) {
+            target = floor(udistance/steps[i])*steps[i];
+        }
+    }
+    
+    if (udistance > target && target > udistance - step_length/UNIT) {
         __weak HLPPreviewCommander *weakself = self;
         [self addBlock:^(void (^complete)(void)) {
             if (weakself) {
-                if (target <= 5.0) {
+                if (target <= 5.0/UNIT) {
                     [weakself.delegate speak:@"approaching. " withOptions:@{@"force":@(YES)} completionHandler:^{
                         complete();
                     }];

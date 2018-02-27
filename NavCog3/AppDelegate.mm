@@ -23,15 +23,17 @@
 #import "AppDelegate.h"
 #import "Logging.h"
 #import "SettingViewController.h"
-#import "LocationManager.h"
+#import <HLPLocationManager/HLPLocationManager+Player.h>
 #import "LocationEvent.h"
 #import "NavDataStore.h"
 #import "NavDeviceTTS.h"
 #import "NavSound.h"
 #import <Speech/Speech.h> // for Swift header
-#import "NavCog3-Swift.h"
+#import <HLPDialog/HLPDialog.h>
 #import <AVFoundation/AVFoundation.h>
 #import "ScreenshotHelper.h"
+
+#define IS_IOS11orHIGHER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)
 
 @interface AppDelegate ()
 
@@ -40,6 +42,7 @@
 @implementation AppDelegate {
     CBCentralManager *bluetoothManager;
     BOOL secondOrLater;
+    NSTimeInterval lastActiveTime;
 }
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -66,57 +69,39 @@
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
     _backgroundID = UIBackgroundTaskInvalid;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noAltimeterAlert:) name:NO_ALTIMETER_ALERT object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationNotAllowedAlert:) name:LOCATION_NOT_ALLOWED_ALERT object:nil];
-    
+        
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:HLPSettingChanged object:nil];
     
     [self detectBluetooth];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableAcceleration:) name:DISABLE_ACCELEARATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableAcceleration:) name:ENABLE_ACCELEARATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationRestart:) name:REQUEST_LOCATION_RESTART object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationStop:) name:REQUEST_LOCATION_STOP object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationHeadingReset:) name:REQUEST_LOCATION_HEADING_RESET object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationReset:) name:REQUEST_LOCATION_RESET object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationUnknown:) name:REQUEST_LOCATION_UNKNOWN object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestBackgroundLocation:) name:REQUEST_BACKGROUND_LOCATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplay:) name:REQUEST_LOG_REPLAY object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLogReplayStop:) name:REQUEST_LOG_REPLAY_STOP object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(serverConfigChanged:) name:SERVER_CONFIG_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(buildingChanged:) name:BUILDING_CHANGED_NOTIFICATION object:nil];
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    [ud addObserver:self forKeyPath:@"nSmooth" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"nStates" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"rssi_bias" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"wheelchair_pdr" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"mixProba" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"rejectDistance" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"diffusionOrientationBias" options:NSKeyValueObservingOptionNew context:nil];
+    [ud addObserver:self forKeyPath:@"location_tracking" options:NSKeyValueObservingOptionNew context:nil];
+    
+    [ud addObserver:self forKeyPath:@"background_mode" options:NSKeyValueObservingOptionNew context:nil];
+    
     return YES;
-}
-
-- (void)noAltimeterAlert:(NSNotification*)note
-{
-    NSString *title = NSLocalizedString(@"NoAltimeterAlertTitle", @"");
-    NSString *message = NSLocalizedString(@"NoAltimeterAlertMessage", @"");
-    NSString *ok = NSLocalizedString(@"I_Understand", @"");
-
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
-                                                                   message:message
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:ok
-                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                              }]];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[self topMostController] presentViewController:alert animated:YES completion:nil];
-    });
-}
-
-- (void)locationNotAllowedAlert:(NSNotification*)note
-{
-    NSString *title = NSLocalizedString(@"LocationNotAllowedTitle", @"");
-    NSString *message = NSLocalizedString(@"LocationNotAllowedMessage", @"");
-    NSString *setting = NSLocalizedString(@"SETTING", @"");
-    NSString *cancel = NSLocalizedString(@"CANCEL", @"");
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
-                                                                   message:message
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:setting
-                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                  NSURL *url = [NSURL URLWithString:@"App-Prefs:root=Privacy"];
-                                                  [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
-                                              }]];
-    [alert addAction:[UIAlertAction actionWithTitle:cancel
-                                              style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                              }]];
-    
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[self topMostController] presentViewController:alert animated:YES completion:nil];
-    });
 }
 
 - (void)settingChanged:(NSNotification*)note
@@ -170,16 +155,196 @@ void uncaughtExceptionHandler(NSException *exception)
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_SAVE object:self];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"PauseConversation" object:self];
+    lastActiveTime = [[NSDate date] timeIntervalSince1970];
 
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_SAVE object:self];
+    [[DialogManager sharedManager] pause];
+
     UIApplication *app = [UIApplication sharedApplication];
     _backgroundID = [app beginBackgroundTaskWithExpirationHandler:^{
         [app endBackgroundTask:_backgroundID];
         _backgroundID = UIBackgroundTaskInvalid;
     }];
 }
+
+- (void)serverConfigChanged:(NSNotification*)note
+{
+    NSMutableDictionary *config = [note.userInfo mutableCopy];
+    config[@"conv_client_id"] = [NavDataStore sharedDataStore].userID;
+    [DialogManager sharedManager].config = config;
+}
+
+- (void)locationChanged:(NSNotification*)note
+{
+    
+}
+
+- (void)buildingChanged:(NSNotification*)note
+{
+    
+}
+
+#pragma mark - NotificationCenter Observers
+
+- (void)disableAcceleration:(NSNotification*)note
+{
+    [HLPLocationManager sharedManager].isAccelerationEnabled = NO;
+}
+
+- (void)enableAcceleration:(NSNotification*)note
+{
+    [HLPLocationManager sharedManager].isAccelerationEnabled = YES;
+}
+
+- (void) requestLocationRestart:(NSNotification*) note
+{
+    [[HLPLocationManager sharedManager] restart];    
+}
+
+- (void) requestLocationStop:(NSNotification*) note
+{
+    [[HLPLocationManager sharedManager] stop];
+}
+
+- (void) requestLocationUnknown:(NSNotification*) note
+{
+    [[HLPLocationManager sharedManager] makeStatusUnknown];
+}
+
+- (void) requestLocationReset:(NSNotification*) note
+{
+    NSDictionary *properties = [note userInfo];
+    HLPLocation *loc = properties[@"location"];
+    double std_dev = [[NSUserDefaults standardUserDefaults] doubleForKey:@"reset_std_dev"];
+    [loc updateOrientation:NAN withAccuracy:std_dev];
+    [[HLPLocationManager sharedManager] resetLocation:loc];
+}
+
+- (void) requestLocationHeadingReset:(NSNotification*) note
+{
+    NSDictionary *properties = [note userInfo];
+    HLPLocation *loc = properties[@"location"];
+    double heading = [properties[@"heading"] doubleValue];
+    double std_dev = [[NSUserDefaults standardUserDefaults] doubleForKey:@"reset_std_dev"];
+    [loc updateOrientation:heading withAccuracy:std_dev];
+    [[HLPLocationManager sharedManager] resetLocation:loc];
+}
+
+- (void) requestBackgroundLocation:(NSNotification*) note
+{
+    BOOL backgroundMode = (note && [[note userInfo][@"value"] boolValue]) ||
+    [[NSUserDefaults standardUserDefaults] boolForKey:@"background_mode"];
+    [HLPLocationManager sharedManager].isBackground = backgroundMode;
+}
+
+- (void) requestLogReplay:(NSNotification*) note
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSDictionary *option =
+    @{
+      @"replay_in_realtime": [ud valueForKey:@"replay_in_realtime"],
+      @"replay_sensor": [ud valueForKey:@"replay_sensor"],
+      @"replay_show_sensor_log": [ud valueForKey:@"replay_show_sensor_log"],
+      @"replay_with_reset": [ud valueForKey:@"replay_with_reset"],
+      };
+    BOOL bNavigation = [[NSUserDefaults standardUserDefaults] boolForKey:@"replay_navigation"];
+    [[HLPLocationManager sharedManager] startLogReplay:note.userInfo[@"path"] withOption:option withLogHandler:^(NSString *line) {
+        if (bNavigation) {
+            NSArray *v = [line componentsSeparatedByString:@" "];
+            if (v.count > 3 && [v[3] hasPrefix:@"initTarget"]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_INIT_TARGET_LOG object:self userInfo:@{@"text":line}];
+                });
+            }
+            if (v.count > 3 && [v[3] hasPrefix:@"showRoute"]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_PROCESS_SHOW_ROUTE_LOG object:self userInfo:@{@"text":line}];
+                });
+            }
+        }
+    }];
+}
+
+- (void)requestLogReplayStop:(NSNotification*) note {
+    [[HLPLocationManager sharedManager] stopLogReplay];
+}
+
+#pragma mark - HLPLocationManagerDelegate
+
+- (void)locationManager:(HLPLocationManager *)manager didLocationUpdate:(HLPLocation *)location
+{
+    NSMutableDictionary *data =
+    [@{
+       //@"x": @(refPose.x()),
+       //@"y": @(refPose.y()),
+       //@"z": @(refPose.z()),
+       @"floor":@(location.floor),
+       @"lat": @(location.lat),
+       @"lng": @(location.lng),
+       @"speed":@(location.speed),
+       @"orientation":@(location.orientation),
+       @"accuracy":@(location.accuracy),
+       @"orientationAccuracy":@(location.orientationAccuracy),
+       //@"anchor":@{
+       //@"lat":anchor[@"latitude"],
+       //@"lng":anchor[@"longitude"]
+       //},
+       //@"rotate":anchor[@"rotate"]
+       } mutableCopy];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:LOCATION_CHANGED_NOTIFICATION object:self userInfo:data];
+}
+
+- (void)locationManager:(HLPLocationManager *)manager didLocationStatusUpdate:(HLPLocationStatus)status
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:NAV_LOCATION_STATUS_CHANGE
+                                                        object:self
+                                                      userInfo:@{@"status":@(status)}];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    if (status == kCLAuthorizationStatusDenied) {
+        NSString *title = NSLocalizedString(@"LocationNotAllowedTitle", @"");
+        NSString *message = NSLocalizedString(@"LocationNotAllowedMessage", @"");
+        NSString *setting = NSLocalizedString(@"SETTING", @"");
+        NSString *cancel = NSLocalizedString(@"CANCEL", @"");
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:setting
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                      NSURL *url = [NSURL URLWithString:@"App-Prefs:root=Privacy"];
+                                                      [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+                                                  }]];
+        [alert addAction:[UIAlertAction actionWithTitle:cancel
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  }]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self topMostController] presentViewController:alert animated:YES completion:nil];
+        });
+    }
+}
+
+- (void)locationManager:(HLPLocationManager *)manager didUpdateOrientation:(double)orientation withAccuracy:(double)accuracy
+{
+    NSDictionary *dic = @{
+                          @"orientation": @(orientation),
+                          @"orientationAccuracy": @(accuracy)
+                          };
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:ORIENTATION_CHANGED_NOTIFICATION object:self userInfo:dic];
+}
+
+- (void)locationManager:(HLPLocationManager*)manager didLogText:(NSString *)text
+{
+    if ([Logging isLogging]) {
+        NSLog(@"%@", text);
+    }
+}
+
+#pragma mark - AppDelegate
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
@@ -194,10 +359,14 @@ void uncaughtExceptionHandler(NSException *exception)
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     [UIApplication.sharedApplication endBackgroundTask:_backgroundID];
     
+    HLPLocationManager *manager = [HLPLocationManager sharedManager];
+    manager.delegate = self;
     if (secondOrLater) {
-        LocationManager *manager = [LocationManager sharedManager];
         if (!manager.isActive) {
             [manager start];
+        }
+        if ([[NSDate date] timeIntervalSince1970] - lastActiveTime > 30) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESTART object:self];
         }
         [Logging stopLog];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
@@ -292,5 +461,13 @@ void uncaughtExceptionHandler(NSException *exception)
     }
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"background_mode"]) {
+        [self requestBackgroundLocation:nil];
+    } else {
+        [[HLPLocationManager sharedManager] invalidate];
+    }
+}
 
 @end

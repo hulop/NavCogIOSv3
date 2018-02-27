@@ -27,4 +27,6 @@
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property NSArray *pois;
 
+- (BOOL) isContentAvailable;
+
 @end

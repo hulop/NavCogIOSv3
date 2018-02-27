@@ -23,7 +23,7 @@
 #import "NavCoverView.h"
 #import "LocationEvent.h"
 #import "NavDeviceTTS.h"
-#import "NavCog3-Swift.h"
+#import <HLPDialog/HLPDialog.h>
 
 
 @implementation NavAnnounceItem
@@ -111,6 +111,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:NAV_ROUTE_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteControl:) name:REMOTE_CONTROL_EVENT object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clear:) name:DialogManager.DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     
     first = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
     first.delegate = self;
@@ -251,7 +252,7 @@
     
     switch (event.subtype) {
         case UIEventSubtypeRemoteControlTogglePlayPause: // 103
-            if (isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_ACTION object:self];
+            if (isDialogActive) [[DialogManager sharedManager] action];
             if (!isDialogActive) [self resetCurrentIndex];
             break;
         case UIEventSubtypeRemoteControlNextTrack: // 104
@@ -261,7 +262,7 @@
             if (!isDialogActive) [self decrementCurrentIndex];
             break;
         case UIEventSubtypeRemoteControlBeginSeekingBackward: // 106
-            if (isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_DIALOG_END object:self];
+            if (isDialogActive) [[DialogManager sharedManager] end];
             if (!isDialogActive) [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_HANDLE_LOCATION_UNKNOWN object:self];
             return;
         case UIEventSubtypeRemoteControlBeginSeekingForward: // 108

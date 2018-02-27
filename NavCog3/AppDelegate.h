@@ -24,9 +24,10 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
+#import <HLPLocationManager/HLPLocationManager.h>
 
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, CBCentralManagerDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, CBCentralManagerDelegate, HLPLocationManagerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 @property UIBackgroundTaskIdentifier backgroundID;

@@ -21,8 +21,12 @@
  *******************************************************************************/
 
 #import "HLPDataUtil.h"
+#import "ServerConfig.h"
 
 #define ROUTE_SEARCH @"%@://%@/%@routesearch"
+#define QUERY_SERVICE @"%@://%@/%@"
+#define QUERY_DIRECTRY @"directory"
+#define QUERY_SEARCH @"search"
 
 @implementation HLPDataUtil
 
@@ -35,6 +39,100 @@
     return [NSURL URLWithString:[NSString stringWithFormat:ROUTE_SEARCH, https, server, context]];
 }
 
++ (NSURL*) urlForQueryServiceWithAction:(NSString*)action {
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSDictionary *config = [[ServerConfig sharedConfig] selectedServerConfig];
+    NSString *server = config[@"query_server"];
+    NSString *https = [ud boolForKey:@"https_connection"]?@"https":@"http";
+    return [NSURL URLWithString:[NSString stringWithFormat:QUERY_SERVICE, https, server, action]];
+}
+
+
++ (void)queryDirectoryForUser:(NSString *)user withQuery:(NSString *)query withCallback :(void (^)(HLPDirectory *))callback
+{
+    NSDictionary *dic =
+    @{
+      @"user": user,
+      @"q": query
+      };
+    
+    NSURL *url = [self urlForQueryServiceWithAction:QUERY_SEARCH];
+    
+    [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
+        if (response == nil) {
+            callback(nil);
+        } else {
+            NSError *error;
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+            if (error) {
+                NSLog(@"%@", error);
+                NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+                callback(nil);
+            } else {
+                HLPDirectory *directory = [MTLJSONAdapter modelOfClass:HLPDirectory.class fromJSONDictionary:json error:&error];
+                if (error) {
+                    NSLog(@"%@", error);
+                    NSLog(@"%@", json[@"sections"]);
+                    callback(nil);
+                } else {
+                    callback(directory);
+                }
+            }
+        }
+    }];
+}
+
++ (void) loadDirectoryAtLat:(double) lat Lng:(double) lng inDist:(int) dist forUser:(NSString*) user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result, HLPDirectory* directory))callback
+{
+    
+    NSDictionary *dic =
+    @{
+      @"lat": @(lat),
+      @"lng": @(lng),
+      @"dist": @(dist),
+      @"user": user,
+      @"lang": lang
+      };
+    
+    NSURL *url = [self urlForQueryServiceWithAction:QUERY_DIRECTRY];
+    
+    [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
+        if (response == nil) {
+            callback(nil, nil);
+        } else {
+            NSError *error;
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+            if (error) {
+                NSLog(@"%@", error);
+                NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+                callback(nil, nil);
+            } else {
+                NSMutableArray *array = [@[] mutableCopy];
+                if (json[@"landmarks"] != nil) {
+                    for(NSDictionary* dic in json[@"landmarks"]) {
+                        NSError *error;
+                        HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
+                        if (error) {
+                            NSLog(@"%@", error);
+                            NSLog(@"%@", dic);
+                        } else {
+                            [array addObject:obj];
+                        }
+                    }
+                }
+                HLPDirectory *directory = [MTLJSONAdapter modelOfClass:HLPDirectory.class fromJSONDictionary:json error:&error];
+                if (error) {
+                    NSLog(@"%@", error);
+                    NSLog(@"%@", json[@"sections"]);
+                    callback(array, nil);                
+                } else {
+                    callback(array, directory);
+                }
+            }
+        }
+    }];
+}
+    
 + (void)loadLandmarksAtLat:(double)lat Lng:(double)lng inDist:(int)dist forUser:(NSString*)user withLang:(NSString *)lang withCallback:(void (^)(NSArray<HLPObject *> *))callback
 {
     NSDictionary *dic =
@@ -248,7 +346,7 @@
                                              cachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                              timeoutInterval: 60.0];
 
-        //NSLog(@"Requesting %@ \n%@", url, temp2);
+        NSLog(@"Requesting %@", url);
         
         [request setHTTPMethod: method];
         [request setValue:type forHTTPHeaderField: @"Content-Type"];
@@ -280,29 +378,19 @@
 
 + (void)getJSON:(NSURL *)url withCallback:(void (^)(NSObject *))callback
 {
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest
-                                    requestWithURL: url
-                                    cachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                    timeoutInterval: 60.0];
-    [request setHTTPMethod: @"GET"];
-    
-    NSURLSession *session = [NSURLSession sharedSession];
-    
-    [[session dataTaskWithRequest: request  completionHandler: ^(NSData *data, NSURLResponse *response, NSError *error) {
+    [HLPDataUtil method:@"GET" request:url contentType:@"" withData:[[NSData alloc] init] callback:^(NSData *response) {
         @try {
-            if (response && ! error) {
+            if (response) {
                 NSError *error2;
-                NSObject *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error2];
+                NSObject *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error2];
                 if (json && !error2) {
                     callback(json);
                 } else {
                     NSLog(@"Error2: %@", [error2 localizedDescription]);
-                    NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                    NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
                     callback(nil);
                 }
             } else {
-                NSLog(@"Error: %@", [error localizedDescription]);
                 callback(nil);
             }
         }
@@ -310,6 +398,6 @@
             NSLog(@"%@", [e debugDescription]);
             callback(nil);
         }
-    }] resume];
+    }];
 }
 @end

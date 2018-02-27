@@ -390,6 +390,18 @@
 /* (No Commment) */
 "proceed distance on floor ..." = "%2$@。。。%1$@進み、";
 
+/* (No Commment) */
+"proceed distance across the corridor" = "通路を横切って%1$@進む";
+
+/* (No Commment) */
+"proceed distance across the corridor ..." = "通路を横切って%1$@進み、";
+
+/* (No Commment) */
+"proceed distance across the corridor on floor" = "%2$@。。。通路を横切って%1$@進む";
+
+/* (No Commment) */
+"proceed distance across the corridor on floor ..." = "%2$@。。。通路を横切って%1$@進み、";
+
 /* No comment provided by engineer. */
 "remaining distance" = "残り%@";
 
@@ -403,10 +415,10 @@
 "turn right" = "右に曲がる";
 
 /* head to the diagonally backward left direction */
-"turn to the backward left" = "左、ななめ、後ろに向く";
+"turn to the backward left" = "後ろに向く";
 
 /* head to the diagonally backward right direction */
-"turn to the backward right" = "右、ななめ、後ろに向く";
+"turn to the backward right" = "後ろに向く";
 
 /* head to the left direction */
 "turn to the left" = "左に向く";

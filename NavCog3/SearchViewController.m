@@ -25,6 +25,7 @@
 #import "NavUtil.h"
 #import "LocationEvent.h"
 #import "DestinationTableViewController.h"
+#import "ServerConfig.h"
 @import AVFoundation;
 
 @interface SearchViewController () {
@@ -183,7 +184,7 @@
 - (void) locationChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.historyView reloadData];
+        //[self.historyView reloadData];
         [self updateViewWithFlag:NO];
     });
 }
@@ -198,7 +199,9 @@
         
         NavDataStore *nds = [NavDataStore sharedDataStore];
         HLPLocation *loc = [nds currentLocation];
-        BOOL isNotManual = ![nds isManualLocation] || [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+        BOOL isDevMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+        BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
+        BOOL isNotManual = ![nds isManualLocation] || isDevMode;
         BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
         
         self.fromButton.enabled = updated && actionEnabled;
@@ -206,9 +209,10 @@
         self.refreshButton.enabled = updated && actionEnabled;
         self.routeOptionsButton.enabled = updated && actionEnabled;
         
-        self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
+        self.switchButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled && !nds.from.isCurrentLocation);
         self.previewButton.enabled = (nds.to._id != nil && nds.from._id != nil && actionEnabled);
-        self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation && actionEnabled && isNotManual);
+        self.previewButton.hidden = !isDevMode && isPreviewDisabled;
+        self.startButton.enabled = (nds.to._id != nil && nds.from._id != nil && validLocation && actionEnabled && isNotManual) || isDevMode;
         
         
         [self.fromButton setTitle:nds.from.name forState:UIControlStateNormal];
@@ -269,6 +273,7 @@
                             @"stairs":[ud boolForKey:@"route_use_stairs"]?@"9":@"1",
                             @"esc":[ud boolForKey:@"route_use_escalator"]?@"9":@"1",
                             @"elv":[ud boolForKey:@"route_use_elevator"]?@"9":@"1",
+                            @"mvw":[ud boolForKey:@"route_use_moving_walkway"]?@"9":@"1",                            
                             @"tactile_paving":[ud boolForKey:@"route_tactile_paving"]?@"1":@"",
                             } mutableCopy];
     // override

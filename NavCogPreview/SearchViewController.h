@@ -35,5 +35,6 @@
 @property (weak, nonatomic) IBOutlet UISwitch *useDestination;
 @property (weak, nonatomic) IBOutlet UILabel *toLabel;
 @property (weak, nonatomic) IBOutlet UILabel *toArrow;
+@property (weak, nonatomic) IBOutlet UILabel *attribution;
 
 @end

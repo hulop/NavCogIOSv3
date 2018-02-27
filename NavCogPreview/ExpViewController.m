@@ -43,8 +43,6 @@
         self.emailInput.text = user_id;
     }
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(destinationsChanged:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
-
     // Do any additional setup after loading the view.
 }
 
@@ -74,7 +72,7 @@
         [NavUtil showModalWaitingWithMessage:@"Checking email address..."];
     });
     
-    [[NavDataStore sharedDataStore] reloadDestinations:YES];
+    [self loadUserInfo];
 }
 
 - (void)loadUserInfo
@@ -114,30 +112,6 @@
         });
     }];
 
-}
-
-- (void) destinationsChanged:(NSNotification*)note
-{    
-    NavDataStore *nds = [NavDataStore sharedDataStore];
-    if ([[nds destinations] count] == 0) {
-        [NavUtil hideModalWaiting];
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error"
-                                                                       message:@"No destinations"
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK", @"BlindView", @"")
-                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                      dispatch_async(dispatch_get_main_queue(), ^(void){
-                                                          [self dismissViewControllerAnimated:YES completion:nil];
-                                                      });
-                                                  }]];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self presentViewController:alert animated:YES completion:nil];
-        });
-    } else {
-        [self loadUserInfo];
-    }
 }
 
 /*

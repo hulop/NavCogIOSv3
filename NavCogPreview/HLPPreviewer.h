@@ -42,6 +42,7 @@
 - (HLPPOI*) elevatorPOI;
 - (HLPPOI*) elevatorEquipmentsPOI;
 - (NSArray<HLPLink*>*) intersectionLinks;
+- (NSArray<HLPLink*>*) intersectionConnectionLinks;
 
 - (HLPLink*) rightLink;
 - (HLPLink*) leftLink;
@@ -62,6 +63,12 @@
 - (BOOL) isOnElevator;
 - (BOOL) isInFrontOfElevator;
 - (BOOL) isSteppingBackward;
+- (BOOL) hasIntersectionName;
+
+- (double)turnAngleToLink:(HLPLink*)link at:(HLPObject*)object;
+- (double)turnAngleToLink:(HLPLink*)link atNode:(HLPNode*)node;
+
+- (NSString*) intersectionName;
 
 @end
 
@@ -73,6 +80,7 @@
 -(void)userLocation:(HLPLocation*)location;
 -(void)remainingDistance:(double)distance;
 -(void)previewStopped:(HLPPreviewEvent*)event;
+-(void)routeNotFound;
 @end
 
 @interface HLPPreviewer : NSObject

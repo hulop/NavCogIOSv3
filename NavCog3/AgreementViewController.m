@@ -22,6 +22,7 @@
 
 
 #import "AgreementViewController.h"
+#import "NavDataStore.h"
 #import "ServerConfig.h"
 
 @interface AgreementViewController ()
@@ -56,8 +57,9 @@
 {
     // TODO: arrow only our content
     NSURL *url = [NSURL URLWithString:[[[request URL] standardizedURL] absoluteString]];
-    if ([[url path] isEqualToString:@"/finish_agreement.jsp"]) { // check if finish page is tryed to be loaded
-        [[ServerConfig sharedConfig] checkAgreement:^(NSDictionary* config) {
+    if ([[url path] hasSuffix:@"/finish_agreement.jsp"]) { // check if finish page is tryed to be loaded
+        NSString *identifier = [[NavDataStore sharedDataStore] userID];
+        [[ServerConfig sharedConfig] checkAgreementForIdentifier:identifier withCompletion:^(NSDictionary* config) {
             BOOL agreed = [config[@"agreed"] boolValue];
             if (agreed) {
                 [self performSegueWithIdentifier:@"unwind_agreement" sender:self];

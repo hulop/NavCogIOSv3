@@ -1,10 +1,24 @@
-//
-//  main.m
-//  NavCogTool
-//
-//  Created by Daisuke Sato on 2016/11/08.
-//  Copyright © 2016年 Daisuke Sato. All rights reserved.
-//
+/*******************************************************************************
+ * Copyright (c) 2014, 2016  IBM Corporation, Carnegie Mellon University and others
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *******************************************************************************/
 
 #include <iostream>
 #include <getopt.h>
@@ -29,9 +43,10 @@ typedef struct {
     double lat;
     double lng;
     double dist = 500;
-    BOOL useStairs = NO;
+    BOOL useStairs = YES;
     BOOL useEscalator = NO;
     BOOL useElevator = YES;
+    BOOL useMovingWalk = NO;
     BOOL tactilePaving = YES;
     BOOL listDestinations = NO;
     BOOL checkRemote = NO;
@@ -54,12 +69,13 @@ void printHelp() {
     std::cout << "-l <string>            set user language" << std::endl;
     std::cout << "-c <string>            config file name" << std::endl;
     std::cout << "-o <string>            set output file path" << std::endl;
-    std::cout << "-k <string>            key string" << std::endl;
+    std::cout << "-k <string>            print MD5 stirng for the key string" << std::endl;
     std::cout << "--useStairs [1|0]      set useStairs" << std::endl;
     std::cout << "--useEscalator [1|0]   set useEscalator" << std::endl;
     std::cout << "--useElevator [1|0]    set useElevator" << std::endl;
+    std::cout << "--useMovingWalk [1|0]  set useMovingWalk" << std::endl;
     std::cout << "--tactilePaving [1|0]  set tactilePaving" << std::endl;
-    std::cout << "--checkRemote [1|0]    setcheckRemote" << std::endl;
+    std::cout << "--checkRemote [1|0]    set flag to check behavior of remote every step" << std::endl;
     std::cout << "--timeout <number>     set timeout default is 60(sec)" << std::endl;
 }
 
@@ -76,6 +92,7 @@ Option parseArguments(int argc, char * argv[]){
         {"useStairs",     required_argument, NULL,  0 },
         {"useEscalator",  required_argument, NULL,  0 },
         {"useElevator",   required_argument, NULL,  0 },
+        {"useMovingWalk",   required_argument, NULL,  0 },
         {"tactilePaving",   required_argument, NULL,  0 },
         {"checkRemote",   required_argument, NULL,  0 },
         {"timeout",   required_argument, NULL,  0 },
@@ -98,6 +115,10 @@ Option parseArguments(int argc, char * argv[]){
             if (strcmp(long_options[option_index].name, "useElevator") == 0){
                 sscanf(optarg, "%d", &boolean);
                 opt.useElevator = boolean;
+            }
+            if (strcmp(long_options[option_index].name, "useMovingWalk") == 0){
+                sscanf(optarg, "%d", &boolean);
+                opt.useMovingWalk = boolean;
             }
             if (strcmp(long_options[option_index].name, "tactilePaving") == 0){
                 sscanf(optarg, "%d", &boolean);
@@ -205,7 +226,7 @@ Option parseArguments(int argc, char * argv[]){
     NSLog(@"User,%@", userID);
     
     dataStore.userID = userID;
-    [dataStore reloadDestinationsAtLat:opt.lat Lng:opt.lng forUser:dataStore.userID withUserLang:dataStore.userLanguage];
+    [dataStore reloadDestinationsAtLat:opt.lat Lng:opt.lng Dist:(int)opt.dist forUser:dataStore.userID withUserLang:dataStore.userLanguage];
 }
 
 - (void)destinationChanged:(NSNotification*)note
@@ -393,7 +414,7 @@ Option parseArguments(int argc, char * argv[]){
     }
 
     NSDictionary *prefs = @{
-                            @"dist":@"500",
+                            @"dist":@(opt.dist),
                             @"preset":@"9",
                             @"min_width":@"8",
                             @"slope":@"9",
@@ -402,6 +423,7 @@ Option parseArguments(int argc, char * argv[]){
                             @"stairs":opt.useStairs?@"9":@"1",
                             @"esc":opt.useEscalator?@"9":@"1",
                             @"elv":opt.useElevator?@"9":@"1",
+                            @"mvw":opt.useMovingWalk?@"9":@"1",
                             @"tactile_paving":opt.tactilePaving?@"1":@""
                             };
 

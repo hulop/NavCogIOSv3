@@ -23,14 +23,22 @@
 /* label for distance unit option */
 "Distance unit" = "Distance unit";
 
+"RESTROOM" = "Restroom";
+
 /* Toilet for people with disability */
-"FOR_DISABLED" = "Multi purpose toilet";
+"FOR_DISABLEDRESTROOM" = "Wheelchair accessible restroom";
 
 /* Toilet for female */
-"FOR_FEMALE" = "Toilet for female";
+"FOR_FEMALEFOR_DISABLEDRESTROOM" = "Female accessible restroom";
 
 /* Toilet for male */
-"FOR_MALE" = "Toilet for male";
+"FOR_MALEFOR_DISABLEDRESTROOM" = "Male accessible restroom";
+
+/* Toilet for female */
+"FOR_FEMALERESTROOM" = "Female restroom";
+
+/* Toilet for male */
+"FOR_MALERESTROOM" = "Male restroom";
 
 /* feet distance unit label */
 "Feet" = "Feet";
@@ -71,19 +79,13 @@
 /* No comment provided by engineer. */
 "Use Escalator" = "Use Escalator";
 
+"Use Moving Walkway" = "Use Moving Walkway";
+
 /* No comment provided by engineer. */
 "Use Stairs" = "Use Stairs";
 
 /* (No Commment) */
 "checkNetworkConnection" = "Check network connection";
-
-"SPEAK_NOW" = "<Speak Now!>";
-
-"PAUSING" = "<Pausing>";
-
-"DialogStart" = "Restart";
-
-"DialogStartHint" = "Double tap to start voice recognition";
 
 "SPEECH_SPEED_CHECK" = "Speech speed is %.2f";
 
@@ -98,8 +100,6 @@
 "soundEffectSetting" = "Use Sound Effect";
 
 "for_bone_conduction_headset" = "Sound Effect for Bone Conduction Headset";
-
-"Error" = "Error";
 
 "Reset_Location" = "Re-init Localization";
 
@@ -131,23 +131,14 @@ While Using the App";
 Feedback is sending...";
 
 "Help" = "Help";
+"Instructions" = "Instructions";
 "OpenHelp" = "Open help page";
+"OpenInstructions" = "Open instructions page";
+"Back to mode selection" = "Back to mode selection";
+"Send Feedback" = "Send Feedback";
+"feedbackSubject" = "NavCog-Feedback(%@)";
+"feedbackBody" = "Please input your feedback here.";
 
 "NeedToUpdateAppTitle" = "App Update";
 "NeedToUpdateAppMessage" = "App is required to be updated";
 "OpenAppStore" = "Open App Store";
-
-"WAIT_ACTION" = "Waiting for your question. Tap the microphone button to restart.";
-
-"NoAudioAccessAlertTitle" = "Microphone not allowed";
-"NoAudioAccessAlertMessage" = "You need to allow access to microphone to enable conversation function.
-From privacy settigs, please turn on
-Microphone　→　NavCog";
-
-"NoSpeechRecoAccessAlertTitle" = "Speech Recognition not allowed";
-"NoSpeechRecoAccessAlertMessage" = "You need to allow access to speech recognition to enable conversation function.
-From privacy settigs, please turn on
-Speech Recognition　→　NavCog";
-
-"unknownError0" = "Voice recognition could not be started. Please try again.";
-"unknownError1" = "Voice recognition is not available. Please try again later.";

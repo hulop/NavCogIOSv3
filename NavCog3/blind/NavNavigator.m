@@ -189,7 +189,9 @@ static NavNavigatorConstants *_instance;
     _expirationTimeOfPreventRemainingDistanceEvent = NAN;
     _backDetectedLocation = nil;
     _distanceFromBackDetectedLocationToLocation = NAN;
-    _noBearing = (_link.minimumWidth <= 2.0);
+    //_noBearing = (_link.minimumWidth <= 2.0);
+    //_noBearing = YES;
+    _noBearing = (_link.minimumWidth <= 2.0) || _link.linkType == LINK_TYPE_ESCALATOR || _link.linkType == LINK_TYPE_PEDESTRIAN_CONVEYER || _link.linkType == LINK_TYPE_STAIRWAY;
     
     _isComplex = fabs([HLPLocation normalizeDegree:_link.initialBearingFromSource - _link.lastBearingForTarget]) > 10;
     
@@ -394,6 +396,8 @@ static NavNavigatorConstants *_instance;
             HLPEntrance *ent = (HLPEntrance*)obj;
             NavPOI *navpoi = nil;
             
+            //NSLog(@"entrance-facility %@", ent.facility.name);
+            
             if ([_nextLink.targetNodeID isEqualToString:ent.node._id]) {
                 // destination with a leaf node, make second last link as last link
                 //_isNextDestination = YES;
@@ -419,9 +423,12 @@ static NavNavigatorConstants *_instance;
                                                          @"isDestination": @(YES),
                                                          @"forAfterEnd": @(YES)
                                                          }];
-            } else {
+            } else if (![[NavDataStore sharedDataStore] isOnStart:ent.forNodeID]){
                 // mid in route
                 HLPLocation *nearest = [_link nearestLocationTo:ent.node.location];
+                if (ent.facility && ent.facility.isNotRead) {
+                    return; // skip no read flag facility
+                }
                 if ((!_isFirst && !_isNextDestination) ||
                     (_isFirst && [_link.sourceLocation distanceTo:nearest] > C.POI_ANNOUNCE_DISTANCE) ||
                     (_isNextDestination && [_link.targetLocation distanceTo:nearest] > C.POI_ANNOUNCE_DISTANCE)) {
@@ -758,7 +765,7 @@ static NavNavigatorConstants *_instance;
         }
         
         [_pois enumerateObjectsUsingBlock:^(NavPOI * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [obj updateWithLocation:_snappedLocationOnLink andUserLocation:location];
+            [obj updateWithLink:_link andUserLocation:location];
         }];
     }
 }
@@ -793,11 +800,17 @@ static NavNavigatorConstants *_instance;
     return self;
 }
 
-- (void)updateWithLocation:(HLPLocation *)location andUserLocation:(HLPLocation *)userLocation
+- (void)updateWithLink:(HLPLink *)link andUserLocation:(HLPLocation *)userLocation
 {
-    _snappedLocationOnLink = location;
-    _distanceFromSnappedLocation = [_snappedLocationOnLink distanceTo:_poiLocation];
-    _distanceFromUserLocation = [userLocation distanceTo:_poiLocation];
+    _link = link;
+    _userLocation = userLocation;
+    
+    _snappedPoiLocationOnLink = [_link nearestLocationTo:_poiLocation];
+    _snappedUserLocationOnLink = [_link nearestLocationTo:_userLocation];
+    _distanceFromSnappedPoiLocationAndSnappedUserLocation = [_snappedUserLocationOnLink distanceTo:_snappedPoiLocationOnLink];
+    
+    //_distanceFromSnappedLocation = [_snappedLocationOnLink distanceTo:_poiLocation];
+    //_distanceFromUserLocation = [userLocation distanceTo:_poiLocation];
     if (!isnan(_angleFromLocation)) {
         _diffAngleFromUserOrientation = [HLPLocation normalizeDegree:_angleFromLocation - userLocation.orientation];
     }
@@ -939,46 +952,6 @@ static NavNavigatorConstants *_instance;
     
     
     // optimize links for navigation
-        
-    // remove crank
-    NSArray*(^removeCrank)(NSArray*) = ^(NSArray *array) {
-        NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
-        for(int i = 0; i < [temp count]-2; i++) {
-            HLPObject* obj1 = temp[i];
-            HLPObject* obj2 = temp[i+1];
-            HLPObject* obj3 = temp[i+2];
-            if ([obj1 isKindOfClass:HLPLink.class] &&
-                [obj2 isKindOfClass:HLPLink.class] &&
-                [obj3 isKindOfClass:HLPLink.class]
-                ) {
-                HLPLink* link1 = (HLPLink*) obj1;
-                HLPLink* link2 = (HLPLink*) obj2;
-                HLPLink* link3 = (HLPLink*) obj3;
-                
-                if (![HLPCombinedLink link:link1 shouldBeCombinedWithLink:link2] &&
-                    ![HLPCombinedLink link:link2 shouldBeCombinedWithLink:link3] &&
-                    [HLPCombinedLink link:link1 shouldBeCombinedWithLink:link3]
-                    ) {
-                    double mw1 = link1.minimumWidth;
-                    double mw3 = link3.minimumWidth;
-                    if (link2.length < (mw1 + mw3) / 2 * C.CRANK_REMOVE_SAFE_RATE) {
-                        
-                        // need to update links
-                        // TODO: tricky update
-                        [link2 offsetTarget:-link2.length];
-                        [link2 updateLastBearingForTarget:link1.lastBearingForTarget];
-                        HLPLink* link12 = [[HLPCombinedLink alloc] initWithLink1:link1 andLink2:link2];
-                        [temp setObject:link12 atIndexedSubscript:i];
-                        [temp removeObjectAtIndex:i+1];
-                        
-                        i--;
-                    }
-                }
-            }
-        }
-        return temp;
-    };
-    route = removeCrank(route);
     
     // combine links
     NSArray*(^combineLinks)(NSArray*) = ^(NSArray *array) {
@@ -1024,8 +997,53 @@ static NavNavigatorConstants *_instance;
         }
         return temp;
     };
-    route = combineLinks(route);
     
+    // remove crank
+    NSArray*(^removeCrank)(NSArray*) = ^(NSArray *array) {
+        NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
+        for(int i = 0; i < [temp count]-2; i++) {
+            HLPObject* obj1 = temp[i];
+            HLPObject* obj2 = temp[i+1];
+            HLPObject* obj3 = temp[i+2];
+            if ([obj1 isKindOfClass:HLPLink.class] &&
+                [obj2 isKindOfClass:HLPLink.class] &&
+                [obj3 isKindOfClass:HLPLink.class]
+                ) {
+                HLPLink* link1 = (HLPLink*) obj1;
+                HLPLink* link2 = (HLPLink*) obj2;
+                HLPLink* link3 = (HLPLink*) obj3;
+                
+                if (![HLPCombinedLink link:link1 shouldBeCombinedWithLink:link2] &&
+                    ![HLPCombinedLink link:link2 shouldBeCombinedWithLink:link3] &&
+                    [HLPCombinedLink link:link1 shouldBeCombinedWithLink:link3]
+                    ) {
+                    double mw1 = link1.minimumWidth;
+                    double mw3 = link3.minimumWidth;
+                    if (link2.length < (mw1 + mw3) / 2 * C.CRANK_REMOVE_SAFE_RATE) {
+                        if (link2.length < 1) {
+                            // need to update links
+                            // TODO: tricky update
+                            [link2 offsetTarget:-link2.length];
+                            [link2 updateLastBearingForTarget:link1.lastBearingForTarget];
+                            HLPLink* link12 = [[HLPCombinedLink alloc] initWithLink1:link1 andLink2:link2];
+                            [temp setObject:link12 atIndexedSubscript:i];
+                            [temp removeObjectAtIndex:i+1];
+                            i--;
+                        } else {
+                            link2.isCrossingCorridor = YES;
+                        }
+                        
+                    }
+                }
+            }
+        }
+        return temp;
+    };
+    
+    route = combineLinks(route); // combine first
+    route = removeCrank(route);  // remove crank
+    route = combineLinks(route); // do combine again
+
     // shorten link before elevator, set bearing after elevator
     NSArray*(^shortenLinkBeforeElevator)(NSArray*) = ^(NSArray *array) {
         NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
@@ -1245,8 +1263,11 @@ static NavNavigatorConstants *_instance;
                 for(NSNumber *wd in walkedDistances) {
                     ave += [wd doubleValue];
                 }
-                walkingSpeed = MAX(ave / MAX_WD * 10, 2.0);
+                double zero_threthold = 0.2;
+                walkingSpeed = MIN(ave / MAX_WD * 10, 2.0);
+                walkingSpeed = walkingSpeed < zero_threthold ? 0 : walkingSpeed;
             }
+            NSLog(@"walkingSpeed = %f", walkingSpeed);
             prevLocation = location;
         }
         
@@ -1333,6 +1354,20 @@ static NavNavigatorConstants *_instance;
                 }
             }
             
+            
+            HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
+            if ( loc.orientationAccuracy > 22.5) {
+                if ([self.delegate respondsToSelector:@selector(requiresHeadingCalibration:)]) {
+                    [self.delegate requiresHeadingCalibration:@{
+                                                                @"accuracy": @(loc.orientationAccuracy),
+                                                                @"silenceIfCalibrated": @(YES),
+                                                                @"noLocation": @(NO)
+                                                                }];
+                    firstLinkInfo.hasBeenBearing = YES;
+                    firstLinkInfo.bearingTargetThreshold = C.CHANGE_HEADING_THRESHOLD;
+                }
+            }
+            
             isFirst = NO;
         }
         
@@ -1372,7 +1407,7 @@ static NavNavigatorConstants *_instance;
                     return MAX(MIN(distance, linkInfo_.link.length/4), 0.6);
                 }
             };
-            NSLog(@"ApproachDistance,%.2f,%.2f,%.2f,%.2f",linkInfo.distanceToTargetFromSnappedLocationOnLink,walkingSpeed,approachingDistance(),approachedDistance(linkInfo));
+            //NSLog(@"ApproachDistance,%.2f,%.2f,%.2f,%.2f",linkInfo.distanceToTargetFromSnappedLocationOnLink,walkingSpeed,approachingDistance(),approachedDistance(linkInfo));
             
             if (linkInfo.link.linkType != LINK_TYPE_ELEVATOR) {
                 
@@ -1402,10 +1437,11 @@ static NavNavigatorConstants *_instance;
                     
                     // リンクターゲットで迷った, 曲がり角を行き過ぎた, 反対に曲がった
                     // 一度曲がる方向に向いた上で（リンクソース）, 違う方向に行った
-                    //if (linkInfo.distanceToTargetFromSnappedLocationOnLink < C.OFF_ROUTE_EXT_LINK_THRETHOLD ||
+                    // if (linkInfo.distanceToTargetFromSnappedLocationOnLink < C.OFF_ROUTE_EXT_LINK_THRETHOLD ||
                     //    linkInfo.distanceToSourceFromSnappedLocationOnLink < C.OFF_ROUTE_EXT_LINK_THRETHOLD) {
                     // 現在のリンクから一定以上離れて、one hopリンク上に居る -> 戻すことを試みる
-                    if (exMinLinkInfo && exMinDistance < C.OFF_ROUTE_EXT_LINK_THRETHOLD &&
+                    // disabled 2017.12.12
+                    if (false && exMinLinkInfo && exMinDistance < C.OFF_ROUTE_EXT_LINK_THRETHOLD &&
                         (!linkInfo.mayBeOffRoute || (now-linkInfo.lastOffRouteNotified) > C.OFF_ROUTE_ANNOUNCE_MIN_INTERVAL) &&
                         fabs(exMinLinkInfo.diffBearingAtSnappedLocationOnLink) > C.BACK_DETECTION_HEADING_THRESHOLD) {
                         linkInfo.offRouteLinkInfo = exMinLinkInfo;
@@ -1811,7 +1847,8 @@ static NavNavigatorConstants *_instance;
                 // return;
             }
             
-            if (!linkInfo.hasBeenActivated && linkInfo.distanceToUserLocationFromLink < C.OFF_ROUTE_THRESHOLD) {
+            if (!linkInfo.hasBeenActivated && !linkInfo.hasBeenBearing &&
+                linkInfo.distanceToUserLocationFromLink < C.OFF_ROUTE_THRESHOLD) {
                 
                 linkInfo.hasBeenActivated = YES;
                 if ([self.delegate respondsToSelector:@selector(userNeedsToWalk:)]) {
@@ -1846,8 +1883,8 @@ static NavNavigatorConstants *_instance;
                        @"targetHeight": @(linkInfo.link.targetHeight),
                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                        @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
-                       @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[]
-                       
+                       @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
+                       @"isCrossingCorridor": @(linkInfo.link.isCrossingCorridor)
                        }];
                 }
                 linkInfo.nextTargetRemainingDistance = nextTargetRemainingDistance(linkInfo.link.length, linkInfo.link.length);
@@ -1917,7 +1954,8 @@ static NavNavigatorConstants *_instance;
                                @"nextLinkType": @(linkInfo.nextLink.linkType),
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                                @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
-                               @"fullAction": @(YES)
+                               @"fullAction": @(YES),
+                               @"isCrossingCorridor": @(linkInfo.nextLink.isCrossingCorridor)
                                }];
                         }
                         linkInfo.hasBeenWaitingAction = YES;
@@ -1962,6 +2000,7 @@ static NavNavigatorConstants *_instance;
             for(int i = 0; i < [linkInfo.pois count]; i++) {
                 NavPOI *poi = linkInfo.pois[i];
                 
+                //NSLog(@"poi approaching - %@ %f",[[poi.origin facility] name], poi.distanceFromSnappedLocation);
                 if (poi.forBeforeStart || poi.forWelcome || poi.forCorner || poi.forFloor) {
                     continue;
                 }
@@ -1969,10 +2008,10 @@ static NavNavigatorConstants *_instance;
                 if (poi.forAfterEnd) {
                     continue;
                 }
-                
                 if (!poi.hasBeenApproached && (now - poi.lastApproached > C.POI_ANNOUNCE_MIN_INTERVAL)) {
-                    if (poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
-                        poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE &&
+                    if (poi.distanceFromSnappedPoiLocationAndSnappedUserLocation < C.POI_ANNOUNCE_DISTANCE &&
+                        //poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
+                        //poi.distanceFromUserLocation < C.POI_ANNOUNCE_DISTANCE &&
                         ([linkInfo.link.targetLocation distanceTo:poi.poiLocation] > C.POI_ANNOUNCE_DISTANCE ||
                          poi.forDoor || poi.forRamp || poi.forObstacle || poi.forBrailleBlock
                          )
@@ -1991,8 +2030,10 @@ static NavNavigatorConstants *_instance;
                     }
                 } else {
                     if (!poi.hasBeenLeft) {
-                        if (poi.distanceFromSnappedLocation > C.POI_ANNOUNCE_DISTANCE &&
-                            poi.distanceFromUserLocation > C.POI_ANNOUNCE_DISTANCE) {
+                        if (poi.distanceFromSnappedPoiLocationAndSnappedUserLocation > C.POI_ANNOUNCE_DISTANCE
+                            //poi.distanceFromSnappedLocation > C.POI_ANNOUNCE_DISTANCE &&
+                            //poi.distanceFromUserLocation > C.POI_ANNOUNCE_DISTANCE
+                            ) {
                             if ([self.delegate respondsToSelector:@selector(userIsLeavingFromPOI:)]) {
                                 [self.delegate userIsLeavingFromPOI:
                                  @{
@@ -2009,7 +2050,7 @@ static NavNavigatorConstants *_instance;
             }
             
             
-            
+            //if (!linkInfo.hasBeenBearing && !linkInfo.noBearing) {
             if (!linkInfo.hasBeenBearing && !linkInfo.noBearing) {
                 
                 BOOL bearing_for_demo = [[NSUserDefaults standardUserDefaults] boolForKey:@"bearing_for_demo"];
@@ -2040,6 +2081,73 @@ static NavNavigatorConstants *_instance;
                         linkInfo.lastBearingDetected = 0;
                     }
                 } else if (walkingSpeed > 0) {
+                    double currentWidth = 3.0;
+                    double nextWidth = 3.0;
+                    if (linkInfo.nextLink.minimumWidth <= 2.0 ||
+                        linkInfo.nextLink.linkType == LINK_TYPE_STAIRWAY ||
+                        linkInfo.nextLink.linkType == LINK_TYPE_ESCALATOR ||
+                        linkInfo.nextLink.linkType == LINK_TYPE_PEDESTRIAN_CONVEYER) {
+                        nextWidth = 1.0;
+                    }
+                        
+                    BOOL doBearing = NO;
+                    double BEARING_NOTIFY_WAIT = 0.0;
+                    
+                    HLPLocation *loc0 = linkInfo.snappedLocationOnLink;
+                    HLPLocation *loc1 = linkInfo.userLocation;
+                    double b0 = [loc1 bearingTo:loc0];
+                    double d0 = [loc1 distanceTo:loc0];
+                    double acc = linkInfo.userLocation.accuracy;
+                    HLPLocation *loc2 = [loc1 offsetLocationByDistance:MIN(d0, acc/2) Bearing:b0];
+                    HLPLocation *loc3 = [loc2 offsetLocationByDistance:walkingSpeed Bearing:linkInfo.userLocation.orientation];
+                    
+                    HLPLocation *loc4 = [loc2 nearestLocationToLineFromLocation:linkInfo.sourceLocation ToLocation:linkInfo.targetLocation];
+                    HLPLocation *loc5 = [loc3 nearestLocationToLineFromLocation:linkInfo.sourceLocation ToLocation:linkInfo.targetLocation];
+                    
+                    double d1 = [loc4 distanceTo:linkInfo.sourceLocation];
+                    double d2 = [loc4 distanceTo:linkInfo.targetLocation];
+                    double d3 = [loc4 distanceTo:loc2];
+                    double r1 = d1/(d1+d2);
+                    double d4 = [loc5 distanceTo:linkInfo.sourceLocation];
+                    double d5 = [loc5 distanceTo:linkInfo.targetLocation];
+                    double d6 = [loc5 distanceTo:loc3];
+                    double r2 = d4/(d4+d5);
+                    
+                    double e1 = d3 / (r1*currentWidth + (1-r1)*nextWidth);
+                    double e2 = d6 / (r2*currentWidth + (1-r2)*nextWidth);
+                    double threshold = 1.0;
+                    doBearing = ((e2 > threshold) && e1 < e2) ||
+                    (e1 > threshold && e2 > threshold);
+
+                    
+                    NSLog(@"doBearing %d: ws=%.2f, acc=%.2f, d0=%.2f, d3=%.2f, d6=%.2f, e1=%.2f, e2=%.2f, diff=%.2f", doBearing, walkingSpeed, acc, d0, d3, d6, e1, e2, linkInfo.diffBearingAtUserLocation);
+
+                    if (doBearing) {
+                        if (linkInfo.lastBearingDetected == 0) {
+                            linkInfo.lastBearingDetected = now;
+                        }
+                        
+                        if (now - linkInfo.lastBearingDetected > BEARING_NOTIFY_WAIT &&
+                            fabs(linkInfo.diffBearingAtUserLocation) >= 20 &&
+                            fabs(linkInfo.diffBearingAtUserLocation) <= 60
+                            ) {
+                            //NSLog(@"needs to bearing: %f degree", linkInfo.diffBearingAtUserLocation);
+                            if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
+                                [self.delegate userNeedsToChangeHeading:
+                                 @{
+                                   @"diffHeading": @(linkInfo.diffBearingAtUserLocation),
+                                   @"threshold": @(0)
+                                   }];
+                            }
+                            linkInfo.hasBeenBearing = YES;
+                            linkInfo.bearingTargetThreshold = fabs(linkInfo.diffBearingAtUserLocation / 2);
+                            linkInfo.lastBearingDetected = 0;
+                        }
+                    } else {
+                        linkInfo.lastBearingDetected = 0;
+                    }
+                    
+                    /*
                     double BEARING_TARGET_DISTANCE = 20;
                     double BEARING_DIFF_THRETHOLD = 2.0;
                     double BEARING_DURATION_FACTOR = 0.1;
@@ -2076,6 +2184,7 @@ static NavNavigatorConstants *_instance;
                     } else {
                         linkInfo.lastBearingDetected = 0;
                     }
+                     */
                 }
             }
             

@@ -211,10 +211,13 @@
 @property (readonly) BOOL leftSide;
 @property (readonly) BOOL rightSide;
 
-@property (readonly) HLPLocation *snappedLocationOnLink;
+@property (readonly) HLPLink *link;
+@property (readonly) HLPLocation *snappedPoiLocationOnLink;
+@property (readonly) HLPLocation *snappedUserLocationOnLink;
 @property (readonly) HLPLocation *userLocation;
-@property (readonly) double distanceFromSnappedLocation;
-@property (readonly) double distanceFromUserLocation;
+@property (readonly) double distanceFromSnappedPoiLocationAndSnappedUserLocation;
+//@property (readonly) double distanceFromSnappedLocation;
+//@property (readonly) double distanceFromUserLocation;
 @property (readonly) double diffAngleFromUserOrientation;
 
 
@@ -226,7 +229,7 @@
 @property int countApproached;
 
 - (instancetype)initWithText:(NSString*)text Location:(HLPLocation*)location Options:(NSDictionary*)options;
-- (void)updateWithLocation:(HLPLocation*)location andUserLocation:(HLPLocation*)userLocation;
+- (void)updateWithLink:(HLPLink*)link andUserLocation:(HLPLocation*)userLocation;
 @end
 
 @interface NavNavigator : NSObject <NavFutureSummarySource>

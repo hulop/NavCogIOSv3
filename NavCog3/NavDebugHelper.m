@@ -24,6 +24,9 @@
 #import "LocationEvent.h"
 #import "NavDeviceTTS.h"
 
+#import <CoreLocation/CoreLocation.h>
+#import <sys/sysctl.h>
+
 @implementation NavDebugHelper {
     NSMutableDictionary *_lastSent;
 }
@@ -208,5 +211,88 @@ didReceiveStream:(NSInputStream *)stream
 {
     certificateHandler(YES);
 }
+
+
+- (NSString*) platformString
+{
+    size_t size;
+    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    char *machine = (char*)malloc(size);
+    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+    NSString *deviceName = [NSString stringWithCString:machine encoding:NSUTF8StringEncoding];
+    free(machine);
+    return deviceName;
+}
+
+- (NSDictionary*) buildBeaconJSON:(NSArray<CLBeacon *> *) beacons
+{
+    NSMutableDictionary *json = [@{} mutableCopy];
+    json[@"type"] = @"rssi";
+    
+    
+    NSString *phoneID = [NSString stringWithFormat:@"%@-%@", [self platformString], UIDevice.currentDevice.identifierForVendor.UUIDString];
+    json[@"phoneID"] = phoneID;
+    
+    long timestamp = [[NSDate date] timeIntervalSince1970] * 1000.0;
+    
+    json[@"timestamp"] = @(timestamp);
+    
+    NSMutableArray* array = [@[] mutableCopy];
+    
+    for(CLBeacon *beacon in beacons) {
+        NSString* id = [NSString stringWithFormat:@"%@-%@-%@",
+                        beacon.proximityUUID.UUIDString,
+                        beacon.major,
+                        beacon.minor];
+        NSDictionary* obj = @{
+                              @"type": @"iBeacon",
+                              @"id": id,
+                              @"rssi": @(beacon.rssi)
+                              };
+        [array addObject:obj];
+    }
+    json[@"data"] = array;
+    
+    return json;
+}
+
+- (void) sendBeacons:(NSArray<CLBeacon *> *) beacons
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if (![ud boolForKey:@"send_beacon_data"]) {
+        return;
+    }
+    
+    NSDictionary *json = [self buildBeaconJSON:beacons];
+    
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/beacon", [ud stringForKey:@"beacon_data_server"]]];
+    
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    
+    request.HTTPMethod = @"POST";
+    
+    NSData *data = [NSJSONSerialization dataWithJSONObject:json options:0 error:nil];
+    request.HTTPBody = data;
+    
+    NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.timeoutIntervalForRequest = 2;
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+    
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (data != nil) {
+            NSLog(@"Send success");
+            //std::cout << "Send success" << std::endl;
+        }
+        if (error) {
+            NSLog(@"%@", [error localizedDescription]);
+            //std::cout << [[error localizedDescription] cStringUsingEncoding:NSUTF8StringEncoding] << std::endl;
+        }
+    }];
+    
+    [task resume];
+}
+
 
 @end

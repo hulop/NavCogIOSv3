@@ -25,6 +25,9 @@
 #import "NavUtil.h"
 #import "LocationEvent.h"
 #import "DestinationTableViewController.h"
+#import "ExpConfig.h"
+#import "ServerConfig+Preview.h"
+#import "HLPGeoJSON+External.h"
 @import AVFoundation;
 
 @interface NavSearchHistoryDataSource2: NavSearchHistoryDataSource
@@ -84,12 +87,14 @@
     BOOL updated;
     BOOL actionEnabled;
     NSString *lastIdentifier;
+    BOOL presented;
 }
 
 @end
 
 @implementation SearchViewController {
     NavSearchHistoryDataSource *historySource;
+    NSDictionary *filter;
 }
 
 - (void)viewDidLoad {
@@ -180,20 +185,29 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    presented = YES;
+    [self updateViewWithFlag:YES];
+}
+
+- (IBAction)returnActionForSegue:(UIStoryboardSegue *)segue
+{
     [self updateViewWithFlag:YES];
 }
 
 - (IBAction)refreshDestinations:(id)sender {
     updated = false;
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:PREVIEW_SELECTED_FILTER];
     [self loadDestinations:YES];
 }
 
 - (void) loadDestinations:(BOOL) force
 {
     if (!updated) {
-        if ([[NavDataStore sharedDataStore] reloadDestinations:force]) {
-            actionEnabled = NO;
-            [self updateViewWithFlag:NO];
+        if ([[NavDataStore sharedDataStore] reloadDestinations:force withComplete:^(NSArray *d, HLPDirectory *directory) {
+            NavDataStore *nds = [NavDataStore sharedDataStore];
+            nds.from = [NavDestination selectStart];
+            nds.to = [NavDestination selectDestination];
+        }]) {
             [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait",@"")];
             return;
         }
@@ -251,6 +265,19 @@
 - (void) updateViewWithFlag:(BOOL)voiceoverNotificationFlag
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        filter = [[NSUserDefaults standardUserDefaults] objectForKey:PREVIEW_SELECTED_FILTER];
+        if ([[ServerConfig sharedConfig] useAreaSelection] && filter == nil && presented) {
+            [self performSegueWithIdentifier:@"area_selection" sender:self];
+        }
+        
+        if (filter) {
+            self.navigationItem.title = filter[@"building"];
+            self.navigationItem.rightBarButtonItem.accessibilityLabel = @"Change area";
+        } else {
+            self.navigationItem.title = @"Route";
+            self.navigationItem.rightBarButtonItem.accessibilityLabel = @"Refresh";
+        }
+        
         self.navigationItem.hidesBackButton = !updated || !actionEnabled;
         if (!updated || !actionEnabled) {
             self.navigationItem.leftBarButtonItem = nil;
@@ -260,8 +287,11 @@
         HLPLocation *loc = [nds currentLocation];
         BOOL isNotManual = ![nds isManualLocation] || [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
         BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
-        BOOL useDest = self.useDestination.on;
+        BOOL onlyRoutePreview = [[ServerConfig sharedConfig] onlyRoutePreview];
+        BOOL useDest = self.useDestination.on || onlyRoutePreview;
 
+        self.useDestination.hidden = onlyRoutePreview;
+        
         self.fromButton.enabled = updated && actionEnabled;
         self.toButton.enabled = updated && actionEnabled;
         self.refreshButton.enabled = updated && actionEnabled;
@@ -292,6 +322,23 @@
         self.toButton.hidden = !useDest;
         self.toArrow.hidden = !useDest;
         self.switchButton.hidden = !useDest;
+        
+        NSMutableSet *set = [[NSMutableSet alloc] init];
+        if (nds.destinations) {
+            for(HLPLandmark *landmark in nds.destinations) {
+                if (landmark && landmark.isExternalPOI) {
+                    [set addObject:landmark.externalAttribution];
+                }
+            }
+        }
+        NSMutableString *temp = [@"" mutableCopy];
+        [set enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
+            if (temp.length > 0) {
+                [temp appendString:@", "];
+            }
+            [temp appendString:obj];
+        }];
+        self.attribution.text = temp;
     });
 }
 
@@ -316,6 +363,14 @@
 - (void) _startNavigation:(NSDictionary*)override
 {
     NavDataStore *nds = [NavDataStore sharedDataStore];
+    
+    [ExpConfig sharedConfig].currentRoute = @{
+                                              @"name":[NSString stringWithFormat:@"%@ -> %@", nds.from.name, nds.to.name],
+                                              @"from_id":nds.from.singleId,
+                                              @"to_id":nds.to._id,
+                                              @"limit":@(24*3600*365)
+                                              };
+    
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     __block NSMutableDictionary *prefs = [@{
                             @"dist":@"500",
@@ -327,6 +382,7 @@
                             @"stairs":[ud boolForKey:@"route_use_stairs"]?@"9":@"1",
                             @"esc":[ud boolForKey:@"route_use_escalator"]?@"9":@"1",
                             @"elv":[ud boolForKey:@"route_use_elevator"]?@"9":@"1",
+                            @"mvw":[ud boolForKey:@"route_use_moving_walkway"]?@"9":@"1",  
                             @"tactile_paving":[ud boolForKey:@"route_tactile_paving"]?@"1":@"",
                             } mutableCopy];
     // override
@@ -425,9 +481,13 @@
 
         DestinationTableViewController *dView = (DestinationTableViewController*)segue.destinationViewController;
         lastIdentifier = dView.restorationIdentifier = segue.identifier;
+        if (filter) {
+            NavDestination *dest = [[NavDestination alloc] initWithLabel:@"" Filter:filter];
+            dView.filterDest = dest;
+        }
         dView.root = self;
         
-        if ([lastIdentifier isEqualToString:@"toDestinations"]) {
+        if ([lastIdentifier isEqualToString:@"toDestinations"] || [lastIdentifier isEqualToString:@"area_selection"]) {
             dView.voTarget = _toButton;
         } else {
             dView.voTarget = _fromButton;

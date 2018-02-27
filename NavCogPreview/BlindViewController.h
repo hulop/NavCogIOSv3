@@ -21,14 +21,14 @@
  *******************************************************************************/
 
 #import <UIKit/UIKit.h>
-#import <NavWebView/NavWebView.h>
+#import "NavBlindWebView.h"
 #import "NavCoverView.h"
 #import "HLPPreviewer.h"
 #import "HLPPreviewCommander.h"
 
-@interface BlindViewController : UIViewController <NavWebviewHelperDelegate, HLPPreviewerDelegate, PreviewCommandDelegate, PreviewTraverseDelegate, HLPPreviewCommanderDelegate, UITabBarDelegate>
+@interface BlindViewController : UIViewController <HLPWebViewDelegate, HLPPreviewerDelegate, PreviewCommandDelegate, PreviewTraverseDelegate, HLPPreviewCommanderDelegate, UITabBarDelegate>
 
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (weak, nonatomic) IBOutlet NavBlindWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;

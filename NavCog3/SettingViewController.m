@@ -26,14 +26,16 @@
 #import "ConfigManager.h"
 #import "LocationEvent.h"
 #import "NavDebugHelper.h"
-#import "NavCog3-Swift.h"
+#import <HLPDialog/HLPDialog.h>
 #import "NavDeviceTTS.h"
 #import "NavDataStore.h"
 #import "AuthManager.h"
 #import "NavUtil.h"
 #import "Logging.h"
 #import "ScreenshotHelper.h"
-#import "SSZipArchive.h"
+#import <ZipArchive/SSZipArchive.h>
+#import "HelpViewController.h"
+#import "ServerConfig.h"
 
 @interface SettingViewController ()
 
@@ -119,7 +121,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     }
     [self updateView];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DialogManager.DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
 
     
     // Uncomment the following line to preserve selection between presentations.
@@ -158,7 +160,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
 {
     [self.tableView reloadData];
     
-    BOOL dialog = [[DialogManager sharedManager] isDialogAvailable];
+    BOOL dialog = [[DialogManager sharedManager] isAvailable];
     if (self.dialogSearchCell) {
         self.dialogSearchCell.selectionStyle = dialog?UITableViewCellSelectionStyleGray:UITableViewCellSelectionStyleNone;
         self.dialogSearchCell.textLabel.enabled = dialog;
@@ -285,10 +287,20 @@ static HLPSetting *poiLabel, *ignoreFacility;
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
         [self.navigationController popToRootViewControllerAnimated:YES];
     } else if ([setting.name isEqualToString:@"OpenHelp"]) {
-        NSString *lang = [@"-" stringByAppendingString:[[NavDataStore sharedDataStore] userLanguage]];
-        if ([lang isEqualToString:@"-en"]) { lang = @""; }
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://hulop.github.io/help%@", lang]];
-        [NavUtil openURL:url onViewController:self];
+        HelpViewController *vc = [HelpViewController getInstance];
+        [self.navigationController showViewController:vc sender:self];
+    } else if ([setting.name isEqualToString:@"OpenInstructions"]) {
+        HelpViewController *vc = [HelpViewController getInstance];
+        vc.helpType = @"instructions";
+        vc.helpTitle = NSLocalizedString(@"Instructions", @"");
+        [self.navigationController showViewController:vc sender:self];
+    } else if ([setting.name isEqualToString:@"back_to_mode_selection"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_UNLOAD_BLIND object:self];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else if ([setting.name isEqualToString:@"send_feedback"]) {
+        NSString *subject = [NSString stringWithFormat:NSLocalizedString(@"feedbackSubject", @""), [NavDataStore sharedDataStore].userID];
+        NSString *body = NSLocalizedString(@"feedbackBody", @"");
+        [self composeEmailSubject:subject Body:body withAttachment:nil];
     } else {
         [self performSegueWithIdentifier:setting.name sender:self];
     }
@@ -350,7 +362,8 @@ static HLPSetting *poiLabel, *ignoreFacility;
                         [fm removeItemAtPath:dir error:nil];
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self composeEmailBody:description withAttachment:zpath];
+                            NSString* subject = [NSString stringWithFormat:@"Report Issue (%@)", [[zpath lastPathComponent] stringByDeletingPathExtension]];
+                            [self composeEmailSubject:subject Body:description withAttachment:zpath];
                         });
                     }
                 });
@@ -359,16 +372,18 @@ static HLPSetting *poiLabel, *ignoreFacility;
     });
 }
 
-- (void)composeEmailBody:(NSString*)body withAttachment:(NSString*)path
+- (void)composeEmailSubject:(NSString*)subject Body:(NSString*)body withAttachment:(NSString*)path
 {
     if([MFMailComposeViewController canSendMail]) {
         MFMailComposeViewController *mailCont = [[MFMailComposeViewController alloc] init];
         mailCont.mailComposeDelegate = self;
         
-        [mailCont setSubject:[NSString stringWithFormat:@"Report Issue (%@)", [[path lastPathComponent] stringByDeletingPathExtension]]];
+        [mailCont setSubject:subject];
         [mailCont setToRecipients:[NSArray arrayWithObject:@"hulop.contact@gmail.com"]];
         [mailCont setMessageBody:body isHTML:NO];
-        [mailCont addAttachmentData:[NSData dataWithContentsOfFile:path] mimeType:@"application/zip" fileName:[path lastPathComponent]];
+        if (path) {
+            [mailCont addAttachmentData:[NSData dataWithContentsOfFile:path] mimeType:@"application/zip" fileName:[path lastPathComponent]];
+        }
         
         [self presentViewController:mailCont animated:YES completion:nil];
     } else {
@@ -429,25 +444,27 @@ static HLPSetting *poiLabel, *ignoreFacility;
 {
     if (userSettingHelper) {
         BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_BLIND"];
+        BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+        BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
         //[speechLabel setVisible:blindMode];
         //[speechSpeedSetting setVisible:blindMode];
         
-        [poiLabel setVisible:blindMode];
+        [previewSpeedSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
+        [previewWithActionSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
         [ignoreFacility setVisible:blindMode];
-        
-        [previewSpeedSetting setVisible:blindMode];
-        [previewWithActionSetting setVisible:blindMode];
         [vibrateSetting setVisible:blindMode];
         [soundEffectSetting setVisible:blindMode];
         [boneConductionSetting setVisible:blindMode];
+
+        [unitLabel setVisible:blindMode];
+        [unitMeter setVisible:blindMode];
+        [unitFeet setVisible:blindMode];
+
         [exerciseLabel setVisible:blindMode];
         [exerciseAction setVisible:blindMode];
         //[mapLabel setVisible:blindMode];
         //[initialZoomSetting setVisible:blindMode];
         [resetLocation setVisible:!blindMode];
-        [unitLabel setVisible:blindMode];
-        [unitMeter setVisible:blindMode];
-        [unitFeet setVisible:blindMode];
         
         idLabel.label = [NavDataStore sharedDataStore].userID;
         BOOL isDeveloperAuthorized = [[AuthManager sharedManager] isDeveloperAuthorized];
@@ -459,19 +476,29 @@ static HLPSetting *poiLabel, *ignoreFacility;
     }
     userSettingHelper = [[HLPSettingHelper alloc] init];
 
+    [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenInstructions", @"") Name:@"OpenInstructions"];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenHelp", @"") Name:@"OpenHelp"];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"Send Feedback", @"") Name:@"send_feedback"];
+    
+    [userSettingHelper addSectionTitle:NSLocalizedString(@"Mode", @"")];
+    [userSettingHelper addActionTitle:NSLocalizedString(@"Back to mode selection", @"") Name:@"back_to_mode_selection"];
     
     speechLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech_Sound", @"label for tts options")];
     speechSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
                                      Name:@"speech_speed" DefaultValue:@(0.55) Min:0.1 Max:1 Interval:0.05];
     previewSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
     previewWithActionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
+    ignoreFacility = [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info." Name:@"ignore_facility" DefaultValue:@(NO) Accept:nil];
     vibrateSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"vibrateSetting", @"") Name:@"vibrate" DefaultValue:@(YES) Accept:nil];
     soundEffectSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"soundEffectSetting", @"") Name:@"sound_effect" DefaultValue:@(YES) Accept:nil];
     boneConductionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"for_bone_conduction_headset",@"") Name:@"for_bone_conduction_headset" DefaultValue:@(NO) Accept:nil];
 
-    poiLabel = [userSettingHelper addSectionTitle:@"POI"];
-    ignoreFacility = [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info." Name:@"ignore_facility" DefaultValue:@(NO) Accept:nil];
-    
+    unitLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];
+    unitMeter = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Meter", @"meter distance unit label")
+                                                 Name:@"unit_meter" Group:@"distance_unit" DefaultValue:@(YES) Accept:nil];
+    unitFeet = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
+                                                Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
     
     exerciseLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
     exerciseAction = [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];
@@ -483,16 +510,6 @@ static HLPSetting *poiLabel, *ignoreFacility;
     
     resetLocation = [userSettingHelper addActionTitle:NSLocalizedString(@"Reset_Location", @"") Name:@"Reset_Location"];
     
-
-    unitLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];
-    unitMeter = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Meter", @"meter distance unit label")
-                                     Name:@"unit_meter" Group:@"distance_unit" DefaultValue:@(YES) Accept:nil];
-    unitFeet = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
-                                     Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
-    
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
-    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenHelp", @"") Name:@"OpenHelp"];
-
     NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     NSString *buildNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     
@@ -517,6 +534,9 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [detailSettingHelper addActionTitle:@"Report Issue" Name:@"report_issue"];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Record logs" Name:@"logging_to_file" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Record screenshots" Name:@"record_screenshots" DefaultValue:@(NO) Accept:nil];
+    
+    [detailSettingHelper addSectionTitle:@"Background"];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Background Mode" Name:@"background_mode" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSectionTitle:@"Setting Preset"];
     [detailSettingHelper addActionTitle:@"Setting Preset" Name:@"choose_config"];
@@ -624,6 +644,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Confidence of heading for initialization" Name:@"headingConfidenceInit" DefaultValue:@(0.0) Min:0.0 Max:1.0 Interval:0.05];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Orientation accuracy threshold for reliable orientation [degree]" Name:@"oriAccThreshold" DefaultValue:@(22.5) Min:0.0 Max:120 Interval:2.5];
+    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Initial location search radius in 2D [m]" Name:@"initialSearchRadius2D" DefaultValue:@(10) Min:5 Max:50 Interval:1];
     [[blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Apply yaw drift smoothing" Name:@"applyYawDriftSmoothing" DefaultValue:@(YES) Accept:nil] setVisible: YES];
 
     
@@ -643,6 +664,10 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability for floor trans area" Name:@"mixtureProbabilityFloorTransArea" DefaultValue:@(0.25) Min:0.0 Max:1.0 Interval:0.05];
     [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Weight multiplier for floor trans area" Name:@"weightFloorTransArea" DefaultValue:@(4) Min:1 Max:5 Interval:0.1] setVisible:YES];
     [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Reject distance for floor trans area" Name:@"rejectDistanceFloorTrans" DefaultValue:@(10) Min:0.0 Max:25.0 Interval:1] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Duration allowing force floor update" Name:@"durationAllowForceFloorUpdate" DefaultValue:@(1) Min:1 Max:20 Interval:1] setVisible:YES];
+    
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Window for altimeter manager" Name:@"windowAltitudeManager" DefaultValue:@(3) Min:1 Max:10 Interval:1] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev threshold for altimeter manager" Name:@"stdThresholdAltitudeManager" DefaultValue:@(0.15) Min:0.0 Max:2.0 Interval:0.05] setVisible:YES];
     
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (prediction)"];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Sigma stop for random walker" Name:@"sigmaStopRW" DefaultValue:@(0.2) Min:0.0 Max:1.0 Interval:0.1];
@@ -762,6 +787,8 @@ static HLPSetting *poiLabel, *ignoreFacility;
                                              Name:@"route_use_elevator" DefaultValue:@(YES) Accept:nil];
     [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Escalator", @"")
                                              Name:@"route_use_escalator" DefaultValue:@(NO) Accept:nil];
+    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Moving Walkway", @"")
+                                             Name:@"route_use_moving_walkway" DefaultValue:@(NO) Accept:nil];
     [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Stairs", @"")
                                              Name:@"route_use_stairs" DefaultValue:@(YES) Accept:nil];
 }
@@ -791,7 +818,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
         NSString *name = [NSString stringWithFormat:@"report_issue_%@", log];
         [reportIssueSettingHelper addActionTitle:label Name:name];
         count++;
-        if (count >= 5) {
+        if (count >= 10) {
             break;
         }
     }
@@ -806,15 +833,15 @@ static HLPSetting *poiLabel, *ignoreFacility;
 {
     NSString *id = [[tableView cellForRowAtIndexPath:indexPath] reuseIdentifier];
     if ([id isEqualToString:@"search_option"]) {
-        [self.webViewHelper triggerWebviewControl:WebviewControlRouteSearchOptionButton];
+        [self.webView triggerWebviewControl:HLPWebviewControlRouteSearchOptionButton];
         [self.navigationController popViewControllerAnimated:YES];
     }
     if ([id isEqualToString:@"search_route"]) {
-        [self.webViewHelper triggerWebviewControl:WebviewControlRouteSearchButton];
+        [self.webView triggerWebviewControl:HLPWebviewControlRouteSearchButton];
         [self.navigationController popViewControllerAnimated:YES];
     }
     if ([id isEqualToString:@"end_navigation"]) {
-        [self.webViewHelper triggerWebviewControl:WebviewControlEndNavigation];
+        [self.webView triggerWebviewControl:HLPWebviewControlEndNavigation];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
@@ -823,7 +850,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
 {
     NSString *id = [[tableView cellForRowAtIndexPath:indexPath] reuseIdentifier];
     if ([id isEqualToString:@"dialog_search"]) {
-        return [[DialogManager sharedManager] isDialogAvailable];
+        return [[DialogManager sharedManager] isAvailable];
     }
     return YES;
 }
@@ -863,7 +890,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
     if ([identifier isEqualToString:@"show_dialog_wc"]) {
-        return [[DialogManager sharedManager] isDialogAvailable];
+        return [[DialogManager sharedManager] isAvailable];
     }
     return YES;
 }

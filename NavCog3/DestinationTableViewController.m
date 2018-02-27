@@ -23,60 +23,142 @@
 #import "DestinationTableViewController.h"
 #import "NavDataSource.h"
 #import "LocationEvent.h"
-#import "NavCog3-Swift.h"
+#import <HLPDialog/HLPDialog.h>
+#import "DefaultTTS.h"
 
 @interface DestinationTableViewController ()
 
 @end
 
 @implementation DestinationTableViewController {
-    NavDestinationDataSource *source;
+    NavTableDataSource *_source;
+    NavTableDataSource *_defaultSource;
     NavDestination *filterDest;
+    UISearchController *searchController;
+    
+    NSString *lastSearchQuery;
+}
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+{
+    NSString *query = searchController.searchBar.text;
+    if (query && query.length > 0) {
+        lastSearchQuery = query;
+        searchController.dimsBackgroundDuringPresentation = YES;
+        [[NavDataStore sharedDataStore] searchDestinations:query withComplete:^(HLPDirectory *directory) {
+            if (![lastSearchQuery isEqualToString:query]) {
+                return;
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                _source = [[NavDirectoryDataSource alloc] initWithDirectory:directory];
+                searchController.dimsBackgroundDuringPresentation = NO;
+                [self.tableView reloadData];
+            });
+        }];
+    } else {
+        _source = _defaultSource;
+        [self.tableView reloadData];
+    }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    source = [[NavDestinationDataSource alloc] init];
-    source.filter = filterDest.filter;
-    if (source.filter) {
-        self.navigationItem.title = filterDest.label;
-        source.showShops = YES;
-        source.showSectionIndex = YES;
-        source.showShopBuilding = NO;
-        source.showShopFloor = YES;
-    }
-    
-    if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
-        if (!source.filter) {
-            self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
-            source.showCurrentLocation = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"];
-            source.showNearShops = YES;
-            source.showBuilding = YES;
-            source.showShopBuilding = YES;
+    if ([[NavDataStore sharedDataStore] directory]) {
+        NavDirectoryDataSource *source = [[NavDirectoryDataSource alloc] init];
+        if (filterDest) {
+            source.directory = filterDest.item.content;
+        } else {
+            source.directory = [[NavDataStore sharedDataStore] directory];
+            
+            if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
+                self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
+                source.showDialog = NO;
+                source.showCurrentLocation = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"];
+                source.showFacility = NO;
+            }
+            if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
+                self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
+                source.showDialog = YES;
+                source.showCurrentLocation = NO;
+                source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
+            }
+            
+            searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+            searchController.searchResultsUpdater = self;
+            searchController.obscuresBackgroundDuringPresentation = YES;
+            searchController.dimsBackgroundDuringPresentation = NO;
+            searchController.hidesNavigationBarDuringPresentation = NO;
+            searchController.searchBar.placeholder = @"Search";
+            if (@available(iOS 11.0, *)) {
+                self.navigationItem.searchController = searchController;
+            } else {
+                self.tableView.tableHeaderView = searchController.searchBar;
+            }
+        }
+        [source update:nil];
+        _source = _defaultSource = source;
+        self.definesPresentationContext = true;
+    } else {
+        NavDestinationDataSource *source = [[NavDestinationDataSource alloc] init];
+
+        source.filter = filterDest.filter;
+        
+        if (source.filter) {
+            self.navigationItem.title = filterDest.label;
+            source.showShops = YES;
+            source.showSectionIndex = YES;
+            source.showShopBuilding = NO;
             source.showShopFloor = YES;
         }
-    }
-    if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
-        if (!source.filter) {
-            self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
-            source.showDialog = YES;
-            source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
-            source.showBuilding = YES;
-            source.showShopBuilding = YES;
-            source.showShopFloor = YES;
+        
+        if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
+            if (!source.filter) {
+                self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_start", @"BlindView", @"");
+                source.showCurrentLocation = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_current_location_from_start"];
+                source.showNearShops = YES;
+                source.showBuilding = YES;
+                source.showShopBuilding = YES;
+                source.showShopFloor = YES;
+            }
         }
+        if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
+            if (!source.filter) {
+                self.navigationItem.title = NSLocalizedStringFromTable(@"_nav_select_destination", @"BlindView", @"");
+                source.showDialog = YES;
+                source.showFacility = ![[NSUserDefaults standardUserDefaults] boolForKey:@"hide_facility_from_to"];
+                source.showBuilding = YES;
+                source.showShopBuilding = YES;
+                source.showShopFloor = YES;
+            }
+        }
+        [source update:nil];
+        _source = source;
     }
-    [source update:nil];
     
     [self.tableView reloadData];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:DialogManager.DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.hidesSearchBarWhenScrolling = NO;
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.hidesSearchBarWhenScrolling = YES;
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -91,32 +173,32 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [source numberOfSectionsInTableView:tableView];
+    return [_source numberOfSectionsInTableView:tableView];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [source tableView:tableView numberOfRowsInSection:section];
+    return [_source tableView:tableView numberOfRowsInSection:section];
 }
 
 - (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
-    return [source sectionIndexTitlesForTableView:tableView];
+    return [_source sectionIndexTitlesForTableView:tableView];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return [source tableView:tableView titleForHeaderInSection:section];
+    return [_source tableView:tableView titleForHeaderInSection:section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [source tableView:tableView cellForRowAtIndexPath:indexPath];
+    UITableViewCell *cell = [_source tableView:tableView cellForRowAtIndexPath:indexPath];
     
     cell.textLabel.text = NSLocalizedStringFromTable(cell.textLabel.text, @"BlindView", @"");
     
-    NavDestination *dest = [source destinationForRowAtIndexPath:indexPath];
+    NavDestination *dest = [_source destinationForRowAtIndexPath:indexPath];
     if (dest.type == NavDestinationTypeDialogSearch) {
-        BOOL dialog = [[DialogManager sharedManager] isDialogAvailable];
+        BOOL dialog = [[DialogManager sharedManager] isAvailable];
         cell.textLabel.enabled = dialog;
         cell.selectionStyle = dialog?UITableViewCellSelectionStyleGray:UITableViewCellSelectionStyleNone;
     }
@@ -128,13 +210,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NavDestination *dest = [source destinationForRowAtIndexPath:indexPath];
+    NavDestination *dest = [_source destinationForRowAtIndexPath:indexPath];
     
     if (dest.type == NavDestinationTypeFilter) {
         filterDest = dest;
         [self performSegueWithIdentifier:@"sub_category" sender:self];
     } else if (dest.type == NavDestinationTypeDialogSearch) {
-        if ([[DialogManager sharedManager] isDialogAvailable]) {
+        if ([[DialogManager sharedManager] isAvailable]) {
             [self performSegueWithIdentifier:@"show_dialog" sender:self];
         }
     } else {
@@ -166,6 +248,7 @@
     if ([segue.destinationViewController isKindOfClass:DialogViewController.class]){
         DialogViewController* dView = (DialogViewController*)segue.destinationViewController;
         dView.root = _root;
+        dView.tts = [DefaultTTS new];
     }
 }
 

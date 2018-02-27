@@ -26,10 +26,12 @@
 #import "AuthManager.h"
 #import "NavUtil.h"
 #import "NavDataStore.h"
+#import "NavDataSource.h"
 #import "HLPFingerprint.h"
 #import "BlindViewController.h"
 #import "ServerConfig+Preview.h"
 #import "ExpConfig.h"
+#import "HelpViewController.h"
 
 @interface SettingViewController ()
 
@@ -41,6 +43,9 @@
 static HLPSettingHelper *userSettingHelper;
 static HLPSettingHelper *routeOptionsSettingHelper;
 static HLPSettingHelper *expSettingHelper;
+static NavDestinationDataSource *destSource;
+static HLPSettingHelper *areaSettingHelper;
+static NSDictionary<NSString*, NavDestination*> *destMap;
 
 static HLPSetting *idLabel;
 
@@ -67,6 +72,15 @@ static HLPSetting *idLabel;
         helper = expSettingHelper;
         self.navigationItem.title = @"Select a route";
     }
+    if ([self.restorationIdentifier isEqualToString:@"area_selection"]) {
+        destSource = [[NavDestinationDataSource alloc] init];
+        destSource.showBuilding = YES;
+        destSource.defaultFilter = @{@"minor_category":@{@"$not_contains":@"_preview_no_destination_"}};
+        [destSource update:nil];
+        [SettingViewController setupAreaSettings];
+        helper = areaSettingHelper;
+        self.navigationItem.title = @"Select an area";
+    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configChanged:) name:EXP_ROUTES_CHANGED_NOTIFICATION object:nil];
     
@@ -75,7 +89,6 @@ static HLPSetting *idLabel;
         self.tableView.delegate = helper;
         self.tableView.dataSource = helper;
     }
-    
     [self updateView];
 }
 
@@ -99,7 +112,6 @@ static HLPSetting *idLabel;
 - (void) updateView
 {
     [self.tableView reloadData];
-    
 }
 
 - (void)dealloc
@@ -121,10 +133,17 @@ static HLPSetting *idLabel;
     }
 
     if ([setting.name isEqualToString:@"help_preview"]) {
-        NSString *lang = [@"-" stringByAppendingString:[[NavDataStore sharedDataStore] userLanguage]];
-        if ([lang isEqualToString:@"-en"]) { lang = @""; }
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://hulop.github.io/help_preview%@", lang]];
-        [NavUtil openURL:url onViewController:self];
+        HelpViewController *vc = [HelpViewController getInstance];
+        [self.navigationController showViewController:vc sender:self];
+    }
+    
+    if ([self.restorationIdentifier isEqualToString:@"area_selection"]) {
+        NSDictionary* filter = destMap[setting.name].filter;
+        if ([filter[@"building"] isEqual:[NSNull null]]) {
+            filter = @{@"building":@""};
+        }
+        [[NSUserDefaults standardUserDefaults] setObject:filter forKey:PREVIEW_SELECTED_FILTER];
+        [self performSegueWithIdentifier:@"unwind_to_search" sender:self];
     }
 }
 
@@ -189,11 +208,11 @@ static HLPSetting *idLabel;
     
     [userSettingHelper addSectionTitle:@"Preview Jump"];
     [userSettingHelper addSettingWithType:BOOLEAN Label:@"Step sound for jump" Name:@"step_sound_for_jump" DefaultValue:@(YES) Accept:nil];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info. for jump" Name:@"ignore_facility_for_jump2" DefaultValue:@(YES) Accept:nil];
+    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info. for jump" Name:@"ignore_facility_for_jump2" DefaultValue:@(NO) Accept:nil];
     
     [userSettingHelper addSectionTitle:@"Preview Walk"];
     [userSettingHelper addSettingWithType:BOOLEAN Label:@"Step sound for walk" Name:@"step_sound_for_walk" DefaultValue:@(YES) Accept:nil];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info. for walk" Name:@"ignore_facility_for_walk2" DefaultValue:@(YES) Accept:nil];
+    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info. for walk" Name:@"ignore_facility_for_walk2" DefaultValue:@(NO) Accept:nil];
 
     [[userSettingHelper addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
     [[userSettingHelper addSettingWithType:TEXTINPUT Label:@"Server Host" Name:@"hokoukukan_server" DefaultValue:@"" Accept:nil] setVisible:NO];
@@ -222,6 +241,8 @@ static HLPSetting *idLabel;
                                              Name:@"route_use_elevator" DefaultValue:@(YES) Accept:nil];
     [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Escalator", @"")
                                              Name:@"route_use_escalator" DefaultValue:@(NO) Accept:nil];
+    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Moving Walkway", @"")
+                                             Name:@"route_use_moving_walkway" DefaultValue:@(NO) Accept:nil];
     [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Stairs", @"")
                                              Name:@"route_use_stairs" DefaultValue:@(YES) Accept:nil];
 }
@@ -247,6 +268,30 @@ static HLPSetting *idLabel;
         HLPSetting *setting = [expSettingHelper addActionTitle:title Name:route[@"name"]];        
         setting.disabled = (elapsed_time > limit);
     }
+}
+
++ (void)setupAreaSettings
+{
+    if (!areaSettingHelper) {
+        areaSettingHelper = [[HLPSettingHelper alloc] init];
+    }
+    [areaSettingHelper removeAllSetting];
+    [areaSettingHelper addSectionTitle:@"Select an area"];
+    
+    UITableView *view = [[UITableView alloc] init];
+    NSInteger rows = [destSource tableView:view numberOfRowsInSection:0];
+    NSMutableDictionary *temp = [@{} mutableCopy];
+    for(long i = 0; i < rows; i++) {
+        NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
+        NavDestination *dest = [destSource destinationForRowAtIndexPath:index];
+        NSString *title = dest.filter[@"building"];
+        if ([title isEqual:[NSNull null]]) {
+            title = @"NOAREA";
+        }
+        [areaSettingHelper addActionTitle:title Name:title];
+        temp[title] = dest;
+    }
+    destMap = temp;
 }
 
 - (void)didReceiveMemoryWarning {

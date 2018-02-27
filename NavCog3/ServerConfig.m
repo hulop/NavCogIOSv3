@@ -23,7 +23,6 @@
 
 #import "ServerConfig.h"
 #import "HLPDataUtil.h"
-#import <UIKit/UIKit.h>
 
 #define SERVERLIST_URL @"https://hulop.github.io/serverlist.json"
 
@@ -58,8 +57,10 @@ static ServerConfig *instance;
 
 - (void)clear
 {
+    _serverList = nil;
     _selectedServerConfig = nil;
     _agreementConfig = nil;
+    _downloadConfig = nil;
     _selected = nil;
 }
 
@@ -122,7 +123,8 @@ static ServerConfig *instance;
 {
     NSString *server_host = [self.selected objectForKey:@"hostname"];
     NSString *config_file_name = [self.selected objectForKey:@"config_file_name"];
-    NSString *https = [[self.selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
+
     config_file_name = config_file_name?config_file_name:@"server_config.json";
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/config/%@",https, server_host, config_file_name]];
     
@@ -139,7 +141,7 @@ static ServerConfig *instance;
 - (NSArray*) checkDownloadFiles
 {
     NSString *server_host = [self.selected objectForKey:@"hostname"];
-    NSString *https = [[self.selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
     NSDictionary *json = _selectedServerConfig;
 
     NSLog(@"server_config.json: %@", json);
@@ -203,17 +205,19 @@ static ServerConfig *instance;
     return NO;
 }
 
-- (void)checkAgreement:(void(^)(NSDictionary*))complete
+- (void)checkAgreementForIdentifier:(NSString*)identifier withCompletion:(void(^)(NSDictionary*))complete
 {
     if ([[[ServerConfig sharedConfig].selected objectForKey:@"no_checkagreement"] boolValue]) {
         _agreementConfig = @{@"agreed":@(true)};
         complete(_agreementConfig);
         return;
     }
-    
+
+    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
+    NSLog(@"AppName: %@",appName);
     NSString *server_host = [[ServerConfig sharedConfig].selected objectForKey:@"hostname"];
-    NSString *device_id = [[UIDevice currentDevice].identifierForVendor UUIDString];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/api/check_agreement?id=%@",server_host, device_id]];
+    NSString *https = [[self.selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/api/check_agreement?id=%@&appname=%@",https,server_host, identifier, appName]];
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
@@ -260,4 +264,8 @@ static ServerConfig *instance;
     [ud setObject:@(0) forKey:[NSString stringWithFormat:@"%@_enquete_ask_count", identifier]];
 }
 
+- (BOOL)isPreviewDisabled
+{
+    return _selectedServerConfig[@"navcog_disable_preview"] && [_selectedServerConfig[@"navcog_disable_preview"] boolValue];
+}
 @end

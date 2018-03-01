@@ -988,7 +988,7 @@ static NSRegularExpression *patternHLPPOIFlags;
 
 + (BOOL) link:(HLPLink *)link1 canBeCombinedWithLink:(HLPLink *)link2
 {
-    return  fabs(link1.lastBearingForTarget - link2.initialBearingFromSource) < 20.0 &&
+    return fabs([HLPLocation normalizeDegree:(link1.lastBearingForTarget - link2.initialBearingFromSource)]) < 20.0 &&
     [link1.type isEqualToString:link2.type] &&
     link1.direction == link2.direction &&
     link1.sourceHeight == link1.targetHeight &&

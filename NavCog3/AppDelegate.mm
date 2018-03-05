@@ -76,6 +76,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableAcceleration:) name:DISABLE_ACCELEARATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableAcceleration:) name:ENABLE_ACCELEARATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableStabilizeLocalize:) name:DISABLE_STABILIZE_LOCALIZE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableStabilizeLocalize:) name:ENABLE_STABILIZE_LOCALIZE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationRestart:) name:REQUEST_LOCATION_RESTART object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationStop:) name:REQUEST_LOCATION_STOP object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationHeadingReset:) name:REQUEST_LOCATION_HEADING_RESET object:nil];
@@ -194,6 +196,16 @@ void uncaughtExceptionHandler(NSException *exception)
 - (void)enableAcceleration:(NSNotification*)note
 {
     [HLPLocationManager sharedManager].isAccelerationEnabled = YES;
+}
+
+- (void)disableStabilizeLocalize:(NSNotification*)note
+{
+    [HLPLocationManager sharedManager].isStabilizeLocalizeEnabled = NO;
+}
+
+- (void)enableStabilizeLocalize:(NSNotification*)note
+{
+    [HLPLocationManager sharedManager].isStabilizeLocalizeEnabled = YES;
 }
 
 - (void) requestLocationRestart:(NSNotification*) note

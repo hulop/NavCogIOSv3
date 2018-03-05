@@ -21,14 +21,14 @@
 *******************************************************************************/
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
-@interface HelpViewController : UIViewController
+@interface WebViewController : UIViewController
 
-@property NSString* helpType;
-@property NSString* helpTitle;
-
-@property (weak, nonatomic) IBOutlet UIWebView *webview;
+@property NSURL* url;
+@property WKWebView *webview;
 
 + (instancetype) getInstance;
++ (NSURL*) hulopHelpPageURLwithType:(NSString*)helpType;
 
 @end

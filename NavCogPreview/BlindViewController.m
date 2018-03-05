@@ -32,7 +32,7 @@
 #import "ServerConfig+Preview.h"
 #import "ExpConfig.h"
 #import "Logging.h"
-#import "HelpViewController.h"
+#import "WebViewController.h"
 
 
 #import <CoreMotion/CoreMotion.h>
@@ -283,7 +283,9 @@ double stdev(double array[], long count) {
 - (void)viewDidAppear:(BOOL)animated
 {
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"first_launch"]) {
-        HelpViewController *vc = [HelpViewController getInstance];
+        WebViewController *vc = [WebViewController getInstance];
+        vc.url = [WebViewController hulopHelpPageURLwithType:@"help"];
+        vc.title = NSLocalizedString(@"Help", @"");
         [self.navigationController showViewController:vc sender:self];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"first_launch"];
     }

@@ -31,7 +31,7 @@
 #import "BlindViewController.h"
 #import "ServerConfig+Preview.h"
 #import "ExpConfig.h"
-#import "HelpViewController.h"
+#import "WebViewController.h"
 
 @interface SettingViewController ()
 
@@ -133,7 +133,9 @@ static HLPSetting *idLabel;
     }
 
     if ([setting.name isEqualToString:@"help_preview"]) {
-        HelpViewController *vc = [HelpViewController getInstance];
+        WebViewController *vc = [WebViewController getInstance];
+        vc.url = [WebViewController hulopHelpPageURLwithType:@"help"];
+        vc.title = NSLocalizedString(@"Help", @"");
         [self.navigationController showViewController:vc sender:self];
     }
     

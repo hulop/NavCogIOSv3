@@ -36,7 +36,7 @@
 #import "SettingViewController.h"
 
 #import "ServerConfig.h"
-#import "HelpViewController.h"
+#import "WebViewController.h"
 
 #import <HLPLocationManager/HLPLocationManager+Player.h>
 #import "DefaultTTS.h"
@@ -179,9 +179,9 @@
     
     
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"first_launch"]) {
-        HelpViewController *vc = [HelpViewController getInstance];
-        vc.helpType = @"instructions";
-        vc.helpTitle = NSLocalizedString(@"Instructions", @"");
+        WebViewController *vc = [WebViewController getInstance];
+        vc.url = [WebViewController hulopHelpPageURLwithType:@"instructions"];
+        vc.title = NSLocalizedString(@"Instructions", @"");
         [self.navigationController showViewController:vc sender:self];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"first_launch"];
     }

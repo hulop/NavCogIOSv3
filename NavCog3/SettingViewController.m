@@ -34,7 +34,7 @@
 #import "Logging.h"
 #import "ScreenshotHelper.h"
 #import <ZipArchive/SSZipArchive.h>
-#import "HelpViewController.h"
+#import "WebViewController.h"
 #import "ServerConfig.h"
 
 @interface SettingViewController ()
@@ -287,12 +287,14 @@ static HLPSetting *poiLabel, *ignoreFacility;
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
         [self.navigationController popToRootViewControllerAnimated:YES];
     } else if ([setting.name isEqualToString:@"OpenHelp"]) {
-        HelpViewController *vc = [HelpViewController getInstance];
+        WebViewController *vc = [WebViewController getInstance];
+        vc.url = [WebViewController hulopHelpPageURLwithType:@"help"];
+        vc.title = NSLocalizedString(@"Help", @"");
         [self.navigationController showViewController:vc sender:self];
     } else if ([setting.name isEqualToString:@"OpenInstructions"]) {
-        HelpViewController *vc = [HelpViewController getInstance];
-        vc.helpType = @"instructions";
-        vc.helpTitle = NSLocalizedString(@"Instructions", @"");
+        WebViewController *vc = [WebViewController getInstance];
+        vc.url = [WebViewController hulopHelpPageURLwithType:@"instructions"];
+        vc.title = NSLocalizedString(@"Instructions", @"");
         [self.navigationController showViewController:vc sender:self];
     } else if ([setting.name isEqualToString:@"back_to_mode_selection"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_UNLOAD_BLIND object:self];

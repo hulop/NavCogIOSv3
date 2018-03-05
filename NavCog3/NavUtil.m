@@ -22,6 +22,7 @@
 
 #import "NavUtil.h"
 #import <sys/utsname.h>
+#import <objc/runtime.h>
 
 @implementation UIMessageView
 
@@ -185,5 +186,25 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
     
     return deviceName;
 }
+
+- (void)_accessibilityElementDidBecomeFocused {
+    NSLog(@"_accessibilityElementDidBecomeFocused %@", self);
+    [NSNotificationCenter.defaultCenter postNotificationName:AccessibilityElementDidBecomeFocused object:self];
+}
+- (void)_accessibilityElementDidBecomeFocused2 {
+    NSLog(@"_accessibilityElementDidBecomeFocused2 %@", self);
+    [NSNotificationCenter.defaultCenter postNotificationName:AccessibilityElementDidBecomeFocused object:self];
+}
+
++ (void)switchAccessibilityMethods {
+    Method toMethod = class_getInstanceMethod(NavUtil.self, @selector(_accessibilityElementDidBecomeFocused));
+    Method uaeMethod = class_getInstanceMethod(UIAccessibilityElement.self, @selector(accessibilityElementDidBecomeFocused));
+    method_exchangeImplementations(uaeMethod, toMethod);
+    
+    Method toMethod2 = class_getInstanceMethod(NavUtil.self, @selector(_accessibilityElementDidBecomeFocused2));
+    Method uvMethod = class_getInstanceMethod(UIView.self, @selector(accessibilityElementDidBecomeFocused));
+    method_exchangeImplementations(uvMethod, toMethod2);
+}
+
 
 @end

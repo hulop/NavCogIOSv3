@@ -57,6 +57,14 @@
     [self.delegate didBecomeFocused:self];
 }
 
+- (BOOL)accessibilityActivate {
+    if (!_noSpeak) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NEAREST_POI object:self];
+        return true;
+    }
+    return false;
+}
+
 // this hack code causes repeating announcement because voiceover might detect
 // screen change based on rendering on webview
 // this hack is no longer used and another hack code is implemented

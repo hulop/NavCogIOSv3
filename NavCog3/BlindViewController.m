@@ -329,7 +329,10 @@
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:self];
     [self becomeFirstResponder];
-    
+    if ([navigator isActive]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
+    }
+
     UIView* target = [self findLabel:self.navigationController.navigationBar.subviews];
     
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, target.superview);
@@ -1193,6 +1196,34 @@
         NSLog(@"%@", [e toDictionary]);
     };
     [ctx evaluateScript:command];
+}
+
+- (void)showPOI:(NavPOI *)poi
+{
+    if (![poi.origin isKindOfClass:HLPEntrance.class]) {
+        return;
+    }
+    HLPEntrance *hpoi = (HLPEntrance*)poi.origin;
+    HLPFacility *facility = hpoi.facility;
+    WebViewController *vc = [WebViewController getInstance];
+
+    NSString *content = facility.properties[@"content"];
+    NSURL *url = nil;
+    if ([content hasPrefix:@"bundle://"]) {
+        content = [content substringFromIndex:@"bundle://".length];
+        NSString *file = [content lastPathComponent];
+        NSString *ext = [file pathExtension];
+        NSString *name = [file stringByDeletingPathExtension];
+        NSString *dir = [content stringByDeletingLastPathComponent];
+        url = [[NSBundle mainBundle] URLForResource:name withExtension:ext subdirectory:dir];
+    } else {
+        url = [NSURL URLWithString:content];
+    }
+
+    NSLog(@"%@", url);
+    vc.title = facility.name;
+    vc.url = url;
+    [self.navigationController showViewController:vc sender:self];
 }
 
 - (void)requestDialogStart:(NSNotification *)note

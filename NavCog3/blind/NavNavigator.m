@@ -858,7 +858,7 @@ static NavNavigatorConstants *_instance;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeCleared:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStatus:) name:REQUEST_NAVIGATION_STATUS object:nil];
-    
+
     navigationQueue = [[NSOperationQueue alloc] init];
     navigationQueue.maxConcurrentOperationCount = 1;
     navigationQueue.qualityOfService = NSQualityOfServiceUserInteractive;

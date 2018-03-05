@@ -22,17 +22,35 @@
 
 #import "WebViewController.h"
 #import "NavDataStore.h"
+#import "NavUtil.h"
 
 @interface WebViewController ()
 
 @end
 
-@implementation WebViewController
+@implementation WebViewController {
+    BOOL initialFocused;
+    UILabel *titleView;
+}
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeFocused:) name:AccessibilityElementDidBecomeFocused object:nil];
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)didBecomeFocused:(NSNotificationCenter*)note
+{
+    if (!initialFocused) {
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, titleView);
+        initialFocused = YES;
+    }
 }
 
 - (void)viewDidLoad {
@@ -41,6 +59,7 @@
     /* init webview */
     _webview = [[WKWebView alloc] init];
     [self.view addSubview:_webview];
+    _webview.navigationDelegate = self;
     _webview.translatesAutoresizingMaskIntoConstraints = NO;
     if (@available(iOS 11.0, *)) {
         [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_webview attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view.safeAreaLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
@@ -55,7 +74,10 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
     [self.webview loadRequest:request];
-    self.navigationItem.title = self.title;
+    
+    titleView = [[UILabel alloc] init];
+    titleView.text = self.title;
+    self.navigationItem.titleView = titleView;
 }
 
 - (void)didReceiveMemoryWarning {

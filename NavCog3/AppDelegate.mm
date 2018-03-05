@@ -32,6 +32,7 @@
 #import <HLPDialog/HLPDialog.h>
 #import <AVFoundation/AVFoundation.h>
 #import "ScreenshotHelper.h"
+#import "NavUtil.h"
 
 #define IS_IOS11orHIGHER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)
 
@@ -65,6 +66,7 @@
 
     [NavDeviceTTS sharedTTS];
     [NavSound sharedInstance];
+    [NavUtil switchAccessibilityMethods];
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     

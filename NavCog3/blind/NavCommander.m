@@ -27,9 +27,18 @@
 
 @implementation NavCommander {
     NSTimeInterval lastPOIAnnounceTime;
+    NSMutableArray<NavPOI*>* approachingPOIs;
 }
 
 #pragma mark - string builder functions
+
+- (instancetype) init
+{
+    self = [super self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestNearestPOI:) name:REQUEST_NEAREST_POI object:nil];
+    approachingPOIs = [@[] mutableCopy];
+    return self;
+}
 
 - (void)dealloc
 {
@@ -767,6 +776,9 @@
     BOOL isDestinationPOI = NO;
     BOOL shortSentence = (now - lastPOIAnnounceTime) < 3;
     
+    if (poi && ![approachingPOIs containsObject:poi]) {
+        [approachingPOIs addObject:poi];
+    }
     
     BOOL ignoreFacility = [[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility"];
     if (ignoreFacility && [poi.origin isKindOfClass:HLPEntrance.class]) {
@@ -863,6 +875,10 @@
 - (void)userIsLeavingFromPOI:(NSDictionary*)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
+    NavPOI *poi = properties[@"poi"];
+    if (poi && [approachingPOIs containsObject:poi]) {
+        [approachingPOIs removeObject:poi];
+    }
 }
 
 - (NSString *)summaryString:(NSDictionary *)properties
@@ -911,10 +927,28 @@
     
     return string;
 }
-
 - (void)currentStatus:(NSDictionary *)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
+    
+    HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];
+    double minDistance = DBL_MAX;
+    NavPOI *nearestPOI = nil;
+    for(NavPOI *poi in approachingPOIs) {
+        double d = [poi.poiLocation distanceTo:location];
+        if (d < minDistance) {
+            minDistance = d;
+            nearestPOI = poi;
+        }
+    }
+    if (minDistance < 10) {
+        [self userIsApproachingToPOI:@{
+                                       @"poi": nearestPOI,
+                                       @"heading": @(nearestPOI.diffAngleFromUserOrientation)
+                                           }];
+        return;
+    }
+    
     double distance = [properties[@"distance"] doubleValue];
 
     BOOL offRoute = [properties[@"offRoute"] boolValue];
@@ -1006,6 +1040,23 @@
     NSString *string = NSLocalizedStringFromTable(@"REROUTING", @"BlindView", @"");
     [self.delegate vibrate];
     [self.delegate speak:string withOptions:properties completionHandler:^{}];
+}
+
+- (void)requestNearestPOI:(NSNotification*)note
+{
+    HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];
+    double minDistance = DBL_MAX;
+    NavPOI *nearestPOI = nil;
+    for(NavPOI *poi in approachingPOIs) {
+        double d = [poi.poiLocation distanceTo:location];
+        if (d < minDistance) {
+            minDistance = d;
+            nearestPOI = poi;
+        }
+    }
+    if (minDistance < 10) {
+        [self.delegate showPOI:nearestPOI];
+    }
 }
 
 

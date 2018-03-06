@@ -137,17 +137,6 @@
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
     
-    dialogHelper = [[DialogViewHelper alloc] init];
-    double scale = 0.75;
-    double size = (113*scale)/2;
-    double x = size+8;
-    double y = self.view.bounds.size.height - (size+8) - 63;
-    dialogHelper.scale = scale;
-    [dialogHelper inactive];
-    [dialogHelper setup:self.view position:CGPointMake(x, y)];
-    dialogHelper.delegate = self;
-    dialogHelper.helperView.hidden = YES;
-    
     self.searchButton.enabled = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
@@ -333,6 +322,20 @@
     UIView* target = [self findLabel:self.navigationController.navigationBar.subviews];
     
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, target.superview);
+    
+    dialogHelper = [[DialogViewHelper alloc] init];
+    double scale = 0.75;
+    double size = (113*scale)/2;
+    double x = size+8;
+    double y = self.view.bounds.size.height + self.view.bounds.origin.y - (size+8);
+    if (@available(iOS 11.0, *)) {
+        y -= self.view.safeAreaInsets.bottom;
+    }
+    dialogHelper.scale = scale;
+    [dialogHelper inactive];
+    [dialogHelper setup:self.view position:CGPointMake(x, y)];
+    dialogHelper.delegate = self;
+    dialogHelper.helperView.hidden = YES;
 }
 
 - (BOOL)canBecomeFirstResponder

@@ -119,8 +119,10 @@
     NSString *modelName = [ud stringForKey:@"bleloc_map_data"];
     NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
-    NSString* modelPath = [documentsPath stringByAppendingPathComponent:modelName];
-    [manager setModelPath:modelPath];
+    if (modelName) {
+        NSString* modelPath = [documentsPath stringByAppendingPathComponent:modelName];
+        [manager setModelPath:modelPath];
+    }
     
     NSDictionary *params = [self getLocationManagerParams];
     [manager setParameters:params];

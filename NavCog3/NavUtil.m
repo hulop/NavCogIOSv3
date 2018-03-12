@@ -188,11 +188,11 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
 }
 
 - (void)_accessibilityElementDidBecomeFocused {
-    NSLog(@"_accessibilityElementDidBecomeFocused %@", self);
+    //NSLog(@"_accessibilityElementDidBecomeFocused %@", self);
     [NSNotificationCenter.defaultCenter postNotificationName:AccessibilityElementDidBecomeFocused object:self];
 }
 - (void)_accessibilityElementDidBecomeFocused2 {
-    NSLog(@"_accessibilityElementDidBecomeFocused2 %@", self);
+    //NSLog(@"_accessibilityElementDidBecomeFocused2 %@", self);
     [NSNotificationCenter.defaultCenter postNotificationName:AccessibilityElementDidBecomeFocused object:self];
 }
 

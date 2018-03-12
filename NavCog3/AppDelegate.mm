@@ -353,7 +353,7 @@ void uncaughtExceptionHandler(NSException *exception)
 
 - (void)locationManager:(HLPLocationManager*)manager didLogText:(NSString *)text
 {
-    if ([Logging isLogging]) {
+    if ([Logging isLogging] && [Logging isSensorLogging]) {
         NSLog(@"%@", text);
     }
 }
@@ -384,7 +384,8 @@ void uncaughtExceptionHandler(NSException *exception)
         }
         [Logging stopLog];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
-            [Logging startLog];
+            BOOL sensor = [[NSUserDefaults standardUserDefaults] boolForKey:@"logging_sensor"];
+            [Logging startLog:sensor];
         }
     }
     [self checkRecordScreenshots];

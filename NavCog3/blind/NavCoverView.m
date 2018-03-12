@@ -202,7 +202,7 @@
 // switch between two accessibility element to detect tap on screen
 - (void)didBecomeFocused:(NavAnnounceItem *)item
 {
-    NSLog(@"focused:%@", item);
+    //NSLog(@"focused:%@", item);
     if (item == currentStatusItem) {
         currentStatusItem.accessibilityFrame = CGRectMake(0,0,1,1);
         currentStatusItem2.accessibilityFrame = self.window.frame;
@@ -224,7 +224,7 @@
             UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, item);
         }
     }
-    NSLog(@"%@", elements);
+    //NSLog(@"%@", elements);
 }
 
 - (void)speakCurrentElement

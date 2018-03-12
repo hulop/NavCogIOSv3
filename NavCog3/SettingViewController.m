@@ -403,7 +403,8 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [self dismissViewControllerAnimated:YES completion:nil];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
-        [Logging startLog];
+        BOOL sensor = [[NSUserDefaults standardUserDefaults] boolForKey:@"logging_sensor"];
+        [Logging startLog:sensor];
     }
 }
 
@@ -610,6 +611,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
 
     
     [blelocppSettingHelper addSectionTitle:@"blelocpp params"];
+    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Record sensor" Name:@"logging_sensor" DefaultValue:@(YES) Accept:nil];
     [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Webview update min interval" Name:@"webview_update_min_interval" DefaultValue:@(0.5) Min:0 Max:3.0 Interval:0.1];
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Show states" Name:@"show_states" DefaultValue:@(NO) Accept:nil];
     [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use blelocpp accuracy" Name:@"use_blelocpp_acc" DefaultValue:@(NO) Accept:nil];

@@ -1267,7 +1267,7 @@ static NavNavigatorConstants *_instance;
                 walkingSpeed = MIN(ave / MAX_WD * 10, 2.0);
                 walkingSpeed = walkingSpeed < zero_threthold ? 0 : walkingSpeed;
             }
-            NSLog(@"walkingSpeed = %f", walkingSpeed);
+            //NSLog(@"walkingSpeed = %f", walkingSpeed);
             prevLocation = location;
         }
         

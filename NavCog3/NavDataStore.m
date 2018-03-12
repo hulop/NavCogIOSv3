@@ -1281,6 +1281,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
 - (void)clearRoute
 {
     routeCache = nil;
+    [Logging logType:@"clearRoute" withParam:@{}];
     [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CLEARED_NOTIFICATION object:self];
 }
 

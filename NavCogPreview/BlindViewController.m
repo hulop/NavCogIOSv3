@@ -345,7 +345,7 @@ double stdev(double array[], long count) {
 
 -(void)previewStarted:(HLPPreviewEvent*)event
 {
-    logFile = [Logging startLog];
+    logFile = [Logging startLog:false];
     duration = 0;
     [self _active];
     

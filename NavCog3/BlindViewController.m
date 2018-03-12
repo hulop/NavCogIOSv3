@@ -326,7 +326,11 @@
 
     UIView* target = [self findLabel:self.navigationController.navigationBar.subviews];
     
-    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, target.superview);
+    if (!_cover.hidden) {
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, _cover.center);
+    } else {
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.navigationItem);
+    }
     
     if (!dialogHelper) {
         dialogHelper = [[DialogViewHelper alloc] init];

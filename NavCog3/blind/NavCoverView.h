@@ -36,6 +36,6 @@
 @interface NavCoverView : UIView <NavAnnounceItemDelegate>
 @property id<NavFutureSummarySource> fsSource;
 @property BOOL preventCurrentStatus;
+@property (readonly) UIAccessibilityElement *center;
 
-- (void)focusFirst;
 @end

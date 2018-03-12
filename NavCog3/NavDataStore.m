@@ -67,7 +67,6 @@
             break;
         case NavDestinationTypeLandmarks:
             [aCoder encodeObject:_landmarks forKey:@"landmarks"];
-            break;
         case NavDestinationTypeLandmark:
             [aCoder encodeObject:_landmark forKey:@"landmark"];
             break;
@@ -91,6 +90,7 @@
     switch(_type) {
         case NavDestinationTypeDirectoryItem:
             _item = [aDecoder decodeObjectForKey:@"item"];
+            break;
         case NavDestinationTypeLandmarks:
             _landmarks = [aDecoder decodeObjectForKey:@"landmarks"];
         case NavDestinationTypeLandmark:

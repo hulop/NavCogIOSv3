@@ -21,12 +21,12 @@
 *******************************************************************************/
 
 #import <UIKit/UIKit.h>
-#import <WebKit/WebKit.h>
+#import <HLPWebView/HLPWebView.h>
 
-@interface WebViewController : UIViewController <WKNavigationDelegate>
+@interface WebViewController : UIViewController <WKNavigationDelegate, HLPTTSProtocol>
 
 @property NSURL* url;
-@property WKWebView *webview;
+@property HLPWebView *webview;
 
 + (instancetype) getInstance;
 + (NSURL*) hulopHelpPageURLwithType:(NSString*)helpType;

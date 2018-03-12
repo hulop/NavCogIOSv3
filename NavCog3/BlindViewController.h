@@ -31,7 +31,7 @@
 
 @interface BlindViewController : UIViewController <HLPWebViewDelegate, HLPTTSProtocol, NavNavigatorDelegate, NavCommanderDelegate, NavPreviewerDelegate, MCBrowserViewControllerDelegate, DialogViewDelegate>
 
-@property (weak, nonatomic) IBOutlet NavBlindWebView *webView;
+@property (nonatomic) IBOutlet NavBlindWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;

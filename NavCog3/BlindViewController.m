@@ -113,7 +113,9 @@
     [super viewDidLoad];
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _webView = [[NavBlindWebView alloc] initWithFrame:CGRectMake(0,0,0,0) configuration:[[WKWebViewConfiguration alloc] init]];
     _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
+    [self.view addSubview:_webView];
     _webView.userMode = [ud stringForKey:@"user_mode"];
     _webView.config = @{
                         @"serverHost":[ud stringForKey:@"selected_hokoukukan_server"],
@@ -123,6 +125,7 @@
 
     _webView.delegate = self;
     _webView.tts = self;
+    [_webView setFullScreenForView:self.view];
     
     navigator = [[NavNavigator alloc] init];
     commander = [[NavCommander alloc] init];
@@ -208,8 +211,7 @@
 
 - (void) checkMapCenter:(NSTimer*)timer
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        HLPLocation *loc = [_webView getCenter];
+    [_webView getCenterWithCompletion:^(HLPLocation *loc) {
         if (loc != nil) {
             [NavDataStore sharedDataStore].mapCenter = loc;
             HLPLocation *cloc = [NavDataStore sharedDataStore].currentLocation;
@@ -227,7 +229,7 @@
             [self updateView];
             [timer invalidate];
         }
-    });
+    }];
 }
 
 
@@ -326,19 +328,21 @@
     
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, target.superview);
     
-    dialogHelper = [[DialogViewHelper alloc] init];
-    double scale = 0.75;
-    double size = (113*scale)/2;
-    double x = size+8;
-    double y = self.view.bounds.size.height + self.view.bounds.origin.y - (size+8);
-    if (@available(iOS 11.0, *)) {
-        y -= self.view.safeAreaInsets.bottom;
+    if (!dialogHelper) {
+        dialogHelper = [[DialogViewHelper alloc] init];
+        double scale = 0.75;
+        double size = (113*scale)/2;
+        double x = size+8;
+        double y = self.view.bounds.size.height + self.view.bounds.origin.y - (size+8);
+        if (@available(iOS 11.0, *)) {
+            y -= self.view.safeAreaInsets.bottom;
+        }
+        dialogHelper.scale = scale;
+        [dialogHelper inactive];
+        [dialogHelper setup:self.view position:CGPointMake(x, y)];
+        dialogHelper.delegate = self;
+        dialogHelper.helperView.hidden = YES;
     }
-    dialogHelper.scale = scale;
-    [dialogHelper inactive];
-    [dialogHelper setup:self.view position:CGPointMake(x, y)];
-    dialogHelper.delegate = self;
-    dialogHelper.helperView.hidden = YES;
 }
 
 - (BOOL)canBecomeFirstResponder
@@ -551,9 +555,9 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
 }
 
-- (void)speak:(NSString *)text force:(BOOL)isForce
+- (void)speak:(NSString *)text force:(BOOL)isForce completionHandler:(void (^)(void))handler
 {
-    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:nil];
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:handler];
 }
 
 - (BOOL)isSpeaking
@@ -913,7 +917,7 @@
     if ([properties[@"isActive"] boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
-                [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.setSync(true);"];
+                [_webView evaluateJavaScript:@"$hulop.map.setSync(true);" completionHandler:nil];
             }
         });
             
@@ -963,7 +967,7 @@
     }
     [NavDataStore sharedDataStore].start = [[NSDate date] timeIntervalSince1970];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
+        [_webView evaluateJavaScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]] completionHandler:nil];
 
         //_cover.preventCurrentStatus = YES;
         [NavUtil hideModalWaiting];
@@ -1223,7 +1227,6 @@
         url = [NSURL URLWithString:content];
     }
 
-    NSLog(@"%@", url);
     vc.title = facility.name;
     vc.url = url;
     [self.navigationController showViewController:vc sender:self];
@@ -1288,7 +1291,7 @@
     }
     if ([segue.identifier isEqualToString:@"show_search"]) {
         if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
-            [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.setSync(true);"];
+            [_webView evaluateJavaScript:@"$hulop.map.setSync(true);" completionHandler:nil];
         }
     }
 }

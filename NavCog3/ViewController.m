@@ -80,6 +80,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     state = ViewStateLoading;
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _webView = [[HLPWebView alloc] initWithFrame:CGRectMake(0,0,0,0) configuration:[[WKWebViewConfiguration alloc] init]];
     _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
     _webView.userMode = [ud stringForKey:@"user_mode"];
     _webView.config = @{
@@ -89,6 +90,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
                         };
     _webView.delegate = self;
     _webView.tts = self;
+    [_webView setFullScreenForView:self.view];
     
     /*
     NSString *server = ;
@@ -181,10 +183,9 @@ typedef NS_ENUM(NSInteger, ViewState) {
         return;
     }
     NSLog(@"checkState");
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSDictionary *json = [_webView getState];
+    [_webView getStateWithCompletionHandler:^(NSDictionary * _Nonnull json) {
         [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:json];
-    });
+    }];
 }
 
 - (void) openURL:(NSNotification*)note
@@ -373,9 +374,9 @@ typedef NS_ENUM(NSInteger, ViewState) {
     
 }
 
-- (void)speak:(NSString *)text force:(BOOL)isForce
+- (void)speak:(NSString *)text force:(BOOL)isForce completionHandler:(void (^)(void))handler
 {
-    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:nil];
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:handler];
 }
 
 - (BOOL)isSpeaking

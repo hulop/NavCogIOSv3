@@ -23,10 +23,18 @@
 #import <UIKit/UIKit.h>
 #import <HLPWebView/HLPWebView.h>
 
+@class WebViewController;
+
+@protocol WebViewControllerDelegate
+@required
+- (void)webViewControllerClosed:(WebViewController*)controller;
+@end
+
 @interface WebViewController : UIViewController <WKNavigationDelegate, HLPTTSProtocol>
 
 @property NSURL* url;
 @property HLPWebView *webview;
+@property (weak) id<WebViewControllerDelegate> delegate;
 
 + (instancetype) getInstance;
 + (NSURL*) hulopHelpPageURLwithType:(NSString*)helpType;

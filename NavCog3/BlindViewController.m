@@ -36,7 +36,6 @@
 #import "SettingViewController.h"
 
 #import "ServerConfig.h"
-#import "WebViewController.h"
 
 #import <HLPLocationManager/HLPLocationManager+Player.h>
 #import "DefaultTTS.h"
@@ -320,9 +319,6 @@
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:self];
     [self becomeFirstResponder];
-    if ([navigator isActive]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_STATUS object:self];
-    }
 
     UIView* target = [self findLabel:self.navigationController.navigationBar.subviews];
     
@@ -1217,6 +1213,7 @@
     HLPEntrance *hpoi = (HLPEntrance*)poi.origin;
     HLPFacility *facility = hpoi.facility;
     WebViewController *vc = [WebViewController getInstance];
+    vc.delegate = self;
 
     NSString *content = facility.properties[@"content"];
     NSURL *url = nil;
@@ -1234,6 +1231,12 @@
     vc.title = facility.name;
     vc.url = url;
     [self.navigationController showViewController:vc sender:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_PAUSE object:nil];
+}
+
+- (void)webViewControllerClosed:(WebViewController *)controller
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_RESUME object:nil];
 }
 
 - (void)requestDialogStart:(NSNotification *)note

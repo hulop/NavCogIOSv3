@@ -845,6 +845,8 @@ static NavNavigatorConstants *_instance;
     
     NSMutableArray *walkedDistances;
     double walkingSpeed;
+    
+    BOOL isResumed;
 }
 
 - (instancetype)init
@@ -858,6 +860,7 @@ static NavNavigatorConstants *_instance;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeCleared:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStatus:) name:REQUEST_NAVIGATION_STATUS object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestResume:) name:REQUEST_NAVIGATION_RESUME object:nil];
 
     navigationQueue = [[NSOperationQueue alloc] init];
     navigationQueue.maxConcurrentOperationCount = 1;
@@ -2276,7 +2279,18 @@ static NavNavigatorConstants *_instance;
     return nil;
 }
 
+- (void) requestResume:(NSNotification*)note
+{
+    isResumed = YES;
+}
+
 - (void) requestStatus:(NSNotification*)note
+{
+    [self _requestStatus:@{@"resume":@(isResumed)}];
+    isResumed = false;
+}
+
+- (void) _requestStatus:(NSDictionary*)options
 {
     if (!_isActive) {
         HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
@@ -2327,7 +2341,8 @@ static NavNavigatorConstants *_instance;
                        @"linkType": @(linkInfo.link.linkType),
                        @"distance": @(linkInfo.link.length),
                        @"nohistory": @(YES),
-                       @"force": @(YES)
+                       @"force": @(YES),
+                       @"resume": options[@"resume"]
                        
                        }];
                 } else if (linkInfo.hasBeenApproaching) { // on elevator
@@ -2392,7 +2407,8 @@ static NavNavigatorConstants *_instance;
                        @"diffHeading": @(linkInfo.diffBearingAtUserLocationToSnappedLocationOnLink),
                        @"distance": @(linkInfo.distanceToUserLocationFromLink),
                        @"nohistory": @(YES),
-                       @"force": @(YES)
+                       @"force": @(YES),
+                       @"resume": options[@"resume"]
                        }];
                     
                 } else {
@@ -2401,7 +2417,8 @@ static NavNavigatorConstants *_instance;
                          @{
                            @"turnAngle": @(linkInfo.nextTurnAngle),
                            @"nohistory": @(YES),
-                           @"force": @(YES)
+                           @"force": @(YES),
+                           @"resume": options[@"resume"]
                            
                            }];
                     }
@@ -2434,7 +2451,8 @@ static NavNavigatorConstants *_instance;
                            @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
                            @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
                            @"nohistory": @(YES),
-                           @"force": @(YES)
+                           @"force": @(YES),
+                           @"resume": options[@"resume"]
                            }];
                     }
                 }

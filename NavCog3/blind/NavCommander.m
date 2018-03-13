@@ -931,6 +931,8 @@
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
     
+    BOOL resume = [properties[@"resume"] boolValue];
+    
     HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];
     double minDistance = DBL_MAX;
     NavPOI *nearestPOI = nil;
@@ -945,8 +947,13 @@
         [self userIsApproachingToPOI:@{
                                        @"poi": nearestPOI,
                                        @"heading": @(nearestPOI.diffAngleFromUserOrientation)
-                                           }];
-        return;
+                                       }];
+        if (!resume) {
+            return;
+        }
+    }
+    if (resume) { // read both poi and status info. when it is resumed
+        properties = [properties mtl_dictionaryByAddingEntriesFromDictionary:@{@"force":@(NO)}];
     }
     
     double distance = [properties[@"distance"] doubleValue];

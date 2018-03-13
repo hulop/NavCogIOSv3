@@ -111,6 +111,9 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     NSLog(@"WEB_PAGE,%@,%@,close,%ld", self.title, self.url, (long)([[NSDate date] timeIntervalSince1970]*1000));
+    if (self.delegate) {
+        [self.delegate webViewControllerClosed:self];
+    }
 }
 
 /*

@@ -157,8 +157,8 @@
     
 
     if (nextLinkType == LINK_TYPE_ELEVATOR || nextLinkType == LINK_TYPE_ESCALATOR || nextLinkType == LINK_TYPE_STAIRWAY) {
-        int sourceHeight = [properties[@"nextSourceHeight"] intValue];
-        int targetHeight = [properties[@"nextTargetHeight"] intValue];
+        double sourceHeight = [properties[@"nextSourceHeight"] doubleValue];
+        double targetHeight = [properties[@"nextTargetHeight"] doubleValue];
         NSString *mean = [HLPLink nameOfLinkType:nextLinkType];
         
         NSString *angle;
@@ -236,8 +236,8 @@
         }
     }
     else if (linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
-        int sourceHeight = [properties[@"sourceHeight"] intValue];
-        int targetHeight = [properties[@"targetHeight"] intValue];
+        double sourceHeight = [properties[@"nextSourceHeight"] doubleValue];
+        double targetHeight = [properties[@"nextTargetHeight"] doubleValue];
         NSString *mean = [HLPLink nameOfLinkType:linkType];
         //NSString *sfloor = [self floorString:sourceHeight];
         NSString *tfloor = [self floorString:targetHeight];

@@ -93,6 +93,8 @@ static ServerConfig *instance;
     if (serverListURL) {
         NSError *error;
         serverlist = [NSString stringWithContentsOfURL:serverListURL encoding:NSUTF8StringEncoding error:&error];
+        NSArray* allLinedStrings = [serverlist componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        serverlist = [allLinedStrings objectAtIndex:0];
         serverlist = [serverlist stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     }
     

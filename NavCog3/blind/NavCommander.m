@@ -776,7 +776,8 @@
     BOOL isDestinationPOI = NO;
     BOOL shortSentence = (now - lastPOIAnnounceTime) < 3;
     
-    if (poi && ![approachingPOIs containsObject:poi]) {
+    if (poi && ![approachingPOIs containsObject:poi] && poi.hasContent) {
+        [_delegate vibrate];
         [approachingPOIs addObject:poi];
     }
     
@@ -1061,10 +1062,11 @@
             nearestPOI = poi;
         }
     }
-    if (minDistance < 10) {
-        [self.delegate showPOI:nearestPOI];
+    if (minDistance < 10 && nearestPOI.hasContent) {
+        [self.delegate showPOI:nearestPOI.contentURL withName:nearestPOI.contentName];
     }
 }
+
 
 
 @end

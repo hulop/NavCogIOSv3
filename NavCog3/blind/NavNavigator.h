@@ -211,6 +211,10 @@
 @property (readonly) BOOL leftSide;
 @property (readonly) BOOL rightSide;
 
+@property (readonly) BOOL hasContent;
+@property (readonly) NSString* contentURL;
+@property (readonly) NSString* contentName;
+
 @property (readonly) HLPLink *link;
 @property (readonly) HLPLocation *snappedPoiLocationOnLink;
 @property (readonly) HLPLocation *snappedUserLocationOnLink;

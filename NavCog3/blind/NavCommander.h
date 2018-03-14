@@ -28,7 +28,7 @@
 - (void)playSuccess;
 - (void)vibrate;
 - (void)executeCommand:(NSString*)command;
-- (void)showPOI:(NavPOI*)poi;
+- (void)showPOI:(NSString *)contentURL withName:(NSString*)name;
 @end
 
 @interface NavCommander : NSObject <NavNavigatorDelegate>

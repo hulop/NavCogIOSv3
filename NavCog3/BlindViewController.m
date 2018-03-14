@@ -1205,30 +1205,24 @@
     [ctx evaluateScript:command];
 }
 
-- (void)showPOI:(NavPOI *)poi
+- (void)showPOI:(NSString *)contentURL withName:(NSString*)name
 {
-    if (![poi.origin isKindOfClass:HLPEntrance.class]) {
-        return;
-    }
-    HLPEntrance *hpoi = (HLPEntrance*)poi.origin;
-    HLPFacility *facility = hpoi.facility;
     WebViewController *vc = [WebViewController getInstance];
     vc.delegate = self;
 
-    NSString *content = facility.properties[@"content"];
     NSURL *url = nil;
-    if ([content hasPrefix:@"bundle://"]) {
-        content = [content substringFromIndex:@"bundle://".length];
-        NSString *file = [content lastPathComponent];
+    if ([contentURL hasPrefix:@"bundle://"]) {
+        contentURL = [contentURL substringFromIndex:@"bundle://".length];
+        NSString *file = [contentURL lastPathComponent];
         NSString *ext = [file pathExtension];
         NSString *name = [file stringByDeletingPathExtension];
-        NSString *dir = [content stringByDeletingLastPathComponent];
+        NSString *dir = [contentURL stringByDeletingLastPathComponent];
         url = [[NSBundle mainBundle] URLForResource:name withExtension:ext subdirectory:dir];
     } else {
-        url = [NSURL URLWithString:content];
+        url = [NSURL URLWithString:contentURL];
     }
 
-    vc.title = facility.name;
+    vc.title = name;
     vc.url = url;
     [self.navigationController showViewController:vc sender:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_PAUSE object:nil];

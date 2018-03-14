@@ -816,6 +816,32 @@ static NavNavigatorConstants *_instance;
     }
     _userLocation = userLocation;
 }
+
+- (BOOL) hasContent
+{
+    return self.contentURL != nil;
+}
+    
+- (NSString*) contentURL
+{
+    if (![self.origin isKindOfClass:HLPEntrance.class]) {
+        return nil;
+    }
+    HLPEntrance *hpoi = (HLPEntrance*)self.origin;
+    HLPFacility *facility = hpoi.facility;
+    return facility.properties[@"content"];
+}
+
+- (NSString*) contentName
+{
+    if (![self.origin isKindOfClass:HLPEntrance.class]) {
+        return nil;
+    }
+    HLPEntrance *hpoi = (HLPEntrance*)self.origin;
+    HLPFacility *facility = hpoi.facility;
+    return facility.name;
+}
+
 @end
 
 @implementation NavNavigator {

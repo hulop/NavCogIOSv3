@@ -32,7 +32,7 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *stopButton;
-@property (nonatomic) IBOutlet HLPWebView *webView;
+@property (strong, nonatomic) IBOutlet HLPWebView *webView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *micButton;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (weak, nonatomic) IBOutlet UILabel *errorMessage;

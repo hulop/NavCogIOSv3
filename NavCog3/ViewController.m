@@ -81,6 +81,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     _webView = [[HLPWebView alloc] initWithFrame:CGRectMake(0,0,0,0) configuration:[[WKWebViewConfiguration alloc] init]];
+    [self.view addSubview:_webView];
     _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
     _webView.userMode = [ud stringForKey:@"user_mode"];
     _webView.config = @{
@@ -103,17 +104,6 @@ typedef NS_ENUM(NSInteger, ViewState) {
     recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
     recognizer.delegate = self;
     [self.webView addGestureRecognizer:recognizer];
-    
-    dialogHelper = [[DialogViewHelper alloc] init];
-    double scale = 0.75;
-    double size = (113*scale)/2;
-    double x = size+8;
-    double y = self.view.bounds.size.height - (size+8) - 63;
-    dialogHelper.scale = scale;
-    [dialogHelper inactive];
-    [dialogHelper setup:self.view position:CGPointMake(x, y)];
-    dialogHelper.delegate = self;
-    dialogHelper.helperView.hidden = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
 
@@ -152,6 +142,25 @@ typedef NS_ENUM(NSInteger, ViewState) {
             [[self topMostController] presentViewController:alert animated:YES completion:nil];
         });
         [ud setBool:YES forKey:@"checked_altimeter"];
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{    
+    if (!dialogHelper) {
+        dialogHelper = [[DialogViewHelper alloc] init];
+        double scale = 0.75;
+        double size = (113*scale)/2;
+        double x = size+8;
+        double y = self.view.bounds.size.height + self.view.bounds.origin.y - (size+8);
+        if (@available(iOS 11.0, *)) {
+            y -= self.view.safeAreaInsets.bottom;
+        }
+        dialogHelper.scale = scale;
+        [dialogHelper inactive];
+        [dialogHelper setup:self.view position:CGPointMake(x, y)];
+        dialogHelper.delegate = self;
+        dialogHelper.helperView.hidden = YES;
     }
 }
 

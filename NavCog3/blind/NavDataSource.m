@@ -215,7 +215,6 @@
 
 @implementation NavDestinationDataSource {
     NSArray *sections;
-    NSDictionary *_filter;
 }
 
 - (instancetype) init {

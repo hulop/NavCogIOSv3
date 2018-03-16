@@ -852,6 +852,7 @@ static NavNavigatorConstants *_instance;
     self = [super init];
     
     _isActive = NO;
+    _isPaused = NO;
     [self reset];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeChanged:) name:ROUTE_CHANGED_NOTIFICATION object:nil];
@@ -881,10 +882,21 @@ static NavNavigatorConstants *_instance;
 - (void) stop
 {
     _isActive = NO;
+    _isPaused = NO;
     [self.delegate didActiveStatusChanged:
      @{
        @"isActive": @(_isActive)
        }];
+}
+
+- (void) pause
+{
+    _isPaused = YES;
+}
+
+- (void) resume
+{
+    _isPaused = NO;
 }
 
 - (void)routeChanged:(NSNotification*)note
@@ -1181,6 +1193,9 @@ static NavNavigatorConstants *_instance;
 
 - (void)locationChanged:(NSNotification*)note
 {
+    if (_isPaused) {
+        return;
+    }
     if (!_isActive) {
         if (alertForHeadingAccuracy) {
             HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];

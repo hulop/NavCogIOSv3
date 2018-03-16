@@ -26,12 +26,12 @@
 #import "HLPDirectory.h"
 
 @interface NavTableDataSource: NSObject <UITableViewDataSource>{
-    @protected NSObject *_filter;
+    @protected NSDictionary *_filter;
     @protected BOOL _showCurrentLocation;
     @protected BOOL _showFacility;
     @protected BOOL _showDialog;
 }
-@property NSObject *filter;
+@property NSDictionary *filter;
 @property BOOL showCurrentLocation;
 @property BOOL showFacility;
 @property BOOL showDialog;

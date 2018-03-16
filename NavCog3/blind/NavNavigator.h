@@ -238,9 +238,12 @@
 
 @interface NavNavigator : NSObject <NavFutureSummarySource>
 @property (readonly) BOOL isActive;
+@property (readonly) BOOL isPaused;
 @property (weak) id<NavNavigatorDelegate> delegate;
 
 - (void) stop;
+- (void) pause;
+- (void) resume;
 //- (void)preventRemainingDistanceEventFor:(NSTimeInterval)timeInSeconds;
 //- (void)preventRemainingDistanceEventBy:(double)nextTargetDistance;
 @end

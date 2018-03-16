@@ -821,7 +821,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
         [reportIssueSettingHelper addActionTitle:label Name:name];
         count++;
         if (count >= 10) {
-            break;
+            //break;
         }
     }
 }

@@ -36,6 +36,20 @@
 
 #define IS_IOS11orHIGHER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)
 
+void NavNSLog(NSString* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    NSString *msg = [[NSString alloc] initWithFormat:fmt arguments:args];
+    va_end(args);
+    if (!isatty(STDERR_FILENO))
+    {
+        fprintf(stdout, "%s\n", [msg UTF8String]);
+    }
+    va_start(args, fmt);
+    NSLogv(fmt, args);
+    va_end(args);
+}
+
 @interface AppDelegate ()
 
 @end

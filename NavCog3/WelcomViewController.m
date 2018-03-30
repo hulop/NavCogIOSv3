@@ -97,7 +97,9 @@
     }
      */
     
-    [[NSUserDefaults standardUserDefaults] setBool:[[AuthManager sharedManager] isDeveloperAuthorized] forKey:@"developer_mode"];
+    if (![[AuthManager sharedManager] isDeveloperAuthorized]) {
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"developer_mode"];
+    }
     /*
     if ([[AuthManager sharedManager] isDeveloperAuthorized]) {
         [self performSegueWithIdentifier:@"show_mode_selection" sender:self];

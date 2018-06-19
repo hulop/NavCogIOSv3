@@ -29,6 +29,7 @@
 @implementation ServerConfig {
     NSURL *targetDir;
     int requestCount;
+    NSDictionary *_selected;
 }
 
 static ServerConfig *instance;
@@ -64,6 +65,22 @@ static ServerConfig *instance;
     _selected = nil;
 }
 
+- (void)setSelected:(NSDictionary *)selected
+{
+    _selected = selected;
+    
+    if (_selected[@"use_http"] && [_selected[@"use_http"] boolValue]) {
+        [[NSUserDefaults standardUserDefaults] setValue:@(NO) forKey:@"https_connection"];
+    } else {
+        [[NSUserDefaults standardUserDefaults] setValue:@(YES) forKey:@"https_connection"];
+    }
+}
+
+- (NSDictionary *)selected
+{
+    return _selected;
+}
+
 - (void)requestServerList:(NSString *)path withComplete:(void (^)(NSDictionary *))complete
 {
     
@@ -80,7 +97,7 @@ static ServerConfig *instance;
             
             for (NSDictionary *server in _serverList[@"servers"]) {
                 if ([server[@"selected"] boolValue]) {
-                    _selected = server;
+                    self.selected = server;
                 }
             }
             complete(json);
@@ -109,7 +126,7 @@ static ServerConfig *instance;
             
             for (NSDictionary *server in _serverList[@"servers"]) {
                 if ([server[@"selected"] boolValue]) {
-                    _selected = server;
+                    self.selected = server;
                 }
             }
             complete(_serverList);
@@ -124,7 +141,7 @@ static ServerConfig *instance;
     NSString *server_host = [self.selected objectForKey:@"hostname"];
     NSString *config_file_name = [self.selected objectForKey:@"config_file_name"];
     NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
-
+    
     config_file_name = config_file_name?config_file_name:@"server_config.json";
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/config/%@",https, server_host, config_file_name]];
     
@@ -216,7 +233,7 @@ static ServerConfig *instance;
     NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
     NSLog(@"AppName: %@",appName);
     NSString *server_host = [[ServerConfig sharedConfig].selected objectForKey:@"hostname"];
-    NSString *https = [[self.selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/api/check_agreement?id=%@&appname=%@",https,server_host, identifier, appName]];
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {

@@ -487,19 +487,19 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [userSettingHelper addActionTitle:NSLocalizedString(@"Back to mode selection", @"") Name:@"back_to_mode_selection"];
     
     speechLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech_Sound", @"label for tts options")];
-    speechSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
+    speechSpeedSetting = [userSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
                                      Name:@"speech_speed" DefaultValue:@(0.55) Min:0.1 Max:1 Interval:0.05];
-    previewSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
-    previewWithActionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
-    ignoreFacility = [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info." Name:@"ignore_facility" DefaultValue:@(NO) Accept:nil];
-    vibrateSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"vibrateSetting", @"") Name:@"vibrate" DefaultValue:@(YES) Accept:nil];
-    soundEffectSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"soundEffectSetting", @"") Name:@"sound_effect" DefaultValue:@(YES) Accept:nil];
-    boneConductionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"for_bone_conduction_headset",@"") Name:@"for_bone_conduction_headset" DefaultValue:@(NO) Accept:nil];
+    previewSpeedSetting = [userSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
+    previewWithActionSetting = [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
+    ignoreFacility = [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Ignore facility info." Name:@"ignore_facility" DefaultValue:@(NO) Accept:nil];
+    vibrateSetting = [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"vibrateSetting", @"") Name:@"vibrate" DefaultValue:@(YES) Accept:nil];
+    soundEffectSetting = [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"soundEffectSetting", @"") Name:@"sound_effect" DefaultValue:@(YES) Accept:nil];
+    boneConductionSetting = [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"for_bone_conduction_headset",@"") Name:@"for_bone_conduction_headset" DefaultValue:@(NO) Accept:nil];
 
     unitLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];
-    unitMeter = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Meter", @"meter distance unit label")
+    unitMeter = [userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:NSLocalizedString(@"Meter", @"meter distance unit label")
                                                  Name:@"unit_meter" Group:@"distance_unit" DefaultValue:@(YES) Accept:nil];
-    unitFeet = [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
+    unitFeet = [userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:NSLocalizedString(@"Feet", @"feet distance unit label")
                                                 Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
     
     exerciseLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
@@ -507,7 +507,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     
     mapLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Map", @"label for map")];
     mapLabel.visible = NO;
-    initialZoomSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Initial zoom level for navigation", @"") Name:@"zoom_for_navigation" DefaultValue:@(20) Min:15 Max:22 Interval:1];
+    initialZoomSetting = [userSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:NSLocalizedString(@"Initial zoom level for navigation", @"") Name:@"zoom_for_navigation" DefaultValue:@(20) Min:15 Max:22 Interval:1];
     initialZoomSetting.visible = NO;
     
     resetLocation = [userSettingHelper addActionTitle:NSLocalizedString(@"Reset_Location", @"") Name:@"Reset_Location"];
@@ -534,11 +534,11 @@ static HLPSetting *poiLabel, *ignoreFacility;
     
     [detailSettingHelper addSectionTitle:@"Report Issue"];
     [detailSettingHelper addActionTitle:@"Report Issue" Name:@"report_issue"];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Record logs" Name:@"logging_to_file" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Record screenshots" Name:@"record_screenshots" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Record logs" Name:@"logging_to_file" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Record screenshots" Name:@"record_screenshots" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSectionTitle:@"Background"];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Background Mode" Name:@"background_mode" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Background Mode" Name:@"background_mode" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSectionTitle:@"Setting Preset"];
     [detailSettingHelper addActionTitle:@"Setting Preset" Name:@"choose_config"];
@@ -549,20 +549,20 @@ static HLPSetting *poiLabel, *ignoreFacility;
     
     
     [detailSettingHelper addSectionTitle:@"Developer mode"];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Developer mode" Name:@"developer_mode" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:ACTION Label:@"P2P Debug" Name:@"p2p_debug" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"P2P Debug Follower" Name:@"p2p_debug_follower" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Developer mode" Name:@"developer_mode" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeAction Label:@"P2P Debug" Name:@"p2p_debug" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"P2P Debug Follower" Name:@"p2p_debug_follower" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSectionTitle:@"Detail Settings"];
     [detailSettingHelper addActionTitle:@"Adjust blelocpp" Name:@"adjust_blelocpp"];
     [detailSettingHelper addActionTitle:@"Adjust blind navi" Name:@"adjust_blind_navi"];
 
     [detailSettingHelper addSectionTitle:@"Navigation server"];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Cache clear for next launch" Name:@"cache_clear" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil];
-    [detailSettingHelper addSettingWithType:HOST_PORT Label:@"Server" Name:@"hokoukukan_server" DefaultValue:@[@""] Accept:nil];
-    [detailSettingHelper addSettingWithType:SUBTITLE Label:@"Server" Name:@"selected_hokoukukan_server" DefaultValue:@"" Accept:nil];
-    [detailSettingHelper addSettingWithType:TEXTINPUT Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Cache clear for next launch" Name:@"cache_clear" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeHostPort Label:@"Server" Name:@"hokoukukan_server" DefaultValue:@[@""] Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeSubtitle Label:@"Server" Name:@"selected_hokoukukan_server" DefaultValue:@"" Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeTextInput Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil];
 
     /*
     [detailSettingHelper addSectionTitle:NSLocalizedString(@"UI_Mode", @"")];
@@ -571,22 +571,22 @@ static HLPSetting *poiLabel, *ignoreFacility;
      */
 
     [detailSettingHelper addSectionTitle:@"For Demo"];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use compass" Name:@"use_compass" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset as start location" Name:@"reset_as_start_point" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset as start heading" Name:@"reset_as_start_heading" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:DOUBLE Label:@"Reset std dev" Name:@"reset_std_dev" DefaultValue:@(1.0) Min:0 Max:3 Interval:0.5];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset at elevator" Name:@"reset_at_elevator" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Reset at elevator continuously" Name:@"reset_at_elevator_continuously" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Stabilize localize on elevator" Name:@"stabilize_localize_on_elevator" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use compass" Name:@"use_compass" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Reset as start location" Name:@"reset_as_start_point" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Reset as start heading" Name:@"reset_as_start_heading" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Reset std dev" Name:@"reset_std_dev" DefaultValue:@(1.0) Min:0 Max:3 Interval:0.5];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Reset at elevator" Name:@"reset_at_elevator" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Reset at elevator continuously" Name:@"reset_at_elevator_continuously" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Stabilize localize on elevator" Name:@"stabilize_localize_on_elevator" DefaultValue:@(NO) Accept:nil];
     
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Current Location\"" Name:@"hide_current_location_from_start" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Hide \"Facility\"" Name:@"hide_facility_from_to" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Accuracy for demo" Name:@"accuracy_for_demo" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Bearing for demo" Name:@"bearing_for_demo" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Hide \"Current Location\"" Name:@"hide_current_location_from_start" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Hide \"Facility\"" Name:@"hide_facility_from_to" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Accuracy for demo" Name:@"accuracy_for_demo" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Bearing for demo" Name:@"bearing_for_demo" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSectionTitle:@"Test"];
-    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Send beacon data" Name:@"send_beacon_data" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:TEXTINPUT Label:@"Server" Name:@"beacon_data_server" DefaultValue:@"192.168.1.1:8080" Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Send beacon data" Name:@"send_beacon_data" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:NavCogSettingTypeTextInput Label:@"Server" Name:@"beacon_data_server" DefaultValue:@"192.168.1.1:8080" Accept:nil];
 }
 
 + (void)setupBlelocppSettings
@@ -598,93 +598,93 @@ static HLPSetting *poiLabel, *ignoreFacility;
     blelocppSettingHelper = [[HLPSettingHelper alloc] init];
     
     [blelocppSettingHelper addSectionTitle:@"blelocpp mode"];
-    [blelocppSettingHelper addSettingWithType:OPTION Label:@"No tracking (oneshot)" Name:@"oneshot" Group:@"location_tracking" DefaultValue:@(YES) Accept:nil];
-    [blelocppSettingHelper addSettingWithType:OPTION Label:@"Tracking (PDR)" Name:@"tracking" Group:@"location_tracking" DefaultValue:@(NO) Accept:nil];
-    [blelocppSettingHelper addSettingWithType:OPTION Label:@"Tracking (Random walk)" Name:@"randomwalker" Group:@"location_tracking" DefaultValue:@(NO) Accept:nil];
-    [blelocppSettingHelper addSettingWithType:OPTION Label:@"Tracking (Weak Pose Random Walker)" Name:@"weak_pose_random_walker" Group:@"location_tracking" DefaultValue:@(NO) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeOption Label:@"No tracking (oneshot)" Name:@"oneshot" Group:@"location_tracking" DefaultValue:@(YES) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeOption Label:@"Tracking (PDR)" Name:@"tracking" Group:@"location_tracking" DefaultValue:@(NO) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeOption Label:@"Tracking (Random walk)" Name:@"randomwalker" Group:@"location_tracking" DefaultValue:@(NO) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeOption Label:@"Tracking (Weak Pose Random Walker)" Name:@"weak_pose_random_walker" Group:@"location_tracking" DefaultValue:@(NO) Accept:nil];
     
     [blelocppSettingHelper addSectionTitle:@"blelocpp representative location definition"];
-    [blelocppSettingHelper addSettingWithType:OPTION Label:@"mean" Name:@"mean" Group:@"rep_location" DefaultValue:@(YES) Accept:nil];
-    [blelocppSettingHelper addSettingWithType:OPTION Label:@"densest" Name:@"densest" Group:@"rep_location" DefaultValue:@(NO) Accept:nil];
-    [blelocppSettingHelper addSettingWithType:OPTION Label:@"closest to mean" Name:@"closest_mean" Group:@"rep_location" DefaultValue:@(NO) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeOption Label:@"mean" Name:@"mean" Group:@"rep_location" DefaultValue:@(YES) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeOption Label:@"densest" Name:@"densest" Group:@"rep_location" DefaultValue:@(NO) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeOption Label:@"closest to mean" Name:@"closest_mean" Group:@"rep_location" DefaultValue:@(NO) Accept:nil];
 
     
     [blelocppSettingHelper addSectionTitle:@"blelocpp params"];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Webview update min interval" Name:@"webview_update_min_interval" DefaultValue:@(0.5) Min:0 Max:3.0 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Show states" Name:@"show_states" DefaultValue:@(NO) Accept:nil];
-    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use blelocpp accuracy" Name:@"use_blelocpp_acc" DefaultValue:@(NO) Accept:nil];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"blelocpp accuracy sigma" Name:@"blelocpp_accuracy_sigma" DefaultValue:@(3) Min:1 Max:6 Interval:1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"nSmooth" Name:@"nSmooth" DefaultValue:@(2) Min:1 Max:10 Interval:1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"nSmoothTracking" Name:@"nSmoothTracking" DefaultValue:@(3) Min:1 Max:10 Interval:1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Webview update min interval" Name:@"webview_update_min_interval" DefaultValue:@(0.5) Min:0 Max:3.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Show states" Name:@"show_states" DefaultValue:@(NO) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use blelocpp accuracy" Name:@"use_blelocpp_acc" DefaultValue:@(NO) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"blelocpp accuracy sigma" Name:@"blelocpp_accuracy_sigma" DefaultValue:@(3) Min:1 Max:6 Interval:1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"nSmooth" Name:@"nSmooth" DefaultValue:@(2) Min:1 Max:10 Interval:1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"nSmoothTracking" Name:@"nSmoothTracking" DefaultValue:@(3) Min:1 Max:10 Interval:1];
 
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"nStates" Name:@"nStates" DefaultValue:@(500) Min:100 Max:2000 Interval:100];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"nEffective (recommended gt or eq nStates/2)" Name:@"nEffective" DefaultValue:@(250) Min:50 Max:2000 Interval:50];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"nStates" Name:@"nStates" DefaultValue:@(500) Min:100 Max:2000 Interval:100];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"nEffective (recommended gt or eq nStates/2)" Name:@"nEffective" DefaultValue:@(250) Min:50 Max:2000 Interval:50];
     
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"alphaWeaken" Name:@"alphaWeaken" DefaultValue:@(0.3)  Min:0 Max:1.0 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"RSSI bias (old)" Name:@"rssi_bias" DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"alphaWeaken" Name:@"alphaWeaken" DefaultValue:@(0.3)  Min:0 Max:1.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"RSSI bias (old)" Name:@"rssi_bias" DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5];
     
-    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use RSSI bias for models" Name:@"rssi_bias_model_used" DefaultValue:@(YES) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use RSSI bias for models" Name:@"rssi_bias_model_used" DefaultValue:@(YES) Accept:nil];
     NSString *deviceModel = [NavUtil deviceModel];
-    [blelocppSettingHelper addSettingWithType:DOUBLE
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble
                                         Label:[NSString stringWithFormat:@"RSSI bias (%@)", deviceModel]
                                          Name:[@"rssi_bias_m_" stringByAppendingString:deviceModel]
                                  DefaultValue:@(0)  Min:-10 Max:10 Interval:0.5];
     
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev coefficient for different floor" Name:@"coeffDiffFloorStdev" DefaultValue:@(5)  Min:1 Max:10000 Interval:1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Stdev coefficient for different floor" Name:@"coeffDiffFloorStdev" DefaultValue:@(5)  Min:1 Max:10000 Interval:1];
     
-    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use wheelchair PDR threthold" Name:@"wheelchair_pdr" DefaultValue:@(NO) Accept:nil];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability from likelihood" Name:@"mixProba" DefaultValue:@(0) Min:0 Max:0.01 Interval:0.001];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix reject distance [m]" Name:@"rejectDistance" DefaultValue:@(5) Min:0 Max:30 Interval:1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix reject floor difference" Name:@"rejectFloorDifference" DefaultValue:@(0.95) Min:0 Max:1 Interval:0.05];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix minimum number of beacons" Name:@"nBeaconsMinimum" DefaultValue:@(3) Min:0 Max:10 Interval:1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Orientation bias diffusion" Name:@"diffusionOrientationBias" DefaultValue:@(10) Min:0 Max:90 Interval:1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use wheelchair PDR threthold" Name:@"wheelchair_pdr" DefaultValue:@(NO) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Mix probability from likelihood" Name:@"mixProba" DefaultValue:@(0) Min:0 Max:0.01 Interval:0.001];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Mix reject distance [m]" Name:@"rejectDistance" DefaultValue:@(5) Min:0 Max:30 Interval:1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Mix reject floor difference" Name:@"rejectFloorDifference" DefaultValue:@(0.95) Min:0 Max:1 Interval:0.05];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Mix minimum number of beacons" Name:@"nBeaconsMinimum" DefaultValue:@(3) Min:0 Max:10 Interval:1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Orientation bias diffusion" Name:@"diffusionOrientationBias" DefaultValue:@(10) Min:0 Max:90 Interval:1];
     
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Initial walking speed" Name:@"meanVelocity" DefaultValue:@(1.0) Min:0.25 Max:1.5 Interval:0.05];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Half life of hitting wall" Name:@"weightDecayHalfLife" DefaultValue:@(5) Min:1 Max:10 Interval:1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Resampling lower bound 2D [m]" Name:@"locLB" DefaultValue:@(0.5) Min:0 Max:2 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Resampling lower bound floor [floor]" Name:@"floorLB" DefaultValue:@(0.1) Min:0.0 Max:1 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Initial walking speed" Name:@"meanVelocity" DefaultValue:@(1.0) Min:0.25 Max:1.5 Interval:0.05];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Half life of hitting wall" Name:@"weightDecayHalfLife" DefaultValue:@(5) Min:1 Max:10 Interval:1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Resampling lower bound 2D [m]" Name:@"locLB" DefaultValue:@(0.5) Min:0 Max:2 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Resampling lower bound floor [floor]" Name:@"floorLB" DefaultValue:@(0.1) Min:0.0 Max:1 Interval:0.1];
     
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Confidence of heading for initialization" Name:@"headingConfidenceInit" DefaultValue:@(0.0) Min:0.0 Max:1.0 Interval:0.05];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Orientation accuracy threshold for reliable orientation [degree]" Name:@"oriAccThreshold" DefaultValue:@(22.5) Min:0.0 Max:120 Interval:2.5];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Initial location search radius in 2D [m]" Name:@"initialSearchRadius2D" DefaultValue:@(10) Min:5 Max:50 Interval:1];
-    [[blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Apply yaw drift smoothing" Name:@"applyYawDriftSmoothing" DefaultValue:@(YES) Accept:nil] setVisible: YES];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Confidence of heading for initialization" Name:@"headingConfidenceInit" DefaultValue:@(0.0) Min:0.0 Max:1.0 Interval:0.05];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Orientation accuracy threshold for reliable orientation [degree]" Name:@"oriAccThreshold" DefaultValue:@(22.5) Min:0.0 Max:120 Interval:2.5];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Initial location search radius in 2D [m]" Name:@"initialSearchRadius2D" DefaultValue:@(10) Min:5 Max:50 Interval:1];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Apply yaw drift smoothing" Name:@"applyYawDriftSmoothing" DefaultValue:@(YES) Accept:nil] setVisible: YES];
 
     
     // Parameters for status monitoring
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (location status monitoring)"];
-    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Activate location status monitoring" Name:@"activatesStatusMonitoring" DefaultValue:@(YES) Accept:nil];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Location status monitoring interval [ms]" Name:@"statusMonitoringIntervalMS" DefaultValue:@(0) Min:0 Max:10000 Interval:1000] setVisible:YES];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter locating radius [m]" Name:@"enterLocating" DefaultValue:@(3.5) Min:0 Max:20 Interval:0.5] setVisible:YES];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit locating radius [m]" Name:@"exitLocating" DefaultValue:@(5.0) Min:0 Max:20 Interval:0.5] setVisible:YES];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Enter stable radius [m]" Name:@"enterStable" DefaultValue:@(3.5) Min:0 Max:20 Interval:0.5] setVisible:YES];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exit stable radius [m]" Name:@"exitStable" DefaultValue:@(5.0) Min:0 Max:20 Interval:0.5] setVisible:YES];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Exponent n of minimum weight stable (w=10^n)" Name:@"exponentMinWeightStable" DefaultValue:@(-4) Min:-9 Max:-1 Interval:1] setVisible:YES];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Min unstable loop" Name:@"minUnstableLoop" DefaultValue:@(5) Min:1 Max:10 Interval:1] setVisible:YES];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Activate location status monitoring" Name:@"activatesStatusMonitoring" DefaultValue:@(YES) Accept:nil];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Location status monitoring interval [ms]" Name:@"statusMonitoringIntervalMS" DefaultValue:@(0) Min:0 Max:10000 Interval:1000] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Enter locating radius [m]" Name:@"enterLocating" DefaultValue:@(3.5) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Exit locating radius [m]" Name:@"exitLocating" DefaultValue:@(5.0) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Enter stable radius [m]" Name:@"enterStable" DefaultValue:@(3.5) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Exit stable radius [m]" Name:@"exitStable" DefaultValue:@(5.0) Min:0 Max:20 Interval:0.5] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Exponent n of minimum weight stable (w=10^n)" Name:@"exponentMinWeightStable" DefaultValue:@(-4) Min:-9 Max:-1 Interval:1] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Min unstable loop" Name:@"minUnstableLoop" DefaultValue:@(5) Min:1 Max:10 Interval:1] setVisible:YES];
     
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (floor transition)"];
-    [blelocppSettingHelper addSettingWithType:BOOLEAN Label:@"Use altimeter for floor trans support" Name:@"use_altimeter" DefaultValue:@(YES) Accept:nil];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Mix probability for floor trans area" Name:@"mixtureProbabilityFloorTransArea" DefaultValue:@(0.25) Min:0.0 Max:1.0 Interval:0.05];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Weight multiplier for floor trans area" Name:@"weightFloorTransArea" DefaultValue:@(4) Min:1 Max:5 Interval:0.1] setVisible:YES];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Reject distance for floor trans area" Name:@"rejectDistanceFloorTrans" DefaultValue:@(10) Min:0.0 Max:25.0 Interval:1] setVisible:YES];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Duration allowing force floor update" Name:@"durationAllowForceFloorUpdate" DefaultValue:@(1) Min:1 Max:20 Interval:1] setVisible:YES];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use altimeter for floor trans support" Name:@"use_altimeter" DefaultValue:@(YES) Accept:nil];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Mix probability for floor trans area" Name:@"mixtureProbabilityFloorTransArea" DefaultValue:@(0.25) Min:0.0 Max:1.0 Interval:0.05];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Weight multiplier for floor trans area" Name:@"weightFloorTransArea" DefaultValue:@(4) Min:1 Max:5 Interval:0.1] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Reject distance for floor trans area" Name:@"rejectDistanceFloorTrans" DefaultValue:@(10) Min:0.0 Max:25.0 Interval:1] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Duration allowing force floor update" Name:@"durationAllowForceFloorUpdate" DefaultValue:@(1) Min:1 Max:20 Interval:1] setVisible:YES];
     
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Window for altimeter manager" Name:@"windowAltitudeManager" DefaultValue:@(3) Min:1 Max:10 Interval:1] setVisible:YES];
-    [[blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev threshold for altimeter manager" Name:@"stdThresholdAltitudeManager" DefaultValue:@(0.15) Min:0.0 Max:2.0 Interval:0.05] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Window for altimeter manager" Name:@"windowAltitudeManager" DefaultValue:@(3) Min:1 Max:10 Interval:1] setVisible:YES];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Stdev threshold for altimeter manager" Name:@"stdThresholdAltitudeManager" DefaultValue:@(0.15) Min:0.0 Max:2.0 Interval:0.05] setVisible:YES];
     
     [blelocppSettingHelper addSectionTitle:@"blelocpp params (prediction)"];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Sigma stop for random walker" Name:@"sigmaStopRW" DefaultValue:@(0.2) Min:0.0 Max:1.0 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Sigma move for random walker" Name:@"sigmaMoveRW" DefaultValue:@(1.0) Min:0.0 Max:3.0 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Pose random walk rate for WPRW" Name:@"poseRandomWalkRate" DefaultValue:@(1.0) Min:0.0 Max:2.0 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Random walk rate for WPRW" Name:@"randomWalkRate" DefaultValue:@(0.2) Min:0.0 Max:2.0 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Probability orientation offset jump for WPRW" Name:@"probaOriBiasJump" DefaultValue:@(0.0) Min:0.0 Max:0.5 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"relativeVelocityEscalator" Name:@"relativeVelocityEscalator" DefaultValue:@(0.5) Min:0.1 Max:1.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Sigma stop for random walker" Name:@"sigmaStopRW" DefaultValue:@(0.2) Min:0.0 Max:1.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Sigma move for random walker" Name:@"sigmaMoveRW" DefaultValue:@(1.0) Min:0.0 Max:3.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Pose random walk rate for WPRW" Name:@"poseRandomWalkRate" DefaultValue:@(1.0) Min:0.0 Max:2.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Random walk rate for WPRW" Name:@"randomWalkRate" DefaultValue:@(0.2) Min:0.0 Max:2.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Probability orientation offset jump for WPRW" Name:@"probaOriBiasJump" DefaultValue:@(0.0) Min:0.0 Max:0.5 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"relativeVelocityEscalator" Name:@"relativeVelocityEscalator" DefaultValue:@(0.5) Min:0.1 Max:1.0 Interval:0.1];
     
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Probability backward move for WPRW" Name:@"probaBackwardMove" DefaultValue:@(0.0) Min:0.0 Max:0.5 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Probability backward move for WPRW" Name:@"probaBackwardMove" DefaultValue:@(0.0) Min:0.0 Max:0.5 Interval:0.1];
     
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Stdev velocity" Name:@"stdVelocity" DefaultValue:@(0.3) Min:0.0 Max:1.0 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Diffusion velocity" Name:@"diffusionVelocity" DefaultValue:@(0.1) Min:0.0 Max:1.0 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Minimum velocity" Name:@"minVelocity" DefaultValue:@(0.1) Min:0.0 Max:1.0 Interval:0.1];
-    [blelocppSettingHelper addSettingWithType:DOUBLE Label:@"Maximum velocity" Name:@"maxVelocity" DefaultValue:@(1.5) Min:0.0 Max:3.0 Interval:0.1];    
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Stdev velocity" Name:@"stdVelocity" DefaultValue:@(0.3) Min:0.0 Max:1.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Diffusion velocity" Name:@"diffusionVelocity" DefaultValue:@(0.1) Min:0.0 Max:1.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Minimum velocity" Name:@"minVelocity" DefaultValue:@(0.1) Min:0.0 Max:1.0 Interval:0.1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Maximum velocity" Name:@"maxVelocity" DefaultValue:@(1.5) Min:0.0 Max:3.0 Interval:0.1];    
 }
 
 
@@ -701,7 +701,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     NSArray *names = [NavNavigatorConstants propertyNames];
     for(NSString *name in names) {
         NSArray *val = defaults[name];
-        [blindnaviSettingHelper addSettingWithType:DOUBLE
+        [blindnaviSettingHelper addSettingWithType:NavCogSettingTypeDouble
                                           Label:[NSString stringWithFormat:@"%@(%@)", name, val[0]]
                                            Name:name
                                    DefaultValue:val[0]
@@ -723,7 +723,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [mapSettingHelper addSectionTitle:@"2D localization data"];
 
     for(NSString *map in [ConfigManager filenamesWithSuffix:@"json"]) {
-        [mapSettingHelper addSettingWithType:OPTION Label:[map stringByDeletingPathExtension] Name:map Group:@"bleloc_map_data" DefaultValue:@(NO) Accept:nil];
+        [mapSettingHelper addSettingWithType:NavCogSettingTypeOption Label:[map stringByDeletingPathExtension] Name:map Group:@"bleloc_map_data" DefaultValue:@(NO) Accept:nil];
     }
 
 }
@@ -753,11 +753,11 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [logSettingHelper removeAllSetting];
     
     [logSettingHelper addSectionTitle:@"Log Replay"];
-    [logSettingHelper addSettingWithType:BOOLEAN Label:@"Replay in realtime" Name:@"replay_in_realtime" DefaultValue:@(NO) Accept:nil];
-    [logSettingHelper addSettingWithType:BOOLEAN Label:@"Use sensor log" Name:@"replay_sensor" DefaultValue:@(NO) Accept:nil];
-    [logSettingHelper addSettingWithType:BOOLEAN Label:@"Show sensor log" Name:@"replay_show_sensor_log" DefaultValue:@(NO) Accept:nil];
-    [logSettingHelper addSettingWithType:BOOLEAN Label:@"Use reset in sensor log" Name:@"replay_with_reset" DefaultValue:@(YES) Accept:nil];
-    [logSettingHelper addSettingWithType:BOOLEAN Label:@"Use navigation log" Name:@"replay_navigation" DefaultValue:@(YES) Accept:nil];
+    [logSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Replay in realtime" Name:@"replay_in_realtime" DefaultValue:@(NO) Accept:nil];
+    [logSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use sensor log" Name:@"replay_sensor" DefaultValue:@(NO) Accept:nil];
+    [logSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Show sensor log" Name:@"replay_show_sensor_log" DefaultValue:@(NO) Accept:nil];
+    [logSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use reset in sensor log" Name:@"replay_with_reset" DefaultValue:@(YES) Accept:nil];
+    [logSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use navigation log" Name:@"replay_navigation" DefaultValue:@(YES) Accept:nil];
     
     [logSettingHelper addSectionTitle:@"Choose Log"];
     NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -783,15 +783,15 @@ static HLPSetting *poiLabel, *ignoreFacility;
     routeOptionsSettingHelper = [[HLPSettingHelper alloc] init];
     
     
-    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Prefer Tactile Paving", @"")
+    [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Prefer Tactile Paving", @"")
                                              Name:@"route_tactile_paving" DefaultValue:@(YES) Accept:nil];
-    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Elevator", @"")
+    [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Use Elevator", @"")
                                              Name:@"route_use_elevator" DefaultValue:@(YES) Accept:nil];
-    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Escalator", @"")
+    [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Use Escalator", @"")
                                              Name:@"route_use_escalator" DefaultValue:@(NO) Accept:nil];
-    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Moving Walkway", @"")
+    [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Use Moving Walkway", @"")
                                              Name:@"route_use_moving_walkway" DefaultValue:@(NO) Accept:nil];
-    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Stairs", @"")
+    [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Use Stairs", @"")
                                              Name:@"route_use_stairs" DefaultValue:@(YES) Accept:nil];
 }
 

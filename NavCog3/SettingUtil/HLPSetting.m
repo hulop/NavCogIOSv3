@@ -242,7 +242,7 @@
 
 - (void) exportSetting:(NSMutableDictionary*)dic
 {
-    if (_type == ACTION || _type == SECTION) {
+    if (_type == NavCogSettingTypeAction || _type == NavCogSettingTypeSection) {
         return;
     }
     if (_isList) {

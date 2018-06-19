@@ -36,7 +36,7 @@
     int count = 0;
     for(HLPSetting *s in self.settings) {
         //NSLog(@"%@ %d", s.label, s.type);
-        if (s.type == SECTION && s.visible) {
+        if (s.type == NavCogSettingTypeSection && s.visible) {
             count++;
         }
     }
@@ -60,10 +60,10 @@
     for(HLPSetting *s in self.settings) {
         if (!s.visible) continue;
         
-        if (first && s.type != SECTION) {
+        if (first && s.type != NavCogSettingTypeSection) {
             current++;
         }
-        else if (s.type == SECTION) {
+        else if (s.type == NavCogSettingTypeSection) {
             current++;
         }
         
@@ -73,7 +73,7 @@
             selected = NO;
         }
 
-        if (selected && s.type != SECTION) {
+        if (selected && s.type != NavCogSettingTypeSection) {
             count++;
         }
 
@@ -100,10 +100,10 @@
     for(HLPSetting *s in self.settings) {
         if (!s.visible) continue;
         
-        if (first && s.type != SECTION) {
+        if (first && s.type != NavCogSettingTypeSection) {
             current++;
         }
-        else if (s.type == SECTION) {
+        else if (s.type == NavCogSettingTypeSection) {
             current++;
         }
         
@@ -116,7 +116,7 @@
             selected = NO;
         }
         
-        if (selected && s.type != SECTION) {
+        if (selected && s.type != NavCogSettingTypeSection) {
             if (count == row) {
                 return s;
             }
@@ -133,19 +133,19 @@
         return @"pickerCell";
     }
     switch (s.type) {
-        case UUID_TYPE:
-        case HOST_PORT:
-        case SUBTITLE:
-        case STRING:
-        case OPTION:
-        case ACTION:
+        case NavCogSettingTypeUUIDType:
+        case NavCogSettingTypeHostPort:
+        case NavCogSettingTypeSubtitle:
+        case NavCogSettingTypeString:
+        case NavCogSettingTypeOption:
+        case NavCogSettingTypeAction:
             return @"subtitleCell";
-        case BOOLEAN:
+        case NavCogSettingTypeBoolean:
             return @"switchCell";
-        case DOUBLE:
+        case NavCogSettingTypeDouble:
             return @"sliderCell";
-        case TEXTINPUT:
-        case PASSINPUT:
+        case NavCogSettingTypeTextInput:
+        case NavCogSettingTypePassInput:
             return @"textCell";
         default:
             break;
@@ -176,10 +176,10 @@
     if (s == nil) {
         return 44;
     }
-    if (s.type == DOUBLE) {
+    if (s.type == NavCogSettingTypeDouble) {
         return 76;
     }
-    if (s.type == TEXTINPUT || s.type == PASSINPUT) {
+    if (s.type == NavCogSettingTypeTextInput || s.type == NavCogSettingTypePassInput) {
         return 78;
     }
     if (s.isList) {
@@ -236,7 +236,7 @@
 - (HLPSetting*)addSectionTitle:(NSString *)title
 {
     HLPSetting *s = [[HLPSetting alloc] init];
-    s.type = SECTION;
+    s.type = NavCogSettingTypeSection;
     s.label = title;
     
     [self.settings addObject:s];
@@ -246,7 +246,7 @@
 - (HLPSetting*)addActionTitle:(NSString *)title Name:(NSString*)name
 {
     HLPSetting *s = [[HLPSetting alloc] init];
-    s.type = ACTION;
+    s.type = NavCogSettingTypeAction;
     s.label = title;
     s.name = name;
     
@@ -313,12 +313,12 @@
     if (handler) {
         [s setHandler:handler];
     } else {
-        if (s.type == UUID_TYPE) {
+        if (s.type == NavCogSettingTypeUUIDType) {
             [s setHandler:^NSObject *(NSObject *value) {
                 return [self uuidDefaultHandler:value];
             }];
         }
-        if (s.type == HOST_PORT) {
+        if (s.type == NavCogSettingTypeHostPort) {
             [s setHandler:^NSObject *(NSObject *value) {
                 return [self hostPortDefaultHandler:value];
             }];
@@ -372,7 +372,7 @@
     NSString *title = @"";
     int count = 0;
     for(HLPSetting *s in self.settings) {
-        if (s.type == SECTION && s.visible) {
+        if (s.type == NavCogSettingTypeSection && s.visible) {
             if (count == row) {
                 title = s.label;
             }
@@ -414,7 +414,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     HLPSetting *s = [self _getSetting:indexPath];
-    if (s.type == ACTION) {
+    if (s.type == NavCogSettingTypeAction) {
         [self.delegate actionPerformed:s];
     }
 }

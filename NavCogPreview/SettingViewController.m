@@ -191,34 +191,34 @@ static HLPSetting *idLabel;
     [userSettingHelper addActionTitle:@"Help" Name:@"help_preview"];
     
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Distance unit", @"label for distance unit option")];
-    [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Meter", @"meter distance unit label")
+    [userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:NSLocalizedString(@"Meter", @"meter distance unit label")
                                      Name:@"unit_meter" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
-    [userSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Feet", @"feet distance unit label")
+    [userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:NSLocalizedString(@"Feet", @"feet distance unit label")
                                      Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(YES) Accept:nil];
 
     
     [[userSettingHelper addSectionTitle:@"Forward Direction"] setVisible:NO];
-    [[userSettingHelper addSettingWithType:OPTION Label:@"Up - Forward" Name:@"UpForward" Group:@"forwardDirection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
-    [[userSettingHelper addSettingWithType:OPTION Label:@"Down - Forward" Name:@"DownForward" Group:@"forwardDirection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
+    [[userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:@"Up - Forward" Name:@"UpForward" Group:@"forwardDirection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
+    [[userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:@"Down - Forward" Name:@"DownForward" Group:@"forwardDirection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
 
     [userSettingHelper addSectionTitle:@"Preview Parameters"];
-    [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
+    [userSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
                                      Name:@"speech_speed" DefaultValue:@(0.55) Min:0.1 Max:1 Interval:0.05];
 
-    [[userSettingHelper addSettingWithType:DOUBLE Label:@"Step Length" Name:@"preview_step_length" DefaultValue:@(0.75)Min:0.25 Max:1.5 Interval:0.05] setVisible:NO];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Prevent Offroute" Name:@"prevent_offroute" DefaultValue:@(YES) Accept:nil];
+    [[userSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Step Length" Name:@"preview_step_length" DefaultValue:@(0.75)Min:0.25 Max:1.5 Interval:0.05] setVisible:NO];
+    [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Prevent Offroute" Name:@"prevent_offroute" DefaultValue:@(YES) Accept:nil];
     
     [userSettingHelper addSectionTitle:@"Preview Jump"];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Step sound for jump" Name:@"step_sound_for_jump" DefaultValue:@(YES) Accept:nil];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info. for jump" Name:@"ignore_facility_for_jump2" DefaultValue:@(NO) Accept:nil];
+    [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Step sound for jump" Name:@"step_sound_for_jump" DefaultValue:@(YES) Accept:nil];
+    [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Ignore facility info. for jump" Name:@"ignore_facility_for_jump2" DefaultValue:@(NO) Accept:nil];
     
     [userSettingHelper addSectionTitle:@"Preview Walk"];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Step sound for walk" Name:@"step_sound_for_walk" DefaultValue:@(YES) Accept:nil];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info. for walk" Name:@"ignore_facility_for_walk2" DefaultValue:@(NO) Accept:nil];
+    [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Step sound for walk" Name:@"step_sound_for_walk" DefaultValue:@(YES) Accept:nil];
+    [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Ignore facility info. for walk" Name:@"ignore_facility_for_walk2" DefaultValue:@(NO) Accept:nil];
 
-    [[userSettingHelper addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
-    [[userSettingHelper addSettingWithType:TEXTINPUT Label:@"Server Host" Name:@"hokoukukan_server" DefaultValue:@"" Accept:nil] setVisible:NO];
-    [[userSettingHelper addSettingWithType:TEXTINPUT Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil] setVisible:NO];
+    [[userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil] setVisible:NO];
+    [[userSettingHelper addSettingWithType:NavCogSettingTypeTextInput Label:@"Server Host" Name:@"hokoukukan_server" DefaultValue:@"" Accept:nil] setVisible:NO];
+    [[userSettingHelper addSettingWithType:NavCogSettingTypeTextInput Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil] setVisible:NO];
 
 
     NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
@@ -237,15 +237,15 @@ static HLPSetting *idLabel;
     routeOptionsSettingHelper = [[HLPSettingHelper alloc] init];
     
     
-    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Prefer Tactile Paving", @"")
+    [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Prefer Tactile Paving", @"")
                                              Name:@"route_tactile_paving" DefaultValue:@(YES) Accept:nil];
-    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Elevator", @"")
+    [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Use Elevator", @"")
                                              Name:@"route_use_elevator" DefaultValue:@(YES) Accept:nil];
-    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Escalator", @"")
+    [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Use Escalator", @"")
                                              Name:@"route_use_escalator" DefaultValue:@(NO) Accept:nil];
-    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Moving Walkway", @"")
+    [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Use Moving Walkway", @"")
                                              Name:@"route_use_moving_walkway" DefaultValue:@(NO) Accept:nil];
-    [routeOptionsSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Use Stairs", @"")
+    [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Use Stairs", @"")
                                              Name:@"route_use_stairs" DefaultValue:@(YES) Accept:nil];
 }
 

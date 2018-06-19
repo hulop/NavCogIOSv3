@@ -26,22 +26,35 @@
 #import "HLPPoint3D.h"
 #import <CoreGraphics/CoreGraphics.h>
 
-@interface HLPBeaconSample : NSObject {
-    HLPPoint3D *point;
-    NSArray *beacons;
-    NSString *uuid;
-}
 
-- (id) initWithBeacons:(NSArray*)array;
+typedef NS_ENUM(NSInteger, HLPBeaconSamplesType) {
+    HLPBeaconSamplesBeacon,
+    HLPBeaconSamplesRaw
+};
 
-- (void) setPoint:(HLPPoint3D*)point;
-- (BOOL) needPoint;
+@interface HLPBeaconSample : NSObject
 
-- (NSMutableDictionary*) toJSON:(BOOL)simple;
-- (NSString*) toString;
+@property (readonly) HLPPoint3D *point;
+@property (readonly) NSArray<CLBeacon*> *beacons;
+@property (readonly) NSString *uuidString;
+@property (atomic, readonly) long long timestamp;
 
-- (NSString*) getUUID;
+- (instancetype) initWithBeacons:(NSArray*)array atPoint:(HLPPoint3D*) point;
+- (void) transform2D:(CGAffineTransform)param;
+- (NSDictionary*) toJSONByType:(HLPBeaconSamplesType)type withInfo:(NSDictionary*)optionalInfo;
 
-@property (atomic, readonly) long long time;
+@end
+
+@interface HLPBeaconSamples : NSObject
+
+@property (readonly) NSArray<HLPBeaconSample*> *samples;
+@property (readonly) HLPBeaconSamplesType type;
+
+- (instancetype) initWithType:(HLPBeaconSamplesType) type;
+- (void) addBeacons:(NSArray<CLBeacon*>*)beacons atPoint:(HLPPoint3D*) point;
+- (void) transform2D:(CGAffineTransform)param;
+- (NSInteger) count;
+- (NSArray*) toJSON:(NSDictionary*)optionalInfo;
+
 
 @end

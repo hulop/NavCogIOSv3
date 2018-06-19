@@ -25,63 +25,130 @@
 
 @implementation HLPBeaconSample
 
-- (id)initWithBeacons:(NSArray *)array {
+- (id)initWithBeacons:(NSArray<CLBeacon*> *)array {
     self = [super init];
-    _time = (long long)([[NSDate date] timeIntervalSince1970]*1000);
-    beacons = array;
+    _timestamp = (long long)([[NSDate date] timeIntervalSince1970]*1000);
     if (array && [array count] > 0) {
-        CLBeacon *b = (CLBeacon*)[array objectAtIndex:0];
-        uuid = b.proximityUUID.UUIDString;
+        _uuidString = [[[array objectAtIndex:0] proximityUUID] UUIDString];
     }
     return self;
 }
 
-- (id)initWithBeaconsStr:(NSString *)str {
+- (instancetype)initWithBeacons:(NSArray *)array atPoint:(HLPPoint3D *)point {
+    self = [super init];
+    _timestamp = (long long)([[NSDate date] timeIntervalSince1970]*1000);
+    if (array && [array count] > 0) {
+        _uuidString = [[[array objectAtIndex:0] proximityUUID] UUIDString];
+    }
+    _beacons = array;
+    _point = point;
     return self;
 }
 
-- (void)setPoint:(HLPPoint3D *)_point {
-    point = _point;
+- (void) transform2D:(CGAffineTransform)param
+{
+    [_point transform2D:param];
 }
 
-- (BOOL) needPoint {
-    return point != nil;
-}
+- (NSDictionary *)toJSONByType:(HLPBeaconSamplesType)type withInfo:(NSDictionary *)optionalInfo
+{
+    NSMutableDictionary *json = [@{} mutableCopy];
 
-- (NSMutableDictionary *)toJSON:(BOOL)simple {
-    NSMutableDictionary *json = [[NSMutableDictionary alloc] init];
-    
+    if (type == HLPBeaconSamplesBeacon) {
+        NSMutableArray *data = [@[] mutableCopy];
+        for(CLBeacon *b in _beacons) {
+            [data addObject:@{
+                              @"major": b.major,
+                              @"minor": b.minor,
+                              @"rssi": @(b.rssi)
+                              }];
+        }
+        json[@"timestamp"] = @(_timestamp);
+        json[@"data"] = data;
+        json[@"uuid"] = _uuidString;
+    }
+    if (type == HLPBeaconSamplesRaw) {
+        NSMutableDictionary *data = [@{} mutableCopy];
+        NSMutableArray *beacons = [@[] mutableCopy];
+        for(CLBeacon *b in _beacons) {
+            [beacons addObject:@{
+                              @"type": b.minor,
+                              @"rssi": @(b.rssi),
+                              @"id": [NSString stringWithFormat:@"%@-%@-%@", b.proximityUUID.UUIDString, b.major, b.minor],
+                              @"timestamp": @(_timestamp)
+                              }];
+        }
+        data[@"beacons"] = beacons;
+        data[@"timestamp"] = @(_timestamp);
+        
+        json[@"information"] = [optionalInfo?optionalInfo:@{} mutableCopy];
+        json[@"information"][@"x"] = @(_point.x);
+        json[@"information"][@"y"] = @(_point.y);
 
-    [json setValue:[NSNumber numberWithLongLong:self.time ] forKey:@"timestamp"];
-    
-    if (point) {
-        if(!simple) {[json setValue:@"Beacon" forKey:@"type"];}
-        if(!simple) {[json setValue:[NSNumber numberWithFloat:point.x] forKey:@"x"];}
-        if(!simple) {[json setValue:[NSNumber numberWithFloat:point.y] forKey:@"y"];}
-        if(!simple) {[json setValue:[NSNumber numberWithFloat:point.z] forKey:@"z"];}
-        if(!simple) {[json setValue:point.floor forKey:@"floor"];}
+        json[@"data"] = data;
     }
-    NSMutableArray *ba = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [beacons count]; i++) {
-        CLBeacon *b = (CLBeacon*)[beacons objectAtIndex:i];
-        NSMutableDictionary *bd = [[NSMutableDictionary alloc] init];
-        [bd setObject:b.major forKey:@"major"];
-        [bd setObject:b.minor forKey:@"minor"];
-        [bd setObject:[NSNumber numberWithInteger:b.rssi] forKey:@"rssi"];
-        [ba addObject:bd];
-    }
-    [json setValue:uuid forKey:@"uuid"];
-    [json setValue:ba forKey:@"data"];
-    
     return json;
 }
 
-- (NSString *)toString {
-    return [NSString stringWithFormat:@"Beacon(%ld)",(unsigned long)[beacons count]];
+@end
+    
+    
+@implementation HLPBeaconSamples
+
+
+- (instancetype)initWithType:(HLPBeaconSamplesType)type {
+    self = [super init];
+    _type = type;
+    return self;
 }
 
-- (NSString *)getUUID {
-    return uuid;
+- (void)transform2D:(CGAffineTransform)param
+{
+    for(HLPBeaconSample* sample in _samples) {
+        [sample transform2D:param];
+    }
+}
+
+
+- (void)addBeacons:(NSArray<CLBeacon *> *)beacons atPoint:(HLPPoint3D *)point
+{
+    HLPBeaconSample *sample = [[HLPBeaconSample alloc] initWithBeacons:beacons atPoint:point];
+    if (_samples == nil) {
+        _samples = @[sample];
+    } else {
+        _samples = [_samples arrayByAddingObject:sample];
+    }
+}
+
+- (NSArray *)toJSON:(NSDictionary *)optionalInfo {
+    NSMutableArray *json = [@[] mutableCopy];
+    
+    if (_type == HLPBeaconSamplesBeacon) {
+        NSMutableDictionary *obj = [@{} mutableCopy];
+        NSMutableDictionary *info = [optionalInfo?optionalInfo:@{} mutableCopy];
+        NSMutableArray<NSDictionary*> *beacons = [@[] mutableCopy];
+        
+        for(HLPBeaconSample* sample in _samples) {
+            [beacons addObject:[sample toJSONByType:_type withInfo:nil]];
+            info[@"x"] = @(sample.point.x);
+            info[@"y"] = @(sample.point.y);
+        }
+        
+        obj[@"information"] = info;
+        obj[@"beacons"] = beacons;
+        [json addObject:obj];
+    }
+    if (_type == HLPBeaconSamplesRaw) {
+        for(HLPBeaconSample* sample in _samples) {
+            [json addObject:[sample toJSONByType:_type withInfo:optionalInfo]];
+        }        
+    }
+    return json;
+}
+
+- (NSInteger)count
+{
+    return [_samples count];
 }
 
 @end

@@ -33,8 +33,15 @@
 #define REFPOINTS_API_URL @"%@://%@/data/refpoints%@"
 
 @implementation FingerprintManager {
-    double lat,lng,x,y;
-    HLPBeaconSampler *sampler;
+    double lat,lng,x,y,dx,dy;
+    SCNVector3 currentArPosition;
+    
+    SCNVector3 arStart;
+    SCNVector3 arEnd;
+    HLPLocation *locStart;
+    HLPLocation *locEnd;
+    
+    double rotation;
 }
 
 static FingerprintManager *instance;
@@ -50,7 +57,9 @@ static FingerprintManager *instance;
 {
     self = [super init];
     _isReady = false;
-    sampler = [HLPBeaconSampler sharedInstance];
+    _sampler = [HLPBeaconSampler sharedInstance];
+    _sampler.delegate = self;
+    rotation = 0;
     return self;
 }
 
@@ -270,7 +279,7 @@ static FingerprintManager *instance;
     }
 }
 
-- (NSString*) stringify:(NSDictionary*)dic
+- (NSString*) stringify:(NSObject*)dic
 {
     NSData *data = [NSJSONSerialization dataWithJSONObject:dic options:0 error:nil];
     return [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
@@ -282,6 +291,12 @@ static FingerprintManager *instance;
         return;
     }
     
+    [self setLocationAtLat:lat_ Lng:lng_];
+    [self startSampling];
+}
+
+- (void)setLocationAtLat:(double)lat_ Lng:(double)lng_
+{
     lat = lat_;
     lng = lng_;
     
@@ -290,8 +305,6 @@ static FingerprintManager *instance;
     MKMapPoint local = [FingerprintManager convertFromGlobal:g ToLocalWithRefpoint:_selectedRefpoint];
     x = local.x;
     y = local.y;
-    
-    [self startSampling];
 }
 
 - (void)startSampling {
@@ -301,15 +314,21 @@ static FingerprintManager *instance;
     }
     
     _isSampling = YES;
-    sampler.delegate = self;
-    [sampler setSamplingBeaconUUID:uuid];
-    [sampler startRecording];
+    [_sampler reset];
+    [_sampler setSamplingBeaconUUID:uuid];
+    [_sampler startRecording];
+}
+
+- (void)stopSampling {
+    if (_isSampling) {
+        [_sampler stopRecording];
+    }
 }
 
 - (void)cancel
 {
-    [sampler stopRecording];
-    [sampler reset];
+    [_sampler stopRecording];
+    [_sampler reset];
     _isSampling = NO;
     _visibleBeaconCount = 0;
     _beaconsSampleCount = 0;
@@ -318,39 +337,104 @@ static FingerprintManager *instance;
 
 - (void)updated
 {
-    _visibleBeaconCount = sampler.visibleBeaconCount;
-    _beaconsSampleCount = sampler.beaconSampleCount;
+    _visibleBeaconCount = _sampler.visibleBeaconCount;
+    _beaconsSampleCount = _sampler.beaconSampleCount;
     
     if ([_delegate manager:self didObservedBeacons:(int)_visibleBeaconCount atSample:(int)_beaconsSampleCount]) {
         
     } else {
-        if (sampler.isRecording) {
-            [sampler stopRecording];
+        if (_sampler.isRecording) {
+            [_sampler stopRecording];
             //[self sendData];
         }
     }
 }
 
+- (void)qrCodeDetected:(NSString *)message
+{
+    NSArray<NSString*>* items = [message componentsSeparatedByString:@":"];
+    
+    if ([@"latlng" isEqualToString:items[0]]) {
+        double lat = items[1].doubleValue;
+        double lng = items[2].doubleValue;
+        double floor = items[3].doubleValue;
+        if (floor > 0) {
+            floor = floor - 1;
+        }
+        
+        HLPLocation *loc = [[HLPLocation alloc] initWithLat:lat Lng:lng Floor:floor];
+        [self.delegate manager:self didDetectLocation:loc];
+    }
+}
+
+- (void)arPositionUpdated:(SCNVector3)position
+{
+    currentArPosition = position;
+    double c = cos(rotation);
+    double s = sin(rotation);
+    dx = c*(currentArPosition.x - arStart.x) - s*(arStart.z - currentArPosition.z);
+    dy = s*(currentArPosition.x - arStart.x) + c*(arStart.z - currentArPosition.z);
+    
+    [_sampler setSamplingLocation:[[HLPPoint3D alloc] initWithX:x+dx Y:y+dy Z:0 Floor:_selectedRefpoint.floor_num]];
+    
+    if (self.arkitSamplingReady) {
+        CLLocationCoordinate2D g = [FingerprintManager convertFromLocal:MKMapPointMake(x+dx, y+dy) ToGlobalWithRefpoint:_selectedRefpoint];
+        [self.delegate manager:self didARLocationChange:[[HLPLocation alloc] initWithLat:g.latitude Lng:g.longitude Floor:_selectedRefpoint.floor_num]];
+    }
+}
+
+- (void)adjustLocation:(HLPLocation *)location
+{
+    if (!locStart) {
+        locStart = location;
+        arStart = currentArPosition;
+        
+        [self setLocationAtLat:locStart.lat Lng:locStart.lng];
+    }
+    else if (!locEnd) {
+        locEnd = location;
+        arEnd = currentArPosition;
+    }
+    
+    if (locStart && locEnd) {
+        // compute
+        
+        CLLocationCoordinate2D g1 = CLLocationCoordinate2DMake(locStart.lat, locStart.lng);
+        CLLocationCoordinate2D g2 = CLLocationCoordinate2DMake(locEnd.lat, locEnd.lng);
+        
+        MKMapPoint l1 = [FingerprintManager convertFromGlobal:g1 ToLocalWithRefpoint:_selectedRefpoint];
+        MKMapPoint l2 = [FingerprintManager convertFromGlobal:g2 ToLocalWithRefpoint:_selectedRefpoint];
+
+        double dx = arEnd.x - arStart.x;
+        double dy = arStart.z - arEnd.z;
+        
+        double c = cos(rotation);
+        double s = sin(rotation);
+
+        MKMapPoint l3 = MKMapPointMake(l1.x + c*dx - s*dy, l1.y + s*dx + c*dy);
+        
+        MKMapPoint v12 = MKMapPointMake(l2.x - l1.x, l2.y - l1.y);
+        MKMapPoint v13 = MKMapPointMake(l3.x - l1.x, l3.y - l1.y);
+        
+        double dot = v13.x * v12.x + v13.y * v12.y;
+        double cross = v13.x * v12.y - v13.y * v12.x;
+        
+        rotation = atan2(cross, dot);
+        
+        locStart = locEnd;
+        locEnd = nil;
+        
+        CGAffineTransform t = CGAffineTransformIdentity;
+        t = CGAffineTransformTranslate(t, x, y);
+        t = CGAffineTransformRotate(t, rotation);
+        t = CGAffineTransformTranslate(t, -x, -y);
+        
+        [_sampler transform2D:t];
+    }
+}
+
 - (void)sendData
 {
-    NSMutableDictionary *json = [[HLPBeaconSampler sharedInstance] toJSON];
-    
-    NSMutableDictionary *meta = [@{} mutableCopy];
-    meta[@"name"] = _selectedRefpoint._metadata[@"name"];
-    
-    NSMutableDictionary *info = [@{} mutableCopy];
-    info[@"site_id"] = _selectedRefpoint.floor;
-    info[@"x"] = @(x);
-    info[@"y"] = @(y);
-    info[@"z"] = @(0);
-    info[@"lat"] = @(lat);
-    info[@"lng"] = @(lng);
-    info[@"refid"] = _selectedRefpoint._id;
-    info[@"floor"] = _selectedRefpoint.floor;
-    info[@"floor_num"] = @(_selectedRefpoint.floor_num);
-
-    NSMutableArray *tags = [@[] mutableCopy];
-    
     size_t size;
     sysctlbyname("hw.machine", NULL, &size, NULL, 0);
     char *machine = malloc(size);
@@ -358,19 +442,22 @@ static FingerprintManager *instance;
     NSString *platform = [NSString stringWithCString:machine encoding:NSUTF8StringEncoding];
     NSString *device_uuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
     
-    [tags addObject:platform];
-    [tags addObject:device_uuid];
-    info[@"tags"] = tags;
-    
-    json[@"information"] = info;
-    
-    NSDictionary *data = @{
-                           @"_metadata":[self stringify:meta],
-                           @"data":[self stringify:json]
+    NSDictionary *info = @{
+                           @"tags":      @[platform, device_uuid],
+                           @"site_id":   _selectedRefpoint.floor,
+                           @"refid":     _selectedRefpoint._id,
+                           @"floor":     _selectedRefpoint.floor,
+                           @"floor_num": _selectedRefpoint.floor
                            };
     
-    NSLog(@"%@", data);
+    NSArray *array = [_sampler toJSON:info];
+
+    NSDictionary *meta = @{@"name": _selectedRefpoint.floor};
     
+    NSDictionary *data = @{
+                           @"_metadata": [self stringify:meta],
+                           @"data":      [self stringify:array]
+                           };
     NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"]?@"https":@"http";
     NSString *server = [[ServerConfig sharedConfig] fingerPrintingServerHost];
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:SAMPLINGS_API_URL, https, server, @""]];
@@ -383,9 +470,9 @@ static FingerprintManager *instance;
                 NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
                 [_delegate manager:self didSendData:nil withError:[NSError errorWithDomain:@"beacon.send" code:0 userInfo:nil]];
             } else {
-                NSString *oid = dic[@"_id"][@"$oid"];
-                NSLog(@"sent %ld", [response length]);
-                [_delegate manager:self didSendData:oid withError:nil];
+                //NSString *oid = dic[@"_id"][@"$oid"];
+                //NSLog(@"sent %ld", [response length]);
+                [_delegate manager:self didSendData:nil withError:nil];
                 
                 [self loadSamplings:^{
                     [_delegate manager:self didSamplingsLoaded:_samplings];
@@ -395,8 +482,8 @@ static FingerprintManager *instance;
             [_delegate manager:self didSendData:nil withError:[NSError errorWithDomain:@"beacon.send" code:0 userInfo:nil]];
         }
     }];
-    
-    [sampler reset];
+
+    [_sampler reset];
 }
 
 - (void)deleteFingerprint:(NSString *)idString
@@ -480,7 +567,7 @@ static FingerprintManager *instance;
 - (CLBeacon*)strongestBeacon
 {
     CLBeacon *strongest = nil;
-    for(CLBeacon *beacon in sampler.visibleBeacons) {
+    for(CLBeacon *beacon in _sampler.visibleBeacons) {
         if (beacon.rssi == 0) {
             continue;
         }
@@ -493,7 +580,7 @@ static FingerprintManager *instance;
 
 - (void)reset
 {
-    [sampler reset];
+    [_sampler reset];
 }
 
 - (void)removeBeacon:(HLPGeoJSONFeature *)beacon
@@ -554,7 +641,7 @@ static FingerprintManager *instance;
 
 - (NSArray<CLBeacon *> *)visibleBeacons
 {
-    return sampler.visibleBeacons;
+    return _sampler.visibleBeacons;
 }
 
 - (NSString*) getTime
@@ -580,6 +667,16 @@ static FingerprintManager *instance;
     
     loc = [loc offsetLocationByDistance:d Bearing:r];
     return CLLocationCoordinate2DMake(loc.lat, loc.lng);
+}
+
+- (UIView*)enableARKit:(BOOL)enabled {
+    _sampler.ARKitEnabled = enabled;
+    return _sampler.view;
+}
+
+- (BOOL)arkitSamplingReady
+{
+    return locStart || locEnd;
 }
 
 @end

@@ -22,7 +22,12 @@
 
 #import "HLPBeaconSampler.h"
 
-@implementation HLPBeaconSampler
+@implementation HLPBeaconSampler {
+    BOOL _ARKitEnabled;
+    ARWorldTrackingConfiguration *_arkitConfig;
+    CIDetector *_detector;
+    NSTimeInterval _lastScan;
+}
 
 
 static HLPBeaconSampler *sharedData_ = nil;
@@ -41,16 +46,74 @@ static HLPBeaconSampler *sharedData_ = nil;
 {
     self = [super init];
     if (self) {
-        sampledData = [[NSMutableArray alloc] init];
-        lastProcessedIndex = 0;
-        sampledPoint = [[NSMutableArray alloc] init];
-        
         locationManager = [[CLLocationManager alloc]init];
         locationManager.delegate = self;
         
         recording = FALSE;
     }
     return self;
+}
+
+- (void)setARKitEnabled:(BOOL)ARKitEnabled
+{
+    if (!_ARKitEnabled && ARKitEnabled) {
+        [self prepareARKit];
+    }
+    if (_ARKitEnabled && !ARKitEnabled) {
+        [self destroyARKit];
+    }
+    _ARKitEnabled = ARKitEnabled;
+}
+
+- (BOOL)ARKitEnabled {
+    return _ARKitEnabled;
+}
+
+- (void)prepareARKit
+{
+    _view = [[ARSCNView alloc] init];
+    
+    _view.delegate = self;
+    //_view.showsStatistics = YES;
+    _view.debugOptions = ARSCNDebugOptionShowWorldOrigin | ARSCNDebugOptionShowFeaturePoints;
+    
+    _detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:nil];
+    
+    _arkitConfig = [[ARWorldTrackingConfiguration alloc] init];
+    [_view.session runWithConfiguration:_arkitConfig];
+}
+
+- (void) renderer:(id<SCNSceneRenderer>)renderer didRenderScene:(SCNScene *)scene atTime:(NSTimeInterval)time
+{
+    SCNVector3 pos = SCNVector3Make(0,0,0);
+    pos = [_view.pointOfView convertPosition:pos toNode:nil];
+    [self.delegate arPositionUpdated:pos];
+    
+    NSTimeInterval now = [NSDate date].timeIntervalSince1970;
+    if (now - _lastScan < 0.5) {
+        return;
+    }
+    _lastScan = now;
+    
+    CIImage *image = [[CIImage alloc] initWithCVPixelBuffer: _view.session.currentFrame.capturedImage];
+    NSArray<CIFeature*>* features = [_detector featuresInImage:image];
+
+    for (CIFeature *feature in features) {
+        if ([feature isKindOfClass:CIQRCodeFeature.class]) {
+            CIQRCodeFeature *qr = (CIQRCodeFeature*) feature;
+            
+            [self.delegate qrCodeDetected:qr.messageString];
+        }
+    }
+}
+
+- (void)destroyARKit
+{
+    [_view.session pause];
+    _view.delegate = nil;
+    _view = nil;
+    _detector = nil;
+    _arkitConfig = nil;
 }
 
 
@@ -60,19 +123,16 @@ static HLPBeaconSampler *sharedData_ = nil;
     allBeacons = [[CLBeaconRegion alloc] initWithProximityUUID:uuid identifier:@"dynamicBeaconSamplingTool"];
 }
 
-- (void) setSamplingLocation:(HLPPoint3D *)point {
-    for (HLPBeaconSample *bs in sampledData) {
-        [bs setPoint:point];
-    }
+- (void) setSamplingLocation:(HLPPoint3D *)_location {
+    lastLocation = _location;
+    //_samples = [[HLPBeaconSamples alloc] initWithType:_ARKitEnabled?HLPBeaconSamplesRaw:HLPBeaconSamplesBeacon];
 }
 
 - (void)reset {
     @synchronized(self) {
-        [sampledData removeAllObjects];
+        _samples = [[HLPBeaconSamples alloc] initWithType:_ARKitEnabled?HLPBeaconSamplesRaw:HLPBeaconSamplesBeacon];
     }
-    lastProcessedIndex = 0;
     _visibleBeacons = nil;
-    [sampledPoint removeAllObjects];
 }
 
 - (BOOL) startRecording {
@@ -109,19 +169,12 @@ static HLPBeaconSampler *sharedData_ = nil;
     [self fireUpdated];
 }
 
-- (NSMutableDictionary *)toJSON {
-    NSMutableDictionary *json = [[NSMutableDictionary alloc] init];
-    NSMutableArray *beacons = [[NSMutableArray alloc] init];
-    [json setObject:beacons forKey:@"beacons"];
-    
-    for(HLPBeaconSample *bs in sampledData) {
-        [beacons addObject:[bs toJSON:TRUE]];
-    }
-    return json;
+- (NSArray *)toJSON:(NSDictionary*)optionalInfo {
+    return [_samples toJSON:optionalInfo];
 }
 
 - (long) beaconSampleCount {
-    return [sampledData count];
+    return [_samples count];
 }
 
 - (long) visibleBeaconCount {
@@ -132,11 +185,16 @@ static HLPBeaconSampler *sharedData_ = nil;
     return recording;
 }
 
+- (void)transform2D:(CGAffineTransform)param
+{
+    [_samples transform2D:param];
+}
+
 
 # pragma mark - private
 - (void) startSensor
 {
-    for(CLRegion *r in locationManager.rangedRegions) {
+    for(CLBeaconRegion *r in locationManager.rangedRegions) {
         [locationManager stopRangingBeaconsInRegion:r];
     }
     [locationManager startRangingBeaconsInRegion:allBeacons];
@@ -152,14 +210,6 @@ static HLPBeaconSampler *sharedData_ = nil;
     }
 }
 
-- (void) addSample:(HLPBeaconSample*)bs {
-    if (recording) {
-        if (!pauseing) {
-            [sampledData addObject:bs];
-        }
-    }
-}
-
 # pragma mark -- location manager delegate
 
 - (void)locationManager:(CLLocationManager *)_manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
@@ -169,8 +219,7 @@ static HLPBeaconSampler *sharedData_ = nil;
     _visibleBeacons = beacons;
     
     @synchronized(self) {
-        HLPBeaconSample *bs = [[HLPBeaconSample alloc ]initWithBeacons:beacons];
-        [self addSample:bs];
+        [_samples addBeacons:beacons atPoint:lastLocation];
     }
     
     [self fireUpdated];

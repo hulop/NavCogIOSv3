@@ -24,6 +24,8 @@
 	<true/>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Only for including CoreBluetooth</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app use camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app use beacon location</string>
 	<key>UIFileSharingEnabled</key>

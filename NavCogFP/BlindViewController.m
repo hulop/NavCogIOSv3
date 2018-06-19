@@ -32,12 +32,15 @@
 #import "NavDeviceTTS.h"
 #import "NavBlindWebView.h"
 
+#define IS_IOS11orHIGHER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)
 
 @interface BlindViewController () {
     FPMode fpMode;
     
     int x, y;
     double fx, fy;
+    
+    NSTimeInterval lastQRLocationTime;
 }
 
 @end
@@ -54,7 +57,10 @@
     BOOL loaded;
     HLPRefpoint* currentRp;
     UITabBar *tabbar;
-    UITabBarItem *item1, *item2, *item3, *item4;
+    UITabBarItem *item1, *item2, *item3, *item4, *item5;
+    
+    UIView *arView;
+    HLPLocation *qrLocation;
 }
 
 - (void)dealloc
@@ -78,69 +84,23 @@
     [self.view addSubview:tabbar];
     
     item1 = [[UITabBarItem alloc]initWithTitle:@"FingerPrint" image:[UIImage imageNamed:@"fingerprint"] tag:0];
-    item2 = [[UITabBarItem alloc]initWithTitle:@"Beacon" image:[UIImage imageNamed:@"beacon"] tag:1];
-    item3 = [[UITabBarItem alloc]initWithTitle:@"ID" image:[UIImage imageNamed:@"id"] tag:2];
-    item4 = [[UITabBarItem alloc]initWithTitle:@"POI" image:[UIImage imageNamed:@"poi"] tag:3];
-    item1.enabled = item2.enabled = item3.enabled = item4.enabled = NO;
+    item5 = [[UITabBarItem alloc]initWithTitle:@"ARFingerPrint" image:[UIImage imageNamed:@"fingerprint"] tag:1];
+    item2 = [[UITabBarItem alloc]initWithTitle:@"Beacon" image:[UIImage imageNamed:@"beacon"] tag:2];
+    item3 = [[UITabBarItem alloc]initWithTitle:@"ID" image:[UIImage imageNamed:@"id"] tag:3];
+    item4 = [[UITabBarItem alloc]initWithTitle:@"POI" image:[UIImage imageNamed:@"poi"] tag:4];
+    item1.enabled = item5.enabled = item2.enabled = item3.enabled = item4.enabled = NO;
     
-    tabbar.items = @[item1, item2, item3, item4];
+    tabbar.items = @[item1, item5, item2, item3, item4];
     tabbar.selectedItem = item1;
     tabbar.delegate = self;
     
-    [tabbar setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
-    NSLayoutConstraint *layoutLeft =
-    [NSLayoutConstraint constraintWithItem:tabbar
-                                 attribute:NSLayoutAttributeLeading
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.view
-                                 attribute:NSLayoutAttributeLeading
-                                multiplier:1.0
-                                  constant:0.0];
-    
-    NSLayoutConstraint *layoutRight =
-    [NSLayoutConstraint constraintWithItem:tabbar
-                                 attribute:NSLayoutAttributeTrailing
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.view
-                                 attribute:NSLayoutAttributeTrailing
-                                multiplier:1.0
-                                  constant:0.0];
-    
-    NSLayoutConstraint *layoutBottom =
-    [NSLayoutConstraint constraintWithItem:tabbar
-                                 attribute:NSLayoutAttributeBottom
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.view
-                                 attribute:NSLayoutAttributeBottom
-                                multiplier:1.0
-                                  constant:0.0];
-    
-    NSLayoutConstraint *layoutHeight =
-    [NSLayoutConstraint constraintWithItem:tabbar
-                                 attribute:NSLayoutAttributeHeight
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:nil
-                                 attribute:NSLayoutAttributeHeight
-                                multiplier:1.0
-                                  constant:49];
-    
-    NSLayoutConstraint *layoutBottom2 =
-    [NSLayoutConstraint constraintWithItem:self.view
-                                 attribute:NSLayoutAttributeBottom
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.webView
-                                 attribute:NSLayoutAttributeBottom
-                                multiplier:1.0
-                                  constant:49];
-
-    [self.view addConstraints:@[layoutLeft, layoutRight, layoutBottom, layoutHeight, layoutBottom2]];
-    [self.view layoutIfNeeded];
 
     [self.devUp setTitle:@"Up" forState:UIControlStateNormal];
     [self.devDown setTitle:@"Down" forState:UIControlStateNormal];
     [self.devLeft setTitle:@"Left" forState:UIControlStateNormal];
     [self.devRight setTitle:@"Right" forState:UIControlStateNormal];
+    
+    [self.devNote setTitle:@"Accept" forState:UIControlStateNormal];
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
@@ -172,9 +132,68 @@
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    
+    [tabbar setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    NSLayoutConstraint *layoutLeft =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeLeading
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.view
+                                 attribute:NSLayoutAttributeLeading
+                                multiplier:1.0
+                                  constant:0.0];
+    
+    NSLayoutConstraint *layoutRight =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeTrailing
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.view
+                                 attribute:NSLayoutAttributeTrailing
+                                multiplier:1.0
+                                  constant:0.0];
+    
+    NSLayoutConstraint *layoutBottom =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeBottom
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.view
+                                 attribute:NSLayoutAttributeBottom
+                                multiplier:1.0
+                                  constant:0.0];
+    
+    int height = 49;
+    if (IS_IOS11orHIGHER) { height += self.view.safeAreaInsets.bottom; }
+    
+    NSLayoutConstraint *layoutHeight =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeHeight
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:nil
+                                 attribute:NSLayoutAttributeHeight
+                                multiplier:1.0
+                                  constant:height ];
+    
+    NSLayoutConstraint *layoutBottom2 =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeTop
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.webView
+                                 attribute:NSLayoutAttributeBottom
+                                multiplier:1.0
+                                  constant:0];
+    
+    [self.view addConstraints:@[layoutLeft, layoutRight, layoutBottom, layoutHeight, layoutBottom2]];
+    [self.view layoutIfNeeded];
+    
+    [self updateView];
+}
+
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
-    FPMode modes[4] = {FPModeFingerprint, FPModeBeacon, FPModeID, FPModePOI};
+    FPMode modes[5] = {FPModeFingerprint, FPModeARFingerprint, FPModeBeacon, FPModeID, FPModePOI};
     fpMode = modes[item.tag];
     
     if (fpMode == FPModeID) {
@@ -284,9 +303,7 @@
                 mv.message.preferredMaxLayoutWidth = mv.bounds.size.width;
                 mv.message.text = [NSString stringWithFormat:@"Major:%5d Minor:%5d\nRSSI=%4ld",[b.major intValue],[b.minor intValue],b.rssi];
                 mv.message.adjustsFontSizeToFitWidth = YES;
-
-            } else {
-                [NavUtil hideMessageView:self.view];
+                
             }
         });
             
@@ -294,10 +311,16 @@
         return YES;
     } else {
         [self updateView];
-        long count = [[NSUserDefaults standardUserDefaults] integerForKey:@"finger_printing_duration"];
-        if (sampleCount >= count) {
-            [fpm sendData];
-            return NO;
+        if (fpMode == FPModeFingerprint) {
+            long count = [[NSUserDefaults standardUserDefaults] integerForKey:@"finger_printing_duration"];
+            if (sampleCount >= count) {
+                [fpm sendData];
+                return NO;
+            }
+        }
+        if (fpMode == FPModeARFingerprint) {
+            [self clearFeatures];
+            [self showARFingerprints:fpm.sampler.samples.samples];
         }
         return YES;
     }
@@ -310,8 +333,47 @@
         if (fpMode == FPModeFingerprint) {
             [self showFingerprints:samplings];
         }
+        if (fpMode == FPModeARFingerprint) {
+            [self showFingerprints:samplings];
+        }
         [self updateView];
     });
+}
+
+- (void)manager:(FingerprintManager *)manager didDetectLocation:(HLPLocation *)location
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.getMap().getView().setZoom(21);"];
+        
+        HLPLocation *center = [self.webView getCenter];
+        double eps = 10e-7;
+        if (fabs(center.lat - location.lat) < eps &&
+            fabs(center.lng - location.lng) < eps &&
+            fabs(center.floor - location.floor) < 0.1) {
+            return;
+        }
+        
+        qrLocation = location;
+        [self.webView manualLocation:location withSync:NO];
+        
+        for(HLPRefpoint *rp in fpm.refpoints) {
+            if (fabs(rp.floor_num - location.floor) < 0.1) {
+                [fpm select:rp];
+                [self updateView];
+                break;
+            }
+        }
+    });
+}
+
+- (void)manager:(FingerprintManager *)manager didARLocationChange:(HLPLocation *)location
+{
+    NSTimeInterval now = [NSDate date].timeIntervalSince1970;
+    if (!qrLocation && now - lastQRLocationTime > 0.1) {
+        [location updateFloor:NAN];
+        [self.webView manualLocation:location withSync:NO];
+        lastQRLocationTime = now;
+    }
 }
 
 #pragma mark - POIManagerDelegate
@@ -408,22 +470,26 @@
 
 - (void) startSampling
 {
-    fpm.delegate = self;
-    [NavUtil showWaitingForView:self.view withMessage:@"Sampling..."];
+    if (fpMode != FPModeARFingerprint) {
+        [NavUtil showWaitingForView:self.view withMessage:@"Sampling..."];
+    }
     [fpm startSamplingAtLat:center.lat Lng:center.lng];
 }
+
 - (void) cancelSampling
 {
     [NavUtil hideWaitingForView:self.view];
     [fpm cancel];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void) completeSampling
 {
-    [self updateView];
+    [NavUtil hideWaitingForView:self.view];
+    [fpm sendData];
+    [fpm stopSampling];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void) viewDidDisappear:(BOOL)animated
 {
 }
 
@@ -435,13 +501,69 @@
         BOOL existRefpoint = fpm.selectedRefpoint != nil;
         BOOL existUUID = ([ud stringForKey:@"selected_finger_printing_beacon_uuid"] != nil);
         BOOL isSampling = fpm.isSampling;
-        
         BOOL showButtons = existRefpoint && (fpMode == FPModeFingerprint);
+        BOOL showAccept = existRefpoint && (fpMode == FPModeARFingerprint) && qrLocation;
         
         self.devUp.hidden = !showButtons;
         self.devDown.hidden = !showButtons;
         self.devLeft.hidden = !showButtons;
         self.devRight.hidden = !showButtons;
+        
+        self.devNote.hidden = !showAccept;
+        
+        UIView *temp = [fpm enableARKit:(fpMode == FPModeARFingerprint)];
+        if (!arView && temp) {
+            [self.view addSubview:temp];
+            
+            [temp setTranslatesAutoresizingMaskIntoConstraints:NO];
+            temp.layer.opacity = 0.5;
+            
+            NSLayoutConstraint *layoutLeft =
+            [NSLayoutConstraint constraintWithItem:temp
+                                         attribute:NSLayoutAttributeLeading
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:self.webView
+                                         attribute:NSLayoutAttributeLeading
+                                        multiplier:1.0
+                                          constant:0.0];
+            
+            int top = 0;
+            //if (IS_IOS11orHIGHER) { top += self.view.safeAreaInsets.top; }
+            
+            NSLayoutConstraint *layoutTop =
+            [NSLayoutConstraint constraintWithItem:temp
+                                         attribute:NSLayoutAttributeTop
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:self.webView
+                                         attribute:NSLayoutAttributeTop
+                                        multiplier:1.0
+                                          constant:top];
+            
+            NSLayoutConstraint *layoutWidth =
+            [NSLayoutConstraint constraintWithItem:temp
+                                         attribute:NSLayoutAttributeWidth
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:nil
+                                         attribute:NSLayoutAttributeWidth
+                                        multiplier:1.0
+                                          constant:120];
+            
+            NSLayoutConstraint *layoutHeight =
+            [NSLayoutConstraint constraintWithItem:temp
+                                         attribute:NSLayoutAttributeHeight
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:nil
+                                         attribute:NSLayoutAttributeHeight
+                                        multiplier:1.0
+                                          constant:160];
+            
+            [self.view addConstraints:@[layoutLeft, layoutTop, layoutWidth, layoutHeight]];
+            [self.view layoutIfNeeded];
+        }
+        if (!temp && arView) {
+            [arView removeFromSuperview];
+        }
+        arView = temp;
         
         if (fpMode == FPModeFingerprint) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
@@ -474,7 +596,34 @@
                     self.navigationItem.title = @"No Reference Point";
                 }
             }
-        } else if (fpMode == FPModeBeacon) {
+        } else if (fpMode == FPModeARFingerprint) {
+            self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID && fpm.arkitSamplingReady;
+            self.settingButton.enabled = true;//fpm.isReady || !_retryButton.hidden;
+            
+            self.searchButton.title = NSLocalizedStringFromTable(isSampling?@"End":@"Start", @"Fingerprint", @"");
+            
+            self.navigationItem.rightBarButtonItem = _searchButton;
+            self.navigationItem.leftBarButtonItem = _settingButton;
+            
+            if (isSampling) {
+                self.navigationItem.title = [NSString stringWithFormat:@"%@ - %ld (%ld)",
+                                             fpm.selectedRefpoint.floor,
+                                             fpm.beaconsSampleCount, fpm.visibleBeaconCount];
+            } else {
+                if (existRefpoint) {
+                    if (fpm.samplings) {
+                        self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld] (%.1f, %.1f)",
+                                                     fpm.selectedRefpoint.floor,
+                                                     [fpm.samplings count], fx, fy];
+                    } else {
+                        self.navigationItem.title = fpm.selectedRefpoint.floor;
+                    }
+                } else {
+                    self.navigationItem.title = @"No Reference Point";
+                }
+            }
+        }
+        else if (fpMode == FPModeBeacon) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady || !_retryButton.hidden;
             
@@ -550,7 +699,7 @@
             
             self.navigationItem.title = @"POI";
         }
-        if (fpMode != FPModePOI) {
+        if (fpMode != FPModePOI && fpMode != FPModeARFingerprint) {
             [_webView stringByEvaluatingJavaScriptFromString:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();"];
         }
     });
@@ -576,7 +725,7 @@
 {
     [NSTimer scheduledTimerWithTimeInterval:2 repeats:NO block:^(NSTimer * _Nonnull timer) {
         [self reload];
-        item1.enabled = item2.enabled = item3.enabled = YES;
+        item1.enabled = item5.enabled = item2.enabled = item3.enabled = YES;
         item4.enabled = [[ServerConfig sharedConfig] isMapEditorKeyAvailable];
     }];
 }
@@ -595,7 +744,7 @@
     if (fpMode == FPModePOI || showRoute) {
         [poim initCenter:center];
     }
-    if (fpMode == FPModeFingerprint || fpMode == FPModeBeacon) {
+    if (fpMode == FPModeFingerprint || fpMode == FPModeARFingerprint ||fpMode == FPModeBeacon) {
         [NavUtil showWaitingForView:self.view withMessage:@"Loading..."];
         [fpm load];
     }
@@ -610,6 +759,24 @@
                      @"lat": @(p.lat),
                      @"lng": @(p.lng),
                      @"count": @([p.beacons count])
+                     };
+        }
+        return (NSDictionary*)nil;
+    }];
+}
+
+- (void) showARFingerprints:(NSArray*) samples
+{
+    [self showFeatures:samples withStyle:^NSDictionary *(NSObject *obj) {
+        if([obj isKindOfClass:HLPBeaconSample.class]) {
+            HLPBeaconSample *s = (HLPBeaconSample*)obj;
+            MKMapPoint l = MKMapPointMake(s.point.x, s.point.y);
+            CLLocationCoordinate2D g = [FingerprintManager convertFromLocal:l ToGlobalWithRefpoint:fpm.selectedRefpoint];
+            
+            return @{
+                     @"lat": @(g.latitude),
+                     @"lng": @(g.longitude),
+                     @"count": @"*"
                      };
         }
         return (NSDictionary*)nil;
@@ -871,7 +1038,7 @@
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
     if ([identifier isEqualToString:@"show_search"]) {
-        if (fpMode == FPModeFingerprint) {
+        if (fpMode == FPModeFingerprint || fpMode == FPModeARFingerprint) {
             if (selectedFeature && [selectedFeature isKindOfClass:HLPSampling.class]) {
                 [self checkDeletion:^{
                     [NavUtil showModalWaitingWithMessage:@"Deleting..."];
@@ -879,7 +1046,12 @@
                 } withType:@"Fingerprint"];
             } else {
                 if (fpm.isSampling) {
-                    [self cancelSampling];
+                    if (fpMode == FPModeFingerprint) {
+                        [self cancelSampling];
+                    }
+                    if (fpMode == FPModeARFingerprint) {
+                        [self completeSampling];
+                    }
                 } else {
                     [self startSampling];
                 }
@@ -991,5 +1163,15 @@
     [self updateView];
 }
 
+- (IBAction)addNote:(id)sender
+{
+    if (fpMode == FPModeARFingerprint) {
+        [fpm adjustLocation:qrLocation];
+        qrLocation = nil;
+        [self clearFeatures];
+        [self showARFingerprints:fpm.sampler.samples.samples];
+        [self updateView];
+    }
+}
 
 @end

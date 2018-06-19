@@ -20,19 +20,17 @@
  * THE SOFTWARE.
  *******************************************************************************/
 #import <Foundation/Foundation.h>
+#import <CoreGraphics/CoreGraphics.h>
 
 @interface HLPPoint3D : NSObject
 
 @property (atomic, assign) float x;
 @property (atomic, assign) float y;
 @property (atomic, assign) float z;
-@property (atomic, assign) NSString *floor;
-@property (atomic, assign) long long time;
+@property (atomic, assign) int floor;
 
-- (id) initWithX:(float)x Y:(float)y Z:(float)z Floor:(NSString*)floor;
-+ (HLPPoint3D*) interpolateFrom:(HLPPoint3D*)from To:(HLPPoint3D*)to inTime:(long long)time;
-+ (HLPPoint3D*) interpolateFrom:(HLPPoint3D*)from To:(HLPPoint3D*)to inRatio:(float)ratio;
-- (float) distanceTo:(HLPPoint3D*)point;
+- (id) initWithX:(float)x Y:(float)y Z:(float)z Floor:(int)floor;
+- (void) transform2D:(CGAffineTransform)param;
 - (NSDictionary*) toJSON;
 
 @end

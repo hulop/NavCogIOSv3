@@ -48,7 +48,7 @@ static HLPBeaconSampler *sharedData_ = nil;
     if (self) {
         locationManager = [[CLLocationManager alloc]init];
         locationManager.delegate = self;
-        
+        _qrCodeInterval = 0.5;
         recording = FALSE;
     }
     return self;
@@ -90,7 +90,7 @@ static HLPBeaconSampler *sharedData_ = nil;
     [self.delegate arPositionUpdated:pos];
     
     NSTimeInterval now = [NSDate date].timeIntervalSince1970;
-    if (now - _lastScan < 0.5) {
+    if (now - _lastScan < _qrCodeInterval) {
         return;
     }
     _lastScan = now;
@@ -102,7 +102,7 @@ static HLPBeaconSampler *sharedData_ = nil;
         if ([feature isKindOfClass:CIQRCodeFeature.class]) {
             CIQRCodeFeature *qr = (CIQRCodeFeature*) feature;
             
-            [self.delegate qrCodeDetected:qr.messageString];
+            [self.delegate qrCodeDetected:qr];
         }
     }
 }

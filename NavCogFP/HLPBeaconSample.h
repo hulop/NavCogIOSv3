@@ -32,7 +32,7 @@ typedef NS_ENUM(NSInteger, HLPBeaconSamplesType) {
     HLPBeaconSamplesRaw
 };
 
-@interface HLPBeaconSample : NSObject
+@interface HLPBeaconSample : NSObject<NSCopying>
 
 @property (readonly) HLPPoint3D *point;
 @property (readonly) NSArray<CLBeacon*> *beacons;

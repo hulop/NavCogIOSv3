@@ -25,6 +25,20 @@
 
 @implementation HLPBeaconSample
 
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    HLPBeaconSample* result = [[HLPBeaconSample allocWithZone:zone] initWithBeacons:self.beacons atPoint:self.point];    
+    if (result) {
+        result->_timestamp = self.timestamp;
+    }
+    return result;
+}
+
+- (BOOL)isEqual:(HLPBeaconSample*)object
+{
+    return [self.point isEqual:object.point];
+}
+
 - (id)initWithBeacons:(NSArray<CLBeacon*> *)array {
     self = [super init];
     _timestamp = (long long)([[NSDate date] timeIntervalSince1970]*1000);

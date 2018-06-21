@@ -42,6 +42,7 @@
     HLPLocation *locEnd;
     
     double rotation;
+    BOOL calibrated;
 }
 
 static FingerprintManager *instance;
@@ -88,6 +89,10 @@ static FingerprintManager *instance;
 
 - (void)select:(HLPRefpoint *)rp
 {
+    if ([_selectedRefpoint isEqual:rp]) {
+        return;
+    }
+    
     _selectedRefpoint = rp;
     if (!rp) {
         return;
@@ -291,8 +296,8 @@ static FingerprintManager *instance;
         return;
     }
     
-    [self setLocationAtLat:lat_ Lng:lng_];
     [self startSampling];
+    [self setLocationAtLat:lat_ Lng:lng_];
 }
 
 - (void)setLocationAtLat:(double)lat_ Lng:(double)lng_
@@ -305,6 +310,7 @@ static FingerprintManager *instance;
     MKMapPoint local = [FingerprintManager convertFromGlobal:g ToLocalWithRefpoint:_selectedRefpoint];
     x = local.x;
     y = local.y;
+    [_sampler setSamplingLocation:[[HLPPoint3D alloc] initWithX:x Y:y Z:0 Floor:_selectedRefpoint.floor_num]];
 }
 
 - (void)startSampling {
@@ -328,11 +334,18 @@ static FingerprintManager *instance;
 - (void)cancel
 {
     [_sampler stopRecording];
-    [_sampler reset];
     _isSampling = NO;
+    [_delegate manager:self didStatusChanged:_isReady];
+}
+
+- (void)reset
+{
     _visibleBeaconCount = 0;
     _beaconsSampleCount = 0;
-    [_delegate manager:self didStatusChanged:_isReady];
+    calibrated = NO;
+    locStart = locEnd = nil;
+    rotation = 0;
+    [_sampler reset];
 }
 
 - (void)updated
@@ -350,21 +363,9 @@ static FingerprintManager *instance;
     }
 }
 
-- (void)qrCodeDetected:(NSString *)message
+- (void)qrCodeDetected:(CIQRCodeFeature *)feature
 {
-    NSArray<NSString*>* items = [message componentsSeparatedByString:@":"];
-    
-    if ([@"latlng" isEqualToString:items[0]]) {
-        double lat = items[1].doubleValue;
-        double lng = items[2].doubleValue;
-        double floor = items[3].doubleValue;
-        if (floor > 0) {
-            floor = floor - 1;
-        }
-        
-        HLPLocation *loc = [[HLPLocation alloc] initWithLat:lat Lng:lng Floor:floor];
-        [self.delegate manager:self didDetectLocation:loc];
-    }
+    [self.delegate manager:self didQRCodeDetect:feature];
 }
 
 - (void)arPositionUpdated:(SCNVector3)position
@@ -398,6 +399,7 @@ static FingerprintManager *instance;
     
     if (locStart && locEnd) {
         // compute
+        calibrated = YES;
         
         CLLocationCoordinate2D g1 = CLLocationCoordinate2DMake(locStart.lat, locStart.lng);
         CLLocationCoordinate2D g2 = CLLocationCoordinate2DMake(locEnd.lat, locEnd.lng);
@@ -578,10 +580,6 @@ static FingerprintManager *instance;
     return strongest;
 }
 
-- (void)reset
-{
-    [_sampler reset];
-}
 
 - (void)removeBeacon:(HLPGeoJSONFeature *)beacon
 {
@@ -677,6 +675,11 @@ static FingerprintManager *instance;
 - (BOOL)arkitSamplingReady
 {
     return locStart || locEnd;
+}
+
+- (BOOL)locationAdjustable
+{
+    return !calibrated;
 }
 
 @end

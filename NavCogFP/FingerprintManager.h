@@ -37,7 +37,7 @@
 -(BOOL)manager:(FingerprintManager*)manager didObservedBeacons:(int)beaconCount atSample:(int)sampleCount;
 -(void)manager:(FingerprintManager*)manager didSendData:(NSString*)idString withError:(NSError*)error;
 -(void)manager:(FingerprintManager*)manager didSamplingsLoaded:(NSArray*)samplings;
--(void)manager:(FingerprintManager*)manager didDetectLocation:(HLPLocation*)location;
+-(void)manager:(FingerprintManager*)manager didQRCodeDetect:(CIQRCodeFeature*)feature;
 -(void)manager:(FingerprintManager*)manager didARLocationChange:(HLPLocation*)location;
 @end
 
@@ -57,6 +57,7 @@
 @property (readonly) HLPFloorplan *selectedFloorplan;
 @property (readonly) HLPBeaconSampler *sampler;
 @property (readonly) BOOL arkitSamplingReady;
+@property (readonly) BOOL locationAdjustable;
 
 +(instancetype)sharedManager;
 

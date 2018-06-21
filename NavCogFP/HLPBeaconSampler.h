@@ -31,7 +31,7 @@
 
 @required
 - (void)updated;
-- (void)qrCodeDetected:(NSString*)message;
+- (void)qrCodeDetected:(CIQRCodeFeature*)message;
 - (void)arPositionUpdated:(SCNVector3)position;
 @optional
 
@@ -55,6 +55,7 @@
 @property BOOL ARKitEnabled;
 @property (nullable, readonly) ARSCNView *view;
 @property (readonly) HLPBeaconSamples* samples;
+@property double qrCodeInterval;
 
 + (HLPBeaconSampler *)sharedInstance;
 

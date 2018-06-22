@@ -550,7 +550,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     
     [detailSettingHelper addSectionTitle:@"Developer mode"];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Developer mode" Name:@"developer_mode" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:ACTION Label:@"P2P Debug" Name:@"p2p_debug" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:ACTION_TYPE Label:@"P2P Debug" Name:@"p2p_debug" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"P2P Debug Follower" Name:@"p2p_debug_follower" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSectionTitle:@"Detail Settings"];
@@ -587,6 +587,22 @@ static HLPSetting *poiLabel, *ignoreFacility;
     [detailSettingHelper addSectionTitle:@"Test"];
     [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Send beacon data" Name:@"send_beacon_data" DefaultValue:@(NO) Accept:nil];
     [detailSettingHelper addSettingWithType:TEXTINPUT Label:@"Server" Name:@"beacon_data_server" DefaultValue:@"192.168.1.1:8080" Accept:nil];
+    
+    [detailSettingHelper addSectionTitle:@"Image Localization"];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use CNN heading calibration" Name:@"use_cnn_heading_calibration" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use CNN navigation" Name:@"use_cnn_navigation" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use CNN MobileNet" Name:@"use_cnn_mobilenet" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:BOOLEAN Label:@"Use CNN LSTM" Name:@"use_cnn_lstm" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:TEXTINPUT Label:@"CNN settings file" Name:@"image_cnn_settings" DefaultValue:@"cnn-model.json" Accept:nil];
+    [detailSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Image", @"image beacon cnn mode label") Name:@"image_cnn_mode_image" Group:@"image_cnn_mode" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Beacon", @"image beacon cnn mode label") Name:@"image_cnn_mode_beacon" Group:@"image_cnn_mode" DefaultValue:@(NO) Accept:nil];
+    [detailSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"Image and Beacon", @"image beacon cnn mode label") Name:@"image_cnn_mode_image_beacon" Group:@"image_cnn_mode" DefaultValue:@(YES) Accept:nil];
+    [detailSettingHelper addSettingWithType:DOUBLE Label:@"Max CNN FPS" Name:@"maxCnnFPS" DefaultValue:@(2.0) Min:0.1 Max:30.0 Interval:0.1];
+    [detailSettingHelper addSettingWithType:DOUBLE Label:@"Angle accuracy threshold use image" Name:@"angleAccuracyThresholdUseImage" DefaultValue:@(22.5) Min:0.5 Max:50.0 Interval:0.5];
+    [detailSettingHelper addSettingWithType:DOUBLE Label:@"Sigma distance for image likelihood" Name:@"sigmaDistImageLikelihood" DefaultValue:@(1.0) Min:1.0 Max:10.0 Interval:0.1];
+    [detailSettingHelper addSettingWithType:DOUBLE Label:@"Sigma angle for image likelihood" Name:@"sigmaAngleImageLikelihood" DefaultValue:@(45.0) Min:1.0 Max:90.0 Interval:1.0];
+    [detailSettingHelper addSettingWithType:DOUBLE Label:@"Image update distance threshold" Name:@"imageUpdateDistThreshold" DefaultValue:@(3.0) Min:1.0 Max:10.0 Interval:1.0];
+    [detailSettingHelper addSettingWithType:DOUBLE Label:@"Image update angle lower bound" Name:@"imageUpdateAngleLB" DefaultValue:@(5.0) Min:1.0 Max:90.0 Interval:1.0];
 }
 
 + (void)setupBlelocppSettings

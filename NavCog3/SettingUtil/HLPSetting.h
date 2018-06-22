@@ -38,7 +38,7 @@
 
 typedef NS_ENUM (NSUInteger, NavCogSettingType) {
     SECTION,
-    ACTION,
+    ACTION_TYPE,
     UUID_TYPE,
     HOST_PORT,
     STRING,

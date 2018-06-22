@@ -988,14 +988,28 @@
     BOOL silenceIfCalibrated = properties[@"silenceIfCalibrated"] != nil && [properties[@"silenceIfCalibrated"] boolValue];
     double acc = [properties[@"accuracy"] doubleValue];
     NSString *string;
+    BOOL useCnnHeadingCalib = [[NSUserDefaults standardUserDefaults] boolForKey:@"use_cnn_heading_calibration"];
     if (acc > 45) {
-        string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION", @"BlindView", @"");        
+        if (useCnnHeadingCalib) {
+            string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION_IMAGE", @"BlindView", @"");
+        } else {
+            string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION", @"BlindView", @"");
+        }
     }
     else if (acc > 22.5) {
-        string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION2", @"BlindView", @"");
+        if (useCnnHeadingCalib) {
+            string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION_IMAGE2", @"BlindView", @"");
+        } else {
+            string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION2", @"BlindView", @"");
+        }
     }
-    else if (!silenceIfCalibrated){
-        string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION3", @"BlindView", @"");
+    else {
+        if (useCnnHeadingCalib) {
+            // always speak when heading calibration finishes in image localization mode
+            string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION_IMAGE3", @"BlindView", @"");
+        } else if (!silenceIfCalibrated){
+            string = NSLocalizedStringFromTable(@"HEADING_CALIBRATION3", @"BlindView", @"");
+        }
     }
     [self.delegate vibrate];
     [self.delegate speak:string withOptions:properties completionHandler:^{}];

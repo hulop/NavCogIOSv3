@@ -37,6 +37,7 @@
 
 #import "ServerConfig.h"
 #import "WebViewController.h"
+#import "Logging.h"
 
 #import <HLPLocationManager/HLPLocationManager+Player.h>
 #import "DefaultTTS.h"
@@ -132,6 +133,8 @@
     previewer.delegate = self;
     _cover.fsSource = navigator;
     
+    [HLPImageCaptureManager sharedManager].imageViewDelegate = self;
+    
     defaultColor = self.navigationController.navigationBar.barTintColor;
     
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
@@ -139,6 +142,7 @@
     
     self.searchButton.enabled = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplayStop:) name:REQUEST_LOG_REPLAY_STOP object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debugPeerStateChanged:) name:DEBUG_PEER_STATE_CHANGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestDialogStart:) name:REQUEST_DIALOG_START object:nil];
@@ -317,6 +321,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_IMAGE_CNN object:self];
     [self becomeFirstResponder];
     
     UIView* target = [self findLabel:self.navigationController.navigationBar.subviews];
@@ -362,6 +367,7 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_ACCELEARATION object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_IMAGE_CNN object:self];
 }
 
 - (void)debugPeerStateChanged:(NSNotification*)note
@@ -465,6 +471,51 @@
     }
 }
 
+- (void)showImage:(long)timestamp image:(UIImage*)image
+{
+    if ([Logging isLogging]) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0), ^{
+            NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString *collectionName = [[[Logging logFilePath] lastPathComponent] stringByDeletingPathExtension];
+            NSString *imageFileDir = [docDir stringByAppendingPathComponent:collectionName];
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            if (![fileManager fileExistsAtPath:imageFileDir]) {
+                [fileManager createDirectoryAtPath:imageFileDir withIntermediateDirectories:NO attributes:nil error:nil];
+            }
+            
+            NSString *imageFileName = [NSString stringWithFormat:@"%ld.jpg", timestamp];
+            NSString *imageFilePath = [NSString stringWithFormat:@"%@/%@" , imageFileDir, imageFileName];
+            
+            NSData *imageData = [[NSData alloc] initWithData:UIImageJPEGRepresentation(image, 1.0f)];
+            if (![imageData writeToFile:imageFilePath atomically:YES]) {
+                NSLog(@"Error to save image %@", imageFilePath);
+            }
+        });
+    }
+
+    HLPImageCaptureManager *captureManager = [HLPImageCaptureManager sharedManager];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.imageView.image = captureManager.lastLocalizeImage;
+        
+        NSArray *lastImageLocalizePose = captureManager.lastImageLocalizePose;
+        if ([lastImageLocalizePose count]==4) {
+            self.imageMessage.text = [NSString stringWithFormat:@"%.01f,%.01f,%.01f,%.01f", [lastImageLocalizePose[0] doubleValue], [lastImageLocalizePose[1] doubleValue], [lastImageLocalizePose[2] doubleValue], [lastImageLocalizePose[3] doubleValue]*(180.0/M_PI)];
+        } else {
+            self.imageMessage.text = @"Image failed";
+        }
+        
+        NSArray *lastImageLocalizePredict = captureManager.lastImageLocalizePredict;
+        if ([lastImageLocalizePredict count]==4) {
+            self.pfMessage.text = [NSString stringWithFormat:@"%.01f,%.01f,%.01f,%.01f", [lastImageLocalizePredict[0] doubleValue], [lastImageLocalizePredict[1] doubleValue], [lastImageLocalizePredict[2] doubleValue], [lastImageLocalizePredict[3] doubleValue]*(180.0/M_PI)];
+        } else {
+            self.pfMessage.text = @"predict failed";
+        }
+        
+        HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];
+        self.pfMiscMessage.text = [NSString stringWithFormat:@"%0.1f, %0.1f, %0.1f, %.01f", location.floor, location.accuracy, location.orientation, location.orientationAccuracy];
+    });
+}
 
 - (void) logReplay:(NSNotification*)note
 {

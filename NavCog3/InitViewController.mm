@@ -123,6 +123,23 @@
         NSString* modelPath = [documentsPath stringByAppendingPathComponent:modelName];
         [manager setModelPath:modelPath];
     }
+
+    NSString *cnnSettingName = [[NSUserDefaults standardUserDefaults] stringForKey:@"image_cnn_settings"];
+    NSString *cnnSettingPath = [documentsPath stringByAppendingPathComponent:cnnSettingName];
+    
+    NSString *cnnMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"image_cnn_mode"];
+    HLPImageLocalizeMode imageLocalizeMode = HLPImageLocalizeImageBeacon;
+    if ([cnnMode isEqualToString:@"image_cnn_mode_image"]){
+        imageLocalizeMode = HLPImageLocalizeImage;
+    } else if ([cnnMode isEqualToString:@"image_cnn_mode_beacon"]){
+        imageLocalizeMode = HLPImageLocalizeBeacon;
+    } else if ([cnnMode isEqualToString:@"image_cnn_mode_image_beacon"]){
+        imageLocalizeMode = HLPImageLocalizeImageBeacon;
+    }
+    BOOL useCnnMobileNet = [[NSUserDefaults standardUserDefaults] boolForKey:@"use_cnn_mobilenet"];
+    BOOL useCnnLstm = [[NSUserDefaults standardUserDefaults] boolForKey:@"use_cnn_lstm"];
+    
+    [manager setImageCnnSettings:cnnSettingPath localizeMode:imageLocalizeMode useMobileNet:useCnnMobileNet useLstm:useCnnLstm];
     
     NSDictionary *params = [self getLocationManagerParams];
     [manager setParameters:params];
@@ -141,6 +158,15 @@
       @"locLB":             @"locLB",
       @"activatesStatusMonitoring":@"activatesStatusMonitoring",
       @"rep_location":      @"repLocation",
+      //image localization
+      @"use_cnn_heading_calibration":   @"usesCnnHeadingCalibration",
+      @"use_cnn_navigation":    @"usesCnnNavigation",
+      @"maxCnnFPS":@"maxCnnFPS",
+      @"angleAccuracyThresholdUseImage":@"angleAccuracyThresholdUseImage",
+      @"sigmaDistImageLikelihood":@"sigmaDistImageLikelihood",
+      @"sigmaAngleImageLikelihood":@"sigmaAngleImageLikelihood",
+      @"imageUpdateDistThreshold":@"imageUpdateDistThreshold",
+      @"imageUpdateAngleLB":@"imageUpdateAngleLB",
       //
       @"nStates":           @"nStates",
       @"nEffective":        @"effectiveSampleSizeThreshold",

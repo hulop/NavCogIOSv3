@@ -242,7 +242,7 @@
 
 - (void) exportSetting:(NSMutableDictionary*)dic
 {
-    if (_type == ACTION || _type == SECTION) {
+    if (_type == ACTION_TYPE || _type == SECTION) {
         return;
     }
     if (_isList) {

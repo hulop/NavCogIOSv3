@@ -461,7 +461,7 @@ static NavDataStore* instance_ = nil;
     HLPLocation *loc = [self currentLocation];
     if (loc && [Logging isLogging]) {
         long now = (long)([[NSDate date] timeIntervalSince1970]*1000);
-        NSLog(@"Pose,%f,%f,%f,%f,%f,%f,%ld,%f",loc.lat,loc.lng,loc.floor,loc.accuracy,loc.orientation,loc.orientationAccuracy,now,loc.speed);
+        NSLog(@"Pose,%.15f,%.15f,%f,%f,%f,%f,%ld,%f",loc.lat,loc.lng,loc.floor,loc.accuracy,loc.orientation,loc.orientationAccuracy,now,loc.speed);
     }
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NAV_LOCATION_CHANGED_NOTIFICATION

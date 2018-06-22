@@ -26,10 +26,11 @@
 #import "NavNavigator.h"
 #import "NavCommander.h"
 #import "NavPreviewer.h"
+#import <HLPLocationManager/HLPImageCaptureManager.h>
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <HLPDialog/HLPDialog.h>
 
-@interface BlindViewController : UIViewController <HLPWebViewDelegate, HLPTTSProtocol, NavNavigatorDelegate, NavCommanderDelegate, NavPreviewerDelegate, MCBrowserViewControllerDelegate, DialogViewDelegate>
+@interface BlindViewController : UIViewController <HLPWebViewDelegate, HLPTTSProtocol, NavNavigatorDelegate, NavCommanderDelegate, NavPreviewerDelegate, HLPLocalizeImageViewDelegate, MCBrowserViewControllerDelegate, DialogViewDelegate>
 
 @property (weak, nonatomic) IBOutlet NavBlindWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
@@ -50,6 +51,12 @@
 @property (weak, nonatomic) IBOutlet UIButton *devDown;
 @property (weak, nonatomic) IBOutlet UIButton *devNote;
 @property (weak, nonatomic) IBOutlet UIButton *devRestart;
+
+@property id<HLPLocalizeImageViewDelegate> imageViewDelegate;
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
+@property (weak, nonatomic) IBOutlet UILabel *imageMessage;
+@property (weak, nonatomic) IBOutlet UILabel *pfMessage;
+@property (weak, nonatomic) IBOutlet UILabel *pfMiscMessage;
 
 @property (weak, nonatomic) IBOutlet UILabel *commitLabel;
 

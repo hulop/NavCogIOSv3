@@ -394,5 +394,9 @@ Head to the correct orientation
 "HEADING_CALIBRATION2" = "Please take a couple of steps to confirm your orientation.";
 "HEADING_CALIBRATION3" = "Orientation is adjusted.";
 
+"HEADING_CALIBRATION_IMAGE" = "Please hold iPhone.";
+"HEADING_CALIBRATION_IMAGE2" = "Please hold iPhone a bit more.";
+"HEADING_CALIBRATION_IMAGE3" = "Orientation is adjusted.";
+
 "NO_AVAILABLE_LOCATION" = "Location information is not available";
 

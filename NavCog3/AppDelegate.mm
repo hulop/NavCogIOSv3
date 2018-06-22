@@ -78,6 +78,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableAcceleration:) name:ENABLE_ACCELEARATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableStabilizeLocalize:) name:DISABLE_STABILIZE_LOCALIZE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableStabilizeLocalize:) name:ENABLE_STABILIZE_LOCALIZE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableImageCnn:) name:DISABLE_IMAGE_CNN object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableImageCnn:) name:ENABLE_IMAGE_CNN object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationRestart:) name:REQUEST_LOCATION_RESTART object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationStop:) name:REQUEST_LOCATION_STOP object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestLocationHeadingReset:) name:REQUEST_LOCATION_HEADING_RESET object:nil];
@@ -206,6 +208,16 @@ void uncaughtExceptionHandler(NSException *exception)
 - (void)enableStabilizeLocalize:(NSNotification*)note
 {
     [HLPLocationManager sharedManager].isStabilizeLocalizeEnabled = YES;
+}
+
+- (void)disableImageCnn:(NSNotification*)note
+{
+    [HLPLocationManager sharedManager].isImageCnnEnabled = NO;
+}
+
+- (void)enableImageCnn:(NSNotification*)note
+{
+    [HLPLocationManager sharedManager].isImageCnnEnabled = YES;
 }
 
 - (void) requestLocationRestart:(NSNotification*) note

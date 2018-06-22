@@ -91,7 +91,7 @@
         if (self.setting.type == OPTION) {
             self.accessoryType = [self.setting boolValue]?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
             self.subtitle.text = nil;
-        } else if(self.setting.type == ACTION) {
+        } else if(self.setting.type == ACTION_TYPE) {
             self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             self.subtitle.text = nil;
         } else {
@@ -119,7 +119,7 @@
     if (self.setting.type == OPTION) {
         [self.setting.group checkOption:self.setting];
     }
-    if (self.setting.type == ACTION) {
+    if (self.setting.type == ACTION_TYPE) {
         [self.delegate actionPerformed:self.setting];
     }
 }

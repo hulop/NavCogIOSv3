@@ -73,6 +73,9 @@
 #define ENABLE_ACCELEARATION @"enable_acceleration"
 #define DISABLE_ACCELEARATION @"disable_acceleration"
 
+#define ENABLE_IMAGE_CNN @"enable_image_cnn"
+#define DISABLE_IMAGE_CNN @"disable_image_cnn"
+
 #define ENABLE_STABILIZE_LOCALIZE @"ENABLE_STABILIZE_LOCALIZE"
 #define DISABLE_STABILIZE_LOCALIZE @"DISABLE_STABILIZE_LOCALIZE"
 

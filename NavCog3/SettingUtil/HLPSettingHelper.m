@@ -138,7 +138,7 @@
         case SUBTITLE:
         case STRING:
         case OPTION:
-        case ACTION:
+        case ACTION_TYPE:
             return @"subtitleCell";
         case BOOLEAN:
             return @"switchCell";
@@ -246,7 +246,7 @@
 - (HLPSetting*)addActionTitle:(NSString *)title Name:(NSString*)name
 {
     HLPSetting *s = [[HLPSetting alloc] init];
-    s.type = ACTION;
+    s.type = ACTION_TYPE;
     s.label = title;
     s.name = name;
     
@@ -414,7 +414,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     HLPSetting *s = [self _getSetting:indexPath];
-    if (s.type == ACTION) {
+    if (s.type == ACTION_TYPE) {
         [self.delegate actionPerformed:s];
     }
 }

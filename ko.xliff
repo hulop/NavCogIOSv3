@@ -140,7 +140,7 @@
       </trans-unit>
       <trans-unit id="JmH-wi-lih.text">
         <source>Subtitle</source>
-        <target>Subtitle</target>
+        <target>부제</target>
         <note>Class = "UILabel"; text = "Subtitle"; ObjectID = "JmH-wi-lih";</note>
       </trans-unit>
       <trans-unit id="LBt-N2-zq5.title">
@@ -207,7 +207,7 @@
       </trans-unit>
       <trans-unit id="V3W-HM-tEd.text">
         <source>Title</source>
-        <target>Title</target>
+        <target>제목</target>
         <note>Class = "UILabel"; text = "Title"; ObjectID = "V3W-HM-tEd";</note>
       </trans-unit>
       <trans-unit id="Wpx-c4-w3p.normalTitle">
@@ -240,7 +240,7 @@
       </trans-unit>
       <trans-unit id="ceO-aS-gCh.text">
         <source>Subtitle</source>
-        <target>Subtitle</target>
+        <target>부제</target>
         <note>Class = "UILabel"; text = "Subtitle"; ObjectID = "ceO-aS-gCh";</note>
       </trans-unit>
       <trans-unit id="ckT-Tm-n01.normalTitle">
@@ -272,7 +272,7 @@
       </trans-unit>
       <trans-unit id="hia-uJ-SXj.text">
         <source>Subtitle</source>
-        <target>Subtitle</target>
+        <target>부제</target>
         <note>Class = "UILabel"; text = "Subtitle"; ObjectID = "hia-uJ-SXj";</note>
       </trans-unit>
       <trans-unit id="iaC-38-VID.text">
@@ -282,12 +282,12 @@
       </trans-unit>
       <trans-unit id="lBV-Yb-qEM.text">
         <source>Title</source>
-        <target>Title</target>
+        <target>제목</target>
         <note>Class = "UILabel"; text = "Title"; ObjectID = "lBV-Yb-qEM";</note>
       </trans-unit>
       <trans-unit id="mnb-EZ-XdC.text">
         <source>Label</source>
-        <target>Label</target>
+        <target>라벨</target>
         <note>Class = "UILabel"; text = "Label"; ObjectID = "mnb-EZ-XdC";</note>
       </trans-unit>
       <trans-unit id="nc7-od-aTQ.title">
@@ -360,7 +360,7 @@
       </trans-unit>
       <trans-unit id="ygY-iz-tJa.text">
         <source>Title</source>
-        <target>Title</target>
+        <target>제목</target>
         <note>Class = "UILabel"; text = "Title"; ObjectID = "ygY-iz-tJa";</note>
       </trans-unit>
       <trans-unit id="zGZ-Nf-Jjr.normalTitle">
@@ -377,15 +377,19 @@
     <body>
       <trans-unit id="CFBundleDisplayName">
         <source>NavCog</source>
+        <target>NavCog</target>
       </trans-unit>
       <trans-unit id="CFBundleName">
         <source>$(PRODUCT_NAME)</source>
+        <target>$(PRODUCT_NAME)</target>
       </trans-unit>
       <trans-unit id="NSBluetoothPeripheralUsageDescription">
         <source>Only for including CoreBluetooth</source>
+        <target>Corebluetooth 전용</target>
       </trans-unit>
       <trans-unit id="NSCameraUsageDescription">
         <source>Only for including OpenCV</source>
+        <target>OpenCV 전용</target>
       </trans-unit>
       <trans-unit id="NSLocationWhenInUseUsageDescription">
         <source>This app uses iBeacon information</source>
@@ -397,6 +401,7 @@
       </trans-unit>
       <trans-unit id="NSPhotoLibraryUsageDescription">
         <source>Only for including OpenCV</source>
+        <target>OpenCV 전용</target>
       </trans-unit>
       <trans-unit id="NSSpeechRecognitionUsageDescription">
         <source>This app uses voice reco for conversation</source>
@@ -446,6 +451,7 @@
       </trans-unit>
       <trans-unit id="Turn On">
         <source>Turn On</source>
+        <target>ON으로 해주세요.</target>
         <note>ok</note>
       </trans-unit>
     </body>
@@ -630,6 +636,7 @@
       </trans-unit>
       <trans-unit id="Go to %2$@ by %1$@, now you are in %3$@">
         <source>Go to %2$@ by %1$@, now you are in %3$@</source>
+        <target>%1$@로 부터 %2$@로 갑니다. 현재 위치는 %3$@ 입니다. </target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="HEADING_CALIBRATION">
@@ -936,6 +943,7 @@ Head to the correct orientation
       </trans-unit>
       <trans-unit id="ground floor">
         <source>ground floor</source>
+        <target>지상층</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="in front of you">
@@ -1071,6 +1079,7 @@ Head to the correct orientation
       </trans-unit>
       <trans-unit id="to: %@">
         <source>to: %@</source>
+        <target>%@으로</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="turn around">
@@ -1443,6 +1452,7 @@ While Using the App</source>
       </trans-unit>
       <trans-unit id="Mode">
         <source>Mode</source>
+        <target>모드</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Navigation">
@@ -1472,6 +1482,7 @@ While Using the App</source>
       </trans-unit>
       <trans-unit id="NotSpecified">
         <source>NotSpecified</source>
+        <target>지정되어 있지 않습니다. </target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="OpenAppStore">

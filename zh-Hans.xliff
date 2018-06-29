@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
-  <file original="NavCog3/Base.lproj/LaunchScreen.storyboard" source-language="en" datatype="plaintext" target-language="zh-Hans">
+  <file original="NavCog3/Base.lproj/LaunchScreen.storyboard" source-language="en" datatype="plaintext" target-language="ko">
     <header>
       <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="9.2" build-num="9C40b"/>
     </header>
     <body/>
   </file>
-  <file original="NavCog3/Base.lproj/Main.storyboard" source-language="en" datatype="plaintext" target-language="zh-Hans">
+  <file original="NavCog3/Base.lproj/Main.storyboard" source-language="en" datatype="plaintext" target-language="ko">
     <header>
       <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="9.2" build-num="9C40b"/>
     </header>
@@ -140,7 +140,7 @@
       </trans-unit>
       <trans-unit id="JmH-wi-lih.text">
         <source>Subtitle</source>
-        <target>Subtitle</target>
+        <target>副标题</target>
         <note>Class = "UILabel"; text = "Subtitle"; ObjectID = "JmH-wi-lih";</note>
       </trans-unit>
       <trans-unit id="LBt-N2-zq5.title">
@@ -207,7 +207,7 @@
       </trans-unit>
       <trans-unit id="V3W-HM-tEd.text">
         <source>Title</source>
-        <target>Title</target>
+        <target>标题</target>
         <note>Class = "UILabel"; text = "Title"; ObjectID = "V3W-HM-tEd";</note>
       </trans-unit>
       <trans-unit id="Wpx-c4-w3p.normalTitle">
@@ -240,7 +240,7 @@
       </trans-unit>
       <trans-unit id="ceO-aS-gCh.text">
         <source>Subtitle</source>
-        <target>Subtitle</target>
+        <target>副标题</target>
         <note>Class = "UILabel"; text = "Subtitle"; ObjectID = "ceO-aS-gCh";</note>
       </trans-unit>
       <trans-unit id="ckT-Tm-n01.normalTitle">
@@ -272,7 +272,7 @@
       </trans-unit>
       <trans-unit id="hia-uJ-SXj.text">
         <source>Subtitle</source>
-        <target>Subtitle</target>
+        <target>副标题</target>
         <note>Class = "UILabel"; text = "Subtitle"; ObjectID = "hia-uJ-SXj";</note>
       </trans-unit>
       <trans-unit id="iaC-38-VID.text">
@@ -282,12 +282,12 @@
       </trans-unit>
       <trans-unit id="lBV-Yb-qEM.text">
         <source>Title</source>
-        <target>Title</target>
+        <target>标题</target>
         <note>Class = "UILabel"; text = "Title"; ObjectID = "lBV-Yb-qEM";</note>
       </trans-unit>
       <trans-unit id="mnb-EZ-XdC.text">
         <source>Label</source>
-        <target>Label</target>
+        <target>标签</target>
         <note>Class = "UILabel"; text = "Label"; ObjectID = "mnb-EZ-XdC";</note>
       </trans-unit>
       <trans-unit id="nc7-od-aTQ.title">
@@ -360,7 +360,7 @@
       </trans-unit>
       <trans-unit id="ygY-iz-tJa.text">
         <source>Title</source>
-        <target>Title</target>
+        <target>标题</target>
         <note>Class = "UILabel"; text = "Title"; ObjectID = "ygY-iz-tJa";</note>
       </trans-unit>
       <trans-unit id="zGZ-Nf-Jjr.normalTitle">
@@ -370,22 +370,26 @@
       </trans-unit>
     </body>
   </file>
-  <file original="NavCog3/Info.plist" source-language="en" datatype="plaintext" target-language="zh-Hans">
+  <file original="NavCog3/Info.plist" source-language="en" datatype="plaintext" target-language="ko">
     <header>
       <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="9.2" build-num="9C40b"/>
     </header>
     <body>
       <trans-unit id="CFBundleDisplayName">
         <source>NavCog</source>
+        <target>NavCog</target>
       </trans-unit>
       <trans-unit id="CFBundleName">
         <source>$(PRODUCT_NAME)</source>
+        <target>$(PRODUCT_NAME)</target>
       </trans-unit>
       <trans-unit id="NSBluetoothPeripheralUsageDescription">
         <source>Only for including CoreBluetooth</source>
+        <target>仅限含CoreBlueTooth的</target>
       </trans-unit>
       <trans-unit id="NSCameraUsageDescription">
         <source>Only for including OpenCV</source>
+        <target>仅限含OpenCV的</target>
       </trans-unit>
       <trans-unit id="NSLocationWhenInUseUsageDescription">
         <source>This app uses iBeacon information</source>
@@ -397,6 +401,7 @@
       </trans-unit>
       <trans-unit id="NSPhotoLibraryUsageDescription">
         <source>Only for including OpenCV</source>
+        <target>仅限含OpenCV的</target>
       </trans-unit>
       <trans-unit id="NSSpeechRecognitionUsageDescription">
         <source>This app uses voice reco for conversation</source>
@@ -404,7 +409,7 @@
       </trans-unit>
     </body>
   </file>
-  <file original="NavCog3/SettingUtil/en.lproj/HLPSettingView.strings" source-language="en" datatype="plaintext" target-language="zh-Hans">
+  <file original="NavCog3/SettingUtil/en.lproj/HLPSettingView.strings" source-language="en" datatype="plaintext" target-language="ko">
     <header>
       <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="9.2" build-num="9C40b"/>
     </header>
@@ -446,11 +451,12 @@
       </trans-unit>
       <trans-unit id="Turn On">
         <source>Turn On</source>
+        <target>打开开关</target>
         <note>ok</note>
       </trans-unit>
     </body>
   </file>
-  <file original="NavCog3/en.lproj/BlindView.strings" source-language="en" datatype="plaintext" target-language="zh-Hans">
+  <file original="NavCog3/en.lproj/BlindView.strings" source-language="en" datatype="plaintext" target-language="ko">
     <header>
       <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="9.2" build-num="9C40b"/>
     </header>
@@ -630,6 +636,7 @@
       </trans-unit>
       <trans-unit id="Go to %2$@ by %1$@, now you are in %3$@">
         <source>Go to %2$@ by %1$@, now you are in %3$@</source>
+        <target>从%1$@前往%2$@。所在地是%3$@。</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="HEADING_CALIBRATION">
@@ -689,6 +696,7 @@ Head to the correct orientation
       </trans-unit>
       <trans-unit id="NavCog">
         <source>NavCog</source>
+        <target>NavCog</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="NoBrailleBlockPOIString">
@@ -701,6 +709,7 @@ Head to the correct orientation
       </trans-unit>
       <trans-unit id="OK">
         <source>OK</source>
+        <target>OK</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="ObstaclePOIString1">
@@ -936,7 +945,8 @@ Head to the correct orientation
       </trans-unit>
       <trans-unit id="ground floor">
         <source>ground floor</source>
-        <note>No comment provided by engineer.</note>
+        <target>正面</target>
+        <note>1楼</note>
       </trans-unit>
       <trans-unit id="in front of you">
         <source>in front of you</source>
@@ -1071,6 +1081,7 @@ Head to the correct orientation
       </trans-unit>
       <trans-unit id="to: %@">
         <source>to: %@</source>
+        <target>目的地：%@</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="turn around">
@@ -1110,7 +1121,7 @@ Head to the correct orientation
       </trans-unit>
     </body>
   </file>
-  <file original="NavCog3/en.lproj/BlindView.stringsdict" source-language="en" datatype="plaintext" target-language="zh-Hans">
+  <file original="NavCog3/en.lproj/BlindView.stringsdict" source-language="en" datatype="plaintext" target-language="ko">
     <header>
       <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="9.2" build-num="9C40b"/>
     </header>
@@ -1133,7 +1144,7 @@ Head to the correct orientation
       </trans-unit>
     </body>
   </file>
-  <file original="NavCog3/en.lproj/HLPGeoJSON.strings" source-language="en" datatype="plaintext" target-language="zh-Hans">
+  <file original="NavCog3/en.lproj/HLPGeoJSON.strings" source-language="en" datatype="plaintext" target-language="ko">
     <header>
       <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="9.2" build-num="9C40b"/>
     </header>
@@ -1299,7 +1310,7 @@ Head to the correct orientation
       </trans-unit>
     </body>
   </file>
-  <file original="NavCog3/en.lproj/Localizable.strings" source-language="en" datatype="plaintext" target-language="zh-Hans">
+  <file original="NavCog3/en.lproj/Localizable.strings" source-language="en" datatype="plaintext" target-language="ko">
     <header>
       <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="9.2" build-num="9C40b"/>
     </header>
@@ -1443,6 +1454,7 @@ While Using the App</source>
       </trans-unit>
       <trans-unit id="Mode">
         <source>Mode</source>
+        <target>模式</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Navigation">
@@ -1472,6 +1484,7 @@ While Using the App</source>
       </trans-unit>
       <trans-unit id="NotSpecified">
         <source>NotSpecified</source>
+        <target>无指定</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="OpenAppStore">

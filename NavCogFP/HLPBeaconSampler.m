@@ -97,10 +97,10 @@ static HLPBeaconSampler *sharedData_ = nil;
     
     CIImage *image = [[CIImage alloc] initWithCVPixelBuffer: _view.session.currentFrame.capturedImage];
     NSArray<CIFeature*>* features = [_detector featuresInImage:image];
-
+    
     for (CIFeature *feature in features) {
         if ([feature isKindOfClass:CIQRCodeFeature.class]) {
-            CIQRCodeFeature *qr = (CIQRCodeFeature*) feature;
+                CIQRCodeFeature *qr = (CIQRCodeFeature*) feature;
             
             [self.delegate qrCodeDetected:qr];
         }

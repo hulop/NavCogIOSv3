@@ -117,6 +117,11 @@ static NSValueTransformer *transformer;
 @end
 
 @implementation HLPSampling
+
+- (NSString *)description {
+    return self._id[@"$oid"];
+}
+
 +(NSDictionary *)JSONKeyPathsByPropertyKey
 {
     return [[super JSONKeyPathsByPropertyKey] mtl_dictionaryByAddingEntriesFromDictionary:@{

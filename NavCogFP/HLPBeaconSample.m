@@ -36,7 +36,15 @@
 
 - (BOOL)isEqual:(HLPBeaconSample*)object
 {
-    return [self.point isEqual:object.point];
+    if (![object isKindOfClass: HLPBeaconSample.class]) {
+        return NO;
+    }
+    return self.timestamp == object.timestamp;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"%ld beacons sample (%lld)", _beacons.count, _timestamp];
 }
 
 - (id)initWithBeacons:(NSArray<CLBeacon*> *)array {
@@ -86,7 +94,7 @@
         NSMutableArray *beacons = [@[] mutableCopy];
         for(CLBeacon *b in _beacons) {
             [beacons addObject:@{
-                              @"type": b.minor,
+                              @"type": @"iBeacon",
                               @"rssi": @(b.rssi),
                               @"id": [NSString stringWithFormat:@"%@-%@-%@", b.proximityUUID.UUIDString, b.major, b.minor],
                               @"timestamp": @(_timestamp)

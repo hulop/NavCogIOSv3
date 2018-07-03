@@ -107,7 +107,7 @@ static FingerprintManager *instance;
 - (void) createRefpoints
 {
     for(HLPFloorplan *fp in _floorplans) {
-        if ([self createRefpointForFloorplan:fp withComplete:^{
+        if ([self createRefpointForFloorplan:fp withComplete:^(HLPRefpoint *json) {
             [self createRefpoints];
         }]) {
             return;
@@ -173,7 +173,8 @@ static FingerprintManager *instance;
                 } else {
                     [temp addObject:rp];
                     NSString *refid = rp.refid[@"$oid"];
-                    if (refid) {
+                    NSString *name = rp._metadata[@"name"];
+                    if (refid && ![name containsString:@"ARKit"]) {
                         if (rp.x == 0 && rp.y == 0 && rp.rotate == 0) {
                             _floorplanRefpointMap[refid] = rp;
                         }
@@ -234,9 +235,22 @@ static FingerprintManager *instance;
     }];
 }
 
-- (BOOL) createRefpointForFloorplan:(HLPFloorplan*)fp withComplete:(void(^)(void)) complete
+- (BOOL) createRefpointForFloorplan:(HLPFloorplan*)fp withComplete:(void(^)(HLPRefpoint*)) complete
 {
-    if (_floorplanRefpointMap[fp._id[@"$oid"]]) {
+    return [self createRefpointForFloorplan:fp withName:nil withComplete:complete];
+}
+
+- (BOOL) createRefpointForARForFloorplan:(HLPFloorplan*)fp withComplete:(void(^)(HLPRefpoint*)) complete
+{
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"YYYY-MM-dd-hh-mm-ss"];
+    NSString *name = [NSString stringWithFormat:@"ARKit-%@", [formatter stringFromDate:[NSDate date]]];
+    return [self createRefpointForFloorplan:fp withName:name withComplete:complete];
+}
+
+- (BOOL) createRefpointForFloorplan:(HLPFloorplan*)fp withName:(NSString*)extName withComplete:(void(^)(HLPRefpoint*)) complete
+{
+    if (_floorplanRefpointMap[fp._id[@"$oid"]] && !extName) {
         return false;
     }
     
@@ -244,7 +258,11 @@ static FingerprintManager *instance;
     NSString *server = [[ServerConfig sharedConfig] fingerPrintingServerHost];
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:REFPOINTS_API_URL, https, server, [self getTime]]];
     
-    NSString *name = [NSString stringWithFormat:@"%@-%@", fp.group, [self floorString:fp.floor]];;
+    NSString *floorName = [NSString stringWithFormat:@"%@-%@", fp.group, [self floorString:fp.floor]];
+    NSString *name = floorName;
+    if (extName) {
+        name = [NSString stringWithFormat:@"%@-%@",name, extName];
+    }
     
     NSMutableDictionary *data = [@{} mutableCopy];
     data[@"x"] = @(0);
@@ -254,7 +272,7 @@ static FingerprintManager *instance;
     data[@"anchor_lng"] = @(fp.lng);
     data[@"anchor_rotate"] = @(fp.rotate);
     data[@"filename"] = fp.filename;
-    data[@"floor"] = name;
+    data[@"floor"] = floorName;
     data[@"floor_num"] = @(fp.floor);
     data[@"refid"] = fp._id;
     
@@ -267,8 +285,10 @@ static FingerprintManager *instance;
 
     [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
         if (response) {
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:nil];
+            HLPRefpoint *rp = [MTLJSONAdapter modelOfClass:HLPRefpoint.class fromJSONDictionary:json error:nil];
             [self loadRefpoints:^{
-                complete();
+                complete(rp);
             }];
         }
     }];
@@ -380,7 +400,7 @@ static FingerprintManager *instance;
     
     if (self.arkitSamplingReady) {
         CLLocationCoordinate2D g = [FingerprintManager convertFromLocal:MKMapPointMake(x+dx, y+dy) ToGlobalWithRefpoint:_selectedRefpoint];
-        [self.delegate manager:self didARLocationChange:[[HLPLocation alloc] initWithLat:g.latitude Lng:g.longitude Floor:_selectedRefpoint.floor_num]];
+        [self.delegate manager:self didARLocationChange:[[HLPLocation alloc]initWithLat:g.latitude Lng:g.longitude Floor:_selectedRefpoint.floor_num]];
     }
 }
 
@@ -437,6 +457,17 @@ static FingerprintManager *instance;
 
 - (void)sendData
 {
+    if (self.arkitSamplingReady) {
+        [self createRefpointForARForFloorplan:_selectedFloorplan withComplete:^(HLPRefpoint *rp) {
+            [self _sendDataForRefpoint:rp];
+        }];
+    } else {
+        [self _sendDataForRefpoint:_selectedRefpoint];
+    }
+}
+
+- (void)_sendDataForRefpoint:(HLPRefpoint*)refpoint
+{
     size_t size;
     sysctlbyname("hw.machine", NULL, &size, NULL, 0);
     char *machine = malloc(size);
@@ -444,17 +475,19 @@ static FingerprintManager *instance;
     NSString *platform = [NSString stringWithCString:machine encoding:NSUTF8StringEncoding];
     NSString *device_uuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
     
-    NSDictionary *info = @{
-                           @"tags":      @[platform, device_uuid],
-                           @"site_id":   _selectedRefpoint.floor,
-                           @"refid":     _selectedRefpoint._id,
-                           @"floor":     _selectedRefpoint.floor,
-                           @"floor_num": _selectedRefpoint.floor
-                           };
+    NSDictionary *info;
+    
+    info = @{
+             @"tags":      @[platform, device_uuid],
+             @"site_id":   refpoint.floor,
+             @"refid":     refpoint._id,
+             @"floor":     refpoint.floor,
+             @"floor_num": @(refpoint.floor_num)
+             };
     
     NSArray *array = [_sampler toJSON:info];
 
-    NSDictionary *meta = @{@"name": _selectedRefpoint.floor};
+    NSDictionary *meta = @{@"name": refpoint.floor};
     
     NSDictionary *data = @{
                            @"_metadata": [self stringify:meta],

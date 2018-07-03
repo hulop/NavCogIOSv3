@@ -466,6 +466,8 @@
                 break;
             }
         }
+        
+        lastQrLocation = qrLocation;
     });
 }
 
@@ -1058,7 +1060,7 @@
     
     showingFeatures = [showingFeatures arrayByAddingObjectsFromArray:features];
     for(NSObject<NSCopying> *f in features) {
-        [styleMap setObject:styleFunction forKey:f];
+        [styleMap setObject:styleFunction forKey:f.description];
     }
 
     NSObject *poi = [self findFeatureAt:center];
@@ -1066,7 +1068,11 @@
     
     NSMutableArray *temp = [@[] mutableCopy];
     for(NSObject *f in showingFeatures) {
-        NSDictionary*(^styleFunction)(NSObject* obj) = [styleMap objectForKey:f];
+        NSDictionary*(^styleFunction)(NSObject* obj) = [styleMap objectForKey:f.description];
+        if (!styleFunction) {
+            NSLog(@"no style function for %@", f);
+            continue;
+        }
         NSDictionary *dict = styleFunction(f);
         if (dict) {
             [temp addObject:dict];
@@ -1088,7 +1094,11 @@
     double min = DBL_MAX;
     NSObject *mino = nil;
     for(NSObject<NSCopying> *f in showingFeatures) {
-        NSDictionary*(^styleFunction)(NSObject* obj) = [styleMap objectForKey:f];
+        NSDictionary*(^styleFunction)(NSObject* obj) = [styleMap objectForKey:f.description];
+        if (!styleFunction) {
+            NSLog(@"no style function for %@", f);
+            continue;
+        }
         NSDictionary *dict = styleFunction(f);
         if (dict) {
             [loc updateLat:[dict[@"lat"] doubleValue] Lng:[dict[@"lng"] doubleValue]];

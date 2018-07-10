@@ -22,6 +22,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import <CoreMotion/CoreMotion.h>
+#import <ARKit/ARKit.h>
 #import "HLPPoint3D.h"
 #import "HLPBeaconSample.h"
 
@@ -30,11 +31,13 @@
 
 @required
 - (void)updated;
+- (void)qrCodeDetected:(CIQRCodeFeature*)message;
+- (void)arPositionUpdated:(SCNVector3)position;
 @optional
 
 @end
 
-@interface HLPBeaconSampler : NSObject <CLLocationManagerDelegate>{
+@interface HLPBeaconSampler : NSObject <CLLocationManagerDelegate, ARSCNViewDelegate>{
     CLLocationManager *locationManager;
     
     CLBeaconRegion *allBeacons;
@@ -44,14 +47,15 @@
     BOOL pauseing;
     BOOL isStartRecording;
     
-    NSMutableArray *sampledData;
-    NSMutableArray *sampledPoint;
-    
-    long lastProcessedIndex;
+    HLPPoint3D *lastLocation;
 }
 
 @property (nonatomic, assign) id<HLPBeaconSamplerDelegate> delegate;
 @property (nonatomic, readonly) NSArray* visibleBeacons;
+@property BOOL ARKitEnabled;
+@property (nullable, readonly) ARSCNView *view;
+@property (readonly) HLPBeaconSamples* samples;
+@property double qrCodeInterval;
 
 + (HLPBeaconSampler *)sharedInstance;
 
@@ -62,9 +66,10 @@
 - (BOOL) startRecording;
 - (void) stopRecording;
 
-- (NSMutableDictionary*) toJSON;
+- (NSArray*) toJSON:(NSDictionary*)optionalInfo;
 - (long) visibleBeaconCount;
 - (long) beaconSampleCount;
 - (BOOL) isRecording;
 
+- (void) transform2D:(CGAffineTransform)param;
 @end

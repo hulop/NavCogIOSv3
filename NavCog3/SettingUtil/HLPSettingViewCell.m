@@ -88,10 +88,10 @@
     }
     if (self.subtitle) {
         self.subtitle.textColor = self.setting.disabled ? [UIColor grayColor] : [UIColor blackColor];
-        if (self.setting.type == OPTION) {
+        if (self.setting.type == NavCogSettingTypeOption) {
             self.accessoryType = [self.setting boolValue]?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
             self.subtitle.text = nil;
-        } else if(self.setting.type == ACTION) {
+        } else if(self.setting.type == NavCogSettingTypeAction) {
             self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             self.subtitle.text = nil;
         } else {
@@ -100,7 +100,7 @@
     }
     if (self.textInput) {
         self.textInput.enabled = !self.setting.disabled;
-        self.textInput.secureTextEntry = (setting.type == PASSINPUT);
+        self.textInput.secureTextEntry = (setting.type == NavCogSettingTypePassInput);
         self.textInput.text = [self.setting stringValue];
         self.textInput.accessibilityLabel = self.setting.label;
     }
@@ -116,10 +116,10 @@
         [self.switchView setOn:!self.switchView.on animated:YES];
         [self switchChanged:self.switchView];
     }
-    if (self.setting.type == OPTION) {
+    if (self.setting.type == NavCogSettingTypeOption) {
         [self.setting.group checkOption:self.setting];
     }
-    if (self.setting.type == ACTION) {
+    if (self.setting.type == NavCogSettingTypeAction) {
         [self.delegate actionPerformed:self.setting];
     }
 }
@@ -262,7 +262,7 @@
     }
     
     retval.text = [self.setting titleForRow:row];
-    if (self.setting.type == UUID_TYPE) {
+    if (self.setting.type == NavCogSettingTypeUUIDType) {
         retval.font = [UIFont systemFontOfSize:11];
     }
     

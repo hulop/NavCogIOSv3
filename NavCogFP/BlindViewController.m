@@ -31,30 +31,113 @@
 #import "SettingViewController.h"
 #import "NavDeviceTTS.h"
 #import "NavBlindWebView.h"
+#import <CoreMotion/CoreMotion.h>
+
+#define IS_IOS11orHIGHER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)
+
+@interface TargetLayer: CALayer {
+}
+
+@property CGSize size;
+@property CGPoint center;
+@property BOOL isCentered;
+@property CGRect target;
+@property CGRect border;
+@property BOOL inBorder;
+@end
 
 
-@interface BlindViewController () {
-    FPMode fpMode;
+@implementation TargetLayer
+
+- (void)drawInContext:(CGContextRef)ctx
+{
+    if (_size.width == 0) {
+        return;
+    }
     
-    int x, y;
-    double fx, fy;
+    double scale = MAX(self.frame.size.height / _size.width, self.frame.size.width / _size.height);
+
+    CGContextTranslateCTM(ctx, 0, - (_size.width*scale - self.frame.size.height)/2);
+    CGContextRotateCTM(ctx, -M_PI_2);
+    CGContextScaleCTM(ctx, -scale, scale);
+    //CGContextTranslateCTM(ctx, self.frame.size.width, - (_size.width*scale - self.frame.size.height)/2);
+    //CGContextRotateCTM(ctx, M_PI_2);
+    //CGContextScaleCTM(ctx, scale, scale);
+
+    CGFloat lineWidth = 5/scale;
+
+    CGColorRef outColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:1].CGColor;
+    CGColorRef inColor = [UIColor colorWithRed:0 green:0 blue:1 alpha:1].CGColor;
+    CGColorRef targetColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1].CGColor;
+    
+    CGContextSetStrokeColorWithColor(ctx, targetColor);
+    CGContextSetLineWidth(ctx, lineWidth);
+    CGContextStrokeRect(ctx, _target);
+    
+    CGContextSetStrokeColorWithColor(ctx, _inBorder ? inColor : outColor);
+    CGContextSetLineWidth(ctx, lineWidth);
+    CGContextStrokeRect(ctx, _border);
+    
+    CGContextMoveToPoint(ctx, (self.size.width-100)/2, (self.size.height)/2);
+    CGContextAddLineToPoint(ctx, (self.size.width+100)/2, (self.size.height)/2);
+    CGContextMoveToPoint(ctx, (self.size.width)/2, (self.size.height-100)/2);
+    CGContextAddLineToPoint(ctx, (self.size.width)/2, (self.size.height+100)/2);
+    CGContextSetStrokeColorWithColor(ctx, targetColor);
+    CGContextSetLineWidth(ctx, lineWidth);
+    CGContextStrokePath(ctx);
+    
+    CGContextMoveToPoint(ctx, (self.size.width-100)/2+_center.x, (self.size.height)/2+_center.y);
+    CGContextAddLineToPoint(ctx, (self.size.width+100)/2+_center.x, (self.size.height)/2+_center.y);
+    CGContextMoveToPoint(ctx, (self.size.width)/2+_center.x, (self.size.height-100)/2+_center.y);
+    CGContextAddLineToPoint(ctx, (self.size.width)/2+_center.x, (self.size.height+100)/2+_center.y);
+    CGContextSetStrokeColorWithColor(ctx, _isCentered ? inColor : outColor);
+    CGContextSetLineWidth(ctx, lineWidth);
+    CGContextStrokePath(ctx);
 }
 
 @end
 
 @implementation BlindViewController {
+    FPMode fpMode;
+    
+    int x, y;
+    double fx, fy;
+    
+    UIView *arView;
+    HLPLocation *qrLocation;
+    HLPLocation *lastQrLocation;
+
+    NSTimer *qrCodeTimer;
+    NSTimeInterval lastQRCodeTime;
+    NSTimeInterval lastQRLocationTime;
+    CIQRCodeFeature* qrCode;
+    CMMotionManager *motionManager;
+    NSLayoutConstraint *arViewLayoutWidth;
+    NSLayoutConstraint *arViewLayoutHeight;
+    TargetLayer *arTargetLayer;
+    
     FingerprintManager *fpm;
     BeaconAddTableViewController *batvc;
     POIAddTableViewController *poivc;
     NSArray<NSObject*>* showingFeatures;
-    NSDictionary*(^showingStyle)(NSObject* obj);
+    NSMutableDictionary* styleMap;
     NSObject* selectedFeature;
     POIManager *poim;
     HLPLocation *center;
     BOOL loaded;
     HLPRefpoint* currentRp;
     UITabBar *tabbar;
-    UITabBarItem *item1, *item2, *item3, *item4;
+    UITabBarItem *item1, *item2, *item3, *item4, *item5;
+    
+}
+
+- (void)reset {
+    qrLocation = nil;
+    lastQrLocation = Nil;
+    lastQRLocationTime = 0;
+    qrCode = nil;
+    [fpm reset];
+    [qrCodeTimer invalidate];
 }
 
 - (void)dealloc
@@ -78,69 +161,23 @@
     [self.view addSubview:tabbar];
     
     item1 = [[UITabBarItem alloc]initWithTitle:@"FingerPrint" image:[UIImage imageNamed:@"fingerprint"] tag:0];
-    item2 = [[UITabBarItem alloc]initWithTitle:@"Beacon" image:[UIImage imageNamed:@"beacon"] tag:1];
-    item3 = [[UITabBarItem alloc]initWithTitle:@"ID" image:[UIImage imageNamed:@"id"] tag:2];
-    item4 = [[UITabBarItem alloc]initWithTitle:@"POI" image:[UIImage imageNamed:@"poi"] tag:3];
-    item1.enabled = item2.enabled = item3.enabled = item4.enabled = NO;
+    item5 = [[UITabBarItem alloc]initWithTitle:@"ARFingerPrint" image:[UIImage imageNamed:@"fingerprint"] tag:1];
+    item2 = [[UITabBarItem alloc]initWithTitle:@"Beacon" image:[UIImage imageNamed:@"beacon"] tag:2];
+    item3 = [[UITabBarItem alloc]initWithTitle:@"ID" image:[UIImage imageNamed:@"id"] tag:3];
+    item4 = [[UITabBarItem alloc]initWithTitle:@"POI" image:[UIImage imageNamed:@"poi"] tag:4];
+    item1.enabled = item5.enabled = item2.enabled = item3.enabled = item4.enabled = NO;
     
-    tabbar.items = @[item1, item2, item3, item4];
+    tabbar.items = @[item1, item5, item2, item3, item4];
     tabbar.selectedItem = item1;
     tabbar.delegate = self;
     
-    [tabbar setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
-    NSLayoutConstraint *layoutLeft =
-    [NSLayoutConstraint constraintWithItem:tabbar
-                                 attribute:NSLayoutAttributeLeading
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.view
-                                 attribute:NSLayoutAttributeLeading
-                                multiplier:1.0
-                                  constant:0.0];
-    
-    NSLayoutConstraint *layoutRight =
-    [NSLayoutConstraint constraintWithItem:tabbar
-                                 attribute:NSLayoutAttributeTrailing
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.view
-                                 attribute:NSLayoutAttributeTrailing
-                                multiplier:1.0
-                                  constant:0.0];
-    
-    NSLayoutConstraint *layoutBottom =
-    [NSLayoutConstraint constraintWithItem:tabbar
-                                 attribute:NSLayoutAttributeBottom
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.view
-                                 attribute:NSLayoutAttributeBottom
-                                multiplier:1.0
-                                  constant:0.0];
-    
-    NSLayoutConstraint *layoutHeight =
-    [NSLayoutConstraint constraintWithItem:tabbar
-                                 attribute:NSLayoutAttributeHeight
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:nil
-                                 attribute:NSLayoutAttributeHeight
-                                multiplier:1.0
-                                  constant:49];
-    
-    NSLayoutConstraint *layoutBottom2 =
-    [NSLayoutConstraint constraintWithItem:self.view
-                                 attribute:NSLayoutAttributeBottom
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.webView
-                                 attribute:NSLayoutAttributeBottom
-                                multiplier:1.0
-                                  constant:49];
-
-    [self.view addConstraints:@[layoutLeft, layoutRight, layoutBottom, layoutHeight, layoutBottom2]];
-    [self.view layoutIfNeeded];
 
     [self.devUp setTitle:@"Up" forState:UIControlStateNormal];
     [self.devDown setTitle:@"Down" forState:UIControlStateNormal];
     [self.devLeft setTitle:@"Left" forState:UIControlStateNormal];
     [self.devRight setTitle:@"Right" forState:UIControlStateNormal];
+    
+    [self.devNote setTitle:@"Accept" forState:UIControlStateNormal];
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
@@ -172,9 +209,68 @@
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    
+    [tabbar setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    NSLayoutConstraint *layoutLeft =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeLeading
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.view
+                                 attribute:NSLayoutAttributeLeading
+                                multiplier:1.0
+                                  constant:0.0];
+    
+    NSLayoutConstraint *layoutRight =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeTrailing
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.view
+                                 attribute:NSLayoutAttributeTrailing
+                                multiplier:1.0
+                                  constant:0.0];
+    
+    NSLayoutConstraint *layoutBottom =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeBottom
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.view
+                                 attribute:NSLayoutAttributeBottom
+                                multiplier:1.0
+                                  constant:0.0];
+    
+    int height = 49;
+    if (IS_IOS11orHIGHER) { height += self.view.safeAreaInsets.bottom; }
+    
+    NSLayoutConstraint *layoutHeight =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeHeight
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:nil
+                                 attribute:NSLayoutAttributeHeight
+                                multiplier:1.0
+                                  constant:height ];
+    
+    NSLayoutConstraint *layoutBottom2 =
+    [NSLayoutConstraint constraintWithItem:tabbar
+                                 attribute:NSLayoutAttributeTop
+                                 relatedBy:NSLayoutRelationEqual
+                                    toItem:self.webView
+                                 attribute:NSLayoutAttributeBottom
+                                multiplier:1.0
+                                  constant:0];
+    
+    [self.view addConstraints:@[layoutLeft, layoutRight, layoutBottom, layoutHeight, layoutBottom2]];
+    [self.view layoutIfNeeded];
+    
+    [self updateView];
+}
+
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
-    FPMode modes[4] = {FPModeFingerprint, FPModeBeacon, FPModeID, FPModePOI};
+    FPMode modes[5] = {FPModeFingerprint, FPModeARFingerprint, FPModeBeacon, FPModeID, FPModePOI};
     fpMode = modes[item.tag];
     
     if (fpMode == FPModeID) {
@@ -186,6 +282,7 @@
             [NavUtil hideMessageView:self.view];
             [fpm cancel];
         }
+        [self reset];
     }
     
     [self clearFeatures];
@@ -284,9 +381,7 @@
                 mv.message.preferredMaxLayoutWidth = mv.bounds.size.width;
                 mv.message.text = [NSString stringWithFormat:@"Major:%5d Minor:%5d\nRSSI=%4ld",[b.major intValue],[b.minor intValue],b.rssi];
                 mv.message.adjustsFontSizeToFitWidth = YES;
-
-            } else {
-                [NavUtil hideMessageView:self.view];
+                
             }
         });
             
@@ -294,10 +389,15 @@
         return YES;
     } else {
         [self updateView];
-        long count = [[NSUserDefaults standardUserDefaults] integerForKey:@"finger_printing_duration"];
-        if (sampleCount >= count) {
-            [fpm sendData];
-            return NO;
+        if (fpMode == FPModeFingerprint) {
+            long count = [[NSUserDefaults standardUserDefaults] integerForKey:@"finger_printing_duration"];
+            if (sampleCount >= count) {
+                [fpm sendData];
+                return NO;
+            }
+        }
+        if (fpMode == FPModeARFingerprint) {
+            [self redrawFingerprint];
         }
         return YES;
     }
@@ -307,11 +407,78 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [NavUtil hideModalWaiting];
-        if (fpMode == FPModeFingerprint) {
-            [self showFingerprints:samplings];
-        }
+        [self redrawFingerprint];
         [self updateView];
     });
+}
+
+- (void)manager:(FingerprintManager *)manager didQRCodeDetect:(CIQRCodeFeature *)feature
+{
+    if (!fpm.locationAdjustable) {
+        return;
+    }
+    NSString *message = feature.messageString;
+    NSArray<NSString*>* items = [message componentsSeparatedByString:@":"];
+    
+    if (![@"latlng" isEqualToString:items[0]]) {
+        return;
+    }
+    
+    double lat = items[1].doubleValue;
+    double lng = items[2].doubleValue;
+    double floor = items[3].doubleValue;
+    if (floor > 0) {
+        floor = floor - 1;
+    }
+    
+    qrCode = feature;
+    lastQRCodeTime = [[NSDate date] timeIntervalSince1970];
+    if (!qrCodeTimer) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            qrCodeTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+                
+                if ((now - lastQRCodeTime) > fpm.sampler.qrCodeInterval*2) {
+                    qrCode = nil;
+                }
+            }];
+        });
+    }
+    HLPLocation *location = [[HLPLocation alloc] initWithLat:lat Lng:lng Floor:floor];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.getMap().getView().setZoom(21);"];
+        
+        double eps = 10e-7;
+        if (fabs(lastQrLocation.lat - location.lat) < eps &&
+            fabs(lastQrLocation.lng - location.lng) < eps &&
+            fabs(lastQrLocation.floor - location.floor) < 0.1) {
+            return;
+        }
+        
+        qrLocation = location;
+        [self.webView manualLocation:location withSync:NO];
+        
+        for(HLPRefpoint *rp in fpm.refpoints) {
+            if (fabs(rp.floor_num - location.floor) < 0.1) {
+                [fpm select:rp];
+                [self updateView];
+                break;
+            }
+        }
+        
+        lastQrLocation = qrLocation;
+    });
+}
+
+- (void)manager:(FingerprintManager *)manager didARLocationChange:(HLPLocation *)location
+{
+    NSTimeInterval now = [NSDate date].timeIntervalSince1970;
+    if (!qrLocation && now - lastQRLocationTime > 0.1) {
+        [location updateFloor:NAN];
+        [self.webView manualLocation:location withSync:NO];
+        lastQRLocationTime = now;
+    }
 }
 
 #pragma mark - POIManagerDelegate
@@ -408,22 +575,27 @@
 
 - (void) startSampling
 {
-    fpm.delegate = self;
-    [NavUtil showWaitingForView:self.view withMessage:@"Sampling..."];
+    if (fpMode != FPModeARFingerprint) {
+        [NavUtil showWaitingForView:self.view withMessage:@"Sampling..."];
+    }
     [fpm startSamplingAtLat:center.lat Lng:center.lng];
 }
+
 - (void) cancelSampling
 {
     [NavUtil hideWaitingForView:self.view];
     [fpm cancel];
+    [self redrawFingerprint];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void) completeSampling
 {
-    [self updateView];
+    [NavUtil hideWaitingForView:self.view];
+    [fpm sendData];
+    [fpm stopSampling];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void) viewDidDisappear:(BOOL)animated
 {
 }
 
@@ -435,13 +607,136 @@
         BOOL existRefpoint = fpm.selectedRefpoint != nil;
         BOOL existUUID = ([ud stringForKey:@"selected_finger_printing_beacon_uuid"] != nil);
         BOOL isSampling = fpm.isSampling;
-        
         BOOL showButtons = existRefpoint && (fpMode == FPModeFingerprint);
+        BOOL showAccept = existRefpoint && (fpMode == FPModeARFingerprint) && qrLocation;
         
         self.devUp.hidden = !showButtons;
         self.devDown.hidden = !showButtons;
         self.devLeft.hidden = !showButtons;
         self.devRight.hidden = !showButtons;
+        
+        self.devNote.hidden = !showAccept;
+        
+        UIView *temp = [fpm enableARKit:(fpMode == FPModeARFingerprint)];
+        if (!arView && temp) {
+            [self.view addSubview:temp];
+            
+            [temp setTranslatesAutoresizingMaskIntoConstraints:NO];
+            //temp.layer.opacity = 0.5;
+            
+            NSLayoutConstraint *layoutLeft =
+            [NSLayoutConstraint constraintWithItem:temp
+                                         attribute:NSLayoutAttributeLeading
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:self.webView
+                                         attribute:NSLayoutAttributeLeading
+                                        multiplier:1.0
+                                          constant:0.0];
+            
+            int top = 0;
+            //if (IS_IOS11orHIGHER) { top += self.view.safeAreaInsets.top; }
+            
+            NSLayoutConstraint *layoutTop =
+            [NSLayoutConstraint constraintWithItem:temp
+                                         attribute:NSLayoutAttributeTop
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:self.webView
+                                         attribute:NSLayoutAttributeTop
+                                        multiplier:1.0
+                                          constant:top];
+            
+            arViewLayoutWidth =
+            [NSLayoutConstraint constraintWithItem:temp
+                                         attribute:NSLayoutAttributeWidth
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:nil
+                                         attribute:NSLayoutAttributeWidth
+                                        multiplier:1.0
+                                          constant:120];
+            
+            arViewLayoutHeight =
+            [NSLayoutConstraint constraintWithItem:temp
+                                         attribute:NSLayoutAttributeHeight
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:nil
+                                         attribute:NSLayoutAttributeHeight
+                                        multiplier:1.0
+                                          constant:160];
+            
+            [self.view addConstraints:@[layoutLeft, layoutTop, arViewLayoutWidth, arViewLayoutHeight]];
+            [self.view layoutIfNeeded];
+            
+            motionManager = [[CMMotionManager alloc] init];
+            [motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical
+                                                               toQueue:[[NSOperationQueue alloc] init]
+                                                           withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
+                                                               
+                                                               if (!arView || !qrLocation || !qrCode) {
+                                                                   if (arTargetLayer.size.width != 0) {
+                                                                       arTargetLayer.size = CGSizeMake(0,0);
+                                                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                                                           [arTargetLayer setNeedsDisplay];
+                                                                       });
+                                                                   }
+                                                                   return;
+                                                               }
+                                                               
+                                                               CGSize size = ((ARSCNView*)arView).session.currentFrame.camera.imageResolution;
+                                                               CGRect border = qrCode.bounds;
+                                                               border.size.width += 100;
+                                                               border.size.height += 100;
+                                                               border.origin.x = (size.width - border.size.width) / 2;
+                                                               border.origin.y = (size.height - border.size.height) / 2;
+                                                               CGPoint center = CGPointMake(motion.attitude.pitch*200, motion.attitude.roll*200);
+                                                               arTargetLayer.size = size;
+                                                               arTargetLayer.target = qrCode.bounds;
+                                                               arTargetLayer.border = border;
+                                                               arTargetLayer.center = center;
+                                                               
+                                                               arTargetLayer.inBorder = YES;
+                                                               arTargetLayer.inBorder =
+                                                                (fabs((qrCode.bottomLeft.x + qrCode.topRight.x) - size.width) <= 50) &&
+                                                                (fabs((qrCode.bottomLeft.y + qrCode.topRight.y) - size.height) <= 50);
+                                                               
+                                                               arTargetLayer.isCentered =
+                                                                (fabs(motion.attitude.roll) <= 0.1) &&
+                                                                (fabs(motion.attitude.pitch) <= 0.1);
+                                                               
+                                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                                   [arTargetLayer setNeedsDisplay];
+                                                               });
+                                                               
+                                                               if (!arTargetLayer.inBorder || !arTargetLayer.isCentered) {
+                                                                   return;
+                                                               }
+                                                               
+                                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                                   [self acceptQRLocation];
+                                                               });
+                                                           }];
+            arTargetLayer = [[TargetLayer alloc] init];
+            [temp.layer addSublayer:arTargetLayer];
+            arTargetLayer.frame = temp.bounds;
+        }
+        if (qrLocation && arView && arViewLayoutWidth.constant == 120) {
+            arViewLayoutWidth.constant = 240;
+            arViewLayoutHeight.constant = 320;
+            arTargetLayer.frame = CGRectMake(0, 0, 240, 320);
+            fpm.sampler.qrCodeInterval = 0.1;
+            [self.view layoutIfNeeded];
+        }
+        if (!qrLocation && arView && arViewLayoutWidth.constant == 240) {
+            arViewLayoutWidth.constant = 120;
+            arViewLayoutHeight.constant = 160;
+            arTargetLayer.frame = CGRectMake(0, 0, 120, 150);
+            fpm.sampler.qrCodeInterval = 0.5;
+            [self.view layoutIfNeeded];
+        }
+        
+        if (!temp && arView) {
+            [arView removeFromSuperview];
+        }
+        arView = temp;
         
         if (fpMode == FPModeFingerprint) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
@@ -474,7 +769,35 @@
                     self.navigationItem.title = @"No Reference Point";
                 }
             }
-        } else if (fpMode == FPModeBeacon) {
+        } else if (fpMode == FPModeARFingerprint) {
+            self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID && fpm.arkitSamplingReady;
+            self.settingButton.enabled = true;//fpm.isReady || !_retryButton.hidden;
+            
+            self.searchButton.title = NSLocalizedStringFromTable(isSampling?@"End":@"Start", @"FingerPrint", @"");
+            self.settingButton.title = isSampling?NSLocalizedStringFromTable(@"Cancel", @"FingerPrint", @""):NSLocalizedStringFromTable(@"2FQ-fL-pff.headerTitle", @"Main", @"");
+            
+            self.navigationItem.rightBarButtonItem = _searchButton;
+            self.navigationItem.leftBarButtonItem = _settingButton;
+            
+            if (isSampling) {
+                self.navigationItem.title = [NSString stringWithFormat:@"%@ - %ld (%ld)",
+                                             fpm.selectedRefpoint.floor,
+                                             fpm.beaconsSampleCount, fpm.visibleBeaconCount];
+            } else {
+                if (existRefpoint) {
+                    if (fpm.samplings) {
+                        self.navigationItem.title = [NSString stringWithFormat:@"%@ [%ld] (%.1f, %.1f)",
+                                                     fpm.selectedRefpoint.floor,
+                                                     [fpm.samplings count], fx, fy];
+                    } else {
+                        self.navigationItem.title = fpm.selectedRefpoint.floor;
+                    }
+                } else {
+                    self.navigationItem.title = @"No Reference Point";
+                }
+            }
+        }
+        else if (fpMode == FPModeBeacon) {
             self.searchButton.enabled = existRefpoint && nds.isManualLocation && existUUID;
             self.settingButton.enabled = fpm.isReady || !_retryButton.hidden;
             
@@ -550,7 +873,7 @@
             
             self.navigationItem.title = @"POI";
         }
-        if (fpMode != FPModePOI) {
+        if (fpMode != FPModePOI && fpMode != FPModeARFingerprint) {
             [_webView stringByEvaluatingJavaScriptFromString:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();"];
         }
     });
@@ -576,7 +899,7 @@
 {
     [NSTimer scheduledTimerWithTimeInterval:2 repeats:NO block:^(NSTimer * _Nonnull timer) {
         [self reload];
-        item1.enabled = item2.enabled = item3.enabled = YES;
+        item1.enabled = item5.enabled = item2.enabled = item3.enabled = YES;
         item4.enabled = [[ServerConfig sharedConfig] isMapEditorKeyAvailable];
     }];
 }
@@ -595,9 +918,20 @@
     if (fpMode == FPModePOI || showRoute) {
         [poim initCenter:center];
     }
-    if (fpMode == FPModeFingerprint || fpMode == FPModeBeacon) {
+    if (fpMode == FPModeFingerprint || fpMode == FPModeARFingerprint ||fpMode == FPModeBeacon) {
         [NavUtil showWaitingForView:self.view withMessage:@"Loading..."];
         [fpm load];
+    }
+}
+
+- (void) redrawFingerprint
+{
+    [self clearFeatures];
+    if (fpMode == FPModeFingerprint || fpMode == FPModeARFingerprint) {
+        [self showFingerprints:fpm.samplings];
+    }
+    if (fpMode == FPModeARFingerprint) {
+        [self showARFingerprints:fpm.sampler.samples.samples];
     }
 }
 
@@ -609,7 +943,25 @@
             return @{
                      @"lat": @(p.lat),
                      @"lng": @(p.lng),
-                     @"count": @([p.beacons count])
+                     @"count": ([p.beacons count] ? @([p.beacons count]) : @"")
+                     };
+        }
+        return (NSDictionary*)nil;
+    }];
+}
+
+- (void) showARFingerprints:(NSArray*) samples
+{
+    [self showFeatures:samples withStyle:^NSDictionary *(NSObject *obj) {
+        if([obj isKindOfClass:HLPBeaconSample.class]) {
+            HLPBeaconSample *s = (HLPBeaconSample*)obj;
+            MKMapPoint l = MKMapPointMake(s.point.x, s.point.y);
+            CLLocationCoordinate2D g = [FingerprintManager convertFromLocal:l ToGlobalWithRefpoint:fpm.selectedRefpoint];
+            
+            return @{
+                     @"lat": @(g.latitude),
+                     @"lng": @(g.longitude),
+                     @"count": @"*"
                      };
         }
         return (NSDictionary*)nil;
@@ -692,7 +1044,7 @@
 - (void) clearFeatures
 {
     showingFeatures = @[];
-    showingStyle = nil;
+    styleMap = [@{} mutableCopy];
     selectedFeature = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -702,15 +1054,25 @@
 
 - (void) showFeatures:(NSArray<NSObject*>*)features withStyle:(NSDictionary*(^)(NSObject* obj))styleFunction
 {
-    showingFeatures = features;
-    showingStyle = styleFunction;
+    if (!features) {
+        return;
+    }
+    
+    showingFeatures = [showingFeatures arrayByAddingObjectsFromArray:features];
+    for(NSObject<NSCopying> *f in features) {
+        [styleMap setObject:styleFunction forKey:f.description];
+    }
 
     NSObject *poi = [self findFeatureAt:center];
     selectedFeature = poi;
-
     
     NSMutableArray *temp = [@[] mutableCopy];
-    for(NSObject *f in features) {
+    for(NSObject *f in showingFeatures) {
+        NSDictionary*(^styleFunction)(NSObject* obj) = [styleMap objectForKey:f.description];
+        if (!styleFunction) {
+            NSLog(@"no style function for %@", f);
+            continue;
+        }
         NSDictionary *dict = styleFunction(f);
         if (dict) {
             [temp addObject:dict];
@@ -731,8 +1093,13 @@
     HLPLocation *loc = [[HLPLocation alloc] initWithLat:0 Lng:0];
     double min = DBL_MAX;
     NSObject *mino = nil;
-    for(NSObject *f in showingFeatures) {
-        NSDictionary *dict = showingStyle(f);
+    for(NSObject<NSCopying> *f in showingFeatures) {
+        NSDictionary*(^styleFunction)(NSObject* obj) = [styleMap objectForKey:f.description];
+        if (!styleFunction) {
+            NSLog(@"no style function for %@", f);
+            continue;
+        }
+        NSDictionary *dict = styleFunction(f);
         if (dict) {
             [loc updateLat:[dict[@"lat"] doubleValue] Lng:[dict[@"lng"] doubleValue]];
             double d = [loc distanceTo:location];
@@ -884,6 +1251,12 @@
                     [self startSampling];
                 }
             }
+        } else if (fpMode == FPModeARFingerprint) {
+            if (fpm.isSampling) {
+                [self completeSampling];
+            } else {
+                [self startSampling];
+            }
         } else if (fpMode == FPModeBeacon) {
             if (selectedFeature && [selectedFeature isKindOfClass:HLPGeoJSONFeature.class]) {
                 [self checkDeletion:^{
@@ -906,6 +1279,14 @@
             }
         }
         return NO;
+    }
+    if ([identifier isEqualToString:@"blind_settings"]) {
+        if (fpMode == FPModeARFingerprint) {
+            if (fpm.isSampling) {
+                [self cancelSampling];
+                return NO;
+            }
+        }
     }
     
     return YES;
@@ -991,5 +1372,20 @@
     [self updateView];
 }
 
+- (IBAction)addNote:(id)sender
+{
+    [self acceptQRLocation];
+}
+
+- (void) acceptQRLocation
+{
+    if (fpMode == FPModeARFingerprint) {
+        [fpm adjustLocation:qrLocation];
+        lastQrLocation = qrLocation;
+        qrLocation = nil;
+        [self redrawFingerprint];
+        [self updateView];
+    }
+}
 
 @end

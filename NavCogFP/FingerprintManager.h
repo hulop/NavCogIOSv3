@@ -37,6 +37,8 @@
 -(BOOL)manager:(FingerprintManager*)manager didObservedBeacons:(int)beaconCount atSample:(int)sampleCount;
 -(void)manager:(FingerprintManager*)manager didSendData:(NSString*)idString withError:(NSError*)error;
 -(void)manager:(FingerprintManager*)manager didSamplingsLoaded:(NSArray*)samplings;
+-(void)manager:(FingerprintManager*)manager didQRCodeDetect:(CIQRCodeFeature*)feature;
+-(void)manager:(FingerprintManager*)manager didARLocationChange:(HLPLocation*)location;
 @end
 
 @interface FingerprintManager : NSObject <HLPBeaconSamplerDelegate>
@@ -53,6 +55,9 @@
 @property NSArray *samplings;
 @property (readonly) HLPRefpoint *selectedRefpoint;
 @property (readonly) HLPFloorplan *selectedFloorplan;
+@property (readonly) HLPBeaconSampler *sampler;
+@property (readonly) BOOL arkitSamplingReady;
+@property (readonly) BOOL locationAdjustable;
 
 +(instancetype)sharedManager;
 
@@ -61,6 +66,7 @@
 -(void)select:(HLPRefpoint*)rp;
 -(void)startSamplingAtLat:(double)lat Lng:(double)lng;
 -(void)startSampling;
+-(void)stopSampling;
 -(void)cancel;
 -(void)sendData;
 -(void)deleteFingerprint:(NSString*)idString;
@@ -70,6 +76,8 @@
 -(CLBeacon*)strongestBeacon;
 -(void)reset;
 -(NSArray<CLBeacon*>*)visibleBeacons;
+-(UIView*)enableARKit:(BOOL)enabled;
+-(void)adjustLocation:(HLPLocation*)location;
 
 + (MKMapPoint) convertFromGlobal:(CLLocationCoordinate2D)global ToLocalWithRefpoint:(HLPRefpoint*)rp;
 + (CLLocationCoordinate2D) convertFromLocal:(MKMapPoint)local ToGlobalWithRefpoint:(HLPRefpoint*)rp;

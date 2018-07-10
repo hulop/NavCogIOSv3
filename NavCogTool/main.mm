@@ -208,6 +208,7 @@ Option parseArguments(int argc, char * argv[]){
     dataStore = [NavDataStore sharedDataStore];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(destinationChanged:) name:DESTINATIONS_CHANGED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeChanged:) name:ROUTE_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     return self;
 }
@@ -227,6 +228,13 @@ Option parseArguments(int argc, char * argv[]){
     
     dataStore.userID = userID;
     [dataStore reloadDestinationsAtLat:opt.lat Lng:opt.lng Dist:(int)opt.dist forUser:dataStore.userID withUserLang:dataStore.userLanguage];
+}
+
+- (void)routeChanged:(NSNotification*)note
+{
+    HLPNode *node = dataStore.route.lastObject;
+    NSLog(@"LastNode,%.8f,%.8f,%f",node.location.lat,node.location.lng,node.location.floor);
+    NSLog(@"LastNode,%.8f,%.8f,%f",node.location.lat,node.location.lng,node.location.floor);
 }
 
 - (void)destinationChanged:(NSNotification*)note
@@ -312,7 +320,7 @@ Option parseArguments(int argc, char * argv[]){
         if (range.location != NSNotFound) {
             toID = [toID substringWithRange:NSMakeRange(0, range.location)];
         }
-        
+
         if (opt.outputPath.length() > 0) {
             fromToList = @[@{@"from":fromID, @"to":toID, @"file":[NSString stringWithCString:opt.outputPath.c_str() encoding:NSUTF8StringEncoding]}];
         }
@@ -536,6 +544,7 @@ Option parseArguments(int argc, char * argv[]){
 {
     [commander didNavigationStarted:properties];
     [previewer didNavigationStarted:properties];
+    NSLog(@"TotalLength,%.2f",[properties[@"totalLength"] doubleValue]);
 }
 
 - (void)didNavigationFinished:(NSDictionary *)properties

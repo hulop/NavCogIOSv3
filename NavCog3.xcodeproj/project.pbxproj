@@ -123,6 +123,7 @@
 		7E7C54FD1F87670D0007D01A /* NavCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E27F8F41EFA5FFE00FB3309 /* NavCoverView.m */; };
 		7E7ED5A51F5E67BC0033814B /* ScreenshotHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */; };
 		7E7ED5A81F5EDFC90033814B /* lastcommit.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7E7ED5A71F5EDFC90033814B /* lastcommit.txt */; };
+		7E891CF920D2A9330057E03E /* HLPDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE207DA2022F7BA00160160 /* HLPDirectory.m */; };
 		7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */; };
 		7E8D8F361E8A92F9006DB46D /* BeaconAddTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8D8F341E8A92F9006DB46D /* BeaconAddTableViewController.m */; };
 		7E8D8F391E8AA542006DB46D /* FingerPrint.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E8D8F381E8AA542006DB46D /* FingerPrint.storyboard */; };
@@ -152,6 +153,7 @@
 		7EA49A361F9AE52B00E1369B /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA49A341F9AE21900E1369B /* WebViewController.m */; };
 		7EAE6F0D1D2642D600614C35 /* NavBlindWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */; };
 		7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */; };
+		7EB3FFA320D779D600D6D05E /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EB3FFA220D779D500D6D05E /* ARKit.framework */; };
 		7EBE397A1E8298C5002A7BF9 /* HLPBeaconSample.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE39791E8298C5002A7BF9 /* HLPBeaconSample.m */; };
 		7EBE397D1E8298D7002A7BF9 /* HLPPoint3D.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE397C1E8298D7002A7BF9 /* HLPPoint3D.m */; };
 		7EBE39801E829928002A7BF9 /* HLPBeaconSampler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE397F1E829928002A7BF9 /* HLPBeaconSampler.m */; };
@@ -372,6 +374,7 @@
 		7EAE6F0B1D2642D600614C35 /* NavBlindWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavBlindWebView.h; sourceTree = "<group>"; };
 		7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavBlindWebView.m; sourceTree = "<group>"; };
 		7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		7EB3FFA220D779D500D6D05E /* ARKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ARKit.framework; path = System/Library/Frameworks/ARKit.framework; sourceTree = SDKROOT; };
 		7EBE39781E8298C5002A7BF9 /* HLPBeaconSample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPBeaconSample.h; sourceTree = "<group>"; };
 		7EBE39791E8298C5002A7BF9 /* HLPBeaconSample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPBeaconSample.m; sourceTree = "<group>"; };
 		7EBE397B1E8298D7002A7BF9 /* HLPPoint3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPPoint3D.h; sourceTree = "<group>"; };
@@ -458,6 +461,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EB3FFA320D779D600D6D05E /* ARKit.framework in Frameworks */,
 				7E30FA3D1E81551900D542E5 /* CoreBluetooth.framework in Frameworks */,
 				A91D384F1F628185008A34D1 /* HLPLocationManager.framework in Frameworks */,
 				A91EA3011F55377E00548203 /* HLPWebView.framework in Frameworks */,
@@ -516,6 +520,7 @@
 		0F5EA397BCF0C5EEF08F5111 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7EB3FFA220D779D500D6D05E /* ARKit.framework */,
 				7E9657EF1F619B9300A6B489 /* AssetsLibrary.framework */,
 				A93ED2771ED2DBB800B75760 /* AVFoundation.framework */,
 				7EF45E441E3F42AB00208042 /* ConversationV1.framework */,
@@ -922,7 +927,6 @@
 				7EE8E6081EF27541006EE7C3 /* Frameworks */,
 				7EE8E6091EF27541006EE7C3 /* Resources */,
 				A91AAE5A1F6A772C00B5F903 /* ShellScript */,
-				C5FF6E128321C9352BC0D81E /* [CP] Embed Pods Frameworks */,
 				0A167564C48AD83255BABA02 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -1103,9 +1107,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview-resources.sh",
+				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FormatterKit.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1118,13 +1125,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NavCogTool-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		150F7571B29BA5870E4432E2 /* [CP] Copy Pods Resources */ = {
@@ -1133,9 +1143,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh",
+				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FormatterKit.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1148,9 +1161,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP-frameworks.sh",
+				"${PODS_ROOT}/OpenCV-Dynamic/opencv2.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/opencv2.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1163,13 +1179,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NavCogPreview-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		3CB98F53EB42ACE8E61D6511 /* [CP] Copy Pods Resources */ = {
@@ -1178,9 +1197,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3-resources.sh",
+				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FormatterKit.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1193,13 +1215,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NavCog3-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		64345F8FA9B5423FF8FFA563 /* [CP] Check Pods Manifest.lock */ = {
@@ -1208,13 +1233,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NavCogFP-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7E7ED5A61F5EDF620033814B /* ShellScript */ = {
@@ -1256,9 +1284,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3-frameworks.sh",
+				"${PODS_ROOT}/OpenCV-Dynamic/opencv2.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/opencv2.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1272,7 +1303,6 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/Mantle.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/FormatterKit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/HLPWebView.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/ConversationV1.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RestKit.framework",
@@ -1308,28 +1338,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP-resources.sh",
+				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FormatterKit.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C5FF6E128321C9352BC0D81E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1426,6 +1444,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E891CF920D2A9330057E03E /* HLPDirectory.m in Sources */,
 				7EA49A361F9AE52B00E1369B /* WebViewController.m in Sources */,
 				7EDAFE911F3054A200368058 /* ExpViewController.m in Sources */,
 				7E27F9171EFA629300FB3309 /* AuthManager.m in Sources */,
@@ -1579,7 +1598,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = NavCogFP/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogFP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1603,7 +1622,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = NavCogFP/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogFP;
 				PRODUCT_NAME = "$(TARGET_NAME)";

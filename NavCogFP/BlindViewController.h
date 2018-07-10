@@ -29,6 +29,7 @@
 
 typedef NS_ENUM(NSInteger, FPMode) {
     FPModeFingerprint,
+    FPModeARFingerprint,
     FPModeBeacon,
     FPModeID,
     FPModePOI

@@ -3,13 +3,13 @@ inhibit_all_warnings!
 
 target 'NavCog3' do
   platform :ios, '8.4'
-  pod 'OpenCV-Dynamic', '3.2.4'
+  pod 'OpenCV-Dynamic', :git => 'https://github.com/Legoless/OpenCV-Dynamic.git'
   pod 'FormatterKit'
 end
 
 target 'NavCogFP' do
   platform :ios, '8.4'
-  pod 'OpenCV-Dynamic', '3.2.4'
+  pod 'OpenCV-Dynamic', :git => 'https://github.com/Legoless/OpenCV-Dynamic.git'
   pod 'FormatterKit'
 end
 

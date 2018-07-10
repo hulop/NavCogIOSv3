@@ -37,17 +37,17 @@
 @end
 
 typedef NS_ENUM (NSUInteger, NavCogSettingType) {
-    SECTION,
-    ACTION,
-    UUID_TYPE,
-    HOST_PORT,
-    STRING,
-    SUBTITLE,
-    DOUBLE,
-    BOOLEAN,
-    TEXTINPUT,
-    PASSINPUT,
-    OPTION
+    NavCogSettingTypeSection,
+    NavCogSettingTypeAction,
+    NavCogSettingTypeUUIDType,
+    NavCogSettingTypeHostPort,
+    NavCogSettingTypeString,
+    NavCogSettingTypeSubtitle,
+    NavCogSettingTypeDouble,
+    NavCogSettingTypeBoolean,
+    NavCogSettingTypeTextInput,
+    NavCogSettingTypePassInput,
+    NavCogSettingTypeOption
 };
 
 @interface HLPSetting: NSObject {

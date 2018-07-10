@@ -141,12 +141,12 @@ static HLPSetting *chooseConfig, *fingerprintLabel, *beaconUUID, *duration;
     chooseConfig = [userSettingHelper addActionTitle:@"Select Refpoint" Name:@"choose_config"];
 
     fingerprintLabel = [userSettingHelper addSectionTitle:@"Finger Printing"];
-    beaconUUID = [userSettingHelper addSettingWithType:UUID_TYPE Label:@"Beacon UUID" Name:@"finger_printing_beacon_uuid" DefaultValue:@[] Accept:nil];
-    duration = [userSettingHelper addSettingWithType:DOUBLE Label:@"Duration" Name:@"finger_printing_duration" DefaultValue:@(5) Min:1 Max:30 Interval:1];
+    beaconUUID = [userSettingHelper addSettingWithType:NavCogSettingTypeUUIDType Label:@"Beacon UUID" Name:@"finger_printing_beacon_uuid" DefaultValue:@[] Accept:nil];
+    duration = [userSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Duration" Name:@"finger_printing_duration" DefaultValue:@(5) Min:1 Max:30 Interval:1];
     
-    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Show Route" Name:@"finger_printing_show_route" DefaultValue:@(NO) Accept:nil];
-    [userSettingHelper addSettingWithType:BOOLEAN Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil];
-    [[userSettingHelper addSettingWithType:TEXTINPUT Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil] setVisible:NO];
+    [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Show Route" Name:@"finger_printing_show_route" DefaultValue:@(NO) Accept:nil];
+    [userSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use HTTPS" Name:@"https_connection" DefaultValue:@(YES) Accept:nil];
+    [[userSettingHelper addSettingWithType:NavCogSettingTypeTextInput Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil] setVisible:NO];
 
     NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     NSString *buildNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];

@@ -32,6 +32,8 @@
 @implementation WebViewController {
     BOOL initialFocused;
     BOOL initialRead;
+    BOOL webpageReady;
+    BOOL pageClosed;
     UILabel *titleView;
 }
 
@@ -54,7 +56,20 @@
         initialFocused = YES;
     } else {
         if (!initialRead) {
-            [_webview evaluateJavaScript:@"$hulop.ready_to_read()" completionHandler:^(id _Nullable res, NSError * _Nullable error) {
+            [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                if (pageClosed) {
+                    [timer invalidate];
+                    return;
+                }
+                if (webpageReady) {
+                    [timer invalidate];
+                    NSString *script = @"(function (){if(window.$hulop && $hulop.ready_to_read) {$hulop.ready_to_read();} else {setTimeout(arguments.callee,100)}})()";
+                    [_webview evaluateJavaScript:script completionHandler:^(id _Nullable res, NSError * _Nullable error) {
+                        if (error) {
+                            NSLog(@"%@", error.description);
+                        }
+                    }];
+                }
             }];
             initialRead = YES;
         }
@@ -96,6 +111,7 @@
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
+    webpageReady = YES;
 }
 
 - (void)didEnterBackground:(NSNotification*)note
@@ -111,6 +127,8 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     NSLog(@"WEB_PAGE,%@,%@,close,%ld", self.title, self.url, (long)([[NSDate date] timeIntervalSince1970]*1000));
+    pageClosed = YES;
+    [self.webview evaluateJavaScript:@"stopAll();" completionHandler:nil];
     if (self.delegate) {
         [self.delegate webViewControllerClosed:self];
     }

@@ -426,6 +426,13 @@
 /* head to the right direction */
 "turn to the right" = "右に向く";
 
+/* head to the diagonally forward left direction */
+"turn slightly to the left" = "少し左に向く";
+
+/* head to the diagonally forward right direction */
+"turn slightly to the right" = "少し右に向く";
+
+
 "Always_Background" = "常にバックグラウンドで動作";
 
 "HEADING_CALIBRATION" = "方角を調整するため、周りに注意して、5メートルほど歩いてください。";

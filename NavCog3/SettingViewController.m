@@ -59,7 +59,7 @@ static HLPSetting *previewSpeedSetting, *previewWithActionSetting;
 static HLPSetting *boneConductionSetting, *exerciseLabel, *exerciseAction, *resetLocation;
 static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitFeet, *idLabel;
 static HLPSetting *advancedLabel, *advancedMenu;
-static HLPSetting *poiLabel, *ignoreFacility;
+static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
 
 
 - (void)viewDidLoad {
@@ -455,6 +455,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
         [previewSpeedSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
         [previewWithActionSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
         [ignoreFacility setVisible:blindMode];
+        [showPOI setVisible:blindMode];
         [vibrateSetting setVisible:blindMode];
         [soundEffectSetting setVisible:blindMode];
         [boneConductionSetting setVisible:blindMode];
@@ -493,6 +494,7 @@ static HLPSetting *poiLabel, *ignoreFacility;
     previewSpeedSetting = [userSettingHelper addSettingWithType:DOUBLE Label:NSLocalizedString(@"Preview speed", @"") Name:@"preview_speed" DefaultValue:@(1) Min:1 Max:10 Interval:1];
     previewWithActionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"Preview with action", @"") Name:@"preview_with_action" DefaultValue:@(NO) Accept:nil];
     ignoreFacility = [userSettingHelper addSettingWithType:BOOLEAN Label:@"Ignore facility info." Name:@"ignore_facility" DefaultValue:@(NO) Accept:nil];
+    showPOI = [userSettingHelper addSettingWithType:BOOLEAN Label:@"Show POI with Action" Name:@"show_poi_with_action" DefaultValue:@(NO) Accept:nil];
     vibrateSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"vibrateSetting", @"") Name:@"vibrate" DefaultValue:@(YES) Accept:nil];
     soundEffectSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"soundEffectSetting", @"") Name:@"sound_effect" DefaultValue:@(YES) Accept:nil];
     boneConductionSetting = [userSettingHelper addSettingWithType:BOOLEAN Label:NSLocalizedString(@"for_bone_conduction_headset",@"") Name:@"for_bone_conduction_headset" DefaultValue:@(NO) Accept:nil];

@@ -204,6 +204,9 @@
         _targetFloor = targetHeight;
     }
 }
+- (void)userIsHeadingToPOI:(NSDictionary *)properties
+{
+}
 - (void)userNeedsToTakeAction:(NSDictionary*)properties
 {
     if (properties[@"diffHeading"]) {

@@ -30,7 +30,7 @@
 - (void)webViewControllerClosed:(WebViewController*)controller;
 @end
 
-@interface WebViewController : UIViewController <WKNavigationDelegate, HLPTTSProtocol>
+@interface WebViewController : UIViewController <HLPWebViewDelegate, HLPTTSProtocol>
 
 @property NSURL* url;
 @property HLPWebView *webview;

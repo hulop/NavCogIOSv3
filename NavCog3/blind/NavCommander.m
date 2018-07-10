@@ -27,6 +27,7 @@
 
 @implementation NavCommander {
     NSTimeInterval lastPOIAnnounceTime;
+    NavPOI* lastApproachedPOI;
     NSMutableArray<NavPOI*>* approachingPOIs;
 }
 
@@ -487,9 +488,9 @@
         } else if (diffHeading > 60) {
             string = NSLocalizedStringFromTable(@"turn to the right",@"BlindView", @"head to the right direction");
         } else if (diffHeading < -threshold) {
-            string = NSLocalizedStringFromTable(@"bear left",@"BlindView", @"head to the diagonally forward left direction");
+            string = NSLocalizedStringFromTable(@"turn slightly to the left",@"BlindView", @"head to the diagonally forward left direction");
         } else if (diffHeading > threshold) {
-            string = NSLocalizedStringFromTable(@"bear right",@"BlindView", @"head to the diagonally forward right direction");
+            string = NSLocalizedStringFromTable(@"turn slightly to the right",@"BlindView", @"head to the diagonally forward right direction");
         } else {
             //@throw [[NSException alloc] initWithName:@"wrong parameters" reason:@"abs(diffHeading) is smaller than threshold" userInfo:nil];
             return nil;
@@ -644,6 +645,24 @@
     [_delegate speak:string withOptions:properties completionHandler:^{}];
 }
 
+- (void)userIsHeadingToPOI:(NSDictionary *)properties
+{
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    BOOL showPOIwithAction = [[NSUserDefaults standardUserDefaults] boolForKey:@"show_poi_with_action"];
+    NavPOI *poi = properties[@"poi"];
+    double heading = [properties[@"heading"] doubleValue];
+    double threshold = [properties[@"threshold"] doubleValue];
+    if (showPOIwithAction) {
+        if (poi == lastApproachedPOI) {
+            if (fabs(heading) < threshold) {
+                [self requestNearestPOI:nil];
+            } else {
+                [self.delegate showPOI:nil withName:nil];
+            }
+        }
+    }
+}
+
 - (void)userNeedsToTakeAction:(NSDictionary*)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
@@ -777,7 +796,7 @@
     BOOL shortSentence = (now - lastPOIAnnounceTime) < 3;
     
     if (poi && ![approachingPOIs containsObject:poi] && poi.hasContent) {
-        [_delegate vibrate];
+        lastApproachedPOI = poi;
         [approachingPOIs addObject:poi];
     }
     
@@ -928,6 +947,7 @@
     
     return string;
 }
+
 - (void)currentStatus:(NSDictionary *)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
@@ -944,7 +964,7 @@
             nearestPOI = poi;
         }
     }
-    if (minDistance < 10) {
+    if (minDistance < 10 && !resume) {
         [self userIsApproachingToPOI:@{
                                        @"poi": nearestPOI,
                                        @"heading": @(nearestPOI.diffAngleFromUserOrientation)
@@ -1053,15 +1073,9 @@
 - (void)requestNearestPOI:(NSNotification*)note
 {
     HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];
-    double minDistance = DBL_MAX;
-    NavPOI *nearestPOI = nil;
-    for(NavPOI *poi in approachingPOIs) {
-        double d = [poi.poiLocation distanceTo:location];
-        if (d < minDistance) {
-            minDistance = d;
-            nearestPOI = poi;
-        }
-    }
+ 
+    double minDistance = lastApproachedPOI == nil ? DBL_MAX : [lastApproachedPOI.poiLocation distanceTo:location];
+    NavPOI *nearestPOI = lastApproachedPOI;
     if (minDistance < 10 && nearestPOI.hasContent) {
         [self.delegate showPOI:nearestPOI.contentURL withName:nearestPOI.contentName];
     }

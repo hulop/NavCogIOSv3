@@ -133,13 +133,13 @@
     first.delegate = self;
     first.accessibilityLabel = NSLocalizedString(@"Navigation", @"");
     first.accessibilityTraits = UIAccessibilityTraitStaticText | UIAccessibilityTraitHeader;
-    first.accessibilityFrame = CGRectMake(0,0,1,1);
+    first.accessibilityFrame = [self makeHiddenAccessibilityFrame];
     
     header = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
     header.delegate = self;
     header.accessibilityTraits = UIAccessibilityTraitHeader | UIAccessibilityTraitStaticText;
     header.accessibilityLabel = NSLocalizedStringFromTable(@"SummaryHeader",@"BlindView",@"");
-    header.accessibilityFrame = CGRectMake(0,0,1,1);
+    header.accessibilityFrame = [self makeHiddenAccessibilityFrame];
 
     
     speaks = [@[] mutableCopy];
@@ -151,7 +151,7 @@
         currentStatusItem.delegate = self;
         
         currentStatusItem2 = [[NavCurrentStatusItem alloc] initWithAccessibilityContainer:self];
-        currentStatusItem2.accessibilityFrame = CGRectMake(0, 0, 1, 1);
+        currentStatusItem2.accessibilityFrame = [self makeHiddenAccessibilityFrame];
         currentStatusItem2.delegate = self;
     }
 
@@ -204,19 +204,21 @@
 {
     //NSLog(@"focused:%@", item);
     if (item == currentStatusItem) {
-        currentStatusItem.accessibilityFrame = CGRectMake(0,0,1,1);
+        currentStatusItem.accessibilityFrame = [self makeHiddenAccessibilityFrame];
         currentStatusItem2.accessibilityFrame = self.window.frame;
         [elements addObject: currentStatusItem2];
     } else if (item == currentStatusItem2) {
         NSInteger index = [elements indexOfObject:currentStatusItem];
-        elements[index] = currentStatusItem2;
-        elements[[elements count] - 1] = currentStatusItem;
-        NavCurrentStatusItem *temp = currentStatusItem;
-        currentStatusItem = currentStatusItem2;
-        currentStatusItem2 = temp;
-        currentStatusItem.accessibilityFrame = CGRectMake(0,0,1,1);
-        currentStatusItem2.accessibilityFrame = self.window.frame;
-        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, item);
+        if (index != NSNotFound) {
+            elements[index] = currentStatusItem2;
+            elements[[elements count] - 1] = currentStatusItem;
+            NavCurrentStatusItem *temp = currentStatusItem;
+            currentStatusItem = currentStatusItem2;
+            currentStatusItem2 = temp;
+            currentStatusItem.accessibilityFrame = [self makeHiddenAccessibilityFrame];
+            currentStatusItem2.accessibilityFrame = self.window.frame;
+            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, item);
+        }
     } else {
         currentStatusItem.accessibilityFrame = self.window.frame;
         if ([elements lastObject] == currentStatusItem2) {

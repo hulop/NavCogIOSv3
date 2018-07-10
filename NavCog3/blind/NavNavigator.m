@@ -1851,6 +1851,7 @@ static NavNavigatorConstants *_instance;
                     linkInfo.hasBeenBearing = NO;
                     if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
                         [self.delegate userAdjustedHeading:@{}];
+                        [self _requestStatus:@{@"resume":@(YES)}];
                     }
                 }
                 // TODO if skip this turn
@@ -2052,6 +2053,31 @@ static NavNavigatorConstants *_instance;
                 if (poi.forAfterEnd) {
                     continue;
                 }
+                
+                if (!poi.hasBeenHeaded &&
+                    fabs(poi.diffAngleFromUserOrientation) < C.ADJUST_HEADING_MARGIN) {
+                    if ([self.delegate respondsToSelector:@selector(userIsHeadingToPOI:)]) {
+                        [self.delegate userIsHeadingToPOI:
+                         @{
+                           @"poi": poi,
+                           @"heading": @(poi.diffAngleFromUserOrientation),
+                           @"threshold": @(C.ADJUST_HEADING_MARGIN)
+                           }];
+                    }
+                    poi.hasBeenHeaded = YES;
+                }
+                if (poi.hasBeenHeaded &&
+                    fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
+                    if ([self.delegate respondsToSelector:@selector(userIsHeadingToPOI:)]) {
+                        [self.delegate userIsHeadingToPOI:
+                         @{
+                           @"poi": poi,
+                           @"heading": @(poi.diffAngleFromUserOrientation)
+                           }];
+                    }
+                    poi.hasBeenHeaded = NO;
+                }
+                
                 if (!poi.hasBeenApproached && (now - poi.lastApproached > C.POI_ANNOUNCE_MIN_INTERVAL)) {
                     if (poi.distanceFromSnappedPoiLocationAndSnappedUserLocation < C.POI_ANNOUNCE_DISTANCE &&
                         //poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
@@ -2349,7 +2375,7 @@ static NavNavigatorConstants *_instance;
         }
         return;
     }
-    //NavNavigatorConstants *C = [NavNavigatorConstants constants];
+    NavNavigatorConstants *C = [NavNavigatorConstants constants];
     
     id obj = linkInfos[navIndex];
     if (obj && [obj isKindOfClass:NavLinkInfo.class]) {
@@ -2463,8 +2489,8 @@ static NavNavigatorConstants *_instance;
                            
                            }];
                     }
-                    else if (fabs(linkInfo.diffBearingAtUserLocation) > 22.5) {
-                        linkInfo.bearingTargetThreshold = 22.5;
+                    else if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) > C.CHANGE_HEADING_THRESHOLD) {
+                        linkInfo.bearingTargetThreshold = C.CHANGE_HEADING_THRESHOLD;
                         linkInfo.hasBeenBearing = YES;
                         if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
                             [self.delegate userNeedsToChangeHeading:

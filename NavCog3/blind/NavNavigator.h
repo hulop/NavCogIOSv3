@@ -112,6 +112,7 @@
 // POI
 - (void)userIsApproachingToPOI:(NSDictionary*)properties;
 - (void)userIsLeavingFromPOI:(NSDictionary*)properties;
+- (void)userIsHeadingToPOI:(NSDictionary*)properties;
 
 // Summary
 - (NSString*)summaryString:(NSDictionary*)properties;
@@ -231,6 +232,7 @@
 @property BOOL hasBeenLeft;
 @property NSTimeInterval lastLeft;
 @property int countApproached;
+@property BOOL hasBeenHeaded;
 
 - (instancetype)initWithText:(NSString*)text Location:(HLPLocation*)location Options:(NSDictionary*)options;
 - (void)updateWithLink:(HLPLink*)link andUserLocation:(HLPLocation*)userLocation;

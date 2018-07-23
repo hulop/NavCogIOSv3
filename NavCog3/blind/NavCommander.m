@@ -160,6 +160,7 @@
     if (nextLinkType == LINK_TYPE_ELEVATOR || nextLinkType == LINK_TYPE_ESCALATOR || nextLinkType == LINK_TYPE_STAIRWAY) {
         double sourceHeight = [properties[@"nextSourceHeight"] doubleValue];
         double targetHeight = [properties[@"nextTargetHeight"] doubleValue];
+        HLPLinkIncline incline = [properties[@"nextIncline"] intValue];
         NSString *mean = [HLPLink nameOfLinkType:nextLinkType];
         
         NSString *angle;
@@ -190,7 +191,7 @@
             return nil;
         }
         else {
-            BOOL up = targetHeight > sourceHeight;
+            BOOL up = (incline == HLPLinkInclineUp);
             BOOL __block left = NO, right = NO;
             [flags enumerateObjectsUsingBlock:^(HLPPOIEscalatorFlags * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 left = left || obj.left;
@@ -208,7 +209,7 @@
             side = NSLocalizedStringFromTable(side, @"BlindView", @"");
 
             NSString *tfloor = [self floorString:targetHeight];
-            NSString *format = @"FloorChangeActionString4";
+            NSString *format = fabs(sourceHeight - targetHeight) < 0.1 ? @"FloorChangeActionString3": @"FloorChangeActionString4";
             format = [format stringByAppendingString:up?@"Up":@"Down"];
             
             string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , angle, side, mean, tfloor];//@""
@@ -237,20 +238,22 @@
         }
     }
     else if (linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
-        double sourceHeight = [properties[@"nextSourceHeight"] doubleValue];
-        double targetHeight = [properties[@"nextTargetHeight"] doubleValue];
+        //double sourceHeight = [properties[@"nextSourceHeight"] doubleValue];
+        //double targetHeight = [properties[@"nextTargetHeight"] doubleValue];
+        double sourceHeight = [properties[@"sourceHeight"] doubleValue];
+        double targetHeight = [properties[@"targetHeight"] doubleValue];
         NSString *mean = [HLPLink nameOfLinkType:linkType];
         //NSString *sfloor = [self floorString:sourceHeight];
         NSString *tfloor = [self floorString:targetHeight];
         //string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %2$@ by %1$@, now you are in %3$@",@"BlindView",@"") , mean, tfloor, sfloor];
-        BOOL up = targetHeight > sourceHeight;
+        BOOL up = [properties[@"incline"] intValue] == HLPLinkInclineUp;
         BOOL full = [properties[@"fullAction"] boolValue];
         if (full) {
             NSString *format = @"FloorChangeDoneActionString2";
             format = [format stringByAppendingString:up?@"Up":@"Down"];
             string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , mean, string];
         } else {
-            NSString *format = @"FloorChangeActionString2";
+            NSString *format = fabs(sourceHeight - targetHeight) < 0.1 ? @"FloorChangeActionString1" : @"FloorChangeActionString2";
             format = [format stringByAppendingString:up?@"Up":@"Down"];
             string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , mean, tfloor];
         }

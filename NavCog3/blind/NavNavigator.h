@@ -174,6 +174,9 @@
 @property BOOL mayBeOffRoute;
 @property NavLinkInfo* offRouteLinkInfo;
 
+@property HLPLinkIncline incline;
+@property HLPLinkIncline nextIncline;
+
 
 - (instancetype)initWithLink:(HLPLink*)link nextLink:(HLPLink*)nextLink andOptions:(NSDictionary*)options;
 - (void)reset;

@@ -50,10 +50,22 @@
 "Go to %1$@" = "Go to the %1$@.";
 
 /* No comment provided by engineer. */
+"FloorChangeActionString1Down" = "Go down %1$@.";
+
+/* No comment provided by engineer. */
+"FloorChangeActionString1Up" = "Go up %1$@.";
+
+/* No comment provided by engineer. */
 "FloorChangeActionString2Down" = "Go down to the %2$@ by %1$@.";
 
 /* No comment provided by engineer. */
 "FloorChangeActionString2Up" = "Go up to the %2$@ by %1$@.";
+
+/* No comment provided by engineer. */
+"FloorChangeActionString3Down" = "go down %2$@ %3$@ %1$@";
+
+/* No comment provided by engineer. */
+"FloorChangeActionString3Up" = "go up %2$@ %3$@ %1$@";
 
 /* No comment provided by engineer. */
 "FloorChangeActionString4Down" = "go down to the %4$@ by %2$@ %3$@ %1$@";

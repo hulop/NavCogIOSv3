@@ -198,6 +198,35 @@ static NavNavigatorConstants *_instance;
     _targetLocation = _link.targetLocation;
     _sourceLocation = _link.sourceLocation;
     
+    HLPLinkIncline(^checkIncline)(HLPLink *) = ^(HLPLink *link) {
+        HLPLinkIncline incline = HLPLinkInclineEven;
+        
+        if (link.sourceHeight == link.targetHeight) {
+            // if links with these link types, assume it has an incline from original link source to target
+            if (link.linkType == LINK_TYPE_ESCALATOR || link.linkType == LINK_TYPE_RAMP || link.linkType == LINK_TYPE_STAIRWAY) {
+                NSString *originalSource = link.properties[PROPKEY_SOURCE_NODE_ID];
+                NSString *originalTarget = link.properties[PROPKEY_TARGET_NODE_ID];
+                if ([originalSource isEqualToString:link.sourceNodeID]) {
+                    incline = HLPLinkInclineUp;
+                }
+                if ([originalTarget isEqualToString:link.sourceNodeID]) {
+                    incline = HLPLinkInclineDown;
+                }
+            }
+        } else {
+            if (link.sourceHeight < link.targetHeight) {
+                incline = HLPLinkInclineUp;
+            }
+            else if (link.sourceHeight > link.targetHeight) {
+                incline = HLPLinkInclineDown;
+            }
+        }
+        return incline;
+    };
+    _incline = checkIncline(_link);
+    _nextIncline = checkIncline(_nextLink);
+    
+    
     NSMutableArray<NavPOI*> *poisTemp = [@[] mutableCopy];
     NSArray *links = @[_link];
     
@@ -1565,7 +1594,9 @@ static NavNavigatorConstants *_instance;
                                        @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
                                        @"nextLinkType": @(linkInfo.nextLink.linkType),
                                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                                       @"incline": @(linkInfo.incline)
+                                       
                                        }];
                                 }
                             } else {
@@ -1693,6 +1724,7 @@ static NavNavigatorConstants *_instance;
                                @"nextLinkType": @(linkInfo.nextLink.linkType),
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                                @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                               @"incline": @(linkInfo.incline),
                                @"distance": @(linkInfo.link.length)
                                }];
                         }
@@ -1821,7 +1853,8 @@ static NavNavigatorConstants *_instance;
                                @"diffHeading": @(0),
                                @"nextLinkType": @(linkInfo.link.linkType),
                                @"nextSourceHeight": @(linkInfo.link.sourceHeight),
-                               @"nextTargetHeight": @(linkInfo.link.targetHeight)
+                               @"nextTargetHeight": @(linkInfo.link.targetHeight),
+                               @"incline": @(linkInfo.incline)
                                }];
                         }
                     }
@@ -1882,8 +1915,10 @@ static NavNavigatorConstants *_instance;
                            @"isNextDestination": @(linkInfo.isNextDestination),
                            @"sourceHeight": @(linkInfo.link.sourceHeight),
                            @"targetHeight": @(linkInfo.link.targetHeight),
+                           @"incline": @(linkInfo.incline),
                            @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                           @"nextIncline": @(linkInfo.nextIncline)
                            
                            }];
                     }
@@ -1926,8 +1961,10 @@ static NavNavigatorConstants *_instance;
                        @"isNextDestination": @(linkInfo.isNextDestination),
                        @"sourceHeight": @(linkInfo.link.sourceHeight),
                        @"targetHeight": @(linkInfo.link.targetHeight),
+                       @"incline": @(linkInfo.incline),
                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                        @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                       @"nextIncline": @(linkInfo.nextIncline),
                        @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
                        @"isCrossingCorridor": @(linkInfo.link.isCrossingCorridor)
                        }];
@@ -1975,7 +2012,8 @@ static NavNavigatorConstants *_instance;
                        @"turnAngle": @(linkInfo.nextTurnAngle),
                        @"nextLinkType": @(linkInfo.nextLink.linkType),
                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                       @"nextIncline": @(linkInfo.nextIncline)
                        }];
                     
                 }
@@ -1996,9 +2034,11 @@ static NavNavigatorConstants *_instance;
                                @"linkType": @(linkInfo.link.linkType),
                                @"sourceHeight": @(linkInfo.link.sourceHeight),
                                @"targetHeight": @(linkInfo.link.targetHeight),
+                               @"incline": @(linkInfo.incline),
                                @"nextLinkType": @(linkInfo.nextLink.linkType),
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                                @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                               @"nextIncline": @(linkInfo.nextIncline),
                                @"fullAction": @(YES),
                                @"isCrossingCorridor": @(linkInfo.nextLink.isCrossingCorridor)
                                }];
@@ -2335,8 +2375,10 @@ static NavNavigatorConstants *_instance;
                               @"isNextDestination": @(linkInfo.isNextDestination),
                               @"sourceHeight": @(linkInfo.link.sourceHeight),
                               @"targetHeight": @(linkInfo.link.targetHeight),
+                              @"incline": @(linkInfo.incline),
                               @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                              @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                              @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                              @"nextIncline": @(linkInfo.nextIncline)
                               }];
                 }
             }
@@ -2441,12 +2483,12 @@ static NavNavigatorConstants *_instance;
                         [self.delegate userNeedsToTakeAction:
                          @{
                            @"nextLinkType": @(linkInfo.link.linkType),
-                           @"nextSourceHeight": @(linkInfo.link.sourceHeight),
-                           @"nextTargetHeight": @(linkInfo.link.targetHeight),
+                           @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                           @"nextIncline": @(linkInfo.nextIncline),
                            @"fullAction": @(YES),
                            @"nohistory": @(YES),
                            @"force": @(YES)
-
                            }];
                     }
 
@@ -2514,8 +2556,10 @@ static NavNavigatorConstants *_instance;
                            @"isNextDestination": @(linkInfo.isNextDestination),
                            @"sourceHeight": @(linkInfo.link.sourceHeight),
                            @"targetHeight": @(linkInfo.link.targetHeight),
+                           @"incline": @(linkInfo.incline),
                            @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                            @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                           @"nextIncline": @(linkInfo.nextIncline),
                            @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
                            @"nohistory": @(YES),
                            @"force": @(YES),

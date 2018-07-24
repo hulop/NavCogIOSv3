@@ -1175,7 +1175,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     [links enumerateObjectsUsingBlock:^(HLPLink *link, BOOL * _Nonnull stop) {
         
         if (!isnan(loc.floor) &&
-            (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
+            (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
             return;
         }
         if (link.isLeaf) {

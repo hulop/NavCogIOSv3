@@ -112,7 +112,7 @@
     
     if (properties[@"diffHeading"]) {
         if (fabs([HLPLocation normalizeDegree:[properties[@"diffHeading"] doubleValue] - turnAngle]) > 45 &&
-            linkType != LINK_TYPE_ELEVATOR) {
+            ((linkType != LINK_TYPE_ELEVATOR) && (linkType != LINK_TYPE_ESCALATOR && (linkType != LINK_TYPE_STAIRWAY)))) {
             turnAngle = [properties[@"diffHeading"] doubleValue];
         }
     }
@@ -697,6 +697,10 @@
     
     NSString *floorInfo = [self floorPOIString:pois];
     NSString *dist = [self distanceString:distance];
+    
+    if (dist == nil) {
+        return; // nop
+    }
     
     if (linkType == LINK_TYPE_ELEVATOR || linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
         [string appendString:action];

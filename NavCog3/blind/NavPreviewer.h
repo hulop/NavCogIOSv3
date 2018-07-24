@@ -36,6 +36,8 @@
 @property double targetAngle;
 @property double targetDistance;
 @property double targetFloor;
+@property double targetOrientation;
+@property HLPLocation *targetLocation;
 @property id<NavPreviewerDelegate> delegate;
 @property NSTimer *autoTimer;
 

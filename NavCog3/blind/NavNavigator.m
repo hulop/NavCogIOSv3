@@ -1966,7 +1966,9 @@ static NavNavigatorConstants *_instance;
                        @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
                        @"nextIncline": @(linkInfo.nextIncline),
                        @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
-                       @"isCrossingCorridor": @(linkInfo.link.isCrossingCorridor)
+                       @"isCrossingCorridor": @(linkInfo.link.isCrossingCorridor),
+                       @"targetOrientation": @(linkInfo.link.lastBearingForTarget),
+                       @"targetLocation": linkInfo.link.targetLocation
                        }];
                 }
                 linkInfo.nextTargetRemainingDistance = nextTargetRemainingDistance(linkInfo.link.length, linkInfo.link.length);

@@ -90,6 +90,15 @@
         if (!isnan(_targetFloor) && turnAction) {
             [self manualGoFloor:_targetFloor];
             _targetFloor = NAN;
+            if (_targetLocation) {
+                [self manualLocation:_targetLocation];
+                _targetLocation = nil;
+            }
+            if (!isnan(_targetOrientation)) {
+                double diff = [HLPLocation normalizeDegree:[NavDataStore sharedDataStore].currentLocation.orientation - _targetOrientation];
+                [self manualTurn:diff];
+                _targetOrientation = NAN;
+            }
             return;
         }
     } else if (exerciseMode) {
@@ -106,6 +115,15 @@
         if (!isnan(_targetFloor) && turnAction) {
             [self manualGoFloor:_targetFloor];
             _targetFloor = NAN;
+            if (_targetLocation) {
+                [self manualLocation:_targetLocation];
+                _targetLocation = nil;
+            }
+            if (!isnan(_targetOrientation)) {
+                double diff = [HLPLocation normalizeDegree:[NavDataStore sharedDataStore].currentLocation.orientation - _targetOrientation];
+                [self manualTurn:diff];
+                _targetOrientation = NAN;
+            }
             return;
         }
     } else {
@@ -132,6 +150,15 @@
         if (!isnan(_targetFloor)) {
             [self manualGoFloor:_targetFloor];
             _targetFloor = NAN;
+            if (_targetLocation) {
+                [self manualLocation:_targetLocation];
+                _targetLocation = nil;
+            }
+            if (!isnan(_targetOrientation)) {
+                double diff = [HLPLocation normalizeDegree:[NavDataStore sharedDataStore].currentLocation.orientation - _targetOrientation];
+                [self manualTurn:diff];
+                _targetOrientation = NAN;
+            }
             return;
         }
     }
@@ -149,6 +176,8 @@
     _targetFloor = NAN;
     _targetDistance = NAN;
     _targetAngle = NAN;
+    _targetLocation = nil;
+    _targetOrientation = NAN;
 }
 
 - (void)couldNotStartNavigation:(NSDictionary *)properties
@@ -230,7 +259,17 @@
     if (properties[@"targetHeight"]) {
         double targetHeight = [properties[@"targetHeight"] doubleValue];
         _targetFloor = targetHeight;
-        
+    }
+    if (properties[@"sourceHeight"]) {
+        double sourceFloor = [properties[@"sourceHeight"] doubleValue];
+        if (fabs(_targetFloor - sourceFloor) > 0.1) {
+            if (properties[@"targetLocation"]) {
+                _targetLocation = properties[@"targetLocation"];
+            }
+            if (properties[@"targetOrientation"]) {
+                _targetOrientation = [properties[@"targetOrientation"] doubleValue];
+            }
+        }
     }
 }
 - (void)userGetsOnElevator:(NSDictionary *)properties

@@ -62,6 +62,7 @@
                     return;
                 }
                 if (webpageReady) {
+                    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _webview);
                     [timer invalidate];
                     NSString *script = @"(function (){if(window.$hulop && $hulop.ready_to_read) {$hulop.ready_to_read();} else {setTimeout(arguments.callee,100)}})()";
                     [_webview evaluateJavaScript:script completionHandler:^(id _Nullable res, NSError * _Nullable error) {

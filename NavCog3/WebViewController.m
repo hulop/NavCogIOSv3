@@ -51,29 +51,27 @@
 
 - (void)didBecomeFocused:(NSNotificationCenter*)note
 {
-    if (!initialFocused) {
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, titleView);
-        initialFocused = YES;
-    } else {
-        if (!initialRead) {
-            [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-                if (pageClosed) {
-                    [timer invalidate];
-                    return;
-                }
-                if (webpageReady) {
-                    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _webview);
-                    [timer invalidate];
+    if (webpageReady && initialRead == NO) {
+        initialRead = YES;
+        [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+            if (pageClosed) {
+                [timer invalidate];
+                return;
+            }
+            if (webpageReady) {
+                UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _webview);
+                [timer invalidate];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    NSLog(@"$hulop.read_to_read is called");
                     NSString *script = @"(function (){if(window.$hulop && $hulop.ready_to_read) {$hulop.ready_to_read();} else {setTimeout(arguments.callee,100)}})()";
                     [_webview evaluateJavaScript:script completionHandler:^(id _Nullable res, NSError * _Nullable error) {
                         if (error) {
                             NSLog(@"%@", error.description);
                         }
                     }];
-                }
-            }];
-            initialRead = YES;
-        }
+                });
+            }
+        }];
     }
 }
 
@@ -113,6 +111,7 @@
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
     webpageReady = YES;
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, titleView);
 }
 
 - (void)didEnterBackground:(NSNotification*)note

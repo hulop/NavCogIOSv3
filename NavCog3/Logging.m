@@ -41,11 +41,13 @@ void NavNSLog(NSString* fmt, ...) {
 
 static int stderrSave = 0;
 static NSString *logFilePath = nil;
+static BOOL isSensorLogging = true;
 
-+ (NSString*)startLog {
++ (NSString*)startLog:(BOOL)_isSensorLogging {
     if (stderrSave != 0) {
         return nil;
     }
+    isSensorLogging = _isSensorLogging;
     static NSDateFormatter *formatter;
     if (!formatter) {
         formatter = [[NSDateFormatter alloc] init];
@@ -82,6 +84,10 @@ static NSString *logFilePath = nil;
 
 +(BOOL)isLogging {
     return stderrSave != 0;
+}
+
++(BOOL)isSensorLogging {
+    return isSensorLogging;
 }
 
 + (void)logType:(NSString *)type withParam:(NSDictionary *)param

@@ -23,6 +23,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#define AccessibilityElementDidBecomeFocused @"AccessibilityElementDidBecomeFocused"
+
 @interface UIMessageView :UIView
 @property UILabel *message;
 @property UIButton *action;
@@ -38,5 +40,6 @@
 +(void)hideMessageView:(UIView*)view;
 +(void)openURL:(NSURL*)url onViewController:(UIViewController*)controller;
 +(NSString*)deviceModel;
++(void)switchAccessibilityMethods;
 @end
 

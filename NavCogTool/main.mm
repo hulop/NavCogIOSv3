@@ -498,6 +498,10 @@ Option parseArguments(int argc, char * argv[]){
 {
 }
 
+- (void)showPOI:(NavPOI *)poi
+{
+}
+
 #pragma mark - NavNavigatorDelegate
 
 - (void)didActiveStatusChanged:(NSDictionary *)properties

@@ -28,10 +28,11 @@
 #import "NavPreviewer.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <HLPDialog/HLPDialog.h>
+#import "WebViewController.h"
 
-@interface BlindViewController : UIViewController <HLPWebViewDelegate, HLPTTSProtocol, NavNavigatorDelegate, NavCommanderDelegate, NavPreviewerDelegate, MCBrowserViewControllerDelegate, DialogViewDelegate>
+@interface BlindViewController : UIViewController <HLPWebViewDelegate, HLPTTSProtocol, NavNavigatorDelegate, NavCommanderDelegate, NavPreviewerDelegate, MCBrowserViewControllerDelegate, DialogViewDelegate, WebViewControllerDelegate>
 
-@property (weak, nonatomic) IBOutlet NavBlindWebView *webView;
+@property (nonatomic) IBOutlet NavBlindWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;

@@ -107,10 +107,22 @@
 "FloorBasementD" = "地下%@階";
 
 /* (No Commment) */
+"FloorChangeActionString1Down" = "%1$@をおります";
+
+/* (No Commment) */
+"FloorChangeActionString1Up" = "%1$@を上がります";
+
+/* (No Commment) */
 "FloorChangeActionString2Down" = "%1$@を使って%2$@におります";
 
 /* (No Commment) */
 "FloorChangeActionString2Up" = "%1$@を使って%2$@に上がります";
+
+/* (No Commment) */
+"FloorChangeActionString3Down" = "%1$@、%2$@の%3$@をおりる";
+
+/* (No Commment) */
+"FloorChangeActionString3Up" = "%1$@、%2$@の%3$@を上がる";
 
 /* (No Commment) */
 "FloorChangeActionString4Down" = "%1$@、%2$@の%3$@を使って%4$@へおりる";
@@ -119,10 +131,10 @@
 "FloorChangeActionString4Up" = "%1$@、%2$@の%3$@を使って%4$@へ上がる";
 
 /* (No Commment) */
-"FloorChangeDoneActionString2Down" = "%@をおりたら、%@";
+"FloorChangeDoneActionString2Down" = "%@が終わったら、%@";
 
 /* (No Commment) */
-"FloorChangeDoneActionString2Up" = "%@をのぼったら、%@";
+"FloorChangeDoneActionString2Up" = "%@が終わったら、%@";
 
 /* floor */
 "FloorD" = "%@階";
@@ -425,6 +437,13 @@
 
 /* head to the right direction */
 "turn to the right" = "右に向く";
+
+/* head to the diagonally forward left direction */
+"turn slightly to the left" = "少し左に向く";
+
+/* head to the diagonally forward right direction */
+"turn slightly to the right" = "少し右に向く";
+
 
 "Always_Background" = "常にバックグラウンドで動作";
 

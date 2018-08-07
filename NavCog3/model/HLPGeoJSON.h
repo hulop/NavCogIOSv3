@@ -223,6 +223,12 @@ typedef enum: int {
 @property (nonatomic, readonly) BOOL right;
 @end
 
+typedef NS_ENUM(NSInteger, HLPLinkIncline) {
+    HLPLinkInclineEven = 0,
+    HLPLinkInclineUp = 1,
+    HLPLinkInclineDown = 2
+};
+
 @interface HLPLink : HLPObject {
 @protected
     double _length;

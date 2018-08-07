@@ -981,6 +981,9 @@ static NSRegularExpression *patternHLPPOIFlags;
     if (link1.linkType == LINK_TYPE_ESCALATOR && ![link1 isKindOfClass:HLPCombinedLink.class]) {
         return link2.length < 3;
     }
+    if (link1.linkType == LINK_TYPE_STAIRWAY && link2.linkType == LINK_TYPE_STAIRWAY) {
+        return YES;
+    }
 
     return [HLPCombinedLink link:link1 canBeCombinedWithLink:link2] &&
     link1.linkType == link2.linkType;

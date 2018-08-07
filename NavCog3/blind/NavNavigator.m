@@ -198,6 +198,35 @@ static NavNavigatorConstants *_instance;
     _targetLocation = _link.targetLocation;
     _sourceLocation = _link.sourceLocation;
     
+    HLPLinkIncline(^checkIncline)(HLPLink *) = ^(HLPLink *link) {
+        HLPLinkIncline incline = HLPLinkInclineEven;
+        
+        if (link.sourceHeight == link.targetHeight) {
+            // if links with these link types, assume it has an incline from original link source to target
+            if (link.linkType == LINK_TYPE_ESCALATOR || link.linkType == LINK_TYPE_RAMP || link.linkType == LINK_TYPE_STAIRWAY) {
+                NSString *originalSource = link.properties[PROPKEY_SOURCE_NODE_ID];
+                NSString *originalTarget = link.properties[PROPKEY_TARGET_NODE_ID];
+                if ([originalSource isEqualToString:link.sourceNodeID]) {
+                    incline = HLPLinkInclineUp;
+                }
+                if ([originalTarget isEqualToString:link.sourceNodeID]) {
+                    incline = HLPLinkInclineDown;
+                }
+            }
+        } else {
+            if (link.sourceHeight < link.targetHeight) {
+                incline = HLPLinkInclineUp;
+            }
+            else if (link.sourceHeight > link.targetHeight) {
+                incline = HLPLinkInclineDown;
+            }
+        }
+        return incline;
+    };
+    _incline = checkIncline(_link);
+    _nextIncline = checkIncline(_nextLink);
+    
+    
     NSMutableArray<NavPOI*> *poisTemp = [@[] mutableCopy];
     NSArray *links = @[_link];
     
@@ -816,6 +845,32 @@ static NavNavigatorConstants *_instance;
     }
     _userLocation = userLocation;
 }
+
+- (BOOL) hasContent
+{
+    return self.contentURL != nil;
+}
+    
+- (NSString*) contentURL
+{
+    if (![self.origin isKindOfClass:HLPEntrance.class]) {
+        return nil;
+    }
+    HLPEntrance *hpoi = (HLPEntrance*)self.origin;
+    HLPFacility *facility = hpoi.facility;
+    return facility.properties[@"content"];
+}
+
+- (NSString*) contentName
+{
+    if (![self.origin isKindOfClass:HLPEntrance.class]) {
+        return nil;
+    }
+    HLPEntrance *hpoi = (HLPEntrance*)self.origin;
+    HLPFacility *facility = hpoi.facility;
+    return facility.name;
+}
+
 @end
 
 @implementation NavNavigator {
@@ -845,6 +900,8 @@ static NavNavigatorConstants *_instance;
     
     NSMutableArray *walkedDistances;
     double walkingSpeed;
+    
+    BOOL isResumed;
 }
 
 - (instancetype)init
@@ -859,7 +916,8 @@ static NavNavigatorConstants *_instance;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(routeCleared:) name:ROUTE_CLEARED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStatus:) name:REQUEST_NAVIGATION_STATUS object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestResume:) name:REQUEST_NAVIGATION_RESUME object:nil];
+
     navigationQueue = [[NSOperationQueue alloc] init];
     navigationQueue.maxConcurrentOperationCount = 1;
     navigationQueue.qualityOfService = NSQualityOfServiceUserInteractive;
@@ -1282,7 +1340,7 @@ static NavNavigatorConstants *_instance;
                 walkingSpeed = MIN(ave / MAX_WD * 10, 2.0);
                 walkingSpeed = walkingSpeed < zero_threthold ? 0 : walkingSpeed;
             }
-            NSLog(@"walkingSpeed = %f", walkingSpeed);
+            //NSLog(@"walkingSpeed = %f", walkingSpeed);
             prevLocation = location;
         }
         
@@ -1536,7 +1594,9 @@ static NavNavigatorConstants *_instance;
                                        @"diffHeading": @(linkInfo.diffNextBearingAtSnappedLocationOnLink),
                                        @"nextLinkType": @(linkInfo.nextLink.linkType),
                                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                                       @"incline": @(linkInfo.incline)
+                                       
                                        }];
                                 }
                             } else {
@@ -1664,6 +1724,7 @@ static NavNavigatorConstants *_instance;
                                @"nextLinkType": @(linkInfo.nextLink.linkType),
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                                @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                               @"incline": @(linkInfo.incline),
                                @"distance": @(linkInfo.link.length)
                                }];
                         }
@@ -1792,7 +1853,8 @@ static NavNavigatorConstants *_instance;
                                @"diffHeading": @(0),
                                @"nextLinkType": @(linkInfo.link.linkType),
                                @"nextSourceHeight": @(linkInfo.link.sourceHeight),
-                               @"nextTargetHeight": @(linkInfo.link.targetHeight)
+                               @"nextTargetHeight": @(linkInfo.link.targetHeight),
+                               @"incline": @(linkInfo.incline)
                                }];
                         }
                     }
@@ -1822,6 +1884,7 @@ static NavNavigatorConstants *_instance;
                     linkInfo.hasBeenBearing = NO;
                     if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
                         [self.delegate userAdjustedHeading:@{}];
+                        [self _requestStatus:@{@"resume":@(YES)}];
                     }
                 }
                 // TODO if skip this turn
@@ -1852,8 +1915,10 @@ static NavNavigatorConstants *_instance;
                            @"isNextDestination": @(linkInfo.isNextDestination),
                            @"sourceHeight": @(linkInfo.link.sourceHeight),
                            @"targetHeight": @(linkInfo.link.targetHeight),
+                           @"incline": @(linkInfo.incline),
                            @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                           @"nextIncline": @(linkInfo.nextIncline)
                            
                            }];
                     }
@@ -1896,10 +1961,14 @@ static NavNavigatorConstants *_instance;
                        @"isNextDestination": @(linkInfo.isNextDestination),
                        @"sourceHeight": @(linkInfo.link.sourceHeight),
                        @"targetHeight": @(linkInfo.link.targetHeight),
+                       @"incline": @(linkInfo.incline),
                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                        @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                       @"nextIncline": @(linkInfo.nextIncline),
                        @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
-                       @"isCrossingCorridor": @(linkInfo.link.isCrossingCorridor)
+                       @"isCrossingCorridor": @(linkInfo.link.isCrossingCorridor),
+                       @"targetOrientation": @(linkInfo.link.lastBearingForTarget),
+                       @"targetLocation": linkInfo.link.targetLocation
                        }];
                 }
                 linkInfo.nextTargetRemainingDistance = nextTargetRemainingDistance(linkInfo.link.length, linkInfo.link.length);
@@ -1945,7 +2014,8 @@ static NavNavigatorConstants *_instance;
                        @"turnAngle": @(linkInfo.nextTurnAngle),
                        @"nextLinkType": @(linkInfo.nextLink.linkType),
                        @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                       @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                       @"nextIncline": @(linkInfo.nextIncline)
                        }];
                     
                 }
@@ -1966,9 +2036,11 @@ static NavNavigatorConstants *_instance;
                                @"linkType": @(linkInfo.link.linkType),
                                @"sourceHeight": @(linkInfo.link.sourceHeight),
                                @"targetHeight": @(linkInfo.link.targetHeight),
+                               @"incline": @(linkInfo.incline),
                                @"nextLinkType": @(linkInfo.nextLink.linkType),
                                @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                                @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                               @"nextIncline": @(linkInfo.nextIncline),
                                @"fullAction": @(YES),
                                @"isCrossingCorridor": @(linkInfo.nextLink.isCrossingCorridor)
                                }];
@@ -2023,6 +2095,31 @@ static NavNavigatorConstants *_instance;
                 if (poi.forAfterEnd) {
                     continue;
                 }
+                
+                if (!poi.hasBeenHeaded &&
+                    fabs(poi.diffAngleFromUserOrientation) < C.ADJUST_HEADING_MARGIN) {
+                    if ([self.delegate respondsToSelector:@selector(userIsHeadingToPOI:)]) {
+                        [self.delegate userIsHeadingToPOI:
+                         @{
+                           @"poi": poi,
+                           @"heading": @(poi.diffAngleFromUserOrientation),
+                           @"threshold": @(C.ADJUST_HEADING_MARGIN)
+                           }];
+                    }
+                    poi.hasBeenHeaded = YES;
+                }
+                if (poi.hasBeenHeaded &&
+                    fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < C.ADJUST_HEADING_MARGIN) {
+                    if ([self.delegate respondsToSelector:@selector(userIsHeadingToPOI:)]) {
+                        [self.delegate userIsHeadingToPOI:
+                         @{
+                           @"poi": poi,
+                           @"heading": @(poi.diffAngleFromUserOrientation)
+                           }];
+                    }
+                    poi.hasBeenHeaded = NO;
+                }
+                
                 if (!poi.hasBeenApproached && (now - poi.lastApproached > C.POI_ANNOUNCE_MIN_INTERVAL)) {
                     if (poi.distanceFromSnappedPoiLocationAndSnappedUserLocation < C.POI_ANNOUNCE_DISTANCE &&
                         //poi.distanceFromSnappedLocation < C.POI_ANNOUNCE_DISTANCE &&
@@ -2280,8 +2377,10 @@ static NavNavigatorConstants *_instance;
                               @"isNextDestination": @(linkInfo.isNextDestination),
                               @"sourceHeight": @(linkInfo.link.sourceHeight),
                               @"targetHeight": @(linkInfo.link.targetHeight),
+                              @"incline": @(linkInfo.incline),
                               @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
-                              @"nextTargetHeight": @(linkInfo.nextLink.targetHeight)
+                              @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                              @"nextIncline": @(linkInfo.nextIncline)
                               }];
                 }
             }
@@ -2291,7 +2390,18 @@ static NavNavigatorConstants *_instance;
     return nil;
 }
 
+- (void) requestResume:(NSNotification*)note
+{
+    isResumed = YES;
+}
+
 - (void) requestStatus:(NSNotification*)note
+{
+    [self _requestStatus:@{@"resume":@(isResumed)}];
+    isResumed = false;
+}
+
+- (void) _requestStatus:(NSDictionary*)options
 {
     if (!_isActive) {
         HLPLocation *loc = [[NavDataStore sharedDataStore] currentLocation];
@@ -2309,7 +2419,7 @@ static NavNavigatorConstants *_instance;
         }
         return;
     }
-    //NavNavigatorConstants *C = [NavNavigatorConstants constants];
+    NavNavigatorConstants *C = [NavNavigatorConstants constants];
     
     id obj = linkInfos[navIndex];
     if (obj && [obj isKindOfClass:NavLinkInfo.class]) {
@@ -2342,7 +2452,8 @@ static NavNavigatorConstants *_instance;
                        @"linkType": @(linkInfo.link.linkType),
                        @"distance": @(linkInfo.link.length),
                        @"nohistory": @(YES),
-                       @"force": @(YES)
+                       @"force": @(YES),
+                       @"resume": options[@"resume"]
                        
                        }];
                 } else if (linkInfo.hasBeenApproaching) { // on elevator
@@ -2374,12 +2485,12 @@ static NavNavigatorConstants *_instance;
                         [self.delegate userNeedsToTakeAction:
                          @{
                            @"nextLinkType": @(linkInfo.link.linkType),
-                           @"nextSourceHeight": @(linkInfo.link.sourceHeight),
-                           @"nextTargetHeight": @(linkInfo.link.targetHeight),
+                           @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
+                           @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                           @"nextIncline": @(linkInfo.nextIncline),
                            @"fullAction": @(YES),
                            @"nohistory": @(YES),
                            @"force": @(YES)
-
                            }];
                     }
 
@@ -2407,7 +2518,8 @@ static NavNavigatorConstants *_instance;
                        @"diffHeading": @(linkInfo.diffBearingAtUserLocationToSnappedLocationOnLink),
                        @"distance": @(linkInfo.distanceToUserLocationFromLink),
                        @"nohistory": @(YES),
-                       @"force": @(YES)
+                       @"force": @(YES),
+                       @"resume": options[@"resume"]
                        }];
                     
                 } else {
@@ -2416,12 +2528,13 @@ static NavNavigatorConstants *_instance;
                          @{
                            @"turnAngle": @(linkInfo.nextTurnAngle),
                            @"nohistory": @(YES),
-                           @"force": @(YES)
+                           @"force": @(YES),
+                           @"resume": options[@"resume"]
                            
                            }];
                     }
-                    else if (fabs(linkInfo.diffBearingAtUserLocation) > 22.5) {
-                        linkInfo.bearingTargetThreshold = 22.5;
+                    else if (fabs(linkInfo.diffBearingAtSnappedLocationOnLink) > C.CHANGE_HEADING_THRESHOLD) {
+                        linkInfo.bearingTargetThreshold = C.CHANGE_HEADING_THRESHOLD;
                         linkInfo.hasBeenBearing = YES;
                         if ([self.delegate respondsToSelector:@selector(userNeedsToChangeHeading:)]) {
                             [self.delegate userNeedsToChangeHeading:
@@ -2445,11 +2558,14 @@ static NavNavigatorConstants *_instance;
                            @"isNextDestination": @(linkInfo.isNextDestination),
                            @"sourceHeight": @(linkInfo.link.sourceHeight),
                            @"targetHeight": @(linkInfo.link.targetHeight),
+                           @"incline": @(linkInfo.incline),
                            @"nextSourceHeight": @(linkInfo.nextLink.sourceHeight),
                            @"nextTargetHeight": @(linkInfo.nextLink.targetHeight),
+                           @"nextIncline": @(linkInfo.nextIncline),
                            @"escalatorFlags": linkInfo.nextLink.escalatorFlags?linkInfo.nextLink.escalatorFlags:@[],
                            @"nohistory": @(YES),
-                           @"force": @(YES)
+                           @"force": @(YES),
+                           @"resume": options[@"resume"]
                            }];
                     }
                 }

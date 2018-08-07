@@ -205,11 +205,6 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:SERVER_CONFIG_CHANGED_NOTIFICATION
                                                                     object:self
                                                                   userInfo:config.selectedServerConfig];
-
-                [Logging stopLog];
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
-                    [Logging startLog];
-                }
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *hostname = config.selected[@"hostname"];

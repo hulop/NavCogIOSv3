@@ -67,7 +67,6 @@
             break;
         case NavDestinationTypeLandmarks:
             [aCoder encodeObject:_landmarks forKey:@"landmarks"];
-            break;
         case NavDestinationTypeLandmark:
             [aCoder encodeObject:_landmark forKey:@"landmark"];
             break;
@@ -91,6 +90,7 @@
     switch(_type) {
         case NavDestinationTypeDirectoryItem:
             _item = [aDecoder decodeObjectForKey:@"item"];
+            break;
         case NavDestinationTypeLandmarks:
             _landmarks = [aDecoder decodeObjectForKey:@"landmarks"];
         case NavDestinationTypeLandmark:
@@ -1175,7 +1175,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     [links enumerateObjectsUsingBlock:^(HLPLink *link, BOOL * _Nonnull stop) {
         
         if (!isnan(loc.floor) &&
-            (link.sourceHeight != loc.floor || link.targetHeight != loc.floor)) {
+            (link.sourceHeight != loc.floor && link.targetHeight != loc.floor)) {
             return;
         }
         if (link.isLeaf) {
@@ -1281,6 +1281,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
 - (void)clearRoute
 {
     routeCache = nil;
+    [Logging logType:@"clearRoute" withParam:@{}];
     [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CLEARED_NOTIFICATION object:self];
 }
 

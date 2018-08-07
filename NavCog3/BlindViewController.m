@@ -36,7 +36,6 @@
 #import "SettingViewController.h"
 
 #import "ServerConfig.h"
-#import "WebViewController.h"
 
 #import <HLPLocationManager/HLPLocationManager+Player.h>
 #import "DefaultTTS.h"
@@ -74,6 +73,10 @@
     
     NSTimeInterval lastLocationSent;
     NSTimeInterval lastOrientationSent;
+    
+    BOOL initialViewDidAppear;
+    BOOL needVOFocus;
+    WebViewController *showingPage;
 }
 
 @end
@@ -112,8 +115,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    initialViewDidAppear = YES;
+    
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _webView = [[NavBlindWebView alloc] initWithFrame:CGRectMake(0,0,0,0) configuration:[[WKWebViewConfiguration alloc] init]];
     _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
+    [self.view addSubview:_webView];
+    for(UIView *v in self.view.subviews) {
+        if (v != _webView) {
+            [self.view bringSubviewToFront:v];
+        }
+    }
     _webView.userMode = [ud stringForKey:@"user_mode"];
     _webView.config = @{
                         @"serverHost":[ud stringForKey:@"selected_hokoukukan_server"],
@@ -123,6 +135,7 @@
 
     _webView.delegate = self;
     _webView.tts = self;
+    [_webView setFullScreenForView:self.view];
     
     navigator = [[NavNavigator alloc] init];
     commander = [[NavCommander alloc] init];
@@ -195,6 +208,15 @@
     }
 }
 
+- (void)elementDidBecomeFocused:(NSNotification*)note
+{
+    NSLog(@"elementDidBecomeFocused");
+    if (needVOFocus) {
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, _cover.center);
+        needVOFocus = NO;
+    }
+}
+
 - (UIViewController*) topMostController
 {
     UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
@@ -208,8 +230,7 @@
 
 - (void) checkMapCenter:(NSTimer*)timer
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        HLPLocation *loc = [_webView getCenter];
+    [_webView getCenterWithCompletion:^(HLPLocation *loc) {
         if (loc != nil) {
             [NavDataStore sharedDataStore].mapCenter = loc;
             HLPLocation *cloc = [NavDataStore sharedDataStore].currentLocation;
@@ -227,7 +248,7 @@
             [self updateView];
             [timer invalidate];
         }
-    });
+    }];
 }
 
 
@@ -316,26 +337,34 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:self];
-    [self becomeFirstResponder];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(elementDidBecomeFocused:) name:AccessibilityElementDidBecomeFocused object:nil];
     
+    if (!initialViewDidAppear) {
+        needVOFocus = YES;
+    }
+    initialViewDidAppear = NO;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_STABILIZE_LOCALIZE object:self];
+    [self becomeFirstResponder];
+
     UIView* target = [self findLabel:self.navigationController.navigationBar.subviews];
     
-    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, target.superview);
-    
-    dialogHelper = [[DialogViewHelper alloc] init];
-    double scale = 0.75;
-    double size = (113*scale)/2;
-    double x = size+8;
-    double y = self.view.bounds.size.height + self.view.bounds.origin.y - (size+8);
-    if (@available(iOS 11.0, *)) {
-        y -= self.view.safeAreaInsets.bottom;
+    if (!dialogHelper) {
+        dialogHelper = [[DialogViewHelper alloc] init];
+        double scale = 0.75;
+        double size = (113*scale)/2;
+        double x = size+8;
+        double y = self.view.bounds.size.height + self.view.bounds.origin.y - (size+8);
+        if (@available(iOS 11.0, *)) {
+            y -= self.view.safeAreaInsets.bottom;
+        }
+        dialogHelper.scale = scale;
+        [dialogHelper inactive];
+        [dialogHelper setup:self.view position:CGPointMake(x, y)];
+        dialogHelper.delegate = self;
+        dialogHelper.helperView.hidden = YES;
     }
-    dialogHelper.scale = scale;
-    [dialogHelper inactive];
-    [dialogHelper setup:self.view position:CGPointMake(x, y)];
-    dialogHelper.delegate = self;
-    dialogHelper.helperView.hidden = YES;
 }
 
 - (BOOL)canBecomeFirstResponder
@@ -362,6 +391,8 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_ACCELEARATION object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_STABILIZE_LOCALIZE object:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:AccessibilityElementDidBecomeFocused object:nil];
 }
 
 - (void)debugPeerStateChanged:(NSNotification*)note
@@ -411,11 +442,14 @@
             [[_settingButton valueForKey:@"view"] addGestureRecognizer:longPressGesture];
         }
         
-        self.navigationItem.title = NSLocalizedStringFromTable(exerciseMode?@"Exercise":(previewMode?@"Preview":@"NavCog"), @"BlindView", @"");
-        
+        UILabel *titleView = [[UILabel alloc] init];
+        titleView.text = NSLocalizedStringFromTable(exerciseMode?@"Exercise":(previewMode?@"Preview":@"NavCog"), @"BlindView", @"");
         if (debugFollower) {
-            self.navigationItem.title = NSLocalizedStringFromTable(@"Follow", @"BlindView", @"");
+            titleView.text = NSLocalizedStringFromTable(@"Follow", @"BlindView", @"");
         }
+        titleView.accessibilityLabel = @"( )";
+        titleView.accessibilityTraits = UIAccessibilityTraitStaticText;
+        self.navigationItem.titleView = titleView;
         
         if (debugFollower || initFlag) {    
             self.navigationItem.rightBarButtonItem = nil;
@@ -521,21 +555,29 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY_STOP object:self];
 }
 
-#pragma mark - HLPWebView
+#pragma mark - MKWebViewDelegate
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation
 {
     [_indicator startAnimating];
     _indicator.hidden = NO;
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
 }
 
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    [_indicator stopAnimating];
+    _indicator.hidden = YES;
+    _retryButton.hidden = NO;
+    _errorMessage.hidden = NO;
+}
+
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
@@ -548,9 +590,9 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
 }
 
-- (void)speak:(NSString *)text force:(BOOL)isForce
+- (void)speak:(NSString *)text force:(BOOL)isForce completionHandler:(void (^)(void))handler
 {
-    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:nil];
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:handler];
 }
 
 - (BOOL)isSpeaking
@@ -910,7 +952,7 @@
     if ([properties[@"isActive"] boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
-                [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.setSync(true);"];
+                [_webView evaluateJavaScript:@"$hulop.map.setSync(true);" completionHandler:nil];
             }
         });
             
@@ -960,7 +1002,7 @@
     }
     [NavDataStore sharedDataStore].start = [[NSDate date] timeIntervalSince1970];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]];
+        [_webView evaluateJavaScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]] completionHandler:nil];
 
         //_cover.preventCurrentStatus = YES;
         [NavUtil hideModalWaiting];
@@ -1020,6 +1062,11 @@
 {
     [commander userIsApproachingToTarget:properties];
     [previewer userIsApproachingToTarget:properties];
+}
+- (void)userIsHeadingToPOI:(NSDictionary*)properties
+{
+    [commander userIsHeadingToPOI:properties];
+    [previewer userIsHeadingToPOI:properties];
 }
 - (void)userNeedsToTakeAction:(NSDictionary*)properties
 {
@@ -1198,6 +1245,47 @@
     [ctx evaluateScript:command];
 }
 
+- (void)showPOI:(NSString *)contentURL withName:(NSString*)name
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (contentURL == nil && name == nil) {
+            if (showingPage) {
+                [showingPage.navigationController popViewControllerAnimated:YES];
+            }
+            return;
+        }
+        if (showingPage) {
+            return;
+        }
+        
+        showingPage = [WebViewController getInstance];
+        showingPage.delegate = self;
+        
+        NSURL *url = nil;
+        if ([contentURL hasPrefix:@"bundle://"]) {
+            NSString *tempurl = [contentURL substringFromIndex:@"bundle://".length];
+            NSString *file = [tempurl lastPathComponent];
+            NSString *ext = [file pathExtension];
+            NSString *name = [file stringByDeletingPathExtension];
+            NSString *dir = [tempurl stringByDeletingLastPathComponent];
+            url = [[NSBundle mainBundle] URLForResource:name withExtension:ext subdirectory:dir];
+        } else {
+            url = [NSURL URLWithString:contentURL];
+        }
+        
+        showingPage.title = name;
+        showingPage.url = url;
+        [self.navigationController showViewController:showingPage sender:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_PAUSE object:nil];
+    });
+}
+
+- (void)webViewControllerClosed:(WebViewController *)controller
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_RESUME object:nil];
+    showingPage = nil;
+}
+
 - (void)requestDialogStart:(NSNotification *)note
 {
     if ([navigator isActive] ||
@@ -1257,7 +1345,7 @@
     }
     if ([segue.identifier isEqualToString:@"show_search"]) {
         if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
-            [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.setSync(true);"];
+            [_webView evaluateJavaScript:@"$hulop.map.setSync(true);" completionHandler:nil];
         }
     }
 }

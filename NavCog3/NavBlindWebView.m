@@ -48,14 +48,14 @@
     NSString *script = [NSString stringWithFormat:@"$hulop.map.initTarget(%@, null)", dataStr];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self stringByEvaluatingJavaScriptFromString:script];
+        [self evaluateJavaScript:script completionHandler:nil];
     });
 }
 
 - (void)clearRoute
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self stringByEvaluatingJavaScriptFromString:@"$hulop.map.clearRoute()"];
+        [self evaluateJavaScript:@"$hulop.map.clearRoute()" completionHandler:nil];
     });
 }
 
@@ -78,25 +78,23 @@
     NSString *script = [NSString stringWithFormat:@"$hulop.map.showRoute(%@, null, true, true);/*$hulop.map.showResult(true);*/$('#map-page').trigger('resize');", dataStr];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self stringByEvaluatingJavaScriptFromString:script];
+        [self evaluateJavaScript:script completionHandler:nil];
     });
 }
 
-- (HLPLocation *)getCenter
+- (void)getCenterWithCompletion:(void(^)(HLPLocation*))completion
 {
-    NSString *script = @"(function(){var a=$hulop.map.getCenter();var f=$hulop.indoor.getCurrentFloor();f=f>0?f-1:f;return JSON.stringify({lat:a[1],lng:a[0],floor:f});})()";
-    NSString *state = [self stringByEvaluatingJavaScriptFromString:script];
-    NSError *error = nil;
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[state dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
-    if (json) {
-        return [[HLPLocation alloc] initWithLat:[json[@"lat"] doubleValue]
-                                            Lng:[json[@"lng"] doubleValue]
-                                          Floor:[json[@"floor"] doubleValue]];
-    } else {
-        NSLog(@"%@", error.localizedDescription);
-    }
-    return nil;
-    
+    NSString *script = @"(function(){var a=$hulop.map.getCenter();var f=$hulop.indoor.getCurrentFloor();f=f>0?f-1:f;return {lat:a[1],lng:a[0],floor:f};})()";
+    [self evaluateJavaScript:script completionHandler:^(id _Nullable state, NSError * _Nullable error) {
+        NSDictionary *json = state;
+        if (json) {
+            completion([[HLPLocation alloc] initWithLat:[json[@"lat"] doubleValue]
+                                                    Lng:[json[@"lng"] doubleValue]
+                                                  Floor:[json[@"floor"] doubleValue]]);
+            return;
+        }
+        completion(nil);
+    }];
 }
 
 
@@ -118,7 +116,7 @@
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self stringByEvaluatingJavaScriptFromString:script];
+        [self evaluateJavaScript:script completionHandler:nil];
     });
 }
 
@@ -134,7 +132,7 @@
     NSString *script = [NSString stringWithFormat:@"$hulop.logging && $hulop.logging.onData(%@);",jsonstr];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self stringByEvaluatingJavaScriptFromString:script];
+        [self evaluateJavaScript:script completionHandler:nil];
     });
 }
 

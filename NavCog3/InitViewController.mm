@@ -29,6 +29,7 @@
 #import <HLPLocationManager/HLPLocationManagerParameters.h>
 #import <Speech/Speech.h>
 #import <HLPDialog/HLPDialog.h>
+#import "Logging.h"
 
 @interface InitViewController ()
 
@@ -128,6 +129,12 @@
     [manager setParameters:params];
     
     [manager start];
+        
+    [Logging stopLog];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
+        BOOL sensor = [[NSUserDefaults standardUserDefaults] boolForKey:@"logging_sensor"];
+        [Logging startLog:sensor];
+    }
 }
 
 - (NSDictionary*) getLocationManagerParams

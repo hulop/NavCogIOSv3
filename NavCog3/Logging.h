@@ -24,10 +24,11 @@
 
 @interface Logging : NSObject
 
-+ (NSString*)startLog;
++ (NSString*)startLog:(BOOL)isSensorLogging;
 + (NSString*)logFilePath;
 + (void)stopLog;
 + (BOOL)isLogging;
++ (BOOL)isSensorLogging;
 + (void)logType:(NSString*)type withParam:(NSDictionary*)param;
 
 @end

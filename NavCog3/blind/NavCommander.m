@@ -27,9 +27,19 @@
 
 @implementation NavCommander {
     NSTimeInterval lastPOIAnnounceTime;
+    NavPOI* lastApproachedPOI;
+    NSMutableArray<NavPOI*>* approachingPOIs;
 }
 
 #pragma mark - string builder functions
+
+- (instancetype) init
+{
+    self = [super self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestNearestPOI:) name:REQUEST_NEAREST_POI object:nil];
+    approachingPOIs = [@[] mutableCopy];
+    return self;
+}
 
 - (void)dealloc
 {
@@ -102,7 +112,7 @@
     
     if (properties[@"diffHeading"]) {
         if (fabs([HLPLocation normalizeDegree:[properties[@"diffHeading"] doubleValue] - turnAngle]) > 45 &&
-            linkType != LINK_TYPE_ELEVATOR) {
+            ((linkType != LINK_TYPE_ELEVATOR) && (linkType != LINK_TYPE_ESCALATOR && (linkType != LINK_TYPE_STAIRWAY)))) {
             turnAngle = [properties[@"diffHeading"] doubleValue];
         }
     }
@@ -148,8 +158,9 @@
     
 
     if (nextLinkType == LINK_TYPE_ELEVATOR || nextLinkType == LINK_TYPE_ESCALATOR || nextLinkType == LINK_TYPE_STAIRWAY) {
-        int sourceHeight = [properties[@"nextSourceHeight"] intValue];
-        int targetHeight = [properties[@"nextTargetHeight"] intValue];
+        double sourceHeight = [properties[@"nextSourceHeight"] doubleValue];
+        double targetHeight = [properties[@"nextTargetHeight"] doubleValue];
+        HLPLinkIncline incline = [properties[@"nextIncline"] intValue];
         NSString *mean = [HLPLink nameOfLinkType:nextLinkType];
         
         NSString *angle;
@@ -180,7 +191,7 @@
             return nil;
         }
         else {
-            BOOL up = targetHeight > sourceHeight;
+            BOOL up = (incline == HLPLinkInclineUp);
             BOOL __block left = NO, right = NO;
             [flags enumerateObjectsUsingBlock:^(HLPPOIEscalatorFlags * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 left = left || obj.left;
@@ -198,7 +209,7 @@
             side = NSLocalizedStringFromTable(side, @"BlindView", @"");
 
             NSString *tfloor = [self floorString:targetHeight];
-            NSString *format = @"FloorChangeActionString4";
+            NSString *format = fabs(sourceHeight - targetHeight) < 0.1 ? @"FloorChangeActionString3": @"FloorChangeActionString4";
             format = [format stringByAppendingString:up?@"Up":@"Down"];
             
             string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , angle, side, mean, tfloor];//@""
@@ -227,20 +238,22 @@
         }
     }
     else if (linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
-        int sourceHeight = [properties[@"sourceHeight"] intValue];
-        int targetHeight = [properties[@"targetHeight"] intValue];
+        //double sourceHeight = [properties[@"nextSourceHeight"] doubleValue];
+        //double targetHeight = [properties[@"nextTargetHeight"] doubleValue];
+        double sourceHeight = [properties[@"sourceHeight"] doubleValue];
+        double targetHeight = [properties[@"targetHeight"] doubleValue];
         NSString *mean = [HLPLink nameOfLinkType:linkType];
         //NSString *sfloor = [self floorString:sourceHeight];
         NSString *tfloor = [self floorString:targetHeight];
         //string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"Go to %2$@ by %1$@, now you are in %3$@",@"BlindView",@"") , mean, tfloor, sfloor];
-        BOOL up = targetHeight > sourceHeight;
+        BOOL up = [properties[@"incline"] intValue] == HLPLinkInclineUp;
         BOOL full = [properties[@"fullAction"] boolValue];
         if (full) {
             NSString *format = @"FloorChangeDoneActionString2";
             format = [format stringByAppendingString:up?@"Up":@"Down"];
             string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , mean, string];
         } else {
-            NSString *format = @"FloorChangeActionString2";
+            NSString *format = fabs(sourceHeight - targetHeight) < 0.1 ? @"FloorChangeActionString1" : @"FloorChangeActionString2";
             format = [format stringByAppendingString:up?@"Up":@"Down"];
             string = [NSString stringWithFormat:NSLocalizedStringFromTable(format,@"BlindView",@"") , mean, tfloor];
         }
@@ -478,9 +491,9 @@
         } else if (diffHeading > 60) {
             string = NSLocalizedStringFromTable(@"turn to the right",@"BlindView", @"head to the right direction");
         } else if (diffHeading < -threshold) {
-            string = NSLocalizedStringFromTable(@"bear left",@"BlindView", @"head to the diagonally forward left direction");
+            string = NSLocalizedStringFromTable(@"turn slightly to the left",@"BlindView", @"head to the diagonally forward left direction");
         } else if (diffHeading > threshold) {
-            string = NSLocalizedStringFromTable(@"bear right",@"BlindView", @"head to the diagonally forward right direction");
+            string = NSLocalizedStringFromTable(@"turn slightly to the right",@"BlindView", @"head to the diagonally forward right direction");
         } else {
             //@throw [[NSException alloc] initWithName:@"wrong parameters" reason:@"abs(diffHeading) is smaller than threshold" userInfo:nil];
             return nil;
@@ -635,6 +648,24 @@
     [_delegate speak:string withOptions:properties completionHandler:^{}];
 }
 
+- (void)userIsHeadingToPOI:(NSDictionary *)properties
+{
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    BOOL showPOIwithAction = [[NSUserDefaults standardUserDefaults] boolForKey:@"show_poi_with_action"];
+    NavPOI *poi = properties[@"poi"];
+    double heading = [properties[@"heading"] doubleValue];
+    double threshold = [properties[@"threshold"] doubleValue];
+    if (showPOIwithAction) {
+        if (poi == lastApproachedPOI) {
+            if (fabs(heading) < threshold) {
+                [self requestNearestPOI:nil];
+            } else {
+                [self.delegate showPOI:nil withName:nil];
+            }
+        }
+    }
+}
+
 - (void)userNeedsToTakeAction:(NSDictionary*)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
@@ -666,6 +697,10 @@
     
     NSString *floorInfo = [self floorPOIString:pois];
     NSString *dist = [self distanceString:distance];
+    
+    if (dist == nil) {
+        return; // nop
+    }
     
     if (linkType == LINK_TYPE_ELEVATOR || linkType == LINK_TYPE_ESCALATOR || linkType == LINK_TYPE_STAIRWAY) {
         [string appendString:action];
@@ -767,6 +802,10 @@
     BOOL isDestinationPOI = NO;
     BOOL shortSentence = (now - lastPOIAnnounceTime) < 3;
     
+    if (poi && ![approachingPOIs containsObject:poi] && poi.hasContent) {
+        lastApproachedPOI = poi;
+        [approachingPOIs addObject:poi];
+    }
     
     BOOL ignoreFacility = [[NSUserDefaults standardUserDefaults] boolForKey:@"ignore_facility"];
     if (ignoreFacility && [poi.origin isKindOfClass:HLPEntrance.class]) {
@@ -863,6 +902,10 @@
 - (void)userIsLeavingFromPOI:(NSDictionary*)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
+    NavPOI *poi = properties[@"poi"];
+    if (poi && [approachingPOIs containsObject:poi]) {
+        [approachingPOIs removeObject:poi];
+    }
 }
 
 - (NSString *)summaryString:(NSDictionary *)properties
@@ -915,6 +958,32 @@
 - (void)currentStatus:(NSDictionary *)properties
 {
     NSLog(@"%@", NSStringFromSelector(_cmd));
+    
+    BOOL resume = [properties[@"resume"] boolValue];
+    
+    HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];
+    double minDistance = DBL_MAX;
+    NavPOI *nearestPOI = nil;
+    for(NavPOI *poi in approachingPOIs) {
+        double d = [poi.poiLocation distanceTo:location];
+        if (d < minDistance) {
+            minDistance = d;
+            nearestPOI = poi;
+        }
+    }
+    if (minDistance < 10 && !resume) {
+        [self userIsApproachingToPOI:@{
+                                       @"poi": nearestPOI,
+                                       @"heading": @(nearestPOI.diffAngleFromUserOrientation)
+                                       }];
+        if (!resume) {
+            return;
+        }
+    }
+    if (resume) { // read both poi and status info. when it is resumed
+        properties = [properties mtl_dictionaryByAddingEntriesFromDictionary:@{@"force":@(NO)}];
+    }
+    
     double distance = [properties[@"distance"] doubleValue];
 
     BOOL offRoute = [properties[@"offRoute"] boolValue];
@@ -1007,6 +1076,18 @@
     [self.delegate vibrate];
     [self.delegate speak:string withOptions:properties completionHandler:^{}];
 }
+
+- (void)requestNearestPOI:(NSNotification*)note
+{
+    HLPLocation *location = [[NavDataStore sharedDataStore] currentLocation];
+ 
+    double minDistance = lastApproachedPOI == nil ? DBL_MAX : [lastApproachedPOI.poiLocation distanceTo:location];
+    NavPOI *nearestPOI = lastApproachedPOI;
+    if (minDistance < 10 && nearestPOI.hasContent) {
+        [self.delegate showPOI:nearestPOI.contentURL withName:nearestPOI.contentName];
+    }
+}
+
 
 
 @end

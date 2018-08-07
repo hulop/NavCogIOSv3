@@ -80,6 +80,8 @@ typedef NS_ENUM(NSInteger, ViewState) {
     state = ViewStateLoading;
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _webView = [[HLPWebView alloc] initWithFrame:CGRectMake(0,0,0,0) configuration:[[WKWebViewConfiguration alloc] init]];
+    [self.view addSubview:_webView];
     _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
     _webView.userMode = [ud stringForKey:@"user_mode"];
     _webView.config = @{
@@ -89,6 +91,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
                         };
     _webView.delegate = self;
     _webView.tts = self;
+    [_webView setFullScreenForView:self.view];
     
     /*
     NSString *server = ;
@@ -101,17 +104,6 @@ typedef NS_ENUM(NSInteger, ViewState) {
     recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
     recognizer.delegate = self;
     [self.webView addGestureRecognizer:recognizer];
-    
-    dialogHelper = [[DialogViewHelper alloc] init];
-    double scale = 0.75;
-    double size = (113*scale)/2;
-    double x = size+8;
-    double y = self.view.bounds.size.height - (size+8) - 63;
-    dialogHelper.scale = scale;
-    [dialogHelper inactive];
-    [dialogHelper setup:self.view position:CGPointMake(x, y)];
-    dialogHelper.delegate = self;
-    dialogHelper.helperView.hidden = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
 
@@ -153,6 +145,25 @@ typedef NS_ENUM(NSInteger, ViewState) {
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{    
+    if (!dialogHelper) {
+        dialogHelper = [[DialogViewHelper alloc] init];
+        double scale = 0.75;
+        double size = (113*scale)/2;
+        double x = size+8;
+        double y = self.view.bounds.size.height + self.view.bounds.origin.y - (size+8);
+        if (@available(iOS 11.0, *)) {
+            y -= self.view.safeAreaInsets.bottom;
+        }
+        dialogHelper.scale = scale;
+        [dialogHelper inactive];
+        [dialogHelper setup:self.view position:CGPointMake(x, y)];
+        dialogHelper.delegate = self;
+        dialogHelper.helperView.hidden = YES;
+    }
+}
+
 - (UIViewController*) topMostController
 {
     UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
@@ -181,10 +192,9 @@ typedef NS_ENUM(NSInteger, ViewState) {
         return;
     }
     NSLog(@"checkState");
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSDictionary *json = [_webView getState];
+    [_webView getStateWithCompletionHandler:^(NSDictionary * _Nonnull json) {
         [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:json];
-    });
+    }];
 }
 
 - (void) openURL:(NSNotification*)note
@@ -373,9 +383,9 @@ typedef NS_ENUM(NSInteger, ViewState) {
     
 }
 
-- (void)speak:(NSString *)text force:(BOOL)isForce
+- (void)speak:(NSString *)text force:(BOOL)isForce completionHandler:(void (^)(void))handler
 {
-    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:nil];
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:handler];
 }
 
 - (BOOL)isSpeaking
@@ -545,67 +555,69 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
 - (void) locationChanged: (NSNotification*) note
 {
-    UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-    if (appState == UIApplicationStateBackground || appState == UIApplicationStateInactive) {
-        return;
-    }
-    
-    NSDictionary *locations = [note userInfo];
-    if (!locations) {
-        return;
-    }
-    HLPLocation *location = locations[@"current"];
-    if (!location || [location isEqual:[NSNull null]]) {
-        return;
-    }
-    
-    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-    
-    double orientation = -location.orientation / 180 * M_PI;
-    
-    if (lastOrientationSent + 0.2 < now) {
-        [_webView sendData:@[@{
-                               @"type":@"ORIENTATION",
-                               @"z":@(orientation)
-                               }]
-                withName:@"Sensor"];
-        lastOrientationSent = now;
-    }
-    
-    
-    location = locations[@"actual"];
-    if (!location || [location isEqual:[NSNull null]]) {
-        return;
-    }
-    
-    /*
-     if (isnan(location.lat) || isnan(location.lng)) {
-     return;
-     }
-     */
-    
-    if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
-        if (!location.params) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+        if (appState == UIApplicationStateBackground || appState == UIApplicationStateInactive) {
             return;
         }
-        //return; // prevent too much send location info
-    }
-    
-    double floor = location.floor;
-    
-    [_webView sendData:@{
-                       @"lat":@(location.lat),
-                       @"lng":@(location.lng),
-                       @"floor":@(floor),
-                       @"accuracy":@(location.accuracy),
-                       @"rotate":@(0), // dummy
-                       @"orientation":@(999), //dummy
-                       @"debug_info":location.params?location.params[@"debug_info"]:[NSNull null],
-                       @"debug_latlng":location.params?location.params[@"debug_latlng"]:[NSNull null]
-                       }
-            withName:@"XYZ"];
-    
-    lastLocationSent = now;
+        
+        NSDictionary *locations = [note userInfo];
+        if (!locations) {
+            return;
+        }
+        HLPLocation *location = locations[@"current"];
+        if (!location || [location isEqual:[NSNull null]]) {
+            return;
+        }
+        
+        NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+        
+        double orientation = -location.orientation / 180 * M_PI;
+        
+        if (lastOrientationSent + 0.2 < now) {
+            [_webView sendData:@[@{
+                                     @"type":@"ORIENTATION",
+                                     @"z":@(orientation)
+                                     }]
+                      withName:@"Sensor"];
+            lastOrientationSent = now;
+        }
+        
+        
+        location = locations[@"actual"];
+        if (!location || [location isEqual:[NSNull null]]) {
+            return;
+        }
+        
+        /*
+         if (isnan(location.lat) || isnan(location.lng)) {
+         return;
+         }
+         */
+        
+        if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
+            if (!location.params) {
+                return;
+            }
+            //return; // prevent too much send location info
+        }
+        
+        double floor = location.floor;
+        
+        [_webView sendData:@{
+                             @"lat":@(location.lat),
+                             @"lng":@(location.lng),
+                             @"floor":@(floor),
+                             @"accuracy":@(location.accuracy),
+                             @"rotate":@(0), // dummy
+                             @"orientation":@(999), //dummy
+                             @"debug_info":location.params?location.params[@"debug_info"]:[NSNull null],
+                             @"debug_latlng":location.params?location.params[@"debug_latlng"]:[NSNull null]
+                             }
+                  withName:@"XYZ"];
+        
+        lastLocationSent = now;
+    });
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context

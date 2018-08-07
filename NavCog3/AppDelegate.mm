@@ -32,8 +32,23 @@
 #import <HLPDialog/HLPDialog.h>
 #import <AVFoundation/AVFoundation.h>
 #import "ScreenshotHelper.h"
+#import "NavUtil.h"
 
 #define IS_IOS11orHIGHER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)
+
+void NavNSLog(NSString* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    NSString *msg = [[NSString alloc] initWithFormat:fmt arguments:args];
+    va_end(args);
+    if (!isatty(STDERR_FILENO))
+    {
+        fprintf(stdout, "%s\n", [msg UTF8String]);
+    }
+    va_start(args, fmt);
+    NSLogv(fmt, args);
+    va_end(args);
+}
 
 @interface AppDelegate ()
 
@@ -65,6 +80,7 @@
 
     [NavDeviceTTS sharedTTS];
     [NavSound sharedInstance];
+    [NavUtil switchAccessibilityMethods];
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
@@ -351,7 +367,7 @@ void uncaughtExceptionHandler(NSException *exception)
 
 - (void)locationManager:(HLPLocationManager*)manager didLogText:(NSString *)text
 {
-    if ([Logging isLogging]) {
+    if ([Logging isLogging] && [Logging isSensorLogging]) {
         NSLog(@"%@", text);
     }
 }
@@ -382,7 +398,8 @@ void uncaughtExceptionHandler(NSException *exception)
         }
         [Logging stopLog];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
-            [Logging startLog];
+            BOOL sensor = [[NSUserDefaults standardUserDefaults] boolForKey:@"logging_sensor"];
+            [Logging startLog:sensor];
         }
     }
     [self checkRecordScreenshots];

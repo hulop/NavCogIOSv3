@@ -1,0 +1,190 @@
+/* No comment provided by engineer. */
+"Back to mode selection" = "返回模式选择";
+
+/* No comment provided by engineer. */
+"BluetoothOffAlertMessage" = "想在室内使用定位功能需要打开蓝牙。";
+
+/* No comment provided by engineer. */
+"BluetoothOffAlertTitle" = "蓝牙处于关闭状态";
+
+/* No comment provided by engineer. */
+"CANCEL" = "取消";
+
+/* No comment provided by engineer. */
+"CheckAgreement" = "正在确认设置...";
+
+/* No comment provided by engineer. */
+"checkNetworkConnection" = "请确认网络连接";
+
+/* No comment provided by engineer. */
+"CheckServerConfig" = "正在确认设置...";
+
+/* No comment provided by engineer. */
+"CheckServerList" = "正在确认列表...";
+
+/* label for distance unit option */
+"Distance unit" = "距离的单位";
+
+/* No comment provided by engineer. */
+"DOWNLOADING_DATA" = "正在下载数据...";
+
+/* label for exercise options */
+"Exercise" = "练习";
+
+/* No comment provided by engineer. */
+"feedbackBody" = "请输入反馈内容";
+
+/* No comment provided by engineer. */
+"feedbackSubject" = "NavCog-反馈(%@)";
+
+/* feet distance unit label */
+"Feet" = "英尺";
+
+/* No comment provided by engineer. */
+"for_bone_conduction_headset" = "骨传导耳机用的音效";
+
+/* (No Comment) */
+"FOR_DISABLEDRESTROOM" = "多目的厕所";
+
+/* (No Comment) */
+"FOR_FEMALEFOR_DISABLEDRESTROOM" = "多目的女厕所";
+
+/* (No Comment) */
+"FOR_FEMALERESTROOM" = "女厕所";
+
+/* (No Comment) */
+"FOR_MALEFOR_DISABLEDRESTROOM" = "多目的男厕所";
+
+/* (No Comment) */
+"FOR_MALERESTROOM" = "男厕所";
+
+/* No comment provided by engineer. */
+"Help" = "帮助";
+
+/* No comment provided by engineer. */
+"I_Understand" = "知道了";
+
+/* No comment provided by engineer. */
+"Initial zoom level for navigation" = "导航开始时的缩放";
+
+/* No comment provided by engineer. */
+"Instructions" = "指南";
+
+/* No comment provided by engineer. */
+"Launch Exercise" = "开始练习";
+
+/* No comment provided by engineer. */
+"Loading, please wait" = "正在读取，请稍候";
+
+/* No comment provided by engineer. */
+"LocationNotAllowedMessage" = "想在室内使用定位功能需要允许使用位置信息服务。在隐私设置页面 位置信息服务 → NavCog → 选择只有在使用此应用时允许。";
+
+/* No comment provided by engineer. */
+"LocationNotAllowedTitle" = "位置信息未得到允许";
+
+/* label for map */
+"Map" = "地图";
+
+/* meter distance unit label */
+"Meter" = "米";
+
+/* No comment provided by engineer. */
+"Mode" = "模式";
+
+/* No comment provided by engineer. */
+"Navigation" = "向导历史";
+
+/* No comment provided by engineer. */
+"NeedToUpdateAppMessage" = "需要更新应用";
+
+/* No comment provided by engineer. */
+"NeedToUpdateAppTitle" = "更新应用";
+
+/* No comment provided by engineer. */
+"NoAltimeterAlertMessage" = "NavCog不支持此设备。因为此设备未安装气压计，定位结果可能不稳定。";
+
+/* No comment provided by engineer. */
+"NoAltimeterAlertTitle" = "没有气压计";
+
+/* No comment provided by engineer. */
+"NotSpecified" = "无指定";
+
+/* No comment provided by engineer. */
+"Open_with_Safari" = "通过Safari浏览器打开";
+
+/* No comment provided by engineer. */
+"Open_with_Safari_Message" = "可以通过Safari浏览器打开网页吗？";
+
+/* No comment provided by engineer. */
+"OpenAppStore" = "打开应用商店";
+
+/* No comment provided by engineer. */
+"OpenHelp" = "打开帮助页面";
+
+/* No comment provided by engineer. */
+"OpenInstructions" = "打开指南";
+
+/* No comment provided by engineer. */
+"Prefer Tactile Paving" = "导盲砖优先";
+
+/* No comment provided by engineer. */
+"Preview speed" = "预览速度";
+
+/* No comment provided by engineer. */
+"Preview with action" = "摇晃预览";
+
+/* No comment provided by engineer. */
+"Reset_Location" = "重试定位";
+
+/* (No Comment) */
+"RESTROOM" = "厕所";
+
+/* No comment provided by engineer. */
+"Send Feedback" = "发送反馈";
+
+/* No comment provided by engineer. */
+"SETTING" = "打开设置";
+
+/* No comment provided by engineer. */
+"soundEffectSetting" = "音效通知";
+
+/* label for speech speed option */
+"Speech speed" = "朗读速度";
+
+/* label for tts options */
+"Speech_Sound" = "朗读 / 声音";
+
+/* No comment provided by engineer. */
+"SPEECH_SPEED_CHECK" = "朗读速度:%.2f";
+
+/* No comment provided by engineer. */
+"THANKYOU_SENDING" = "非常感谢您配合问卷调查。
+正在发送数据...";
+
+/* (No Comment) */
+"TOILET" = "厕所";
+
+/* No comment provided by engineer. */
+"UI_BLIND" = "视觉障碍患者用户";
+
+/* No comment provided by engineer. */
+"UI_Mode" = "用户界面模式";
+
+/* No comment provided by engineer. */
+"UI_WHEELCHAIR" = "轮椅用户 / 非视觉障碍患者用户";
+
+/* No comment provided by engineer. */
+"Use Elevator" = "使用电梯";
+
+/* No comment provided by engineer. */
+"Use Escalator" = "使用扶梯";
+
+/* No comment provided by engineer. */
+"Use Moving Walkway" = "使用自动人行步道";
+
+/* No comment provided by engineer. */
+"Use Stairs" = "使用台阶";
+
+/* No comment provided by engineer. */
+"vibrateSetting" = "振动通知";
+

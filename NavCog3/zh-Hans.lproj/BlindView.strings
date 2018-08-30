@@ -1,0 +1,399 @@
+/* No comment provided by engineer. */
+"_nav_building" = "建筑";
+
+/* No comment provided by engineer. */
+"_nav_facility" = "设施";
+
+/* No comment provided by engineer. */
+"_nav_latlng" = "所在地";
+
+/* No comment provided by engineer. */
+"_nav_latlng_fix" = "位置";
+
+/* No comment provided by engineer. */
+"_nav_near_shops" = "所在地周边";
+
+/* No comment provided by engineer. */
+"_nav_select_destination" = "选择目的地";
+
+/* No comment provided by engineer. */
+"_nav_select_start" = "选择出发地";
+
+/* (No Comment) */
+"_nav_toilet_female" = "女厕所";
+
+/* (No Comment) */
+"_nav_toilet_male" = "男厕所";
+
+/* (No Comment) */
+"_nav_toilet_multi" = "多目的厕所";
+
+/* No comment provided by engineer. */
+"%@, you might be going backward." = "%@, 您走到反方向了。";
+
+/* (No Comment) */
+"action" = "%1$@";
+
+/* (No Comment) */
+"action at end object" = "在尽头%1$@";
+
+/* (No Comment) */
+"action at near object" = "在%2$@的地方%1$@";
+
+/* (No Comment) */
+"action at warning block" = "在导盲砖的地方%1$@";
+
+/* No comment provided by engineer. */
+"After getting off the elevator, %@" = "下电梯后，%@";
+
+/* (No Comment) */
+"Always_Background" = "总在后台运行";
+
+/* (No Comment) */
+"and action" = "and %1$@";
+
+/* approaching */
+"approaching" = "马上就到";
+
+/* approaching to do something */
+"approaching to %@" = "马上就%@";
+
+/* (No Comment) */
+"AutoDoorPOIString1" = "前方有自动门。";
+
+/* (No Comment) */
+"AutoDoorPOIString1Short" = "有自动门。";
+
+/* (No Comment) */
+"AutoDoorPOIString2" = "前方有%d扇自动门。";
+
+/* (No Comment) */
+"AutoDoorPOIString2Short" = "有%d扇自动门。";
+
+/* No comment provided by engineer. */
+"BACK_DIRECTION" = "后方";
+
+/* head to the diagonally forward left direction */
+"bear left" = "稍微偏向左方";
+
+/* head to the diagonally forward right direction */
+"bear right" = "稍微偏向右方";
+
+/* No comment provided by engineer. */
+"BothSide" = "两侧";
+
+/* No comment provided by engineer. */
+"BrailleBlock" = "有导盲砖";
+
+/* (No Comment) */
+"BrailleBlockPOIString" = "前方有导盲砖";
+
+/* (No Comment) */
+"BrailleBlockPOIStringShort" = "有导盲砖";
+
+/* No comment provided by engineer. */
+"Caution, %@" = "注意，%@";
+
+/* No comment provided by engineer. */
+"destination is %@" = "%1$@是%2$@";
+
+/* remaining distance to the destination */
+"destination is in distance" = "%2$@前是%1$@";
+
+/* No comment provided by engineer. */
+"DialogSearch" = "搜索通话";
+
+/* No comment provided by engineer. */
+"Disabled" = "%@。无效";
+
+/* distance to a destination name */
+"distance to %1$@" = "到%1$@为止还剩%2$@";
+
+/* distance to the destination */
+"distance to the destination" = "离开目的地还剩%1$@";
+
+/* (No Comment) */
+"DoorPOIString1" = "前方有门。";
+
+/* (No Comment) */
+"DoorPOIString1Short" = "有门。";
+
+/* (No Comment) */
+"DoorPOIString2" = "前方有%d扇门。";
+
+/* (No Comment) */
+"DoorPOIString2Short" = "有%d扇门。";
+
+/* (No Comment) */
+"EscalatorSideLeftBackward" = "左侧是逆向，请注意";
+
+/* (No Comment) */
+"EscalatorSideLeftForward" = "请勿坐在左侧";
+
+/* (No Comment) */
+"EscalatorSideRightBackward" = "右侧是逆向，请注意";
+
+/* (No Comment) */
+"EscalatorSideRightForward" = "请勿坐在右侧";
+
+/* (No Comment) */
+"Exercise" = "练习";
+
+/* basement floor */
+"FloorBasementD" = "地下%@层";
+
+/* (No Comment) */
+"FloorChangeActionString2Down" = "使用%1$@下到%2$@";
+
+/* (No Comment) */
+"FloorChangeActionString2Up" = "使用%1$@上到%2$@";
+
+/* (No Comment) */
+"FloorChangeActionString4Down" = "使用%1$@，%2$@的%3$@下到%4$@";
+
+/* (No Comment) */
+"FloorChangeActionString4Up" = "使用%1$@，%2$@的%3$@上到%4$@";
+
+/* (No Comment) */
+"FloorChangeDoneActionString2Down" = "下%@后，%@";
+
+/* (No Comment) */
+"FloorChangeDoneActionString2Up" = "上%@后，%@";
+
+/* floor */
+"FloorD" = "%@层";
+
+/* floor num type */
+"FloorNumType" = "ordinal";
+
+/* No comment provided by engineer. */
+"Follow" = "-NavCog-";
+
+/* No comment provided by engineer. */
+"From_button" = "从%@";
+
+/* No comment provided by engineer. */
+"FRONT_DIRECTION" = "向前";
+
+/* No comment provided by engineer. */
+"go straight" = "直走";
+
+/* No comment provided by engineer. */
+"Go to %1$@" = "前往%1$@。";
+
+/* No comment provided by engineer. */
+"HEADING_CALIBRATION" = "调整方向，注意四周，步行5米左右。";
+
+/* No comment provided by engineer. */
+"HEADING_CALIBRATION2" = "为了精确方向，请继续步行。";
+
+/* No comment provided by engineer. */
+"HEADING_CALIBRATION3" = "方向已调整。";
+
+/* something at your degree -22.5 ~ +22.5 */
+"in front of you" = "正面";
+
+/* (No Comment) */
+"Init Orientation" = "调整方向 前往正确方向 (2根手指长按"NavCog"后结束)";
+
+/* (No Comment) */
+"InMiddle" = "正中间";
+
+/* No comment provided by engineer. */
+"LEFT_BACK_DIRECTION" = "左，斜，后方";
+
+/* No comment provided by engineer. */
+"LEFT_DIRECTION" = "左方";
+
+/* No comment provided by engineer. */
+"LEFT_FRONT_DIRECTION" = "左，斜，前方";
+
+/* No comment provided by engineer. */
+"LeftSide" = "左侧";
+
+/* make turn to -120 ~ -150 */
+"make a big left turn" = "向左急转";
+
+/* make turn to +120 ~ +150 */
+"make a big right turn" = "向右急转";
+
+/* make turn to -22.5 ~ -60 */
+"make a slight left turn" = "斜左转";
+
+/* make turn to +22.5 ~ +60 */
+"make a slight right turn" = "斜右转";
+
+/* make turn to -180 ~ -180 */
+"make a u-turn to the left" = "向左折返";
+
+/* make turn to +150 ~ +180 */
+"make a u-turn to the right" = "向右折返";
+
+/* No comment provided by engineer. */
+"name is %@" = "在%2$@进行%1$@";
+
+/* No comment provided by engineer. */
+"NO_AVAILABLE_LOCATION" = "位置信息不可用";
+
+/* (No Comment) */
+"NoBrailleBlockPOIString" = "前方再无导盲砖";
+
+/* (No Comment) */
+"NoBrailleBlockPOIStringShort" = "导盲砖结束";
+
+/* (No Comment) */
+"ObstaclePOIString1" = "前方%@有障碍物";
+
+/* (No Comment) */
+"ObstaclePOIString1Short" = "%@有障碍物";
+
+/* (No Comment) */
+"ObstaclePOIString2" = "前方%@有障碍物";
+
+/* (No Comment) */
+"ObstaclePOIString2Short" = "%@有障碍物";
+
+/* (No Comment) */
+"on %@" = "on %@";
+
+/* something at your degree -60 ~ -120 */
+"on your left side" = "左侧";
+
+/* something at your degree -150 ~ -180 */
+"on your left side(almost back)" = "左后";
+
+/* something at your degree -120 ~ -150 */
+"on your left side(back)" = "左斜后";
+
+/* something at your degree -22.5 ~ -60 */
+"on your left side(front)" = "左斜前";
+
+/* something at your degree +60 ~ +120 */
+"on your right side" = "右侧";
+
+/* something at your degree +150 ~ +180 */
+"on your right side(almost back)" = "右后";
+
+/* something at your degree +120 ~ +150 */
+"on your right side(back)" = "右斜后";
+
+/* something at your degree +22.5 ~ +60 */
+"on your right side(front)" = "右斜前";
+
+/* No comment provided by engineer. */
+"Others" = "其他";
+
+/* No comment provided by engineer. */
+"PERIOD" = "。";
+
+/* No comment provided by engineer. */
+"poi are %@" = "在%2$@进行%1$@";
+
+/* No comment provided by engineer. */
+"poi is %@" = "在%2$@进行%1$@";
+
+/* (No Comment) */
+"Preview" = "预览";
+
+/* (No Comment) */
+"proceed distance" = "前进%1$@";
+
+/* (No Comment) */
+"proceed distance ..." = "前进%1$@，";
+
+/* (No Comment) */
+"proceed distance across the corridor" = "横穿马路后前进%1$@";
+
+/* (No Comment) */
+"proceed distance across the corridor ..." = "横穿马路后前进%1$@， ";
+
+/* (No Comment) */
+"proceed distance across the corridor on floor" = "%2$@。。。横穿马路后前进%1$@";
+
+/* (No Comment) */
+"proceed distance across the corridor on floor ..." = "%2$@。。。横穿马路后前进%1$@，";
+
+/* (No Comment) */
+"proceed distance on floor" = "%2$@。。。前进%1$@";
+
+/* (No Comment) */
+"proceed distance on floor ..." = "%2$@。。。前进%1$@，";
+
+/* (No Comment) */
+"RampPOIString" = "前方有斜坡";
+
+/* (No Comment) */
+"RampPOIStringShort" = "有斜坡";
+
+/* No comment provided by engineer. */
+"remaining distance" = "还剩%@";
+
+/* No comment provided by engineer. */
+"REROUTING" = "您偏离路线了。正在读取新路线。";
+
+/* No comment provided by engineer. */
+"RIGHT_BACK_DIRECTION" = "右，斜，后方";
+
+/* No comment provided by engineer. */
+"RIGHT_DIRECTION" = "右方向";
+
+/* No comment provided by engineer. */
+"RIGHT_FRONT_DIRECTION" = "右，斜，前方";
+
+/* No comment provided by engineer. */
+"RightSide" = "右侧";
+
+/* (No Comment) */
+"Search" = "搜索";
+
+/* (No Comment) */
+"Search Route" = "搜索路线";
+
+/* (No Comment) */
+"Stop" = "结束";
+
+/* (No Comment) */
+"Stop Navigation" = "向导结束";
+
+/* No comment provided by engineer. */
+"SummaryHeader" = "之后的向导";
+
+/* No comment provided by engineer. */
+"There is a sign says %@" = "有%@的看板";
+
+/* No comment provided by engineer. */
+"To_button" = "%@为止";
+
+/* No comment provided by engineer. */
+"TTS_PAUSE_CHAR" = "。";
+
+/* head to the back */
+"turn around" = "向后转";
+
+/* make turn to -60 ~ -120 */
+"turn left" = "左转";
+
+/* make turn to +60 ~ +120 */
+"turn right" = "右转";
+
+/* head to the diagonally backward left direction */
+"turn to the backward left" = "向后转";
+
+/* head to the diagonally backward right direction */
+"turn to the backward right" = "向后转";
+
+/* head to the left direction */
+"turn to the left" = "向左转";
+
+/* head to the right direction */
+"turn to the right" = "向右转";
+
+/* No comment provided by engineer. */
+"Watch your step, %@" = "注意脚下，%@";
+
+/* arrived message */
+"You arrived" = "已经抵达。";
+
+/* arrived message with destination name */
+"You arrived at %1$@" = "已经抵达%1$@附近。。。辛苦了";
+

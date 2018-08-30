@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>unit_feet</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@foot@</string>
+		<key>foot</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>few</key>
+			<string>%d feet</string>
+			<key>many</key>
+			<string>%d feet</string>
+			<key>one</key>
+			<string>%d foot</string>
+			<key>other</key>
+			<string>%d feet</string>
+			<key>two</key>
+			<string>%d feet</string>
+			<key>zero</key>
+			<string>%d英尺</string>
+		</dict>
+	</dict>
+	<key>unit_meter</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@meter@</string>
+		<key>meter</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>few</key>
+			<string>%d meters</string>
+			<key>many</key>
+			<string>%d meters</string>
+			<key>one</key>
+			<string>%d meter</string>
+			<key>other</key>
+			<string>%d meters</string>
+			<key>two</key>
+			<string>%d meters</string>
+			<key>zero</key>
+			<string>%d米</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

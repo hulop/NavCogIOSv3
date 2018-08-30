@@ -216,6 +216,9 @@
 		A9799F411F72117D00B13FEC /* ConversationV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E441E3F42AB00208042 /* ConversationV1.framework */; };
 		A9799F421F72119900B13FEC /* RestKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E471E3F42AB00208042 /* RestKit.framework */; };
 		A9799F451F7211D000B13FEC /* HLPLocationManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91D384B1F628107008A34D1 /* HLPLocationManager.framework */; };
+		A9A695C12137CAA000009527 /* Fingerprint.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9A695BF2137CAA000009527 /* Fingerprint.strings */; };
+		A9A695C62137CAA000009527 /* HLPGeoJSON.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9A695C42137CAA000009527 /* HLPGeoJSON.strings */; };
+		A9A695C92137CAA000009527 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9A695C72137CAA000009527 /* Localizable.strings */; };
 		A9C94C321F283E1C00B60A46 /* HLPDialog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */; };
 /* End PBXBuildFile section */
 
@@ -453,6 +456,14 @@
 		A93ED2751ED2DBB000B75760 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A93ED2771ED2DBB800B75760 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A93ED2801ED2DE3200B75760 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		A9A695C02137CAA000009527 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Fingerprint.strings"; sourceTree = "<group>"; };
+		A9A695C22137CAA000009527 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = "zh-Hans"; path = "zh-Hans.lproj/BlindView.stringsdict"; sourceTree = "<group>"; };
+		A9A695C32137CAA000009527 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		A9A695C52137CAA000009527 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/HLPGeoJSON.strings"; sourceTree = "<group>"; };
+		A9A695C82137CAA000009527 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		A9A695CA2137CAA000009527 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/BlindView.strings"; sourceTree = "<group>"; };
+		A9A695CB2137CAA000009527 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		A9A695CC2137CAA000009527 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		EBE9F8032158D7532B8BFC20 /* Pods-NavCog3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -603,6 +614,7 @@
 				7E30F9AF1E813FFC00D542E5 /* AppDelegate.h */,
 				7E30F9B01E813FFC00D542E5 /* AppDelegate.m */,
 				7E30F9BD1E813FFC00D542E5 /* Info.plist */,
+				A9A695BF2137CAA000009527 /* Fingerprint.strings */,
 				7E30F9AC1E813FFC00D542E5 /* Supporting Files */,
 				7EBE39811E83FFD1002A7BF9 /* fingerprint.js */,
 				7EE8E5DB1EE68449006EE7C3 /* poi_template.json */,
@@ -848,6 +860,8 @@
 				7E5739F01EF27AFA00BA3601 /* AppDelegate.h */,
 				7E5739F11EF27AFA00BA3601 /* AppDelegate.m */,
 				7EE8E61E1EF27541006EE7C3 /* Info.plist */,
+				A9A695C72137CAA000009527 /* Localizable.strings */,
+				A9A695C42137CAA000009527 /* HLPGeoJSON.strings */,
 				7EE8E60D1EF27541006EE7C3 /* Supporting Files */,
 				7EA49A2C1F98EE4A00E1369B /* HLPGeoJSON+External.h */,
 				7EA49A2D1F98EE4A00E1369B /* HLPGeoJSON+External.m */,
@@ -1000,6 +1014,7 @@
 				Base,
 				ja,
 				"en-US",
+				"zh-Hans",
 			);
 			mainGroup = 7EDEDC131D1E0C6800AC111A;
 			productRefGroup = 7EDEDC1D1D1E0C6800AC111A /* Products */;
@@ -1021,6 +1036,7 @@
 			files = (
 				7E27F93B1EFA64C900FB3309 /* HLPSettingViewPickerCell.xib in Resources */,
 				7E27F93C1EFA64C900FB3309 /* HLPSettingViewSliderCell.xib in Resources */,
+				A9A695C12137CAA000009527 /* Fingerprint.strings in Resources */,
 				7E27F93D1EFA64C900FB3309 /* HLPSettingViewSubtitleCell.xib in Resources */,
 				7E27F93E1EFA64C900FB3309 /* HLPSettingViewSwitchCell.xib in Resources */,
 				7E27F93F1EFA64C900FB3309 /* HLPSettingViewTextCell.xib in Resources */,
@@ -1082,6 +1098,8 @@
 				7E27F9431EFA70BC00FB3309 /* HLPSettingViewSliderCell.xib in Resources */,
 				7E27F9441EFA70BC00FB3309 /* HLPSettingViewSubtitleCell.xib in Resources */,
 				7E27F9451EFA70BC00FB3309 /* HLPSettingViewSwitchCell.xib in Resources */,
+				A9A695C92137CAA000009527 /* Localizable.strings in Resources */,
+				A9A695C62137CAA000009527 /* HLPGeoJSON.strings in Resources */,
 				7E27F9461EFA70BC00FB3309 /* HLPSettingViewTextCell.xib in Resources */,
 				7E27F9111EFA628700FB3309 /* HLPSettingView.strings in Resources */,
 				7E27F9411EFA6DC300FB3309 /* Preview.storyboard in Resources */,
@@ -1510,6 +1528,7 @@
 			children = (
 				7E17F19F1D9A225A00DB1F34 /* ja */,
 				7E9EF44D1DE3D06300F694FB /* en */,
+				A9A695C32137CAA000009527 /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1528,6 +1547,7 @@
 			children = (
 				7E308BDC1DAF147600E525F6 /* en */,
 				7E308BDE1DAF147B00E525F6 /* ja */,
+				A9A695C22137CAA000009527 /* zh-Hans */,
 			);
 			name = BlindView.stringsdict;
 			sourceTree = "<group>";
@@ -1547,6 +1567,7 @@
 			children = (
 				7E96D9281DAC916C00D57C8C /* ja */,
 				7E96D92A1DAC917800D57C8C /* en */,
+				A9A695CA2137CAA000009527 /* zh-Hans */,
 			);
 			name = BlindView.strings;
 			sourceTree = "<group>";
@@ -1566,6 +1587,7 @@
 				7EDEDC291D1E0C6800AC111A /* Base */,
 				7E17F1951D9A211000DB1F34 /* en */,
 				7E683DF91E4425E200D04037 /* ja */,
+				A9A695CC2137CAA000009527 /* zh-Hans */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -1576,8 +1598,35 @@
 				7EDEDC2E1D1E0C6800AC111A /* Base */,
 				7E17F1931D9A20EB00DB1F34 /* ja */,
 				7E17F1971D9A211300DB1F34 /* en */,
+				A9A695CB2137CAA000009527 /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		A9A695BF2137CAA000009527 /* Fingerprint.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A9A695C02137CAA000009527 /* zh-Hans */,
+			);
+			name = Fingerprint.strings;
+			sourceTree = "<group>";
+		};
+		A9A695C42137CAA000009527 /* HLPGeoJSON.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A9A695C52137CAA000009527 /* zh-Hans */,
+			);
+			name = HLPGeoJSON.strings;
+			path = ../NavCog3;
+			sourceTree = "<group>";
+		};
+		A9A695C72137CAA000009527 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A9A695C82137CAA000009527 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			path = ../NavCog3;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

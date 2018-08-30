@@ -1,0 +1,24 @@
+/* (No Comment) */
+"CFBundleDisplayName" = "NavCog";
+
+/* (No Comment) */
+"CFBundleName" = "$(PRODUCT_NAME)";
+
+/* (No Comment) */
+"NSBluetoothPeripheralUsageDescription" = "仅限含CoreBlueTooth的";
+
+/* (No Comment) */
+"NSCameraUsageDescription" = "仅限含OpenCV的";
+
+/* (No Comment) */
+"NSLocationWhenInUseUsageDescription" = "此应用使用iBeacon的信息";
+
+/* (No Comment) */
+"NSMicrophoneUsageDescription" = "此应用为了通话使用麦克风";
+
+/* (No Comment) */
+"NSPhotoLibraryUsageDescription" = "仅限含OpenCV的";
+
+/* (No Comment) */
+"NSSpeechRecognitionUsageDescription" = "此应用为了通话使用语音识别";
+

@@ -1,0 +1,108 @@
+/* 横断歩道 */
+"crossing" = "人行横道";
+
+/* 横断歩道の路面標示の無い交差点の道路 */
+"crossing without sign" = "无人行横道路面标示的十字路口道路";
+
+/* エレベーター */
+"elevator" = "电梯";
+
+/* (No Comment) */
+"ElvButtonLeft" = "电梯左侧有呼叫按钮";
+
+/* (No Comment) */
+"ElvButtonLeftLower" = "电梯左侧偏下位置有呼叫按钮";
+
+/* (No Comment) */
+"ElvButtonLeftPlural" = "电梯左侧有呼叫按钮";
+
+/* (No Comment) */
+"ElvButtonLeftPluralLower" = "电梯左侧偏下位置有呼叫按钮";
+
+/* (No Comment) */
+"ElvButtonMiddle" = "电梯和电梯之间有呼叫按钮";
+
+/* (No Comment) */
+"ElvButtonMiddleLower" = "电梯和电梯之间偏下位置有呼叫按钮";
+
+/* (No Comment) */
+"ElvButtonMiddlePlural" = "电梯和电梯之间有呼叫按钮";
+
+/* (No Comment) */
+"ElvButtonMiddlePluralLower" = "电梯和电梯之间偏下位置有呼叫按钮";
+
+/* (No Comment) */
+"ElvButtonRight" = "电梯右侧有呼叫按钮";
+
+/* (No Comment) */
+"ElvButtonRightLower" = "电梯右侧偏下位置有呼叫按钮";
+
+/* (No Comment) */
+"ElvButtonRightPlural" = "电梯右侧有呼叫按钮";
+
+/* (No Comment) */
+"ElvButtonRightPluralLower" = "电梯右侧偏下位置有呼叫按钮";
+
+/* No comment provided by engineer. */
+"ElvButtonWithBraille" = "有语音向导。";
+
+/* (No Comment) */
+"ElvEqButtonBoth" = "出口方向左右有操作按钮。";
+
+/* (No Comment) */
+"ElvEqButtonBothBraille" = "出口方向左右有操作按钮。有导盲砖。 ";
+
+/* (No Comment) */
+"ElvEqButtonBothLeftBraille" = "出口方向左右有操作按钮。左侧有导盲砖。 ";
+
+/* (No Comment) */
+"ElvEqButtonBothRightBraille" = "出口方向左右有操作按钮。右侧有导盲砖。";
+
+/* (No Comment) */
+"ElvEqButtonLeft" = "出口方向左侧有操作按钮。 ";
+
+/* (No Comment) */
+"ElvEqButtonLeftBraille" = "出口方向左侧有操作按钮。有导盲砖。 ";
+
+/* (No Comment) */
+"ElvEqButtonRight" = "出口方向右侧有操作按钮。 ";
+
+/* (No Comment) */
+"ElvEqButtonRightBraille" = "出口方向右侧有操作按钮。有导盲砖。 ";
+
+/* (No Comment) */
+"ElvEqWithVoiceGuide" = "有语音向导。";
+
+/* エスカレーター */
+"escalator" = "扶梯";
+
+/* 自由通路 */
+"free walkway" = "自由通道";
+
+/* 園路 */
+"garden walk" = "花园小道";
+
+/* 動く歩道 */
+"pedestrian conveyer" = "自动人行步道";
+
+/* 歩行者専用道路 */
+"pedestrian road" = "人行道";
+
+/* 踏切 */
+"rail crossing" = "铁道口";
+
+/* スロープ */
+"ramp" = "斜坡";
+
+/* 歩車共存道路 */
+"road" = "人车混行道路";
+
+/* 歩道 */
+"sidewalk" = "人行道";
+
+/* 階段 */
+"stairway" = "台阶";
+
+/* 不明 */
+"unknown" = "不明";
+

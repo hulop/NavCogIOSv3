@@ -1,0 +1,255 @@
+/* No comment provided by engineer. */
+"_nav_building" = "건물";
+
+/* No comment provided by engineer. */
+"_nav_facility" = "시설";
+
+/* No comment provided by engineer. */
+"_nav_latlng" = "현재 위치";
+
+/* No comment provided by engineer. */
+"_nav_latlng_fix" = "위치";
+
+/* No comment provided by engineer. */
+"_nav_near_shops" = "현재 위치 주변";
+
+/* No comment provided by engineer. */
+"_nav_select_destination" = "목적지를 선택";
+
+/* No comment provided by engineer. */
+"_nav_select_start" = "출발지를 선택";
+
+/* No comment provided by engineer. */
+"%@, you might be going backward." = "%@, 잘못된 방향";
+
+/* No comment provided by engineer. */
+"%@, you might be going wrong direction." = "% @, 잘못된 경로";
+
+/* No comment provided by engineer. */
+"After getting off the elevator, %@" = "엘리베이터를 내려 후 % @";
+
+/* approaching */
+"approaching" = "슬슬입니다";
+
+/* approaching to do something */
+"approaching to %@" = "곧 %@";
+
+/* No comment provided by engineer. */
+"BACK_DIRECTION" = "역방향";
+
+/* head to the diagonally forward left direction */
+"bear left" = "약간 좌회전";
+
+/* head to the diagonally forward right direction */
+"bear right" = "경미한 우회전";
+
+/* No comment provided by engineer. */
+"BothSide" = "양쪽";
+
+/* No comment provided by engineer. */
+"BrailleBlock" = "점자 블록 있습니다";
+
+/* No comment provided by engineer. */
+"Cancel" = "취소";
+
+/* No comment provided by engineer. */
+"Caution, %@" = "주의,%@";
+
+/* No comment provided by engineer. */
+"destination is %@" = "%1$@ %2$@입니다";
+
+/* remaining distance to the destination */
+"destination is in distance" = "%2$@ 먼저 %1$@입니다";
+
+/* No comment provided by engineer. */
+"DialogSearch" = "대화 형 검색";
+
+/* No comment provided by engineer. */
+"Disabled" = "%@.해제";
+
+/* distance to a destination name */
+"distance to %1$@" = "%1$@까지 %2$@";
+
+/* distance to the destination */
+"distance to the destination" = "목적지까지 남은 %1$@";
+
+/* basement floor */
+"FloorBasementD" = "지하 %@ 층";
+
+/* floor */
+"FloorD" = "%@ 층";
+
+/* floor num type */
+"FloorNumType" = "ordinal";
+
+/* No comment provided by engineer. */
+"Follow" = "-NavCog-";
+
+/* No comment provided by engineer. */
+"From_button" = "%@에서";
+
+/* No comment provided by engineer. */
+"from: %@" = "%@에서";
+
+/* No comment provided by engineer. */
+"FRONT_DIRECTION" = "전에";
+
+/* No comment provided by engineer. */
+"go straight" = "직진";
+
+/* No comment provided by engineer. */
+"Go to %1$@" = "%1$@로 이동합니다.";
+
+/* No comment provided by engineer. */
+"Go to %2$@ by %1$@, now you are in %3$@" = "%1$@로 부터 %2$@로 갑니다. 현재 위치는 %3$@ 입니다. ";
+
+/* No comment provided by engineer. */
+"ground floor" = "지상층";
+
+/* No comment provided by engineer. */
+"HEADING_CALIBRATION" = "방향을 조정하려면 주위에주의를 기울여 약 5 미터를 걸어 가십시오.";
+
+/* No comment provided by engineer. */
+"HEADING_CALIBRATION2" = "방향을보다 정확하게하려면 좀 더 걷습니다.。";
+
+/* No comment provided by engineer. */
+"HEADING_CALIBRATION3" = "방향은 조정되었습니다.";
+
+/* something at your degree -22.5 ~ +22.5 */
+"in front of you" = "정면";
+
+/* No comment provided by engineer. */
+"LEFT_BACK_DIRECTION" = "왼쪽, 대각선, 역방향";
+
+/* No comment provided by engineer. */
+"LEFT_DIRECTION" = "왼쪽 방향";
+
+/* No comment provided by engineer. */
+"LEFT_FRONT_DIRECTION" = "왼쪽 비스듬히 앞 방향";
+
+/* No comment provided by engineer. */
+"LeftSide" = "왼쪽";
+
+/* No comment provided by engineer. */
+"Locating..." = "현재 위치 가져 오는 중";
+
+/* make turn to -120 ~ -150 */
+"make a big left turn" = "크게 좌회전";
+
+/* make turn to +120 ~ +150 */
+"make a big right turn" = "크게 우회전";
+
+/* make turn to -22.5 ~ -60 */
+"make a slight left turn" = "대각선 좌회전";
+
+/* make turn to +22.5 ~ +60 */
+"make a slight right turn" = "대각선 우회전";
+
+/* make turn to -180 ~ -180 */
+"make a u-turn to the left" = "왼쪽으로 돌아 가기";
+
+/* make turn to +150 ~ +180 */
+"make a u-turn to the right" = "오른쪽으로 돌아 가기";
+
+/* No comment provided by engineer. */
+"name is %@" = "%2$@ %1$@";
+
+/* No comment provided by engineer. */
+"NO_AVAILABLE_LOCATION" = "위치 정보를 사용할 수 없습니다";
+
+/* something at your degree -60 ~ -120 */
+"on your left side" = "왼쪽";
+
+/* something at your degree -150 ~ -180 */
+"on your left side(almost back)" = "왼쪽 뒤에";
+
+/* something at your degree -120 ~ -150 */
+"on your left side(back)" = "왼쪽 대각선 뒤에";
+
+/* something at your degree -22.5 ~ -60 */
+"on your left side(front)" = "왼쪽 대각선 전";
+
+/* something at your degree +60 ~ +120 */
+"on your right side" = "오른쪽";
+
+/* something at your degree +150 ~ +180 */
+"on your right side(almost back)" = "바로 뒤에";
+
+/* something at your degree +120 ~ +150 */
+"on your right side(back)" = "오른쪽 사선 뒤에";
+
+/* something at your degree +22.5 ~ +60 */
+"on your right side(front)" = "오른쪽 사선 전";
+
+/* No comment provided by engineer. */
+"Others" = "기타";
+
+/* No comment provided by engineer. */
+"PERIOD" = "。";
+
+/* No comment provided by engineer. */
+"poi are %@" = "%2$@ %1$@";
+
+/* No comment provided by engineer. */
+"poi is %@" = "%2$@ %1$@";
+
+/* No comment provided by engineer. */
+"remaining distance" = "나머지 %@";
+
+/* No comment provided by engineer. */
+"REROUTING" = "루트에서 그것을 것 같습니다. 새로운 루트를 실었습니다.";
+
+/* No comment provided by engineer. */
+"RIGHT_BACK_DIRECTION" = "오른쪽, 대각선, 역방향";
+
+/* No comment provided by engineer. */
+"RIGHT_DIRECTION" = "바른 길";
+
+/* No comment provided by engineer. */
+"RIGHT_FRONT_DIRECTION" = "오른쪽, 대각선, 정방향";
+
+/* No comment provided by engineer. */
+"RightSide" = "오른쪽";
+
+/* No comment provided by engineer. */
+"SummaryHeader" = "이 후 안내";
+
+/* No comment provided by engineer. */
+"There is a sign says %@" = "%@라는 간판이 있습니다";
+
+/* No comment provided by engineer. */
+"To_button" = "%@까지";
+
+/* No comment provided by engineer. */
+"TTS_PAUSE_CHAR" = "。";
+
+/* head to the back */
+"turn around" = "뒤돌아서";
+
+/* make turn to -60 ~ -120 */
+"turn left" = "좌회전";
+
+/* make turn to +60 ~ +120 */
+"turn right" = "우회전";
+
+/* head to the diagonally backward left direction */
+"turn to the backward left" = "후진";
+
+/* head to the diagonally backward right direction */
+"turn to the backward right" = "후진";
+
+/* head to the left direction */
+"turn to the left" = "왼쪽을 향";
+
+/* head to the right direction */
+"turn to the right" = "오른쪽을 향";
+
+/* No comment provided by engineer. */
+"Watch your step, %@" = "발밑주의 %@";
+
+/* arrived message */
+"You arrived" = "도착 함";
+
+/* arrived message with destination name */
+"You arrived at %1$@" = "%1$@ 부근에 도착했습니다. . . 수고하셨습니다";
+

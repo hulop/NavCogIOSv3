@@ -464,6 +464,13 @@
 		A9A695CA2137CAA000009527 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/BlindView.strings"; sourceTree = "<group>"; };
 		A9A695CB2137CAA000009527 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		A9A695CC2137CAA000009527 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		A9ED152E21390B57009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ko; path = ko.lproj/BlindView.stringsdict; sourceTree = "<group>"; };
+		A9ED152F21390B57009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/HLPGeoJSON.strings; sourceTree = "<group>"; };
+		A9ED153021390B57009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A9ED153121390B57009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A9ED153221390B57009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/BlindView.strings; sourceTree = "<group>"; };
+		A9ED153321390B57009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Main.strings; sourceTree = "<group>"; };
+		A9ED153421390B57009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		EBE9F8032158D7532B8BFC20 /* Pods-NavCog3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1529,6 +1536,7 @@
 				7E17F19F1D9A225A00DB1F34 /* ja */,
 				7E9EF44D1DE3D06300F694FB /* en */,
 				A9A695C32137CAA000009527 /* zh-Hans */,
+				A9ED153021390B57009E1E0C /* ko */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1548,6 +1556,7 @@
 				7E308BDC1DAF147600E525F6 /* en */,
 				7E308BDE1DAF147B00E525F6 /* ja */,
 				A9A695C22137CAA000009527 /* zh-Hans */,
+				A9ED152E21390B57009E1E0C /* ko */,
 			);
 			name = BlindView.stringsdict;
 			sourceTree = "<group>";
@@ -1568,6 +1577,7 @@
 				7E96D9281DAC916C00D57C8C /* ja */,
 				7E96D92A1DAC917800D57C8C /* en */,
 				A9A695CA2137CAA000009527 /* zh-Hans */,
+				A9ED153221390B57009E1E0C /* ko */,
 			);
 			name = BlindView.strings;
 			sourceTree = "<group>";
@@ -1588,6 +1598,7 @@
 				7E17F1951D9A211000DB1F34 /* en */,
 				7E683DF91E4425E200D04037 /* ja */,
 				A9A695CC2137CAA000009527 /* zh-Hans */,
+				A9ED153321390B57009E1E0C /* ko */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -1599,6 +1610,7 @@
 				7E17F1931D9A20EB00DB1F34 /* ja */,
 				7E17F1971D9A211300DB1F34 /* en */,
 				A9A695CB2137CAA000009527 /* zh-Hans */,
+				A9ED153421390B57009E1E0C /* ko */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -1615,6 +1627,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				A9A695C52137CAA000009527 /* zh-Hans */,
+				A9ED152F21390B57009E1E0C /* ko */,
 			);
 			name = HLPGeoJSON.strings;
 			path = ../NavCog3;
@@ -1624,6 +1637,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				A9A695C82137CAA000009527 /* zh-Hans */,
+				A9ED153121390B57009E1E0C /* ko */,
 			);
 			name = Localizable.strings;
 			path = ../NavCog3;

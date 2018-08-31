@@ -1,0 +1,189 @@
+/* No comment provided by engineer. */
+"Back to mode selection" = "모드 선택으로 돌아 가기";
+
+/* No comment provided by engineer. */
+"BluetoothOffAlertMessage" = "실내 위치 추정 기능을 사용하려면 Bluetooth를 선택해야합니다.";
+
+/* No comment provided by engineer. */
+"BluetoothOffAlertTitle" = "Bluetooth가 꺼져 있습니다";
+
+/* No comment provided by engineer. */
+"CANCEL" = "취소";
+
+/* No comment provided by engineer. */
+"CheckAgreement" = "설정을 확인 중 ...";
+
+/* No comment provided by engineer. */
+"checkNetworkConnection" = "네트워크 연결을 확인하십시오";
+
+/* No comment provided by engineer. */
+"CheckServerConfig" = "설정을 확인 중 ...";
+
+/* No comment provided by engineer. */
+"CheckServerList" = "목록을 확인 중 ...";
+
+/* label for distance unit option */
+"Distance unit" = "거리 단위";
+
+/* No comment provided by engineer. */
+"DOWNLOADING_DATA" = "데이터 다운로드 중 ...";
+
+/* label for exercise options */
+"Exercise" = "연습";
+
+/* No comment provided by engineer. */
+"feedbackBody" = "피드백 내용을 기재 해주세요";
+
+/* No comment provided by engineer. */
+"feedbackSubject" = "NavCog- 피드백 (%@)";
+
+/* feet distance unit label */
+"Feet" = "피트";
+
+/* No comment provided by engineer. */
+"for_bone_conduction_headset" = "골전도 헤드폰의 사운드 효과";
+
+/* (No Comment) */
+"FOR_DISABLEDRESTROOM" = "다목적 화장실";
+
+/* (No Comment) */
+"FOR_FEMALEFOR_DISABLEDRESTROOM" = "여성용 다목적 화장실";
+
+/* (No Comment) */
+"FOR_FEMALERESTROOM" = "여성용 화장실";
+
+/* (No Comment) */
+"FOR_MALEFOR_DISABLEDRESTROOM" = "남성용 다목적 화장실";
+
+/* (No Comment) */
+"FOR_MALERESTROOM" = "남자 화장실";
+
+/* No comment provided by engineer. */
+"Help" = "도움말";
+
+/* No comment provided by engineer. */
+"I_Understand" = "알겠습니다.";
+
+/* No comment provided by engineer. */
+"Initial zoom level for navigation" = "네비게이션 시작시 줌";
+
+/* No comment provided by engineer. */
+"Instructions" = "시작하기";
+
+/* No comment provided by engineer. */
+"Launch Exercise" = "연습을 시작";
+
+/* No comment provided by engineer. */
+"Loading, please wait" = "그것을 스캐닝. 잠시만 기다려주세요.";
+
+/* No comment provided by engineer. */
+"LocationNotAllowedMessage" = "실내 위치 추정 기능을 사용하기 위해서는 위치 정보 서비스를 허용해야합니다. 개인 정보 설정 화면에서 위치 정보 서비스 → NavCog →이 App의 사용에만 허용을 선택합니다.";
+
+/* No comment provided by engineer. */
+"LocationNotAllowedTitle" = "위치 정보가 허용되지 않습니다";
+
+/* label for map */
+"Map" = "지도";
+
+/* meter distance unit label */
+"Meter" = "미터";
+
+/* No comment provided by engineer. */
+"Mode" = "모드";
+
+/* No comment provided by engineer. */
+"Navigation" = "정보 기록";
+
+/* No comment provided by engineer. */
+"NeedToUpdateAppMessage" = "합니다";
+
+/* No comment provided by engineer. */
+"NeedToUpdateAppTitle" = "앱 업데이트";
+
+/* No comment provided by engineer. */
+"NoAltimeterAlertMessage" = "Navcog는 장치를 지원하지 않습니다. 장치에는 기압계가 탑재되어 있지 않기 때문에, 위치 추정 결과가 불안정해질 수 있습니다.";
+
+/* No comment provided by engineer. */
+"NoAltimeterAlertTitle" = "기압계가 없습니다";
+
+/* No comment provided by engineer. */
+"NotSpecified" = "지정되어 있지 않습니다. ";
+
+/* No comment provided by engineer. */
+"Open_with_Safari" = "Safari에서 열기";
+
+/* No comment provided by engineer. */
+"Open_with_Safari_Message" = "Safari에서 웹 페이지를 열어도 되나요?";
+
+/* No comment provided by engineer. */
+"OpenAppStore" = "App Store를 여는";
+
+/* No comment provided by engineer. */
+"OpenHelp" = "도움말 페이지를 열";
+
+/* No comment provided by engineer. */
+"OpenInstructions" = "소개 페이지 열기";
+
+/* No comment provided by engineer. */
+"Prefer Tactile Paving" = "점자 블록을 우선";
+
+/* No comment provided by engineer. */
+"Preview speed" = "미리보기 속도";
+
+/* No comment provided by engineer. */
+"Preview with action" = "흔들어서 미리보기";
+
+/* No comment provided by engineer. */
+"Reset_Location" = "위치 추정을 다시";
+
+/* (No Comment) */
+"RESTROOM" = "토이 레";
+
+/* No comment provided by engineer. */
+"Send Feedback" = "의견을 보내";
+
+/* No comment provided by engineer. */
+"SETTING" = "설정 열기";
+
+/* No comment provided by engineer. */
+"soundEffectSetting" = "효과음 알림知";
+
+/* label for speech speed option */
+"Speech speed" = "읽기 속도";
+
+/* label for tts options */
+"Speech_Sound" = "음성 / 소리";
+
+/* No comment provided by engineer. */
+"SPEECH_SPEED_CHECK" = "읽기 속도 :%.2f";
+
+/* No comment provided by engineer. */
+"THANKYOU_SENDING" = "설문 조사에 협조 해 주셔서 감사합니다. 데이터를 전송 중입니다 ...";
+
+/* (No Comment) */
+"TOILET" = "토이 레";
+
+/* No comment provided by engineer. */
+"UI_BLIND" = "시각 장애인 사용자";
+
+/* No comment provided by engineer. */
+"UI_Mode" = "UI 모드";
+
+/* No comment provided by engineer. */
+"UI_WHEELCHAIR" = "휠체어 사용자 / 시력 자 사용자";
+
+/* No comment provided by engineer. */
+"Use Elevator" = "엘리베이터를 사용";
+
+/* No comment provided by engineer. */
+"Use Escalator" = "에스컬레이터를 사용";
+
+/* No comment provided by engineer. */
+"Use Moving Walkway" = "무빙 워크를 사용";
+
+/* No comment provided by engineer. */
+"Use Stairs" = "계단을 사용";
+
+/* No comment provided by engineer. */
+"vibrateSetting" = "진동 알림";
+

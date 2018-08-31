@@ -1,0 +1,183 @@
+/* Class = "UIButton"; accessibilityHint = "Select to change"; ObjectID = "0AS-gk-VX3"; */
+"0AS-gk-VX3.accessibilityHint" = "변경하려면 선택합니다";
+
+/* Class = "UILabel"; text = "To"; ObjectID = "0fd-8M-uXw"; */
+"0fd-8M-uXw.text" = "목적지";
+
+/* Class = "UIButton"; accessibilityLabel = "Switch From and To"; ObjectID = "0nG-H5-lqv"; */
+"0nG-H5-lqv.accessibilityLabel" = "현재 위치와 목적지를 교체";
+
+/* Class = "UIButton"; normalTitle = "⇅"; ObjectID = "0nG-H5-lqv"; */
+"0nG-H5-lqv.normalTitle" = "⇅";
+
+/* Class = "UILabel"; text = "Announce is understandable"; ObjectID = "0ng-RD-u8G"; */
+"0ng-RD-u8G.text" = "안내의 말은 알기 쉬웠";
+
+/* Class = "UILabel"; text = "Good"; ObjectID = "2uI-Co-rNz"; */
+"2uI-Co-rNz.text" = "좋은";
+
+/* Class = "UIButton"; normalTitle = "Left"; ObjectID = "3qj-Dh-1lE"; */
+"3qj-Dh-1lE.normalTitle" = "왼쪽";
+
+/* Class = "UILabel"; text = ">"; ObjectID = "4BS-F6-arL"; */
+"4BS-F6-arL.text" = ">";
+
+/* Class = "UIButton"; normalTitle = "Route Options"; ObjectID = "4th-C5-Y98"; */
+"4th-C5-Y98.normalTitle" = "검색 설정";
+
+/* Class = "UILabel"; text = "Recent"; ObjectID = "4Ut-P8-0gR"; */
+"4Ut-P8-0gR.text" = "역사";
+
+/* Class = "UILabel"; text = "Optional"; ObjectID = "5dY-jL-v7n"; */
+"5dY-jL-v7n.text" = "모든 항목";
+
+/* Class = "UILabel"; text = "Network Error"; ObjectID = "5yL-Mp-iYF"; */
+"5yL-Mp-iYF.text" = "네트워크에 문제가 있습니다";
+
+/* Class = "UIButton"; normalTitle = "Right"; ObjectID = "7Cs-ZC-ieK"; */
+"7Cs-ZC-ieK.normalTitle" = "오른쪽";
+
+/* Class = "UIButton"; normalTitle = "Down"; ObjectID = "8Qc-Ae-cih"; */
+"8Qc-Ae-cih.normalTitle" = "아래층";
+
+/* Class = "UINavigationItem"; title = "Route"; ObjectID = "37Y-U9-0xf"; */
+"37Y-U9-0xf.title" = "루트 검색";
+
+/* Class = "UIButton"; normalTitle = "Visually Impaired User"; ObjectID = "581-28-Nvd"; */
+"581-28-Nvd.normalTitle" = "시각 장애인";
+
+/* Class = "UIBarButtonItem"; title = "Setting"; ObjectID = "ATn-7d-y1j"; */
+"ATn-7d-y1j.title" = "설정";
+
+/* Class = "UILabel"; text = "Free comment"; ObjectID = "AZZ-SF-owM"; */
+"AZZ-SF-owM.text" = "댓글";
+
+/* Class = "UILabel"; text = "Mode Selection"; ObjectID = "BEl-Il-x1b"; */
+"BEl-Il-x1b.text" = "모드 선택";
+
+/* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "BhE-tH-Cn7"; */
+"BhE-tH-Cn7.title" = "뒤로";
+
+/* Class = "UIButton"; normalTitle = "Restart"; ObjectID = "c9d-DM-4vK"; */
+"c9d-DM-4vK.normalTitle" = "다시 시작";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "ceO-aS-gCh"; */
+"ceO-aS-gCh.text" = "부제";
+
+/* Class = "UIButton"; normalTitle = "Auto"; ObjectID = "ckT-Tm-n01"; */
+"ckT-Tm-n01.normalTitle" = "자동";
+
+/* Class = "UIButton"; normalTitle = "Marker"; ObjectID = "cMN-Lw-Y8t"; */
+"cMN-Lw-Y8t.normalTitle" = "마커";
+
+/* Class = "UILabel"; text = "From"; ObjectID = "g1h-0V-f7m"; */
+"g1h-0V-f7m.text" = "출발지";
+
+/* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "hf2-Dc-ViP"; */
+"hf2-Dc-ViP.title" = "NavCog";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "hia-uJ-SXj"; */
+"hia-uJ-SXj.text" = "부제";
+
+/* Class = "UILabel"; text = "Announce timing is appropriate"; ObjectID = "iaC-38-VID"; */
+"iaC-38-VID.text" = "정보의 타이밍은 적절했다";
+
+/* Class = "UILabel"; text = "Announce is much enough"; ObjectID = "IG6-Ac-J5o"; */
+"IG6-Ac-J5o.text" = "정보의 분량은 다만 좋았습니다";
+
+/* Class = "UILabel"; text = "Network Error"; ObjectID = "IXp-1x-PzW"; */
+"IXp-1x-PzW.text" = "네트워크에 문제가 있습니다";
+
+/* Class = "UIButton"; normalTitle = "Start"; ObjectID = "JF6-KQ-nx5"; */
+"JF6-KQ-nx5.normalTitle" = "시작";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "JmH-wi-lih"; */
+"JmH-wi-lih.text" = "부제";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "lBV-Yb-qEM"; */
+"lBV-Yb-qEM.text" = "제목";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "mnb-EZ-XdC"; */
+"mnb-EZ-XdC.text" = "라벨";
+
+/* Class = "UILabel"; text = "Overall Rating"; ObjectID = "MS2-Hi-s8w"; */
+"MS2-Hi-s8w.text" = "종합 평가";
+
+/* Class = "UINavigationItem"; title = "Download"; ObjectID = "nc7-od-aTQ"; */
+"nc7-od-aTQ.title" = "다운로드";
+
+/* Class = "UIButton"; normalTitle = "Wheelchair User"; ObjectID = "NIc-nT-BkE"; */
+"NIc-nT-BkE.normalTitle" = "휠체어 이용자";
+
+/* Class = "UILabel"; text = "Network Error"; ObjectID = "NRG-DQ-bhb"; */
+"NRG-DQ-bhb.text" = "네트워크에 문제가 있습니다";
+
+/* Class = "UIButton"; normalTitle = "General Pedestrian"; ObjectID = "Qjw-Mo-WPx"; */
+"Qjw-Mo-WPx.normalTitle" = "일반 보행자";
+
+/* Class = "UIButton"; accessibilityHint = "Select to change"; ObjectID = "SC1-aF-UyA"; */
+"SC1-aF-UyA.accessibilityHint" = "변경하기 위해서는 선택합니다";
+
+/* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "SE5-WT-I7E"; */
+"SE5-WT-I7E.normalTitle" = "다시 연결";
+
+/* Class = "UILabel"; text = "Bad"; ObjectID = "sKk-Gk-LQ6"; */
+"sKk-Gk-LQ6.text" = "나쁜";
+
+/* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "sVy-i3-VPD"; */
+"sVy-i3-VPD.normalTitle" = "다시 하다";
+
+/* Class = "UIButton"; normalTitle = "clear"; ObjectID = "SYk-PE-6qn"; */
+"SYk-PE-6qn.normalTitle" = "삭제";
+
+/* Class = "UIButton"; normalTitle = "Reset"; ObjectID = "t8J-sc-MUY"; */
+"t8J-sc-MUY.normalTitle" = "재설정";
+
+/* Class = "UIButton"; normalTitle = "Go"; ObjectID = "t9O-hh-LqB"; */
+"t9O-hh-LqB.normalTitle" = "발하다";
+
+/* Class = "UIButton"; normalTitle = "Note"; ObjectID = "Tdh-uv-IeP"; */
+"Tdh-uv-IeP.normalTitle" = "노트";
+
+/* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "TqI-cp-f3Y"; */
+"TqI-cp-f3Y.normalTitle" = "다시 하다";
+
+/* Class = "UINavigationItem"; title = "Server Selection"; ObjectID = "tYX-Uz-Xz9"; */
+"tYX-Uz-Xz9.title" = "프로젝트의 선택";
+
+/* Class = "UILabel"; text = ">"; ObjectID = "uml-UV-BZ8"; */
+"uml-UV-BZ8.text" = ">";
+
+/* Class = "UIBarButtonItem"; title = "Submit"; ObjectID = "UoK-bu-TMM"; */
+"UoK-bu-TMM.title" = "보내기";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "V3W-HM-tEd"; */
+"V3W-HM-tEd.text" = "제목";
+
+/* Class = "UIButton"; normalTitle = "Back"; ObjectID = "v9y-3H-Lol"; */
+"v9y-3H-Lol.normalTitle" = "돌아 가기";
+
+/* Class = "UIButton"; normalTitle = "Up"; ObjectID = "w8D-6y-H77"; */
+"w8D-6y-H77.normalTitle" = "위층";
+
+/* Class = "UILabel"; text = "Please give us your feedback"; ObjectID = "wiX-qL-za0"; */
+"wiX-qL-za0.text" = "앙케이트에 협력 해주십시오";
+
+/* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "Wpx-c4-w3p"; */
+"Wpx-c4-w3p.normalTitle" = "다시 하다";
+
+/* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "xcm-nO-qOJ"; */
+"xcm-nO-qOJ.title" = "NavCog";
+
+/* Class = "UIBarButtonItem"; title = "Search"; ObjectID = "yBn-Ni-tgc"; */
+"yBn-Ni-tgc.title" = "검색";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "ygY-iz-tJa"; */
+"ygY-iz-tJa.text" = "제목";
+
+/* Class = "UIButton"; normalTitle = "Preview"; ObjectID = "zGZ-Nf-Jjr"; */
+"zGZ-Nf-Jjr.normalTitle" = "미리보기";
+
+/* Class = "UILabel"; text = "Location is accurate"; ObjectID = "ZRc-BH-IJT"; */
+"ZRc-BH-IJT.text" = "표시된 위치 정보는 정확했다";
+

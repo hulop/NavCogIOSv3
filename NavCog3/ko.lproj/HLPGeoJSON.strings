@@ -1,0 +1,108 @@
+/* 横断歩道 */
+"crossing" = "횡단 보도";
+
+/* 横断歩道の路面標示の無い交差点の道路 */
+"crossing without sign" = "횡단 보도 노면 표시가없는 교차로의 도로";
+
+/* エレベーター */
+"elevator" = "엘리베이터";
+
+/* (No Comment) */
+"ElvButtonLeft" = "엘리베이터 왼쪽에 호출 버튼";
+
+/* (No Comment) */
+"ElvButtonLeftLower" = "엘리베이터의 왼쪽 조금 아래에 호출 버튼";
+
+/* (No Comment) */
+"ElvButtonLeftPlural" = "엘리베이터 왼쪽에 호출 버튼";
+
+/* (No Comment) */
+"ElvButtonLeftPluralLower" = "엘리베이터의 왼쪽 조금 아래에 호출 버튼";
+
+/* (No Comment) */
+"ElvButtonMiddle" = "엘리베이터 및 엘리베이터 사이에 호출 버튼";
+
+/* (No Comment) */
+"ElvButtonMiddleLower" = "엘리베이터 및 엘리베이터 동안 약간 아래에 호출 버튼";
+
+/* (No Comment) */
+"ElvButtonMiddlePlural" = "엘리베이터 및 엘리베이터 사이에 호출 버튼";
+
+/* (No Comment) */
+"ElvButtonMiddlePluralLower" = "엘리베이터 및 엘리베이터 동안 약간 아래에 호출 버튼";
+
+/* (No Comment) */
+"ElvButtonRight" = "엘리베이터 바로 호출 버튼";
+
+/* (No Comment) */
+"ElvButtonRightLower" = "엘리베이터의 오른쪽 약간 아래에 호출 버튼";
+
+/* (No Comment) */
+"ElvButtonRightPlural" = "엘리베이터 바로 호출 버튼";
+
+/* (No Comment) */
+"ElvButtonRightPluralLower" = "엘리베이터의 오른쪽 약간 아래에 호출 버튼";
+
+/* No comment provided by engineer. */
+"ElvButtonWithBraille" = "%@. 점자 있음.";
+
+/* (No Comment) */
+"ElvEqButtonBoth" = "출구쪽으로 좌우로 조작 버튼.";
+
+/* (No Comment) */
+"ElvEqButtonBothBraille" = "출구쪽으로 좌우로 조작 버튼. 점자 있음. ";
+
+/* (No Comment) */
+"ElvEqButtonBothLeftBraille" = "출구쪽으로 좌우로 조작 버튼. 왼쪽 점자 있음. ";
+
+/* (No Comment) */
+"ElvEqButtonBothRightBraille" = "출구쪽으로 좌우로 조작 버튼. 오른쪽 점자 있음.";
+
+/* (No Comment) */
+"ElvEqButtonLeft" = "출구로 향해 조작 버튼. ";
+
+/* (No Comment) */
+"ElvEqButtonLeftBraille" = "출구로 향해 조작 버튼. 점자 있음. ";
+
+/* (No Comment) */
+"ElvEqButtonRight" = "출구로 향해 조작 버튼. ";
+
+/* (No Comment) */
+"ElvEqButtonRightBraille" = "출구로 향해 조작 버튼. 점자 있음. ";
+
+/* (No Comment) */
+"ElvEqWithVoiceGuide" = "음성 안내 있음.";
+
+/* エスカレーター */
+"escalator" = "에스컬레이터";
+
+/* 自由通路 */
+"free walkway" = "자유 통로";
+
+/* 園路 */
+"garden walk" = "공원의 길";
+
+/* 動く歩道 */
+"pedestrian conveyer" = "에스컬레이터";
+
+/* 歩行者専用道路 */
+"pedestrian road" = "보행자 전용 도로";
+
+/* 踏切 */
+"rail crossing" = "건널목";
+
+/* スロープ */
+"ramp" = "슬로프";
+
+/* 歩車共存道路 */
+"road" = "보행 차 공존 도로";
+
+/* 歩道 */
+"sidewalk" = "보도";
+
+/* 階段 */
+"stairway" = "계단";
+
+/* 不明 */
+"unknown" = "알";
+

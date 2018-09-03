@@ -161,9 +161,16 @@
             cell.textLabel.textColor = [UIColor grayColor];
             cell.detailTextLabel.textColor = [UIColor grayColor];
         }
-        
-        cell.textLabel.text = server[@"name"][userLanguage];
-        cell.detailTextLabel.text = server[@"description"][userLanguage];
+        NSString *name = server[@"name"][userLanguage];
+        NSString *description = server[@"description"][userLanguage];
+        if (name == nil) {
+            name = server[@"name"][@"en"];
+        }
+        if (description == nil) {
+            description = server[@"description"][@"en"];
+        }
+        cell.textLabel.text = name;
+        cell.detailTextLabel.text = description;
     }
     
     return cell;

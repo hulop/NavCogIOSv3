@@ -22,6 +22,7 @@
 
 #import "WebViewController.h"
 #import "NavDataStore.h"
+#import "ServerConfig.h"
 #import "NavUtil.h"
 #import "NavDeviceTTS.h"
 
@@ -154,7 +155,12 @@
 {
     NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
 
-    NSString *lang = [@"-" stringByAppendingString:[[NavDataStore sharedDataStore] userLanguage]];
+    NSString *lang = [[NavDataStore sharedDataStore] userLanguage];
+    // is server supported user lang
+    if ([ServerConfig sharedConfig].selected[@"name"][lang] == nil) {
+        lang = @"en";
+    }
+    lang = [@"-" stringByAppendingString:lang];
     if ([lang isEqualToString:@"-en"]) { lang = @""; }
     NSString *base = @"https://hulop.github.io/";
     NSString *url = nil;

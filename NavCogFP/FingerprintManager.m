@@ -90,6 +90,7 @@ static FingerprintManager *instance;
 - (void)select:(HLPRefpoint *)rp
 {
     if ([_selectedRefpoint isEqual:rp]) {
+        [_delegate manager:self didRefpointSelected:_selectedRefpoint];
         return;
     }
     

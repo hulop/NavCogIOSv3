@@ -1122,6 +1122,8 @@
         double zoom = [value doubleValue];
         if (min < pow(2, 20-zoom)) {
             completionHandler(mino);
+        } else {
+            completionHandler(nil);
         }
     }];
 }

@@ -157,30 +157,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    tabbar = [[UITabBar alloc] init];
-    [self.view addSubview:tabbar];
-    
-    item1 = [[UITabBarItem alloc]initWithTitle:@"FingerPrint" image:[UIImage imageNamed:@"fingerprint"] tag:0];
-    item5 = [[UITabBarItem alloc]initWithTitle:@"ARFingerPrint" image:[UIImage imageNamed:@"fingerprint"] tag:1];
-    item2 = [[UITabBarItem alloc]initWithTitle:@"Beacon" image:[UIImage imageNamed:@"beacon"] tag:2];
-    item3 = [[UITabBarItem alloc]initWithTitle:@"ID" image:[UIImage imageNamed:@"id"] tag:3];
-    item4 = [[UITabBarItem alloc]initWithTitle:@"POI" image:[UIImage imageNamed:@"poi"] tag:4];
-    item1.enabled = item5.enabled = item2.enabled = item3.enabled = item4.enabled = NO;
-    
-    tabbar.items = @[item1, item5, item2, item3, item4];
-    tabbar.selectedItem = item1;
-    tabbar.delegate = self;
-    
-
-    [self.devUp setTitle:@"Up" forState:UIControlStateNormal];
-    [self.devDown setTitle:@"Down" forState:UIControlStateNormal];
-    [self.devLeft setTitle:@"Left" forState:UIControlStateNormal];
-    [self.devRight setTitle:@"Right" forState:UIControlStateNormal];
-    
-    [self.devNote setTitle:@"Accept" forState:UIControlStateNormal];
-    
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _webView = [[NavBlindWebView alloc] initWithFrame:CGRectMake(0,0,0,0) configuration:[[WKWebViewConfiguration alloc] init]];
     _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
+    [self.view addSubview:_webView];
+    for(UIView *v in self.view.subviews) {
+        if (v != _webView) {
+            [self.view bringSubviewToFront:v];
+        }
+    }
     _webView.userMode = [ud stringForKey:@"user_mode"];
     _webView.config = @{
                         @"serverHost":[ud stringForKey:@"selected_hokoukukan_server"],
@@ -190,6 +175,19 @@
     
     _webView.delegate = self;
     _webView.tts = self;
+    //[_webView setFullScreenForView:self.view];
+    
+    _webView.translatesAutoresizingMaskIntoConstraints = NO;
+    if (@available(iOS 11.0, *)) {
+        //[self.view addConstraint:[NSLayoutConstraint constraintWithItem:_webView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view.safeAreaLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_webView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view.safeAreaLayoutGuide attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    } else {
+        //[self.view addConstraint:[NSLayoutConstraint constraintWithItem:_webView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_webView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    }
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_webView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_webView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1.0 constant:0]];
+
     
     UITapGestureRecognizer *webViewTapped = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapAction:)];
     webViewTapped.numberOfTapsRequired = 1;
@@ -205,6 +203,29 @@
     fpm = [FingerprintManager sharedManager];
     fpm.delegate = self;
     poim.delegate = self;
+    
+    
+    tabbar = [[UITabBar alloc] init];
+    [self.view addSubview:tabbar];
+    
+    item1 = [[UITabBarItem alloc]initWithTitle:@"FingerPrint" image:[UIImage imageNamed:@"fingerprint"] tag:0];
+    item5 = [[UITabBarItem alloc]initWithTitle:@"ARFingerPrint" image:[UIImage imageNamed:@"fingerprint"] tag:1];
+    item2 = [[UITabBarItem alloc]initWithTitle:@"Beacon" image:[UIImage imageNamed:@"beacon"] tag:2];
+    item3 = [[UITabBarItem alloc]initWithTitle:@"ID" image:[UIImage imageNamed:@"id"] tag:3];
+    item4 = [[UITabBarItem alloc]initWithTitle:@"POI" image:[UIImage imageNamed:@"poi"] tag:4];
+    item1.enabled = item5.enabled = item2.enabled = item3.enabled = item4.enabled = NO;
+    
+    tabbar.items = @[item1, item5, item2, item3, item4];
+    tabbar.selectedItem = item1;
+    tabbar.delegate = self;
+    
+    
+    [self.devUp setTitle:@"Up" forState:UIControlStateNormal];
+    [self.devDown setTitle:@"Down" forState:UIControlStateNormal];
+    [self.devLeft setTitle:@"Left" forState:UIControlStateNormal];
+    [self.devRight setTitle:@"Right" forState:UIControlStateNormal];
+    [self.devNote setTitle:@"Accept" forState:UIControlStateNormal];
+    
     
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
 }
@@ -305,16 +326,17 @@
 - (void)tapAction:(UITapGestureRecognizer *)sender
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSString *result = [_webView stringByEvaluatingJavaScriptFromString:@"(function(){return $hulop.indoor.getCurrentFloor()})()"];
-        NSLog(@"touched %@", result);
-        double height = [result doubleValue];
-        height = height<1?height:height-1;
-        HLPLocation* temp = [[HLPLocation alloc] init];
-        [temp update:center];
-        [temp updateFloor:height];
-        [self locationChange:temp];
-        x = fx;
-        y = fy;
+        [_webView evaluateJavaScript:@"(function(){return $hulop.indoor.getCurrentFloor()})()" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+            NSLog(@"touched %@", result);
+            double height = [result doubleValue];
+            height = height<1?height:height-1;
+            HLPLocation* temp = [[HLPLocation alloc] init];
+            [temp update:center];
+            [temp updateFloor:height];
+            [self locationChange:temp];
+            x = fx;
+            y = fy;
+        }];
     });
 }
 
@@ -447,7 +469,7 @@
     HLPLocation *location = [[HLPLocation alloc] initWithLat:lat Lng:lng Floor:floor];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.getMap().getView().setZoom(21);"];
+        [_webView evaluateJavaScript:@"$hulop.map.getMap().getView().setZoom(21);" completionHandler:nil];
         
         double eps = 10e-7;
         if (fabs(lastQrLocation.lat - location.lat) < eps &&
@@ -568,9 +590,10 @@
 {
     center = loc;
     [poim initCenter:center];
-    NSObject *poi = [self findFeatureAt:center];
-    selectedFeature = poi;
-    [self updateView];
+    [self findFeatureAt:center completionHandler:^(NSObject *poi) {
+        selectedFeature = poi;
+        [self updateView];
+    }];
 }
 
 - (void) startSampling
@@ -874,28 +897,13 @@
             self.navigationItem.title = @"POI";
         }
         if (fpMode != FPModePOI && fpMode != FPModeARFingerprint) {
-            [_webView stringByEvaluatingJavaScriptFromString:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();"];
+            [_webView evaluateJavaScript:@"$('div.floorToggle').hide();$('#rotate-up-button').hide();" completionHandler:nil];
         }
     });
 }
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-    [_indicator startAnimating];
-    _indicator.hidden = NO;
-}
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    [_indicator stopAnimating];
-    _indicator.hidden = YES;
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self insertScript];
-    });
-}
-
-- (void)webViewDidInsertBridge:(UIWebView *)webView
+- (void)webViewDidInsertBridge:(WKWebView *)webView
 {
     [NSTimer scheduledTimerWithTimeInterval:2 repeats:NO block:^(NSTimer * _Nonnull timer) {
         [self reload];
@@ -908,7 +916,7 @@
 {
     NSString *jspath = [[NSBundle mainBundle] pathForResource:@"fingerprint" ofType:@"js"];
     NSString *js = [[NSString alloc] initWithContentsOfFile:jspath encoding:NSUTF8StringEncoding error:nil];
-    [_webView stringByEvaluatingJavaScriptFromString:js];
+    [_webView evaluateJavaScript:js completionHandler:nil];
 }
 
 - (void) reload
@@ -991,7 +999,7 @@
 - (void) showPOIs:(NSArray<HLPObject*>*)pois
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.clearRoute()"];
+        [_webView evaluateJavaScript:@"$hulop.map.clearRoute()" completionHandler:nil];
         BOOL showRoute = [[NSUserDefaults standardUserDefaults] boolForKey:@"finger_printing_show_route"];
         if (showRoute) {
             NSArray *route = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
@@ -1048,7 +1056,7 @@
     selectedFeature = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.fp.showFingerprints([]);"];
+        [_webView evaluateJavaScript:@"$hulop.fp.showFingerprints([]);" completionHandler:nil];
     });
 }
 
@@ -1063,33 +1071,34 @@
         [styleMap setObject:styleFunction forKey:f.description];
     }
 
-    NSObject *poi = [self findFeatureAt:center];
-    selectedFeature = poi;
-    
-    NSMutableArray *temp = [@[] mutableCopy];
-    for(NSObject *f in showingFeatures) {
-        NSDictionary*(^styleFunction)(NSObject* obj) = [styleMap objectForKey:f.description];
-        if (!styleFunction) {
-            NSLog(@"no style function for %@", f);
-            continue;
+    [self findFeatureAt:center completionHandler:^(NSObject *poi) {
+        selectedFeature = poi;
+        
+        NSMutableArray *temp = [@[] mutableCopy];
+        for(NSObject *f in showingFeatures) {
+            NSDictionary*(^styleFunction)(NSObject* obj) = [styleMap objectForKey:f.description];
+            if (!styleFunction) {
+                NSLog(@"no style function for %@", f);
+                continue;
+            }
+            NSDictionary *dict = styleFunction(f);
+            if (dict) {
+                [temp addObject:dict];
+            }
         }
-        NSDictionary *dict = styleFunction(f);
-        if (dict) {
-            [temp addObject:dict];
-        }
-    }
+        
+        NSData *data = [NSJSONSerialization dataWithJSONObject:temp options:0 error:nil];
+        NSString* str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
+        //NSLog(@"%@", script);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_webView evaluateJavaScript:script completionHandler:nil];
+        });
+    }];
     
-    NSData *data = [NSJSONSerialization dataWithJSONObject:temp options:0 error:nil];
-    NSString* str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-    NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
-    //NSLog(@"%@", script);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView stringByEvaluatingJavaScriptFromString:script];
-    });
 }
 
-- (NSObject*) findFeatureAt:(HLPLocation*)location
-{
+- (void) findFeatureAt:(HLPLocation*)location completionHandler:(void (^)(NSObject *obj))completionHandler;{
     HLPLocation *loc = [[HLPLocation alloc] initWithLat:0 Lng:0];
     double min = DBL_MAX;
     NSObject *mino = nil;
@@ -1109,12 +1118,12 @@
             }
         }
     }
-    double zoom = [[_webView stringByEvaluatingJavaScriptFromString:@"(function(){return $hulop.map.getMap().getView().getZoom();})()"] doubleValue];
-    
-    if (min < pow(2, 20-zoom)) {
-        return mino;
-    }
-    return nil;
+    [_webView evaluateJavaScript:@"(function(){return $hulop.map.getMap().getView().getZoom();})()" completionHandler:^(id _Nullable value, NSError * _Nullable error) {
+        double zoom = [value doubleValue];
+        if (min < pow(2, 20-zoom)) {
+            completionHandler(mino);
+        }
+    }];
 }
 
 
@@ -1140,6 +1149,40 @@
 - (void)vibrate
 {
     [[NavSound sharedInstance] vibrate:nil];
+}
+
+#pragma mark - MKWebViewDelegate
+
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation
+{
+    [_indicator startAnimating];
+    _indicator.hidden = NO;
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+{
+    [_indicator stopAnimating];
+    _indicator.hidden = YES;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self insertScript];
+    });
+}
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    [_indicator stopAnimating];
+    _indicator.hidden = YES;
+    _retryButton.hidden = NO;
+    _errorMessage.hidden = NO;
+}
+
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    [_indicator stopAnimating];
+    _indicator.hidden = YES;
+    _retryButton.hidden = NO;
+    _errorMessage.hidden = NO;
 }
 
 #pragma mark - HLPWebviewHelperDelegate

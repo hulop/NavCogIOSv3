@@ -37,7 +37,7 @@ typedef NS_ENUM(NSInteger, FPMode) {
 
 @interface BlindViewController : UIViewController <HLPWebViewDelegate, HLPTTSProtocol, FingerprintManagerDelegate, POIManagerDelegate, UIGestureRecognizerDelegate, UITabBarDelegate>
 
-@property (weak, nonatomic) IBOutlet NavBlindWebView *webView;
+@property (nonatomic) IBOutlet NavBlindWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;

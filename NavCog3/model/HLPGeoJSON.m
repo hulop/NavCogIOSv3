@@ -1259,6 +1259,11 @@ static NSRegularExpression *patternHLPPOIFlags;
     return NO;
 }
 
+- (NSString*) getContentPath
+{
+    return [self getI18nAttribute:PROPKEY_CONTENT Lang:_lang];
+}
+
 @end
 
 @implementation HLPEntrance

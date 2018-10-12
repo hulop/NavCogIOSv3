@@ -858,7 +858,7 @@ static NavNavigatorConstants *_instance;
     }
     HLPEntrance *hpoi = (HLPEntrance*)self.origin;
     HLPFacility *facility = hpoi.facility;
-    return facility.properties[@"content"];
+    return [facility getContentPath];
 }
 
 - (NSString*) contentName

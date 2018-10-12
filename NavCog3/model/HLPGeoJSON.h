@@ -46,6 +46,7 @@
 #define PROPKEY_BRAILLE_BLOCK @"視覚障害者誘導用ブロック"
 #define PROPKEY_ADDR @"所在地"
 #define PROPKEY_LINK_STREET_NAME @"通り名称または交差点名称"
+#define PROPKEY_CONTENT @"content"
 
 // for extension
 #define PROPKEY_EXT_MAJOR_CATEGORY @"major_category"
@@ -305,6 +306,7 @@ typedef NS_ENUM(NSInteger, HLPLinkIncline) {
 @property (nonatomic, readonly) NSArray *entrances;
 
 - (BOOL)isNotRead;
+- (NSString*) getContentPath;
 
 @end
 

@@ -182,21 +182,23 @@ static ServerConfig *instance;
         }];
         [config_json setObject:maps forKey:@"map_files"];
     }
-    NSArray *const PRESETS = @[@"preset_for_blind", @"preset_for_sighted", @"preset_for_wheelchair"];
-    [PRESETS enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
-        NSDictionary* preset = [json objectForKey:obj];
-        if (preset) {
+    [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, NSDictionary* _Nonnull preset, BOOL * _Nonnull stop) {
+        if ([key hasPrefix:@"preset_for_"]) {
+            if ([key isEqualToString:@"preset_for_sighted"]) { // backward compatibility
+                key = @"preset_for_general";
+            }
             NSString *src = [preset objectForKey:@"src"];
             long size = [[preset objectForKey:@"size"] longValue];
             if (![self checkIfExists:src size:size]) {
                 [files addObject:@{
                                    @"length": @(size),
-                                   @"url": [NSString stringWithFormat:@"%@://%@/%@",https, server_host,src]
+                                   @"url": [NSString stringWithFormat:@"%@://%@/%@",https, server_host, src]
                                    }];
             }
-            [config_json setValue:[self getDestLocation:src].path forKey:obj];
+            [config_json setValue:[self getDestLocation:src].path forKey:key];
         }
     }];
+    
     NSString* location_config = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:config_json options:0 error:nil] encoding:NSUTF8StringEncoding];
     [location_config writeToURL:[self getDestLocation:@"location_config.json"] atomically:NO encoding:NSUTF8StringEncoding error:nil];
     _downloadConfig = config_json;

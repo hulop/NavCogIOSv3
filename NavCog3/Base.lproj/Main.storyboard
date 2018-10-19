@@ -122,16 +122,14 @@
                 <viewController id="4fr-OV-bcX" customClass="InitViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="k7w-Qw-TAn">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="4Nd-Lu-bdr" customClass="HLPSettingTableView">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="4Nd-Lu-bdr" customClass="HLPSettingTableView">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
-                                <autoresizingMask key="autoresizingMask"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xYS-nn-n2i">
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xYS-nn-n2i">
                                 <rect key="frame" x="0.0" y="20" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <items>
                                     <navigationItem title="Mode Selection" id="pAM-AG-abg">
                                         <barButtonItem key="leftBarButtonItem" title="Back" id="ARb-oa-Pkn">
@@ -144,6 +142,15 @@
                             </navigationBar>
                         </subviews>
                         <color key="backgroundColor" red="0.97647064924240112" green="0.97647064924240112" blue="0.97647064924240112" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="xYS-nn-n2i" firstAttribute="leading" secondItem="4Nd-Lu-bdr" secondAttribute="leading" id="08i-CB-sYr"/>
+                            <constraint firstItem="4Nd-Lu-bdr" firstAttribute="bottom" secondItem="gbU-6B-dS7" secondAttribute="bottom" id="JMd-WV-yxh"/>
+                            <constraint firstItem="xYS-nn-n2i" firstAttribute="top" secondItem="gbU-6B-dS7" secondAttribute="top" id="MJ2-EM-HGe"/>
+                            <constraint firstItem="xYS-nn-n2i" firstAttribute="leading" secondItem="k7w-Qw-TAn" secondAttribute="leading" id="Xac-iC-6Va"/>
+                            <constraint firstItem="xYS-nn-n2i" firstAttribute="trailing" secondItem="4Nd-Lu-bdr" secondAttribute="trailing" id="ijE-T7-Jfx"/>
+                            <constraint firstAttribute="trailing" secondItem="xYS-nn-n2i" secondAttribute="trailing" id="kP8-mm-Pcf"/>
+                            <constraint firstItem="4Nd-Lu-bdr" firstAttribute="top" secondItem="xYS-nn-n2i" secondAttribute="bottom" id="l6l-F1-9Jd"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="gbU-6B-dS7"/>
                     </view>
                     <connections>

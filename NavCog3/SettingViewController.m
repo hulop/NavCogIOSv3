@@ -446,7 +446,7 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
 + (void)setupUserSettings
 {
     if (userSettingHelper) {
-        BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"ui_mode"] isEqualToString:@"UI_BLIND"];
+        BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"] isEqualToString:@"user_blind"];
         BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
         BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
         //[speechLabel setVisible:blindMode];
@@ -566,12 +566,6 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     [detailSettingHelper addSettingWithType:NavCogSettingTypeHostPort Label:@"Server" Name:@"hokoukukan_server" DefaultValue:@[@""] Accept:nil];
     [detailSettingHelper addSettingWithType:NavCogSettingTypeSubtitle Label:@"Server" Name:@"selected_hokoukukan_server" DefaultValue:@"" Accept:nil];
     [detailSettingHelper addSettingWithType:NavCogSettingTypeTextInput Label:@"Context" Name:@"hokoukukan_server_context" DefaultValue:@"" Accept:nil];
-
-    /*
-    [detailSettingHelper addSectionTitle:NSLocalizedString(@"UI_Mode", @"")];
-    [detailSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"UI_WHEELCHAIR", @"") Name:@"UI_WHEELCHAIR" Group:@"ui_mode" DefaultValue:@(YES) Accept:nil];
-    [detailSettingHelper addSettingWithType:OPTION Label:NSLocalizedString(@"UI_BLIND", @"") Name:@"UI_BLIND" Group:@"ui_mode" DefaultValue:@(NO) Accept:nil];
-     */
 
     [detailSettingHelper addSectionTitle:@"For Demo"];
     [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use compass" Name:@"use_compass" DefaultValue:@(NO) Accept:nil];
@@ -864,7 +858,7 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
 - (BOOL) isBlindMode
 {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    return [[ud stringForKey:@"ui_mode"] isEqualToString:@"UI_BLIND"];
+    return [[ud stringForKey:@"user_mode"] isEqualToString:@"user_blind"];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath

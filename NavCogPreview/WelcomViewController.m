@@ -153,53 +153,6 @@
         }
         
         if (config.selectedServerConfig) {
-            /*
-             NSArray *files = [config checkDownloadFiles];
-            if ([files count] > 0) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performSegueWithIdentifier:@"show_download" sender:self];
-                });
-            } else {
-                NSArray *files = config.downloadConfig[@"map_files"];
-                NSFileManager *fm = [NSFileManager defaultManager];
-
-                NSError *error;
-                NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-                for(NSString *path in files) {
-                    NSString *toPath = [path lastPathComponent];
-                    toPath = [docPath stringByAppendingPathComponent:toPath];
-                    [fm removeItemAtPath:toPath error:nil];
-                    [fm copyItemAtPath:path toPath:toPath error:&error];
-                    
-                    NSString *filename = [toPath lastPathComponent];
-                    [[NSUserDefaults standardUserDefaults] setObject:filename forKey:@"bleloc_map_data"];
-                }
-                NSString *presetsDir = [docPath stringByAppendingPathComponent:@"presets"];
-                [fm createDirectoryAtPath:presetsDir withIntermediateDirectories:YES attributes:nil error:nil];
-
-                if (config.downloadConfig[@"preset_for_blind"]) {
-                    [fm removeItemAtPath:[presetsDir stringByAppendingPathComponent:@"blind.plist"] error:nil];
-                    [fm copyItemAtPath:config.downloadConfig[@"preset_for_blind"]
-                                toPath:[presetsDir stringByAppendingPathComponent:@"blind.plist"] error:&error];
-                }
-                if (config.downloadConfig[@"preset_for_sighted"]) {
-                    [fm removeItemAtPath:[presetsDir stringByAppendingPathComponent:@"general.plist"] error:nil];
-                    [fm copyItemAtPath:config.downloadConfig[@"preset_for_sighted"]
-                                toPath:[presetsDir stringByAppendingPathComponent:@"general.plist"] error:&error];
-                }
-                if (config.downloadConfig[@"preset_for_wheelchair"]) {
-                    [fm removeItemAtPath:[presetsDir stringByAppendingPathComponent:@"wheelchair.plist"] error:nil];
-                    [fm copyItemAtPath:config.downloadConfig[@"preset_for_wheelchair"]
-                                toPath:[presetsDir stringByAppendingPathComponent:@"wheelchair.plist"] error:&error];
-                }
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:SERVER_CONFIG_CHANGED_NOTIFICATION
-                                                                    object:self
-                                                                  userInfo:config.selectedServerConfig];
-
-                //[Logging stopLog];
-                //[Logging startLog];
-                */
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *hostname = config.selected[@"hostname"];
                     [[NSUserDefaults standardUserDefaults] setObject:hostname forKey:@"selected_hokoukukan_server"];

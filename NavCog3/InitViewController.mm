@@ -117,6 +117,15 @@
 
 - (void) selectMode:(NSString*) mode
 {
+    // set preference
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    [ud setObject:mode forKey:@"user_mode"];
+    [DialogManager sharedManager].userMode = mode;
+    
+    // load server presets for the user mode
+    [ConfigManager loadConfig:[NSString stringWithFormat:@"presets/%@.plist", [mode substringFromIndex:5]]];
+    
+    // open corresponding view
     NSString *segue = modeSegueMap[mode];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self performSegueWithIdentifier:segue sender:self];
@@ -144,25 +153,9 @@
         return;
     }
     
-    [DialogManager sharedManager].userMode = segue.identifier;
-    if ([segue.identifier isEqualToString:@"user_blind"]) {
-        [ConfigManager loadConfig:@"presets/blind.plist"];
-        [[NSUserDefaults standardUserDefaults] setObject:@"UI_BLIND" forKey:@"ui_mode"];
-    }
-    else if ([segue.identifier isEqualToString:@"user_wheelchair"]) {
-        [ConfigManager loadConfig:@"presets/wheelchair.plist"];
-        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
-    }
-    else if ([segue.identifier isEqualToString:@"user_general"]) {
-        [ConfigManager loadConfig:@"presets/general.plist"];
-        [[NSUserDefaults standardUserDefaults] setObject:@"UI_WHEELCHAIR" forKey:@"ui_mode"];
-    }
-    
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    [ud setObject:segue.identifier forKey:@"user_mode"];
-    
     HLPLocationManager *manager = [HLPLocationManager sharedManager];
     
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSString *modelName = [ud stringForKey:@"bleloc_map_data"];
     NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     

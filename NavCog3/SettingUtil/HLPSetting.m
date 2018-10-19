@@ -65,6 +65,7 @@
 
 @implementation HLPSetting {
     BOOL _changing;
+    CGFloat _customCellHeight;
 }
 
 - (id) init
@@ -75,7 +76,29 @@
                                              selector:@selector(userDefaultsDidChange:)
                                                  name:NSUserDefaultsDidChangeNotification
                                                object:nil];
+    _customCellHeight = HLPSettingDefaultCellHeight;
     return self;
+}
+
+- (void)setCellHeight:(CGFloat)height {
+    _customCellHeight = height;
+}
+
+- (CGFloat)cellHeight {
+    if (_customCellHeight > 0) {
+        return _customCellHeight;
+    }
+    
+    if (_type == NavCogSettingTypeDouble) {
+        return 76;
+    }
+    if (_type == NavCogSettingTypeTextInput || _type == NavCogSettingTypePassInput) {
+        return 78;
+    }
+    if ([self isList]) {
+        return 146;
+    }
+    return 44;
 }
 
 - (void) userDefaultsDidChange:(NSNotification*)note
@@ -263,4 +286,5 @@
         }
     }
 }
+
 @end

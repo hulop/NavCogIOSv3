@@ -20,5 +20,6 @@ end
 
 target 'NavCogPreview' do
   platform :ios, '8.4'
+  pod 'OpenCV-Dynamic', '4.0.0-alpha1'
   pod 'FormatterKit'
 end

@@ -21,6 +21,7 @@
  *******************************************************************************/
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #define HLPSettingChanged @"HLPSettingChanged"
 
@@ -35,6 +36,8 @@
 - (void) exportSetting:(NSMutableDictionary*)dic;
 - (void) update;
 @end
+
+#define HLPSettingDefaultCellHeight (-1)
 
 typedef NS_ENUM (NSUInteger, NavCogSettingType) {
     NavCogSettingTypeSection,
@@ -81,5 +84,7 @@ typedef NS_ENUM (NSUInteger, NavCogSettingType) {
 @property float interval;
 @property BOOL visible;
 @property BOOL disabled;
+@property CGFloat cellHeight;
+@property UIFont *titleFont;
 
 @end

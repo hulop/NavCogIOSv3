@@ -21,11 +21,10 @@
  *******************************************************************************/
 
 #import <UIKit/UIKit.h>
+#import "HLPSettingHelper.h"
 
-@interface InitViewController : UIViewController
+@interface InitViewController : UIViewController <HLPSettingHelperDelegate>
 
-@property (weak, nonatomic) IBOutlet UIButton *blindButton;
-@property (weak, nonatomic) IBOutlet UIButton *wcButton;
-@property (weak, nonatomic) IBOutlet UIButton *gpButton;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end

@@ -154,8 +154,8 @@
 /* Class = "UILabel"; text = "Title"; ObjectID = "V3W-HM-tEd"; */
 "V3W-HM-tEd.text" = "제목";
 
-/* Class = "UIButton"; normalTitle = "Back"; ObjectID = "v9y-3H-Lol"; */
-"v9y-3H-Lol.normalTitle" = "돌아 가기";
+/* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "ARb-oa-Pkn"; */
+"ARb-oa-Pkn.title" = "뒤로"; // "돌아 가기";
 
 /* Class = "UIButton"; normalTitle = "Up"; ObjectID = "w8D-6y-H77"; */
 "w8D-6y-H77.normalTitle" = "위층";

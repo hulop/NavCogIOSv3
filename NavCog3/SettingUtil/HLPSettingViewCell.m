@@ -70,6 +70,10 @@
     self.title.adjustsFontSizeToFitWidth = YES;
     self.title.isAccessibilityElement = NO;
     self.title.textColor = self.setting.disabled ? [UIColor grayColor] : [UIColor blackColor];
+    
+    if (self.setting.titleFont != nil) {
+        self.title.font = self.setting.titleFont;
+    }
 
     if (self.slider) {
         self.slider.enabled = !self.setting.disabled;

@@ -159,3 +159,16 @@ NavCog　→
 "NeedToUpdateAppTitle" = "アプリの更新";
 "NeedToUpdateAppMessage" = "アプリの更新が必要です";
 "OpenAppStore" = "App Storeを開く";
+
+
+/* Mode title for "Visually Impaired User" */
+"user_blind" = "視覚障がい者";
+
+/* Mode title for "Wheelchair User" */
+"user_wheelchair" = "車いす利用者";
+
+/* Mode title for "Stroller User" */
+"user_stroller" = "ベビーカー利用者";
+
+/* Mode title for "General Pedestrian" */
+"user_general" = "一般歩行者";

@@ -173,19 +173,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     HLPSetting *s = [self _getSetting:indexPath];
-    if (s == nil) {
-        return 44;
-    }
-    if (s.type == NavCogSettingTypeDouble) {
-        return 76;
-    }
-    if (s.type == NavCogSettingTypeTextInput || s.type == NavCogSettingTypePassInput) {
-        return 78;
-    }
-    if (s.isList) {
-        return 146;
-    }
-    return 44;
+    return s.cellHeight;
 }
 
 - (void) updateCell:(UITableViewCell*) cell forSetting:(HLPSetting*) s

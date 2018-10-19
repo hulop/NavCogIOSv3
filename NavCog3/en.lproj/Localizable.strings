@@ -142,3 +142,15 @@ Feedback is sending...";
 "NeedToUpdateAppTitle" = "App Update";
 "NeedToUpdateAppMessage" = "App is required to be updated";
 "OpenAppStore" = "Open App Store";
+
+/* Mode title for "Visually Impaired User" */
+"user_blind" = "Visually Impaired User";
+
+/* Mode title for "Wheelchair User" */
+"user_wheelchair" = "Wheelchair User";
+
+/* Mode title for "Stroller User" */
+"user_stroller" = "Baby Stroller User";
+
+/* Mode title for "General Pedestrian" */
+"user_general" = "General Pedestrian";

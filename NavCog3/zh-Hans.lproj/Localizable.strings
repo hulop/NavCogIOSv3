@@ -188,3 +188,14 @@
 /* No comment provided by engineer. */
 "vibrateSetting" = "振动通知";
 
+/* Mode title for "Visually Impaired User" */
+"user_blind" = "视觉障碍患者";
+
+/* Mode title for "Wheelchair User" */
+"user_wheelchair" = "轮椅使用者";
+
+/* Mode title for "Stroller User" */
+"user_stroller" = "婴儿推车用户";
+
+/* Mode title for "General Pedestrian" */
+"user_general" = "一般歩行者";

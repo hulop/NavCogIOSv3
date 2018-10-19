@@ -31,7 +31,14 @@
 #import <HLPDialog/HLPDialog.h>
 #import "Logging.h"
 
-@interface InitViewController ()
+
+
+@interface InitViewController () {
+    HLPSettingHelper *modeHelper;
+    NSMutableDictionary<NSString*, HLPSetting*>* settings;
+    NSArray<NSString*> *modes;
+    NSDictionary<NSString*, NSString*>* modeSegueMap;
+}
 
 @end
 
@@ -39,30 +46,59 @@
     BOOL first;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    modeHelper = [[HLPSettingHelper alloc] init];
+    settings = [@{} mutableCopy];
+    
+    modes = @[@"user_blind", @"user_wheelchair", @"user_stroller", @"user_general"];
+    modeSegueMap = @{@"user_blind": @"blind_view",
+                     @"user_wheelchair": @"general_view",
+                     @"user_stroller": @"general_view",
+                     @"user_general": @"general_view"
+                     };
+    
+    UIFont *customFont = [UIFont systemFontOfSize:24];
+    for(NSString *mode: modes) {
+        HLPSetting* setting = [modeHelper addActionTitle:NSLocalizedString(mode, @"") Name:mode];
+        setting.cellHeight = 90;
+        setting.titleFont = customFont;
+        [settings setObject:setting forKey:mode];
+    }
+    
+    modeHelper.delegate = self;
+    self.tableView.dataSource = modeHelper;
+    self.tableView.delegate = modeHelper;
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     first = YES;
+    [self updateView];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [self updateView];
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    if (self.isBeingDismissed) {
+        [[ServerConfig sharedConfig] clear];
+    }
 }
 
 - (void) updateView
 {
-    self.blindButton.enabled = NO;
-    //self.wcButton.enabled = NO;
-    //self.gpButton.enabled = NO;
+    settings[@"user_blind"].disabled = YES;
     
     NSDictionary *config = [ServerConfig sharedConfig].selectedServerConfig;
     
     if (config[@"key_for_blind"]) {
         BOOL blind_authorized = [[AuthManager sharedManager] isAuthorizedForName:@"blind" withKey:config[@"key_for_blind"]];
-        self.blindButton.enabled = blind_authorized;
+        settings[@"user_blind"].disabled = !blind_authorized;
     } else {
-        self.blindButton.enabled = YES;
+        settings[@"user_blind"].disabled = NO;
     }
+    
+    [self.tableView reloadData];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -70,12 +106,22 @@
     NSDictionary *config = [ServerConfig sharedConfig].selectedServerConfig;
     if (config[@"default_mode"] && first) {
         first = NO;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self performSegueWithIdentifier:config[@"default_mode"] sender:self];
-        });
+        [self selectMode:config[@"default_mode"]];
+        
     }
 }
 
+- (void)actionPerformed:(HLPSetting *)setting {
+    [self selectMode: setting.name];
+}
+
+- (void) selectMode:(NSString*) mode
+{
+    NSString *segue = modeSegueMap[mode];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self performSegueWithIdentifier:segue sender:self];
+    });
+}
 
 - (void)infoButtonPushed:(NSObject*)sender
 {
@@ -276,11 +322,6 @@
     }];
     
     return params;
-}
-
-- (IBAction)backPerformed:(id)sender {
-    [[ServerConfig sharedConfig] clear];
-    [self performSegueWithIdentifier:@"unwind_init" sender:self];
 }
 
 @end

@@ -251,24 +251,25 @@ double stdev(double array[], long count) {
 - (void) checkMapCenter:(NSTimer*)timer
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        HLPLocation *loc = [_webView getCenter];
-        if (loc != nil) {
-            [NavDataStore sharedDataStore].mapCenter = loc;
-            HLPLocation *cloc = [NavDataStore sharedDataStore].currentLocation;
-            if (isnan(cloc.lat) || isnan(cloc.lng)) {
-                NSDictionary *param =
-                @{
-                  @"floor": @(loc.floor),
-                  @"lat": @(loc.lat),
-                  @"lng": @(loc.lng),
-                  @"sync": @(YES)
-                  };
-                [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:param];
-                
+        [_webView getCenterWithCompletion:^(HLPLocation *loc) {
+            if (loc != nil) {
+                [NavDataStore sharedDataStore].mapCenter = loc;
+                HLPLocation *cloc = [NavDataStore sharedDataStore].currentLocation;
+                if (isnan(cloc.lat) || isnan(cloc.lng)) {
+                    NSDictionary *param =
+                    @{
+                      @"floor": @(loc.floor),
+                      @"lat": @(loc.lat),
+                      @"lng": @(loc.lng),
+                      @"sync": @(YES)
+                      };
+                    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:param];
+                    
+                }
+                [self updateView];
+                [timer invalidate];
             }
-            [self updateView];
-            [timer invalidate];
-        }
+        }];
     });
 }
 
@@ -680,22 +681,23 @@ double stdev(double array[], long count) {
 {
     NSString *jspath = [[NSBundle mainBundle] pathForResource:@"fingerprint" ofType:@"js"];
     NSString *js = [[NSString alloc] initWithContentsOfFile:jspath encoding:NSUTF8StringEncoding error:nil];
-    [_webView stringByEvaluatingJavaScriptFromString:js];
+    [_webView evaluateJavaScript:js completionHandler:nil];
 }
 
 - (void) showPOIs:(NSArray<HLPObject*>*)pois
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.map.clearRoute()"];
-        NSArray *route = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-            if ([evaluatedObject isKindOfClass:HLPLink.class]) {
-                HLPLink *link = (HLPLink*)evaluatedObject;
-                return (link.sourceHeight == center.floor || link.targetHeight == center.floor);
-            }
-            return NO;
-        }]];
-        
-        [_webView showRoute:route];
+        [_webView evaluateJavaScript:@"$hulop.map.clearRoute()" completionHandler:^(id _Nullable ret, NSError * _Nullable error) {
+            NSArray *route = [pois filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+                if ([evaluatedObject isKindOfClass:HLPLink.class]) {
+                    HLPLink *link = (HLPLink*)evaluatedObject;
+                    return (link.sourceHeight == center.floor || link.targetHeight == center.floor);
+                }
+                return NO;
+            }]];
+            
+            [_webView showRoute:route];
+        }];
     });
     
     [self showFeatures:pois withStyle:^NSDictionary *(NSObject *obj) {
@@ -741,7 +743,7 @@ double stdev(double array[], long count) {
     selectedFeature = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView stringByEvaluatingJavaScriptFromString:@"$hulop.fp.showFingerprints([]);"];
+        [_webView evaluateJavaScript:@"$hulop.fp.showFingerprints([]);" completionHandler:nil];
     });
 }
 
@@ -763,7 +765,7 @@ double stdev(double array[], long count) {
     NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
     //NSLog(@"%@", script);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView stringByEvaluatingJavaScriptFromString:script];
+        [_webView evaluateJavaScript:script completionHandler:nil];
     });
 }
 
@@ -844,8 +846,9 @@ double stdev(double array[], long count) {
             [previewer stop];
             return NO;
         }
-        
-        [NavDataStore sharedDataStore].mapCenter = [_webView getCenter];
+        [_webView getCenterWithCompletion:^(HLPLocation *loc) {
+            [NavDataStore sharedDataStore].mapCenter = loc;
+        }];
         
         UIViewController *vc = nil;
         

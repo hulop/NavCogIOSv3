@@ -120,7 +120,9 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
 - (void) downloadNext
 {
     if ([downloadingFiles count] == 0) {
-        [self performSegueWithIdentifier:@"unwind_download" sender:self];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSegueWithIdentifier:@"unwind_download" sender:self];
+        });
         return;
     }
     

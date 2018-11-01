@@ -87,25 +87,9 @@
 
 - (void) checkConfig
 {
-    /*
-    if (self.presentedViewController) {
-        //NSLog(@"Presenting: %@", self.presentedViewController);
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1f*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            [self checkConfig];
-        });
-        return;
-    }
-     */
-    
     if (![[AuthManager sharedManager] isDeveloperAuthorized]) {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"developer_mode"];
     }
-    /*
-    if ([[AuthManager sharedManager] isDeveloperAuthorized]) {
-        [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
-        return;
-    }
-     */
     
     if (retryCount > 3) {
         [self didNetworkError];
@@ -115,12 +99,8 @@
     
     ServerConfig *config = [ServerConfig sharedConfig];
 
-    if (!config.selected) {
-        if (config.serverList) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self performSegueWithIdentifier:@"show_server_selection" sender:self];
-            });
-        } else {
+    if (config.selected == nil) {
+        if (config.serverList == nil) { // load server list
             NSLog(@"loading serverlist.json");
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
@@ -129,25 +109,14 @@
                 [self checkConfig];
                 if (config) { retryCount = 0; }
             }];
+        } else { // show server list
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self performSegueWithIdentifier:@"show_server_selection" sender:self];
+            });
         }
-
         return;
-    }
-    
-    
-    if (config.selected) {
-        if (config.agreementConfig) {
-            BOOL agreed = [config.agreementConfig[@"agreed"] boolValue];
-            if (agreed) {
-                NSLog(@"no check agreement");
-                // noop
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performSegueWithIdentifier:@"show_agreement" sender:self];
-                });
-                return;
-            }
-        } else {
+    } else {
+        if (config.agreementConfig == nil) {
             NSLog(@"check agreement");
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.statusLabel.text = NSLocalizedString(@"CheckAgreement", @"");
@@ -159,8 +128,30 @@
             }];
             return;
         }
+        else {
+            BOOL agreed = [config.agreementConfig[@"agreed"] boolValue];
+            
+            if (agreed == NO) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self performSegueWithIdentifier:@"show_agreement" sender:self];
+                });
+                return;
+            } else {
+                NSLog(@"no check agreement");
+            }
+        }
         
-        if (config.selectedServerConfig) {
+        if (config.selectedServerConfig == nil) {
+            NSLog(@"check server config");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
+            });
+            [[ServerConfig sharedConfig] requestServerConfig:^(NSDictionary *config) {
+                [self checkConfig];
+                if (config) { retryCount = 0; }
+            }];
+            return;
+        } else {
             NSArray *files = [config checkDownloadFiles];
             if ([files count] > 0) {
                 NSLog(@"check download files");
@@ -188,14 +179,12 @@
                 NSString *presetsDir = [docPath stringByAppendingPathComponent:@"presets"];
                 [fm createDirectoryAtPath:presetsDir withIntermediateDirectories:YES attributes:nil error:nil];
                 
-                [config.downloadConfig enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-                    if ([key hasPrefix:@"preset_for_"]) {
-                        NSString *name = [NSString stringWithFormat:@"%@.plist", [key substringFromIndex: 11]];
-                        NSString *path = [presetsDir stringByAppendingPathComponent:name];
-                        [fm removeItemAtPath:path error:nil];
-                        [fm copyItemAtPath:obj toPath:path error:nil];
-                    }
-                }];
+                [config enumerateModes:^(id _Nonnull mode, id  _Nonnull obj) {
+                    NSString *name = [NSString stringWithFormat:@"%@.plist", mode];
+                    NSString *path = [presetsDir stringByAppendingPathComponent:name];
+                    [fm removeItemAtPath:path error:nil];
+                    [fm copyItemAtPath:obj toPath:path error:nil];
+                }];                
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:SERVER_CONFIG_CHANGED_NOTIFICATION
                                                                     object:self
@@ -207,16 +196,6 @@
                     [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
                 });
             }
-        } else {
-            NSLog(@"check server config");
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.statusLabel.text = NSLocalizedString(@"CheckServerConfig", @"");
-            });
-            [[ServerConfig sharedConfig] requestServerConfig:^(NSDictionary *config) {
-                [self checkConfig];
-                if (config) { retryCount = 0; }
-            }];
-            return;
         }
     }
 }

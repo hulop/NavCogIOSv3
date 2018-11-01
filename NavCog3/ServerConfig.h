@@ -47,4 +47,6 @@
 - (void) completeRating;
 - (BOOL) isPreviewDisabled;
 
+- (void) enumerateModes:(void(^_Nonnull)(NSString* _Nonnull mode, NSString* _Nonnull presetPath))iterator;
+- (NSArray*) modeList;
 @end

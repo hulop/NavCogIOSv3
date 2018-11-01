@@ -50,7 +50,9 @@
     modeHelper = [[HLPSettingHelper alloc] init];
     settings = [@{} mutableCopy];
     
-    modes = @[@"user_blind", @"user_wheelchair", @"user_stroller", @"user_general"];
+    //modes = @[@"user_blind", @"user_wheelchair", @"user_stroller", @"user_general"];
+    
+    modes = [ServerConfig sharedConfig].modeList; // without user_
     modeSegueMap = @{@"user_blind": @"blind_view",
                      @"user_wheelchair": @"general_view",
                      @"user_stroller": @"general_view",
@@ -59,16 +61,16 @@
     
     UIFont *customFont = [UIFont systemFontOfSize:24];
     for(NSString *mode: modes) {
-        HLPSetting* setting = [modeHelper addActionTitle:NSLocalizedString(mode, @"") Name:mode];
+        NSString *name = [NSString stringWithFormat:@"user_%@", mode];
+        HLPSetting* setting = [modeHelper addActionTitle:NSLocalizedString(name, @"") Name:name];
         setting.cellHeight = 90;
         setting.titleFont = customFont;
-        [settings setObject:setting forKey:mode];
+        [settings setObject:setting forKey:name];
     }
     
     modeHelper.delegate = self;
     self.tableView.dataSource = modeHelper;
     self.tableView.delegate = modeHelper;
-    
 }
 
 - (void)viewDidLoad {
@@ -87,15 +89,17 @@
 
 - (void) updateView
 {
-    settings[@"user_blind"].disabled = YES;
-    
-    NSDictionary *config = [ServerConfig sharedConfig].selectedServerConfig;
-    
-    if (config[@"key_for_blind"]) {
-        BOOL blind_authorized = [[AuthManager sharedManager] isAuthorizedForName:@"blind" withKey:config[@"key_for_blind"]];
-        settings[@"user_blind"].disabled = !blind_authorized;
-    } else {
-        settings[@"user_blind"].disabled = NO;
+    if (settings[@"user_blind"]) {
+        settings[@"user_blind"].disabled = YES;
+        
+        NSDictionary *config = [ServerConfig sharedConfig].selectedServerConfig;
+        
+        if (config[@"key_for_blind"]) {
+            BOOL blind_authorized = [[AuthManager sharedManager] isAuthorizedForName:@"blind" withKey:config[@"key_for_blind"]];
+            settings[@"user_blind"].disabled = !blind_authorized;
+        } else {
+            settings[@"user_blind"].disabled = NO;
+        }
     }
     
     [self.tableView reloadData];

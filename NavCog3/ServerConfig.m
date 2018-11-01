@@ -182,6 +182,7 @@ static ServerConfig *instance;
         }];
         [config_json setObject:maps forKey:@"map_files"];
     }
+
     [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, NSDictionary* _Nonnull preset, BOOL * _Nonnull stop) {
         if ([key hasPrefix:@"preset_for_"]) {
             if ([key isEqualToString:@"preset_for_sighted"]) { // backward compatibility
@@ -288,5 +289,26 @@ static ServerConfig *instance;
 - (BOOL)isPreviewDisabled
 {
     return _selectedServerConfig[@"navcog_disable_preview"] && [_selectedServerConfig[@"navcog_disable_preview"] boolValue];
+}
+
+- (void)enumerateModes:(void (^)(NSString* _Nonnull, NSString* _Nonnull))iterator
+{
+    if (_downloadConfig == nil) {
+        return;
+    }
+    [_downloadConfig enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        if ([key hasPrefix:@"preset_for_"]) {
+            iterator([key substringFromIndex: 11], obj);
+        }
+    }];
+}
+
+- (NSArray *)modeList
+{
+    NSMutableArray *temp = [@[] mutableCopy];
+    [self enumerateModes:^(id  _Nonnull mode, id  _Nonnull obj) {
+        [temp addObject:mode];
+    }];
+    return temp;
 }
 @end

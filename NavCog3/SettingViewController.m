@@ -612,8 +612,8 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     [blelocppSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Show states" Name:@"show_states" DefaultValue:@(NO) Accept:nil];
     [blelocppSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Use blelocpp accuracy" Name:@"use_blelocpp_acc" DefaultValue:@(NO) Accept:nil];
     [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"blelocpp accuracy sigma" Name:@"blelocpp_accuracy_sigma" DefaultValue:@(3) Min:1 Max:6 Interval:1];
-    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"nSmooth" Name:@"nSmooth" DefaultValue:@(2) Min:1 Max:10 Interval:1];
-    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"nSmoothTracking" Name:@"nSmoothTracking" DefaultValue:@(3) Min:1 Max:10 Interval:1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"nSmooth" Name:@"nSmooth" DefaultValue:@(3) Min:1 Max:10 Interval:1];
+    [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"nSmoothTracking" Name:@"nSmoothTracking" DefaultValue:@(1) Min:1 Max:10 Interval:1];
 
     [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"nStates" Name:@"nStates" DefaultValue:@(500) Min:100 Max:2000 Interval:100];
     [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"nEffective (recommended gt or eq nStates/2)" Name:@"nEffective" DefaultValue:@(250) Min:50 Max:2000 Interval:50];
@@ -645,7 +645,7 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Confidence of heading for initialization" Name:@"headingConfidenceInit" DefaultValue:@(0.0) Min:0.0 Max:1.0 Interval:0.05];
     [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Orientation accuracy threshold for reliable orientation [degree]" Name:@"oriAccThreshold" DefaultValue:@(22.5) Min:0.0 Max:120 Interval:2.5];
     [blelocppSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:@"Initial location search radius in 2D [m]" Name:@"initialSearchRadius2D" DefaultValue:@(10) Min:5 Max:50 Interval:1];
-    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Apply yaw drift smoothing" Name:@"applyYawDriftSmoothing" DefaultValue:@(YES) Accept:nil] setVisible: YES];
+    [[blelocppSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Apply yaw drift smoothing" Name:@"applyYawDriftSmoothing" DefaultValue:@(NO) Accept:nil] setVisible: YES];
 
     
     // Parameters for status monitoring

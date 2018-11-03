@@ -94,7 +94,7 @@
         for(HLPDirectorySection *section in _directory.sections) {
             NSMutableArray *temp2 = [@[] mutableCopy];
             [section walk:^BOOL(HLPDirectoryItem *item) {
-                return [[NavDestination alloc] initWithDirectoryItem:item].isMultiple;
+                return item.isFacility;
             } withBuffer:temp2];
             if (temp2.count == 0) {
                 [temp addObject:section];

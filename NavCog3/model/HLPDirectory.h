@@ -34,6 +34,7 @@
 @property (nonatomic, readonly) NSString *subtitlePron;
 @property (nonatomic, readonly) NSString *nodeID;
 @property (nonatomic, readonly) HLPDirectory *content;
+@property (nonatomic) BOOL isFacility;
 
 - (void) walk:(BOOL(^)(HLPDirectoryItem*))func withBuffer:(NSMutableArray*)buffer;
 - (NSString*) getItemTitle;

@@ -728,6 +728,17 @@ static NavDataStore* instance_ = nil;
     }];
     destinationHash = temp;
     
+    // check directory item it is facility or not
+    for (HLPDirectorySection *section in directoryCache.sections) {
+        for(HLPDirectoryItem *item in section.items) {
+            if (item.nodeID) {
+                NSArray* ids = [item.nodeID componentsSeparatedByString:@"|"];
+                HLPLandmark *landmark = [destinationHash objectForKey:ids[0]];
+                item.isFacility = landmark.isFacility;
+            }
+        }
+    }
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
     });

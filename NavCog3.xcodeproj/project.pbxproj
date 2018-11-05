@@ -924,6 +924,7 @@
 				7EDEDC191D1E0C6800AC111A /* Frameworks */,
 				7E7ED5A61F5EDF620033814B /* ShellScript */,
 				7EDEDC1A1D1E0C6800AC111A /* Resources */,
+				7E8CCAEB218F4C0300FE1D68 /* ShellScript */,
 				7EF45E4D1E3F42BD00208042 /* ShellScript */,
 				90F45808E580F898236DAD5E /* [CP] Embed Pods Frameworks */,
 				3CB98F53EB42ACE8E61D6511 /* [CP] Copy Pods Resources */,
@@ -1297,7 +1298,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "git log --oneline | head -n 1 | cut -f 1 -d' ' > $SRCROOT/lastcommit.txt";
+			shellScript = "git log --oneline | head -n 1 | cut -f 1 -d' ' > $SRCROOT/lastcommit.txt\n";
+		};
+		7E8CCAEB218F4C0300FE1D68 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/HLPDialog.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# remove duplicated frameworks\necho \"Removing duplicated frameworks $SCRIPT_INPUT_FILE_0/Frameworks\"\nrm -rf $SCRIPT_INPUT_FILE_0/Frameworks\n\n";
 		};
 		7EF45E4D1E3F42BD00208042 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1317,7 +1336,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 		90F45808E580F898236DAD5E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -297,7 +297,7 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
         vc.title = NSLocalizedString(@"Instructions", @"");
         [self.navigationController showViewController:vc sender:self];
     } else if ([setting.name isEqualToString:@"back_to_mode_selection"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_UNLOAD_BLIND object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_UNLOAD_VIEW object:self];
         [self dismissViewControllerAnimated:YES completion:nil];
     } else if ([setting.name isEqualToString:@"send_feedback"]) {
         NSString *subject = [NSString stringWithFormat:NSLocalizedString(@"feedbackSubject", @""), [NavDataStore sharedDataStore].userID];

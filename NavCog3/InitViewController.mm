@@ -46,6 +46,11 @@
     BOOL first;
 }
 
+- (void)dealloc
+{
+    NSLog(@"dealloc InitViewController");
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     modeHelper = [[HLPSettingHelper alloc] init];
     settings = [@{} mutableCopy];
@@ -80,6 +85,9 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    self.tableView.delegate = nil;
+    self.tableView.dataSource = nil;
+    
     [super viewWillDisappear:animated];
     
     if (self.isBeingDismissed) {

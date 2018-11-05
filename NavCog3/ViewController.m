@@ -64,12 +64,23 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
 - (void)dealloc
 {
-    //[_webView prepareForDealloc];
+    NSLog(@"dealloc ViewController");
+}
+
+- (void)prepareForDealloc
+{
     _webView.delegate = nil;
-    //_webView = nil;
+    
+    dialogHelper.delegate = nil;
+    dialogHelper = nil;
+    
     recognizer = nil;
     
+    _settingButton = nil;
+    
     [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"developer_mode"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_STOP object:self];
 }
 
 - (void)viewDidLoad {
@@ -124,6 +135,8 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestRating:) name:REQUEST_RATING object:nil];
     
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prepareForDealloc) name:REQUEST_UNLOAD_VIEW object:nil];
     
     BOOL checked = [ud boolForKey:@"checked_altimeter"];
     if (!checked && ![CMAltimeter isRelativeAltitudeAvailable]) {

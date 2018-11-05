@@ -29,13 +29,13 @@
 "RESTROOM" = "トイレ";
 
 /* Toilet for people with disability */
-"FOR_DISABLEDRESTROOM" = "多目的トイレ";
+"FOR_DISABLEDRESTROOM" = "多機能トイレ";
 
 /* Toilet for female */
-"FOR_FEMALEFOR_DISABLEDRESTROOM" = "女性用多目的トイレ";
+"FOR_FEMALEFOR_DISABLEDRESTROOM" = "女性用多機能トイレ";
 
 /* Toilet for male */
-"FOR_MALEFOR_DISABLEDRESTROOM" = "男性用多目的トイレ";
+"FOR_MALEFOR_DISABLEDRESTROOM" = "男性用多機能トイレ";
 
 /* Toilet for female */
 "FOR_FEMALERESTROOM" = "女性用トイレ";

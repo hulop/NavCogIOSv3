@@ -149,12 +149,30 @@ static ServerConfig *instance;
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
-            _selectedServerConfig = (NSDictionary*)result;
+            _selectedServerConfig = [self convertRelativePath:(NSDictionary*)result withHostName:url.host];
+            
             complete(_selectedServerConfig);
         } else {
             complete(nil);
         }
     }];
+}
+
+- (NSDictionary*)convertRelativePath:(NSDictionary*)orig withHostName:(NSString*)hostname
+{
+    NSMutableDictionary* ret = [orig mutableCopy];
+    
+    [ret enumerateKeysAndObjectsUsingBlock:^(NSString*  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        if ([key rangeOfString:@"server"].location != NSNotFound) {
+            if ([obj isKindOfClass:NSString.class]) {
+                if ([((NSString*)obj) hasPrefix:@"/"]) {
+                    [ret setObject:[NSString stringWithFormat:@"%@%@", hostname, obj] forKey:key];
+                }
+            }
+        }
+    }];
+    
+    return ret;
 }
 
 - (NSArray*) checkDownloadFiles

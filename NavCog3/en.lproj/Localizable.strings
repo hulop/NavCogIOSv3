@@ -122,9 +122,8 @@
 
 "LocationNotAllowedTitle" = "Location not allowed";
 "LocationNotAllowedMessage" = "You need to allow access to location service to enable indoor localization function.
-From privacy settings, please select
-Location Services ->
-NavCog ->
+From NavCog settings, please select
+Location ->
 While Using the App";
 
 "THANKYOU_SENDING" = "Thank you for your feedback!

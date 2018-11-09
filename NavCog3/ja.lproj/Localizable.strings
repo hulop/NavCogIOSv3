@@ -138,9 +138,8 @@
 
 "LocationNotAllowedTitle" = "位置情報が許可されていません";
 "LocationNotAllowedMessage" = "屋内での位置推定の機能を使うためには位置情報サービスを許可する必要があります。
-プライバシー設定画面から
-位置情報サービス　→
-NavCog　→
+NavCogの設定画面から
+位置情報　→
 このAppの使用中のみ許可
 を選択します。";
 

@@ -115,7 +115,7 @@
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:setting
                                                   style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                      NSURL *url = [NSURL URLWithString:@"App-Prefs:root=Bluetooth"];
+                                                      NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
                                                       [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
                                                   }]];
         [alert addAction:[UIAlertAction actionWithTitle:cancel

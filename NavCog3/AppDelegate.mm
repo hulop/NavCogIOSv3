@@ -342,7 +342,7 @@ void uncaughtExceptionHandler(NSException *exception)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:setting
                                                   style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                      NSURL *url = [NSURL URLWithString:@"App-Prefs:root=Privacy"];
+                                                      NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
                                                       [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
                                                   }]];
         [alert addAction:[UIAlertAction actionWithTitle:cancel
@@ -469,21 +469,22 @@ void uncaughtExceptionHandler(NSException *exception)
     if (bluetoothManager.state == CBManagerStatePoweredOff) {
         NSString *title = NSLocalizedString(@"BluetoothOffAlertTitle", @"");
         NSString *message = NSLocalizedString(@"BluetoothOffAlertMessage", @"");
-        NSString *setting = NSLocalizedString(@"SETTING", @"");
-        NSString *cancel = NSLocalizedString(@"CANCEL", @"");
+        //NSString *setting = NSLocalizedString(@"SETTING", @"");
+        //NSString *cancel = NSLocalizedString(@"CANCEL", @"");
+        NSString *okay = NSLocalizedString(@"OK", @"");
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
                                                                        message:message
                                                                 preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:setting
+        /*[alert addAction:[UIAlertAction actionWithTitle:setting
                                                   style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                      NSURL *url = [NSURL URLWithString:@"App-Prefs:root=Bluetooth"];
+                                                      NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
                                                       [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
-                                                  }]];
-        [alert addAction:[UIAlertAction actionWithTitle:cancel
+                                                  }]];*/
+        [alert addAction:[UIAlertAction actionWithTitle:okay
                                                   style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                                                   }]];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [[self topMostController] presentViewController:alert animated:YES completion:nil];
         });
         

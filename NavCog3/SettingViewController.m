@@ -190,7 +190,7 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
                                                                            message:@"Please set up email account"
                                                                     preferredStyle:UIAlertControllerStyleAlert];
             [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK",@"HLPSettingView",@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-Prefs:root=ACCOUNT_SETTINGS&path=ADD_ACCOUNT"] options:@{} completionHandler:nil];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];
             }]];
             [self presentViewController:alert animated:YES completion:nil];
             return;
@@ -393,7 +393,7 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
                                                                        message:@"Please set up email account"
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK",@"HLPSettingView",@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-Prefs:root=ACCOUNT_SETTINGS&path=ADD_ACCOUNT"] options:@{} completionHandler:nil];            
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];            
         }]];
         [self presentViewController:alert animated:YES completion:nil];
     }

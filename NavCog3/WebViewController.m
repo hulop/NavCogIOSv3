@@ -157,7 +157,7 @@
 
     NSString *lang = [[NavDataStore sharedDataStore] userLanguage];
     // is server supported user lang
-    if ([ServerConfig sharedConfig].selected[@"name"][lang] == nil) {
+    if ([[ServerConfig sharedConfig].selected.name stringByLanguage:lang] == nil) {
         lang = @"en";
     }
     lang = [@"-" stringByAppendingString:lang];

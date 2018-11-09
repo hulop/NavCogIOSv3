@@ -26,16 +26,21 @@
 
 - (BOOL) isExpMode
 {
-    return [self expServerHost] != nil;
+    return [self expServer] != nil;
 }
 
-- (NSString*) expServerHost
+- (NSString*)httpProtocol
 {
-    if (self.selectedServerConfig) {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
+}
+
+- (NSString*) expServer
+{
+    NSString *host = self.selectedServerConfig[@"exp_server_host"];
+    if (host && [host length] > 0) {
         NSString *host = self.selectedServerConfig[@"exp_server_host"];
-        if (host && [host length] > 0) {
-            return host;
-        }
+        NSString *urlString = [NSString stringWithFormat:@"%@://%@", self.httpProtocol, host];
+        return urlString;
     }
     return nil;
 }

@@ -24,12 +24,170 @@
 #import "ServerConfig.h"
 #import "HLPDataUtil.h"
 
-#define SERVERLIST_URL @"https://hulop.github.io/serverlist.json"
+#define SERVERLIST_URLS @[@"https://hulop.github.io/serverlist.json", @"secondary", @"and so on"]
+
+@interface I18nStringsTransformer: NSValueTransformer
+@end
+@implementation I18nStringsTransformer
+static I18nStringsTransformer *I18nStringsTransformerInstance;
++ (instancetype) getInstance {
+    if (!I18nStringsTransformerInstance) {
+        I18nStringsTransformerInstance = [[I18nStringsTransformer alloc] init];
+    }
+    return I18nStringsTransformerInstance;
+}
++ (Class)transformedValueClass {
+    return [I18nStrings class];
+}
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+- (id)transformedValue:(id)value {
+    return [[I18nStrings alloc] initWithDictionary:value];
+}
+@end
+
+@implementation I18nStrings {
+    NSDictionary* _table;
+}
+
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary
+{
+    self = [super init];
+    _table = dictionary;
+    return self;
+}
+
+- (NSString *)stringByLanguage:(NSString *)lang
+{
+    if (lang == nil) {
+        lang = @"en";
+    }
+    if (_table && _table[lang]) {
+        return _table[lang];
+    }
+    //return [NSString stringWithFormat:@"_string_not_found_with_%@", lang];
+    return nil;
+}
+@end
+
+
+@implementation ServerSetting
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"hostname": @"hostname",
+             @"configFileName": @"config_file_name"
+             };
+}
+@end
+
+@implementation ServerEntry {
+    int serverIndex;
+    NSString *_hostname;
+    NSString *_configFileName;
+}
+@synthesize hostname = _hostname;
+@synthesize configFileName = _configFileName;
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"serverID": @"server_id",
+             @"available": @"available",
+             @"name": @"name",
+             @"serverDescription": @"description",
+             @"settings": @"settings",
+             @"hostname": @"hostname",
+             @"configFileName": @"config_file_name",
+             @"noCheckAgreement": @"no_check_agreement",
+             @"selected": @"selected",
+             @"useHttp": @"use_http",
+             @"minimumAppVersion":@"minimum_app_version"
+             };
+}
+
++ (NSValueTransformer *)nameJSONTransformer {
+    return [I18nStringsTransformer getInstance];
+}
+
++ (NSValueTransformer *)serverDescriptionJSONTransformer {
+    return [I18nStringsTransformer getInstance];
+}
+
++ (NSValueTransformer *)settingsJSONTransformer {
+    return [MTLJSONAdapter arrayTransformerWithModelClass:[ServerSetting class]];
+}
+
+
+-(NSString *)hostname
+{
+    unsigned long limit = (_settings != nil) ? _settings.count : 1;
+    if (serverIndex < limit) {
+        if (_settings) {
+            return _settings[serverIndex].hostname;
+        } else {
+            return _hostname;
+        }
+    } else {
+        return nil;
+    }
+}
+
+- (NSString *)configFileName
+{
+    unsigned long limit = (_settings != nil) ? _settings.count : 1;
+    if (serverIndex < limit) {
+        if (_settings) {
+            return _settings[serverIndex].configFileName;
+        } else {
+            return _configFileName;
+        }
+    } else {
+        return nil;
+    }
+}
+
+- (void)failed
+{
+    serverIndex++;
+}
+
+- (NSString*)httpProtocol
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
+}
+
+- (NSURL *)checkAgreementURLWithIdentifier:(NSString *)identifier
+{
+    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
+    NSString *path = [NSString stringWithFormat:@"api/check_agreement?id=%@&appname=%@",identifier, appName];
+    return [self URLWithPath:path];
+}
+
+- (NSURL *)agreementURLWithIdentifier:(NSString *)identifier
+{
+    NSDictionary *config = [ServerConfig sharedConfig].agreementConfig;
+    NSString *path = [NSString stringWithFormat:@"%@?id=%@", config[@"path"], identifier];
+    return [self URLWithPath:path];
+}
+
+- (NSURL *)configFileURL
+{
+    return [self URLWithPath:[NSString stringWithFormat:@"config/%@", self.configFileName]];
+}
+
+- (NSURL*)URLWithPath:(NSString *)path
+{
+    NSString *urlString = [NSString stringWithFormat:@"%@://%@/%@", self.httpProtocol, self.hostname, path];
+    return [NSURL URLWithString:urlString];
+}
+
+@end
+
 
 @implementation ServerConfig {
-    NSURL *targetDir;
-    int requestCount;
-    NSDictionary *_selected;
+    NSURL* targetDir;
+    int _requestCount;
+    ServerEntry* _selected;
 }
 
 static ServerConfig *instance;
@@ -65,24 +223,47 @@ static ServerConfig *instance;
     _selected = nil;
 }
 
-- (void)setSelected:(NSDictionary *)selected
+- (void)setSelected:(ServerEntry *)selected
 {
     _selected = selected;
     
-    if (_selected[@"use_http"] && [_selected[@"use_http"] boolValue]) {
+    if (_selected.useHttp) {
         [[NSUserDefaults standardUserDefaults] setValue:@(NO) forKey:@"https_connection"];
     } else {
         [[NSUserDefaults standardUserDefaults] setValue:@(YES) forKey:@"https_connection"];
     }
 }
 
-- (NSDictionary *)selected
+- (ServerEntry *)selected
 {
     return _selected;
 }
 
-- (void)requestServerList:(NSString *)path withComplete:(void (^)(NSDictionary *))complete
+- (void)requestServerList:(void (^)(ServerList *))complete
 {
+    ServerList*(^processServerList)(NSDictionary*) = ^(NSDictionary* json) {
+        if (json && json[@"servers"]) {
+            NSMutableArray* ret = [@[] mutableCopy];
+            [json[@"servers"] enumerateObjectsUsingBlock:^(NSDictionary* _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSError *error;
+                ServerEntry* entry = [MTLJSONAdapter modelOfClass:ServerEntry.class
+                                               fromJSONDictionary:obj error:&error];
+                if (error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }
+                [ret addObject:entry];
+            }];
+            
+            for (ServerEntry *entry in ret) {
+                if (entry.selected) {
+                    self.selected = entry;
+                    break;
+                }
+            }
+            return (ServerList*)ret;
+        }
+        return (ServerList*)nil;
+    };
     
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -91,68 +272,59 @@ static ServerConfig *instance;
     if ([fm fileExistsAtPath:serverListPath]) {
         NSError *error;
         NSData *data = [NSData dataWithContentsOfFile:serverListPath];
+        
         NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-        if (json) {
-            _serverList = json;
-            
-            for (NSDictionary *server in _serverList[@"servers"]) {
-                if ([server[@"selected"] boolValue]) {
-                    self.selected = server;
-                }
-            }
-            complete(json);
+        if ((_serverList = processServerList(json)) != nil) {
+            complete(_serverList);
             return;
         }
     }
-    NSString *serverlist = SERVERLIST_URL;
+    NSArray *servers = SERVERLIST_URLS;
     
     NSURL *serverListURL = [[NSBundle mainBundle] URLForResource:@"serverlist" withExtension:@"txt"];
     if (serverListURL) {
         NSError *error;
-        serverlist = [NSString stringWithContentsOfURL:serverListURL encoding:NSUTF8StringEncoding error:&error];
-        NSArray* allLinedStrings = [serverlist componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-        serverlist = [allLinedStrings objectAtIndex:0];
-        serverlist = [serverlist stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        NSString *serverlisttext = [NSString stringWithContentsOfURL:serverListURL encoding:NSUTF8StringEncoding error:&error];
+        servers = [serverlisttext componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     }
     
     NSString* serverListURLPath = [documentsPath stringByAppendingPathComponent:@"serverlist.txt"];
     if ([fm fileExistsAtPath:serverListURLPath]) {
         NSError *error;
-        serverlist = [NSString stringWithContentsOfFile:serverListURLPath encoding:NSUTF8StringEncoding error:&error];
-        serverlist = [serverlist stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        NSString *serverlisttext = [NSString stringWithContentsOfFile:serverListURLPath encoding:NSUTF8StringEncoding error:&error];
+        servers = [serverlisttext componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     }
     
-    [HLPDataUtil getJSON:[NSURL URLWithString:serverlist] withCallback:^(NSObject *result) {
-        if (result && [result isKindOfClass:NSDictionary.class]) {
-            _serverList = (NSDictionary*)result;
-            
-            for (NSDictionary *server in _serverList[@"servers"]) {
-                if ([server[@"selected"] boolValue]) {
-                    self.selected = server;
+    __block int index = 0;
+    __block void (^obtainList)(NSString *) = ^(NSString* url) {
+        url = [url stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        
+        [HLPDataUtil getJSON:[NSURL URLWithString:url] withCallback:^(NSObject *result) {
+            if (result && [result isKindOfClass:NSDictionary.class]) {
+                if ((_serverList = processServerList((NSDictionary*)result)) != nil) {
+                    complete(_serverList);
+                    return;
                 }
             }
-            complete(_serverList);
-        } else {
-            complete(nil);
-        }
-    }];
+            if (index < servers.count) {
+                index++;
+                obtainList(servers[index]);
+            }
+        }];
+    };
+    obtainList(servers[index]);
 }
 
 - (void)requestServerConfig:(void(^)(NSDictionary*))complete
 {
-    NSString *server_host = [self.selected objectForKey:@"hostname"];
-    NSString *config_file_name = [self.selected objectForKey:@"config_file_name"];
-    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
-    
-    config_file_name = config_file_name?config_file_name:@"server_config.json";
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/config/%@",https, server_host, config_file_name]];
-    
+    NSURL* url = self.selected.configFileURL;
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
-            _selectedServerConfig = [self convertRelativePath:(NSDictionary*)result withHostName:url.host];
-            
+            _selectedServerConfig = (NSDictionary*)result;
+            _selectedServerConfig = [self convertRelativePath:_selectedServerConfig withHostName:url.host];
             complete(_selectedServerConfig);
         } else {
+            [self.selected failed];
             complete(nil);
         }
     }];
@@ -177,11 +349,8 @@ static ServerConfig *instance;
 
 - (NSArray*) checkDownloadFiles
 {
-    NSString *server_host = [self.selected objectForKey:@"hostname"];
-    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
     NSDictionary *json = _selectedServerConfig;
 
-    NSLog(@"server_config.json: %@", json);
     NSMutableArray *files = [[NSMutableArray alloc] init];
     NSMutableDictionary *config_json = [[NSMutableDictionary alloc] init];
     NSArray* map_files = [json objectForKey:@"map_files"];
@@ -193,7 +362,7 @@ static ServerConfig *instance;
             if (![self checkIfExists:src size:size]) {
                 [files addObject:@{
                                    @"length": @(size),
-                                   @"url": [NSString stringWithFormat:@"%@://%@/%@",https, server_host, src]
+                                   @"url": [self.selected URLWithPath: src]
                                    }];
             }
             [maps addObject:[self getDestLocation:src].path];
@@ -211,7 +380,7 @@ static ServerConfig *instance;
             if (![self checkIfExists:src size:size]) {
                 [files addObject:@{
                                    @"length": @(size),
-                                   @"url": [NSString stringWithFormat:@"%@://%@/%@",https, server_host, src]
+                                   @"url": [self.selected URLWithPath: src]
                                    }];
             }
             [config_json setValue:[self getDestLocation:src].path forKey:key];
@@ -247,23 +416,20 @@ static ServerConfig *instance;
 
 - (void)checkAgreementForIdentifier:(NSString*)identifier withCompletion:(void(^)(NSDictionary*))complete
 {
-    if ([[[ServerConfig sharedConfig].selected objectForKey:@"no_checkagreement"] boolValue]) {
+    if (self.selected.noCheckAgreement) {
         _agreementConfig = @{@"agreed":@(true)};
         complete(_agreementConfig);
         return;
     }
-
-    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
-    NSLog(@"AppName: %@",appName);
-    NSString *server_host = [[ServerConfig sharedConfig].selected objectForKey:@"hostname"];
-    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/api/check_agreement?id=%@&appname=%@",https,server_host, identifier, appName]];
+    
+    NSURL *url = [self.selected checkAgreementURLWithIdentifier:identifier];
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
             _agreementConfig = (NSDictionary*)result;
             complete(_agreementConfig);
         } else {
+            [self.selected failed];
             complete(nil);
         }
     }];
@@ -273,7 +439,7 @@ static ServerConfig *instance;
 {
     NSString *identifier = @"temp";
     if (_selected) {
-        identifier = _selected[@"server_id"];
+        identifier = _selected.serverID;
     }
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
@@ -296,7 +462,7 @@ static ServerConfig *instance;
 {
     NSString *identifier = @"temp";
     if (_selected) {
-        identifier = _selected[@"server_id"];
+        identifier = _selected.serverID;
     }
 
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];

@@ -287,7 +287,7 @@ static HLPSetting *idLabel;
         NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
         NavDestination *dest = [destSource destinationForRowAtIndexPath:index];
         NSString *title = dest.filter[@"building"];
-        if ([title isEqual:[NSNull null]]) {
+        if (title == nil || [title isEqual:[NSNull null]]) {
             title = @"NOAREA";
         }
         [areaSettingHelper addActionTitle:title Name:title];

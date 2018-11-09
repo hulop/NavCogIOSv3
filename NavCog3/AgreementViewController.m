@@ -42,11 +42,9 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     if (count++ == 0) {
-        NSString *server_host = [[ServerConfig sharedConfig].selected objectForKey:@"hostname"];
         NSString *device_id = [[UIDevice currentDevice].identifierForVendor UUIDString];
-        NSDictionary *config = [ServerConfig sharedConfig].agreementConfig;
-        NSString *agreementPath = config[@"path"];
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@%@?id=%@",server_host, agreementPath, device_id]];
+        NSURL *url = [[ServerConfig sharedConfig].selected agreementURLWithIdentifier:device_id];
+        
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
         request.timeoutInterval = 30;
         [self.webView loadRequest:request];

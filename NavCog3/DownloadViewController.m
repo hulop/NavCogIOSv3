@@ -127,7 +127,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
     }
     
     NSDictionary *file = [downloadingFiles firstObject];
-    NSURL *url = [NSURL URLWithString:file[@"url"]];
+    NSURL *url = file[@"url"];
 
     NSLog(@"start download %@", url);
     NSURLSessionDownloadTask * task = [session downloadTaskWithURL:url];
@@ -136,7 +136,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
 
 - (void)updateProgress
 {
-    NSLog(@"downloadedLength=%ld", downloadedLength);
+    //NSLog(@"downloadedLength=%ld", downloadedLength);
     progress = (double)downloadedLength / totalLength;
     dispatch_async(dispatch_get_main_queue(), ^{
         self.progressBar.progress = progress;

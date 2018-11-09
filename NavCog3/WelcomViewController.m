@@ -105,7 +105,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
             });
-            [[ServerConfig sharedConfig] requestServerList:@"" withComplete:^(NSDictionary *config) {
+            [[ServerConfig sharedConfig] requestServerList:^(ServerList *config) {
                 [self checkConfig];
                 if (config) { retryCount = 0; }
             }];
@@ -191,7 +191,7 @@
                                                                   userInfo:config.selectedServerConfig];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    NSString *hostname = config.selected[@"hostname"];
+                    NSString *hostname = config.selected.hostname;
                     [[NSUserDefaults standardUserDefaults] setObject:hostname forKey:@"selected_hokoukukan_server"];
                     [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
                 });

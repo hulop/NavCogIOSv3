@@ -29,7 +29,7 @@
 @end
 
 @implementation ServerSelectionViewController {
-    NSDictionary *servers;
+    ServerList *servers;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
@@ -63,16 +63,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *server = [self serverAtIndexPath:indexPath];
+    ServerEntry *server = [self serverAtIndexPath:indexPath];
     
-    if ([server[@"available"] boolValue] ||
+    if (server.available ||
         [[AuthManager sharedManager] isDeveloperAuthorized]) {
         
-        NSString *minimum_app_version = server[@"minimum_app_version"];
-        if (minimum_app_version) {
+        if (server.minimumAppVersion) {
             NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
             
-            if ([minimum_app_version compare:versionNo options:NSNumericSearch] == NSOrderedDescending) {
+            if ([server.minimumAppVersion compare:versionNo options:NSNumericSearch] == NSOrderedDescending) {
                 NSString *title = NSLocalizedString(@"NeedToUpdateAppTitle", @"");
                 NSString *message = NSLocalizedString(@"NeedToUpdateAppMessage", @"");
                 NSString *ok = NSLocalizedString(@"OpenAppStore", @"");
@@ -111,32 +110,22 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+
+    
     if (!servers) {
         return 0;
     }
-    if (!servers[@"servers"]) {
-        return 0;
-    }
-    if (![servers[@"servers"] isKindOfClass:NSArray.class]) {
-        return 0;
-    }
-    return [servers[@"servers"] count];
+    return [servers count];
 }
 
-- (NSDictionary*) serverAtIndexPath:(NSIndexPath*)indexPath
+- (ServerEntry*) serverAtIndexPath:(NSIndexPath*)indexPath
 {
     if (!servers) {
         return nil;
     }
-    if (!servers[@"servers"]) {
-        return nil;
-    }
-    if (![servers[@"servers"] isKindOfClass:NSArray.class]) {
-        return nil;
-    }
-    NSArray *array = servers[@"servers"];
-    if (0 <= indexPath.row && indexPath.row < [array count]) {
-        return array[indexPath.row];
+
+    if (0 <= indexPath.row && indexPath.row < [servers count]) {
+        return servers[indexPath.row];
     }
     return nil;
 }
@@ -144,14 +133,12 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"server_candidate_cell" forIndexPath:indexPath];
     
-    NSDictionary *server = [self serverAtIndexPath:indexPath];
+    ServerEntry *server = [self serverAtIndexPath:indexPath];
     
     if (server) {
         NSString *userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
 
-        BOOL available = [server[@"available"] boolValue];
-        
-        if (available ||
+        if (server.available ||
             [[AuthManager sharedManager] isDeveloperAuthorized]) {
             //cell.accessoryType = UITableViewCellAccessoryCheckmark;
             cell.textLabel.textColor = [UIColor blackColor];
@@ -161,14 +148,8 @@
             cell.textLabel.textColor = [UIColor grayColor];
             cell.detailTextLabel.textColor = [UIColor grayColor];
         }
-        NSString *name = server[@"name"][userLanguage];
-        NSString *description = server[@"description"][userLanguage];
-        if (name == nil) {
-            name = server[@"name"][@"en"];
-        }
-        if (description == nil) {
-            description = server[@"description"][@"en"];
-        }
+        NSString *name = [server.name stringByLanguage:userLanguage];
+        NSString *description = [server.serverDescription stringByLanguage:userLanguage];
         cell.textLabel.text = name;
         cell.detailTextLabel.text = description;
     }

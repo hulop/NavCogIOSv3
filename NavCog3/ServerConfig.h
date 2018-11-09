@@ -22,19 +22,53 @@
 
 
 #import <Foundation/Foundation.h>
+#import <Mantle/Mantle.h>
+
+@interface I18nStrings : NSObject
+- (instancetype)initWithDictionary:(NSDictionary*)dictionary;
+- (NSString*_Nullable)stringByLanguage:(NSString*_Nullable)lang;
+@end
+
+@interface ServerSetting : MTLModel<MTLJSONSerializing>
+@property (readonly) NSString* _Nonnull hostname;
+@property (readonly) NSString* _Nonnull configFileName;
+@end
+
+@interface ServerEntry : MTLModel<MTLJSONSerializing>
+@property (readonly) NSString* _Nonnull serverID;
+@property (readonly) BOOL available;
+@property (readonly) I18nStrings* _Nonnull name;
+@property (readonly) I18nStrings* _Nonnull serverDescription;
+@property (readonly) NSArray<ServerSetting*>* _Nullable settings;
+@property (readonly) NSString* _Nullable hostname;
+@property (readonly) NSString* _Nullable configFileName;
+@property (readonly) BOOL noCheckAgreement;
+@property (readonly) BOOL selected;
+@property (readonly) BOOL useHttp;
+@property (readonly) NSString* _Nullable minimumAppVersion;
+
+- (void)failed;
+- (NSURL*)configFileURL;
+- (NSURL*)checkAgreementURLWithIdentifier:(NSString*)identifier;
+- (NSURL*)agreementURLWithIdentifier:(NSString*)identifier;
+- (NSURL*)URLWithPath:(NSString*)path;
+@end
+
+typedef NSArray<ServerEntry*> ServerList;
 
 @interface ServerConfig : NSObject
 
-@property NSDictionary *serverList;
+@property ServerList* _Nonnull serverList;
 
-@property NSDictionary *selected;
+@property ServerEntry* _Nullable selected;
 @property (readonly) NSDictionary *selectedServerConfig;
 @property (readonly) NSDictionary *agreementConfig;
 @property (readonly) NSDictionary *downloadConfig;
 
 + (instancetype) sharedConfig;
 
-- (void) requestServerList:(NSString*)path withComplete:(void(^)(NSDictionary*))complete;
+- (void) requestServerList:(void(^)(ServerList*))complete;
+
 - (void) requestServerConfig:(void(^)(NSDictionary* config))complete;
 - (NSArray*) checkDownloadFiles;
 - (void) checkAgreementForIdentifier:(NSString*)identifier withCompletion:(void(^)(NSDictionary* config))complete;

@@ -100,11 +100,23 @@
     [self.devRight setTitle:@"Right" forState:UIControlStateNormal];
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    _webView = [[NavBlindWebView alloc] initWithFrame:CGRectMake(0,0,0,0) configuration:[[WKWebViewConfiguration alloc] init]];
+    _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
+    [self.view addSubview:_webView];
+    for(UIView *v in self.view.subviews) {
+        if (v != _webView) {
+            [self.view bringSubviewToFront:v];
+        }
+    }
+    _webView.userMode = [ud stringForKey:@"user_mode"];
     _webView.config = @{
                         @"serverHost":[ud stringForKey:@"selected_hokoukukan_server"],
+                        @"serverContext":[ud stringForKey:@"hokoukukan_server_context"],
+                        @"usesHttps":@([ud boolForKey:@"https_connection"])
                         };
-    _webView.userMode = [ud stringForKey:@"user_mode"];
     _webView.delegate = self;
+    //_webView.tts = self;
+    [_webView setFullScreenForView:self.view];
     
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
@@ -327,6 +339,16 @@ double stdev(double array[], long count) {
     [[NavSound sharedInstance] vibrate:nil];
 }
 
+- (BOOL)isSpeaking
+{
+    return [[NavDeviceTTS sharedTTS] isSpeaking];
+}
+
+- (void)speak:(NSString *)text force:(BOOL)isForce completionHandler:(void (^)(void))handler
+{
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:handler];
+}
+
 - (void)speak:(NSString *)text withOptions:(NSDictionary *)options completionHandler:(void (^)())handler
 {
     [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:handler];
@@ -335,6 +357,40 @@ double stdev(double array[], long count) {
 - (BOOL)isAutoProceed
 {
     return previewer.isAutoProceed;
+}
+
+#pragma mark - MKWebViewDelegate
+
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation
+{
+    [_indicator startAnimating];
+    _indicator.hidden = NO;
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+{
+    [_indicator stopAnimating];
+    _indicator.hidden = YES;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self insertScript];
+    });
+}
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    [_indicator stopAnimating];
+    _indicator.hidden = YES;
+    _retryButton.hidden = NO;
+    _errorMessage.hidden = NO;
+}
+
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    [_indicator stopAnimating];
+    _indicator.hidden = YES;
+    _retryButton.hidden = NO;
+    _errorMessage.hidden = NO;
 }
 
 #pragma mark - HLPPreviewerDelegate
@@ -658,22 +714,6 @@ double stdev(double array[], long count) {
             self.searchButton.title = @"Search";
             self.searchButton.accessibilityLabel = @"Search";
         }
-    });
-}
-
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-    [_indicator startAnimating];
-    _indicator.hidden = NO;
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    [_indicator stopAnimating];
-    _indicator.hidden = YES;
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self insertScript];
     });
 }
 

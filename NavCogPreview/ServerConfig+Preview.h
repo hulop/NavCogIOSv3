@@ -28,7 +28,7 @@
 @interface ServerConfig (Exp)
 
 - (BOOL) isExpMode;
-- (NSString*) expServerHost;
+- (NSString*) expServer;
 - (BOOL) useDeviceId;
 - (BOOL) useAreaSelection;
 - (BOOL) onlyRoutePreview;

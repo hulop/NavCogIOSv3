@@ -45,11 +45,9 @@ static ExpConfig *instance;
 - (void)requestUserInfo:(NSString*)user_id withComplete:(void(^)(NSDictionary*))complete
 {
     _user_id = user_id;
-    NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
-    NSString *https = [[[ServerConfig sharedConfig].selected objectForKey:@"use_http"] boolValue] ? @"http": @"https";
+    NSString *server = [[ServerConfig sharedConfig] expServer];
     BOOL useDeviceID = [[ServerConfig sharedConfig] useDeviceId];
-    
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/user?id=%@",https, server_host, user_id]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/user?id=%@",server, user_id]];
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
@@ -75,13 +73,12 @@ static ExpConfig *instance;
     _user_id = user_id;
     NSError *error;
     
-    NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
-    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
+    NSString *server = [[ServerConfig sharedConfig] expServer];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/user?id=%@",server, user_id]];
     
-    NSURL *userurl = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/user?id=%@",https, server_host, _user_id]];
     NSData *userdata = [NSJSONSerialization dataWithJSONObject:info options:0 error:&error];
     
-    [HLPDataUtil postRequest:userurl
+    [HLPDataUtil postRequest:url
                  contentType:@"application/json; charset=UTF-8"
                     withData:userdata
                     callback:^(NSData *response)
@@ -117,11 +114,9 @@ static ExpConfig *instance;
         complete(nil);
         return;
     }
-    NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
-    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
-    NSString *routes_file_name = @"exp_routes.json";
-    
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/%@",https, server_host, routes_file_name]];
+    NSString *server = [[ServerConfig sharedConfig] expServer];
+    BOOL useDeviceID = [[ServerConfig sharedConfig] useDeviceId];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/exp_routes.json",server]];
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
@@ -227,10 +222,8 @@ static ExpConfig *instance;
     }
     info[@"routes"] = routes;
 
-    NSString *server_host = [[ServerConfig sharedConfig] expServerHost];
-    NSString *https = [[NSUserDefaults standardUserDefaults] boolForKey:@"https_connection"] ? @"https" : @"http";
-    
-    NSURL *logurl = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/log?id=%@",https, server_host, logFileId]];
+    NSString *server = [[ServerConfig sharedConfig] expServer];
+    NSURL *logurl = [NSURL URLWithString:[NSString stringWithFormat:@"%@/log?id=%@",server, logFileId]];
     NSDictionary *logdic = @{
                               @"_id": logFileId,
                               @"user_id": _user_id,
@@ -240,7 +233,7 @@ static ExpConfig *instance;
     
     NSData *logdata = [NSJSONSerialization dataWithJSONObject:logdic options:0 error:&error];
     
-    NSURL *userurl = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/user?id=%@",https, server_host, _user_id]];
+    NSURL *userurl = [NSURL URLWithString:[NSString stringWithFormat:@"%@/user?id=%@",server, _user_id]];
     NSData *userdata = [NSJSONSerialization dataWithJSONObject:info options:0 error:&error];
     
     [HLPDataUtil postRequest:logurl

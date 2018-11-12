@@ -1732,7 +1732,9 @@ static NavNavigatorConstants *_instance;
                             HLPLocation *loc = elevatorLocation(linkInfo.link);
                             [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:NAN];
                             
-                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:self userInfo:@{@"location":loc}];
+                            if(![[NavDataStore sharedDataStore] previewMode]){
+                                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:self userInfo:@{@"location":loc}];
+                            }
                             lastElevatorResetTime = NAN;
                         }
                         
@@ -1864,7 +1866,9 @@ static NavNavigatorConstants *_instance;
                             HLPLocation *loc = elevatorLocation(linkInfo.link);
                             [loc updateLat:loc.lat Lng:loc.lng Accuracy:0 Floor:NAN];
                             
-                            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:self userInfo:@{@"location":loc}];
+                            if(![[NavDataStore sharedDataStore] previewMode]){
+                                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESET object:self userInfo:@{@"location":loc}];
+                            }
                             lastElevatorResetTime = now;
                         }
                     }

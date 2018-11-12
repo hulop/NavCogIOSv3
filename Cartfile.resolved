@@ -1,6 +1,6 @@
 github "Mantle/Mantle" "2.0.7"
 github "ZipArchive/ZipArchive" "v2.0.4"
-github "hulop/HLPDialog" "1.0.2"
+github "hulop/HLPDialog" "v1.0.3"
 github "hulop/HLPLocationManager" "v1.0.9-d"
 github "hulop/HLPWebView" "6d1e0715ff9968f4da24c0fb7d60143c3aaf4da5"
 github "watson-developer-cloud/swift-sdk" "v0.18.0"

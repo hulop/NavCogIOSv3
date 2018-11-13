@@ -177,9 +177,6 @@
 		7EE8E5E71EE94857006EE7C3 /* WelcomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E5E61EE94857006EE7C3 /* WelcomViewController.m */; };
 		7EE8E60F1EF27541006EE7C3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8E60E1EF27541006EE7C3 /* main.m */; };
 		7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */; };
-		7EF3670A219298B8004D63E4 /* public-key.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7EF36709219298B8004D63E4 /* public-key.txt */; };
-		7EF3670B2194FA8D004D63E4 /* public-key.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7EF36709219298B8004D63E4 /* public-key.txt */; };
-		7EF3670C2194FA97004D63E4 /* public-key.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7EF36709219298B8004D63E4 /* public-key.txt */; };
 		7EF45E321E3F1E3700208042 /* AgreementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2A1E3F1E3700208042 /* AgreementViewController.m */; };
 		7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */; };
 		7EF45E341E3F1E3700208042 /* ServerSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */; };
@@ -1047,7 +1044,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7EF3670B2194FA8D004D63E4 /* public-key.txt in Resources */,
 				7E27F93B1EFA64C900FB3309 /* HLPSettingViewPickerCell.xib in Resources */,
 				7E27F93C1EFA64C900FB3309 /* HLPSettingViewSliderCell.xib in Resources */,
 				A9A695C12137CAA000009527 /* Fingerprint.strings in Resources */,
@@ -1087,7 +1083,6 @@
 				7EDEDC2F1D1E0C6800AC111A /* LaunchScreen.storyboard in Resources */,
 				7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */,
 				7E9238EB1D5189F100875766 /* HLPSettingViewSliderCell.xib in Resources */,
-				7EF3670A219298B8004D63E4 /* public-key.txt in Resources */,
 				7E9238EC1D5189F100875766 /* HLPSettingViewSubtitleCell.xib in Resources */,
 				7E308BDB1DAF147600E525F6 /* BlindView.stringsdict in Resources */,
 				7E96D9271DAC916C00D57C8C /* BlindView.strings in Resources */,
@@ -1108,7 +1103,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7EF3670C2194FA97004D63E4 /* public-key.txt in Resources */,
 				7E5D3BBB1F01FC38002420DA /* footstep-l.aiff in Resources */,
 				7E27F9421EFA70BC00FB3309 /* HLPSettingViewPickerCell.xib in Resources */,
 				7E27F9431EFA70BC00FB3309 /* HLPSettingViewSliderCell.xib in Resources */,

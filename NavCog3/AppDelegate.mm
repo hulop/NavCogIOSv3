@@ -194,12 +194,13 @@ void uncaughtExceptionHandler(NSException *exception)
 
 - (void)locationChanged:(NSNotification*)note
 {
-    
+    HLPLocation *loc = [NavDataStore sharedDataStore].currentLocation;
+    [[DialogManager sharedManager] changeLocationWithLat:loc.lat lng:loc.lng floor:loc.floor];
 }
 
 - (void)buildingChanged:(NSNotification*)note
 {
-    
+    [[DialogManager sharedManager] changeBuilding:note.userInfo[@"building"]];
 }
 
 #pragma mark - NotificationCenter Observers

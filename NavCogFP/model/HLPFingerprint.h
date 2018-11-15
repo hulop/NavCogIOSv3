@@ -32,6 +32,7 @@
 @end
 
 @interface HLPFloorplan : HLPDBObject
+@property (nonatomic, readonly) NSString *type;
 @property (nonatomic, readonly) NSString *group;
 @property (nonatomic, readonly) double floor;
 @property (nonatomic, readonly) double origin_x;

@@ -51,6 +51,7 @@ static NSValueTransformer *transformer;
 +(NSDictionary *)JSONKeyPathsByPropertyKey
 {
     return [[super JSONKeyPathsByPropertyKey] mtl_dictionaryByAddingEntriesFromDictionary:@{
+             @"type": @"type",
              @"group": @"group",
              @"floor": @"floor",
              @"origin_x": @"origin_x",

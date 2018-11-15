@@ -172,17 +172,20 @@ static FingerprintManager *instance;
                     NSLog(@"%@", error);
                     NSLog(@"%@", dic);
                 } else {
-                    [temp addObject:rp];
+                    
                     NSString *refid = rp.refid[@"$oid"];
-                    NSString *name = rp._metadata[@"name"];
-                    if (refid && ![name containsString:@"ARKit"]) {
-                        if (rp.x == 0 && rp.y == 0 && rp.rotate == 0) {
-                            _floorplanRefpointMap[refid] = rp;
-                        }
-                    }
                     if (_floorplanMap[refid]) {
                         [rp updateWithFloorplan:_floorplanMap[refid]];
+                        NSString *type = [_floorplanMap[refid] type];
+                        
+                        if (refid && [@"floormap" isEqualToString:type]) {
+                            [temp addObject:rp];
+                            if (rp.x == 0 && rp.y == 0 && rp.rotate == 0) {
+                                _floorplanRefpointMap[refid] = rp;
+                            }
+                        }
                     }
+                    
                 }
             }
             _refpoints = temp;
@@ -251,6 +254,9 @@ static FingerprintManager *instance;
 
 - (BOOL) createRefpointForFloorplan:(HLPFloorplan*)fp withName:(NSString*)extName withComplete:(void(^)(HLPRefpoint*)) complete
 {
+    if (![fp.type isEqualToString:@"floormap"]) {
+        return false;
+    }
     if (_floorplanRefpointMap[fp._id[@"$oid"]] && !extName) {
         return false;
     }
@@ -553,6 +559,8 @@ static FingerprintManager *instance;
         return;
     }
     
+    HLPFloorplan *fp = _selectedFloorplan;
+    
     lat = lat_;
     lng = lng_;
     
@@ -561,6 +569,11 @@ static FingerprintManager *instance;
     MKMapPoint local = [FingerprintManager convertFromGlobal:g ToLocalWithRefpoint:_selectedRefpoint];
     x = local.x;
     y = local.y;
+    
+    if ([fp.beacons.crs isEqualToString:@"epsg:3857"]) {
+        x = x * fp.ppm_x + fp.origin_x;
+        y = y * fp.ppm_y + fp.origin_y;
+    }
     
     NSError *error;
     NSDictionary *dic =
@@ -580,7 +593,6 @@ static FingerprintManager *instance;
     HLPGeoJSONFeature *feature = [MTLJSONAdapter modelOfClass:HLPGeoJSONFeature.class fromJSONDictionary:dic error:&error];
 
     
-    HLPFloorplan *fp = _selectedFloorplan;
     NSMutableArray *features = [[NSMutableArray alloc] initWithArray:fp.beacons.features];
     [features addObject:feature];
     

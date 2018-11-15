@@ -347,7 +347,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showRefpoint:manager.selectedRefpoint];
         if (fpMode == FPModeBeacon) {
-            [self showBeacons:manager.selectedFloorplan.beacons withRefpoint:manager.selectedRefpoint];
+            [self showBeaconsOnFloorplan:manager.selectedFloorplan withRefpoint:manager.selectedRefpoint];
         }
         
         [self updateView];
@@ -371,9 +371,9 @@
         [NavUtil hideModalWaiting];
         
         [self showRefpoint:manager.selectedRefpoint];
-        if (fpMode == FPModeBeacon) {
-            [self showBeacons:manager.selectedFloorplan.beacons withRefpoint:manager.selectedRefpoint];
-        }
+        //if (fpMode == FPModeBeacon) {
+        //[self showBeaconsOnFloorplan:manager.selectedFloorplan withRefpoint:manager.selectedRefpoint];
+        //}
         [self updateView];
     });
 }
@@ -921,6 +921,7 @@
 
 - (void) reload
 {
+    fpm.delegate = self;
     BOOL showRoute = [[NSUserDefaults standardUserDefaults] boolForKey:@"finger_printing_show_route"];
     
     if (fpMode == FPModePOI || showRoute) {
@@ -976,13 +977,17 @@
     }];
 }
 
-- (void) showBeacons:(HLPGeoJSON*) beacons withRefpoint:(HLPRefpoint*)rp
+- (void) showBeaconsOnFloorplan:(HLPFloorplan*) floorplan withRefpoint:(HLPRefpoint*)rp
 {
-    [self showFeatures:beacons.features withStyle:^(NSObject *obj) {
+    NSLog(@"showBeacons");
+    [self showFeatures:floorplan.beacons.features withStyle:^(NSObject *obj) {
         if ([obj isKindOfClass:HLPGeoJSONFeature.class]) {
             HLPGeoJSONFeature* f = (HLPGeoJSONFeature*)obj;
             if ([f.properties[@"type"] isEqualToString:@"beacon"]) {
                 MKMapPoint local = MKMapPointMake([f.geometry.coordinates[0] doubleValue], [f.geometry.coordinates[1] doubleValue]);
+                if ([floorplan.beacons.crs isEqualToString:@"epsg:3857"]) { // updated feature
+                    local = MKMapPointMake((local.x - floorplan.origin_x) / floorplan.ppm_x , (local.y - floorplan.origin_y) / floorplan.ppm_y);
+                }
                 CLLocationCoordinate2D global = [FingerprintManager convertFromLocal:local ToGlobalWithRefpoint:rp];
                 
                 return @{
@@ -1091,6 +1096,7 @@
         NSString* str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
         NSString* script = [NSString stringWithFormat:@"$hulop.fp.showFingerprints(%@);", str];
         //NSLog(@"%@", script);
+        NSLog(@"showFeatures");
         dispatch_async(dispatch_get_main_queue(), ^{
             [_webView evaluateJavaScript:script completionHandler:nil];
         });
@@ -1310,7 +1316,8 @@
                 } withType:@"Beacon"];
             } else {
                 batvc = [[UIStoryboard storyboardWithName:@"FingerPrint" bundle:nil] instantiateViewControllerWithIdentifier:@"beaconadd"];
-                [self.navigationController pushViewController:batvc animated:YES];
+                [self.navigationController showDetailViewController:batvc sender:self];
+                //[self.navigationController pushViewController:batvc animated:YES];
             }
         } else if (fpMode == FPModePOI) {
             if (selectedFeature && [selectedFeature isKindOfClass:HLPGeoJSONFeature.class]) {
@@ -1370,7 +1377,7 @@
         [poim addPOI:poivc.selectedPOI at:center withOptions:@{}];
         poivc.selectedPOI = nil;
     }
-    
+    [self reload];
 }
 
 # pragma mark action

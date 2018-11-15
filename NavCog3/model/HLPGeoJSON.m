@@ -148,7 +148,8 @@
 {
     return @{
              @"type": @"type",
-             @"features": @"features"
+             @"features": @"features",
+             @"crs": @"_crs"
              };
 }
 

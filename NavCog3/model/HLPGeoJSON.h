@@ -94,6 +94,7 @@
 @interface HLPGeoJSON : MTLModel<MTLJSONSerializing, NSCoding>
 @property (nonatomic, readonly) NSString *type;
 @property (nonatomic, readonly) NSArray<HLPGeoJSONFeature*> *features;
+@property (nonatomic, readonly) NSString *crs;
 @end
 
 typedef enum {

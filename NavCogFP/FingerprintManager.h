@@ -50,8 +50,8 @@
 @property (readonly) long beaconsSampleCount;
 @property NSArray *floorplans;
 @property NSArray *refpoints;
-@property NSMutableDictionary *floorplanRefpointMap;
-@property NSMutableDictionary *floorplanMap;
+@property NSMutableDictionary<NSString*, HLPRefpoint*> *floorplanRefpointMap;
+@property NSMutableDictionary<NSString*, HLPFloorplan*> *floorplanMap;
 @property NSArray *samplings;
 @property (readonly) HLPRefpoint *selectedRefpoint;
 @property (readonly) HLPFloorplan *selectedFloorplan;

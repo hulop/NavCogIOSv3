@@ -76,12 +76,11 @@ $hulop.fp = (function(){
 
         var ids = {};
         fps.forEach(function(fp) {
-          if (isNaN(fp.lat + fp.lng)) {
-            return;
-          }
           var id = fp.lat + ':' + fp.lng + ':' + fp.count;
-          ids[id] = true;
           if (!vectorSource.getFeatureById(id)) {
+            if (isNaN(fp.lat + fp.lng)) {
+              return;
+            }
             var f = new ol.Feature({
               'geometry' : new ol.geom.Point(ol.proj.transform([fp.lng, fp.lat], 'EPSG:4326', 'EPSG:3857')),
               'name' : `${fp.count}`
@@ -89,12 +88,13 @@ $hulop.fp = (function(){
             f.setId(id);
             vectorSource.addFeature(f);
           }
+          ids[id] = true;
         });
         vectorSource.forEachFeature(function (f) {
           ids[f.getId()] || vectorSource.removeFeature(f);
         });
       } catch(e) {
-        console.error(e);
+        //console.error(e);
         //alert(e.message);
       }
     }

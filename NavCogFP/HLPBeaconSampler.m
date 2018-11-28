@@ -21,12 +21,14 @@
  *******************************************************************************/
 
 #import "HLPBeaconSampler.h"
+#import "NavUtil.h"
 
 @implementation HLPBeaconSampler {
     BOOL _ARKitEnabled;
     ARWorldTrackingConfiguration *_arkitConfig;
     CIDetector *_detector;
     NSTimeInterval _lastScan;
+    int _tracking_error_count;
 }
 
 
@@ -81,6 +83,7 @@ static HLPBeaconSampler *sharedData_ = nil;
     
     _arkitConfig = [[ARWorldTrackingConfiguration alloc] init];
     [_view.session runWithConfiguration:_arkitConfig];
+    _tracking_error_count = 0;
 }
 
 - (void) renderer:(id<SCNSceneRenderer>)renderer didRenderScene:(SCNScene *)scene atTime:(NSTimeInterval)time
@@ -114,6 +117,7 @@ static HLPBeaconSampler *sharedData_ = nil;
     _view = nil;
     _detector = nil;
     _arkitConfig = nil;
+    [NavUtil hideModalWaiting];
 }
 
 
@@ -235,5 +239,43 @@ static HLPBeaconSampler *sharedData_ = nil;
     }
 }
 
+- (void) session:(ARSession *)session cameraDidChangeTrackingState:(ARCamera *)camera {
+    NSLog(@"trackingState=%ld reason=%ld", camera.trackingState, camera.trackingStateReason);
+    if (camera.trackingState != ARTrackingStateNormal && camera.trackingStateReason > ARTrackingStateReasonInitializing) {
+        _tracking_error_count++;
+        NSString *trackingState = @"", *trackingStateReason = @"";
+        switch (camera.trackingState) {
+            case ARTrackingStateNotAvailable:
+                trackingState = @"NotAvailable";
+                break;
+            case ARTrackingStateLimited:
+                trackingState = @"Limited";
+                break;
+            case ARTrackingStateNormal:
+                trackingState = @"Normal";
+                break;
+        }
+        switch (camera.trackingStateReason) {
+            case ARTrackingStateReasonNone:
+                trackingStateReason = @"None";
+                break;
+            case ARTrackingStateReasonInitializing:
+                trackingStateReason = @"Initializing";
+                break;
+            case ARTrackingStateReasonExcessiveMotion:
+                trackingStateReason = @"ExcessiveMotion";
+                break;
+            case ARTrackingStateReasonInsufficientFeatures:
+                trackingStateReason = @"InsufficientFeatures";
+                break;
+            case ARTrackingStateReasonRelocalizing:
+                trackingStateReason = @"Relocalizing";
+                break;
+        }
+        [NavUtil showModalWaitingWithMessage:[NSString stringWithFormat:@"State: %@\n\nReason: %@\n\nTotal error count: %d", trackingState, trackingStateReason, _tracking_error_count]];
+    } else {
+        [NavUtil hideModalWaiting];
+    }
+}
 
 @end

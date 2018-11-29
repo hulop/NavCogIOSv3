@@ -318,7 +318,7 @@ static FingerprintManager *instance;
     }
     
     [self startSampling];
-    [self setLocationAtLat:lat_ Lng:lng_];
+//    [self setLocationAtLat:lat_ Lng:lng_];
 }
 
 - (void)setLocationAtLat:(double)lat_ Lng:(double)lng_

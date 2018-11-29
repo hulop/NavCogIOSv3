@@ -136,22 +136,45 @@
     ServerEntry *server = [self serverAtIndexPath:indexPath];
     
     if (server) {
-        NSString *userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
-
-        if (server.available ||
-            [[AuthManager sharedManager] isDeveloperAuthorized]) {
-            //cell.accessoryType = UITableViewCellAccessoryCheckmark;
-            cell.textLabel.textColor = [UIColor blackColor];
-            cell.detailTextLabel.textColor = [UIColor blackColor];
-        } else {
-            //cell.accessoryType = UITableViewCellAccessoryNone;
-            cell.textLabel.textColor = [UIColor grayColor];
-            cell.detailTextLabel.textColor = [UIColor grayColor];
+        //NSString *userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2]; // use first two characters.
+        
+        // Enumerate user language candidates by using first preferred language
+        NSMutableArray* userLanguageCandidates = [[NSMutableArray alloc] init];
+        NSString* separator = @"-";
+        NSString *userLanguage = [NSLocale preferredLanguages].firstObject; // use first preferred language.
+        if (userLanguage == nil){
+            userLanguage = @"en";
         }
-        NSString *name = [server.name stringByLanguage:userLanguage];
-        NSString *description = [server.serverDescription stringByLanguage:userLanguage];
-        cell.textLabel.text = name;
-        cell.detailTextLabel.text = description;
+        NSArray *userLangSplitted = [userLanguage componentsSeparatedByString:separator];
+        for(int j=0; j<userLangSplitted.count-1; j++){
+            NSRange range = [userLanguage rangeOfString:separator options:NSBackwardsSearch];
+            userLanguage = [userLanguage substringToIndex: range.location];
+            [userLanguageCandidates addObject:userLanguage];
+        }
+        [userLanguageCandidates addObject:@"en"]; // add "en" as the last candidate
+        
+        for(int i=0; i<userLanguageCandidates.count; i++){
+            NSString *userLanguage = [userLanguageCandidates objectAtIndex:i];
+            
+            if (server.available ||
+                [[AuthManager sharedManager] isDeveloperAuthorized]) {
+                //cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                cell.textLabel.textColor = [UIColor blackColor];
+                cell.detailTextLabel.textColor = [UIColor blackColor];
+            } else {
+                //cell.accessoryType = UITableViewCellAccessoryNone;
+                cell.textLabel.textColor = [UIColor grayColor];
+                cell.detailTextLabel.textColor = [UIColor grayColor];
+            }
+            NSString *name = [server.name stringByLanguage:userLanguage];
+            NSString *description = [server.serverDescription stringByLanguage:userLanguage];
+            
+            if(name){
+                cell.textLabel.text = name;
+                cell.detailTextLabel.text = description;
+                break;
+            }
+        }
     }
     
     return cell;

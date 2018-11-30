@@ -98,6 +98,7 @@
             }
         }
         [ServerConfig sharedConfig].selected = server;
+        [[NavDataStore sharedDataStore] selectUserLanguage:server.userLanguage];
 
         [self performSegueWithIdentifier:@"unwind_server_selection" sender:self];
     }
@@ -142,8 +143,7 @@
         // Enumerate user language candidates by using first preferred language
         NSArray* userLanguageCandidates = [[NavDataStore sharedDataStore] userLanguageCandidates];
         
-        for(int i=0; i<userLanguageCandidates.count; i++){
-            NSString *userLanguage = [userLanguageCandidates objectAtIndex:i];
+        for(NSString *userLanguage in userLanguageCandidates) {
             
             if (server.available ||
                 [[AuthManager sharedManager] isDeveloperAuthorized]) {
@@ -161,6 +161,7 @@
             if(name){
                 cell.textLabel.text = name;
                 cell.detailTextLabel.text = description;
+                server.userLanguage = userLanguage;
                 break;
             }
         }

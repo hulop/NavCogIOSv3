@@ -365,8 +365,7 @@ static NavDataStore* instance_ = nil;
     
     [self reset];
     
-    //userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
-    userLanguage = [self userLanguageCandidates].firstObject;
+    [self selectUserLanguage:[self userLanguageCandidates].firstObject];
     destinationDistCache = 1000;
     
     // prevent problem on server cache
@@ -408,6 +407,15 @@ static NavDataStore* instance_ = nil;
     }
     [userLanguageCandidates addObject:@"en"]; // add "en" as the last candidate
     return userLanguageCandidates;
+}
+
+- (BOOL)selectUserLanguage:(NSString *)newLanguage
+{
+    if ([self.userLanguageCandidates containsObject:newLanguage]) {
+        userLanguage = newLanguage;
+        return YES;
+    }
+    return NO;
 }
 
 - (void) setUserID:(NSString *)userID

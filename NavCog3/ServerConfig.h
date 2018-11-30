@@ -46,6 +46,7 @@
 @property (readonly) BOOL selected;
 @property (readonly) BOOL useHttp;
 @property (readonly) NSString* _Nullable minimumAppVersion;
+@property NSString* userLanguage;
 
 - (void)failed;
 - (NSURL*)configFileURL;

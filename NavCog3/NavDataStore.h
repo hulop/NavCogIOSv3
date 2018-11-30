@@ -109,6 +109,7 @@ typedef enum {
 - (NSArray*) features;
 - (NSString*) userLanguage;
 - (NSArray*) userLanguageCandidates;
+- (BOOL) selectUserLanguage:(NSString*)newLanguage;
 - (NSArray*) searchHistory;
 - (BOOL) isManualLocation;
 

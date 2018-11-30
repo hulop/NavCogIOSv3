@@ -108,6 +108,7 @@ typedef enum {
 - (NSArray*) route;
 - (NSArray*) features;
 - (NSString*) userLanguage;
+- (NSArray*) userLanguageCandidates;
 - (NSArray*) searchHistory;
 - (BOOL) isManualLocation;
 

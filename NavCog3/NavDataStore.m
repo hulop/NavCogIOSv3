@@ -365,7 +365,8 @@ static NavDataStore* instance_ = nil;
     
     [self reset];
     
-    userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
+    //userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2];
+    userLanguage = [self userLanguageCandidates].firstObject;
     destinationDistCache = 1000;
     
     // prevent problem on server cache
@@ -381,6 +382,32 @@ static NavDataStore* instance_ = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(buildingChanged:) name:BUILDING_CHANGED_NOTIFICATION object:nil];
 
     return self;
+}
+
+- (NSArray*) userLanguageCandidates
+{
+    // Enumerate user language candidates by using first preferred language
+    NSMutableArray* userLanguageCandidates = [[NSMutableArray alloc] init];
+    NSString* separator = @"-";
+    NSString *userLanguage = [NSLocale preferredLanguages].firstObject; // use first preferred language.
+    if (userLanguage == nil){
+        userLanguage = @"en";
+    }
+    NSArray *userLangSplitted = [userLanguage componentsSeparatedByString:separator];
+    for(int j=0; j<userLangSplitted.count-1; j++){
+        NSRange range = [userLanguage rangeOfString:separator options:NSBackwardsSearch];
+        userLanguage = [userLanguage substringToIndex: range.location];
+        
+        // for compatibility
+        if([userLanguage isEqualToString:@"zh-Hans"]){
+            [userLanguageCandidates addObject:@"zh-CN"];
+        }else if([userLanguage isEqualToString:@"zh-Hant"]){
+            [userLanguageCandidates addObject:@"zh-TW"];
+        }
+        [userLanguageCandidates addObject:userLanguage];
+    }
+    [userLanguageCandidates addObject:@"en"]; // add "en" as the last candidate
+    return userLanguageCandidates;
 }
 
 - (void) setUserID:(NSString *)userID

@@ -23,6 +23,7 @@
 #import "ServerSelectionViewController.h"
 #import "ServerConfig.h"
 #import "AuthManager.h"
+#import "NavDataStore.h"
 
 @interface ServerSelectionViewController ()
 
@@ -139,19 +140,7 @@
         //NSString *userLanguage = [[[NSLocale preferredLanguages] objectAtIndex:0] substringToIndex:2]; // use first two characters.
         
         // Enumerate user language candidates by using first preferred language
-        NSMutableArray* userLanguageCandidates = [[NSMutableArray alloc] init];
-        NSString* separator = @"-";
-        NSString *userLanguage = [NSLocale preferredLanguages].firstObject; // use first preferred language.
-        if (userLanguage == nil){
-            userLanguage = @"en";
-        }
-        NSArray *userLangSplitted = [userLanguage componentsSeparatedByString:separator];
-        for(int j=0; j<userLangSplitted.count-1; j++){
-            NSRange range = [userLanguage rangeOfString:separator options:NSBackwardsSearch];
-            userLanguage = [userLanguage substringToIndex: range.location];
-            [userLanguageCandidates addObject:userLanguage];
-        }
-        [userLanguageCandidates addObject:@"en"]; // add "en" as the last candidate
+        NSArray* userLanguageCandidates = [[NavDataStore sharedDataStore] userLanguageCandidates];
         
         for(int i=0; i<userLanguageCandidates.count; i++){
             NSString *userLanguage = [userLanguageCandidates objectAtIndex:i];

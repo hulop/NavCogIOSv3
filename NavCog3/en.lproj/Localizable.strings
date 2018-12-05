@@ -153,3 +153,13 @@ Feedback is sending...";
 
 /* Mode title for "General Pedestrian" */
 "user_general" = "General Pedestrian";
+
+/* Mode heading title of setting menu */
+"Mode" = "Mode";
+
+/* Skip to read facility infomation when users pass by */
+"Ignore facility info." = "Ignore facility info.";
+
+/* Show POI detail when users change their heading toward the POI */
+"Show POI with Action" = "Show POI with Action";
+

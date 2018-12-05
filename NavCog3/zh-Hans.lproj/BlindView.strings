@@ -247,10 +247,10 @@
 "make a slight right turn" = "斜右转";
 
 /* make turn to -180 ~ -180 */
-"make a u-turn to the left" = "向左折返";
+"make a u-turn to the left" = "向左折回";
 
 /* make turn to +150 ~ +180 */
-"make a u-turn to the right" = "向右折返";
+"make a u-turn to the right" = "向右折回";
 
 /* No comment provided by engineer. */
 "name is %@" = "在%2$@进行%1$@";

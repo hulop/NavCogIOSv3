@@ -97,7 +97,7 @@
 "ElvEqWithVoiceGuide" = "有语音向导。";
 
 /* エスカレーター */
-"escalator" = "扶梯";
+"escalator" = "自动扶梯";
 
 /* 自由通路 */
 "free walkway" = "自由通道";

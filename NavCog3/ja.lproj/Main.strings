@@ -74,8 +74,8 @@
 /* Class = "UILabel"; text = "Free comment"; ObjectID = "AZZ-SF-owM"; */
 "AZZ-SF-owM.text" = "コメント";
 
-/* Class = "UILabel"; text = "Mode Selection"; ObjectID = "BEl-Il-x1b"; */
-"BEl-Il-x1b.text" = "モード選択";
+/* Class = "UINavigationItem"; text = "Mode Selection"; ObjectID = "pAM-AG-abg"; */
+"pAM-AG-abg.title" = "モード選択";
 
 /* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "BhE-tH-Cn7"; */
 "BhE-tH-Cn7.title" = "戻る";

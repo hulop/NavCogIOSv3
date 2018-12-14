@@ -128,7 +128,7 @@
     HLPRefpoint* currentRp;
     UITabBar *tabbar;
     UITabBarItem *item1, *item2, *item3, *item4, *item5;
-    
+    BOOL showing;
 }
 
 - (void)reset {
@@ -138,6 +138,7 @@
     qrCode = nil;
     [fpm reset];
     [qrCodeTimer invalidate];
+    showing = NO;
 }
 
 - (void)dealloc
@@ -935,12 +936,18 @@
 
 - (void) redrawFingerprint
 {
-    [self clearFeatures];
-    if (fpMode == FPModeFingerprint || fpMode == FPModeARFingerprint) {
-        [self showFingerprints:fpm.samplings];
-    }
-    if (fpMode == FPModeARFingerprint) {
-        [self showARFingerprints:fpm.sampler.samples.samples];
+    switch (fpMode) {
+        case FPModeFingerprint:
+            [self showFingerprints:fpm.samplings];
+            break;
+        case FPModeARFingerprint:
+            if (!showing) {
+                [self showARFingerprints:fpm.sampler.samples.samples];
+            }
+            break;
+        default:
+            [self clearFeatures];
+            break;
     }
 }
 
@@ -1070,8 +1077,8 @@
     if (!features) {
         return;
     }
-    
-    showingFeatures = [showingFeatures arrayByAddingObjectsFromArray:features];
+    showing = YES;
+    showingFeatures = features;// [showingFeatures arrayByAddingObjectsFromArray:features];
     for(NSObject<NSCopying> *f in features) {
         [styleMap setObject:styleFunction forKey:f.description];
     }
@@ -1099,6 +1106,7 @@
         NSLog(@"showFeatures");
         dispatch_async(dispatch_get_main_queue(), ^{
             [_webView evaluateJavaScript:script completionHandler:nil];
+            showing = NO;
         });
     }];
     

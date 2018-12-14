@@ -37,7 +37,7 @@
 
 @end
 
-@interface HLPBeaconSampler : NSObject <CLLocationManagerDelegate, ARSCNViewDelegate>{
+@interface HLPBeaconSampler : NSObject <CLLocationManagerDelegate, ARSCNViewDelegate, ARSessionDelegate>{
     CLLocationManager *locationManager;
     
     CLBeaconRegion *allBeacons;

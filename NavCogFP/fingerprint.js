@@ -22,66 +22,85 @@
 
 $hulop.fp = (function(){
   try {
-    var vectorSource = new ol.source.Vector({
-      projection: 'EPSG:4326'
-    });
 
-    function computeFeatureStyle(feature) {
+    function createStyle(text) {
       return  new ol.style.Style({
-	image: new ol.style.Circle({
-	  fill: new ol.style.Fill({
-            color: 'rgba(55, 200, 150, 0.5)'
-	  }),
-	  stroke: new ol.style.Stroke({
-            width: 1,
-            color: 'rgba(55, 200, 150, 0.8)'
-	  }),
-	  radius: 7
-	}),
-	text: new ol.style.Text({
-          font: '12px helvetica,sans-serif',
-          text: feature.get('name'),
-          fill: new ol.style.Fill({
-            color: '#000'
+        'image' : new ol.style.Circle({
+          'fill' : new ol.style.Fill({
+            'color' : 'rgba(55, 200, 150, 0.5)'
           }),
-          stroke: new ol.style.Stroke({
-            color: '#fff',
-            width: 2
+          'stroke' : new ol.style.Stroke({
+            'width' : 1,
+            'color' : 'rgba(55, 200, 150, 0.8)'
+          }),
+          'radius' : 7
+        }),
+        'text' : new ol.style.Text({
+          'font' : '12px helvetica,sans-serif',
+          'text' : text,
+          'fill' : new ol.style.Fill({
+            'color' : '#000'
+          }),
+          'stroke' : new ol.style.Stroke({
+            'color' : '#fff',
+            'width' : 2
           })
-	})
+        })
       });
     }
-    
+
+    var vectorSource = new ol.source.Vector({
+      'projection' : 'EPSG:4326'
+    });
     var vectorLayer;
-        
+    var styleCache = {
+      '*' : createStyle('*')
+    };
+
     function showFingerprints(fps) {
       try {
-	if (!vectorLayer) {
-	  vectorLayer = new ol.layer.Vector({
-            source: vectorSource,
-	    zIndex: 105
-	  });
-	  $hulop.map.getMap().addLayer(vectorLayer);
-	}
-	
-	var features = fps.map(function(fp) {
-	  var point = new ol.geom.Point(ol.proj.transform([fp.lng, fp.lat], 'EPSG:4326', 'EPSG:3857'));
-	  var pointFeature = new ol.Feature({
-	    geometry: point,
-	    name: `${fp.count}`
-	  });
-	  pointFeature.setStyle(computeFeatureStyle(pointFeature));
-	  return pointFeature;
-	});
-	vectorSource.clear(true);
-	vectorSource.addFeatures(features);
+        if (fps.length == 0) {
+          vectorSource.clear();
+          return;
+        } else if (!vectorLayer) {
+          vectorLayer = new ol.layer.Vector({
+            'source' : vectorSource,
+            'style' : function(f) {
+              var text = f.get('name');
+              return styleCache[text] || createStyle(text);
+            },
+            'zIndex' : 105
+          });
+          $hulop.map.getMap().addLayer(vectorLayer);
+        }
+
+        var ids = {};
+        fps.forEach(function(fp) {
+          var id = fp.lat + ':' + fp.lng + ':' + fp.count;
+          if (!vectorSource.getFeatureById(id)) {
+            if (isNaN(fp.lat + fp.lng)) {
+              return;
+            }
+            var f = new ol.Feature({
+              'geometry' : new ol.geom.Point(ol.proj.transform([fp.lng, fp.lat], 'EPSG:4326', 'EPSG:3857')),
+              'name' : `${fp.count}`
+            });
+            f.setId(id);
+            vectorSource.addFeature(f);
+          }
+          ids[id] = true;
+        });
+        vectorSource.forEachFeature(function (f) {
+          ids[f.getId()] || vectorSource.removeFeature(f);
+        });
       } catch(e) {
-	//alert(e.message);
+        //console.error(e);
+        //alert(e.message);
       }
     }
-    
+
     return {
-      showFingerprints:showFingerprints
+      'showFingerprints' : showFingerprints
     };
   } catch(e) {
     //alert(e.message);

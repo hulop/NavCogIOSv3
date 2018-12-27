@@ -410,7 +410,6 @@
 		7EE8E60E1EF27541006EE7C3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7EE8E61E1EF27541006EE7C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
-		7EF36709219298B8004D63E4 /* public-key.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "public-key.txt"; path = "keys/public-key.txt"; sourceTree = SOURCE_ROOT; };
 		7EF45E2A1E3F1E3700208042 /* AgreementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AgreementViewController.m; sourceTree = "<group>"; };
 		7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadViewController.m; sourceTree = "<group>"; };
 		7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerSelectionViewController.m; sourceTree = "<group>"; };
@@ -827,7 +826,6 @@
 				7E6E42EC1D911236006B6899 /* LocationEvent.h */,
 				7EF45E531E3F58D200208042 /* dev.hashfile */,
 				7EDAFE8B1F3042C400368058 /* NavCog3.pch */,
-				7EF36709219298B8004D63E4 /* public-key.txt */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";

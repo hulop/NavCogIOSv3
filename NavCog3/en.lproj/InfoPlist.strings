@@ -21,6 +21,6 @@
  *******************************************************************************/
 
 /* No Localized Strings */
-"NSLocationWhenInUseUsageDescription" = "This app uses iBeacon information";
-"NSMicrophoneUsageDescription" = "This app uses microphone for conversation";
-"NSSpeechRecognitionUsageDescription" = "This app uses voice reco for conversation";
+"NSLocationWhenInUseUsageDescription" = "This app uses iBeacon information to locate your position";
+"NSMicrophoneUsageDescription" = "This app uses microphone to provide conversational interface for destination search. ";
+"NSSpeechRecognitionUsageDescription" = "This app uses microphone to provide conversational interface for destination search. ";

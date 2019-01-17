@@ -21,6 +21,6 @@
  *******************************************************************************/
 
 /* No Localized Strings */
-"NSLocationWhenInUseUsageDescription" = "このアプリはiBeaconの情報を使います";
-"NSMicrophoneUsageDescription" = "このアプリは対話のためにマイクを使用します";
-"NSSpeechRecognitionUsageDescription" = "このアプリは対話のために音声認識を使用します";
+"NSLocationWhenInUseUsageDescription" = "このアプリはiBeaconを使って位置情報を取得します";
+"NSMicrophoneUsageDescription" = "このアプリは対話で目的地を設定するためにマイクを使用します";
+"NSSpeechRecognitionUsageDescription" = "このアプリは対話で目的地を設定するために音声認識を使用します";

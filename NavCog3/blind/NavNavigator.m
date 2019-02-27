@@ -848,7 +848,7 @@ static NavNavigatorConstants *_instance;
 
 - (BOOL) hasContent
 {
-    return self.contentURL != nil;
+    return self.contentURL.length > 0;
 }
     
 - (NSString*) contentURL

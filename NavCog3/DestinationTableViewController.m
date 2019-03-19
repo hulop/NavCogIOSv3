@@ -193,16 +193,25 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [_source tableView:tableView cellForRowAtIndexPath:indexPath];
-    
+
     cell.textLabel.text = NSLocalizedStringFromTable(cell.textLabel.text, @"BlindView", @"");
-    
+
     NavDestination *dest = [_source destinationForRowAtIndexPath:indexPath];
     if (dest.type == NavDestinationTypeDialogSearch) {
         BOOL dialog = [[DialogManager sharedManager] isAvailable];
         cell.textLabel.enabled = dialog;
         cell.selectionStyle = dialog?UITableViewCellSelectionStyleGray:UITableViewCellSelectionStyleNone;
+    } else if (dest.type == NavDestinationTypeLandmark ||
+               dest.type == NavDestinationTypeLandmarks) {
+        if (dest.landmark.disabled) {
+            cell.textLabel.enabled = NO;
+            cell.selectionStyle = UITableViewCellSelectionStyleGray;
+        } else {
+            cell.textLabel.enabled = YES;
+            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+        }
     }
-    
+
     return cell;
 }
 
@@ -211,7 +220,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NavDestination *dest = [_source destinationForRowAtIndexPath:indexPath];
-    
+
     if (dest.type == NavDestinationTypeFilter) {
         filterDest = dest;
         [self performSegueWithIdentifier:@"sub_category" sender:self];
@@ -219,15 +228,20 @@
         if ([[DialogManager sharedManager] isAvailable]) {
             [self performSegueWithIdentifier:@"show_dialog" sender:self];
         }
+    } else if (dest.type == NavDestinationTypeLandmark ||
+               dest.type == NavDestinationTypeLandmarks) {
+        if (dest.landmark.disabled) {
+            return;
+        }
     } else {
-        if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {            
+        if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
             [NavDataStore sharedDataStore].from = dest;
         }
         if ([self.restorationIdentifier isEqualToString:@"toDestinations"]) {
             [NavDataStore sharedDataStore].to = dest;
         }
         [self.navigationController popToViewController:_root animated:YES];
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _voTarget);        
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _voTarget);
     }
 }
 

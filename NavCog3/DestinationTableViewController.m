@@ -221,17 +221,18 @@
 {
     NavDestination *dest = [_source destinationForRowAtIndexPath:indexPath];
 
+    if (dest.type == NavDestinationTypeLandmark ||
+        dest.type == NavDestinationTypeLandmarks) {
+        if (dest.landmark.disabled) {
+            return;
+        }
+    }
     if (dest.type == NavDestinationTypeFilter) {
         filterDest = dest;
         [self performSegueWithIdentifier:@"sub_category" sender:self];
     } else if (dest.type == NavDestinationTypeDialogSearch) {
         if ([[DialogManager sharedManager] isAvailable]) {
             [self performSegueWithIdentifier:@"show_dialog" sender:self];
-        }
-    } else if (dest.type == NavDestinationTypeLandmark ||
-               dest.type == NavDestinationTypeLandmarks) {
-        if (dest.landmark.disabled) {
-            return;
         }
     } else {
         if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {

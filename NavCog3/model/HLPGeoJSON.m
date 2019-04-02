@@ -314,7 +314,8 @@
               @"namePron": @"name_pron",
               @"nodeID": @"node",
               @"nodeHeight": @"node_height",
-              @"nodeCoordinates": @"node_coordinates"
+              @"nodeCoordinates": @"node_coordinates",
+              @"disabled": @"disable"
               }];
 }
 

@@ -151,17 +151,21 @@
     return vc;
 }
 
-+ (NSURL*) hulopHelpPageURLwithType:(NSString*)helpType
++ (NSURL*) hulopHelpPageURLwithType:(NSString*)helpType languageDetection:(BOOL)languageDetection
 {
     NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
 
     NSString *lang = [[NavDataStore sharedDataStore] userLanguage];
-    // is server supported user lang
-    if ([[ServerConfig sharedConfig].selected.name stringByLanguage:lang] == nil) {
-        lang = @"en";
+    if (languageDetection) {
+        // is server supported user lang
+        if ([[ServerConfig sharedConfig].selected.name stringByLanguage:lang] == nil) {
+            lang = @"en";
+        }
+        lang = [@"-" stringByAppendingString:lang];
+        if ([lang isEqualToString:@"-en"]) { lang = @""; }
+    } else {
+        lang = @"";
     }
-    lang = [@"-" stringByAppendingString:lang];
-    if ([lang isEqualToString:@"-en"]) { lang = @""; }
     NSString *base = @"https://hulop.github.io/";
     NSString *url = nil;
     if ([appName isEqualToString:@"NavCog3"]) {
@@ -171,6 +175,38 @@
     }
     NSLog(@"%@", url);
     return [NSURL URLWithString:url];
+}
+
++ (void) checkHttpStatusWithURL:(NSURL *)url completionHandler:(void (^)(NSURL * _Nonnull url, NSInteger statusCode))completion
+{
+    @try {
+        NSMutableURLRequest *request =
+        [NSMutableURLRequest requestWithURL:url
+                                cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                            timeoutInterval:60.0];
+
+        NSLog(@"Requesting %@", url);
+
+        NSURLSession *session = [NSURLSession sharedSession];
+        [[session dataTaskWithRequest:request
+                    completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+              @try {
+                  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                  NSInteger statusCode = [httpResponse statusCode];
+                  if (!error) {
+                      completion(url, statusCode);
+                  } else {
+                      completion(url, 0);
+                      NSLog(@"Error: %@", [error localizedDescription]);
+                  }
+              } @catch (NSException *exception) {
+                  NSLog(@"%@", [exception debugDescription]);
+              }
+          }] resume];
+    } @catch (NSException *exception) {
+        NSLog(@"%@", [exception debugDescription]);
+        completion(url, 0);
+    }
 }
 
 - (void)speak:(NSString *)text force:(BOOL)isForce completionHandler:(void (^)(void))completion

@@ -26,7 +26,7 @@
 
 @interface HLPDataUtil : NSObject
 
-+ (void) queryDirectoryForUser:(NSString*) user withQuery:(NSString*)query withCallback:(void(^)(HLPDirectory* directory))callback;
++ (void) queryDirectoryForUser:(NSString*) user withQuery:(NSString*)query withLang:(NSString*)lang withCallback:(void(^)(HLPDirectory* directory))callback;
 
 + (void) loadDirectoryAtLat:(double) lat Lng:(double) lng inDist:(int) dist forUser:(NSString*) user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result, HLPDirectory* directory))callback;
     

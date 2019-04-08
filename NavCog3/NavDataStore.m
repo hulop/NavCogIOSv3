@@ -655,7 +655,8 @@ static NavDataStore* instance_ = nil;
 - (void)searchDestinations:(NSString*) query withComplete:(void (^)(HLPDirectory *))complete
 {
     NSString *user = [self userID];
-    [HLPDataUtil queryDirectoryForUser:user withQuery:query withCallback:^(HLPDirectory *directory) {
+    NSString *lang = [self userLanguage];
+    [HLPDataUtil queryDirectoryForUser:user withQuery:query withLang:lang withCallback:^(HLPDirectory *directory) {
         complete(directory);
     }];
 }

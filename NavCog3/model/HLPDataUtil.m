@@ -48,11 +48,12 @@
 }
 
 
-+ (void)queryDirectoryForUser:(NSString *)user withQuery:(NSString *)query withCallback :(void (^)(HLPDirectory *))callback
++ (void)queryDirectoryForUser:(NSString *)user withQuery:(NSString *)query withLang:(NSString*)lang withCallback :(void (^)(HLPDirectory *))callback
 {
     NSDictionary *dic =
     @{
       @"user": user,
+      @"lang": lang,
       @"q": query
       };
     

@@ -155,6 +155,7 @@
 
 #pragma mark - flags for navigation
 @property BOOL hasBeenBearing;
+@property NSTimeInterval lastBearingFixed;
 @property BOOL noBearing;
 @property double bearingTargetThreshold;
 @property BOOL hasBeenActivated;

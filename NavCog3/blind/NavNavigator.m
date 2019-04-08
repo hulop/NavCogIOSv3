@@ -191,7 +191,9 @@ static NavNavigatorConstants *_instance;
     _distanceFromBackDetectedLocationToLocation = NAN;
     //_noBearing = (_link.minimumWidth <= 2.0);
     //_noBearing = YES;
-    _noBearing = (_link.minimumWidth <= 2.0) || _link.linkType == LINK_TYPE_ESCALATOR || _link.linkType == LINK_TYPE_PEDESTRIAN_CONVEYER || _link.linkType == LINK_TYPE_STAIRWAY;
+    _noBearing = (_link.minimumWidth <= 2.0) || _link.linkType == LINK_TYPE_ESCALATOR ||
+                _link.linkType == LINK_TYPE_PEDESTRIAN_CONVEYER || _link.linkType == LINK_TYPE_STAIRWAY ||
+                _nextLink.linkType == LINK_TYPE_ELEVATOR;
     
     _isComplex = fabs([HLPLocation normalizeDegree:_link.initialBearingFromSource - _link.lastBearingForTarget]) > 10;
     
@@ -1546,7 +1548,10 @@ static NavNavigatorConstants *_instance;
                         if (linkInfo.lastRerouteDetected && (now - linkInfo.lastRerouteDetected) > 10) {
                             linkInfo.lastRerouteDetected = now + 10;
                             if ([self.delegate respondsToSelector:@selector(reroute:)]) {
-                                [self.delegate reroute:@{}];
+                                [self.delegate reroute:@{
+                                                         @"nohistory": @(YES),
+                                                         @"force": @(YES)
+                                                         }];
                             }
                         } else if (!linkInfo.lastRerouteDetected) {
                             linkInfo.lastRerouteDetected = now;
@@ -1652,7 +1657,9 @@ static NavNavigatorConstants *_instance;
                                         [self.delegate userMaybeGoingBackward:
                                          @{
                                            @"diffHeading": @(minLinkInfo.diffBearingAtUserLocation),
-                                           @"threshold": @(C.CHANGE_HEADING_THRESHOLD)
+                                           @"threshold": @(C.CHANGE_HEADING_THRESHOLD),
+                                           @"nohistory": @(YES),
+                                           @"force": @(YES)
                                            }];
                                     }
                                 }
@@ -1886,9 +1893,10 @@ static NavNavigatorConstants *_instance;
                 if ((!bearing_for_demo && fabs(linkInfo.diffBearingAtUserLocation) < linkInfo.bearingTargetThreshold) ||
                     (bearing_for_demo && fabs(linkInfo.diffBearingAtSnappedLocationOnLink) < linkInfo.bearingTargetThreshold)) {
                     linkInfo.hasBeenBearing = NO;
+                    linkInfo.lastBearingFixed = now;
                     if ([self.delegate respondsToSelector:@selector(userAdjustedHeading:)]) {
                         [self.delegate userAdjustedHeading:@{}];
-                        [self _requestStatus:@{@"resume":@(YES)}];
+                        //[self _requestStatus:@{@"resume":@(YES)}];
                     }
                 }
                 // TODO if skip this turn
@@ -2167,7 +2175,7 @@ static NavNavigatorConstants *_instance;
             
             
             //if (!linkInfo.hasBeenBearing && !linkInfo.noBearing) {
-            if (!linkInfo.hasBeenBearing && !linkInfo.noBearing) {
+            if (!linkInfo.hasBeenBearing && !linkInfo.noBearing && now - linkInfo.lastBearingFixed > 5 && !linkInfo.hasBeenFixBackward) {
                 
                 BOOL bearing_for_demo = [[NSUserDefaults standardUserDefaults] boolForKey:@"bearing_for_demo"];
                 
@@ -2515,7 +2523,7 @@ static NavNavigatorConstants *_instance;
                 
             } else { // non elevator link
                 
-                if (linkInfo.distanceToUserLocationFromLink > 3) {
+                if (linkInfo.distanceToUserLocationFromLink > C.OFF_ROUTE_THRESHOLD || NO) { // disable
                     [self.delegate currentStatus:
                      @{
                        @"offRoute": @(YES),

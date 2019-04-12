@@ -197,52 +197,25 @@
     cell.textLabel.text = NSLocalizedStringFromTable(cell.textLabel.text, @"BlindView", @"");
 
     NavDestination *dest = [_source destinationForRowAtIndexPath:indexPath];
+    BOOL enabled = YES;
     if (dest.type == NavDestinationTypeDialogSearch) {
-        BOOL dialog = [[DialogManager sharedManager] isAvailable];
-        cell.textLabel.enabled = dialog;
-        cell.selectionStyle = dialog?UITableViewCellSelectionStyleGray:UITableViewCellSelectionStyleNone;
+        enabled = [[DialogManager sharedManager] isAvailable];
+    } else if (dest.type == NavDestinationTypeLandmark ||
+               dest.type == NavDestinationTypeLandmarks) {
+        enabled = !dest.landmark.disabled;
+    } else if (dest.type == NavDestinationTypeDirectoryItem) {
+        NSArray<NSString *> *ids = [dest._id componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"|"]];
+        NavDestination *d = [[NavDataStore sharedDataStore] destinationByIDs:ids];
+        enabled = !d.landmark.disabled;
     }
-    if (dest.type == NavDestinationTypeLandmark ||
-        dest.type == NavDestinationTypeLandmarks) {
-        if (dest.landmark.disabled) {
-            cell.textLabel.enabled = NO;
-            cell.selectionStyle = UITableViewCellSelectionStyleGray;
-        } else {
-            cell.textLabel.enabled = YES;
-            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-        }
-    }
-    if (dest.type == NavDestinationTypeDirectoryItem) {
-        NSArray<NSString*> *ids = [dest._id componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"|"]];
-        NavDestination *l = [[NavDataStore sharedDataStore] destinationByIDs:ids];
-        if (l.landmark.disabled) {
-            cell.textLabel.enabled = NO;
-            cell.selectionStyle = UITableViewCellSelectionStyleGray;
-        } else {
-            cell.textLabel.enabled = YES;
-            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-        }
-    }
+    cell.textLabel.enabled = enabled;
+    cell.selectionStyle = enabled ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NavDestination *dest = [_source destinationForRowAtIndexPath:indexPath];
-
-    if (dest.type == NavDestinationTypeLandmark ||
-        dest.type == NavDestinationTypeLandmarks) {
-        if (dest.landmark.disabled) {
-            return;
-        }
-    }
-    if (dest.type == NavDestinationTypeDirectoryItem) {
-        NSArray<NSString*> *ids = [dest._id componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"|"]];
-        NavDestination *l = [[NavDataStore sharedDataStore] destinationByIDs:ids];
-        if (l.landmark.disabled) {
-            return;
-        }
-    }
     if (dest.type == NavDestinationTypeFilter) {
         filterDest = dest;
         [self performSegueWithIdentifier:@"sub_category" sender:self];
@@ -251,6 +224,18 @@
             [self performSegueWithIdentifier:@"show_dialog" sender:self];
         }
     } else {
+        if (dest.type == NavDestinationTypeLandmark ||
+            dest.type == NavDestinationTypeLandmarks) {
+            if (dest.landmark.disabled) {
+                return;
+            }
+        } else if (dest.type == NavDestinationTypeDirectoryItem) {
+            NSArray<NSString *> *ids = [dest._id componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"|"]];
+            NavDestination *d = [[NavDataStore sharedDataStore] destinationByIDs:ids];
+            if (d.landmark.disabled) {
+                return;
+            }
+        }
         if ([self.restorationIdentifier isEqualToString:@"fromDestinations"]) {
             [NavDataStore sharedDataStore].from = dest;
         }

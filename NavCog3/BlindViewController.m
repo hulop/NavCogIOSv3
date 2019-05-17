@@ -976,6 +976,12 @@
             }
         }
         
+        if (!rerouteFlag) {
+            [_webView logToServer:@{@"event": @"navigation", @"status": @"started"}];
+        } else {
+            [_webView logToServer:@{@"event": @"navigation", @"status": @"rerouted"}];
+        }
+
         if ([NavDataStore sharedDataStore].previewMode) {
             [[NavDataStore sharedDataStore] manualLocationReset:properties];
             double delayInSeconds = 2.0;
@@ -985,11 +991,11 @@
             });
         }
 
+        rerouteFlag = NO;
     } else {
         [previewer setAutoProceed:NO];
     }
     [self updateView];
-    rerouteFlag = NO;
 }
 
 - (void)couldNotStartNavigation:(NSDictionary *)properties
@@ -1019,7 +1025,6 @@
         [NavUtil hideModalWaiting];
     });
     
-    [_webView logToServer:@{@"event": @"navigation", @"status": @"start"}];
     
     //double delayInSeconds = 1.0;
     //dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -1043,11 +1048,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_STABILIZE_LOCALIZE object:self];
     }
     
-    if (properties[@"isEndOfLink"] && [properties[@"isEndOfLink"] boolValue] == YES) {
-        [_webView logToServer:@{@"event": @"navigation", @"status": @"start"}];
-    } else {
-        [_webView logToServer:@{@"event": @"navigation", @"status": @"cancel"}];
-    }
+    [_webView logToServer:@{@"event": @"navigation", @"status": @"finished"}];
 
     [commander didNavigationFinished:properties];
     [previewer didNavigationFinished:properties];
@@ -1365,6 +1366,8 @@
 {
     if ([identifier isEqualToString:@"show_search"] && [navigator isActive]) {
         [[NavDataStore sharedDataStore] clearRoute];
+        
+        [_webView logToServer:@{@"event": @"navigation", @"status": @"canceled"}];
         [NavDataStore sharedDataStore].previewMode = NO;
         [NavDataStore sharedDataStore].exerciseMode = NO;
         [previewer setAutoProceed:NO];

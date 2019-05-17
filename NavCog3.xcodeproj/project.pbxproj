@@ -1309,6 +1309,7 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/HLPDialog.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/HLPLocationManager.framework",
 			);
 			outputFileListPaths = (
 			);
@@ -1316,7 +1317,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# remove duplicated frameworks\necho \"Removing duplicated frameworks $SCRIPT_INPUT_FILE_0/Frameworks\"\nrm -rf $SCRIPT_INPUT_FILE_0/Frameworks\n\n";
+			shellScript = "# remove duplicated frameworks\necho \"Removing duplicated frameworks $SCRIPT_INPUT_FILE_0/Frameworks\"\nrm -rf $SCRIPT_INPUT_FILE_0/Frameworks\nrm -rf $SCRIPT_INPUT_FILE_1/Frameworks\n\n";
 		};
 		7EF45E4D1E3F42BD00208042 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1333,6 +1334,13 @@
 				"$(SRCROOT)/Carthage/Build/iOS/ZipArchive.framework",
 			);
 			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/ConversationV1.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RestKit.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/HLPDialog.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Mantle.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/HLPWebView.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/HLPLocationManager.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/ZipArchive.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1845,7 +1853,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0.1;
 				VALID_ARCHS = arm64;
 				WARNING_CFLAGS = (
 					"-Wno-inconsistent-missing-override",
@@ -1879,7 +1887,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0.1;
 				VALID_ARCHS = arm64;
 				WARNING_CFLAGS = (
 					"-Wno-inconsistent-missing-override",

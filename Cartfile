@@ -1,6 +1,6 @@
 github "Mantle/Mantle" == 2.0.7
-github "ZipArchive/ZipArchive" == 2.0.4
+github "ZipArchive/ZipArchive" == 2.2.1
 
 github "hulop/HLPWebView" "v1.1"
-github "hulop/HLPDialog" "v1.0.4"
+github "hulop/HLPDialog" "v1.0.5"
 github "hulop/HLPLocationManager" "v1.0.10-gamma"

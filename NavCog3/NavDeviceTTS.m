@@ -183,7 +183,7 @@ static NavDeviceTTS *instance = nil;
     }
 }
 
-- (AVSpeechUtterance *)speak:(NSString *)text withOptions:(NSDictionary *)options completionHandler:(void (^)())handler
+- (AVSpeechUtterance *)speak:(NSString *)text withOptions:(NSDictionary *)options completionHandler:(void (^)(void))handler
 {
     BOOL force = [options[@"force"] boolValue];
     BOOL selfspeak = [options[@"selfspeak"] boolValue];
@@ -197,22 +197,22 @@ static NavDeviceTTS *instance = nil;
     return [self _speak:text force:force selfvoicing:selfspeak nohistory:nohistory quickAnswer:quickAnswer voice:aVoice completionHandler:handler];
 }
 
-- (AVSpeechUtterance *)selfspeak:(NSString *)text completionHandler:(void (^)())handler
+- (AVSpeechUtterance *)selfspeak:(NSString *)text completionHandler:(void (^)(void))handler
 {
     return [self selfspeak:text force:NO completionHandler:handler];
 }
 
-- (AVSpeechUtterance *)selfspeak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)())handler
+- (AVSpeechUtterance *)selfspeak:(NSString *)text force:(BOOL)flag completionHandler:(void (^)(void))handler
 {
     return [self _speak:text force:flag selfvoicing:YES nohistory:YES quickAnswer:NO voice:nil completionHandler:handler];
 }
 
-- (AVSpeechUtterance*) speak: (NSString*) text completionHandler:(void (^)())handler
+- (AVSpeechUtterance*) speak: (NSString*) text completionHandler:(void (^)(void))handler
 {
     return [self speak:text force:NO completionHandler:handler];
 }
 
-- (AVSpeechUtterance*) speak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)())handler
+- (AVSpeechUtterance*) speak:(NSString*)text force:(BOOL)flag completionHandler:(void (^)(void))handler
 {
     return [self _speak:text force:flag selfvoicing:NO nohistory:NO quickAnswer:NO voice:nil completionHandler:handler];
 }
@@ -223,7 +223,7 @@ static NavDeviceTTS *instance = nil;
                     nohistory:(BOOL)nohistory
                   quickAnswer:(BOOL)quickAnswer
                         voice:(AVSpeechSynthesisVoice*)voice_
-            completionHandler:(void (^)())handler
+            completionHandler:(void (^)(void))handler
 {
     if (text == nil) {
         handler();

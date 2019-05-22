@@ -358,8 +358,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:ENABLE_ACCELEARATION object:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:DISABLE_STABILIZE_LOCALIZE object:self];
     [self becomeFirstResponder];
-
-    UIView* target = [self findLabel:self.navigationController.navigationBar.subviews];
     
     if (!dialogHelper) {
         dialogHelper = [[DialogViewHelper alloc] init];
@@ -1184,7 +1182,7 @@
 
 #pragma mark - NavCommanderDelegate
 
-- (void)speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void (^)())handler
+- (void)speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void (^)(void))handler
 {
     [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:handler];
 }

@@ -1223,7 +1223,7 @@ static NavNavigatorConstants *_instance;
     }];
 }
 
-- (void)setTimeout:(double)delay withBlock:(void(^)()) block
+- (void)setTimeout:(double)delay withBlock:(void(^)(void)) block
 {
     if (![NavDataStore sharedDataStore].previewMode) {
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC));
@@ -1291,7 +1291,7 @@ static NavNavigatorConstants *_instance;
     
     if (timeoutTimer) {
         [timeoutTimer invalidate];
-        [self setTimeout:1 withBlock:^(NSTimer * _Nonnull timer) {
+        [self setTimeout:1 withBlock:^(void) {
             [[NavDataStore sharedDataStore] manualLocation:nil];
         }];
     }
@@ -1387,7 +1387,7 @@ static NavNavigatorConstants *_instance;
             NavLinkInfo *firstLinkInfo = linkInfos[firstLinkIndex];
             // TODO improve length from current location not from existing node
             
-            double (^lengthOfRoute)() = ^(){
+            double (^lengthOfRoute)(void) = ^(){
                 double total = 0;
                 for(NSInteger i=firstLinkIndex; i < [linkInfos count]; i++) {
                     NavLinkInfo *info = [linkInfos objectAtIndex:i];
@@ -1465,7 +1465,7 @@ static NavNavigatorConstants *_instance;
                 return;
             }
             
-            double(^approachingDistance)() = ^{
+            double(^approachingDistance)(void) = ^{
                 if (linkInfo.link.linkType == LINK_TYPE_ESCALATOR || linkInfo.link.linkType == LINK_TYPE_STAIRWAY) {
                     return 3.0;
                 } else {

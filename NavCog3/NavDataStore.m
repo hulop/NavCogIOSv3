@@ -823,18 +823,18 @@ static NavDataStore* instance_ = nil;
     [NSKeyedArchiver archiveRootObject:temp toFile:path];
 }
 
-- (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
+- (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID withPreferences:(NSDictionary *)prefs complete:(void (^)(void))complete
 {
     [self saveHistory];
     [self requestRouteFrom:fromID To:toID forUser:self.userID withLang:self.userLanguage useCache:NO withPreferences:prefs complete:complete];
 }
 
-- (void)requestRerouteFrom:(NSString *)fromID To:(NSString *)toID withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
+- (void)requestRerouteFrom:(NSString *)fromID To:(NSString *)toID withPreferences:(NSDictionary *)prefs complete:(void (^)(void))complete
 {
     [self requestRouteFrom:fromID To:toID forUser:self.userID withLang:self.userLanguage useCache:YES withPreferences:prefs complete:complete];
 }
 
-- (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID forUser:(NSString*)user withLang:(NSString*)lang useCache:(BOOL)useCache withPreferences:(NSDictionary *)prefs complete:(void (^)())complete
+- (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID forUser:(NSString*)user withLang:(NSString*)lang useCache:(BOOL)useCache withPreferences:(NSDictionary *)prefs complete:(void (^)(void))complete
 {
     if (fromID == nil || toID == nil || user == nil || lang == nil || prefs == nil) {
         return;
@@ -1154,8 +1154,8 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
         }
     }
     
-    HLPEntrance *destinationNode = _entranceMap[[[self.route lastObject] _id]];
-    HLPEntrance *startNode = _entranceMap[[[self.route firstObject] _id]];;
+    //HLPEntrance *destinationNode = _entranceMap[[[self.route lastObject] _id]];
+    //HLPEntrance *startNode = _entranceMap[[[self.route firstObject] _id]];;
     
     for(HLPEntrance *ent in features) {
         if ([ent isKindOfClass:HLPEntrance.class]) {
@@ -1288,7 +1288,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
 
 #define CONFIG_JSON @"%@://%@/%@config/dialog_config.json"
 
-- (void)requestServerConfigWithComplete:(void(^)())complete
+- (void)requestServerConfigWithComplete:(void(^)(void))complete
 {
     NSString *server = [[NSUserDefaults standardUserDefaults] stringForKey:@"selected_hokoukukan_server"];
     
@@ -1653,7 +1653,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     }
     for(HLPObject *o in self.route) {
         if ([o._id isEqualToString:linkID]) {
-            return o;
+            return (HLPLink *)o;
         }
     }
     return nil;

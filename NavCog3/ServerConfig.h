@@ -25,8 +25,8 @@
 #import <Mantle/Mantle.h>
 
 @interface I18nStrings : NSObject
-- (instancetype)initWithDictionary:(NSDictionary*)dictionary;
-- (NSString*_Nullable)stringByLanguage:(NSString*_Nullable)lang;
+- (instancetype _Nonnull)initWithDictionary:(NSDictionary* _Nonnull)dictionary;
+- (NSString* _Nonnull)stringByLanguage:(NSString* _Nonnull)lang;
 @end
 
 @interface ServerSetting : MTLModel<MTLJSONSerializing>
@@ -46,35 +46,36 @@
 @property (readonly) BOOL selected;
 @property (readonly) BOOL useHttp;
 @property (readonly) NSString* _Nullable minimumAppVersion;
-@property NSString* userLanguage;
+@property NSString* _Nonnull userLanguage;
 
 - (void)failed;
-- (NSURL*)configFileURL;
-- (NSURL*)checkAgreementURLWithIdentifier:(NSString*)identifier;
-- (NSURL*)agreementURLWithIdentifier:(NSString*)identifier;
-- (NSURL*)URLWithPath:(NSString*)path;
+- (NSURL* _Nonnull)configFileURL;
+- (NSURL* _Nonnull)checkAgreementURLWithIdentifier:(NSString* _Nonnull)identifier;
+- (NSURL* _Nonnull)agreementURLWithIdentifier:(NSString* _Nonnull)identifier;
+- (NSURL* _Nonnull)URLWithPath:(NSString* _Nonnull)path;
 @end
 
 typedef NSArray<ServerEntry*> ServerList;
 
 @interface ServerConfig : NSObject
 
-@property ServerList* _Nonnull serverList;
+@property ServerList* _Nullable serverList;
 
 @property ServerEntry* _Nullable selected;
-@property (readonly) NSDictionary *selectedServerConfig;
-@property (readonly) NSDictionary *agreementConfig;
-@property (readonly) NSDictionary *downloadConfig;
+@property (readonly) NSDictionary* _Nullable selectedServerConfig;
+@property (readonly) NSDictionary* _Nullable agreementConfig;
+@property (readonly) NSDictionary* _Nullable downloadConfig;
+@property (readonly) NSArray* _Nullable extraMenuConfig;
 
-+ (instancetype) sharedConfig;
++ (instancetype _Nonnull) sharedConfig;
 
-- (void) requestServerList:(void(^)(ServerList*))complete;
+- (void) requestServerList:(void(^_Nullable)(ServerList* _Nullable))complete;
 
-- (void) requestServerConfig:(void(^)(NSDictionary* config))complete;
-- (NSArray*) checkDownloadFiles;
-- (void) checkAgreementForIdentifier:(NSString*)identifier withCompletion:(void(^)(NSDictionary* config))complete;
+- (void) requestServerConfig:(void(^_Nullable)(NSDictionary* _Nullable config))complete;
+- (NSArray* _Nonnull) checkDownloadFiles;
+- (void) checkAgreementForIdentifier:(NSString* _Nonnull)identifier withCompletion:(void(^_Nullable)(NSDictionary* _Nullable config))complete;
 
-- (NSURL*) getDestLocation:(NSString*)path;
+- (NSURL* _Nonnull) getDestLocation:(NSString* _Nonnull)path;
 
 - (void) clear;
 

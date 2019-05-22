@@ -24,7 +24,7 @@
 #import "NavNavigator.h"
 
 @protocol NavCommanderDelegate
-- (void)speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void (^)())handler;
+- (void)speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void (^)(void))handler;
 - (void)playSuccess;
 - (void)vibrate;
 - (void)executeCommand:(NSString*)command;

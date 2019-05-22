@@ -27,16 +27,16 @@
 
 @protocol WebViewControllerDelegate
 @required
-- (void)webViewControllerClosed:(WebViewController*)controller;
+- (void)webViewControllerClosed:(WebViewController* _Nonnull)controller;
 @end
 
 @interface WebViewController : UIViewController <HLPWebViewDelegate, HLPTTSProtocol>
 
-@property NSURL* url;
-@property HLPWebView *webview;
-@property (weak) id<WebViewControllerDelegate> delegate;
+@property NSURL* _Nonnull url;
+@property HLPWebView * _Nonnull webview;
+@property (weak) id<WebViewControllerDelegate> _Nullable delegate;
 
-+ (instancetype) getInstance;
-+ (NSURL*) hulopHelpPageURLwithType:(NSString*)helpType languageDetection:(BOOL)languageDetection;
-+ (void) checkHttpStatusWithURL:(NSURL *)url completionHandler:(void (^)(NSURL * _Nonnull url, NSInteger statusCode))completion;
++ (instancetype _Nonnull ) getInstance;
++ (NSURL*_Nullable) hulopHelpPageURLwithType:(NSString*_Nonnull)helpType languageDetection:(BOOL)languageDetection;
++ (void) checkHttpStatusWithURL:(NSURL * _Nonnull)url completionHandler:(void (^_Nullable)(NSURL * _Nonnull url, NSInteger statusCode))completion;
 @end

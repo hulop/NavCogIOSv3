@@ -318,6 +318,22 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
                 [weakself.navigationController showViewController:vc sender:weakself];
             });
         }];
+    } else if ([setting.name hasPrefix:@"Open:"]) {
+        ServerConfig *sc  = [ServerConfig sharedConfig];
+        NSString *path = [setting.name substringFromIndex:@"Open:".length];
+        NSURL *url = [sc.selected URLWithPath:path];
+        __weak typeof(self) weakself = self;
+        [WebViewController checkHttpStatusWithURL:url completionHandler:^(NSURL * _Nonnull url, NSInteger statusCode) {
+            __weak NSURL *weakurl = url;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                WebViewController *vc = [WebViewController getInstance];
+                if (statusCode == 200) {
+                    vc.url = weakurl;
+                }
+                vc.title = @"";
+                [weakself.navigationController showViewController:vc sender:weakself];
+            });
+        }];
     } else if ([setting.name isEqualToString:@"back_to_mode_selection"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_UNLOAD_VIEW object:self];
         [self dismissViewControllerAnimated:YES completion:nil];
@@ -467,39 +483,6 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
 
 + (void)setupUserSettings
 {
-    if (userSettingHelper) {
-        BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"] isEqualToString:@"user_blind"];
-        BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
-        BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
-        //[speechLabel setVisible:blindMode];
-        //[speechSpeedSetting setVisible:blindMode];
-        
-        [previewSpeedSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
-        [previewWithActionSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
-        [ignoreFacility setVisible:blindMode];
-        [showPOI setVisible:blindMode];
-        [vibrateSetting setVisible:blindMode];
-        [soundEffectSetting setVisible:blindMode];
-        [boneConductionSetting setVisible:blindMode];
-
-        [unitLabel setVisible:blindMode];
-        [unitMeter setVisible:blindMode];
-        [unitFeet setVisible:blindMode];
-
-        [exerciseLabel setVisible:blindMode];
-        [exerciseAction setVisible:blindMode];
-        //[mapLabel setVisible:blindMode];
-        //[initialZoomSetting setVisible:blindMode];
-        [resetLocation setVisible:!blindMode];
-        
-        idLabel.label = [NavDataStore sharedDataStore].userID;
-        BOOL isDeveloperAuthorized = [[AuthManager sharedManager] isDeveloperAuthorized];
-        [idLabel setVisible:isDeveloperAuthorized];
-        [advancedLabel setVisible:isDeveloperAuthorized];
-        [advancedMenu setVisible:isDeveloperAuthorized];
-        
-        return;
-    }
     userSettingHelper = [[HLPSettingHelper alloc] init];
 
     [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
@@ -537,6 +520,24 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     
     resetLocation = [userSettingHelper addActionTitle:NSLocalizedString(@"Reset_Location", @"") Name:@"Reset_Location"];
     
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    [[ServerConfig sharedConfig].extraMenuList enumerateObjectsUsingBlock:^(NSDictionary* obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj[@"section_title"] && obj[@"menus"]) {
+            I18nStrings* section_title = [[I18nStrings alloc] initWithDictionary:obj[@"section_title"]];
+            
+            [userSettingHelper addSectionTitle:[section_title stringByLanguage:nds.userLanguage]];
+            [obj[@"menus"] enumerateObjectsUsingBlock:^(NSDictionary* obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if (obj[@"title"] && obj[@"content"]) {
+                    I18nStrings* title = [[I18nStrings alloc] initWithDictionary:obj[@"title"]];
+                    I18nStrings* content = [[I18nStrings alloc] initWithDictionary:obj[@"content"]];
+                    
+                    [userSettingHelper addActionTitle:[title stringByLanguage:nds.userLanguage]
+                                                 Name:[NSString stringWithFormat:@"Open:%@", [content stringByLanguage:nds.userLanguage]]];
+                }
+            }];
+        }
+    }];
+
     NSString *versionNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     NSString *buildNo = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     
@@ -545,6 +546,40 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     
     advancedLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Advanced", @"")];
     advancedMenu = [userSettingHelper addActionTitle:NSLocalizedString(@"Advanced Setting", @"") Name:@"advanced_settings"];
+    
+    if (userSettingHelper) {
+        BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"] isEqualToString:@"user_blind"];
+        BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
+        BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
+        //[speechLabel setVisible:blindMode];
+        //[speechSpeedSetting setVisible:blindMode];
+        
+        [previewSpeedSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
+        [previewWithActionSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
+        [ignoreFacility setVisible:blindMode];
+        [showPOI setVisible:blindMode];
+        [vibrateSetting setVisible:blindMode];
+        [soundEffectSetting setVisible:blindMode];
+        [boneConductionSetting setVisible:blindMode];
+        
+        [unitLabel setVisible:blindMode];
+        [unitMeter setVisible:blindMode];
+        [unitFeet setVisible:blindMode];
+        
+        [exerciseLabel setVisible:blindMode];
+        [exerciseAction setVisible:blindMode];
+        //[mapLabel setVisible:blindMode];
+        //[initialZoomSetting setVisible:blindMode];
+        [resetLocation setVisible:!blindMode];
+        
+        idLabel.label = [NavDataStore sharedDataStore].userID;
+        BOOL isDeveloperAuthorized = [[AuthManager sharedManager] isDeveloperAuthorized];
+        [idLabel setVisible:isDeveloperAuthorized];
+        [advancedLabel setVisible:isDeveloperAuthorized];
+        [advancedMenu setVisible:isDeveloperAuthorized];
+        
+        return;
+    }
 }
 
 + (void)setupDeveloperSettings

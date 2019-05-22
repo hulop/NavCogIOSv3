@@ -84,5 +84,8 @@ typedef NSArray<ServerEntry*> ServerList;
 - (BOOL) isPreviewDisabled;
 
 - (void) enumerateModes:(void(^_Nonnull)(NSString* _Nonnull mode, NSString* _Nonnull presetPath))iterator;
-- (NSArray*) modeList;
+- (NSArray* _Nonnull) modeList;
+
+- (NSArray* _Nullable) extraMenuList;
+- (NSString*_Nonnull)convertRelativePath:(NSString*_Nonnull)orig;
 @end

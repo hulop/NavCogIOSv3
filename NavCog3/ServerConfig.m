@@ -330,6 +330,17 @@ static ServerConfig *instance;
     }];
 }
 
+- (NSString*)convertRelativePath:(NSString*)orig
+{
+    if (_selected) {
+        NSURL* url = self.selected.configFileURL;
+        if ([orig hasPrefix:@"/"]) {
+            return [NSString stringWithFormat:@"%@%@", url.host, orig];
+        }
+    }
+    return orig;
+}
+
 - (NSDictionary*)convertRelativePath:(NSDictionary*)orig withHostName:(NSString*)hostname
 {
     NSMutableDictionary* ret = [orig mutableCopy];
@@ -494,5 +505,16 @@ static ServerConfig *instance;
         [temp addObject:mode];
     }];
     return temp;
+}
+
+- (NSArray *)extraMenuList
+{
+    NSDictionary *json = _selectedServerConfig;
+    
+    if (json[@"extra_menus"]) {
+        _extraMenuConfig = json[@"extra_menus"];
+    }
+    
+    return _extraMenuConfig;
 }
 @end

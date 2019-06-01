@@ -26,7 +26,7 @@
 #import "ConfigManager.h"
 #import "LocationEvent.h"
 #import "NavDebugHelper.h"
-#import <HLPDialog/HLPDialog.h>
+#import <HLPDialog/HLPDialog-Swift.h>
 #import "NavDeviceTTS.h"
 #import "NavDataStore.h"
 #import "AuthManager.h"

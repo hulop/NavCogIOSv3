@@ -23,7 +23,7 @@
 #import "DestinationTableViewController.h"
 #import "NavDataSource.h"
 #import "LocationEvent.h"
-#import <HLPDialog/HLPDialog.h>
+#import <HLPDialog/HLPDialog-Swift.h>
 #import "DefaultTTS.h"
 
 @interface DestinationTableViewController ()

@@ -45,3 +45,4 @@
 /* (No Comment) */
 "NSSpeechRecognitionUsageDescription" = "이 응용 프로그램은 대화를 위해 음성 인식을 사용합니다";
 
+"NSBluetoothAlwaysUsageDescription" = "이 응용 프로그램은 BLE 비콘과의 블루투스 통신을 기반으로 목적지로 이동합니다.";

@@ -24,3 +24,4 @@
 "NSLocationWhenInUseUsageDescription" = "This app navigates you towards destinations based on the location of the device.";
 "NSMicrophoneUsageDescription" = "This app uses microphone to provide conversational interface for destination search. ";
 "NSSpeechRecognitionUsageDescription" = "This app uses microphone to provide conversational interface for destination search. ";
+"NSBluetoothAlwaysUsageDescription" = "This app navigates you towards destinations based on Bluetooth communication with BLE beacon.";

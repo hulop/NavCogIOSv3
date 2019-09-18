@@ -45,3 +45,4 @@
 /* (No Comment) */
 "NSSpeechRecognitionUsageDescription" = "此应用为了通话使用语音识别";
 
+"NSBluetoothAlwaysUsageDescription" = "此应用程序根据与BLE信标的蓝牙通信导航到目的地";

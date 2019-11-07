@@ -3,13 +3,13 @@ inhibit_all_warnings!
 
 target 'NavCog3' do
   platform :ios, '8.4'
-  pod 'OpenCV-Dynamic', '4.0.0-alpha1'
+  pod 'OpenCV-Dynamic', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.3.6/platform/ios/podspecs/OpenCV-Dynamic.podspec"
   pod 'FormatterKit'
 end
 
 target 'NavCogFP' do
   platform :ios, '8.4'
-  pod 'OpenCV-Dynamic', '4.0.0-alpha1'
+  pod 'OpenCV-Dynamic', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.3.6/platform/ios/podspecs/OpenCV-Dynamic.podspec"
   pod 'FormatterKit'
 end
 
@@ -20,6 +20,6 @@ end
 
 target 'NavCogPreview' do
   platform :ios, '8.4'
-  pod 'OpenCV-Dynamic', '4.0.0-alpha1'
+  pod 'OpenCV-Dynamic', :podspec => "https://raw.githubusercontent.com/hulop/blelocpp/v1.3.6/platform/ios/podspecs/OpenCV-Dynamic.podspec"
   pod 'FormatterKit'
 end

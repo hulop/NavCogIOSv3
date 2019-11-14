@@ -45,6 +45,8 @@
 	<true/>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Only for including CoreBluetooth</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app use BLE beacon location</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Only for including OpenCV</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

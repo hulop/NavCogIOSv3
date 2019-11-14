@@ -24,3 +24,4 @@
 "NSLocationWhenInUseUsageDescription" = "このアプリはデバイスの位置情報を使って目的地までの案内をします";
 "NSMicrophoneUsageDescription" = "このアプリは対話で目的地を設定するためにマイクを使用します";
 "NSSpeechRecognitionUsageDescription" = "このアプリは対話で目的地を設定するために音声認識を使用します";
+"NSBluetoothAlwaysUsageDescription" = "このアプリはBLEビーコンとのBluetooth通信を使って目的地までの案内をします";

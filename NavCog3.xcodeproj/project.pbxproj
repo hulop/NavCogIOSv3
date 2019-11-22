@@ -1396,12 +1396,13 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Mantle.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/HLPWebView.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/HLPLocationManager.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/ZipArchive.framework",
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 		AE2ADB1F1433ECD3FB4A9856 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

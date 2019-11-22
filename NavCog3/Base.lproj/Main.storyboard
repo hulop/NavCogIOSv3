@@ -13,7 +13,7 @@
         <!--NavCog-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -119,7 +119,7 @@
         <!--Init View Controller-->
         <scene sceneID="H8a-9G-NOM">
             <objects>
-                <viewController id="4fr-OV-bcX" customClass="InitViewController" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="4fr-OV-bcX" customClass="InitViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="k7w-Qw-TAn">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -167,7 +167,7 @@
         <!--Navigation Controller-->
         <scene sceneID="HgL-RI-FlR">
             <objects>
-                <navigationController storyboardIdentifier="wheelchair_ui_navigation" useStoryboardIdentifierAsRestorationIdentifier="YES" id="S1z-Er-If2" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="wheelchair_ui_navigation" modalPresentationStyle="fullScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="S1z-Er-If2" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="CbX-U2-dSC">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -183,7 +183,7 @@
         <!--Setting View Controller-->
         <scene sceneID="6eY-Gj-biD">
             <objects>
-                <tableViewController useStoryboardIdentifierAsRestorationIdentifier="YES" id="5By-Wf-lM7" customClass="SettingViewController" sceneMemberID="viewController">
+                <tableViewController modalPresentationStyle="fullScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="5By-Wf-lM7" customClass="SettingViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="dyR-sF-yjs" customClass="HLPSettingTableView">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -280,7 +280,7 @@
         <!--NavCog-->
         <scene sceneID="jsF-Mo-vEC">
             <objects>
-                <viewController storyboardIdentifier="blind_ui" id="1gp-c3-Yyi" customClass="BlindViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="blind_ui" modalPresentationStyle="fullScreen" id="1gp-c3-Yyi" customClass="BlindViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Vhx-Qg-XmL">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -626,7 +626,7 @@
         <!--Navigation Controller-->
         <scene sceneID="5hy-mh-CiW">
             <objects>
-                <navigationController storyboardIdentifier="blind_ui_navigation" useStoryboardIdentifierAsRestorationIdentifier="YES" id="QOE-vl-QfO" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="blind_ui_navigation" modalPresentationStyle="fullScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="QOE-vl-QfO" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="1yD-Jj-G52">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -642,7 +642,7 @@
         <!--Route-->
         <scene sceneID="XuW-9p-1ux">
             <objects>
-                <viewController id="M0g-Fg-mUv" customClass="SearchViewController" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="M0g-Fg-mUv" customClass="SearchViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="EXu-Yu-iRX">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -829,7 +829,7 @@
         <!--Destination Table View Controller-->
         <scene sceneID="k1K-xw-B7r">
             <objects>
-                <tableViewController id="2QI-n6-OB0" customClass="DestinationTableViewController" sceneMemberID="viewController">
+                <tableViewController modalPresentationStyle="fullScreen" id="2QI-n6-OB0" customClass="DestinationTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="4Vx-Of-sSd" customClass="HLPSettingTableView">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -903,7 +903,7 @@
         <!--Dialog View Controller-->
         <scene sceneID="7vw-Hj-Rkg">
             <objects>
-                <viewController id="YRz-sv-vaW" customClass="DialogViewController" customModule="HLPDialog" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="YRz-sv-vaW" customClass="DialogViewController" customModule="HLPDialog" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="CkD-sT-tsx">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -918,7 +918,7 @@
         <!--Web View Controller-->
         <scene sceneID="whE-3r-Ub6">
             <objects>
-                <viewController storyboardIdentifier="web_view" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ime-J0-f14" customClass="WebViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="web_view" modalPresentationStyle="fullScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ime-J0-f14" customClass="WebViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MMp-LF-02e">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -933,7 +933,7 @@
         <!--Welcom View Controller-->
         <scene sceneID="YEL-k9-N4f">
             <objects>
-                <viewController id="rPX-gt-o07" customClass="WelcomViewController" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="rPX-gt-o07" customClass="WelcomViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="pa2-LL-8Qj">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -984,7 +984,7 @@
         <!--Server Selection View Controller-->
         <scene sceneID="Yxt-lG-jtO">
             <objects>
-                <viewController id="Pgn-Ra-Ddq" customClass="ServerSelectionViewController" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="Pgn-Ra-Ddq" customClass="ServerSelectionViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Pj4-8I-hnQ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1058,7 +1058,7 @@
         <!--Agreement View Controller-->
         <scene sceneID="FdU-86-dMx">
             <objects>
-                <viewController id="tib-LA-JLS" customClass="AgreementViewController" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="tib-LA-JLS" customClass="AgreementViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="fAA-3J-3v3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1127,7 +1127,7 @@
         <!--Download View Controller-->
         <scene sceneID="dhi-Vm-qji">
             <objects>
-                <viewController id="odC-TJ-tkF" customClass="DownloadViewController" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="odC-TJ-tkF" customClass="DownloadViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Xfi-Qd-XLF">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1191,7 +1191,7 @@
         <!--Rating View Controller-->
         <scene sceneID="LUc-pO-gOQ">
             <objects>
-                <viewController storyboardIdentifier="rating_view" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hk9-wr-WOW" customClass="RatingViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="rating_view" modalPresentationStyle="fullScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hk9-wr-WOW" customClass="RatingViewController" sceneMemberID="viewController">
                     <scrollView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" id="KL6-rx-B9M">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="720"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

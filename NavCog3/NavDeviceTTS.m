@@ -416,11 +416,17 @@ static NavDeviceTTS *instance = nil;
     NSString *speechString = userInfo[UIAccessibilityAnnouncementKeyStringValue];
     
     HLPSpeechEntry *se = [processing objectForKey:speechString];
-    se.speakFinish = [[NSDate date] timeIntervalSince1970];
-    NSLog(@"speak_finish_vo,%.2f,%.2f,%f", se.speakStart - se.issued, se.speakFinish - se.speakStart, NSDate.date.timeIntervalSince1970);
-    [processing removeObjectForKey:speechString];
     
     if (se) {
+        se.speakFinish = [[NSDate date] timeIntervalSince1970];
+        
+        if (se.selfvoicing) {
+            return;
+        }
+    
+        NSLog(@"speak_finish_vo,%.2f,%.2f,%f", se.speakStart - se.issued, se.speakFinish - se.speakStart, NSDate.date.timeIntervalSince1970);
+        [processing removeObjectForKey:speechString];
+    
         isSpeaking = NO;
         isProcessing = NO;
         expire = NAN;

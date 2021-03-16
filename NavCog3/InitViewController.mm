@@ -301,7 +301,10 @@
                 // check device and update rssi_bias
                 NSString *deviceName = [NavUtil deviceModel];
                 NSString *configKey = [@"rssi_bias_m_" stringByAppendingString:deviceName];
-                rssiBias = [ud floatForKey:configKey];
+                // check if configKey exists in the user defaults.
+                if ([ud objectForKey:configKey] != nil){
+                    rssiBias = [ud floatForKey:configKey];
+                }
             }
             params[@"minRssiBias"] = @(rssiBias-0.1);
             params[@"maxRssiBias"] = @(rssiBias+0.1);

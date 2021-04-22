@@ -1359,14 +1359,12 @@ static NavNavigatorConstants *_instance;
             [info updateWithLocation:location];
             if (info.distanceToUserLocationFromLink < minDistance &&
                 (
-                 (fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD &&
-                  fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD) ||
-                 ((info.link.linkType == LINK_TYPE_ELEVATOR ||
-                   info.link.linkType == LINK_TYPE_ESCALATOR ||
-                   info.link.linkType == LINK_TYPE_STAIRWAY) &&
-                  (fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD ||
-                   fabs(location.floor - info.link.targetHeight) < C.FLOOR_DIFF_THRESHOLD))
-                 )
+                 (info.link.isFloorTransition == NO &&
+                  fabs(location.floor - info.link.sourceHeight) < C.FLOOR_DIFF_THRESHOLD) ||
+                 (info.link.isFloorTransition == YES &&
+                  ((info.link.sourceHeight < location.floor && location.floor < info.link.targetHeight) ||
+                   (info.link.targetHeight < location.floor && location.floor < info.link.sourceHeight))
+                 ))
                 ) {
                 minDistance = info.distanceToUserLocationFromLink;
                 minIndex = i;

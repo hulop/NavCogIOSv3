@@ -285,6 +285,7 @@ typedef NS_ENUM(NSInteger, HLPLinkIncline) {
 - (void) offsetSource:(double)distance;
 - (HLPPOIElevatorEquipments*) elevatorEquipments;
 - (BOOL) isSafeLinkType;
+- (BOOL) isFloorTransition;
 
 - (instancetype) initWithSource:(HLPLocation*)source Target:(HLPLocation*)target;
 @end

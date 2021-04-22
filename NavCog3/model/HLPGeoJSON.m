@@ -948,6 +948,11 @@ static NSRegularExpression *patternHLPPOIFlags;
     _linkType == LINK_TYPE_PEDESTRIAN_ROAD;
 }
 
+- (BOOL)isFloorTransition
+{
+    return _sourceHeight != _targetHeight;
+}
+
 - (instancetype)initWithSource:(HLPLocation *)source Target:(HLPLocation *)target
 {
     self = [super init];

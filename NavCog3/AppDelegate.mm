@@ -29,10 +29,11 @@
 #import "NavDeviceTTS.h"
 #import "NavSound.h"
 #import <Speech/Speech.h> // for Swift header
-#import <HLPDialog/HLPDialog-Swift.h>
 #import <AVFoundation/AVFoundation.h>
 #import "ScreenshotHelper.h"
 #import "NavUtil.h"
+
+@import HLPDialog;
 
 #define IS_IOS11orHIGHER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)
 

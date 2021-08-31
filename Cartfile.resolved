@@ -1,8 +1,4 @@
 github "Mantle/Mantle" "2.0.7"
 github "ZipArchive/ZipArchive" "v2.2.1"
-github "daltoniam/Starscream" "3.0.5"
-github "hulop/HLPDialog" "v1.0.7"
 github "hulop/HLPLocationManager" "v1.0.11"
 github "hulop/HLPWebView" "v1.1"
-github "watson-developer-cloud/restkit" "2.0.0"
-github "watson-developer-cloud/swift-sdk" "1.0.0"

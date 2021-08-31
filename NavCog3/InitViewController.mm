@@ -28,9 +28,9 @@
 #import "AuthManager.h"
 #import <HLPLocationManager/HLPLocationManagerParameters.h>
 #import <Speech/Speech.h>
-#import <HLPDialog/HLPDialog-Swift.h>
 #import "Logging.h"
 
+@import HLPDialog;
 
 
 @interface InitViewController () {

@@ -23,7 +23,7 @@
 
 #import "NavBlindWebView.h"
 #import "NavDataStore.h"
-#import <Mantle/Mantle.h>
+#import <Mantle.h>
 
 @implementation NavBlindWebView
 

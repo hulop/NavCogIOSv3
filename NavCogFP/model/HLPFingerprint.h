@@ -23,7 +23,7 @@
 #import <Foundation/Foundation.h>
 
 #import "HLPGeoJSON.h"
-#import <Mantle/Mantle.h>
+#import <Mantle.h>
 #import <HLPLocationManager/HLPLocation.h>
 
 @interface HLPDBObject : MTLModel<MTLJSONSerializing, NSCoding>

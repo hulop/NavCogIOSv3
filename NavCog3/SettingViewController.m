@@ -32,7 +32,7 @@
 #import "NavUtil.h"
 #import "Logging.h"
 #import "ScreenshotHelper.h"
-#import <ZipArchive/SSZipArchive.h>
+#import <SSZipArchive.h>
 #import "WebViewController.h"
 #import "ServerConfig.h"
 

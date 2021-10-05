@@ -7,9 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0A9AE0FB45967A7B8CDC33BC /* libPods-NavCogPreview.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 35160725C7FDA4E6ABCFA139 /* libPods-NavCogPreview.a */; };
+		231778EFD52FD719622748FD /* libPods-NavCogFP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5D9DE6372649AF633976E29 /* libPods-NavCogFP.a */; };
 		3008B8B326DDFC42008C27B1 /* HLPDialog in Frameworks */ = {isa = PBXBuildFile; productRef = 3008B8B226DDFC42008C27B1 /* HLPDialog */; };
-		341B73DAD151025E2A79374B /* libPods-NavCogFP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BA9F07AEB733BB60BE0E8A9 /* libPods-NavCogFP.a */; };
+		3077FDC226E73D19006404B1 /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 3077FDC126E73D19006404B1 /* Mantle */; };
+		309A48F82706A10A00318B44 /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 309A48F72706A10A00318B44 /* Mantle */; };
+		309A48FE2706A14300318B44 /* HLPDialog in Frameworks */ = {isa = PBXBuildFile; productRef = 309A48FD2706A14300318B44 /* HLPDialog */; };
+		309A49002706A1D700318B44 /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 309A48FF2706A1D700318B44 /* Mantle */; };
+		309AB807270BF74100E58467 /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 309AB806270BF74100E58467 /* Mantle */; };
+		30F54F4C270CCDC000ABD9FC /* HLPWebView in Frameworks */ = {isa = PBXBuildFile; productRef = 30F54F4B270CCDC000ABD9FC /* HLPWebView */; };
 		7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E08DB571DB9F08E00E82161 /* ConfigManager.m */; };
 		7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7E17F19E1D9A225A00DB1F34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A01D9A225A00DB1F34 /* InfoPlist.strings */; };
@@ -110,12 +115,6 @@
 		7E5D3BC21F0340D8002420DA /* HLPWalker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5D3BC11F0340D8002420DA /* HLPWalker.m */; };
 		7E5D3BC81F039E9B002420DA /* POIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5D3BC71F039E9B002420DA /* POIViewController.m */; };
 		7E5E65101F3067F100FE43E5 /* ExpConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5E650F1F3067F100FE43E5 /* ExpConfig.m */; };
-		7E6047921FE0D21C003440B0 /* HLPLocationManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91D384B1F628107008A34D1 /* HLPLocationManager.framework */; };
-		7E6047931FE0D2F8003440B0 /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AFAE1C3CB403E5BB2703A0E /* libPods-NavCog3.a */; };
-		7E6047971FE0D3DE003440B0 /* HLPLocationManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91D384D1F628161008A34D1 /* HLPLocationManager.framework */; };
-		7E6047981FE0D3DE003440B0 /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2E91F550F2800548203 /* Mantle.framework */; };
-		7E60479A1FE0D403003440B0 /* HLPLocationManager.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A91D384D1F628161008A34D1 /* HLPLocationManager.framework */; };
-		7E60479B1FE0D403003440B0 /* Mantle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A91EA2E91F550F2800548203 /* Mantle.framework */; };
 		7E683DF51E42DE8100D04037 /* RatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E683DF21E42DE8100D04037 /* RatingViewController.m */; };
 		7E683DF61E42DE8100D04037 /* StarRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E683DF41E42DE8100D04037 /* StarRatingView.m */; };
 		7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */; };
@@ -200,33 +199,41 @@
 		7EF7F7B41DD1BC2B000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
 		7EF7F7B51DD1BC2B000A625A /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7EF7F7B71DD1C138000A625A /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
-		992C90F99A598213C278D838 /* libPods-NavCogTool.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80D51D6F63C288B12DC6754E /* libPods-NavCogTool.a */; };
-		A91AAE5C1F6A783600B5F903 /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5150EA1D8D75C400ED25FB /* Mantle.framework */; };
-		A91AAE5E1F6A786300B5F903 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91AAE5D1F6A786300B5F903 /* ZipArchive.framework */; };
+		8D37A882ED933432ED169F00 /* libPods-NavCogPreview.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FFAFDC056C5DA7FD576A81D6 /* libPods-NavCogPreview.a */; };
 		A91AAE611F6A7C1B00B5F903 /* NavBlindWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */; };
-		A91AAE621F6A7DF100B5F903 /* HLPWebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2FF1F55376200548203 /* HLPWebView.framework */; };
-		A91D384F1F628185008A34D1 /* HLPLocationManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91D384B1F628107008A34D1 /* HLPLocationManager.framework */; };
-		A91EA2E81F550EF800548203 /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5150EA1D8D75C400ED25FB /* Mantle.framework */; };
-		A91EA2EE1F550F7200548203 /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5150EA1D8D75C400ED25FB /* Mantle.framework */; };
-		A91EA3001F55376200548203 /* HLPWebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2FF1F55376200548203 /* HLPWebView.framework */; };
-		A91EA3011F55377E00548203 /* HLPWebView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91EA2FF1F55376200548203 /* HLPWebView.framework */; };
 		A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A923DA091F26DBF60002E3CB /* DefaultTTS.m */; };
-		A9799F401F72115800B13FEC /* HLPDialog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */; };
-		A9799F411F72117D00B13FEC /* ConversationV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E441E3F42AB00208042 /* ConversationV1.framework */; };
-		A9799F421F72119900B13FEC /* RestKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EF45E471E3F42AB00208042 /* RestKit.framework */; };
-		A9799F451F7211D000B13FEC /* HLPLocationManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91D384B1F628107008A34D1 /* HLPLocationManager.framework */; };
 		A9A695C12137CAA000009527 /* Fingerprint.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9A695BF2137CAA000009527 /* Fingerprint.strings */; };
+		CE7AA8F1AFA6671B4710BA81 /* libPods-NavCogTool.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3A807804B8E02FCAA739E02 /* libPods-NavCogTool.a */; };
+		D3B684BD87877697DA26A4DE /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABCC51EA52F7E70CF93DA9D2 /* libPods-NavCog3.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		30647B382706482C000536D2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		309A490A2706A32700318B44 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7EF7F79B1DD178F7000A625A /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				7E60479A1FE0D403003440B0 /* HLPLocationManager.framework in CopyFiles */,
-				7E60479B1FE0D403003440B0 /* Mantle.framework in CopyFiles */,
 				7EC20B5A1DDAC9C900818E33 /* HLPGeoJSON.strings in CopyFiles */,
 				7EC20B5B1DDAC9C900818E33 /* BlindView.strings in CopyFiles */,
 				7EC20B5C1DDAC9C900818E33 /* BlindView.stringsdict in CopyFiles */,
@@ -239,12 +246,10 @@
 /* Begin PBXFileReference section */
 		0D18A95F063007726536010A /* Pods-NavCog3.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.debug.xcconfig"; sourceTree = "<group>"; };
 		236A8A941827481A63E3CAD2 /* Pods-NavCogTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.release.xcconfig"; sourceTree = "<group>"; };
-		35160725C7FDA4E6ABCFA139 /* libPods-NavCogPreview.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogPreview.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AF7CE4FA37DA8CC1D99A442 /* Pods-NavCogFP.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFP.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP.debug.xcconfig"; sourceTree = "<group>"; };
 		40D977CBB37A56EF684BDB52 /* Pods-NavCogFP.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFP.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP.release.xcconfig"; sourceTree = "<group>"; };
 		49EF4A10A8A15A8B96509BB9 /* Pods-NavCogPreview.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogPreview.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview.release.xcconfig"; sourceTree = "<group>"; };
 		5E656ADFCD62234B5F612AA6 /* Pods-NavCogPreview.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogPreview.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview.debug.xcconfig"; sourceTree = "<group>"; };
-		6AFAE1C3CB403E5BB2703A0E /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E08DB561DB9F08E00E82161 /* ConfigManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigManager.h; sourceTree = "<group>"; };
 		7E08DB571DB9F08E00E82161 /* ConfigManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigManager.m; sourceTree = "<group>"; };
 		7E0E97141D98B80100CF2960 /* NavDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavDataStore.h; sourceTree = "<group>"; };
@@ -255,7 +260,6 @@
 		7E17F1981D9A213600DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = SettingUtil/ja.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
 		7E17F19F1D9A225A00DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7E17F1A41D9A226100DB1F34 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
-		7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HLPDialog.framework; path = Carthage/Build/iOS/HLPDialog.framework; sourceTree = "<group>"; };
 		7E1F9F281DEEB1D3003E1B23 /* NavDebugHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavDebugHelper.h; sourceTree = "<group>"; };
 		7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavDebugHelper.m; sourceTree = "<group>"; };
 		7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
@@ -295,7 +299,6 @@
 		7E433DD31D6E84D300C6C993 /* NavUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavUtil.m; sourceTree = "<group>"; };
 		7E5150A21D8BF32800ED25FB /* NavNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavNavigator.h; path = blind/NavNavigator.h; sourceTree = "<group>"; };
 		7E5150A31D8BF32800ED25FB /* NavNavigator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavNavigator.m; path = blind/NavNavigator.m; sourceTree = "<group>"; };
-		7E5150EA1D8D75C400ED25FB /* Mantle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mantle.framework; path = Carthage/Build/iOS/Mantle.framework; sourceTree = "<group>"; };
 		7E5739F01EF27AFA00BA3601 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		7E5739F11EF27AFA00BA3601 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		7E5739F31EF27B2B00BA3601 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
@@ -330,7 +333,6 @@
 		7E7ED5A31F5E67BC0033814B /* ScreenshotHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotHelper.h; sourceTree = "<group>"; };
 		7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenshotHelper.m; sourceTree = "<group>"; };
 		7E7ED5A71F5EDFC90033814B /* lastcommit.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lastcommit.txt; sourceTree = SOURCE_ROOT; };
-		7E83928C22A22E2600CF07D9 /* AssistantV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssistantV1.framework; path = Carthage/Build/iOS/AssistantV1.framework; sourceTree = "<group>"; };
 		7E8A33BB1D917D5200D20CD5 /* HLPDataUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPDataUtil.h; path = model/HLPDataUtil.h; sourceTree = "<group>"; };
 		7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = HLPDataUtil.m; path = model/HLPDataUtil.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		7E8D8F331E8A92F9006DB46D /* BeaconAddTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconAddTableViewController.h; sourceTree = "<group>"; };
@@ -422,8 +424,6 @@
 		7EF45E381E3F1E5600208042 /* AuthManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthManager.h; sourceTree = "<group>"; };
 		7EF45E391E3F1E5600208042 /* AuthManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthManager.m; sourceTree = "<group>"; };
 		7EF45E3C1E3F426F00208042 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		7EF45E441E3F42AB00208042 /* ConversationV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ConversationV1.framework; path = Carthage/Build/iOS/ConversationV1.framework; sourceTree = "<group>"; };
-		7EF45E471E3F42AB00208042 /* RestKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RestKit.framework; path = Carthage/Build/iOS/RestKit.framework; sourceTree = "<group>"; };
 		7EF45E531E3F58D200208042 /* dev.hashfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dev.hashfile; sourceTree = "<group>"; };
 		7EF562C81EE6356B004053DA /* POIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POIManager.h; sourceTree = "<group>"; };
 		7EF562C91EE6356B004053DA /* POIManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POIManager.m; sourceTree = "<group>"; };
@@ -439,14 +439,7 @@
 		7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavPreviewer.m; path = blind/NavPreviewer.m; sourceTree = "<group>"; };
 		7EF7F7AC1DD1949C000A625A /* NavDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavDataSource.h; path = blind/NavDataSource.h; sourceTree = "<group>"; };
 		7EF7F7AD1DD1949C000A625A /* NavDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavDataSource.m; path = blind/NavDataSource.m; sourceTree = "<group>"; };
-		80D51D6F63C288B12DC6754E /* libPods-NavCogTool.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogTool.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E3BEBAB18357F1E1596477F /* Pods-NavCogTool.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.debug.xcconfig"; sourceTree = "<group>"; };
-		9BA9F07AEB733BB60BE0E8A9 /* libPods-NavCogFP.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogFP.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A91AAE5D1F6A786300B5F903 /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = Carthage/Build/iOS/ZipArchive.framework; sourceTree = "<group>"; };
-		A91D384B1F628107008A34D1 /* HLPLocationManager.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HLPLocationManager.framework; path = Carthage/Build/iOS/HLPLocationManager.framework; sourceTree = "<group>"; };
-		A91D384D1F628161008A34D1 /* HLPLocationManager.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HLPLocationManager.framework; path = Carthage/Build/Mac/HLPLocationManager.framework; sourceTree = "<group>"; };
-		A91EA2E91F550F2800548203 /* Mantle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mantle.framework; path = Carthage/Build/Mac/Mantle.framework; sourceTree = "<group>"; };
-		A91EA2FF1F55376200548203 /* HLPWebView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HLPWebView.framework; path = Carthage/Build/iOS/HLPWebView.framework; sourceTree = "<group>"; };
 		A923DA081F26DBF60002E3CB /* DefaultTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultTTS.h; path = dialog/DefaultTTS.h; sourceTree = "<group>"; };
 		A923DA091F26DBF60002E3CB /* DefaultTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DefaultTTS.m; path = dialog/DefaultTTS.m; sourceTree = "<group>"; };
 		A93ED2731ED2DBA900B75760 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -470,7 +463,11 @@
 		A9ED154721391494009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/HLPGeoJSON.strings; sourceTree = "<group>"; };
 		A9ED1548213914A4009E1E0C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "SettingUtil/zh-Hans.lproj/HLPSettingView.strings"; sourceTree = "<group>"; };
 		A9ED1549213914A6009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = SettingUtil/ko.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
+		ABCC51EA52F7E70CF93DA9D2 /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5D9DE6372649AF633976E29 /* libPods-NavCogFP.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogFP.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E3A807804B8E02FCAA739E02 /* libPods-NavCogTool.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogTool.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBE9F8032158D7532B8BFC20 /* Pods-NavCog3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.release.xcconfig"; sourceTree = "<group>"; };
+		FFAFDC056C5DA7FD576A81D6 /* libPods-NavCogPreview.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogPreview.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -480,10 +477,8 @@
 			files = (
 				7EB3FFA320D779D600D6D05E /* ARKit.framework in Frameworks */,
 				7E30FA3D1E81551900D542E5 /* CoreBluetooth.framework in Frameworks */,
-				A91D384F1F628185008A34D1 /* HLPLocationManager.framework in Frameworks */,
-				A91EA3011F55377E00548203 /* HLPWebView.framework in Frameworks */,
-				A91EA2EE1F550F7200548203 /* Mantle.framework in Frameworks */,
-				341B73DAD151025E2A79374B /* libPods-NavCogFP.a in Frameworks */,
+				231778EFD52FD719622748FD /* libPods-NavCogFP.a in Frameworks */,
+				309A49002706A1D700318B44 /* Mantle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,17 +486,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E6047931FE0D2F8003440B0 /* libPods-NavCog3.a in Frameworks */,
-				7E6047921FE0D21C003440B0 /* HLPLocationManager.framework in Frameworks */,
+				3077FDC226E73D19006404B1 /* Mantle in Frameworks */,
 				7E9657F01F619B9300A6B489 /* AssetsLibrary.framework in Frameworks */,
 				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
-				A91EA3001F55376200548203 /* HLPWebView.framework in Frameworks */,
 				3008B8B326DDFC42008C27B1 /* HLPDialog in Frameworks */,
-				A91EA2E81F550EF800548203 /* Mantle.framework in Frameworks */,
 				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
-				A91AAE5E1F6A786300B5F903 /* ZipArchive.framework in Frameworks */,
+				30F54F4C270CCDC000ABD9FC /* HLPWebView in Frameworks */,
+				D3B684BD87877697DA26A4DE /* libPods-NavCog3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -509,13 +502,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A9799F411F72117D00B13FEC /* ConversationV1.framework in Frameworks */,
-				A9799F401F72115800B13FEC /* HLPDialog.framework in Frameworks */,
-				A9799F451F7211D000B13FEC /* HLPLocationManager.framework in Frameworks */,
-				A91AAE621F6A7DF100B5F903 /* HLPWebView.framework in Frameworks */,
-				A91AAE5C1F6A783600B5F903 /* Mantle.framework in Frameworks */,
-				A9799F421F72119900B13FEC /* RestKit.framework in Frameworks */,
-				0A9AE0FB45967A7B8CDC33BC /* libPods-NavCogPreview.a in Frameworks */,
+				8D37A882ED933432ED169F00 /* libPods-NavCogPreview.a in Frameworks */,
+				309A48F82706A10A00318B44 /* Mantle in Frameworks */,
+				309A48FE2706A14300318B44 /* HLPDialog in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -523,9 +512,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E6047971FE0D3DE003440B0 /* HLPLocationManager.framework in Frameworks */,
-				7E6047981FE0D3DE003440B0 /* Mantle.framework in Frameworks */,
-				992C90F99A598213C278D838 /* libPods-NavCogTool.a in Frameworks */,
+				CE7AA8F1AFA6671B4710BA81 /* libPods-NavCogTool.a in Frameworks */,
+				309AB807270BF74100E58467 /* Mantle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -535,30 +523,20 @@
 		0F5EA397BCF0C5EEF08F5111 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7E83928C22A22E2600CF07D9 /* AssistantV1.framework */,
 				7EB3FFA220D779D500D6D05E /* ARKit.framework */,
 				7E9657EF1F619B9300A6B489 /* AssetsLibrary.framework */,
 				A93ED2771ED2DBB800B75760 /* AVFoundation.framework */,
-				7EF45E441E3F42AB00208042 /* ConversationV1.framework */,
 				7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */,
 				7EF45E3C1E3F426F00208042 /* Security.framework */,
 				7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */,
 				A93ED2751ED2DBB000B75760 /* Foundation.framework */,
-				7E1BE48B1F25B78300FF17BD /* HLPDialog.framework */,
-				A91D384B1F628107008A34D1 /* HLPLocationManager.framework */,
-				A91D384D1F628161008A34D1 /* HLPLocationManager.framework */,
-				A91EA2FF1F55376200548203 /* HLPWebView.framework */,
-				7E5150EA1D8D75C400ED25FB /* Mantle.framework */,
-				A91EA2E91F550F2800548203 /* Mantle.framework */,
 				A93ED2801ED2DE3200B75760 /* MapKit.framework */,
 				7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */,
-				7EF45E471E3F42AB00208042 /* RestKit.framework */,
 				A93ED2731ED2DBA900B75760 /* UIKit.framework */,
-				A91AAE5D1F6A786300B5F903 /* ZipArchive.framework */,
-				6AFAE1C3CB403E5BB2703A0E /* libPods-NavCog3.a */,
-				80D51D6F63C288B12DC6754E /* libPods-NavCogTool.a */,
-				9BA9F07AEB733BB60BE0E8A9 /* libPods-NavCogFP.a */,
-				35160725C7FDA4E6ABCFA139 /* libPods-NavCogPreview.a */,
+				ABCC51EA52F7E70CF93DA9D2 /* libPods-NavCog3.a */,
+				D5D9DE6372649AF633976E29 /* libPods-NavCogFP.a */,
+				FFAFDC056C5DA7FD576A81D6 /* libPods-NavCogPreview.a */,
+				E3A807804B8E02FCAA739E02 /* libPods-NavCogTool.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -900,15 +878,17 @@
 				7E30F9A61E813FFC00D542E5 /* Sources */,
 				7E30F9A71E813FFC00D542E5 /* Frameworks */,
 				7E30F9A81E813FFC00D542E5 /* Resources */,
-				A91EA2E31F550DE100548203 /* ShellScript */,
-				22BE0151B3145215692085A2 /* [CP] Embed Pods Frameworks */,
 				AE2ADB1F1433ECD3FB4A9856 /* [CP] Copy Pods Resources */,
+				309A490A2706A32700318B44 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = NavCogFP;
+			packageProductDependencies = (
+				309A48FF2706A1D700318B44 /* Mantle */,
+			);
 			productName = NavCogFP;
 			productReference = 7E30F9AA1E813FFC00D542E5 /* NavCogFP.app */;
 			productType = "com.apple.product-type.application";
@@ -922,10 +902,8 @@
 				7EDEDC191D1E0C6800AC111A /* Frameworks */,
 				7E7ED5A61F5EDF620033814B /* ShellScript */,
 				7EDEDC1A1D1E0C6800AC111A /* Resources */,
-				7E8CCAEB218F4C0300FE1D68 /* ShellScript */,
-				7EF45E4D1E3F42BD00208042 /* ShellScript */,
-				90F45808E580F898236DAD5E /* [CP] Embed Pods Frameworks */,
 				3CB98F53EB42ACE8E61D6511 /* [CP] Copy Pods Resources */,
+				30647B382706482C000536D2 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -934,6 +912,8 @@
 			name = NavCog3;
 			packageProductDependencies = (
 				3008B8B226DDFC42008C27B1 /* HLPDialog */,
+				3077FDC126E73D19006404B1 /* Mantle */,
+				30F54F4B270CCDC000ABD9FC /* HLPWebView */,
 			);
 			productName = NavCog3;
 			productReference = 7EDEDC1C1D1E0C6800AC111A /* NavCog3.app */;
@@ -947,15 +927,17 @@
 				7EE8E6071EF27541006EE7C3 /* Sources */,
 				7EE8E6081EF27541006EE7C3 /* Frameworks */,
 				7EE8E6091EF27541006EE7C3 /* Resources */,
-				A91AAE5A1F6A772C00B5F903 /* ShellScript */,
 				0A167564C48AD83255BABA02 /* [CP] Copy Pods Resources */,
-				6271C99506A622E765EACF84 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = NavCogPreview;
+			packageProductDependencies = (
+				309A48F72706A10A00318B44 /* Mantle */,
+				309A48FD2706A14300318B44 /* HLPDialog */,
+			);
 			productName = NavCogPreview;
 			productReference = 7EE8E60B1EF27541006EE7C3 /* NavCogPreview.app */;
 			productType = "com.apple.product-type.application";
@@ -976,6 +958,9 @@
 			dependencies = (
 			);
 			name = NavCogTool;
+			packageProductDependencies = (
+				309AB806270BF74100E58467 /* Mantle */,
+			);
 			productName = NavCogTool;
 			productReference = 7EF7F79D1DD178F7000A625A /* NavCogTool */;
 			productType = "com.apple.product-type.tool";
@@ -1029,6 +1014,8 @@
 			mainGroup = 7EDEDC131D1E0C6800AC111A;
 			packageReferences = (
 				3008B8B126DDFC42008C27B1 /* XCRemoteSwiftPackageReference "HLPDialog" */,
+				3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */,
+				30F54F4A270CCDBF00ABD9FC /* XCRemoteSwiftPackageReference "HLPWebView" */,
 			);
 			productRefGroup = 7EDEDC1D1D1E0C6800AC111A /* Products */;
 			projectDirPath = "";
@@ -1136,7 +1123,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview-resources.sh",
 				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -1145,7 +1132,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		0AF75701F0B2D49207E78FDA /* [CP] Check Pods Manifest.lock */ = {
@@ -1172,7 +1159,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh",
 				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -1181,25 +1168,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		22BE0151B3145215692085A2 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP-frameworks.sh",
-				"${PODS_ROOT}/OpenCV-Dynamic/opencv2.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/opencv2.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NavCogTool/Pods-NavCogTool-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		2B972C7C863F4B25A5373A6C /* [CP] Check Pods Manifest.lock */ = {
@@ -1226,7 +1195,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-NavCog3/Pods-NavCog3-resources.sh",
 				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -1235,7 +1204,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NavCog3/Pods-NavCog3-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		411E67F404EF85208367F33F /* [CP] Check Pods Manifest.lock */ = {
@@ -1254,24 +1223,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6271C99506A622E765EACF84 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview-frameworks.sh",
-				"${PODS_ROOT}/OpenCV-Dynamic/opencv2.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/opencv2.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		64345F8FA9B5423FF8FFA563 /* [CP] Check Pods Manifest.lock */ = {
@@ -1305,111 +1256,13 @@
 			shellPath = /bin/sh;
 			shellScript = "git log --oneline | head -n 1 | cut -f 1 -d' ' > $SRCROOT/lastcommit.txt\n";
 		};
-		7E8CCAEB218F4C0300FE1D68 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/HLPDialog.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/HLPLocationManager.framework",
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# remove duplicated frameworks\necho \"Removing duplicated frameworks $SCRIPT_INPUT_FILE_0/Frameworks\"\nrm -rf $SCRIPT_INPUT_FILE_0/Frameworks\nrm -rf $SCRIPT_INPUT_FILE_1/Frameworks\n\n";
-		};
-		7EF45E4D1E3F42BD00208042 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Mantle.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/HLPWebView.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/HLPLocationManager.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ZipArchive.framework",
-			);
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/AssistantV1.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RestKit.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/HLPDialog.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Mantle.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/HLPWebView.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/HLPLocationManager.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/ZipArchive.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
-		};
-		90F45808E580F898236DAD5E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3-frameworks.sh",
-				"${PODS_ROOT}/OpenCV-Dynamic/opencv2.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/opencv2.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A91AAE5A1F6A772C00B5F903 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Mantle.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/HLPWebView.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ConversationV1.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RestKit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/HLPDialog.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/HLPWebView.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/HLPLocationManager.framework",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
-		};
-		A91EA2E31F550DE100548203 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Mantle.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/HLPWebView.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/HLPLocationManager.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ZipArchive.framework",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
-		};
 		AE2ADB1F1433ECD3FB4A9856 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-NavCogFP/Pods-NavCogFP-resources.sh",
 				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -1418,7 +1271,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NavCogFP/Pods-NavCogFP-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1987,7 +1840,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				LD_RUNPATH_SEARCH_PATHS = ./;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
@@ -2009,7 +1862,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				LD_RUNPATH_SEARCH_PATHS = ./;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
@@ -2075,6 +1928,22 @@
 				kind = branch;
 			};
 		};
+		3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:Mantle/Mantle.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.2.0;
+			};
+		};
+		30F54F4A270CCDBF00ABD9FC /* XCRemoteSwiftPackageReference "HLPWebView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hulop/HLPWebView";
+			requirement = {
+				branch = "swift-package";
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2082,6 +1951,36 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3008B8B126DDFC42008C27B1 /* XCRemoteSwiftPackageReference "HLPDialog" */;
 			productName = HLPDialog;
+		};
+		3077FDC126E73D19006404B1 /* Mantle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */;
+			productName = Mantle;
+		};
+		309A48F72706A10A00318B44 /* Mantle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */;
+			productName = Mantle;
+		};
+		309A48FD2706A14300318B44 /* HLPDialog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3008B8B126DDFC42008C27B1 /* XCRemoteSwiftPackageReference "HLPDialog" */;
+			productName = HLPDialog;
+		};
+		309A48FF2706A1D700318B44 /* Mantle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */;
+			productName = Mantle;
+		};
+		309AB806270BF74100E58467 /* Mantle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */;
+			productName = Mantle;
+		};
+		30F54F4B270CCDC000ABD9FC /* HLPWebView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30F54F4A270CCDBF00ABD9FC /* XCRemoteSwiftPackageReference "HLPWebView" */;
+			productName = HLPWebView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

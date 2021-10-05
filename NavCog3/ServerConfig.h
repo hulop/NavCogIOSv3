@@ -22,7 +22,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import <Mantle/Mantle.h>
+#import <Mantle.h>
 
 @interface I18nStrings : NSObject
 - (instancetype _Nonnull)initWithDictionary:(NSDictionary* _Nonnull)dictionary;

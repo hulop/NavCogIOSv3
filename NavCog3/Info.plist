@@ -35,6 +35,11 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>69</string>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>Intent</string>
+		<string>Intent1</string>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -43,10 +48,10 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Only for including CoreBluetooth</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>This app use BLE beacon location</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Only for including CoreBluetooth</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Only for including OpenCV</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

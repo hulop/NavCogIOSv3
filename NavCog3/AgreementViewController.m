@@ -54,16 +54,21 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     // TODO: arrow only our content
+
     NSURL *url = [NSURL URLWithString:[[[request URL] standardizedURL] absoluteString]];
     if ([[url path] hasSuffix:@"/finish_agreement.jsp"]) { // check if finish page is tryed to be loaded
         NSString *identifier = [[NavDataStore sharedDataStore] userID];
         [[ServerConfig sharedConfig] checkAgreementForIdentifier:identifier withCompletion:^(NSDictionary* config) {
             BOOL agreed = [config[@"agreed"] boolValue];
             if (agreed) {
-                [self performSegueWithIdentifier:@"unwind_agreement" sender:self];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self performSegueWithIdentifier:@"unwind_agreement" sender:self];
+                });
             } else {
                 [[ServerConfig sharedConfig] clear];
-                [self performSegueWithIdentifier:@"unwind_agreement" sender:self];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self performSegueWithIdentifier:@"unwind_agreement" sender:self];
+                });
             }
         }];
         return NO;

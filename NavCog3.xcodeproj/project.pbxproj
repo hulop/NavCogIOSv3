@@ -9,11 +9,13 @@
 /* Begin PBXBuildFile section */
 		231778EFD52FD719622748FD /* libPods-NavCogFP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5D9DE6372649AF633976E29 /* libPods-NavCogFP.a */; };
 		3008B8B326DDFC42008C27B1 /* HLPDialog in Frameworks */ = {isa = PBXBuildFile; productRef = 3008B8B226DDFC42008C27B1 /* HLPDialog */; };
-		3077FDC226E73D19006404B1 /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 3077FDC126E73D19006404B1 /* Mantle */; };
-		309A48F82706A10A00318B44 /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 309A48F72706A10A00318B44 /* Mantle */; };
 		309A48FE2706A14300318B44 /* HLPDialog in Frameworks */ = {isa = PBXBuildFile; productRef = 309A48FD2706A14300318B44 /* HLPDialog */; };
-		309A49002706A1D700318B44 /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 309A48FF2706A1D700318B44 /* Mantle */; };
-		309AB807270BF74100E58467 /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 309AB806270BF74100E58467 /* Mantle */; };
+		30D2DAC02710BA2F001CA62E /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 30D2DABF2710BA2F001CA62E /* Mantle */; };
+		30D2DAC22710BA6E001CA62E /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 30D2DAC12710BA6E001CA62E /* Mantle */; };
+		30D2DAC42710BA75001CA62E /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 30D2DAC32710BA75001CA62E /* Mantle */; };
+		30D2DAC62710BA7C001CA62E /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 30D2DAC52710BA7C001CA62E /* Mantle */; };
+		30D2DAC82710BAEE001CA62E /* HLPWebView in Frameworks */ = {isa = PBXBuildFile; productRef = 30D2DAC72710BAEE001CA62E /* HLPWebView */; };
+		30D2DACA2710BB12001CA62E /* HLPWebView in Frameworks */ = {isa = PBXBuildFile; productRef = 30D2DAC92710BB12001CA62E /* HLPWebView */; };
 		30F54F4C270CCDC000ABD9FC /* HLPWebView in Frameworks */ = {isa = PBXBuildFile; productRef = 30F54F4B270CCDC000ABD9FC /* HLPWebView */; };
 		7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E08DB571DB9F08E00E82161 /* ConfigManager.m */; };
 		7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
@@ -476,9 +478,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				7EB3FFA320D779D600D6D05E /* ARKit.framework in Frameworks */,
+				30D2DACA2710BB12001CA62E /* HLPWebView in Frameworks */,
 				7E30FA3D1E81551900D542E5 /* CoreBluetooth.framework in Frameworks */,
 				231778EFD52FD719622748FD /* libPods-NavCogFP.a in Frameworks */,
-				309A49002706A1D700318B44 /* Mantle in Frameworks */,
+				30D2DAC42710BA75001CA62E /* Mantle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -486,7 +489,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3077FDC226E73D19006404B1 /* Mantle in Frameworks */,
 				7E9657F01F619B9300A6B489 /* AssetsLibrary.framework in Frameworks */,
 				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
@@ -495,6 +497,7 @@
 				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
 				30F54F4C270CCDC000ABD9FC /* HLPWebView in Frameworks */,
 				D3B684BD87877697DA26A4DE /* libPods-NavCog3.a in Frameworks */,
+				30D2DAC02710BA2F001CA62E /* Mantle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -503,8 +506,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D37A882ED933432ED169F00 /* libPods-NavCogPreview.a in Frameworks */,
-				309A48F82706A10A00318B44 /* Mantle in Frameworks */,
 				309A48FE2706A14300318B44 /* HLPDialog in Frameworks */,
+				30D2DAC62710BA7C001CA62E /* Mantle in Frameworks */,
+				30D2DAC82710BAEE001CA62E /* HLPWebView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -513,7 +517,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE7AA8F1AFA6671B4710BA81 /* libPods-NavCogTool.a in Frameworks */,
-				309AB807270BF74100E58467 /* Mantle in Frameworks */,
+				30D2DAC22710BA6E001CA62E /* Mantle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -887,7 +891,8 @@
 			);
 			name = NavCogFP;
 			packageProductDependencies = (
-				309A48FF2706A1D700318B44 /* Mantle */,
+				30D2DAC32710BA75001CA62E /* Mantle */,
+				30D2DAC92710BB12001CA62E /* HLPWebView */,
 			);
 			productName = NavCogFP;
 			productReference = 7E30F9AA1E813FFC00D542E5 /* NavCogFP.app */;
@@ -912,8 +917,8 @@
 			name = NavCog3;
 			packageProductDependencies = (
 				3008B8B226DDFC42008C27B1 /* HLPDialog */,
-				3077FDC126E73D19006404B1 /* Mantle */,
 				30F54F4B270CCDC000ABD9FC /* HLPWebView */,
+				30D2DABF2710BA2F001CA62E /* Mantle */,
 			);
 			productName = NavCog3;
 			productReference = 7EDEDC1C1D1E0C6800AC111A /* NavCog3.app */;
@@ -935,8 +940,9 @@
 			);
 			name = NavCogPreview;
 			packageProductDependencies = (
-				309A48F72706A10A00318B44 /* Mantle */,
 				309A48FD2706A14300318B44 /* HLPDialog */,
+				30D2DAC52710BA7C001CA62E /* Mantle */,
+				30D2DAC72710BAEE001CA62E /* HLPWebView */,
 			);
 			productName = NavCogPreview;
 			productReference = 7EE8E60B1EF27541006EE7C3 /* NavCogPreview.app */;
@@ -959,7 +965,7 @@
 			);
 			name = NavCogTool;
 			packageProductDependencies = (
-				309AB806270BF74100E58467 /* Mantle */,
+				30D2DAC12710BA6E001CA62E /* Mantle */,
 			);
 			productName = NavCogTool;
 			productReference = 7EF7F79D1DD178F7000A625A /* NavCogTool */;
@@ -1014,8 +1020,8 @@
 			mainGroup = 7EDEDC131D1E0C6800AC111A;
 			packageReferences = (
 				3008B8B126DDFC42008C27B1 /* XCRemoteSwiftPackageReference "HLPDialog" */,
-				3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */,
 				30F54F4A270CCDBF00ABD9FC /* XCRemoteSwiftPackageReference "HLPWebView" */,
+				30D2DABE2710BA2F001CA62E /* XCRemoteSwiftPackageReference "Mantle" */,
 			);
 			productRefGroup = 7EDEDC1D1D1E0C6800AC111A /* Products */;
 			projectDirPath = "";
@@ -1928,9 +1934,9 @@
 				kind = branch;
 			};
 		};
-		3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */ = {
+		30D2DABE2710BA2F001CA62E /* XCRemoteSwiftPackageReference "Mantle" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:Mantle/Mantle.git";
+			repositoryURL = "https://github.com/Mantle/Mantle";
 			requirement = {
 				kind = exactVersion;
 				version = 2.2.0;
@@ -1952,30 +1958,40 @@
 			package = 3008B8B126DDFC42008C27B1 /* XCRemoteSwiftPackageReference "HLPDialog" */;
 			productName = HLPDialog;
 		};
-		3077FDC126E73D19006404B1 /* Mantle */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */;
-			productName = Mantle;
-		};
-		309A48F72706A10A00318B44 /* Mantle */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */;
-			productName = Mantle;
-		};
 		309A48FD2706A14300318B44 /* HLPDialog */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3008B8B126DDFC42008C27B1 /* XCRemoteSwiftPackageReference "HLPDialog" */;
 			productName = HLPDialog;
 		};
-		309A48FF2706A1D700318B44 /* Mantle */ = {
+		30D2DABF2710BA2F001CA62E /* Mantle */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */;
+			package = 30D2DABE2710BA2F001CA62E /* XCRemoteSwiftPackageReference "Mantle" */;
 			productName = Mantle;
 		};
-		309AB806270BF74100E58467 /* Mantle */ = {
+		30D2DAC12710BA6E001CA62E /* Mantle */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3077FDC026E73D19006404B1 /* XCRemoteSwiftPackageReference "Mantle" */;
+			package = 30D2DABE2710BA2F001CA62E /* XCRemoteSwiftPackageReference "Mantle" */;
 			productName = Mantle;
+		};
+		30D2DAC32710BA75001CA62E /* Mantle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30D2DABE2710BA2F001CA62E /* XCRemoteSwiftPackageReference "Mantle" */;
+			productName = Mantle;
+		};
+		30D2DAC52710BA7C001CA62E /* Mantle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30D2DABE2710BA2F001CA62E /* XCRemoteSwiftPackageReference "Mantle" */;
+			productName = Mantle;
+		};
+		30D2DAC72710BAEE001CA62E /* HLPWebView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30F54F4A270CCDBF00ABD9FC /* XCRemoteSwiftPackageReference "HLPWebView" */;
+			productName = HLPWebView;
+		};
+		30D2DAC92710BB12001CA62E /* HLPWebView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30F54F4A270CCDBF00ABD9FC /* XCRemoteSwiftPackageReference "HLPWebView" */;
+			productName = HLPWebView;
 		};
 		30F54F4B270CCDC000ABD9FC /* HLPWebView */ = {
 			isa = XCSwiftPackageProductDependency;

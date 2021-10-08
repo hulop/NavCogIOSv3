@@ -22,7 +22,12 @@ This is a localization library for bluetooth le beacons.
   s.dependency 'picojson', '1.3.0'
   s.dependency 'cereal',   '1.1.2'
 
-  s.xcconfig = {'GCC_SYMBOLS_PRIVATE_EXTERN' => true}
+  s.xcconfig = {
+    'GCC_SYMBOLS_PRIVATE_EXTERN' => true,
+    'GCC_OPTIMIZATION_LEVEL' => "$(GCC_OPTIMIZATION_LEVEL_$(CONFIGURATION))",
+    'GCC_OPTIMIZATION_LEVEL_Debug' => "2",
+    'GCC_OPTIMIZATION_LEVEL_Release' => "s"
+  }
 
   s.prepare_command = <<-CMD
     mkdir bleloc

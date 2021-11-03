@@ -3,7 +3,7 @@
 ## Example of localization
 This app uses BasicLocalizer in [blelocpp](https://github.com/hulop/blelocpp) library to localize user's location by observing bluetooth LE beacons signals.
 
-You need to provide a [model file](https://github.com/hulop/NavCogIOSv3/wiki/Prepare-data-for-localization) for localization.
+You need to provide a [model file](https://github.com/hulop/NavCogIOSv3/wiki) for localization.
 
 ## UI Mode
 - **Blind User Mode**: This mode is for blind users.

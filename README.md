@@ -25,14 +25,10 @@ The project also includes the following tools.
 - [ZipArchive](https://github.com/ZipArchive/ZipArchive) (MIT License)
 
 ## Build
-1. install [Carthage](https://github.com/Carthage/Carthage).
-2. In the project directory, run `carthage bootstrap --platform iOS`.
-3. install [Cocoapods](https://cocoapods.org/)
-4. In the project directory, run `pod install`
-5. Open NavCog3.xcworkspace
-6. Build NavCog3 target with Xcode.
-
-\# if you archive the app for AppStore, `Frameworks` directory in `Carthage/Build/iOS/HLPDialog.framework` should be removed.
+1. install [Cocoapods](https://cocoapods.org/) version > 1.9.0
+2. In the project directory, run `pod install`
+3. Open NavCog3.xcworkspace
+4. Build NavCog3 target with Xcode.
 
 ## Setup
 See [wiki](https://github.com/hulop/NavCogIOSv3/wiki) for set up servers and data.

@@ -24,7 +24,7 @@
 #import "HLPDataUtil.h"
 #import "NavDataStore.h"
 #import "ServerConfig+FingerPrint.h"
-#include <Mantle/Mantle.h>
+#import <Mantle.h>
 
 #define DIST 500
 

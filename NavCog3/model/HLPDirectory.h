@@ -22,7 +22,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import <Mantle/Mantle.h>
+#import <Mantle.h>
 #import "HLPGeoJSON.h"
 
 @class HLPDirectory;

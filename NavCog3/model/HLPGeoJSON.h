@@ -21,7 +21,7 @@
  *******************************************************************************/
 
 #import <Foundation/Foundation.h>
-#import <Mantle/Mantle.h>
+#import <Mantle.h>
 #import <HLPLocationManager/HLPLocation.h>
 
 #define PROPKEY_NODE_ID @"ノードID"

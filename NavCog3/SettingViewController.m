@@ -26,16 +26,17 @@
 #import "ConfigManager.h"
 #import "LocationEvent.h"
 #import "NavDebugHelper.h"
-#import <HLPDialog/HLPDialog-Swift.h>
 #import "NavDeviceTTS.h"
 #import "NavDataStore.h"
 #import "AuthManager.h"
 #import "NavUtil.h"
 #import "Logging.h"
 #import "ScreenshotHelper.h"
-#import <ZipArchive/SSZipArchive.h>
+#import <SSZipArchive.h>
 #import "WebViewController.h"
 #import "ServerConfig.h"
+
+@import HLPDialog;
 
 @interface SettingViewController ()
 

@@ -630,7 +630,7 @@ static NavNavigatorConstants *_instance;
     checkLinkFeatures(links, ^ BOOL (HLPLink *link) {
         return link.brailleBlockType == HLPBrailleBlockTypeAvailable;
     }, ^(NSRange range) {
-        _noBearing = YES;
+        self->_noBearing = YES;
         NSArray *result = [links subarrayWithRange:range];
         HLPLink *link = result[0];
         HLPLink *link2 = [result lastObject];
@@ -644,7 +644,7 @@ static NavNavigatorConstants *_instance;
         // no block
         BOOL lastLinkHasBraille = (range.location+range.length == [links count]);
         
-        if (!lastLinkHasBraille || _nextLink.brailleBlockType != HLPBrailleBlockTypeAvailable) {
+        if (!lastLinkHasBraille || self->_nextLink.brailleBlockType != HLPBrailleBlockTypeAvailable) {
             [poisTemp addObject:[[NavPOI alloc] initWithText:nil Location:link2.targetLocation Options:
                                  @{
                                    @"origin":result,
@@ -660,10 +660,10 @@ static NavNavigatorConstants *_instance;
         return link.brailleBlockType != HLPBrailleBlockTypeAvailable;
     }, ^(NSRange range) {
         BOOL lastLinkHasNoBraille = range.location+range.length == [links count];
-        if (lastLinkHasNoBraille && _nextLink.brailleBlockType == HLPBrailleBlockTypeAvailable) {
-            [poisTemp addObject:[[NavPOI alloc] initWithText:nil Location:_link.targetLocation Options:
+        if (lastLinkHasNoBraille && self->_nextLink.brailleBlockType == HLPBrailleBlockTypeAvailable) {
+            [poisTemp addObject:[[NavPOI alloc] initWithText:nil Location:self->_link.targetLocation Options:
                                  @{
-                                   @"origin":_nextLink,
+                                   @"origin":self->_nextLink,
                                    @"forBrailleBlock":@(YES)
                                    }]];
         }
@@ -1017,7 +1017,7 @@ static NavNavigatorConstants *_instance;
     
     
     oneHopLinks = [oneHopLinks filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLink *link, NSDictionary<NSString *,id> * _Nullable bindings) {
-        return ![route containsObject:link] && [link length] > C.OFF_ROUTE_THRESHOLD;
+        return ![self->route containsObject:link] && [link length] > C.OFF_ROUTE_THRESHOLD;
     }]];
     
     navIndex = 0;
@@ -1229,7 +1229,7 @@ static NavNavigatorConstants *_instance;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             if (block) {
-                [navigationQueue addOperationWithBlock:block];
+                [self->navigationQueue addOperationWithBlock:block];
             }
         });
     }
@@ -1389,8 +1389,8 @@ static NavNavigatorConstants *_instance;
             
             double (^lengthOfRoute)(void) = ^(){
                 double total = 0;
-                for(NSInteger i=firstLinkIndex; i < [linkInfos count]; i++) {
-                    NavLinkInfo *info = [linkInfos objectAtIndex:i];
+                for(NSInteger i=self->firstLinkIndex; i < [self->linkInfos count]; i++) {
+                    NavLinkInfo *info = [self->linkInfos objectAtIndex:i];
                     if ([info isEqual:[NSNull null]]) {
                         continue;
                     }
@@ -1469,7 +1469,7 @@ static NavNavigatorConstants *_instance;
                 if (linkInfo.link.linkType == LINK_TYPE_ESCALATOR || linkInfo.link.linkType == LINK_TYPE_STAIRWAY) {
                     return 3.0;
                 } else {
-                    double distance = MAX((walkingSpeed-1) * C.APPROACHED_DISTANCE_THRESHOLD, 0);
+                    double distance = MAX((self->walkingSpeed-1) * C.APPROACHED_DISTANCE_THRESHOLD, 0);
                     return MIN(C.APPROACHING_DISTANCE_THRESHOLD + distance, linkInfo.link.length/2);
                 }
             };
@@ -1478,7 +1478,7 @@ static NavNavigatorConstants *_instance;
                     return C.APPROACHED_DISTANCE_THRESHOLD;
                 } else {
                     // quick fix: adjust approached distance with user's walaking speed
-                    double distance = walkingSpeed * C.APPROACHED_DISTANCE_THRESHOLD;
+                    double distance = self->walkingSpeed * C.APPROACHED_DISTANCE_THRESHOLD;
                     return MAX(MIN(distance, linkInfo_.link.length/4), 0.6);
                 }
             };

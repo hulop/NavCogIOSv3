@@ -181,8 +181,8 @@ void uncaughtExceptionHandler(NSException *exception)
 
     UIApplication *app = [UIApplication sharedApplication];
     _backgroundID = [app beginBackgroundTaskWithExpirationHandler:^{
-        [app endBackgroundTask:_backgroundID];
-        _backgroundID = UIBackgroundTaskInvalid;
+        [app endBackgroundTask:self->_backgroundID];
+        self->_backgroundID = UIBackgroundTaskInvalid;
     }];
 }
 
@@ -439,8 +439,8 @@ void uncaughtExceptionHandler(NSException *exception)
     }
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
     if ([[url scheme] isEqualToString:@"navcog3"]) {
         if ([[url host] isEqualToString:@"start_navigation"]) {
             NSURLComponents *comp = [[NSURLComponents alloc] initWithString:[url absoluteString]];

@@ -24,6 +24,7 @@
 #import "AgreementViewController.h"
 #import "NavDataStore.h"
 #import "ServerConfig.h"
+#import "NavUtil.h"
 
 @interface AgreementViewController ()
 
@@ -36,7 +37,29 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.webView.delegate = self;
+
+    WKWebViewConfiguration *conf = [[WKWebViewConfiguration alloc] init];
+    conf.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
+
+    // add script to manage viewport equivalent to UIWebView
+    NSString *jScript = @"var meta = document.createElement('meta'); meta.setAttribute('name', 'viewport');"
+        "meta.setAttribute('content', 'width=device-width');"
+        "document.getElementsByTagName('head')[0].appendChild(meta);";
+
+    WKUserScript *wkUScript = [[WKUserScript alloc] initWithSource:jScript injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
+    WKUserContentController *wkUController = [[WKUserContentController alloc] init];
+    [wkUController addUserScript:wkUScript];
+
+    conf.userContentController = wkUController;
+
+    _webview = [[HLPWebView alloc] initWithFrame:CGRectMake(0,0,0,0) configuration:conf];
+
+    [self.view addSubview:_webview];
+    _webview.navigationDelegate = self;
+    [_webview setFullScreenForView:self.view];
+    _webview.isAccessible = YES;
+    _webview.delegate = self;
+
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -47,15 +70,19 @@
         
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
         request.timeoutInterval = 30;
-        [self.webView loadRequest:request];
+        [self.webview loadRequest:request];
     }
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+- (void)viewDidDisappear:(BOOL)animated
 {
-    // TODO: arrow only our content
+    [self.webview evaluateJavaScript:@"stopAll();" completionHandler:nil];
+}
 
-    NSURL *url = [NSURL URLWithString:[[[request URL] standardizedURL] absoluteString]];
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
+{
+
+    NSURL *url = [NSURL URLWithString:[[[navigationAction.request URL] standardizedURL] absoluteString]];
     if ([[url path] hasSuffix:@"/finish_agreement.jsp"]) { // check if finish page is tryed to be loaded
         NSString *identifier = [[NavDataStore sharedDataStore] userID];
         [[ServerConfig sharedConfig] checkAgreementForIdentifier:identifier withCompletion:^(NSDictionary* config) {
@@ -71,25 +98,25 @@
                 });
             }
         }];
-        return NO;
+        decisionHandler(WKNavigationActionPolicyCancel);
+        return;
     }
-    return YES;
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation
+{
+    [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait", @"")];
 }
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.waitIndicator.hidden = NO;
-        [self.waitIndicator startAnimating];
-    });
+    [NavUtil hideModalWaiting];
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void)didEnterBackground:(NSNotification*)note
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.waitIndicator.hidden = YES;
-        [self.waitIndicator stopAnimating];
-    });
+    [self.webview evaluateJavaScript:@"stopAll();" completionHandler:nil];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -13,15 +12,16 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="162"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oAr-LC-eZk" id="Hg8-Dq-pgX">
-                <frame key="frameInset" width="600" height="161"/>
+                <rect key="frame" x="0.0" y="0.0" width="600" height="162"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Server Host" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="fnf-p3-hGy">
+                        <rect key="frame" x="28" y="71" width="298.5" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S3R-gF-QFi">
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S3R-gF-QFi">
+                        <rect key="frame" x="58" y="99" width="30" height="30"/>
                         <state key="normal" title="-">
                             <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </state>
@@ -30,12 +30,14 @@
                         </connections>
                     </button>
                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZkY-Ae-dOd">
+                        <rect key="frame" x="348" y="0.0" width="240" height="162"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="162" id="IDj-nK-mL5"/>
                             <constraint firstAttribute="width" constant="240" id="l3Q-6u-YZz"/>
                         </constraints>
                     </pickerView>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K6V-cl-9bc">
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K6V-cl-9bc">
+                        <rect key="frame" x="58" y="33" width="30" height="30"/>
                         <state key="normal" title="+">
                             <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </state>
@@ -61,10 +63,10 @@
                 </constraints>
                 <variation key="default">
                     <mask key="constraints">
-                        <exclude reference="pAI-X0-HKR"/>
                         <exclude reference="O5y-zE-XD8"/>
                         <exclude reference="Yj4-Yv-lcK"/>
                         <exclude reference="a0g-oK-RI6"/>
+                        <exclude reference="pAI-X0-HKR"/>
                     </mask>
                 </variation>
             </tableViewCellContentView>
@@ -73,6 +75,7 @@
                 <outlet property="pickerView" destination="ZkY-Ae-dOd" id="peA-FO-Kpg"/>
                 <outlet property="title" destination="fnf-p3-hGy" id="XSV-JI-hju"/>
             </connections>
+            <point key="canvasLocation" x="139" y="83"/>
         </tableViewCell>
     </objects>
 </document>

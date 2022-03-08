@@ -95,7 +95,7 @@ static ScreenshotHelper *instance;
                 
                 UIImage *image = [self screenshotImage];
             
-                [queue addOperationWithBlock:^{
+                [self->queue addOperationWithBlock:^{
                     
                     static NSDateFormatter *formatter;
                     if (!formatter) {
@@ -110,8 +110,8 @@ static ScreenshotHelper *instance;
                     NSLog(@"screenshot,%@,%ld",fileName,(long)([NSDate date].timeIntervalSince1970*1000));
                     NSLog(@"%@",filePath);
                     
-                    @synchronized (images) {
-                        [images addObject:fileName];
+                    @synchronized (self->images) {
+                        [self->images addObject:fileName];
                     }
                     [self checkLimit];
                 }];

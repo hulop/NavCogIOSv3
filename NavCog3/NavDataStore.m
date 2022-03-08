@@ -36,6 +36,11 @@
     HLPDirectoryItem *_item;
 }
 
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
 - (BOOL) isEqual:(NavDestination*)obj
 {
     if (_type != obj.type) {
@@ -86,15 +91,17 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super init];
-    _type = [[aDecoder decodeObjectForKey:@"type"] intValue];
+    NSSet *set = [[NSSet alloc] initWithArray:@[NSArray.class, HLPLandmark.class]];
+    _type = [[aDecoder decodeObjectOfClass:NSNumber.class forKey:@"type"] intValue];
     switch(_type) {
         case NavDestinationTypeDirectoryItem:
-            _item = [aDecoder decodeObjectForKey:@"item"];
+            _item = [aDecoder decodeObjectOfClass:HLPDirectoryItem.class forKey:@"item"];
             break;
         case NavDestinationTypeLandmarks:
-            _landmarks = [aDecoder decodeObjectForKey:@"landmarks"];
+            _landmarks = [aDecoder decodeObjectOfClasses:set forKey:@"landmarks"];
+            break;
         case NavDestinationTypeLandmark:
-            _landmark = [aDecoder decodeObjectForKey:@"landmark"];
+            _landmark = [aDecoder decodeObjectOfClass:HLPLandmark.class forKey:@"landmark"];
             break;
         case NavDestinationTypeLocation:
             //_location = [aDecoder decodeObjectForKey:@"location"];
@@ -309,6 +316,42 @@
 {
     return ![[self _id] isEqualToString:[self singleId]];
 }
+@end
+
+@implementation NavHistory {
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithFrom:(NavDestination *)from andTo:(NavDestination *)to
+{
+    self = [super init];
+    _from = from;
+    _to = to;
+    return self;
+}
+
+- (void)encodeWithCoder:(nonnull NSCoder *)coder {
+    [coder encodeObject:_from forKey:@"from"];
+    [coder encodeObject:_to forKey:@"to"];
+}
+
+- (nullable instancetype)initWithCoder:(nonnull NSCoder *)coder {
+    self = [super init];
+    _from = [coder decodeObjectOfClass:NavDestination.class forKey:@"from"];
+    _to = [coder decodeObjectOfClass:NavDestination.class forKey:@"to"];
+    return self;
+}
+
+- (BOOL)isKnown
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    return [nds isKnownDestination:_from] && [nds isKnownDestination:_to];
+}
+
 @end
 
 @implementation NavDataStore {
@@ -718,7 +761,7 @@ static NavDataStore* instance_ = nil;
     if (destinationCacheLocation && [destinationCacheLocation distanceTo:_loadLocation] < dist/2 &&
         destinationCache && destinationCache.count > 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":self->destinationCache?self->destinationCache:@[]}];
         });
         destinationRequesting = NO;
         return NO;
@@ -747,7 +790,7 @@ static NavDataStore* instance_ = nil;
         destinationCacheLocation = nil;
         destinationHash = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":self->destinationCache?self->destinationCache:@[]}];
         });
         return;
     }
@@ -776,7 +819,7 @@ static NavDataStore* instance_ = nil;
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":destinationCache?destinationCache:@[]}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:DESTINATIONS_CHANGED_NOTIFICATION object:self userInfo:@{@"destinations":self->destinationCache?self->destinationCache:@[]}];
     });
     if (complete) {
         complete(destinationCache, directoryCache);
@@ -790,29 +833,27 @@ static NavDataStore* instance_ = nil;
     NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString* path = [documentsPath stringByAppendingPathComponent:@"history.object"];
 
-    NSArray *history = @[];
+    NSArray<NavHistory*> *history = @[];
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        history = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+        NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+        NSError *error;
+        NSSet *set = [[NSSet alloc] initWithArray:@[NSArray.class, NavHistory.class]];
+        history = [NSKeyedUnarchiver unarchivedObjectOfClasses:set fromData:data error:&error];
+        if (history == nil) { // could not use old archived data
+            NSLog(@"saveHistory error %@", error.localizedDescription);
+            history = @[];
+        }
     }
-    
-    NSDictionary *newHist = @{
-                              @"from":[NSKeyedArchiver archivedDataWithRootObject:_from],
-                              @"to":[NSKeyedArchiver archivedDataWithRootObject:_to]};
-    
-    
+
     if ([history count] > 0) {
-        BOOL __block flag = YES;
-        [newHist enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-            
-            NavDestination *dest1 = [NSKeyedUnarchiver unarchiveObjectWithData:[history firstObject][key]];
-            NavDestination *dest2 = [NSKeyedUnarchiver unarchiveObjectWithData:obj];
-            
-            flag = flag && [dest1 isEqual:dest2];
-        }];
-        if (flag) {
+        NavHistory *last = [history firstObject];
+        if (last.from == _from && last.to == _to) {
             return;
         }
     }
+
+    NavHistory *newHist = [[NavHistory alloc] initWithFrom:_from andTo:_to];
+
     NSMutableArray *temp = [history mutableCopy];
     [temp insertObject:newHist
                atIndex:0];
@@ -820,7 +861,10 @@ static NavDataStore* instance_ = nil;
     while([temp count] > 5) {
         [temp removeLastObject];
     }
-    [NSKeyedArchiver archiveRootObject:temp toFile:path];
+    NSError *error;
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:temp requiringSecureCoding:YES error:&error];
+    if (error) NSLog(@"%@", error.description);
+    [data writeToFile:path atomically:YES];
 }
 
 - (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID withPreferences:(NSDictionary *)prefs complete:(void (^)(void))complete
@@ -852,51 +896,51 @@ static NavDataStore* instance_ = nil;
             return;
         }
         [HLPDataUtil loadNodeMapForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {
-            featuresCache = result;
+            self->featuresCache = result;
             [HLPDataUtil loadFeaturesForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {
-                featuresCache = [featuresCache arrayByAddingObjectsFromArray: result];
+                self->featuresCache = [self->featuresCache arrayByAddingObjectsFromArray: result];
                 
-                for(HLPObject* f in featuresCache) {
+                for(HLPObject* f in self->featuresCache) {
                     [f updateWithLang:lang];
                 }
                 
-                [self analyzeFeatures:featuresCache];
+                [self analyzeFeatures:self->featuresCache];
                 [self updateRoute];
                 
                 if (complete) {
                     complete();
                 }
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":routeCache?routeCache:@[]}];
+                [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":self->routeCache?self->routeCache:@[]}];
             }];
         }];
     } else {
         [HLPDataUtil loadRouteFromNode:fromID toNode:toID forUser:user withLang:lang withPrefs:prefs withCallback:^(NSArray<HLPObject *> *result) {
-            routeCache = result;
-            if (useCache && featuresCache) {
+            self->routeCache = result;
+            if (useCache && self->featuresCache) {
                 if (complete) {
                     complete();
                 }
-                [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":routeCache?routeCache:@[]}];
+                [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":self->routeCache?self->routeCache:@[]}];
                 return;
             }
             [HLPDataUtil loadNodeMapForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {
-                featuresCache = result;
+                self->featuresCache = result;
                 [HLPDataUtil loadFeaturesForUser:user withLang:lang WithCallback:^(NSArray<HLPObject *> *result) {
-                    featuresCache = [featuresCache arrayByAddingObjectsFromArray: result];
+                    self->featuresCache = [self->featuresCache arrayByAddingObjectsFromArray: result];
                     
-                    for(HLPObject* f in featuresCache) {
+                    for(HLPObject* f in self->featuresCache) {
                         [f updateWithLang:lang];
                     }
                     
-                    [self analyzeFeatures:featuresCache];
+                    [self analyzeFeatures:self->featuresCache];
                     [self updateRoute];
                     
                     if (complete) {
                         complete();
                     }
                     
-                    [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":routeCache?routeCache:@[]}];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:ROUTE_CHANGED_NOTIFICATION object:self userInfo:@{@"route":self->routeCache?self->routeCache:@[]}];
                 }];
             }];
         }];
@@ -1302,7 +1346,7 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
 
     [HLPDataUtil getJSON:url withCallback:^(NSObject* json){
         if (json && [json isKindOfClass:NSDictionary.class]) {
-            serverConfig = (NSDictionary*)json;
+            self->serverConfig = (NSDictionary*)json;
             complete();
         } else {
             NSLog(@"error in loading dialog_config, retrying...");
@@ -1347,14 +1391,22 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
     return userLanguage;
 }
 
-- (NSArray*) searchHistory
+- (NSArray<NavHistory*>*) searchHistory
 {
     NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString* path = [documentsPath stringByAppendingPathComponent:@"history.object"];
     
     NSArray *history = @[];
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        history = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+        NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+        NSError *error;
+        NSSet *set = [[NSSet alloc] initWithArray:@[NSArray.class, NavHistory.class]];
+        history = [NSKeyedUnarchiver unarchivedObjectOfClasses:set fromData:data error:&error];
+
+        if (history == nil) {
+            NSLog(@"searchHistory error %@", error.localizedDescription);
+            history = @[];
+        }
     }
 
     return history;

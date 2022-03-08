@@ -68,7 +68,7 @@
 #define POI_IS_NOT_READ_FLAG @"_no_read_"
 
 
-@interface HLPGeometry : MTLModel<MTLJSONSerializing, NSCoding>
+@interface HLPGeometry : MTLModel<MTLJSONSerializing, NSCoding, NSSecureCoding>
 @property (nonatomic, readonly) NSString *type;
 @property (nonatomic, readonly) NSArray *coordinates;
 
@@ -79,7 +79,7 @@
 @end
 
 
-@interface HLPGeoJSONFeature : MTLModel<MTLJSONSerializing, NSCoding> {
+@interface HLPGeoJSONFeature : MTLModel<MTLJSONSerializing, NSCoding, NSSecureCoding> {
 @protected
     NSString *_type;
     HLPGeometry *_geometry;

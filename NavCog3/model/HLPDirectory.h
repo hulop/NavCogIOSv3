@@ -27,7 +27,7 @@
 
 @class HLPDirectory;
 
-@interface HLPDirectoryItem : MTLModel<MTLJSONSerializing, NSCoding>
+@interface HLPDirectoryItem : MTLModel<MTLJSONSerializing, NSCoding, NSSecureCoding>
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSString *titlePron;
 @property (nonatomic, readonly) NSString *subtitle;

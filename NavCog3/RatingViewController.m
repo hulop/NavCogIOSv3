@@ -56,14 +56,14 @@
 - (void)updateView
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.submitButton.enabled = _overallStars.stars > 0;
+        self.submitButton.enabled = self->_overallStars.stars > 0;
 
-        self.overallStars.disabled = submitting;
-        self.q1Stars.disabled = submitting;
-        self.q2Stars.disabled = submitting;
-        self.q3Stars.disabled = submitting;
-        self.q4Stars.disabled = submitting;
-        self.freeComment.editable = !submitting;
+        self.overallStars.disabled = self->submitting;
+        self.q1Stars.disabled = self->submitting;
+        self.q2Stars.disabled = self->submitting;
+        self.q3Stars.disabled = self->submitting;
+        self.q4Stars.disabled = self->submitting;
+        self.freeComment.editable = !self->submitting;
     });
 }
 

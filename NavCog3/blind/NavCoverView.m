@@ -320,62 +320,62 @@
             }
             NSString *text = dict[@"text"];
             
-            if ([speaks count] == 0) {
+            if ([self->speaks count] == 0) {
                 flag = YES;
             }
             NavAnnounceItem *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
             e.delegate = self;
             e.accessibilityLabel = text;
             e.accessibilityFrame = [self makeHiddenAccessibilityFrame];
-            [speaks addObject:e];
+            [self->speaks addObject:e];
             
-            BOOL contains2 = ([elements lastObject] == currentStatusItem2);
+            BOOL contains2 = ([self->elements lastObject] == self->currentStatusItem2);
             
-            [elements removeAllObjects];
-            [elements addObject:first];
-            for(int i = 0 ; i < [speaks count]; i++) {
-                [elements addObject:speaks[i]];
+            [self->elements removeAllObjects];
+            [self->elements addObject:self->first];
+            for(int i = 0 ; i < [self->speaks count]; i++) {
+                [self->elements addObject:self->speaks[i]];
             }
             
-            [elements addObject:currentStatusItem];
+            [self->elements addObject:self->currentStatusItem];
             if (!contains2) {
-                currentStatusItem.accessibilityFrame = self.window.frame;
+                self->currentStatusItem.accessibilityFrame = self.window.frame;
             }
             
             // future summary
-            if (_fsSource) {
-                if (summary == nil) {
+            if (self->_fsSource) {
+                if (self->summary == nil) {
                     NSMutableArray *temp = [@[] mutableCopy];
                     
-                    for(int i = 0 ; i < [_fsSource numberOfSummary]; i++) {
-                        NSString *str = [_fsSource summaryAtIndex:i];
+                    for(int i = 0 ; i < [self->_fsSource numberOfSummary]; i++) {
+                        NSString *str = [self->_fsSource summaryAtIndex:i];
                         NavAnnounceItem *e = [[NavAnnounceItem alloc] initWithAccessibilityContainer:self];
                         e.delegate = self;
                         e.accessibilityLabel = [NavDeviceTTS removeDots:str];
                         e.accessibilityFrame = [self makeHiddenAccessibilityFrame];
                         [temp addObject:e];
                     }
-                    summary = temp;
+                    self->summary = temp;
                 }
                 
                 // use flat structure for non-voiceover usage
-                [elements addObject:header];
+                [self->elements addObject:self->header];
                 
-                for(long i = [_fsSource currentIndex]; i < [summary count]; i++) {
-                    [elements addObject:summary[i]];
+                for(long i = [self->_fsSource currentIndex]; i < [self->summary count]; i++) {
+                    [self->elements addObject:self->summary[i]];
                 }
             }
             
             if (contains2) {
-                [elements addObject:currentStatusItem2];
+                [self->elements addObject:self->currentStatusItem2];
                 //currentStatusItem2.accessibilityFrame = CGRectMake(0, 0, 1, 1);
             }
             
             
             // check focused element
             UIAccessibilityElement *focusedElement = nil;
-            for(int i = 0; i < [elements count]; i++) {
-                UIAccessibilityElement *e = elements[i];
+            for(int i = 0; i < [self->elements count]; i++) {
+                UIAccessibilityElement *e = self->elements[i];
                 if (e.accessibilityElementIsFocused) {
                     focusedElement = e;
                 }

@@ -616,7 +616,7 @@
     NSLog(@"%@", NSStringFromSelector(_cmd));
     dispatch_async(dispatch_get_main_queue(), ^{
         NSLog(@"speak,<play success sound>");
-        [_delegate playSuccess];
+        [self->_delegate playSuccess];
     });
 }
 
@@ -639,7 +639,7 @@
     NSString *action = [self actionString:properties];
     NSString *string = nil;
     
-    if (false && action) {
+    if (/* DISABLES CODE */ (false) && action) {
         string = [NSString stringWithFormat:NSLocalizedStringFromTable(@"approaching to %@",@"BlindView",@"approaching to do something") , action];
     } else {
         string = NSLocalizedStringFromTable(@"approaching",@"BlindView",@"approaching");
@@ -877,7 +877,7 @@
             if ([result count] < 2) {
                 return;
             }
-            [_delegate executeCommand:result[1]];
+            [self->_delegate executeCommand:result[1]];
         }];
         lastPOIAnnounceTime = now;
     }

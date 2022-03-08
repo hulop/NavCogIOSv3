@@ -70,6 +70,8 @@ typedef NSArray<ServerEntry*> ServerList;
 + (instancetype _Nonnull) sharedConfig;
 
 - (void) requestServerList:(void(^_Nullable)(ServerList* _Nullable))complete;
+- (ServerList* _Nullable) processServerList:(NSDictionary* _Nullable) json;
+- (void) obtainList:(NSInteger)index fromServers:(NSArray* _Nonnull)servers withCompletion:(void(^_Nullable)(ServerList* _Nullable)) complete;
 
 - (void) requestServerConfig:(void(^_Nullable)(NSDictionary* _Nullable config))complete;
 - (NSArray* _Nonnull) checkDownloadFiles;

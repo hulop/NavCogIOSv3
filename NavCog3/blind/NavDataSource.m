@@ -32,6 +32,14 @@
 - (NavDestination*) destinationForRowAtIndexPath:(NSIndexPath *)indexPath {
     return nil;
 }
+- (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    [self doesNotRecognizeSelector:_cmd];
+    return 0;
+}
 @end
 
 @implementation NavDirectoryDataSource {
@@ -135,7 +143,7 @@
     if ([item isKindOfClass:HLPDirectoryItem.class]) {
         return [[NavDestination alloc] initWithDirectoryItem:item];
     }
-    return item;
+    return nil;
 }
 
 - (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView
@@ -238,24 +246,24 @@
     
     NSArray *all = [[[NavDataStore sharedDataStore] destinations] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(HLPLandmark *landmark, NSDictionary<NSString *,id> * _Nullable bindings) {
         BOOL flag = YES;
-        if (_filter) {
-            for(NSString *key in _filter.allKeys) {
-                if ([[NSNull null] isEqual:_filter[key]]) {
+        if (self->_filter) {
+            for(NSString *key in self->_filter.allKeys) {
+                if ([[NSNull null] isEqual:self->_filter[key]]) {
                     flag = flag && landmark.properties[key] == nil;
-                } else if ([_filter[key] isKindOfClass:NSDictionary.class]) {
-                    NSDictionary *filter = _filter[key];
+                } else if ([self->_filter[key] isKindOfClass:NSDictionary.class]) {
+                    NSDictionary *filter = self->_filter[key];
                     if (filter[@"$not"]) {
                         flag = flag && ![landmark.properties[key] isEqual:filter[@"$not"]];
                     }
                     if (filter[@"$not_contains"]) {
                         flag = flag && ![landmark.properties[key] containsString:filter[@"$not_contains"]];
                     }
-                } else if ([_filter[key] isKindOfClass:NSString.class]) {
-                    flag = flag && ([_filter[key] isEqualToString:landmark.properties[key]] ||
-                                    ([_filter[key] isEqualToString:@""] &&
+                } else if ([self->_filter[key] isKindOfClass:NSString.class]) {
+                    flag = flag && ([self->_filter[key] isEqualToString:landmark.properties[key]] ||
+                                    ([self->_filter[key] isEqualToString:@""] &&
                                      landmark.properties[key] == nil));
                 } else {
-                    flag = flag && [landmark.properties[key] isEqual:_filter[key]];
+                    flag = flag && [landmark.properties[key] isEqual:self->_filter[key]];
                 }
             }
         }
@@ -583,14 +591,6 @@
 @implementation NavSearchHistoryDataSource {
 }
 
-- (BOOL)isKnownHist:(NSDictionary*)dic
-{
-    NavDestination *from = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"from"]];
-    NavDestination *to = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"to"]];
-    return [[NavDataStore sharedDataStore] isKnownDestination:from] &&
-    [[NavDataStore sharedDataStore] isKnownDestination:to];
-}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
@@ -611,31 +611,27 @@
     if(!cell){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
-    NSArray *hist = [[NavDataStore sharedDataStore] searchHistory];
-    NSDictionary *dic = hist[indexPath.row];
-    BOOL isKnown = [self isKnownHist:dic];
-    
-    NavDestination *from = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"from"]];
-    NavDestination *to = [NSKeyedUnarchiver unarchiveObjectWithData:dic[@"to"]];
-    
+    NSArray<NavHistory*> *histories = [[NavDataStore sharedDataStore] searchHistory];
+    NavHistory *history = histories[indexPath.row];
+
     cell.textLabel.numberOfLines = 1;
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.textLabel.lineBreakMode = NSLineBreakByClipping;
-    cell.textLabel.text = to.name;
-    cell.textLabel.accessibilityLabel = isKnown?to.namePron:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Disabled", @"BlindView", @""), to.namePron];
+    cell.textLabel.text = history.to.name;
+    cell.textLabel.accessibilityLabel = history.isKnown?history.to.namePron:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Disabled", @"BlindView", @""), history.to.namePron];
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedStringFromTable(@"from: %@", @"BlindView", @""), from.name];
-    cell.detailTextLabel.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"from: %@", @"BlindView", @""), from.namePron];
+    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedStringFromTable(@"from: %@", @"BlindView", @""), history.from.name];
+    cell.detailTextLabel.accessibilityLabel = [NSString stringWithFormat:NSLocalizedStringFromTable(@"from: %@", @"BlindView", @""), history.from.namePron];
     
-    cell.contentView.layer.opacity = isKnown?1.0:0.5;
+    cell.contentView.layer.opacity = history.isKnown?1.0:0.5;
     
     return cell;
 }
 
--(NSDictionary *)historyAtIndexPath:(NSIndexPath *)indexPath
+-(NavHistory *)historyAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSArray *hist = [[NavDataStore sharedDataStore] searchHistory];
-    return [hist objectAtIndex:indexPath.row];
+    NSArray<NavHistory*> *histories = [[NavDataStore sharedDataStore] searchHistory];
+    return [histories objectAtIndex:indexPath.row];
 }
 
 @end

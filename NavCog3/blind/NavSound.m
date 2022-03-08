@@ -195,7 +195,7 @@ static NavSound *instance;
         double delayInSeconds = 0.1*i;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self _playSystemSound:VoiceRecoStartSoundID];
+            [self _playSystemSound:self->VoiceRecoStartSoundID];
             NSLog(@"%@,%f", NSStringFromSelector(_cmd), NSDate.date.timeIntervalSince1970);
         });
     }

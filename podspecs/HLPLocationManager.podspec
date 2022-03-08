@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "HLPLocationManager"
-  s.version      = "1.1.0"
+  s.version      = "1.1.1"
   s.summary      = "HLPLocationManager"
   s.description  = <<-DESC
 HLPLocationManager is a BLE beacon-based localization Framework for iOS.

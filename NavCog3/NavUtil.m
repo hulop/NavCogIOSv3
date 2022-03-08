@@ -69,7 +69,7 @@ static NSMutableDictionary<NSString*, UIView*>* messageViewMap;
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, (h+size)/2+size, w, size*5)];
         label.text = message;
         label.textAlignment = NSTextAlignmentCenter;
-        label.textColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
+        //label.textColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
         label.numberOfLines = 0;
         
         [overlay setBackgroundColor:

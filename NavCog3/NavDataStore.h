@@ -37,7 +37,8 @@ typedef enum {
     NavDestinationTypeDirectoryItem
 } NavDestinationType;
 
-@interface NavDestination : NSObject <NSCoding>
+
+@interface NavDestination : NSObject <NSCoding, NSSecureCoding>
 @property (readonly) NavDestinationType type;
 @property (readonly) NSString* name;
 @property (readonly) NSString* namePron;
@@ -61,6 +62,16 @@ typedef enum {
 +(instancetype)selectDestination;
 +(instancetype)dialogSearch;
 @end
+
+
+@interface NavHistory : NSObject <NSCoding, NSSecureCoding>
+@property (readonly) NavDestination* from;
+@property (readonly) NavDestination* to;
+
+-(instancetype)initWithFrom:(NavDestination*) from andTo:(NavDestination*) to;
+-(BOOL)isKnown;
+@end
+
 
 @interface NavDataStore : NSObject
 

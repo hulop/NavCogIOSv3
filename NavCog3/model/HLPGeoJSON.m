@@ -33,6 +33,26 @@
              };
 }
 
+- (id)initWithCoder:(NSCoder *)coder
+{
+    self = [super init];
+    _type = [coder decodeObjectOfClass:NSString.class forKey:@"type"];
+    NSSet *set = [[NSSet alloc] initWithArray:@[NSArray.class, NSNumber.class]];
+    _coordinates = [coder decodeObjectOfClasses:set forKey:@"coordinates"];
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder;
+{
+    [coder encodeObject:_type forKey:@"type"];
+    [coder encodeObject:_coordinates forKey:@"coordinates"];
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
 -(void)updateCoordinates:(NSArray *)coordinates
 {
     _coordinates = coordinates;
@@ -89,6 +109,11 @@
     HLPLocation *loc3;
 }
 
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
 +(NSDictionary *)JSONKeyPathsByPropertyKey
 {
     return @{
@@ -98,6 +123,22 @@
              };
 }
 
+- (id)initWithCoder:(NSCoder *)coder
+{
+    self = [super init];
+    _type = [coder decodeObjectOfClass:NSString.class forKey:@"type"];
+    _geometry = [coder decodeObjectOfClass:HLPGeometry.class forKey:@"geometry"];
+    NSSet *set = [[NSSet alloc] initWithArray:@[NSArray.class, NSDictionary.class, NSString.class]];
+    _properties = [coder decodeObjectOfClasses:set forKey:@"properties"];
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder;
+{
+    [coder encodeObject:_type forKey:@"type"];
+    [coder encodeObject:_geometry forKey:@"geometry"];
+    [coder encodeObject:_properties forKey:@"properties"];
+}
 
 - (HLPLocation*)nearestLocationTo:(HLPLocation*)location
 {

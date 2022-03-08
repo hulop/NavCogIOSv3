@@ -239,31 +239,33 @@ static ServerConfig *instance;
     return _selected;
 }
 
+- (ServerList*)processServerList:(NSDictionary *)json
+{
+    if (json && json[@"servers"]) {
+        NSMutableArray* ret = [@[] mutableCopy];
+        [json[@"servers"] enumerateObjectsUsingBlock:^(NSDictionary* _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSError *error;
+            ServerEntry* entry = [MTLJSONAdapter modelOfClass:ServerEntry.class
+                                           fromJSONDictionary:obj error:&error];
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            [ret addObject:entry];
+        }];
+
+        for (ServerEntry *entry in ret) {
+            if (entry.selected) {
+                self.selected = entry;
+                break;
+            }
+        }
+        return (ServerList*)ret;
+    }
+    return (ServerList*)nil;
+}
+
 - (void)requestServerList:(void (^)(ServerList *))complete
 {
-    ServerList*(^processServerList)(NSDictionary*) = ^(NSDictionary* json) {
-        if (json && json[@"servers"]) {
-            NSMutableArray* ret = [@[] mutableCopy];
-            [json[@"servers"] enumerateObjectsUsingBlock:^(NSDictionary* _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                NSError *error;
-                ServerEntry* entry = [MTLJSONAdapter modelOfClass:ServerEntry.class
-                                               fromJSONDictionary:obj error:&error];
-                if (error) {
-                    NSLog(@"%@", error.localizedDescription);
-                }
-                [ret addObject:entry];
-            }];
-            
-            for (ServerEntry *entry in ret) {
-                if (entry.selected) {
-                    self.selected = entry;
-                    break;
-                }
-            }
-            return (ServerList*)ret;
-        }
-        return (ServerList*)nil;
-    };
     
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -274,7 +276,7 @@ static ServerConfig *instance;
         NSData *data = [NSData dataWithContentsOfFile:serverListPath];
         
         NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-        if ((_serverList = processServerList(json)) != nil) {
+        if ((_serverList = [self processServerList:json]) != nil) {
             complete(_serverList);
             return;
         }
@@ -294,25 +296,26 @@ static ServerConfig *instance;
         NSString *serverlisttext = [NSString stringWithContentsOfFile:serverListURLPath encoding:NSUTF8StringEncoding error:&error];
         servers = [serverlisttext componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     }
-    
-    __block int index = 0;
-    __block void (^obtainList)(NSString *) = ^(NSString* url) {
-        url = [url stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-        
-        [HLPDataUtil getJSON:[NSURL URLWithString:url] withCallback:^(NSObject *result) {
-            if (result && [result isKindOfClass:NSDictionary.class]) {
-                if ((_serverList = processServerList((NSDictionary*)result)) != nil) {
-                    complete(_serverList);
-                    return;
-                }
+
+    [self obtainList:0 fromServers:servers withCompletion:complete];
+}
+
+- (void)obtainList:(NSInteger)index fromServers:(NSArray *)servers withCompletion:(void (^)(ServerList * _Nullable))complete
+{
+    NSString *url = servers[index];
+    url = [url stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+
+    [HLPDataUtil getJSON:[NSURL URLWithString:url] withCallback:^(NSObject *result) {
+        if (result && [result isKindOfClass:NSDictionary.class]) {
+            if ((self->_serverList = [self processServerList:((NSDictionary*)result)]) != nil) {
+                complete(self->_serverList);
+                return;
             }
-            if (index < servers.count) {
-                index++;
-                obtainList(servers[index]);
-            }
-        }];
-    };
-    obtainList(servers[index]);
+        }
+        if (index < servers.count) {
+            [self obtainList:index+1 fromServers:servers withCompletion:complete];
+        }
+    }];
 }
 
 - (void)requestServerConfig:(void(^)(NSDictionary*))complete
@@ -320,9 +323,9 @@ static ServerConfig *instance;
     NSURL* url = self.selected.configFileURL;
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
-            _selectedServerConfig = (NSDictionary*)result;
-            _selectedServerConfig = [self convertRelativePath:_selectedServerConfig withHostName:url.host];
-            complete(_selectedServerConfig);
+            self->_selectedServerConfig = (NSDictionary*)result;
+            self->_selectedServerConfig = [self convertRelativePath:self->_selectedServerConfig withHostName:url.host];
+            complete(self->_selectedServerConfig);
         } else {
             [self.selected failed];
             complete(nil);
@@ -437,8 +440,8 @@ static ServerConfig *instance;
     
     [HLPDataUtil getJSON:url withCallback:^(NSObject *result) {
         if (result && [result isKindOfClass:NSDictionary.class]) {
-            _agreementConfig = (NSDictionary*)result;
-            complete(_agreementConfig);
+            self->_agreementConfig = (NSDictionary*)result;
+            complete(self->_agreementConfig);
         } else {
             [self.selected failed];
             complete(nil);

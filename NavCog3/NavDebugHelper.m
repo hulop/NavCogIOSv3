@@ -86,7 +86,7 @@ static NavDebugHelper* instance;
                       @"name": name,
                       @"timestamp": @([[NSDate date] timeIntervalSince1970]),
                       @"userInfo": userInfo?userInfo:[NSNull null]
-                      }];
+                      } requiringSecureCoding:YES error:nil];
     if (data) {
         [self sendData:data];
     }
@@ -114,7 +114,7 @@ static NavDebugHelper* instance;
                       @"name": name,
                       @"timestamp": @([[NSDate date] timeIntervalSince1970]),
                       @"userInfo": userInfo?userInfo:[NSNull null]
-                      }];
+                      } requiringSecureCoding:YES error:nil];
     if (data) {
         [self sendData:data];
     }
@@ -191,7 +191,7 @@ didReceiveStream:(NSInputStream *)stream
 
 - (void) processReceivedData:(NSData*)data
 {
-    NSDictionary *json = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    NSDictionary *json = [NSKeyedUnarchiver unarchivedObjectOfClass:NSDictionary.class fromData:data error:nil];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (json) {
             NSString *name = json[@"name"];

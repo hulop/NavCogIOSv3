@@ -148,8 +148,8 @@
             if (server.available ||
                 [[AuthManager sharedManager] isDeveloperAuthorized]) {
                 //cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                cell.textLabel.textColor = [UIColor blackColor];
-                cell.detailTextLabel.textColor = [UIColor blackColor];
+                cell.textLabel.textColor = nil;
+                cell.detailTextLabel.textColor = nil;
             } else {
                 //cell.accessoryType = UITableViewCellAccessoryNone;
                 cell.textLabel.textColor = [UIColor grayColor];

@@ -192,7 +192,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 {
     if ([[ServerConfig sharedConfig] shouldAskRating]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            ratingInfo = [note userInfo];
+            self->ratingInfo = [note userInfo];
             [self performSegueWithIdentifier:@"show_rating" sender:self];
         });
     }
@@ -376,24 +376,34 @@ typedef NS_ENUM(NSInteger, ViewState) {
     }
 }
 
-#pragma mark - HLPWebView
+#pragma mark - MKWebViewDelegate
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation
 {
     [_indicator startAnimating];
+    _indicator.hidden = NO;
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
     [_indicator stopAnimating];
     _indicator.hidden = YES;
 }
 
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
-    _errorMessage.hidden = NO;
+    [_indicator stopAnimating];
+    _indicator.hidden = YES;
     _retryButton.hidden = NO;
-    
+    _errorMessage.hidden = NO;
+}
+
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    [_indicator stopAnimating];
+    _indicator.hidden = YES;
+    _retryButton.hidden = NO;
+    _errorMessage.hidden = NO;
 }
 
 - (void)speak:(NSString *)text force:(BOOL)isForce completionHandler:(void (^)(void))handler
@@ -587,13 +597,13 @@ typedef NS_ENUM(NSInteger, ViewState) {
         
         double orientation = -location.orientation / 180 * M_PI;
         
-        if (lastOrientationSent + 0.2 < now) {
-            [_webView sendData:@[@{
+        if (self->lastOrientationSent + 0.2 < now) {
+            [self->_webView sendData:@[@{
                                      @"type":@"ORIENTATION",
                                      @"z":@(orientation)
                                      }]
                       withName:@"Sensor"];
-            lastOrientationSent = now;
+            self->lastOrientationSent = now;
         }
         
         
@@ -608,7 +618,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
          }
          */
         
-        if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
+        if (now < self->lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
             if (!location.params) {
                 return;
             }
@@ -617,7 +627,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
         
         double floor = location.floor;
         
-        [_webView sendData:@{
+        [self->_webView sendData:@{
                              @"lat":@(location.lat),
                              @"lng":@(location.lng),
                              @"floor":@(floor),
@@ -629,7 +639,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
                              }
                   withName:@"XYZ"];
         
-        lastLocationSent = now;
+        self->lastLocationSent = now;
     });
 }
 

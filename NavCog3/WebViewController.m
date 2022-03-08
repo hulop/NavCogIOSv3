@@ -55,17 +55,17 @@
     if (webpageReady && initialRead == NO) {
         initialRead = YES;
         [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-            if (pageClosed) {
+            if (self->pageClosed) {
                 [timer invalidate];
                 return;
             }
-            if (webpageReady) {
-                UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _webview);
+            if (self->webpageReady) {
+                UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self->_webview);
                 [timer invalidate];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     NSLog(@"$hulop.read_to_read is called");
                     NSString *script = @"(function (){if(window.$hulop && $hulop.ready_to_read) {$hulop.ready_to_read();} else {setTimeout(arguments.callee,100)}})()";
-                    [_webview evaluateJavaScript:script completionHandler:^(id _Nullable res, NSError * _Nullable error) {
+                    [self->_webview evaluateJavaScript:script completionHandler:^(id _Nullable res, NSError * _Nullable error) {
                         if (error) {
                             NSLog(@"%@", error.description);
                         }

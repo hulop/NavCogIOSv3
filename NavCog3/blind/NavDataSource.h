@@ -61,6 +61,5 @@
 @end
 
 @interface NavSearchHistoryDataSource : NSObject < UITableViewDataSource>
-- (NSDictionary*) historyAtIndexPath:(NSIndexPath*)indexPath;
-- (BOOL)isKnownHist:(NSDictionary*)hist;
+- (NavHistory*) historyAtIndexPath:(NSIndexPath*)indexPath;
 @end

@@ -139,8 +139,8 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
     //NSLog(@"downloadedLength=%ld", downloadedLength);
     progress = (double)downloadedLength / totalLength;
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.progressBar.progress = progress;
-        self.progressLabel.text = [NSString stringWithFormat:@"%d%%", (int)round(progress*100)];
+        self.progressBar.progress = self->progress;
+        self.progressLabel.text = [NSString stringWithFormat:@"%d%%", (int)round(self->progress*100)];
     });
 }
 

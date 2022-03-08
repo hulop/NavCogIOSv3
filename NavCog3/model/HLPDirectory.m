@@ -35,6 +35,11 @@
     return object;
 }
 
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
              @"title": @"title",

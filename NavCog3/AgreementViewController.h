@@ -21,11 +21,12 @@
  *******************************************************************************/
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
+#import "WebViewController.h"
 
-@interface AgreementViewController : UIViewController <UIWebViewDelegate>
+@interface AgreementViewController : UIViewController <HLPWebViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
-
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *waitIndicator;
+@property NSURL* _Nonnull url;
+@property HLPWebView * _Nonnull webview;
 
 @end

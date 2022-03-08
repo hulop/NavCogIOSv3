@@ -412,15 +412,15 @@
 - (void) updateView
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.searchButton.title = NSLocalizedStringFromTable([navigator isActive]?@"Stop":@"Search", @"BlindView", @"");
-        [self.searchButton setAccessibilityLabel:NSLocalizedStringFromTable([navigator isActive]?@"Stop Navigation":@"Search Route", @"BlindView", @"")];
+        self.searchButton.title = NSLocalizedStringFromTable([self->navigator isActive]?@"Stop":@"Search", @"BlindView", @"");
+        [self.searchButton setAccessibilityLabel:NSLocalizedStringFromTable([self->navigator isActive]?@"Stop Navigation":@"Search Route", @"BlindView", @"")];
         
         BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
         BOOL debugFollower = [[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"];
         BOOL hasCenter = [[NavDataStore sharedDataStore] mapCenter] != nil;
         BOOL previewMode = [NavDataStore sharedDataStore].previewMode;
         BOOL exerciseMode = [NavDataStore sharedDataStore].exerciseMode;
-        BOOL isActive = [navigator isActive];
+        BOOL isActive = [self->navigator isActive];
         BOOL peerExists = [[[NavDebugHelper sharedHelper] peers] count] > 0;
 
         self.devGo.hidden = !devMode || previewMode;
@@ -435,20 +435,20 @@
         self.devNote.hidden = !devMode || previewMode;
         self.devRestart.hidden = !devMode || previewMode;
         
-        self.devAuto.selected = previewer.autoProceed;
+        self.devAuto.selected = self->previewer.autoProceed;
         //self.cover.hidden = devMode || !isActive;
         self.cover.hidden = devMode;
         
         self.searchButton.enabled = hasCenter;
         
         self.navigationItem.leftBarButtonItem = nil;
-        if ((isActive && !devMode) || previewMode || initFlag) {
+        if ((isActive && !devMode) || previewMode || self->initFlag) {
         } else {
-            self.navigationItem.leftBarButtonItem = _settingButton;
+            self.navigationItem.leftBarButtonItem = self->_settingButton;
             UILongPressGestureRecognizer* longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleSettingLongPressGesture:)];
             longPressGesture.minimumPressDuration = 1.0;
             longPressGesture.numberOfTouchesRequired = 1;
-            [[_settingButton valueForKey:@"view"] addGestureRecognizer:longPressGesture];
+            [[self->_settingButton valueForKey:@"view"] addGestureRecognizer:longPressGesture];
         }
         
         UILabel *titleView = [[UILabel alloc] init];
@@ -460,17 +460,17 @@
         titleView.accessibilityTraits = UIAccessibilityTraitStaticText;
         self.navigationItem.titleView = titleView;
         
-        if (debugFollower || initFlag) {    
+        if (debugFollower || self->initFlag) {
             self.navigationItem.rightBarButtonItem = nil;
         } else {
-            self.navigationItem.rightBarButtonItem = _searchButton;
+            self.navigationItem.rightBarButtonItem = self->_searchButton;
         }
         
         if (peerExists) {
             self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.9 alpha:1.0];
         } else {
             //self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.9 alpha:1.0];
-            self.navigationController.navigationBar.barTintColor = defaultColor;
+            self.navigationController.navigationBar.barTintColor = self->defaultColor;
         }
         
         [self dialogHelperUpdate];
@@ -479,10 +479,10 @@
         [self.commitLabel setText:cn];
         
         NSMutableArray *elements = [@[self.navigationItem] mutableCopy];
-        if (dialogHelper && dialogHelper.helperView && !dialogHelper.helperView.hidden) {
-            [elements addObject:dialogHelper.helperView];
+        if (self->dialogHelper && self->dialogHelper.helperView && !self->dialogHelper.helperView.hidden) {
+            [elements addObject:self->dialogHelper.helperView];
         }
-        [elements addObject:_cover];
+        [elements addObject:self->_cover];
         self.view.accessibilityElements = elements;
     });
 }
@@ -687,13 +687,13 @@
         
         double orientation = -location.orientation / 180 * M_PI;
         
-        if (lastOrientationSent + 0.2 < now) {
-            [_webView sendData:@[@{
+        if (self->lastOrientationSent + 0.2 < now) {
+            [self->_webView sendData:@[@{
                                    @"type":@"ORIENTATION",
                                    @"z":@(orientation)
                                    }]
                     withName:@"Sensor"];
-            lastOrientationSent = now;
+            self->lastOrientationSent = now;
         }
         
         
@@ -708,7 +708,7 @@
          }
          */
         
-        if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
+        if (now < self->lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
             if (!location.params) {
                 return;
             }
@@ -717,7 +717,7 @@
         
         double floor = location.floor;
         
-        [_webView sendData:@{
+        [self->_webView sendData:@{
                            @"lat":@(location.lat),
                            @"lng":@(location.lng),
                            @"floor":@(floor),
@@ -729,7 +729,7 @@
                            }
                 withName:@"XYZ"];
         
-        lastLocationSent = now;
+        self->lastLocationSent = now;
         [self dialogHelperUpdate];
     });
 }
@@ -866,51 +866,51 @@
     }
     if (previewWithAction) {
         [motionManager startDeviceMotionUpdatesToQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
-            yaws[yawsIndex] = motion.attitude.yaw;
-            yawsIndex = (yawsIndex+1)%10;
+            self->yaws[self->yawsIndex] = motion.attitude.yaw;
+            self->yawsIndex = (self->yawsIndex+1)%10;
             double ave = 0;
             for(int i = 0; i < 10; i++) {
-                ave += yaws[i]*0.1;
+                ave += self->yaws[i]*0.1;
             }
             //NSLog(@"angle=, %f, %f, %f", ave, motion.attitude.yaw, fabs(ave - motion.attitude.yaw));
             if (fabs(ave - motion.attitude.yaw) > M_PI*10/180) {
-                turnAction = ave - motion.attitude.yaw;
+                self->turnAction = ave - motion.attitude.yaw;
             } else {
-                turnAction = 0;
+                self->turnAction = 0;
             }
             
             CMAcceleration acc =  motion.userAcceleration;
             double d = sqrt(pow(acc.x, 2)+pow(acc.y, 2)+pow(acc.z, 2));
-            accs[accsIndex] = d;
-            accsIndex = (accsIndex+1)%10;
+            self->accs[self->accsIndex] = d;
+            self->accsIndex = (self->accsIndex+1)%10;
             ave = 0;
             for(int i = 0; i < 10; i++) {
-                ave += accs[i]*0.1;
+                ave += self->accs[i]*0.1;
             }
             //NSLog(@"angle=, %f", ave);
-            forwardAction = ave > 0.3;
+            self->forwardAction = ave > 0.3;
             
         }];
     }
     if (exerciseMode) {
         [motionManager startDeviceMotionUpdatesToQueue:motionQueue withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
-            if (yawsIndex > 0) {
-                turnAction = [HLPLocation normalizeDegree:-(motion.attitude.yaw - yaws[0])/M_PI*180];
+            if (self->yawsIndex > 0) {
+                self->turnAction = [HLPLocation normalizeDegree:-(motion.attitude.yaw - self->yaws[0])/M_PI*180];
             } else {
-                turnAction = 0;
+                self->turnAction = 0;
             }
-            yaws[0] = motion.attitude.yaw;
-            yawsIndex = 1;
+            self->yaws[0] = motion.attitude.yaw;
+            self->yawsIndex = 1;
             
             CMAcceleration acc =  motion.userAcceleration;
             double d = sqrt(pow(acc.x, 2)+pow(acc.y, 2)+pow(acc.z, 2));
-            accs[accsIndex] = d;
-            accsIndex = (accsIndex+1)%10;
+            self->accs[self->accsIndex] = d;
+            self->accsIndex = (self->accsIndex+1)%10;
             double ave = 0;
             for(int i = 0; i < 10; i++) {
-                ave += accs[i]*0.1;
+                ave += self->accs[i]*0.1;
             }
-            forwardAction = ave > 0.05;
+            self->forwardAction = ave > 0.05;
         }];
         
     }
@@ -961,7 +961,7 @@
     if ([properties[@"isActive"] boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (![[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
-                [_webView evaluateJavaScript:@"$hulop.map.setSync(true);" completionHandler:nil];
+                [self->_webView evaluateJavaScript:@"$hulop.map.setSync(true);" completionHandler:nil];
             }
         });
             
@@ -985,7 +985,7 @@
             double delayInSeconds = 2.0;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                [previewer setAutoProceed:YES];
+                [self->previewer setAutoProceed:YES];
             });
         }
 
@@ -1017,7 +1017,7 @@
     }
     [NavDataStore sharedDataStore].start = [[NSDate date] timeIntervalSince1970];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView evaluateJavaScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]] completionHandler:nil];
+        [self->_webView evaluateJavaScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]] completionHandler:nil];
 
         //_cover.preventCurrentStatus = YES;
         [NavUtil hideModalWaiting];
@@ -1259,17 +1259,17 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (contentURL == nil && name == nil) {
-            if (showingPage) {
-                [showingPage.navigationController popViewControllerAnimated:YES];
+            if (self->showingPage) {
+                [self->showingPage.navigationController popViewControllerAnimated:YES];
             }
             return;
         }
-        if (showingPage) {
+        if (self->showingPage) {
             return;
         }
         
-        showingPage = [WebViewController getInstance];
-        showingPage.delegate = self;
+        self->showingPage = [WebViewController getInstance];
+        self->showingPage.delegate = self;
         
         NSURL *url = nil;
         if ([contentURL hasPrefix:@"bundle://"]) {
@@ -1283,9 +1283,9 @@
             url = [NSURL URLWithString:contentURL];
         }
         
-        showingPage.title = name;
-        showingPage.url = url;
-        [self.navigationController showViewController:showingPage sender:self];
+        self->showingPage.title = name;
+        self->showingPage.url = url;
+        [self.navigationController showViewController:self->showingPage sender:self];
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_NAVIGATION_PAUSE object:nil];
     });
 }

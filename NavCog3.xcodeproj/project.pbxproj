@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		231778EFD52FD719622748FD /* libPods-NavCogFP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5D9DE6372649AF633976E29 /* libPods-NavCogFP.a */; };
 		3008B8B326DDFC42008C27B1 /* HLPDialog in Frameworks */ = {isa = PBXBuildFile; productRef = 3008B8B226DDFC42008C27B1 /* HLPDialog */; };
+		309726AD27D7AFE400F9E5EF /* NavCogTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 309726AC27D7AFE400F9E5EF /* NavCogTests.m */; };
+		309726B827D7B21200F9E5EF /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309726B727D7B21200F9E5EF /* CoreMotion.framework */; };
 		309A48FE2706A14300318B44 /* HLPDialog in Frameworks */ = {isa = PBXBuildFile; productRef = 309A48FD2706A14300318B44 /* HLPDialog */; };
 		30D2DAC02710BA2F001CA62E /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 30D2DABF2710BA2F001CA62E /* Mantle */; };
 		30D2DAC22710BA6E001CA62E /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 30D2DAC12710BA6E001CA62E /* Mantle */; };
@@ -139,7 +141,6 @@
 		7E9238ED1D5189F100875766 /* HLPSettingViewSwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E41D5189F100875766 /* HLPSettingViewSwitchCell.xib */; };
 		7E9238EE1D5189F100875766 /* HLPSettingViewTextCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E51D5189F100875766 /* HLPSettingViewTextCell.xib */; };
 		7E9238F11D5189FF00875766 /* HLPSettingView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238EF1D5189FF00875766 /* HLPSettingView.strings */; };
-		7E9657F01F619B9300A6B489 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9657EF1F619B9300A6B489 /* AssetsLibrary.framework */; };
 		7E96D9271DAC916C00D57C8C /* BlindView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E96D9291DAC916C00D57C8C /* BlindView.strings */; };
 		7E96D92D1DACC56200D57C8C /* HLPGeoJSON.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E96D92F1DACC56200D57C8C /* HLPGeoJSON.strings */; };
 		7E96D9331DACD0C700D57C8C /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E96D9321DACD0C700D57C8C /* SearchViewController.m */; };
@@ -209,6 +210,16 @@
 		D3B684BD87877697DA26A4DE /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABCC51EA52F7E70CF93DA9D2 /* libPods-NavCog3.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		309726BB27D7D44300F9E5EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7EDEDC141D1E0C6800AC111A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7EDEDC1B1D1E0C6800AC111A;
+			remoteInfo = NavCog3;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		30647B382706482C000536D2 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -248,6 +259,11 @@
 /* Begin PBXFileReference section */
 		0D18A95F063007726536010A /* Pods-NavCog3.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.debug.xcconfig"; sourceTree = "<group>"; };
 		236A8A941827481A63E3CAD2 /* Pods-NavCogTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogTool.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogTool/Pods-NavCogTool.release.xcconfig"; sourceTree = "<group>"; };
+		309726AA27D7AFE400F9E5EF /* NavCogTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NavCogTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		309726AC27D7AFE400F9E5EF /* NavCogTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NavCogTests.m; sourceTree = "<group>"; };
+		309726B527D7B1FD00F9E5EF /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/System/Library/Frameworks/CoreLocation.framework; sourceTree = DEVELOPER_DIR; };
+		309726B727D7B21200F9E5EF /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
+		309726BD27D7D51F00F9E5EF /* libHLPLocationManager-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libHLPLocationManager-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AF7CE4FA37DA8CC1D99A442 /* Pods-NavCogFP.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFP.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP.debug.xcconfig"; sourceTree = "<group>"; };
 		40D977CBB37A56EF684BDB52 /* Pods-NavCogFP.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogFP.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogFP/Pods-NavCogFP.release.xcconfig"; sourceTree = "<group>"; };
 		49EF4A10A8A15A8B96509BB9 /* Pods-NavCogPreview.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogPreview.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogPreview/Pods-NavCogPreview.release.xcconfig"; sourceTree = "<group>"; };
@@ -473,6 +489,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		309726A727D7AFE400F9E5EF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				309726B827D7B21200F9E5EF /* CoreMotion.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7E30F9A71E813FFC00D542E5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -489,8 +513,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E9657F01F619B9300A6B489 /* AssetsLibrary.framework in Frameworks */,
-				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EAE818F1E41E89C007B50D3 /* CoreBluetooth.framework in Frameworks */,
 				7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */,
 				3008B8B326DDFC42008C27B1 /* HLPDialog in Frameworks */,
@@ -527,6 +549,9 @@
 		0F5EA397BCF0C5EEF08F5111 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				309726BD27D7D51F00F9E5EF /* libHLPLocationManager-iOS.a */,
+				309726B727D7B21200F9E5EF /* CoreMotion.framework */,
+				309726B527D7B1FD00F9E5EF /* CoreLocation.framework */,
 				7EB3FFA220D779D500D6D05E /* ARKit.framework */,
 				7E9657EF1F619B9300A6B489 /* AssetsLibrary.framework */,
 				A93ED2771ED2DBB800B75760 /* AVFoundation.framework */,
@@ -558,6 +583,14 @@
 				49EF4A10A8A15A8B96509BB9 /* Pods-NavCogPreview.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		309726AB27D7AFE400F9E5EF /* NavCogTests */ = {
+			isa = PBXGroup;
+			children = (
+				309726AC27D7AFE400F9E5EF /* NavCogTests.m */,
+			);
+			path = NavCogTests;
 			sourceTree = "<group>";
 		};
 		7E1F9F2D1DF0190F003E1B23 /* dialog */ = {
@@ -756,6 +789,7 @@
 				7EF7F79E1DD178F7000A625A /* NavCogTool */,
 				7E30F9AB1E813FFC00D542E5 /* NavCogFP */,
 				7EE8E60C1EF27541006EE7C3 /* NavCogPreview */,
+				309726AB27D7AFE400F9E5EF /* NavCogTests */,
 				7EDEDC1D1D1E0C6800AC111A /* Products */,
 				0F5EA397BCF0C5EEF08F5111 /* Frameworks */,
 				1A501AB9050FB78BDAB995B3 /* Pods */,
@@ -769,6 +803,7 @@
 				7EF7F79D1DD178F7000A625A /* NavCogTool */,
 				7E30F9AA1E813FFC00D542E5 /* NavCogFP.app */,
 				7EE8E60B1EF27541006EE7C3 /* NavCogPreview.app */,
+				309726AA27D7AFE400F9E5EF /* NavCogTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -874,6 +909,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		309726A927D7AFE400F9E5EF /* NavCogTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 309726B227D7AFE400F9E5EF /* Build configuration list for PBXNativeTarget "NavCogTests" */;
+			buildPhases = (
+				309726A627D7AFE400F9E5EF /* Sources */,
+				309726A727D7AFE400F9E5EF /* Frameworks */,
+				309726A827D7AFE400F9E5EF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				309726BC27D7D44300F9E5EF /* PBXTargetDependency */,
+			);
+			name = NavCogTests;
+			productName = NavCogTests;
+			productReference = 309726AA27D7AFE400F9E5EF /* NavCogTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		7E30F9A91E813FFC00D542E5 /* NavCogFP */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7E30F9BE1E813FFC00D542E5 /* Build configuration list for PBXNativeTarget "NavCogFP" */;
@@ -977,9 +1030,13 @@
 		7EDEDC141D1E0C6800AC111A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 1320;
 				ORGANIZATIONNAME = HULOP;
 				TargetAttributes = {
+					309726A927D7AFE400F9E5EF = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = 7EDEDC1B1D1E0C6800AC111A;
+					};
 					7E30F9A91E813FFC00D542E5 = {
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
@@ -1006,10 +1063,9 @@
 			};
 			buildConfigurationList = 7EDEDC171D1E0C6800AC111A /* Build configuration list for PBXProject "NavCog3" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 				ja,
@@ -1031,11 +1087,19 @@
 				7EF7F79C1DD178F7000A625A /* NavCogTool */,
 				7E30F9A91E813FFC00D542E5 /* NavCogFP */,
 				7EE8E60A1EF27541006EE7C3 /* NavCogPreview */,
+				309726A927D7AFE400F9E5EF /* NavCogTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		309726A827D7AFE400F9E5EF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7E30F9A81E813FFC00D542E5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1283,6 +1347,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		309726A627D7AFE400F9E5EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				309726AD27D7AFE400F9E5EF /* NavCogTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7E30F9A61E813FFC00D542E5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1434,6 +1506,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		309726BC27D7D44300F9E5EF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7EDEDC1B1D1E0C6800AC111A /* NavCog3 */;
+			targetProxy = 309726BB27D7D44300F9E5EF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		7E17F1A01D9A225A00DB1F34 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
@@ -1537,10 +1617,64 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		309726B027D7AFE400F9E5EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/Pods/HLPLocationManager";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NavCog3.app/NavCog3";
+			};
+			name = Debug;
+		};
+		309726B127D7AFE400F9E5EF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/Pods/HLPLocationManager";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCogTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NavCog3.app/NavCog3";
+			};
+			name = Release;
+		};
 		7E30F9BF1E813FFC00D542E5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3AF7CE4FA37DA8CC1D99A442 /* Pods-NavCogFP.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1548,12 +1682,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NavCogFP/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1569,6 +1700,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 40D977CBB37A56EF684BDB52 /* Pods-NavCogFP.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1576,12 +1708,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NavCogFP/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1607,14 +1736,17 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1639,7 +1771,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1661,14 +1793,17 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1687,7 +1822,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1706,15 +1841,12 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				ENABLE_BITCODE = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				DEVELOPMENT_TEAM = B98QB5W4Z4;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = NavCog3/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1743,15 +1875,12 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				ENABLE_BITCODE = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				DEVELOPMENT_TEAM = B98QB5W4Z4;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_OPTIMIZATION_LEVEL = s;
 				INFOPLIST_FILE = NavCog3/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1788,7 +1917,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/NavCog3/NavCog3.pch";
 				INFOPLIST_FILE = NavCogPreview/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1819,7 +1948,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/NavCog3/NavCog3.pch";
 				INFOPLIST_FILE = NavCogPreview/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1878,6 +2007,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		309726B227D7AFE400F9E5EF /* Build configuration list for PBXNativeTarget "NavCogTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				309726B027D7AFE400F9E5EF /* Debug */,
+				309726B127D7AFE400F9E5EF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		7E30F9BE1E813FFC00D542E5 /* Build configuration list for PBXNativeTarget "NavCogFP" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -178,7 +178,7 @@ static FingerprintManager *instance;
                         [rp updateWithFloorplan:_floorplanMap[refid]];
                         NSString *type = [_floorplanMap[refid] type];
                         
-                        if (refid && [@"floormap" isEqualToString:type]) {
+                        if (refid && (type == NULL || [@"floormap" isEqualToString:type])) {
                             [temp addObject:rp];
                             if (rp.x == 0 && rp.y == 0 && rp.rotate == 0) {
                                 _floorplanRefpointMap[refid] = rp;

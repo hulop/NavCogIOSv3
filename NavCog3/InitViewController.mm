@@ -57,17 +57,11 @@
     
     modes = @[@"blind", @"wheelchair", @"stroller", @"general"];
     
-    modeSegueMap = @{@"user_blind": @"blind_view",
-                     @"user_wheelchair": @"general_view",
-                     @"user_stroller": @"general_view",
-                     @"user_general": @"general_view"
+    modeSegueMap = @{@"user_blind": @"map_view",
+                     @"user_wheelchair": @"map_view",
+                     @"user_stroller": @"map_view",
+                     @"user_general": @"map_view"
                      };
-
-//    modeSegueMap = @{@"user_blind": @"map_view",
-//                     @"user_wheelchair": @"map_view",
-//                     @"user_stroller": @"map_view",
-//                     @"user_general": @"map_view"
-//                     };
 
     UIFont *customFont = [UIFont systemFontOfSize:24];
     for(NSString *mode: modes) {

@@ -447,7 +447,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&gt;" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uml-UV-BZ8">
-                                <rect key="frame" x="348" y="180.5" width="11" height="20.5"/>
+                                <rect key="frame" x="348" y="180.5" width="11" height="20"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <bool key="isElement" value="NO"/>
                                 </accessibility>
@@ -679,7 +679,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Wj-Dx-y5Q">
-                                <rect key="frame" x="0.0" y="313.5" width="375" height="40"/>
+                                <rect key="frame" x="0.0" y="147" width="375" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="vPM-CG-LZ8"/>
                                 </constraints>
@@ -688,7 +688,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sVy-i3-VPD">
-                                <rect key="frame" x="164" y="367.5" width="47" height="36"/>
+                                <rect key="frame" x="164" y="207" width="47" height="36"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="Retry"/>
                                 <connections>
@@ -699,8 +699,8 @@
                         <viewLayoutGuide key="safeArea" id="7Dg-8l-xiD"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="sVy-i3-VPD" firstAttribute="top" secondItem="4Wj-Dx-y5Q" secondAttribute="bottom" constant="14" id="7rc-KN-oaG"/>
-                            <constraint firstItem="4Wj-Dx-y5Q" firstAttribute="centerY" secondItem="pa2-LL-8Qj" secondAttribute="centerY" id="B48-N9-5S2"/>
+                            <constraint firstItem="sVy-i3-VPD" firstAttribute="top" secondItem="4Wj-Dx-y5Q" secondAttribute="bottom" constant="20" id="7rc-KN-oaG"/>
+                            <constraint firstItem="4Wj-Dx-y5Q" firstAttribute="centerY" secondItem="pa2-LL-8Qj" secondAttribute="centerY" multiplier="0.5" id="B48-N9-5S2"/>
                             <constraint firstItem="sVy-i3-VPD" firstAttribute="centerX" secondItem="7Dg-8l-xiD" secondAttribute="centerX" id="Nv1-hn-fWb"/>
                             <constraint firstItem="4Wj-Dx-y5Q" firstAttribute="leading" secondItem="7Dg-8l-xiD" secondAttribute="leading" id="SjI-WP-gew"/>
                             <constraint firstItem="7Dg-8l-xiD" firstAttribute="trailing" secondItem="4Wj-Dx-y5Q" secondAttribute="trailing" id="fCa-Nz-D01"/>
@@ -905,10 +905,10 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Uqw-3g-GCM"/>
+        <segue reference="x4o-MY-LrH"/>
         <segue reference="y9t-k8-dBv"/>
         <segue reference="39c-P9-Li7"/>
-        <segue reference="BKg-hP-LrX"/>
+        <segue reference="A1O-vz-eor"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="Menu" width="32" height="32"/>

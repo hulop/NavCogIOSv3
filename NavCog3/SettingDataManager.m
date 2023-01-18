@@ -90,15 +90,6 @@ static SettingDataManager *sharedData_ = nil;
         mvw = 9;
         tactile_paving = 1;
     } else if ([userMode isEqualToString:@"user_blind"]) {
-//        min_width = 2;
-//        road_condition = 1;
-//        deff_LV = 2;
-//        slope = 1;
-//        stairs = 9;
-//        esc = 1;
-//        elv = 9;
-//        mvw = 1;
-//        tactile_paving = 9;
         presetId = 9;
         min_width = 8;
         road_condition = 9;

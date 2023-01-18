@@ -586,11 +586,11 @@ static HLPSetting *userModeLabel, *userBlindLabel, *userWheelchairLabel, *userSt
         [advancedLabel setVisible:isDeveloperAuthorized];
         [advancedMenu setVisible:isDeveloperAuthorized];
 
-        [userModeLabel setVisible:blindMode];
-        [userBlindLabel setVisible:blindMode];
-        [userWheelchairLabel setVisible:blindMode];
-        [userStrollerLabel setVisible:blindMode];
-        [userGeneralLabel setVisible:blindMode];
+        [userModeLabel setVisible:true];
+        [userBlindLabel setVisible:true];
+        [userWheelchairLabel setVisible:true];
+        [userStrollerLabel setVisible:true];
+        [userGeneralLabel setVisible:true];
 
         return;
     }

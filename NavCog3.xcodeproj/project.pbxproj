@@ -71,10 +71,90 @@
 		D3B684BD87877697DA26A4DE /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABCC51EA52F7E70CF93DA9D2 /* libPods-NavCog3.a */; };
 		E5F6FEF32977A98C00D5C22B /* SettingDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FEF22977A98C00D5C22B /* SettingDataManager.m */; };
 		E5F6FEF52977A9BB00D5C22B /* serverlist.json in Resources */ = {isa = PBXBuildFile; fileRef = E5F6FEF42977A9BB00D5C22B /* serverlist.json */; };
+		E5F6FEFA2977ACD500D5C22B /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FEF62977ACD500D5C22B /* MapViewController.m */; };
+		E5F6FEFB2977ACD500D5C22B /* MapNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FEF82977ACD500D5C22B /* MapNavigationController.m */; };
+		E5F6FEFE2977AD0500D5C22B /* NavTalkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FEFD2977AD0500D5C22B /* NavTalkButton.m */; };
+		E5F6FF082977B2F700D5C22B /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
+		E5F6FF092977B2F700D5C22B /* ServerConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E371E3F1E5600208042 /* ServerConfig.m */; };
+		E5F6FF0A2977B2F700D5C22B /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FEF62977ACD500D5C22B /* MapViewController.m */; };
+		E5F6FF0B2977B2F700D5C22B /* InitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EA019001E2F54E7005E65ED /* InitViewController.mm */; settings = {COMPILER_FLAGS = "-fmodules -fcxx-modules"; }; };
+		E5F6FF0C2977B2F700D5C22B /* ServerSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */; };
+		E5F6FF0D2977B2F700D5C22B /* HLPSettingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9238DC1D5189F100875766 /* HLPSettingHelper.m */; };
+		E5F6FF0E2977B2F700D5C22B /* NavBlindWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */; };
+		E5F6FF0F2977B2F700D5C22B /* DownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */; };
+		E5F6FF102977B2F700D5C22B /* DestinationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E96D9351DAD185800D57C8C /* DestinationTableViewController.m */; };
+		E5F6FF112977B2F700D5C22B /* NavDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AD1DD1949C000A625A /* NavDataSource.m */; };
+		E5F6FF122977B2F700D5C22B /* NavUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E433DD31D6E84D300C6C993 /* NavUtil.m */; };
+		E5F6FF132977B2F700D5C22B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC261D1E0C6800AC111A /* ViewController.m */; };
+		E5F6FF142977B2F700D5C22B /* NavDeviceTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E433DCA1D6E846300C6C993 /* NavDeviceTTS.m */; };
+		E5F6FF152977B2F700D5C22B /* BlindViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42E81D90FD1B006B6899 /* BlindViewController.m */; };
+		E5F6FF162977B2F700D5C22B /* NavCommander.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7A71DD17D4A000A625A /* NavCommander.m */; };
+		E5F6FF172977B2F700D5C22B /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC231D1E0C6800AC111A /* AppDelegate.mm */; settings = {COMPILER_FLAGS = "-fmodules -fcxx-modules"; }; };
+		E5F6FF182977B2F700D5C22B /* NavNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5150A31D8BF32800ED25FB /* NavNavigator.m */; };
+		E5F6FF192977B2F700D5C22B /* ConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E08DB571DB9F08E00E82161 /* ConfigManager.m */; };
+		E5F6FF1A2977B2F700D5C22B /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
+		E5F6FF1B2977B2F700D5C22B /* ScreenshotHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */; };
+		E5F6FF1C2977B2F700D5C22B /* WelcomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */; };
+		E5F6FF1D2977B2F700D5C22B /* HLPSettingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9238DE1D5189F100875766 /* HLPSettingTableView.m */; };
+		E5F6FF1E2977B2F700D5C22B /* HLPDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE207DA2022F7BA00160160 /* HLPDirectory.m */; };
+		E5F6FF1F2977B2F700D5C22B /* SettingDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FEF22977A98C00D5C22B /* SettingDataManager.m */; };
+		E5F6FF202977B2F700D5C22B /* HLPGeoJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */; };
+		E5F6FF212977B2F700D5C22B /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D71351D4EE85F00FDCA66 /* SettingViewController.m */; };
+		E5F6FF222977B2F700D5C22B /* DefaultTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A923DA091F26DBF60002E3CB /* DefaultTTS.m */; };
+		E5F6FF232977B2F700D5C22B /* HLPSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9238DA1D5189F100875766 /* HLPSetting.m */; };
+		E5F6FF242977B2F700D5C22B /* MapNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FEF82977ACD500D5C22B /* MapNavigationController.m */; };
+		E5F6FF252977B2F700D5C22B /* HLPDataUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */; };
+		E5F6FF262977B2F700D5C22B /* NavDebugHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */; };
+		E5F6FF272977B2F700D5C22B /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E96D9321DACD0C700D57C8C /* SearchViewController.m */; };
+		E5F6FF282977B2F700D5C22B /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EDEDC201D1E0C6800AC111A /* main.mm */; };
+		E5F6FF292977B2F700D5C22B /* HLPSettingViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9238E01D5189F100875766 /* HLPSettingViewCell.m */; };
+		E5F6FF2A2977B2F700D5C22B /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9866CD1D5174780073CB49 /* Logging.m */; };
+		E5F6FF2B2977B2F700D5C22B /* NavTalkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FEFD2977AD0500D5C22B /* NavTalkButton.m */; };
+		E5F6FF2C2977B2F700D5C22B /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA49A341F9AE21900E1369B /* WebViewController.m */; };
+		E5F6FF2D2977B2F700D5C22B /* NavSound.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF6FBB11DA4DD8200382F76 /* NavSound.m */; };
+		E5F6FF2E2977B2F700D5C22B /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E391E3F1E5600208042 /* AuthManager.m */; };
+		E5F6FF302977B2F700D5C22B /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9657EF1F619B9300A6B489 /* AssetsLibrary.framework */; };
+		E5F6FF312977B2F700D5C22B /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EAE818E1E41E89C007B50D3 /* CoreBluetooth.framework */; };
+		E5F6FF322977B2F700D5C22B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */; };
+		E5F6FF332977B2F700D5C22B /* HLPDialog in Frameworks */ = {isa = PBXBuildFile; productRef = E5F6FF002977B2F700D5C22B /* HLPDialog */; };
+		E5F6FF342977B2F700D5C22B /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */; };
+		E5F6FF352977B2F700D5C22B /* HLPWebView in Frameworks */ = {isa = PBXBuildFile; productRef = E5F6FF022977B2F700D5C22B /* HLPWebView */; };
+		E5F6FF362977B2F700D5C22B /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABCC51EA52F7E70CF93DA9D2 /* libPods-NavCog3.a */; };
+		E5F6FF372977B2F700D5C22B /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = E5F6FF042977B2F700D5C22B /* Mantle */; };
+		E5F6FF3A2977B2F700D5C22B /* nosound.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7EA018FD1E2F54A3005E65ED /* nosound.aiff */; };
+		E5F6FF3B2977B2F700D5C22B /* HLPSettingViewPickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E11D5189F100875766 /* HLPSettingViewPickerCell.xib */; };
+		E5F6FF3C2977B2F700D5C22B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A01D9A225A00DB1F34 /* InfoPlist.strings */; };
+		E5F6FF3D2977B2F700D5C22B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7EDEDC2D1D1E0C6800AC111A /* LaunchScreen.storyboard */; };
+		E5F6FF3E2977B2F700D5C22B /* exercise-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E28479E1E024112006B1FB8 /* exercise-data.json */; };
+		E5F6FF3F2977B2F700D5C22B /* HLPSettingViewSliderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E21D5189F100875766 /* HLPSettingViewSliderCell.xib */; };
+		E5F6FF402977B2F700D5C22B /* serverlist.json in Resources */ = {isa = PBXBuildFile; fileRef = E5F6FEF42977A9BB00D5C22B /* serverlist.json */; };
+		E5F6FF412977B2F700D5C22B /* HLPSettingViewSubtitleCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E31D5189F100875766 /* HLPSettingViewSubtitleCell.xib */; };
+		E5F6FF422977B2F700D5C22B /* BlindView.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 7E308BDD1DAF147600E525F6 /* BlindView.stringsdict */; };
+		E5F6FF432977B2F700D5C22B /* BlindView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E96D9291DAC916C00D57C8C /* BlindView.strings */; };
+		E5F6FF442977B2F700D5C22B /* HLPSettingViewSwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E41D5189F100875766 /* HLPSettingViewSwitchCell.xib */; };
+		E5F6FF452977B2F700D5C22B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EDEDC2B1D1E0C6800AC111A /* Assets.xcassets */; };
+		E5F6FF462977B2F700D5C22B /* HLPGeoJSON.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E96D92F1DACC56200D57C8C /* HLPGeoJSON.strings */; };
+		E5F6FF472977B2F700D5C22B /* lastcommit.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7E7ED5A71F5EDFC90033814B /* lastcommit.txt */; };
+		E5F6FF482977B2F700D5C22B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7EDEDC281D1E0C6800AC111A /* Main.storyboard */; };
+		E5F6FF492977B2F700D5C22B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A51D9A226100DB1F34 /* Localizable.strings */; };
+		E5F6FF4A2977B2F700D5C22B /* HLPSettingView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238EF1D5189FF00875766 /* HLPSettingView.strings */; };
+		E5F6FF4B2977B2F700D5C22B /* dev.hashfile in Resources */ = {isa = PBXBuildFile; fileRef = 7EF45E531E3F58D200208042 /* dev.hashfile */; };
+		E5F6FF4C2977B2F700D5C22B /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7E6E42DF1D90C7A3006B6899 /* Settings.bundle */; };
+		E5F6FF4D2977B2F700D5C22B /* HLPSettingViewTextCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E9238E51D5189F100875766 /* HLPSettingViewTextCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		30647B382706482C000536D2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E5F6FF4F2977B2F700D5C22B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
@@ -221,6 +301,14 @@
 		E5F6FEF12977A98B00D5C22B /* SettingDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingDataManager.h; sourceTree = "<group>"; };
 		E5F6FEF22977A98C00D5C22B /* SettingDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingDataManager.m; sourceTree = "<group>"; };
 		E5F6FEF42977A9BB00D5C22B /* serverlist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = serverlist.json; sourceTree = "<group>"; };
+		E5F6FEF62977ACD500D5C22B /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
+		E5F6FEF72977ACD500D5C22B /* MapNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapNavigationController.h; sourceTree = "<group>"; };
+		E5F6FEF82977ACD500D5C22B /* MapNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapNavigationController.m; sourceTree = "<group>"; };
+		E5F6FEF92977ACD500D5C22B /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
+		E5F6FEFC2977AD0500D5C22B /* NavTalkButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavTalkButton.h; sourceTree = "<group>"; };
+		E5F6FEFD2977AD0500D5C22B /* NavTalkButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavTalkButton.m; sourceTree = "<group>"; };
+		E5F6FF532977B2F700D5C22B /* NavCogMiraikan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NavCogMiraikan.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5F6FF542977B2F700D5C22B /* Miraikan.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Miraikan.plist; path = "/Users/yoshizawr204/iOS/github-fork/NavCog-Miraikan-Refine/Miraikan.plist"; sourceTree = "<absolute>"; };
 		EBE9F8032158D7532B8BFC20 /* Pods-NavCog3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -238,6 +326,22 @@
 				30F54F4C270CCDC000ABD9FC /* HLPWebView in Frameworks */,
 				D3B684BD87877697DA26A4DE /* libPods-NavCog3.a in Frameworks */,
 				30D2DAC02710BA2F001CA62E /* Mantle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E5F6FF2F2977B2F700D5C22B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5F6FF302977B2F700D5C22B /* AssetsLibrary.framework in Frameworks */,
+				E5F6FF312977B2F700D5C22B /* CoreBluetooth.framework in Frameworks */,
+				E5F6FF312977B2F700D5C22B /* CoreBluetooth.framework in Frameworks */,
+				E5F6FF322977B2F700D5C22B /* CoreMotion.framework in Frameworks */,
+				E5F6FF332977B2F700D5C22B /* HLPDialog in Frameworks */,
+				E5F6FF342977B2F700D5C22B /* MultipeerConnectivity.framework in Frameworks */,
+				E5F6FF352977B2F700D5C22B /* HLPWebView in Frameworks */,
+				E5F6FF362977B2F700D5C22B /* libPods-NavCog3.a in Frameworks */,
+				E5F6FF372977B2F700D5C22B /* Mantle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +417,10 @@
 				7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */,
 				7EA49A331F9AE21900E1369B /* WebViewController.h */,
 				7EA49A341F9AE21900E1369B /* WebViewController.m */,
+				E5F6FEF72977ACD500D5C22B /* MapNavigationController.h */,
+				E5F6FEF82977ACD500D5C22B /* MapNavigationController.m */,
+				E5F6FEF92977ACD500D5C22B /* MapViewController.h */,
+				E5F6FEF62977ACD500D5C22B /* MapViewController.m */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -380,6 +488,8 @@
 				7E433DD31D6E84D300C6C993 /* NavUtil.m */,
 				7EAE6F0B1D2642D600614C35 /* NavBlindWebView.h */,
 				7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */,
+				E5F6FEFC2977AD0500D5C22B /* NavTalkButton.h */,
+				E5F6FEFD2977AD0500D5C22B /* NavTalkButton.m */,
 			);
 			name = navigation;
 			sourceTree = "<group>";
@@ -412,6 +522,7 @@
 			isa = PBXGroup;
 			children = (
 				7EDEDC1C1D1E0C6800AC111A /* NavCog3.app */,
+				E5F6FF532977B2F700D5C22B /* NavCogMiraikan.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -444,6 +555,7 @@
 				7E6E42DF1D90C7A3006B6899 /* Settings.bundle */,
 				7EDEDC2B1D1E0C6800AC111A /* Assets.xcassets */,
 				7EDEDC301D1E0C6800AC111A /* Info.plist */,
+				E5F6FF542977B2F700D5C22B /* Miraikan.plist */,
 				7EDEDC201D1E0C6800AC111A /* main.mm */,
 				7EDEDC221D1E0C6800AC111A /* AppDelegate.h */,
 				7EDEDC231D1E0C6800AC111A /* AppDelegate.mm */,
@@ -481,6 +593,32 @@
 			);
 			productName = NavCog3;
 			productReference = 7EDEDC1C1D1E0C6800AC111A /* NavCog3.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E5F6FEFF2977B2F700D5C22B /* NavCogMiraikan */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E5F6FF502977B2F700D5C22B /* Build configuration list for PBXNativeTarget "NavCogMiraikan" */;
+			buildPhases = (
+				E5F6FF062977B2F700D5C22B /* [CP] Check Pods Manifest.lock */,
+				E5F6FF072977B2F700D5C22B /* Sources */,
+				E5F6FF2F2977B2F700D5C22B /* Frameworks */,
+				E5F6FF382977B2F700D5C22B /* ShellScript */,
+				E5F6FF392977B2F700D5C22B /* Resources */,
+				E5F6FF4E2977B2F700D5C22B /* [CP] Copy Pods Resources */,
+				E5F6FF4F2977B2F700D5C22B /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NavCogMiraikan;
+			packageProductDependencies = (
+				E5F6FF002977B2F700D5C22B /* HLPDialog */,
+				E5F6FF022977B2F700D5C22B /* HLPWebView */,
+				E5F6FF042977B2F700D5C22B /* Mantle */,
+			);
+			productName = NavCog3;
+			productReference = E5F6FF532977B2F700D5C22B /* NavCogMiraikan.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -528,6 +666,7 @@
 			projectRoot = "";
 			targets = (
 				7EDEDC1B1D1E0C6800AC111A /* NavCog3 */,
+				E5F6FEFF2977B2F700D5C22B /* NavCogMiraikan */,
 			);
 		};
 /* End PBXProject section */
@@ -557,6 +696,33 @@
 				7EF45E541E3F58D200208042 /* dev.hashfile in Resources */,
 				7E6E42E01D90C7A3006B6899 /* Settings.bundle in Resources */,
 				7E9238EE1D5189F100875766 /* HLPSettingViewTextCell.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E5F6FF392977B2F700D5C22B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5F6FF3A2977B2F700D5C22B /* nosound.aiff in Resources */,
+				E5F6FF3B2977B2F700D5C22B /* HLPSettingViewPickerCell.xib in Resources */,
+				E5F6FF3C2977B2F700D5C22B /* InfoPlist.strings in Resources */,
+				E5F6FF3D2977B2F700D5C22B /* LaunchScreen.storyboard in Resources */,
+				E5F6FF3E2977B2F700D5C22B /* exercise-data.json in Resources */,
+				E5F6FF3F2977B2F700D5C22B /* HLPSettingViewSliderCell.xib in Resources */,
+				E5F6FF402977B2F700D5C22B /* serverlist.json in Resources */,
+				E5F6FF412977B2F700D5C22B /* HLPSettingViewSubtitleCell.xib in Resources */,
+				E5F6FF422977B2F700D5C22B /* BlindView.stringsdict in Resources */,
+				E5F6FF432977B2F700D5C22B /* BlindView.strings in Resources */,
+				E5F6FF442977B2F700D5C22B /* HLPSettingViewSwitchCell.xib in Resources */,
+				E5F6FF452977B2F700D5C22B /* Assets.xcassets in Resources */,
+				E5F6FF462977B2F700D5C22B /* HLPGeoJSON.strings in Resources */,
+				E5F6FF472977B2F700D5C22B /* lastcommit.txt in Resources */,
+				E5F6FF482977B2F700D5C22B /* Main.storyboard in Resources */,
+				E5F6FF492977B2F700D5C22B /* Localizable.strings in Resources */,
+				E5F6FF4A2977B2F700D5C22B /* HLPSettingView.strings in Resources */,
+				E5F6FF4B2977B2F700D5C22B /* dev.hashfile in Resources */,
+				E5F6FF4C2977B2F700D5C22B /* Settings.bundle in Resources */,
+				E5F6FF4D2977B2F700D5C22B /* HLPSettingViewTextCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -612,6 +778,55 @@
 			shellPath = /bin/sh;
 			shellScript = "git log --oneline | head -n 1 | cut -f 1 -d' ' > $SRCROOT/lastcommit.txt\n";
 		};
+		E5F6FF062977B2F700D5C22B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NavCog3-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E5F6FF382977B2F700D5C22B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git log --oneline | head -n 1 | cut -f 1 -d' ' > $SRCROOT/lastcommit.txt\n";
+		};
+		E5F6FF4E2977B2F700D5C22B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-NavCog3/Pods-NavCog3-resources.sh",
+				"${PODS_ROOT}/FormatterKit/FormatterKit/FormatterKit.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FormatterKit.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NavCog3/Pods-NavCog3-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -621,6 +836,7 @@
 			files = (
 				7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */,
 				7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */,
+				E5F6FEFA2977ACD500D5C22B /* MapViewController.m in Sources */,
 				7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */,
 				7EF45E341E3F1E3700208042 /* ServerSelectionViewController.m in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,
@@ -646,15 +862,63 @@
 				7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */,
 				A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */,
 				7E9238E61D5189F100875766 /* HLPSetting.m in Sources */,
+				E5F6FEFB2977ACD500D5C22B /* MapNavigationController.m in Sources */,
 				7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */,
 				7E1F9F2A1DEEB1D3003E1B23 /* NavDebugHelper.m in Sources */,
 				7E96D9331DACD0C700D57C8C /* SearchViewController.m in Sources */,
 				7EDEDC211D1E0C6800AC111A /* main.mm in Sources */,
 				7E9238E91D5189F100875766 /* HLPSettingViewCell.m in Sources */,
 				7E9866CE1D5174780073CB49 /* Logging.m in Sources */,
+				E5F6FEFE2977AD0500D5C22B /* NavTalkButton.m in Sources */,
 				7EA49A351F9AE21900E1369B /* WebViewController.m in Sources */,
 				7EF6FBB21DA4DD8200382F76 /* NavSound.m in Sources */,
 				7EF45E3B1E3F1E5600208042 /* AuthManager.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E5F6FF072977B2F700D5C22B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5F6FF082977B2F700D5C22B /* NavDataStore.m in Sources */,
+				E5F6FF092977B2F700D5C22B /* ServerConfig.m in Sources */,
+				E5F6FF0A2977B2F700D5C22B /* MapViewController.m in Sources */,
+				E5F6FF0B2977B2F700D5C22B /* InitViewController.mm in Sources */,
+				E5F6FF0C2977B2F700D5C22B /* ServerSelectionViewController.m in Sources */,
+				E5F6FF0D2977B2F700D5C22B /* HLPSettingHelper.m in Sources */,
+				E5F6FF0E2977B2F700D5C22B /* NavBlindWebView.m in Sources */,
+				E5F6FF0F2977B2F700D5C22B /* DownloadViewController.m in Sources */,
+				E5F6FF102977B2F700D5C22B /* DestinationTableViewController.m in Sources */,
+				E5F6FF112977B2F700D5C22B /* NavDataSource.m in Sources */,
+				E5F6FF122977B2F700D5C22B /* NavUtil.m in Sources */,
+				E5F6FF132977B2F700D5C22B /* ViewController.m in Sources */,
+				E5F6FF142977B2F700D5C22B /* NavDeviceTTS.m in Sources */,
+				E5F6FF152977B2F700D5C22B /* BlindViewController.m in Sources */,
+				E5F6FF162977B2F700D5C22B /* NavCommander.m in Sources */,
+				E5F6FF172977B2F700D5C22B /* AppDelegate.mm in Sources */,
+				E5F6FF182977B2F700D5C22B /* NavNavigator.m in Sources */,
+				E5F6FF192977B2F700D5C22B /* ConfigManager.m in Sources */,
+				E5F6FF1A2977B2F700D5C22B /* NavPreviewer.m in Sources */,
+				E5F6FF1B2977B2F700D5C22B /* ScreenshotHelper.m in Sources */,
+				E5F6FF1C2977B2F700D5C22B /* WelcomViewController.m in Sources */,
+				E5F6FF1D2977B2F700D5C22B /* HLPSettingTableView.m in Sources */,
+				E5F6FF1E2977B2F700D5C22B /* HLPDirectory.m in Sources */,
+				E5F6FF1F2977B2F700D5C22B /* SettingDataManager.m in Sources */,
+				E5F6FF202977B2F700D5C22B /* HLPGeoJSON.m in Sources */,
+				E5F6FF212977B2F700D5C22B /* SettingViewController.m in Sources */,
+				E5F6FF222977B2F700D5C22B /* DefaultTTS.m in Sources */,
+				E5F6FF232977B2F700D5C22B /* HLPSetting.m in Sources */,
+				E5F6FF242977B2F700D5C22B /* MapNavigationController.m in Sources */,
+				E5F6FF252977B2F700D5C22B /* HLPDataUtil.m in Sources */,
+				E5F6FF262977B2F700D5C22B /* NavDebugHelper.m in Sources */,
+				E5F6FF272977B2F700D5C22B /* SearchViewController.m in Sources */,
+				E5F6FF282977B2F700D5C22B /* main.mm in Sources */,
+				E5F6FF292977B2F700D5C22B /* HLPSettingViewCell.m in Sources */,
+				E5F6FF2A2977B2F700D5C22B /* Logging.m in Sources */,
+				E5F6FF2B2977B2F700D5C22B /* NavTalkButton.m in Sources */,
+				E5F6FF2C2977B2F700D5C22B /* WebViewController.m in Sources */,
+				E5F6FF2D2977B2F700D5C22B /* NavSound.m in Sources */,
+				E5F6FF2E2977B2F700D5C22B /* AuthManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -869,6 +1133,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
@@ -883,6 +1148,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCog3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -906,6 +1172,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
@@ -920,7 +1187,85 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.hulop.NavCog3;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
+				SWIFT_VERSION = 5.0.1;
+				VALID_ARCHS = arm64;
+				WARNING_CFLAGS = (
+					"-Wno-inconsistent-missing-override",
+					"-Wno-redeclared-class-member",
+				);
+			};
+			name = Release;
+		};
+		E5F6FF512977B2F700D5C22B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0D18A95F063007726536010A /* Pods-NavCog3.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = Miraikan.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.2.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "lab.miraikan.NavCog-Miraikan";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0.1;
+				VALID_ARCHS = arm64;
+				WARNING_CFLAGS = (
+					"-Wno-inconsistent-missing-override",
+					"-Wno-redeclared-class-member",
+				);
+			};
+			name = Debug;
+		};
+		E5F6FF522977B2F700D5C22B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = EBE9F8032158D7532B8BFC20 /* Pods-NavCog3.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				GCC_OPTIMIZATION_LEVEL = s;
+				INFOPLIST_FILE = Miraikan.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.2.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "lab.miraikan.NavCog-Miraikan";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "NavCog3/NavCog3-Bridging-Header.h";
@@ -954,6 +1299,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		E5F6FF502977B2F700D5C22B /* Build configuration list for PBXNativeTarget "NavCogMiraikan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E5F6FF512977B2F700D5C22B /* Debug */,
+				E5F6FF522977B2F700D5C22B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -981,6 +1335,30 @@
 				kind = branch;
 			};
 		};
+		E5F6FF012977B2F700D5C22B /* XCRemoteSwiftPackageReference "HLPDialog" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hulop/HLPDialog";
+			requirement = {
+				branch = "swift-package";
+				kind = branch;
+			};
+		};
+		E5F6FF032977B2F700D5C22B /* XCRemoteSwiftPackageReference "HLPWebView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hulop/HLPWebView";
+			requirement = {
+				branch = "swift-package";
+				kind = branch;
+			};
+		};
+		E5F6FF052977B2F700D5C22B /* XCRemoteSwiftPackageReference "Mantle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Mantle/Mantle";
+			requirement = {
+				kind = exactVersion;
+				version = 2.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -998,6 +1376,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 30F54F4A270CCDBF00ABD9FC /* XCRemoteSwiftPackageReference "HLPWebView" */;
 			productName = HLPWebView;
+		};
+		E5F6FF002977B2F700D5C22B /* HLPDialog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E5F6FF012977B2F700D5C22B /* XCRemoteSwiftPackageReference "HLPDialog" */;
+			productName = HLPDialog;
+		};
+		E5F6FF022977B2F700D5C22B /* HLPWebView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E5F6FF032977B2F700D5C22B /* XCRemoteSwiftPackageReference "HLPWebView" */;
+			productName = HLPWebView;
+		};
+		E5F6FF042977B2F700D5C22B /* Mantle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E5F6FF052977B2F700D5C22B /* XCRemoteSwiftPackageReference "Mantle" */;
+			productName = Mantle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

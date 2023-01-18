@@ -58,7 +58,6 @@
 		7EE207DB2022F7BA00160160 /* HLPDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE207DA2022F7BA00160160 /* HLPDirectory.m */; };
 		7EEA2F2C1D376BAD00FF25C4 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */; };
 		7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */; };
-		7EF45E341E3F1E3700208042 /* ServerSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */; };
 		7EF45E351E3F1E3700208042 /* WelcomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */; };
 		7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E371E3F1E5600208042 /* ServerConfig.m */; };
 		7EF45E3B1E3F1E5600208042 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E391E3F1E5600208042 /* AuthManager.m */; };
@@ -78,7 +77,6 @@
 		E5F6FF092977B2F700D5C22B /* ServerConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E371E3F1E5600208042 /* ServerConfig.m */; };
 		E5F6FF0A2977B2F700D5C22B /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FEF62977ACD500D5C22B /* MapViewController.m */; };
 		E5F6FF0B2977B2F700D5C22B /* InitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EA019001E2F54E7005E65ED /* InitViewController.mm */; settings = {COMPILER_FLAGS = "-fmodules -fcxx-modules"; }; };
-		E5F6FF0C2977B2F700D5C22B /* ServerSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */; };
 		E5F6FF0D2977B2F700D5C22B /* HLPSettingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9238DC1D5189F100875766 /* HLPSettingHelper.m */; };
 		E5F6FF0E2977B2F700D5C22B /* NavBlindWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAE6F0C1D2642D600614C35 /* NavBlindWebView.m */; };
 		E5F6FF0F2977B2F700D5C22B /* DownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */; };
@@ -256,11 +254,9 @@
 		7EE207DA2022F7BA00160160 /* HLPDirectory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HLPDirectory.m; path = model/HLPDirectory.m; sourceTree = "<group>"; };
 		7EEA2F2B1D376BAD00FF25C4 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadViewController.m; sourceTree = "<group>"; };
-		7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerSelectionViewController.m; sourceTree = "<group>"; };
 		7EF45E2D1E3F1E3700208042 /* WelcomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomViewController.h; sourceTree = "<group>"; };
 		7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomViewController.m; sourceTree = "<group>"; };
 		7EF45E301E3F1E3700208042 /* DownloadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadViewController.h; sourceTree = "<group>"; };
-		7EF45E311E3F1E3700208042 /* ServerSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerSelectionViewController.h; sourceTree = "<group>"; };
 		7EF45E361E3F1E5600208042 /* ServerConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerConfig.h; sourceTree = "<group>"; };
 		7EF45E371E3F1E5600208042 /* ServerConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerConfig.m; sourceTree = "<group>"; };
 		7EF45E381E3F1E5600208042 /* AuthManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthManager.h; sourceTree = "<group>"; };
@@ -411,8 +407,6 @@
 				7EA019001E2F54E7005E65ED /* InitViewController.mm */,
 				7EF45E301E3F1E3700208042 /* DownloadViewController.h */,
 				7EF45E2B1E3F1E3700208042 /* DownloadViewController.m */,
-				7EF45E311E3F1E3700208042 /* ServerSelectionViewController.h */,
-				7EF45E2C1E3F1E3700208042 /* ServerSelectionViewController.m */,
 				7EF45E2D1E3F1E3700208042 /* WelcomViewController.h */,
 				7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */,
 				7EA49A331F9AE21900E1369B /* WebViewController.h */,
@@ -838,7 +832,6 @@
 				7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */,
 				E5F6FEFA2977ACD500D5C22B /* MapViewController.m in Sources */,
 				7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */,
-				7EF45E341E3F1E3700208042 /* ServerSelectionViewController.m in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,
 				7EAE6F0D1D2642D600614C35 /* NavBlindWebView.m in Sources */,
 				7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */,
@@ -884,7 +877,6 @@
 				E5F6FF092977B2F700D5C22B /* ServerConfig.m in Sources */,
 				E5F6FF0A2977B2F700D5C22B /* MapViewController.m in Sources */,
 				E5F6FF0B2977B2F700D5C22B /* InitViewController.mm in Sources */,
-				E5F6FF0C2977B2F700D5C22B /* ServerSelectionViewController.m in Sources */,
 				E5F6FF0D2977B2F700D5C22B /* HLPSettingHelper.m in Sources */,
 				E5F6FF0E2977B2F700D5C22B /* NavBlindWebView.m in Sources */,
 				E5F6FF0F2977B2F700D5C22B /* DownloadViewController.m in Sources */,

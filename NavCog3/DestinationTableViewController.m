@@ -264,11 +264,15 @@
         DialogViewController* dView = (DialogViewController*)segue.destinationViewController;
         dView.root = _root;
         dView.tts = [DefaultTTS new];
-//        dView.title = NSLocalizedString(@"Ask AI", comment: "");
-//        dView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 50);
-//        [dView.dialogViewHelper removeFromSuperview];
-//        [dView.dialogViewHelper setup: dView.view
-//                             position: CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height - 120)];
+        
+        NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
+        if ([appName rangeOfString:@"Miraikan"].location != NSNotFound) {
+            dView.title = NSLocalizedString(@"Ask AI", comment: "");
+            dView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 50);
+            [dView.dialogViewHelper removeFromSuperview];
+            [dView.dialogViewHelper setup: dView.view
+                                 position: CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height - 120)];
+        }
     }
 }
 

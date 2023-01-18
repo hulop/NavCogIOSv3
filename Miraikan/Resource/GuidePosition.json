@@ -1,0 +1,57 @@
+[{
+    "title": "ロッカー", "longitude": "139.77701", "latitude": "35.619552", "floor": 0
+},{
+    "title": "コミュニケーションロビー", "longitude": "139.77661", "latitude": "35.61953", "floor": 0
+},{
+    "title": "Miraikan Shop", "longitude": "139.77675", "latitude": "35.619575", "floor": 0
+},{
+    "title": "エントランス", "longitude": "139.77704", "latitude": "35.61967", "floor": 0
+},{
+    "title": "企画展示ゾーン", "longitude": "139.77682", "latitude": "35.61918", "floor": 0
+},{
+    "title": "ビジョナリーラボ", "longitude": "139.77652", "latitude": "35.61899", "floor": 2
+},{
+    "title": "零壱庵", "longitude": "139.77635", "latitude": "35.61916", "floor": 2
+},{
+    "title": "インターネット物理モデル", "longitude": "139.776647", "latitude": "35.61906", "floor": 2
+},{
+    "title": "アナグラのうた", "longitude": "139.77647", "latitude": "35.619225", "floor": 2
+},{
+    "title": "未来逆算思考", "longitude": "139.7768", "latitude": "35.61913", "floor": 2
+},{
+    "title": "アンドロイド", "longitude": "139.776624", "latitude": "35.619305", "floor": 2
+},{
+    "title": "計算機と自然、計算機の自然", "longitude": "139.77695", "latitude": "35.61922", "floor": 2
+},{
+    "title": "ロボット開発の歩み", "longitude": "139.777075", "latitude": "35.619261", "floor": 2
+},{
+    "title": "おや？っこひろば", "longitude": "139.7762", "latitude": "35.61926", "floor": 2
+},{
+    "title": "ニュートリノから探る宇宙", "longitude": "139.77621", "latitude": "35.61908", "floor": 4
+},{
+    "title": "加速器で探る素粒子と宇宙", "longitude": "139.77627", "latitude": "35.6191", "floor": 4
+},{
+    "title": "地球環境とわたし", "longitude": "139.7766", "latitude": "35.61903", "floor": 4
+},{
+    "title": "ちりも積もれば世界をかえる宙", "longitude": "139.77634", "latitude": "35.61915", "floor": 4
+},{
+    "title": "細胞たち研究開発中", "longitude": "139.77672", "latitude": "35.61911", "floor": 4
+},{
+    "title": "コ・スタジオ", "longitude": "139.77658", "latitude": "35.61927", "floor": 4
+},{
+    "title": "ぼくとみんなとそしてきみ", "longitude": "139.77686", "latitude": "35.61917", "floor": 4
+},{
+    "title": "ともに進める医療", "longitude": "139.77674", "latitude": "35.619348", "floor": 4
+},{
+    "title": "こちら、国際宇宙ステーション", "longitude": "139.776964", "latitude": "35.619232", "floor": 4
+},{
+    "title": "オーバルブリッジ", "longitude": "139.77695", "latitude": "35.61948", "floor": 4
+},{
+    "title": "ドームシアター", "longitude": "139.77602", "latitude": "35.61918", "floor": 5
+},{
+    "title": "コンファレンスルーム水星", "longitude": "139.77663", "latitude": "35.619256", "floor": 6
+},{
+    "title": "コンファレンスルーム火星", "longitude": "139.77667", "latitude": "35.61921", "floor": 6
+},{
+    "title": "コンファレンスルーム金星", "longitude": "139.77672", "latitude": "35.61915", "floor": 6
+}]

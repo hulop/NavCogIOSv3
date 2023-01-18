@@ -1,0 +1,21 @@
+[{
+    "id": "world",
+    "title": "世界をさぐる",
+    "titleEn": "Explore the frontiers",
+    "floor": 5,
+    "intro": "私たちはなぜ今、ここに存在しているのでしょう？ 宇宙、地球環境、そしてそのなかで育まれる生命など、私たちをとりまく“世界”のしくみを、さまざまなスケールでさぐるゾーンです。",
+    "introEn": "Why are we here now? This zone allows you to explore space, your solar system, the Earth and all life there on a wide variety of scales."
+}, {
+    "id": "future",
+    "title": "未来をつくる",
+    "titleEn": " Create your future",
+    "floor": 3,
+    "intro": "これから先、私たちはどんな方法で豊かさを築いていけばいいのでしょう？ 私たちが望む社会や暮しのかたちを描きだし、その夢がどんなアイディアによって実現されるかを考えるゾーンです。",
+    "introEn": "How should humans apply and evolve sustainable prosperity? This zone welcomes you to first imagine a future society and lifestyle that you want, and then think on how you can make your dream future a reality."
+}, {
+    "id": "tsunagari",
+    "title": "地球とつながる",
+    "titleEn": " Discover your Earth",
+    "intro": "地球の歴史の中に、人類はどのように位置づけられ、未来にどうつながっていくのでしょう？ 地球上の生命と環境がどう自分とつながっているのかを、最新の科学データやツールとともに考えるゾーンです。",
+    "introEn": " What is the position of human beings in Earth’s history and how should human beings move forward to the future?\nThis zone looks at the question of how we are connected to life and the environment on Earth using the latest scientific data and tools."
+}]

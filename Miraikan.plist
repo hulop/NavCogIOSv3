@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>NavCogMiraikan</string>
+	<string>NavCog Miraikan</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,10 +26,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>org.hulop.NavCog3.open</string>
+			<string>lab.miraikan.NavCog-Miraikan.open</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>navcog3</string>
+				<string>lab.miraikan</string>
 			</array>
 		</dict>
 	</array>
@@ -45,6 +45,7 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>navcogdialog</string>
+		<string>lab.miraikan.ar</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

@@ -27,6 +27,7 @@
 #import "LocationEvent.h"
 #import "Logging.h"
 #import "NavDataStore.h"
+#import <NavCogMiraikan-Swift.h>
 
 @interface WelcomViewController ()
 
@@ -196,14 +197,18 @@
 
                 [ud setObject:mode forKey:@"user_mode"];
 
-                [Logging stopLog];
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
-                    BOOL sensor = [[NSUserDefaults standardUserDefaults] boolForKey:@"logging_sensor"];
-                    [Logging startLog:sensor];
-                }
-
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
+                    
+                    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
+                    if ([appName rangeOfString:@"Miraikan"].location != NSNotFound) {
+                        // Here, set the root to Miraikan's Home page
+                        MainTabController *vc = [[MainTabController alloc] init];
+                        UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
+                        window.rootViewController = vc;
+                    } else {
+                        [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
+                        
+                    }
                 });
             }
         }

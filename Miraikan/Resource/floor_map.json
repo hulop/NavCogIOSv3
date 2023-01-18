@@ -1,0 +1,28 @@
+[{
+    "id": "geo_cosmos",
+    "exhibition_id": "geo-cosmos",
+    "nodeId": "EDITOR_node_1616499609549",
+    "floor": 3,
+    "counter": "l",
+    "title": "ジオ・コスモス",
+    "title_en": "Geo-Cosmos",
+    "title_pron": "ジオ コスモス",
+}, {
+    "id": "co_studio",
+    "exhibition_id": "communication-program",
+    "nodeId": "EDITOR_node_1616590658573",
+    "floor": 5,
+    "counter": "1",
+    "title": "コ・スタジオ",
+    "title_en": "Co-Studio",
+    "title_pron": "コ スタジオ",
+}, {
+    "id": "dome_theater",
+    "exhibition_id": "dome_theater",
+    "nodeId": "EDITOR_node_1637131629804",
+    "floor": 6,
+    "counter": null,
+    "title": "ドームシアター",
+    "title_en": "Dome-Theater",
+    "title_pron": "ドームシアター",
+}]

@@ -64,7 +64,8 @@
     downloadingFiles = files;
     
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-
+    config.timeoutIntervalForRequest = 240;
+    config.timeoutIntervalForResource = 300;
     downloadQueue = [[NSOperationQueue alloc] init];
     
     downloadedLength = 0;
@@ -85,7 +86,7 @@ didFinishDownloadingToURL:(NSURL *)location
     
     NSURL *destLocation = [[ServerConfig sharedConfig] getDestLocation:downloadTask.originalRequest.URL.path];
     [[NSFileManager defaultManager] removeItemAtURL:destLocation error:nil];
-    NSLog(@"moving %@ to %@", location.path, destLocation.path);
+    NSLog(@"%s: %d moving %@ to %@" , __func__, __LINE__, location.path, destLocation.path);
     [[NSFileManager defaultManager] moveItemAtURL:location toURL:destLocation error:&error];
     if (error) {
         NSLog(@"error=%@", error);
@@ -129,7 +130,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
     NSDictionary *file = [downloadingFiles firstObject];
     NSURL *url = file[@"url"];
 
-    NSLog(@"start download %@", url);
+    NSLog(@"%s: %d start download %@" , __func__, __LINE__, url);
     NSURLSessionDownloadTask * task = [session downloadTaskWithURL:url];
     [task resume];
 }
@@ -148,15 +149,5 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

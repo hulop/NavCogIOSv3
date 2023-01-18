@@ -22,37 +22,30 @@
 
 #import <UIKit/UIKit.h>
 #import "NavBlindWebView.h"
-#import "NavCoverView.h"
 #import "NavNavigator.h"
 #import "NavCommander.h"
 #import "NavPreviewer.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import "WebViewController.h"
 
-@import HLPDialog;
+//@import HLPDialog;
 
-@interface BlindViewController : UIViewController <HLPWebViewDelegate, HLPTTSProtocol, NavNavigatorDelegate, NavCommanderDelegate, NavPreviewerDelegate, MCBrowserViewControllerDelegate, DialogViewDelegate, WebViewControllerDelegate>
+@interface BlindViewController: UIViewController <
+    HLPWebViewDelegate,
+    HLPTTSProtocol,
+    NavNavigatorDelegate,
+    NavCommanderDelegate,
+    NavPreviewerDelegate,
+    MCBrowserViewControllerDelegate,
+  //  DialogViewDelegate,
+    WebViewControllerDelegate
+>
 
-@property (nonatomic) IBOutlet NavBlindWebView *webView;
+@property (nonatomic) NavBlindWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *settingButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *micButton;
 @property (weak, nonatomic) IBOutlet UIButton *retryButton;
 @property (weak, nonatomic) IBOutlet UILabel *errorMessage;
-
-@property (weak, nonatomic) IBOutlet NavCoverView *cover;
-@property (weak, nonatomic) IBOutlet UIButton *devLeft;
-@property (weak, nonatomic) IBOutlet UIButton *devRight;
-@property (weak, nonatomic) IBOutlet UIButton *devGo;
-@property (weak, nonatomic) IBOutlet UIButton *devAuto;
-@property (weak, nonatomic) IBOutlet UIButton *devReset;
-@property (weak, nonatomic) IBOutlet UIButton *devMarker;
-@property (weak, nonatomic) IBOutlet UIButton *devUp;
-@property (weak, nonatomic) IBOutlet UIButton *devDown;
-@property (weak, nonatomic) IBOutlet UIButton *devNote;
-@property (weak, nonatomic) IBOutlet UIButton *devRestart;
-
-@property (weak, nonatomic) IBOutlet UILabel *commitLabel;
 
 @end

@@ -60,7 +60,8 @@ static HLPSetting *previewSpeedSetting, *previewWithActionSetting;
 static HLPSetting *boneConductionSetting, *exerciseLabel, *exerciseAction, *resetLocation;
 static HLPSetting *mapLabel, *initialZoomSetting, *unitLabel, *unitMeter, *unitFeet, *idLabel;
 static HLPSetting *advancedLabel, *advancedMenu;
-static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
+static HLPSetting *ignoreFacility, *showPOI;
+static HLPSetting *userModeLabel, *userBlindLabel, *userWheelchairLabel, *userStrollerLabel, *userGeneralLabel;
 
 
 - (void)viewDidLoad {
@@ -69,6 +70,14 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     self.view.frame = [UIScreen mainScreen].bounds;
     self.view.bounds = [UIScreen mainScreen].bounds;
     
+    UILabel *titleView = [[UILabel alloc] init];
+    titleView.text = NSLocalizedString(@"Settings", @"");
+    titleView.accessibilityLabel = @"( )";
+    titleView.isAccessibilityElement = NO;
+    self.navigationItem.titleView = titleView;
+
+    [self.backButton setAccessibilityLabel:NSLocalizedStringFromTable(@"Back", @"BlindView", @"")];
+
     HLPSettingHelper *helper;
     
     if ([self.restorationIdentifier isEqualToString:@"developer_settings"] ||
@@ -270,17 +279,6 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY object:self userInfo:@{@"path":path}];
         
         [self.navigationController popToRootViewControllerAnimated:YES];
-    } else if ([setting.name isEqualToString:@"p2p_debug"]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NavDebugHelper *helper = [NavDebugHelper sharedHelper];
-            [helper start];
-            
-            MCBrowserViewController *viewController = [[MCBrowserViewController alloc] initWithServiceType:NAVCOG3_DEBUG_SERVICE_TYPE
-                                                                                                   session:helper.session];
-            viewController.delegate = self;
-
-            [self presentViewController:viewController animated:YES completion:nil];
-        });
     } else if ([setting.name isEqualToString:@"launch_exercise"]) {
         [[NavDataStore sharedDataStore] startExercise];
         [self.navigationController popToRootViewControllerAnimated:YES];
@@ -486,13 +484,13 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
 {
     userSettingHelper = [[HLPSettingHelper alloc] init];
 
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
-    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenInstructions", @"") Name:@"OpenInstructions"];
-    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenHelp", @"") Name:@"OpenHelp"];
-    [userSettingHelper addActionTitle:NSLocalizedString(@"Send Feedback", @"") Name:@"send_feedback"];
+//    [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
+//    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenInstructions", @"") Name:@"OpenInstructions"];
+//    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenHelp", @"") Name:@"OpenHelp"];
+//    [userSettingHelper addActionTitle:NSLocalizedString(@"Send Feedback", @"") Name:@"send_feedback"];
     
-    [userSettingHelper addSectionTitle:NSLocalizedString(@"Mode", @"")];
-    [userSettingHelper addActionTitle:NSLocalizedString(@"Back to mode selection", @"") Name:@"back_to_mode_selection"];
+//    [userSettingHelper addSectionTitle:NSLocalizedString(@"Mode", @"")];
+//    [userSettingHelper addActionTitle:NSLocalizedString(@"Back to mode selection", @"") Name:@"back_to_mode_selection"];
     
     speechLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech_Sound", @"label for tts options")];
     speechSpeedSetting = [userSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
@@ -511,8 +509,8 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     unitFeet = [userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:NSLocalizedString(@"Feet", @"feet distance unit label")
                                                 Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
     
-    exerciseLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
-    exerciseAction = [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];
+//    exerciseLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
+//    exerciseAction = [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];
     
     mapLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Map", @"label for map")];
     mapLabel.visible = NO;
@@ -521,6 +519,16 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     
     resetLocation = [userSettingHelper addActionTitle:NSLocalizedString(@"Reset_Location", @"") Name:@"Reset_Location"];
     
+    userModeLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Mode", @"label for user mode")];
+    userBlindLabel = [userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:NSLocalizedString(@"user_blind", @"user blind label")
+                                                 Name:@"user_blind" Group:@"user_mode" DefaultValue:@(NO) Accept:nil];
+    userWheelchairLabel = [userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:NSLocalizedString(@"user_wheelchair", @"user wheelchair label")
+                                                Name:@"user_wheelchair" Group:@"user_mode" DefaultValue:@(NO) Accept:nil];
+    userStrollerLabel = [userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:NSLocalizedString(@"user_stroller", @"user stroller label")
+                                                Name:@"user_stroller" Group:@"user_mode" DefaultValue:@(NO) Accept:nil];
+    userGeneralLabel = [userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:NSLocalizedString(@"user_general", @"user general label")
+                                                Name:@"user_general" Group:@"user_mode" DefaultValue:@(NO) Accept:nil];
+
     NavDataStore *nds = [NavDataStore sharedDataStore];
     [[ServerConfig sharedConfig].extraMenuList enumerateObjectsUsingBlock:^(NSDictionary* obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj[@"section_title"] && obj[@"menus"]) {
@@ -550,13 +558,12 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     
     if (userSettingHelper) {
         BOOL blindMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"] isEqualToString:@"user_blind"];
-        BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
         BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
         //[speechLabel setVisible:blindMode];
         //[speechSpeedSetting setVisible:blindMode];
         
-        [previewSpeedSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
-        [previewWithActionSetting setVisible:blindMode && (devMode || !isPreviewDisabled)];
+        [previewSpeedSetting setVisible:blindMode && (!isPreviewDisabled)];
+        [previewWithActionSetting setVisible:blindMode && (!isPreviewDisabled)];
         [ignoreFacility setVisible:blindMode];
         [showPOI setVisible:blindMode];
         [vibrateSetting setVisible:blindMode];
@@ -578,7 +585,13 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
         [idLabel setVisible:isDeveloperAuthorized];
         [advancedLabel setVisible:isDeveloperAuthorized];
         [advancedMenu setVisible:isDeveloperAuthorized];
-        
+
+        [userModeLabel setVisible:blindMode];
+        [userBlindLabel setVisible:blindMode];
+        [userWheelchairLabel setVisible:blindMode];
+        [userStrollerLabel setVisible:blindMode];
+        [userGeneralLabel setVisible:blindMode];
+
         return;
     }
 }
@@ -610,9 +623,6 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     
     
     [detailSettingHelper addSectionTitle:@"Developer mode"];
-    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Developer mode" Name:@"developer_mode" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:NavCogSettingTypeAction Label:@"P2P Debug" Name:@"p2p_debug" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"P2P Debug Follower" Name:@"p2p_debug_follower" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSectionTitle:@"Detail Settings"];
     [detailSettingHelper addActionTitle:@"Adjust blelocpp" Name:@"adjust_blelocpp"];
@@ -848,7 +858,7 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Use Moving Walkway", @"")
                                              Name:@"route_use_moving_walkway" DefaultValue:@(NO) Accept:nil];
     [routeOptionsSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:NSLocalizedString(@"Use Stairs", @"")
-                                             Name:@"route_use_stairs" DefaultValue:@(YES) Accept:nil];
+                                             Name:@"route_use_stairs" DefaultValue:@(NO) Accept:nil];
 }
 
 + (void)setupReportIssueSettingHelper {
@@ -887,6 +897,12 @@ static HLPSetting *poiLabel, *ignoreFacility, *showPOI;
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - IBActions
+- (IBAction)doBack:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark - Table view data source
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *id = [[tableView cellForRowAtIndexPath:indexPath] reuseIdentifier];

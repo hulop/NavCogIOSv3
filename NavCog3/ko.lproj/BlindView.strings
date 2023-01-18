@@ -79,7 +79,7 @@
 "Caution, %@" = "주의,%@";
 
 /* No comment provided by engineer. */
-"destination is %@" = "%1$@ %2$@입니다";
+"destination is" = "%1$@ %2$@입니다";
 
 /* remaining distance to the destination */
 "destination is in distance" = "%2$@ 먼저 %1$@입니다";
@@ -175,7 +175,7 @@
 "make a u-turn to the right" = "오른쪽으로 돌아 가기";
 
 /* No comment provided by engineer. */
-"name is %@" = "%2$@ %1$@";
+"name is" = "%2$@ %1$@";
 
 /* No comment provided by engineer. */
 "NO_AVAILABLE_LOCATION" = "위치 정보를 사용할 수 없습니다";
@@ -211,10 +211,10 @@
 "PERIOD" = "。";
 
 /* No comment provided by engineer. */
-"poi are %@" = "%2$@ %1$@";
+"poi are" = "%2$@ %1$@";
 
 /* No comment provided by engineer. */
-"poi is %@" = "%2$@ %1$@";
+"poi is" = "%2$@ %1$@";
 
 /* No comment provided by engineer. */
 "remaining distance" = "나머지 %@";

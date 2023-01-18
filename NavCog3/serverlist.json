@@ -1,0 +1,18 @@
+{
+    "servers": [
+        {
+            "server_id": "Miraikan",
+            "available": true,
+            "name": {
+                "en": "Miraikan",
+                "ja": "日本科学未来館"
+            },
+            "description": {
+                "en": "",
+                "ja": ""
+            },
+            "hostname": "miraikan.au-syd.mybluemix.net/map",
+            "config_file_name": "server_config.json"
+        }
+    ]
+}

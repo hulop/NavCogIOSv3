@@ -20,6 +20,9 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
+/* (No Commment) */
+"Miraikan" = "日本科学未来館";
+
 /* label for distance unit option */
 "Distance unit" = "距離の単位";
 
@@ -54,6 +57,7 @@
 
 /* No comment provided by engineer. */
 "Loading, please wait" = "読み込んでいます、少々お待ちください";
+"Loading preview" = "測位範囲外です。プレビューを起動しています。";
 
 /* label for map */
 "Map" = "地図";
@@ -134,6 +138,14 @@
 "BluetoothOffAlertMessage" = "屋内での位置推定の機能を使うためにはBluetoothをオンにする必要があります。";
 "CANCEL" = "キャンセル";
 "SETTING" = "設定を開く";
+"YES"     = "はい";
+"NO"      = "いいえ";
+"OK"      = "OK";
+"Done"    = "完了";
+"Decide"  = "決定";
+"Confirm" = "確認";
+"Search"  = "検索";
+"Edit"    = "編集";
 
 
 "LocationNotAllowedTitle" = "位置情報が許可されていません";
@@ -180,3 +192,122 @@ NavCogの設定画面から
 
 /* Show POI detail when users change their heading toward the POI */
 "Show POI with Action" = "向いて音声ガイド";
+
+
+// MARK: Miraikan UI Texts
+// Tabs
+"Call Staff" = "スタッフを呼ぶ";
+"Call SC" = "SCを呼ぶ";
+"Home" = "ホーム";
+"Login" = "ログイン";  // Also used as menu title
+"Ask AI" = "AIに質問";
+
+// pronunciation
+"Call Staff pron" = "スタッフヲヨブ";
+"Call SC pron" = "エスシーヲヨブ";
+"Home pron" = "ホーム";
+"Login pron" = "ログイン";  // Also used as menu title
+"Ask AI pron" = "エーアイニシツモン";
+
+// Menu Section Titles
+"spex" = "特別展";
+"Events" = "イベント";
+"museum_info" = "来館者情報";
+
+// Menu Titles
+"Miraikan Today" = "今日の未来館";
+"Permanent Exhibitions" = "常設展示";
+"Current Position" = "現在位置";
+"Reservation" = "予約";
+"Suggested Routes" = "おすすめルート";
+"Floor Plan" = "館内マップ";
+"Neareast Washroom" = "最寄りのトイレ";
+"News" = "ニュース";
+"Settings" = "設定";
+"Miraikan ID My Page" = "Miraikan ID マイページ";
+"About Miraikan" = "日本科学未来館について";
+"About This App" = "このアプリについて";
+"Logout" = "ログアウト";
+
+// Navigation Settings Texts
+"Navi Settings" = "ナビ設定";
+"Current Location" = "現在地";
+"Preview" = "プレビュー";
+"not_located" = "測位範囲外です";
+"Speech Speed" = "読み上げスピード";
+"Preview Speed" = "プレビュースピード";
+"Speech Speed Description" = "読み上げスピード";
+"Preview Speed Description" = "プレビュースピード";
+"Pathfinding failed" = "経路探索に失敗しました";
+
+/* No comment provided by engineer. */
+"Run Time" = "上映時間: 約%@分";
+"Reservation required" = "要予約";
+"Reservation required pron" = "ヨウヨヤク";
+"accessibility hour minute" = "%@時%@分";
+"accessibility hour" = "%@時";
+
+/* Button for navigation */
+"Guide to this exhibition" = "この展示へナビ";
+
+/* Button for navigation */
+"Guide to" = "%@へナビ";
+
+/* Button for navigation */
+"Guide to %@" = "%@へナビゲーション";
+
+/* Exhibition explanation */
+"Description" = "概要";
+
+/* Exhibition appearance */
+"Overview" = "概観";
+
+// Language Code
+"lang" = "ja";
+
+// Events
+"place_online" = "場所：オンライン";
+
+// AI Dialog Availability
+"ai_available" = "AIと対話開始します";
+"ai_not_available" = "AI対話は使えません";
+
+// Blank Page
+"blank_description" = "この機能はまだ実装されていません";
+
+// Web Page Loading
+"web_loading" = "ウェブ画面の読み込み中です。\nしばらくお待ちください。";
+"web_failed" = "ウェブ画面の読み込みは失敗しました。";
+
+// Home: No Event / Exhibition Today
+"no_spex" = "本日は特別展示がございません";
+"no_event" = "本日はイベントがございません";
+
+
+// Voice Guide
+"Voice Guide" = "音声ガイド";
+"Voice Guide On" = "音声ガイド\nON";
+"Voice Guide Off" = "音声ガイド\nOFF";
+"btn_prev" = "前の説明";
+"btn_next" = "次の説明";
+"btn_play" = "説明を読み上げる";
+"btn_stop" = "説明の読み上げを中止する";
+
+"Move Log" = "移動記録機能";
+"Move Log Start" = "移動\n記録\n開始";
+"Move Log End" = "移動\n記録\n終了";
+"Location information input" = "位置情報入力";
+"Location Input" = "位置\n入力";
+
+// local push
+"Today's event is over" = "本日のイベントは終了しています";
+"It will start soon. Please head to the venue" = "まもなく開始されます。会場に向かってください";
+"Do you want to be notified before the event starts?" = "イベント開始前の通知を行いますか？";
+"Join the Co-Studio Talk" = "コ・スタジオトークに参加します";
+
+"location unknown" = "現在地が不明です";
+
+"AR navigation" = "ARナビゲーション";
+"Switch to AR navigation" = "ARナビゲーションに切り替え";
+"Do you want to start the Miraikan AR app?" = "未来館ARアプリを起動しますか？";
+"Do you want to start the Miraikan AR navigation?" = "未来館ARナビゲーションを起動しますか？";

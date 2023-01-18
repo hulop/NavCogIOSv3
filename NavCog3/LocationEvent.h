@@ -48,6 +48,7 @@
 #define CALIBRATION_BEACON_FOUND @"calibration_beacon_found_notification"
 
 #define REQUEST_RSSI_BIAS @"request_rssi_bias_notification"
+#define REQUEST_LOCATION_INIT @"REQUEST_LOCATION_INIT"
 #define REQUEST_LOCATION_HEADING_RESET @"request_location_heading_reset_notification"
 #define REQUEST_LOCATION_RESET @"request_location_reset_notification"
 #define REQUEST_LOCATION_RESTART @"request_location_restart"
@@ -95,8 +96,8 @@
 #define NO_ALTIMETER_ALERT @"NO_ALTIMETER_ALERT"
 #define LOCATION_NOT_ALLOWED_ALERT @"LOCATION_NOT_ALLOWED_ALERT"
 
-#define REQUEST_RATING @"REQUEST_RATING"
-
 #define REQUEST_UNLOAD_VIEW @"REQUEST_UNLOAD_VIEW"
+
+#define DATA_INITIALIZE_RESTART @"DATA_INITIALIZE_RESTART"
 
 #endif /* LocationEvent_h */

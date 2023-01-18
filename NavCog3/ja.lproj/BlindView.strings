@@ -46,6 +46,9 @@
 /* (No Commment) */
 "AutoDoorPOIString2Short" = "自動ドアが%dつ。";
 
+/* (No Commment) */
+"Back" = "戻る";
+
 /* No comment provided by engineer. */
 "BACK_DIRECTION" = "後ろ方向";
 
@@ -72,6 +75,9 @@
 
 /* No comment provided by engineer. */
 "Disabled" = "%@。無効の";
+
+/* (No Commment) */
+"Done" = "決定";
 
 /* (No Commment) */
 "DoorPOIString1" = "この先、ドアあり。";
@@ -139,17 +145,43 @@
 /* floor */
 "FloorD" = "%@階";
 
+/* (No Commment) */
+"floor -2" = "地下2階";
+
+/* (No Commment) */
+"floor -1" = "地下1階";
+
+/* (No Commment) */
+"floor 1" = "1階";
+
+/* (No Commment) */
+"floor 2" = "2階";
+
+/* (No Commment) */
+"floor 3" = "3階";
+
+/* (No Commment) */
+"floor 4" = "4階";
+
+/* (No Commment) */
+"floor 5" = "5階";
+
+/* (No Commment) */
+"floor 6" = "6階";
+
+/* (No Commment) */
+"floor 7" = "7階";
+
 /* floor num type */
 "FloorNumType" = "cardinal";
-
-/* No comment provided by engineer. */
-"Follow" = "-NavCog-";
 
 /* No comment provided by engineer. */
 "From_button" = "%@から";
 
 /* No comment provided by engineer. */
 "Go to %1$@" = "%1$@に行きます。";
+
+"ground floor" = "地上階";
 
 /* (No Commment) */
 "InMiddle" = "真ん中";
@@ -207,6 +239,9 @@
 /* No comment provided by engineer. */
 "REROUTING" = "ルートからそれたようです。新しいルートを読み込んでいます。";
 
+/* (No Commment) */
+"Retry" = "リトライ";
+
 /* No comment provided by engineer. */
 "RIGHT_BACK_DIRECTION" = "右、ななめ、後ろ方向";
 
@@ -230,6 +265,9 @@
 
 /* (No Commment) */
 "Search Route" = "ルート検索";
+
+/* (No Commment) */
+"Settings" = "設定";
 
 /* (No Commment) */
 "Stop" = "終了";
@@ -316,7 +354,7 @@
 "bear right" = "少し右に向く";
 
 /* No comment provided by engineer. */
-"destination is %@" = "%1$@は%2$@です";
+"destination is" = "%1$@は%2$@です";
 
 /* remaining distance to the destination */
 "destination is in distance" = "%2$@先、%1$@です";
@@ -355,7 +393,7 @@
 "make a u-turn to the right" = "右に折り返す";
 
 /* No comment provided by engineer. */
-"name is %@" = "%2$@に%1$@";
+"name is" = "%2$@に%1$@";
 
 /* (No Commment) */
 "on %@" = "%@";
@@ -385,10 +423,10 @@
 "on your right side(front)" = "右斜め前";
 
 /* No comment provided by engineer. */
-"poi are %@" = "%2$@に%1$@";
+"poi are" = "%2$@に%1$@";
 
 /* No comment provided by engineer. */
-"poi is %@" = "%2$@に%1$@";
+"poi is" = "%2$@に%1$@";
 
 /* (No Commment) */
 "proceed distance" = "%1$@進む";
@@ -444,6 +482,26 @@
 /* head to the diagonally forward right direction */
 "turn slightly to the right" = "少し右に向く";
 
+/* No comment provided by engineer. */
+"InTheFront" = "正面に%@";
+
+/* No comment provided by engineer. */
+"InTheRear" = "後方に%@";
+
+/* No comment provided by engineer. */
+"OnTheLeftSide" = "左側に%@";
+
+/* No comment provided by engineer. */
+"OnTheRightSide" = "右側に%@";
+
+/* No comment provided by engineer. */
+"OnTheLeftRear" = "左後方に%@";
+
+/* No comment provided by engineer. */
+"OnTheRightRear" = "右後方に%@";
+
+/* No comment provided by engineer. */
+"Near" = "%@の近く";
 
 "Always_Background" = "常にバックグラウンドで動作";
 

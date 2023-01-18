@@ -21,16 +21,15 @@
  *******************************************************************************/
 
 #import "ViewController.h"
-#import "LocationEvent.h"
-#import "NavDebugHelper.h"
-#import "NavUtil.h"
-#import "NavDataStore.h"
-#import "RatingViewController.h"
-#import "SettingViewController.h"
-#import "ServerConfig.h"
 #import "NavDeviceTTS.h"
-#import <HLPLocationManager/HLPLocationManager.h>
 #import "DefaultTTS.h"
+#import "LocationEvent.h"
+#import "NavDataStore.h"
+#import "NavUtil.h"
+#import "ServerConfig.h"
+#import "SettingViewController.h"
+#import "NavDebugHelper.h"
+#import <HLPLocationManager/HLPLocationManager.h>
 #import <CoreMotion/CoreMotion.h>
 
 typedef NS_ENUM(NSInteger, ViewState) {
@@ -46,10 +45,10 @@ typedef NS_ENUM(NSInteger, ViewState) {
 };
 
 @interface ViewController () {
-    UISwipeGestureRecognizer *recognizer;
+    ViewState state;
     NSDictionary *uiState;
+    UIColor *defaultColor;
     DialogViewHelper *dialogHelper;
-    NSDictionary *ratingInfo;
     
     NSTimeInterval lastLocationSent;
     NSTimeInterval lastOrientationSent;
@@ -57,14 +56,11 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
 @end
 
-@implementation ViewController {
-    ViewState state;
-    UIColor *defaultColor;
-}
+@implementation ViewController
 
 - (void)dealloc
 {
-    NSLog(@"dealloc ViewController");
+    NSLog(@"%s: %d" , __func__, __LINE__);
 }
 
 - (void)prepareForDealloc
@@ -74,11 +70,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     dialogHelper.delegate = nil;
     dialogHelper = nil;
     
-    recognizer = nil;
-    
     _settingButton = nil;
-    
-    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"developer_mode"];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_STOP object:self];
 }
@@ -91,9 +83,8 @@ typedef NS_ENUM(NSInteger, ViewState) {
     state = ViewStateLoading;
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    _webView = [[HLPWebView alloc] initWithFrame:CGRectMake(0,0,0,0) configuration:[[WKWebViewConfiguration alloc] init]];
+    _webView = [[NavBlindWebView alloc] initWithFrame:CGRectMake(0,0,0,0) configuration:[[WKWebViewConfiguration alloc] init]];
     [self.view addSubview:_webView];
-    _webView.isDeveloperMode = [ud boolForKey:@"developer_mode"];
     _webView.userMode = [ud stringForKey:@"user_mode"];
     _webView.config = @{
                         @"serverHost":[ud stringForKey:@"selected_hokoukukan_server"],
@@ -104,39 +95,16 @@ typedef NS_ENUM(NSInteger, ViewState) {
     _webView.tts = self;
     [_webView setFullScreenForView:self.view];
     
-    /*
-    NSString *server = ;
-    helper = [[HLPWebviewHelper alloc] initWithWebview:self.webView server:server];
-    helper.developerMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);
-    helper.userMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"user_mode"];
-    helper.delegate = self;
-     */
-    
-    recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openMenu:)];
-    recognizer.delegate = self;
-    [self.webView addGestureRecognizer:recognizer];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiStateChanged:) name:WCUI_STATE_CHANGED_NOTIFICATION object:nil];
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dialogStateChanged:) name:DialogManager.DIALOG_AVAILABILITY_CHANGED_NOTIFICATION object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationStatusChanged:) name:NAV_LOCATION_STATUS_CHANGE object:nil];
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationChanged:) name:NAV_LOCATION_CHANGED_NOTIFICATION object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURL:) name: REQUEST_OPEN_URL object:nil];
-    
-    [self updateView];
-    
-    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkState:) userInfo:nil repeats:YES];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestRating:) name:REQUEST_RATING object:nil];
-    
-    [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"developer_mode" options:NSKeyValueObservingOptionNew context:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prepareForDealloc) name:REQUEST_UNLOAD_VIEW object:nil];
+    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkState:) userInfo:nil repeats:YES];
+
+    [self updateView];
     
     BOOL checked = [ud boolForKey:@"checked_altimeter"];
     if (!checked && ![CMAltimeter isRelativeAltitudeAvailable]) {
@@ -148,7 +116,8 @@ typedef NS_ENUM(NSInteger, ViewState) {
                                                                        message:message
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:ok
-                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                  style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction *action) {
                                                   }]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -158,17 +127,22 @@ typedef NS_ENUM(NSInteger, ViewState) {
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+}
+
 - (void)viewDidAppear:(BOOL)animated
-{    
+{
+    [super viewDidAppear:animated];
+
     if (!dialogHelper) {
         dialogHelper = [[DialogViewHelper alloc] init];
         double scale = 0.75;
         double size = (113*scale)/2;
         double x = size+8;
         double y = self.view.bounds.size.height + self.view.bounds.origin.y - (size+8);
-        if (@available(iOS 11.0, *)) {
-            y -= self.view.safeAreaInsets.bottom;
-        }
+        y -= self.view.safeAreaInsets.bottom;
         dialogHelper.scale = scale;
         [dialogHelper inactive];
         [dialogHelper setup:self.view position:CGPointMake(x, y)];
@@ -177,9 +151,24 @@ typedef NS_ENUM(NSInteger, ViewState) {
     }
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
 - (UIViewController*) topMostController
 {
-    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UIViewController *topController = [UIApplication sharedApplication].windows.firstObject.rootViewController;
     
     while (topController.presentedViewController) {
         topController = topController.presentedViewController;
@@ -188,40 +177,180 @@ typedef NS_ENUM(NSInteger, ViewState) {
     return topController;
 }
 
-- (void) requestRating:(NSNotification*)note
-{
-    if ([[ServerConfig sharedConfig] shouldAskRating]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            ratingInfo = [note userInfo];
-            [self performSegueWithIdentifier:@"show_rating" sender:self];
-        });
-    }
-}
-
 - (void) checkState:(NSTimer*)timer
 {
     if (state != ViewStateLoading) {
         [timer invalidate];
         return;
     }
-    NSLog(@"checkState");
+    NSLog(@"%s: %d checkState", __func__, __LINE__);
     [_webView getStateWithCompletionHandler:^(NSDictionary * _Nonnull json) {
         [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:json];
     }];
 }
 
+- (void)updateView
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    HLPLocation *loc = [nds currentLocation];
+    BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
+    BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
+    BOOL peerExists = [[[NavDebugHelper sharedHelper] peers] count] > 0;
+
+    switch(state) {
+        case ViewStateMap:
+            self.navigationItem.rightBarButtonItems = @[self.searchButton];
+            self.navigationItem.leftBarButtonItems = @[self.settingButton];
+            break;
+        case ViewStateSearch:
+            self.navigationItem.rightBarButtonItems = @[self.settingButton];
+            self.navigationItem.leftBarButtonItems = @[self.cancelButton];
+            break;
+        case ViewStateSearchDetail:
+            self.navigationItem.rightBarButtonItems = @[self.backButton];
+            self.navigationItem.leftBarButtonItems = @[self.cancelButton];
+            break;
+        case ViewStateSearchSetting:
+            self.navigationItem.rightBarButtonItems = @[self.searchButton];
+            self.navigationItem.leftBarButtonItems = @[];
+            break;
+        case ViewStateNavigation:
+            self.navigationItem.rightBarButtonItems = @[];
+            self.navigationItem.leftBarButtonItems = @[self.stopButton];
+            break;
+        case ViewStateRouteConfirm:
+            self.navigationItem.rightBarButtonItems = @[self.cancelButton];
+            self.navigationItem.leftBarButtonItems = @[];
+            break;
+        case ViewStateRouteCheck:
+            self.navigationItem.rightBarButtonItems = @[self.doneButton];
+            self.navigationItem.leftBarButtonItems = @[];
+            break;
+        case ViewStateTransition:
+            self.navigationItem.rightBarButtonItems = @[];
+            self.navigationItem.leftBarButtonItems = @[];
+            break;
+        case ViewStateLoading:
+            self.navigationItem.rightBarButtonItems = @[];
+            self.navigationItem.leftBarButtonItems = @[self.settingButton];
+            break;
+    }
+    
+    self.navigationItem.title = NSLocalizedStringFromTable(@"NavCog", @"BlindView", @"");
+    
+    if (peerExists) {
+        self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.9 alpha:1.0];
+    } else {
+        self.navigationController.navigationBar.barTintColor = defaultColor;
+    }
+
+    [self dialogHelperUpdate];
+}
+
+- (void) dialogHelperUpdate
+{
+    NavDataStore *nds = [NavDataStore sharedDataStore];
+    HLPLocation *loc = [nds currentLocation];
+    BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
+    BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
+
+    if (state == ViewStateMap) {
+        if ([[DialogManager sharedManager] isAvailable]  && (!isPreviewDisabled || validLocation)) {
+            if (dialogHelper.helperView.hidden) {
+                dialogHelper.helperView.hidden = NO;
+                [dialogHelper recognize];
+            }
+        } else {
+            dialogHelper.helperView.hidden = YES;
+        }
+    } else {
+        dialogHelper.helperView.hidden = YES;
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    segue.destinationViewController.restorationIdentifier = segue.identifier;
+    
+    if ([segue.identifier isEqualToString:@"user_settings"]) {
+        SettingViewController *sv = (SettingViewController*)segue.destinationViewController;
+        sv.webView = _webView;
+    }
+    if ([segue.identifier isEqualToString:@"show_dialog_wc"]){
+        DialogViewController* dView = (DialogViewController*)segue.destinationViewController;
+        dView.tts = [DefaultTTS new];
+    }
+}
+
+#pragma mark - HLPWebView
+
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation
+{
+    [_indicator startAnimating];
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+{
+    [_indicator stopAnimating];
+    _indicator.hidden = YES;
+}
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    _errorMessage.hidden = NO;
+    _retryButton.hidden = NO;
+}
+
+- (void)webView:(HLPWebView *)webView didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
+{
+    if (floor == 0) {
+        return;
+    }
+    NSDictionary *loc =
+    @{
+      @"lat": @(lat),
+      @"lng": @(lng),
+      @"floor": @(floor),
+      @"sync": @(sync),
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:loc];
+}
+
+- (void)webView:(HLPWebView *)webView didChangeBuilding:(NSString *)building
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:(building != nil ? @{@"building": building} : @{})];
+}
+
+- (void)webView:(HLPWebView *)webView didChangeUIPage:(NSString *)page inNavigation:(BOOL)inNavigation
+{
+    NSDictionary *uiState =
+    @{
+      @"page": page,
+      @"navigation": @(inNavigation),
+      };
+    [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:uiState];
+}
+
+- (void)webView:(HLPWebView *)webView didFinishNavigationStart:(NSTimeInterval)start end:(NSTimeInterval)end from:(NSString *)from to:(NSString *)to
+{
+}
+
+- (void)webView:(HLPWebView *)webView openURL:(NSURL *)url
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
+}
+
+#pragma mark - notification handlers
 - (void) openURL:(NSNotification*)note
 {
     [NavUtil openURL:[note userInfo][@"url"] onViewController:self];
 }
-
 
 - (void)dialogViewTapped
 {
     [dialogHelper inactive];
     dialogHelper.helperView.hidden = YES;
     [self performSegueWithIdentifier:@"show_dialog_wc" sender:self];
-    
 }
 
 - (void)dialogStateChanged:(NSNotification*)note
@@ -268,221 +397,6 @@ typedef NS_ENUM(NSInteger, ViewState) {
     });
 }
 
-- (IBAction)doSearch:(id)sender {
-    state = ViewStateTransition;
-    [self updateView];
-    [_webView triggerWebviewControl:HLPWebviewControlRouteSearchButton];
-}
-
-- (IBAction)stopNavigation:(id)sender {
-    state = ViewStateTransition;
-    [self updateView];
-    [_webView triggerWebviewControl:HLPWebviewControlNone];
-}
-
-- (IBAction)doCancel:(id)sender {
-    state = ViewStateTransition;
-    [self updateView];
-    [_webView triggerWebviewControl:HLPWebviewControlNone];
-}
-
-- (IBAction)doDone:(id)sender {
-    state = ViewStateTransition;
-    [self updateView];
-    [_webView triggerWebviewControl:HLPWebviewControlDoneButton];
-}
-
-- (IBAction)doBack:(id)sender {
-    if (state == ViewStateSearchDetail) {
-        //state = ViewStateTransition;
-        //[self updateView];
-        [_webView triggerWebviewControl:HLPWebviewControlBackToControl];
-    }
-}
-
-
-- (void)updateView
-{
-    NavDataStore *nds = [NavDataStore sharedDataStore];
-    HLPLocation *loc = [nds currentLocation];
-    BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
-    BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
-    BOOL isPreviewDisabled = [[ServerConfig sharedConfig] isPreviewDisabled];
-    BOOL debugFollower = [[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"];
-    BOOL peerExists = [[[NavDebugHelper sharedHelper] peers] count] > 0;
-
-    switch(state) {
-        case ViewStateMap:
-            self.navigationItem.rightBarButtonItems = debugFollower ? @[] : @[self.searchButton];
-            self.navigationItem.leftBarButtonItems = @[self.settingButton];
-            break;
-        case ViewStateSearch:
-            self.navigationItem.rightBarButtonItems = @[self.settingButton];
-            self.navigationItem.leftBarButtonItems = @[self.cancelButton];
-            break;
-        case ViewStateSearchDetail:
-            self.navigationItem.rightBarButtonItems = @[self.backButton];
-            self.navigationItem.leftBarButtonItems = @[self.cancelButton];
-            break;
-        case ViewStateSearchSetting:
-            self.navigationItem.rightBarButtonItems = @[self.searchButton];
-            self.navigationItem.leftBarButtonItems = @[];
-            break;
-        case ViewStateNavigation:
-            self.navigationItem.rightBarButtonItems = @[];
-            self.navigationItem.leftBarButtonItems = @[self.stopButton];
-            break;
-        case ViewStateRouteConfirm:
-            self.navigationItem.rightBarButtonItems = @[self.cancelButton];
-            self.navigationItem.leftBarButtonItems = @[];
-            break;
-        case ViewStateRouteCheck:
-            self.navigationItem.rightBarButtonItems = @[self.doneButton];
-            self.navigationItem.leftBarButtonItems = @[];
-            break;
-        case ViewStateTransition:
-            self.navigationItem.rightBarButtonItems = @[];
-            self.navigationItem.leftBarButtonItems = @[];
-            break;
-        case ViewStateLoading:
-            self.navigationItem.rightBarButtonItems = @[];
-            self.navigationItem.leftBarButtonItems = @[self.settingButton];
-            break;
-    }
-    
-    if (state == ViewStateMap) {
-        if ([[DialogManager sharedManager] isAvailable]  && (!isPreviewDisabled || devMode || validLocation)) {
-            if (dialogHelper.helperView.hidden) {
-                dialogHelper.helperView.hidden = NO;
-                [dialogHelper recognize];
-            }
-        } else {
-            dialogHelper.helperView.hidden = YES;
-        }
-    } else {
-        dialogHelper.helperView.hidden = YES;
-    }
-    
-    self.navigationItem.title = NSLocalizedStringFromTable(@"NavCog", @"BlindView", @"");
-    
-    if (debugFollower) {
-        self.navigationItem.title = NSLocalizedStringFromTable(@"Follow", @"BlindView", @"");
-    }
-    
-    if (peerExists) {
-        self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.9 alpha:1.0];
-    } else {
-        self.navigationController.navigationBar.barTintColor = defaultColor;
-    }
-}
-
-#pragma mark - HLPWebView
-
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-    [_indicator startAnimating];
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    [_indicator stopAnimating];
-    _indicator.hidden = YES;
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-    _errorMessage.hidden = NO;
-    _retryButton.hidden = NO;
-    
-}
-
-- (void)speak:(NSString *)text force:(BOOL)isForce completionHandler:(void (^)(void))handler
-{
-    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:handler];
-}
-
-- (BOOL)isSpeaking
-{
-    return [[NavDeviceTTS sharedTTS] isSpeaking];
-}
-
-- (void)vibrate
-{
-    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-}
-
-- (void)webView:(HLPWebView *)webView didChangeLatitude:(double)lat longitude:(double)lng floor:(double)floor synchronized:(BOOL)sync
-{
-    NSDictionary *loc =
-    @{
-      @"lat": @(lat),
-      @"lng": @(lng),
-      @"floor": @(floor),
-      @"sync": @(sync),
-      };
-    [[NSNotificationCenter defaultCenter] postNotificationName:MANUAL_LOCATION_CHANGED_NOTIFICATION object:self userInfo:loc];
-}
-
-- (void)webView:(HLPWebView *)webView didChangeBuilding:(NSString *)building
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:BUILDING_CHANGED_NOTIFICATION object:self userInfo:(building != nil ? @{@"building": building} : @{})];
-}
-
-- (void)webView:(HLPWebView *)webView didChangeUIPage:(NSString *)page inNavigation:(BOOL)inNavigation
-{
-    NSDictionary *uiState_ =
-    @{
-      @"page": page,
-      @"navigation": @(inNavigation),
-      };
-    [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:uiState_];
-}
-
-- (void)webView:(HLPWebView *)webView didFinishNavigationStart:(NSTimeInterval)start end:(NSTimeInterval)end from:(NSString *)from to:(NSString *)to
-{
-    NSDictionary *navigationInfo =
-    @{
-      @"start": @(start),
-      @"end": @(end),
-      @"from": from,
-      @"to": to,
-      };
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:self userInfo:navigationInfo];
-}
-
-- (void)webView:(HLPWebView *)webView openURL:(NSURL *)url
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_OPEN_URL object:self userInfo:@{@"url": url}];
-}
-
-#pragma mark -
-
-- (void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    NSLog(@"%@", touches);
-    NSLog(@"%@", event);
-}
-
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
-}
-
-- (void)openMenu:(UIGestureRecognizer*)sender
-{
-    NSLog(@"%@", sender);
-    
-    CGPoint p = [sender locationInView:self.webView];
-    NSLog(@"%f %f", p.x, p.y);
-}
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-
 - (void)requestStartNavigation:(NSNotification*)note
 {
     NSDictionary *options = [note userInfo];
@@ -501,9 +415,9 @@ typedef NS_ENUM(NSInteger, ViewState) {
     if (options[@"use_escalator"]) {
         esc = [options[@"use_escalator"] boolValue]?@"&esc=9":@"&esc=1";
     }
-    
-    NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f%@%@%@", options[@"toID"],
-                      [[NSDate date] timeIntervalSince1970], elv, stairs, esc];
+    NSString *dist = [NSString stringWithFormat: @"&dist=%@", @(500)];
+    NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f%@%@%@%@",
+                      options[@"toID"], [[NSDate date] timeIntervalSince1970], elv, stairs, esc, dist];
     [_webView setLocationHash:hash];
 }
 
@@ -521,36 +435,6 @@ typedef NS_ENUM(NSInteger, ViewState) {
     return NO;
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    segue.destinationViewController.restorationIdentifier = segue.identifier;
-    
-    if ([segue.identifier isEqualToString:@"user_settings"]) {
-        SettingViewController *sv = (SettingViewController*)segue.destinationViewController;
-        sv.webView = _webView;
-    }
-    if ([segue.identifier isEqualToString:@"show_rating"] && ratingInfo) {
-        RatingViewController *rv = (RatingViewController*)segue.destinationViewController;
-        rv.start = [ratingInfo[@"start"] doubleValue]/1000.0;
-        rv.end = [ratingInfo[@"end"] doubleValue]/1000.0;
-        rv.from = ratingInfo[@"from"];
-        rv.to = ratingInfo[@"to"];
-        rv.device_id = [[NavDataStore sharedDataStore] userID];
-        
-        ratingInfo = nil;
-    }
-    if ([segue.identifier isEqualToString:@"show_dialog_wc"]){
-        DialogViewController* dView = (DialogViewController*)segue.destinationViewController;
-        dView.tts = [DefaultTTS new];
-    }
-}
-
-- (IBAction)retry:(id)sender {
-    [_webView reload];
-    _errorMessage.hidden = YES;
-    _retryButton.hidden = YES;
-}
-
 - (void)locationStatusChanged:(NSNotification*)note
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -559,6 +443,8 @@ typedef NS_ENUM(NSInteger, ViewState) {
         switch(status) {
             case HLPLocationStatusLocating:
                 [NavUtil showWaitingForView:self.view withMessage:NSLocalizedStringFromTable(@"Locating...", @"BlindView", @"")];
+                break;
+            case HLPLocationStatusUnknown:
                 break;
             default:
                 [NavUtil hideWaitingForView:self.view];
@@ -579,7 +465,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
             return;
         }
         HLPLocation *location = locations[@"current"];
-        if (!location || [location isEqual:[NSNull null]]) {
+        if (!location || isnan(location.lat) || isnan(location.lng)) {
             return;
         }
         
@@ -596,17 +482,10 @@ typedef NS_ENUM(NSInteger, ViewState) {
             lastOrientationSent = now;
         }
         
-        
         location = locations[@"actual"];
-        if (!location || [location isEqual:[NSNull null]]) {
+        if (!location || isnan(location.lat) || isnan(location.lng)) {
             return;
         }
-        
-        /*
-         if (isnan(location.lat) || isnan(location.lng)) {
-         return;
-         }
-         */
         
         if (now < lastLocationSent + [[NSUserDefaults standardUserDefaults] doubleForKey:@"webview_update_min_interval"]) {
             if (!location.params) {
@@ -633,11 +512,58 @@ typedef NS_ENUM(NSInteger, ViewState) {
     });
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
-{
-    if ([keyPath isEqualToString:@"developer_mode"]) {
-        _webView.isDeveloperMode = @([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]);
+#pragma mark - IBActions
+- (IBAction)doSearch:(id)sender {
+    state = ViewStateTransition;
+    [self updateView];
+    [_webView triggerWebviewControl:HLPWebviewControlRouteSearchButton];
+}
+
+- (IBAction)stopNavigation:(id)sender {
+    state = ViewStateTransition;
+    [self updateView];
+    [_webView triggerWebviewControl:HLPWebviewControlNone];
+}
+
+- (IBAction)doCancel:(id)sender {
+    state = ViewStateTransition;
+    [self updateView];
+    [_webView triggerWebviewControl:HLPWebviewControlNone];
+}
+
+- (IBAction)doDone:(id)sender {
+    state = ViewStateTransition;
+    [self updateView];
+    [_webView triggerWebviewControl:HLPWebviewControlDoneButton];
+}
+
+- (IBAction)doBack:(id)sender {
+    if (state == ViewStateSearchDetail) {
+        [_webView triggerWebviewControl:HLPWebviewControlBackToControl];
     }
+}
+
+- (IBAction)retry:(id)sender {
+    [_webView reload];
+    _retryButton.hidden = YES;
+    _errorMessage.hidden = YES;
+}
+
+#pragma mark - NavCommanderDelegate
+
+- (void)speak:(NSString *)text force:(BOOL)isForce completionHandler:(void (^)(void))handler
+{
+    [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:handler];
+}
+
+- (BOOL)isSpeaking
+{
+    return [[NavDeviceTTS sharedTTS] isSpeaking];
+}
+
+- (void)vibrate
+{
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
 @end

@@ -45,14 +45,14 @@
     NSString *query = searchController.searchBar.text;
     if (query && query.length > 0) {
         lastSearchQuery = query;
-        searchController.dimsBackgroundDuringPresentation = YES;
+        searchController.obscuresBackgroundDuringPresentation = YES;
         [[NavDataStore sharedDataStore] searchDestinations:query withComplete:^(HLPDirectory *directory) {
             if (![lastSearchQuery isEqualToString:query]) {
                 return;
             }
             dispatch_async(dispatch_get_main_queue(), ^{
                 _source = [[NavDirectoryDataSource alloc] initWithDirectory:directory];
-                searchController.dimsBackgroundDuringPresentation = NO;
+                searchController.obscuresBackgroundDuringPresentation = NO;
                 [self.tableView reloadData];
             });
         }];
@@ -64,6 +64,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    [self.backButton setAccessibilityLabel:NSLocalizedStringFromTable(@"Back", @"BlindView", @"")];
 
     if ([[NavDataStore sharedDataStore] directory]) {
         NavDirectoryDataSource *source = [[NavDirectoryDataSource alloc] init];
@@ -87,15 +89,10 @@
             
             searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
             searchController.searchResultsUpdater = self;
-            searchController.obscuresBackgroundDuringPresentation = YES;
-            searchController.dimsBackgroundDuringPresentation = NO;
+            searchController.obscuresBackgroundDuringPresentation = NO;
             searchController.hidesNavigationBarDuringPresentation = NO;
             searchController.searchBar.placeholder = @"Search";
-            if (@available(iOS 11.0, *)) {
-                self.navigationItem.searchController = searchController;
-            } else {
-                self.tableView.tableHeaderView = searchController.searchBar;
-            }
+            self.tableView.tableHeaderView = searchController.searchBar;
         }
         [source update:nil];
         _source = _defaultSource = source;
@@ -150,16 +147,12 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (@available(iOS 11.0, *)) {
-        self.navigationItem.hidesSearchBarWhenScrolling = NO;
-    }
+    self.navigationItem.hidesSearchBarWhenScrolling = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if (@available(iOS 11.0, *)) {
-        self.navigationItem.hidesSearchBarWhenScrolling = YES;
-    }
+    self.navigationItem.hidesSearchBarWhenScrolling = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -169,6 +162,11 @@
 
 - (void)configChanged:(NSNotification*)note {
     [self.tableView reloadData];
+}
+
+#pragma mark - IBActions
+- (IBAction)doBack:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Table view data source
@@ -266,6 +264,11 @@
         DialogViewController* dView = (DialogViewController*)segue.destinationViewController;
         dView.root = _root;
         dView.tts = [DefaultTTS new];
+//        dView.title = NSLocalizedString(@"Ask AI", comment: "");
+//        dView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 50);
+//        [dView.dialogViewHelper removeFromSuperview];
+//        [dView.dialogViewHelper setup: dView.view
+//                             position: CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height - 120)];
     }
 }
 

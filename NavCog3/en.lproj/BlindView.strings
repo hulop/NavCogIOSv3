@@ -222,7 +222,7 @@ Head to the correct orientation
 "bear right" = "bear right";
 
 /* No comment provided by engineer. */
-"destination is %@" = "%1$@ is %2$@";
+"destination is" = "%1$@ is %2$@";
 
 /* remaining distance to the destination */
 "destination is in distance" = "%1$@ is in %2$@";
@@ -258,7 +258,7 @@ Head to the correct orientation
 "make a u-turn to the right" = "make a u-turn to the right";
 
 /* No comment provided by engineer. */
-"name is %@" = "%1$@ is %2$@";
+"name is" = "%1$@ is %2$@";
 
 /* (No Commment) */
 "on %@" = "on %@";
@@ -288,10 +288,10 @@ Head to the correct orientation
 "on your right side(front)" = "on your right";
 
 /* No comment provided by engineer. */
-"poi are %@" = "%1$@ are %2$@";
+"poi are" = "%1$@ are %2$@";
 
 /* No comment provided by engineer. */
-"poi is %@" = "a %1$@ is %2$@";
+"poi is" = "a %1$@ is %2$@";
 
 /* (No Commment) */
 "proceed distance" = "proceed %1$@";

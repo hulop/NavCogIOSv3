@@ -66,9 +66,6 @@ static NavDebugHelper* instance;
 
 - (void) processData:(NSNotification*)note
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"]) {
-        return;
-    }
     NSString *name = [note name];
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     
@@ -94,30 +91,7 @@ static NavDebugHelper* instance;
 
 - (void) processData2:(NSNotification*)note
 {
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"]) {
-        return;
-    }
-    NSString *name = [note name];
-    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
-    
-    if ([name isEqualToString:NAV_LOCATION_CHANGED_NOTIFICATION] && _lastSent[name]) {
-        if (now - [_lastSent[name] doubleValue] < 0.1) {
-            return;
-        }
-    }
-    _lastSent[name] = @([[NSDate date] timeIntervalSince1970]);
-    
-    NSDictionary *userInfo = [note userInfo];
-    
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:
-                    @{
-                      @"name": name,
-                      @"timestamp": @([[NSDate date] timeIntervalSince1970]),
-                      @"userInfo": userInfo?userInfo:[NSNull null]
-                      }];
-    if (data) {
-        [self sendData:data];
-    }
+    return;
 }
 
 - (void) start

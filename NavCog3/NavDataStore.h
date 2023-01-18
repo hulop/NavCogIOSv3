@@ -23,6 +23,8 @@
 
 #import <Foundation/Foundation.h>
 #import <HLPLocationManager/HLPLocation.h>
+#import <HLPLocationManager/HLPLocationManager.h>
+#import <HLPLocationManager/HLPLocationManagerParameters.h>
 #import "HLPGeoJson.h"
 #import "HLPDirectory.h"
 
@@ -134,6 +136,7 @@ typedef enum {
 - (HLPLink*) routeLinkById:(NSString*)linkID;
 - (HLPLink*) findElevatorLink:(HLPLink*)link;
 - (NSArray*) nearestLinksAt:(HLPLocation*)loc withOptions:(NSDictionary*)option;
+- (void)setUpHLPLocationManager;
 
 + (NavDestination*) destinationForCurrentLocation;
 

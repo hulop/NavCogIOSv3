@@ -79,8 +79,6 @@ typedef NSArray<ServerEntry*> ServerList;
 
 - (void) clear;
 
-- (BOOL) shouldAskRating;
-- (void) completeRating;
 - (BOOL) isPreviewDisabled;
 
 - (void) enumerateModes:(void(^_Nonnull)(NSString* _Nonnull mode, NSString* _Nonnull presetPath))iterator;
@@ -88,4 +86,6 @@ typedef NSArray<ServerEntry*> ServerList;
 
 - (NSArray* _Nullable) extraMenuList;
 - (NSString*_Nonnull)convertRelativePath:(NSString*_Nonnull)orig;
+- (void)setDataDownloaded:(BOOL) isCompleted;
+- (BOOL)checkDataDownloaded;
 @end

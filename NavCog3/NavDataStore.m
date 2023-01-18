@@ -27,6 +27,7 @@
 #import "LocationEvent.h"
 #import "Logging.h"
 #import "ServerConfig.h"
+#import "NavUtil.h"
 
 #import <GameplayKit/GameplayKit.h>
 #import <MapKit/MapKit.h>
@@ -463,9 +464,6 @@ static NavDataStore* instance_ = nil;
     if (_previewMode) {
         return;
     }
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"]) {
-        return;
-    }
     
     NSDictionary *obj = [note userInfo];
     
@@ -481,8 +479,7 @@ static NavDataStore* instance_ = nil;
         [currentLocation updateParams:obj];
     }
     
-    BOOL devMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"];
-    if (!(isManualLocation && devMode)) {
+    if (!(isManualLocation)) {
         [self postLocationNotification];
     }
     if (!isManualLocation) {
@@ -515,9 +512,6 @@ static NavDataStore* instance_ = nil;
 - (void) orientationChanged: (NSNotification*) note
 {
     if (_previewMode) {
-        return;
-    }
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"p2p_debug_follower"]) {
         return;
     }
 
@@ -576,14 +570,9 @@ static NavDataStore* instance_ = nil;
                    Accuracy:manualCurrentLocation.accuracy
                       Floor:manualCurrentLocation.floor];
         [location updateSpeed:manualCurrentLocation.speed];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"developer_mode"]) {
-            [location updateOrientation:manualOrientation
-                           withAccuracy:0];
-        } else {
-            if (magneticOrientationAccuracy < location.orientationAccuracy) {
-                [location updateOrientation:magneticOrientation
-                               withAccuracy:magneticOrientationAccuracy];
-            }
+        if (magneticOrientationAccuracy < location.orientationAccuracy) {
+            [location updateOrientation:magneticOrientation
+                           withAccuracy:magneticOrientationAccuracy];
         }
     }
     
@@ -1681,6 +1670,170 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
         }
     }
     return nil;
+}
+
+- (void)setUpHLPLocationManager {
+    HLPLocationManager *manager = [HLPLocationManager sharedManager];
+    if (manager.isActive) {
+        return;
+    }
+
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSString *modelName = [ud stringForKey:@"bleloc_map_data"];
+    NSString* documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    if (modelName) {
+        NSString* modelPath = [documentsPath stringByAppendingPathComponent:modelName];
+        [manager setModelPath:modelPath];
+    }
+    
+    NSDictionary *params = [self getLocationManagerParams];
+    [manager setParameters:params];
+    
+    [manager start];
+}
+
+- (NSDictionary*) getLocationManagerParams
+{
+    NSMutableDictionary *params = [@{} mutableCopy];
+    
+    NSDictionary *nameTable =
+    @{//custom
+      @"location_tracking": @"localizeMode",
+      @"rssi_bias":         @"rssi_bias",
+      @"locLB":             @"locLB",
+      @"activatesStatusMonitoring":@"activatesStatusMonitoring",
+      @"rep_location":      @"repLocation",
+      //
+      @"nStates":           @"nStates",
+      @"nEffective":        @"effectiveSampleSizeThreshold",
+      @"alphaWeaken":       @"alphaWeaken",
+      @"nSmooth":           @"nSmooth",
+      @"nSmoothTracking":   @"nSmoothTracking",
+      @"wheelchair_pdr":    @"walkDetectSigmaThreshold",
+      @"meanVelocity":      @"meanVelocity",
+      @"stdVelocity":       @"stdVelocity",
+      @"diffusionVelocity": @"diffusionVelocity",
+      @"minVelocity":       @"minVelocity",
+      @"maxVelocity":       @"maxVelocity",
+      @"diffusionOrientationBias":@"diffusionOrientationBias",
+      @"weightDecayHalfLife":@"weightDecayHalfLife",
+      @"sigmaStopRW":       @"sigmaStop",
+      @"sigmaMoveRW":       @"sigmaMove",
+      @"relativeVelocityEscalator":@"relativeVelocityEscalator",
+      @"initialSearchRadius2D":@"burnInRadius2D",
+      @"mixProba":          @"mixProba",
+      @"rejectDistance":    @"rejectDistance",
+      @"rejectFloorDifference":@"rejectFloorDifference",
+      @"nBeaconsMinimum":   @"nBeaconsMinimum",
+      @"probaOriBiasJump":  @"probabilityOrientationBiasJump",
+      @"poseRandomWalkRate":@"poseRandomWalkRate",
+      @"randomWalkRate":    @"randomWalkRate",
+      @"probaBackwardMove": @"probabilityBackwardMove",
+      @"floorLB":           @"locLB.floor",
+      @"coeffDiffFloorStdev":@"coeffDiffFloorStdev",
+      @"use_altimeter":     @"usesAltimeterForFloorTransCheck",
+      @"windowAltitudeManager":@"altimeterManagerParameters.window",
+      @"stdThresholdAltitudeManager":@"altimeterManagerParameters.stdThreshold",
+      @"weightFloorTransArea":@"pfFloorTransParams.weightTransitionArea",
+      @"mixtureProbabilityFloorTransArea":@"pfFloorTransParams.mixtureProbaTransArea",
+      @"rejectDistanceFloorTrans":@"pfFloorTransParams.rejectDistance",
+      @"durationAllowForceFloorUpdate":@"pfFloorTransParams.durationAllowForceFloorUpdate",
+      @"headingConfidenceInit":@"headingConfidenceForOrientationInit",
+      @"applyYawDriftSmoothing": @"applysYawDriftAdjust",
+      
+      @"accuracy_for_demo": @"accuracyForDemo",
+      @"use_blelocpp_acc":  @"usesBlelocppAcc",
+      @"blelocpp_accuracy_sigma":@"blelocppAccuracySigma",
+      @"oriAccThreshold":   @"oriAccThreshold",
+      @"show_states":       @"showsStates",
+      @"use_compass":       @"usesCompass",
+      };
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    
+    [nameTable enumerateKeysAndObjectsUsingBlock:^(NSString *from, NSString *to, BOOL * _Nonnull stop) {
+        
+        NSObject *value;
+        
+        if ([from isEqualToString:@"location_tracking"]) {
+            NSString *location_tracking = [ud stringForKey:from];
+            if ([location_tracking isEqualToString:@"tracking"]) {
+                value = @(HLPRandomWalkAccAtt);
+            } else if([location_tracking isEqualToString:@"oneshot"]) {
+                value = @(HLPOneshot);
+            } else if([location_tracking isEqualToString:@"randomwalker"]) {
+                value = @(HLPRandomWalkAcc);
+            } else if([location_tracking isEqualToString:@"weak_pose_random_walker"]) {
+                value = @(HLPWeakPoseRandomWalker);
+            }
+        }
+        else if ([from isEqualToString:@"activatesStatusMonitoring"]) {
+            bool activatesDynamicStatusMonitoring = [ud boolForKey:@"activatesStatusMonitoring"];
+            if(activatesDynamicStatusMonitoring){
+                double minWeightStable = pow(10.0, [ud doubleForKey:@"exponentMinWeightStable"]);
+                params[@"locationStatusMonitorParameters.minimumWeightStable"] = @(minWeightStable);
+                params[@"locationStatusMonitorParameters.stdev2DEnterStable"] = ([ud valueForKey:@"enterStable"]);
+                params[@"locationStatusMonitorParameters.stdev2DExitStable"] = ([ud valueForKey:@"exitStable"]);
+                params[@"locationStatusMonitorParameters.stdev2DEnterLocating"] = ([ud valueForKey:@"enterLocating"]);
+                params[@"locationStatusMonitorParameters.stdev2DExitLocating"] = ([ud valueForKey:@"exitLocating"]);
+                params[@"locationStatusMonitorParameters.monitorIntervalMS"] = ([ud valueForKey:@"statusMonitoringIntervalMS"]);
+            }else{
+                params[@"locationStatusMonitorParameters.minimumWeightStable"] = @(0.0);
+                NSNumber *largeStdev = @(10000);
+                params[@"locationStatusMonitorParameters.stdev2DEnterStable"] = largeStdev;
+                params[@"locationStatusMonitorParameters.stdev2DExitStable"] = largeStdev;
+                params[@"locationStatusMonitorParameters.stdev2DEnterLocating"] = largeStdev;
+                params[@"locationStatusMonitorParameters.stdev2DExitLocating"] = largeStdev;
+                params[@"locationStatusMonitorParameters.monitorIntervalMS"] = @(3600*1000*24);
+            }
+            params[@"locationStatusMonitorParameters.unstableLoop"] = ([ud valueForKey:@"minUnstableLoop"]);
+            return;
+        }
+        else if ([from isEqualToString:@"wheelchair_pdr"]) {
+            value = @([ud boolForKey:@"wheelchair_pdr"]?0.1:0.6);
+        }
+        else if ([from isEqualToString:@"locLB"]) {
+            value = [ud valueForKey:@"locLB"];
+            params[@"locLB.x"] = value;
+            params[@"locLB.y"] = value;
+            return;
+        }
+        else if ([from isEqualToString:@"rssi_bias"]) {
+            double rssiBias = [ud doubleForKey:@"rssi_bias"];
+            if([ud boolForKey:@"rssi_bias_model_used"]){
+                // check device and update rssi_bias
+                NSString *deviceName = [NavUtil deviceModel];
+                NSString *configKey = [@"rssi_bias_m_" stringByAppendingString:deviceName];
+                // check if configKey exists in the user defaults.
+                if ([ud objectForKey:configKey] != nil){
+                    rssiBias = [ud floatForKey:configKey];
+                }
+            }
+            params[@"minRssiBias"] = @(rssiBias-0.1);
+            params[@"maxRssiBias"] = @(rssiBias+0.1);
+            params[@"meanRssiBias"] = @(rssiBias);
+            return;
+        }
+        else if ([from isEqualToString:@"rep_location"]) {
+            NSString *rep_location = [ud stringForKey:@"rep_location"];
+            if([rep_location isEqualToString:@"mean"]){
+                value = @(HLPLocationManagerRepLocationMean);
+            }else if([rep_location isEqualToString:@"densest"]){
+                value = @(HLPLocationManagerRepLocationDensest);
+            }else if([rep_location isEqualToString:@"closest_mean"]){
+                value = @(HLPLocationManagerRepLocationClosestMean);
+            }
+        }
+        else {
+            value = [ud valueForKey:from];
+        }
+
+        params[to] = value;
+
+    }];
+    
+    return params;
 }
 
 @end

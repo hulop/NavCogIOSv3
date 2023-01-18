@@ -22,8 +22,11 @@
 
 
 #import <UIKit/UIKit.h>
+#import <CoreBluetooth/CoreBluetooth.h>
+#import <CoreLocation/CoreLocation.h>
+#import <UserNotifications/UserNotifications.h>
 
-@interface WelcomViewController : UIViewController
+@interface WelcomViewController : UIViewController <CBCentralManagerDelegate, CLLocationManagerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 @property (weak, nonatomic) IBOutlet UIButton *retryButton;
 

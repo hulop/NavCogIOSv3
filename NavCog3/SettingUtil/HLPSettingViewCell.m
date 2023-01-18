@@ -69,7 +69,7 @@
     self.title.text = self.setting.label;
     self.title.adjustsFontSizeToFitWidth = YES;
     self.title.isAccessibilityElement = NO;
-    self.title.textColor = self.setting.disabled ? [UIColor grayColor] : [UIColor blackColor];
+    self.title.textColor = self.setting.disabled ? [UIColor systemGrayColor] : [UIColor labelColor];
     
     if (self.setting.titleFont != nil) {
         self.title.font = self.setting.titleFont;
@@ -91,7 +91,7 @@
         self.switchView.accessibilityLabel = self.setting.label;
     }
     if (self.subtitle) {
-        self.subtitle.textColor = self.setting.disabled ? [UIColor grayColor] : [UIColor blackColor];
+        self.subtitle.textColor = self.setting.disabled ? [UIColor systemGrayColor] : [UIColor labelColor];
         if (self.setting.type == NavCogSettingTypeOption) {
             self.accessoryType = [self.setting boolValue]?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
             self.subtitle.text = nil;
@@ -188,7 +188,7 @@
         }
     }]];
     
-    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UIViewController *topController = [UIApplication sharedApplication].windows.firstObject.rootViewController;
     while (topController.presentedViewController) {
         topController = topController.presentedViewController;
     }
@@ -214,7 +214,7 @@
         [self updateView];
     }]];
     
-    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UIViewController *topController = [UIApplication sharedApplication].windows.firstObject.rootViewController;
     while (topController.presentedViewController) {
         topController = topController.presentedViewController;
     }

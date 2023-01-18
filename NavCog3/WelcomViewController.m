@@ -37,6 +37,9 @@
     int agreementCount;
     int retryCount;
     BOOL networkError;
+    CBCentralManager *bluetoothManager;
+    CLLocationManager *locationManager;
+    BOOL isLocationAlert;
 }
 
 - (void)viewDidLoad {
@@ -44,16 +47,18 @@
  
     agreementCount = 0;
     first = YES;
-    
+    isLocationAlert = NO;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataInitializeRestart:) name:DATA_INITIALIZE_RESTART object:nil];
     [self updateView];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    // TODO set serverlist address
     if (first) {
         first = NO;
-        [self checkConfig];
+//        [self checkConfig];
+        [self detectBluetooth];
     }
     self.navigationItem.hidesBackButton = YES;
 }
@@ -68,6 +73,11 @@
         }
         self.retryButton.hidden = !networkError;
     });
+}
+
+- (void) dataInitializeRestart:(NSNotification*) note
+{
+    [self detectBluetooth];
 }
 
 - (void)didNetworkError
@@ -87,10 +97,6 @@
 
 - (void) checkConfig
 {
-    if (![[AuthManager sharedManager] isDeveloperAuthorized]) {
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"developer_mode"];
-    }
-    
     if (retryCount > 3) {
         [self didNetworkError];
         return;
@@ -105,14 +111,11 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.statusLabel.text = NSLocalizedString(@"CheckServerList", @"");
             });
-            [[ServerConfig sharedConfig] requestServerList:^(ServerList *config) {
+            [[ServerConfig sharedConfig] requestServerList:^(ServerList *list) {
+                config.selected = list.firstObject;
                 [self checkConfig];
-                if (config) { retryCount = 0; }
+                if (list) { retryCount = 0; }
             }];
-        } else { // show server list
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self performSegueWithIdentifier:@"show_server_selection" sender:self];
-            });
         }
         return;
     } else {
@@ -127,18 +130,6 @@
                 if (config) { retryCount = 0; }
             }];
             return;
-        }
-        else {
-            BOOL agreed = [config.agreementConfig[@"agreed"] boolValue];
-            
-            if (agreed == NO) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performSegueWithIdentifier:@"show_agreement" sender:self];
-                });
-                return;
-            } else {
-                NSLog(@"no check agreement");
-            }
         }
         
         if (config.selectedServerConfig == nil) {
@@ -160,6 +151,9 @@
                 });
             } else {
                 NSLog(@"file downloaded");
+                [config setDataDownloaded:true];
+                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_INIT object:nil];
+
                 NSArray *files = config.downloadConfig[@"map_files"];
                 NSFileManager *fm = [NSFileManager defaultManager];
 
@@ -190,9 +184,25 @@
                                                                     object:self
                                                                   userInfo:config.selectedServerConfig];
                 
+                NSString *hostname = config.selected.hostname;
+                [[NSUserDefaults standardUserDefaults] setObject:hostname forKey:@"selected_hokoukukan_server"];
+                
+                NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+                
+                NSString *mode = [ud stringForKey:@"RouteMode"];
+                if (mode.length == 0) {
+                    mode = @"user_general";
+                }
+
+                [ud setObject:mode forKey:@"user_mode"];
+
+                [Logging stopLog];
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
+                    BOOL sensor = [[NSUserDefaults standardUserDefaults] boolForKey:@"logging_sensor"];
+                    [Logging startLog:sensor];
+                }
+
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    NSString *hostname = config.selected.hostname;
-                    [[NSUserDefaults standardUserDefaults] setObject:hostname forKey:@"selected_hokoukukan_server"];
                     [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
                 });
             }
@@ -200,12 +210,117 @@
     }
 }
 
+#pragma mark - Bluetooth
+- (void)detectBluetooth
+{
+    if(!bluetoothManager)
+    {
+        bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue() options:@{CBCentralManagerOptionShowPowerAlertKey: @NO}];
+    }
+    [self centralManagerDidUpdateState:bluetoothManager];
+}
+
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central
+{
+    if (bluetoothManager.state == CBManagerStatePoweredOff) {
+        NSString *title = NSLocalizedString(@"BluetoothOffAlertTitle", @"");
+        NSString *message = NSLocalizedString(@"BluetoothOffAlertMessage", @"");
+        NSString *okay = NSLocalizedString(@"OK", @"");
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:okay
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [self detectLocationManager];
+        }]];
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[self topMostController] presentViewController:alert animated:YES completion:nil];
+        });
+    } else if (bluetoothManager.state != CBManagerStateUnknown) {
+        [self detectLocationManager];
+    }
+}
+
+#pragma mark - Location
+- (void)detectLocationManager
+{
+    if (isLocationAlert) {
+        isLocationAlert = NO;
+        [self requestLocalNotificationPermission];
+        return;
+    }
+
+    if(!locationManager)
+    {
+        locationManager = [[CLLocationManager alloc] init];
+    }
+    locationManager.delegate = self;
+    [locationManager requestWhenInUseAuthorization];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    if (status == kCLAuthorizationStatusDenied) {
+        NSString *title = NSLocalizedString(@"LocationNotAllowedTitle", @"");
+        NSString *message = NSLocalizedString(@"LocationNotAllowedMessage", @"");
+        NSString *setting = NSLocalizedString(@"SETTING", @"");
+        NSString *cancel = NSLocalizedString(@"CANCEL", @"");
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:setting
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                      NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                                                      [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+        }]];
+        [alert addAction:[UIAlertAction actionWithTitle:cancel
+                                                  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [self requestLocalNotificationPermission];
+        }]];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self topMostController] presentViewController:alert animated:YES completion:nil];
+        });
+        isLocationAlert = YES;
+    } else if (status != kCLAuthorizationStatusNotDetermined) {
+        [self requestLocalNotificationPermission];
+    }
+}
+
+#pragma mark - Notification
+- (void)requestLocalNotificationPermission {
+    [[UNUserNotificationCenter currentNotificationCenter]
+     requestAuthorizationWithOptions:(UNAuthorizationOptionAlert |
+                                      UNAuthorizationOptionSound |
+                                      UNAuthorizationOptionBadge )
+     completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        NSLog(@"Authorization granted: %d", granted);
+        if (error != nil) {
+            NSLog(@"Error %@", [error description]);
+        }
+        [self checkConfig];
+     }];
+}
+
+#pragma mark -
+// 必要かどうか不明
+- (UIViewController*) topMostController
+{
+    UIViewController *topController = [UIApplication sharedApplication].windows.firstObject.rootViewController;
+
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
+}
+
 - (IBAction)returnActionForSegue:(UIStoryboardSegue *)segue
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0f*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self checkConfig];
     });
-    //[self checkConfig];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -221,6 +336,5 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
-
 
 @end

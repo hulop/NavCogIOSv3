@@ -153,8 +153,12 @@ static ScreenshotHelper *instance;
     CGContextTranslateCTM(ctx, 0.0, screenSize.height);
     CGContextScaleCTM(ctx, scale, -scale);
     
-    for (UIView *view in [UIApplication sharedApplication].keyWindow.subviews) {
-        [(CALayer*)view.layer renderInContext:ctx];
+    UIScene *scene = [[[[UIApplication sharedApplication] connectedScenes] allObjects] firstObject];
+    if ([scene.delegate conformsToProtocol:@protocol(UIWindowSceneDelegate)]) {
+        UIWindow *window = [(id <UIWindowSceneDelegate>)scene.delegate window];
+        for (UIView *view in window.subviews) {
+            [(CALayer*)view.layer renderInContext:ctx];
+        }
     }
     
     CGImageRef cgImage = CGBitmapContextCreateImage(ctx);

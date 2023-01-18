@@ -55,15 +55,20 @@
     modeHelper = [[HLPSettingHelper alloc] init];
     settings = [@{} mutableCopy];
     
-    //modes = @[@"user_blind", @"user_wheelchair", @"user_stroller", @"user_general"];
+    modes = @[@"blind", @"wheelchair", @"stroller", @"general"];
     
-    modes = [ServerConfig sharedConfig].modeList; // without user_
     modeSegueMap = @{@"user_blind": @"blind_view",
                      @"user_wheelchair": @"general_view",
                      @"user_stroller": @"general_view",
                      @"user_general": @"general_view"
                      };
-    
+
+//    modeSegueMap = @{@"user_blind": @"map_view",
+//                     @"user_wheelchair": @"map_view",
+//                     @"user_stroller": @"map_view",
+//                     @"user_general": @"map_view"
+//                     };
+
     UIFont *customFont = [UIFont systemFontOfSize:24];
     for(NSString *mode: modes) {
         NSString *name = [NSString stringWithFormat:@"user_%@", mode];
@@ -101,7 +106,6 @@
         settings[@"user_blind"].disabled = YES;
         
         NSDictionary *config = [ServerConfig sharedConfig].selectedServerConfig;
-        
         if (config[@"key_for_blind"]) {
             BOOL blind_authorized = [[AuthManager sharedManager] isAuthorizedForName:@"blind" withKey:config[@"key_for_blind"]];
             settings[@"user_blind"].disabled = !blind_authorized;
@@ -109,7 +113,6 @@
             settings[@"user_blind"].disabled = NO;
         }
     }
-    
     [self.tableView reloadData];
 }
 
@@ -160,11 +163,6 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    
-    if ([segue.identifier isEqualToString:@"unwind_init"]) {
-        return;
-    }
-    
     HLPLocationManager *manager = [HLPLocationManager sharedManager];
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
@@ -216,7 +214,6 @@
       @"sigmaStopRW":       @"sigmaStop",
       @"sigmaMoveRW":       @"sigmaMove",
       @"relativeVelocityEscalator":@"relativeVelocityEscalator",
-      @"nStates":           @"nBurnIn",
       @"initialSearchRadius2D":@"burnInRadius2D",
       @"mixProba":          @"mixProba",
       @"rejectDistance":    @"rejectDistance",

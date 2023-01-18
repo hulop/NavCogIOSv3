@@ -23,6 +23,7 @@
 #import <UIKit/UIKit.h>
 
 @interface SearchViewController : UIViewController <UITableViewDelegate>
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
 @property (weak, nonatomic) IBOutlet UIButton *fromButton;
 @property (weak, nonatomic) IBOutlet UIButton *toButton;
 @property (weak, nonatomic) IBOutlet UIButton *switchButton;

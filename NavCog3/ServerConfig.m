@@ -24,8 +24,6 @@
 #import "ServerConfig.h"
 #import "HLPDataUtil.h"
 
-#define SERVERLIST_URLS @[@"https://hulop.github.io/serverlist.json", @"secondary", @"and so on"]
-
 @interface I18nStringsTransformer: NSValueTransformer
 @end
 @implementation I18nStringsTransformer
@@ -279,40 +277,17 @@ static ServerConfig *instance;
             return;
         }
     }
-    NSArray *servers = SERVERLIST_URLS;
-    
-    NSURL *serverListURL = [[NSBundle mainBundle] URLForResource:@"serverlist" withExtension:@"txt"];
-    if (serverListURL) {
+
+    NSURL *miraikanURL = [[NSBundle mainBundle] URLForResource:@"serverlist" withExtension:@"json"];
+    if (miraikanURL) {
         NSError *error;
-        NSString *serverlisttext = [NSString stringWithContentsOfURL:serverListURL encoding:NSUTF8StringEncoding error:&error];
-        servers = [serverlisttext componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        NSData *data = [NSData dataWithContentsOfURL:miraikanURL];
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        if ((_serverList = processServerList(json)) != nil) {
+            complete(_serverList);
+            return;
+        }
     }
-    
-    NSString* serverListURLPath = [documentsPath stringByAppendingPathComponent:@"serverlist.txt"];
-    if ([fm fileExistsAtPath:serverListURLPath]) {
-        NSError *error;
-        NSString *serverlisttext = [NSString stringWithContentsOfFile:serverListURLPath encoding:NSUTF8StringEncoding error:&error];
-        servers = [serverlisttext componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-    }
-    
-    __block int index = 0;
-    __block void (^obtainList)(NSString *) = ^(NSString* url) {
-        url = [url stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-        
-        [HLPDataUtil getJSON:[NSURL URLWithString:url] withCallback:^(NSObject *result) {
-            if (result && [result isKindOfClass:NSDictionary.class]) {
-                if ((_serverList = processServerList((NSDictionary*)result)) != nil) {
-                    complete(_serverList);
-                    return;
-                }
-            }
-            if (index < servers.count) {
-                index++;
-                obtainList(servers[index]);
-            }
-        }];
-    };
-    obtainList(servers[index]);
 }
 
 - (void)requestServerConfig:(void(^)(NSDictionary*))complete
@@ -446,41 +421,6 @@ static ServerConfig *instance;
     }];
 }
 
-- (BOOL)shouldAskRating
-{
-    NSString *identifier = @"temp";
-    if (_selected) {
-        identifier = _selected.serverID;
-    }
-    
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    BOOL ask_enquete = NO;
-    BOOL isFirstTime = ![ud boolForKey:[NSString stringWithFormat:@"%@_enquete_answered", identifier]];
-    long count = [ud integerForKey:[NSString stringWithFormat:@"%@_enquete_ask_count", identifier]];
-    if (!isFirstTime) {
-        count++;
-        [ud setObject:@(count) forKey:[NSString stringWithFormat:@"%@_enquete_ask_count", identifier]];
-    }
-    
-    if (_selectedServerConfig) {
-        ask_enquete = [_selectedServerConfig[@"ask_enquete"] boolValue];
-    }
-
-    return ask_enquete && (isFirstTime || count % 5 == 0);
-}
-
-- (void)completeRating
-{
-    NSString *identifier = @"temp";
-    if (_selected) {
-        identifier = _selected.serverID;
-    }
-
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    [ud setObject:@(YES) forKey:[NSString stringWithFormat:@"%@_enquete_answered", identifier]];
-    [ud setObject:@(0) forKey:[NSString stringWithFormat:@"%@_enquete_ask_count", identifier]];
-}
-
 - (BOOL)isPreviewDisabled
 {
     return _selectedServerConfig[@"navcog_disable_preview"] && [_selectedServerConfig[@"navcog_disable_preview"] boolValue];
@@ -498,15 +438,6 @@ static ServerConfig *instance;
     }];
 }
 
-- (NSArray *)modeList
-{
-    NSMutableArray *temp = [@[] mutableCopy];
-    [self enumerateModes:^(id  _Nonnull mode, id  _Nonnull obj) {
-        [temp addObject:mode];
-    }];
-    return temp;
-}
-
 - (NSArray *)extraMenuList
 {
     NSDictionary *json = _selectedServerConfig;
@@ -517,4 +448,13 @@ static ServerConfig *instance;
     
     return _extraMenuConfig;
 }
+
+- (void)setDataDownloaded:(BOOL) isCompleted {
+    [[NSUserDefaults standardUserDefaults] setBool:isCompleted forKey:@"data_downloaded"];
+}
+
+- (BOOL)checkDataDownloaded {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"data_downloaded"];
+}
+
 @end

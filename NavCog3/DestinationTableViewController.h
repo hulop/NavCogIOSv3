@@ -26,5 +26,6 @@
 
 @property UIViewController *root;
 @property UIView *voTarget;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
 
 @end

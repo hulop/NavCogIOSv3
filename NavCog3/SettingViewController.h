@@ -30,6 +30,7 @@
 
 +(void)setup;
 @property (weak, nonatomic) IBOutlet UITableViewCell *dialogSearchCell;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
 @property HLPWebView *webView;
 
 @end

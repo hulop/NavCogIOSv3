@@ -586,7 +586,6 @@
     [_delegate speak:string withOptions:properties completionHandler:^{
         if (hasDestinationPOI == NO) {
             [[NavDataStore sharedDataStore] clearRoute];
-            [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:nil];
         }
     }];
 
@@ -841,7 +840,7 @@
         NSMutableString *string = [@"" mutableCopy];
         if (angle && (poi.text || text)) {
             if (poi.isDestination) {
-                [string appendFormat:NSLocalizedStringFromTable(@"destination is %@", @"BlindView", @""), text, angle];
+                [string appendFormat:NSLocalizedStringFromTable(@"destination is", @"BlindView", @""), text, angle];
                 /*if (poi.text) {
                     [string appendString:NSLocalizedStringFromTable(@"PERIOD", @"BlindView", @"")];
                     [string appendString:poi.text];
@@ -849,11 +848,11 @@
                 isDestinationPOI = YES;
             } else {
                 if (poi.flagPlural) {
-                    [string appendFormat:NSLocalizedStringFromTable(@"poi are %@", @"BlindView", @""), text, angle];
+                    [string appendFormat:NSLocalizedStringFromTable(@"poi are", @"BlindView", @""), text, angle];
                 } else if (poi.flagOnomastic) {
-                    [string appendFormat:NSLocalizedStringFromTable(@"name is %@", @"BlindView", @""), text, angle];
+                    [string appendFormat:NSLocalizedStringFromTable(@"name is", @"BlindView", @""), text, angle];
                 } else {
-                    [string appendFormat:NSLocalizedStringFromTable(@"poi is %@", @"BlindView", @""), text, angle];
+                    [string appendFormat:NSLocalizedStringFromTable(@"poi is", @"BlindView", @""), text, angle];
                 }
             }
         } else {
@@ -871,7 +870,6 @@
         [_delegate speak:result[0] withOptions:properties completionHandler:^{
             if (isDestinationPOI) {
                 [[NavDataStore sharedDataStore] clearRoute];
-                [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_RATING object:nil];
             }
             
             if ([result count] < 2) {

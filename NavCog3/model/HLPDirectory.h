@@ -27,12 +27,20 @@
 
 @class HLPDirectory;
 
+typedef enum: int {
+    HLPToiletTypeNone = -1,
+    HLPToiletTypeMultifunctional = 0,
+    HLPToiletTypeForMen = 1,
+    HLPToiletTypeForWomen = 2
+} HLPToiletType;
+
 @interface HLPDirectoryItem : MTLModel<MTLJSONSerializing, NSCoding>
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSString *titlePron;
 @property (nonatomic, readonly) NSString *subtitle;
 @property (nonatomic, readonly) NSString *subtitlePron;
 @property (nonatomic, readonly) NSString *nodeID;
+@property (nonatomic, readonly) HLPToiletType toilet;
 @property (nonatomic, readonly) HLPDirectory *content;
 @property (nonatomic) BOOL isFacility;
 

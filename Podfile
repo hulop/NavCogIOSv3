@@ -13,21 +13,3 @@ target 'NavCog3' do
   pod 'SSZipArchive', '2.4.2'
   pod 'HLPLocationManager', :podspec => './podspecs/HLPLocationManager.podspec'
 end
-
-target 'NavCogFP' do
-  platform :ios, '9.0'
-  pod 'FormatterKit'
-  pod 'HLPLocationManager', :podspec => './podspecs/HLPLocationManager.podspec'
-end
-
-target 'NavCogTool' do
-  platform :osx, '10.10'
-  pod 'FormatterKit'
-  pod 'HLPLocationManager', :podspec => './podspecs/HLPLocationManager.podspec'
-end
-
-target 'NavCogPreview' do
-  platform :ios, '9.0'
-  pod 'FormatterKit'
-  pod 'HLPLocationManager', :podspec => './podspecs/HLPLocationManager.podspec'
-end

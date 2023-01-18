@@ -167,12 +167,7 @@
         lang = @"";
     }
     NSString *base = @"https://hulop.github.io/";
-    NSString *url = nil;
-    if ([appName isEqualToString:@"NavCog3"]) {
-        url = [NSString stringWithFormat:@"%@%@%@",base, helpType, lang];
-    } else if ([appName isEqualToString:@"NavCogPreview"]) {
-        url = [NSString stringWithFormat:@"%@%@_preview%@",base, helpType, lang];
-    }
+    NSString *url = [NSString stringWithFormat:@"%@%@%@",base, helpType, lang];
     NSLog(@"%@", url);
     return [NSURL URLWithString:url];
 }

@@ -892,7 +892,11 @@ typedef NS_ENUM(NSInteger, ViewState) {
     if (state == ViewStateSearchDetail) {
         [_webView triggerWebviewControl:HLPWebviewControlBackToControl];
     } else {
+#if NavCogMiraikan
         [self.navigationController popViewControllerAnimated:YES];
+#else
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
     }
 }
 

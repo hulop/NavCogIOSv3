@@ -27,7 +27,10 @@
 #import "LocationEvent.h"
 #import "Logging.h"
 #import "NavDataStore.h"
+
+#if NavCogMiraikan
 #import <NavCogMiraikan-Swift.h>
+#endif
 
 @interface WelcomViewController ()
 
@@ -198,17 +201,15 @@
                 [ud setObject:mode forKey:@"user_mode"];
 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
-                    if ([appName rangeOfString:@"Miraikan"].location != NSNotFound) {
-                        // Here, set the root to Miraikan's Home page
-                        MainTabController *vc = [[MainTabController alloc] init];
-                        UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
-                        window.rootViewController = vc;
-                    } else {
-                        [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
-                        
-                    }
+
+#if NavCogMiraikan
+                    // Here, set the root to Miraikan's Home page
+                    MainTabController *vc = [[MainTabController alloc] init];
+                    UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
+                    window.rootViewController = vc;
+#else
+                    [self performSegueWithIdentifier:@"show_mode_selection" sender:self];
+#endif
                 });
             }
         }

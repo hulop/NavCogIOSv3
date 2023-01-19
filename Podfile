@@ -1,7 +1,7 @@
 project 'NavCog3'
 inhibit_all_warnings!
 
-target 'NavCog3' do
+def install_pods
   platform :ios, '9.0'
   pod 'FormatterKit'
   pod 'OpenCV', :podspec => './podspecs/OpenCV.podspec'
@@ -12,4 +12,13 @@ target 'NavCog3' do
   pod 'bleloc', :podspec => './podspecs/bleloc.podspec'
   pod 'SSZipArchive', '2.4.2'
   pod 'HLPLocationManager', :podspec => './podspecs/HLPLocationManager.podspec'
+end
+
+
+target 'NavCog3' do
+  install_pods
+end
+
+target 'NavCogMiraikan' do
+  install_pods
 end

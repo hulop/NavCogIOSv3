@@ -68,7 +68,7 @@
 		7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
 		7EF7F7AE1DD1949C000A625A /* NavDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AD1DD1949C000A625A /* NavDataSource.m */; };
 		A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A923DA091F26DBF60002E3CB /* DefaultTTS.m */; };
-		D3B684BD87877697DA26A4DE /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABCC51EA52F7E70CF93DA9D2 /* libPods-NavCog3.a */; };
+		D3B684BD87877697DA26A4DE /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		E537504C2977D6D700BC3ACA /* AdditionalLocation.json in Resources */ = {isa = PBXBuildFile; fileRef = E5F6FFDE2977CCB600D5C22B /* AdditionalLocation.json */; };
 		E537504D2977D6D700BC3ACA /* CheckPointPosition.json in Resources */ = {isa = PBXBuildFile; fileRef = E5F6FFE22977CCB600D5C22B /* CheckPointPosition.json */; };
 		E537504E2977D6D700BC3ACA /* event.json in Resources */ = {isa = PBXBuildFile; fileRef = E5F6FFE32977CCB600D5C22B /* event.json */; };
@@ -609,7 +609,7 @@
 				3008B8B326DDFC42008C27B1 /* HLPDialog in Frameworks */,
 				7E1F9F2C1DEEB671003E1B23 /* MultipeerConnectivity.framework in Frameworks */,
 				30F54F4C270CCDC000ABD9FC /* HLPWebView in Frameworks */,
-				D3B684BD87877697DA26A4DE /* libPods-NavCog3.a in Frameworks */,
+				D3B684BD87877697DA26A4DE /* (null) in Frameworks */,
 				30D2DAC02710BA2F001CA62E /* Mantle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1824,6 +1824,11 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					NavCog3,
+				);
 				INFOPLIST_FILE = NavCog3/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1863,6 +1868,11 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					NavCog3,
+				);
 				INFOPLIST_FILE = NavCog3/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1901,6 +1911,11 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					NavCogMiraikan,
+				);
 				INFOPLIST_FILE = Miraikan.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1940,6 +1955,11 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					NavCogMiraikan,
+				);
 				INFOPLIST_FILE = Miraikan.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -164,6 +164,8 @@
 		E53750A92977D73900BC3ACA /* BaseListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF922977CC7F00D5C22B /* BaseListController.swift */; };
 		E53750AA2977D73900BC3ACA /* BaseNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF902977CC7F00D5C22B /* BaseNavController.swift */; };
 		E53750AB2977D73900BC3ACA /* BaseTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF8F2977CC7F00D5C22B /* BaseTabController.swift */; };
+		E55D4C95297F6D7100DE379B /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E55D4C94297F6D7100DE379B /* LocationManager.m */; };
+		E55D4C97297F719E00DE379B /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E55D4C94297F6D7100DE379B /* LocationManager.m */; };
 		E5F600002977CCC100D5C22B /* DistanceCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF82977CCC100D5C22B /* DistanceCheckViewController.swift */; };
 		E5F6000C2977CCD500D5C22B /* MapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F600012977CCD500D5C22B /* MapManager.swift */; };
 		E5F6000D2977CCD500D5C22B /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F600022977CCD500D5C22B /* Host.swift */; };
@@ -484,6 +486,8 @@
 		A9ED1549213914A6009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = SettingUtil/ko.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
 		D604F5B4F497C66164142E1B /* libPods-NavCogMiraikan.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogMiraikan.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6A2933F1F60A0C58188E95C /* Pods-NavCogMiraikan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogMiraikan.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogMiraikan/Pods-NavCogMiraikan.release.xcconfig"; sourceTree = "<group>"; };
+		E55D4C94297F6D7100DE379B /* LocationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
+		E55D4C96297F6D7C00DE379B /* LocationManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
 		E5F600012977CCD500D5C22B /* MapManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapManager.swift; sourceTree = "<group>"; };
 		E5F600022977CCD500D5C22B /* Host.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		E5F600032977CCD500D5C22B /* ImageAdaptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAdaptor.swift; sourceTree = "<group>"; };
@@ -747,6 +751,8 @@
 				E5F6FEF12977A98B00D5C22B /* SettingDataManager.h */,
 				E5F6FEF22977A98C00D5C22B /* SettingDataManager.m */,
 				E5F600392977CFDB00D5C22B /* ExpandedFunction.h */,
+				E55D4C96297F6D7C00DE379B /* LocationManager.h */,
+				E55D4C94297F6D7100DE379B /* LocationManager.m */,
 			);
 			name = helper;
 			sourceTree = "<group>";
@@ -1408,6 +1414,7 @@
 				E5F6FFD42977CCA500D5C22B /* GuidePositionModel.swift in Sources */,
 				E5F600142977CCD500D5C22B /* DefaultTTS.swift in Sources */,
 				E5F6FFBB2977CC9300D5C22B /* BaseListView.swift in Sources */,
+				E55D4C95297F6D7100DE379B /* LocationManager.m in Sources */,
 				E5F600112977CCD500D5C22B /* LineSegment.swift in Sources */,
 				E5F6FFBE2977CC9300D5C22B /* BlankView.swift in Sources */,
 				E5F6FFD12977CCA500D5C22B /* NavButtonModel.swift in Sources */,
@@ -1476,6 +1483,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E55D4C97297F719E00DE379B /* LocationManager.m in Sources */,
 				E537507B2977D73900BC3ACA /* AccessibilityModel.swift in Sources */,
 				E537507C2977D73900BC3ACA /* AdditionalLocationModel.swift in Sources */,
 				E537507D2977D73900BC3ACA /* CardModel.swift in Sources */,

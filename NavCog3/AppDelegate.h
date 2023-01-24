@@ -23,13 +23,11 @@
 
 
 #import <UIKit/UIKit.h>
-#import <HLPLocationManager/HLPLocationManager.h>
 
-
-@interface AppDelegate : UIResponder <UIApplicationDelegate, HLPLocationManagerDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-@property UIBackgroundTaskIdentifier backgroundID;
+//@property UIBackgroundTaskIdentifier backgroundID;
 
 @end
 

@@ -30,12 +30,9 @@
 #import "NavSound.h"
 #import <Speech/Speech.h> // for Swift header
 #import <AVFoundation/AVFoundation.h>
-#import "ScreenshotHelper.h"
 #import "NavUtil.h"
 
 @import HLPDialog;
-
-#define IS_IOS11orHIGHER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0)
 
 void NavNSLog(NSString* fmt, ...) {
     va_list args;
@@ -91,8 +88,6 @@ void NavNSLog(NSString* fmt, ...) {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
     _backgroundID = UIBackgroundTaskInvalid;
-        
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:HLPSettingChanged object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disableAcceleration:) name:DISABLE_ACCELEARATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableAcceleration:) name:ENABLE_ACCELEARATION object:nil];
@@ -123,35 +118,6 @@ void NavNSLog(NSString* fmt, ...) {
     [ud addObserver:self forKeyPath:@"background_mode" options:NSKeyValueObservingOptionNew context:nil];
     
     return YES;
-}
-
-- (void)settingChanged:(NSNotification*)note
-{
-    if ([note.object isKindOfClass:HLPSetting.class]) {
-        HLPSetting* setting = note.object;
-        if ([setting.name isEqualToString:@"record_screenshots"]) {
-            [self checkRecordScreenshots];
-        }
-    }
-}
-
-- (void)checkRecordScreenshots
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"record_screenshots"]) {
-        [self startRecordScreenshots];
-    } else {
-        [self stopRecordScreenshots];
-    }
-}
-
-- (void)startRecordScreenshots
-{
-    [[ScreenshotHelper sharedHelper] startRecording];
-}
-
-- (void)stopRecordScreenshots
-{
-    [[ScreenshotHelper sharedHelper] stopRecording];
 }
 
 - (UIViewController*) topMostController
@@ -399,7 +365,6 @@ void uncaughtExceptionHandler(NSException *exception)
             [Logging startLog:sensor];
         }
     }
-    [self checkRecordScreenshots];
     secondOrLater = YES;
     
     [self beginReceivingRemoteControlEvents];

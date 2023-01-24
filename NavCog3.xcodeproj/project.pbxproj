@@ -11,6 +11,7 @@
 		3008B8B326DDFC42008C27B1 /* HLPDialog in Frameworks */ = {isa = PBXBuildFile; productRef = 3008B8B226DDFC42008C27B1 /* HLPDialog */; };
 		30D2DAC02710BA2F001CA62E /* Mantle in Frameworks */ = {isa = PBXBuildFile; productRef = 30D2DABF2710BA2F001CA62E /* Mantle */; };
 		30F54F4C270CCDC000ABD9FC /* HLPWebView in Frameworks */ = {isa = PBXBuildFile; productRef = 30F54F4B270CCDC000ABD9FC /* HLPWebView */; };
+		686A6A6F6A5460934A7B1FA9 /* libPods-NavCog3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20FC39F6D45A9D9CFD390696 /* libPods-NavCog3.a */; };
 		7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E08DB571DB9F08E00E82161 /* ConfigManager.m */; };
 		7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E97151D98B80100CF2960 /* NavDataStore.m */; };
 		7E17F19E1D9A225A00DB1F34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E17F1A01D9A225A00DB1F34 /* InfoPlist.strings */; };
@@ -26,7 +27,6 @@
 		7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42DD1D90C77C006B6899 /* HLPGeoJSON.m */; };
 		7E6E42E01D90C7A3006B6899 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7E6E42DF1D90C7A3006B6899 /* Settings.bundle */; };
 		7E6E42E91D90FD1B006B6899 /* BlindViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E6E42E81D90FD1B006B6899 /* BlindViewController.m */; };
-		7E7ED5A51F5E67BC0033814B /* ScreenshotHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */; };
 		7E7ED5A81F5EDFC90033814B /* lastcommit.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7E7ED5A71F5EDFC90033814B /* lastcommit.txt */; };
 		7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */; };
 		7E9238E61D5189F100875766 /* HLPSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9238DA1D5189F100875766 /* HLPSetting.m */; };
@@ -215,7 +215,6 @@
 		E5F6FF182977B2F700D5C22B /* NavNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5150A31D8BF32800ED25FB /* NavNavigator.m */; };
 		E5F6FF192977B2F700D5C22B /* ConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E08DB571DB9F08E00E82161 /* ConfigManager.m */; };
 		E5F6FF1A2977B2F700D5C22B /* NavPreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7F7AA1DD189B0000A625A /* NavPreviewer.m */; };
-		E5F6FF1B2977B2F700D5C22B /* ScreenshotHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */; };
 		E5F6FF1C2977B2F700D5C22B /* WelcomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF45E2E1E3F1E3700208042 /* WelcomViewController.m */; };
 		E5F6FF1D2977B2F700D5C22B /* HLPSettingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9238DE1D5189F100875766 /* HLPSettingTableView.m */; };
 		E5F6FF1E2977B2F700D5C22B /* HLPDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE207DA2022F7BA00160160 /* HLPDirectory.m */; };
@@ -356,6 +355,7 @@
 
 /* Begin PBXFileReference section */
 		0D18A95F063007726536010A /* Pods-NavCog3.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.debug.xcconfig"; sourceTree = "<group>"; };
+		20FC39F6D45A9D9CFD390696 /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		591B4096F69C7B6FE3BAAA4E /* Pods-NavCogMiraikan.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogMiraikan.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogMiraikan/Pods-NavCogMiraikan.debug.xcconfig"; sourceTree = "<group>"; };
 		7E08DB561DB9F08E00E82161 /* ConfigManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigManager.h; sourceTree = "<group>"; };
 		7E08DB571DB9F08E00E82161 /* ConfigManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigManager.m; sourceTree = "<group>"; };
@@ -388,8 +388,6 @@
 		7E6E42E71D90FD1B006B6899 /* BlindViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlindViewController.h; sourceTree = "<group>"; };
 		7E6E42E81D90FD1B006B6899 /* BlindViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlindViewController.m; sourceTree = "<group>"; };
 		7E6E42EC1D911236006B6899 /* LocationEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationEvent.h; sourceTree = "<group>"; };
-		7E7ED5A31F5E67BC0033814B /* ScreenshotHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotHelper.h; sourceTree = "<group>"; };
-		7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenshotHelper.m; sourceTree = "<group>"; };
 		7E7ED5A71F5EDFC90033814B /* lastcommit.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lastcommit.txt; sourceTree = SOURCE_ROOT; };
 		7E8A33BB1D917D5200D20CD5 /* HLPDataUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HLPDataUtil.h; path = model/HLPDataUtil.h; sourceTree = "<group>"; };
 		7E8A33BC1D917D5200D20CD5 /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = HLPDataUtil.m; path = model/HLPDataUtil.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -611,6 +609,7 @@
 				30F54F4C270CCDC000ABD9FC /* HLPWebView in Frameworks */,
 				D3B684BD87877697DA26A4DE /* (null) in Frameworks */,
 				30D2DAC02710BA2F001CA62E /* Mantle in Frameworks */,
+				686A6A6F6A5460934A7B1FA9 /* libPods-NavCog3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -647,6 +646,7 @@
 				7E1F9F2B1DEEB671003E1B23 /* MultipeerConnectivity.framework */,
 				A93ED2731ED2DBA900B75760 /* UIKit.framework */,
 				D604F5B4F497C66164142E1B /* libPods-NavCogMiraikan.a */,
+				20FC39F6D45A9D9CFD390696 /* libPods-NavCog3.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -744,8 +744,6 @@
 				7E9866CD1D5174780073CB49 /* Logging.m */,
 				7E1F9F281DEEB1D3003E1B23 /* NavDebugHelper.h */,
 				7E1F9F291DEEB1D3003E1B23 /* NavDebugHelper.m */,
-				7E7ED5A31F5E67BC0033814B /* ScreenshotHelper.h */,
-				7E7ED5A41F5E67BC0033814B /* ScreenshotHelper.m */,
 				E5F6FEF12977A98B00D5C22B /* SettingDataManager.h */,
 				E5F6FEF22977A98C00D5C22B /* SettingDataManager.m */,
 				E5F600392977CFDB00D5C22B /* ExpandedFunction.h */,
@@ -1400,7 +1398,6 @@
 				7E5150A41D8BF32800ED25FB /* NavNavigator.m in Sources */,
 				7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */,
 				7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */,
-				7E7ED5A51F5E67BC0033814B /* ScreenshotHelper.m in Sources */,
 				E5F6FF892977CC3700D5C22B /* VoiceGuideController.swift in Sources */,
 				E5F600232977CCFC00D5C22B /* AITabController.swift in Sources */,
 				E5F600322977CD0E00D5C22B /* FloorSelectionController.swift in Sources */,
@@ -1581,7 +1578,6 @@
 				E5F6FF182977B2F700D5C22B /* NavNavigator.m in Sources */,
 				E5F6FF192977B2F700D5C22B /* ConfigManager.m in Sources */,
 				E5F6FF1A2977B2F700D5C22B /* NavPreviewer.m in Sources */,
-				E5F6FF1B2977B2F700D5C22B /* ScreenshotHelper.m in Sources */,
 				E5F6FF1C2977B2F700D5C22B /* WelcomViewController.m in Sources */,
 				E5F6FF1D2977B2F700D5C22B /* HLPSettingTableView.m in Sources */,
 				E5F6FF1E2977B2F700D5C22B /* HLPDirectory.m in Sources */,

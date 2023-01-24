@@ -31,7 +31,6 @@
 #import "AuthManager.h"
 #import "NavUtil.h"
 #import "Logging.h"
-#import "ScreenshotHelper.h"
 #import <SSZipArchive.h>
 #import "WebViewController.h"
 #import "ServerConfig.h"
@@ -352,10 +351,7 @@ static HLPSetting *userModeLabel, *userBlindLabel, *userWheelchairLabel, *userSt
     NSString *dir = [documentsPath stringByAppendingPathComponent:[log stringByDeletingPathExtension]];
     [fm createDirectoryAtPath:dir withIntermediateDirectories:NO attributes:nil error:nil];
 
-    NSString* plist = [[log stringByDeletingPathExtension] stringByAppendingPathExtension:@"plist"];
     NSString* cereal = [[log stringByDeletingPathExtension] stringByAppendingPathExtension:@"cereal"];
-    NSString* zip = [[log stringByDeletingPathExtension] stringByAppendingPathExtension:@"zip"];
-    NSString* mapName = [[NSUserDefaults standardUserDefaults] stringForKey:@"bleloc_map_data"];
     NSString* desc = [[log stringByDeletingPathExtension] stringByAppendingPathExtension:@"txt"];
     
     NSMutableDictionary *dic = [@{} mutableCopy];
@@ -367,48 +363,11 @@ static HLPSetting *userModeLabel, *userBlindLabel, *userWheelchairLabel, *userSt
     [routeOptionsSettingHelper exportSetting:dic];
     [ConfigManager saveConfig:dic withName:[log stringByDeletingPathExtension] Force:YES];
 
-    NSString* lpath = [documentsPath stringByAppendingPathComponent:log];
-    NSString* ppath = [documentsPath stringByAppendingPathComponent:plist];
     NSString* cpath = [documentsPath stringByAppendingPathComponent:cereal];
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_SERIALIZE object:self userInfo:@{@"filePath":cpath}];
 
-    NSString* mpath = [documentsPath stringByAppendingPathComponent:mapName];
     NSString* dpath = [dir stringByAppendingPathComponent:desc];
     [description writeToFile:dpath atomically:YES encoding:NSUTF8StringEncoding error:nil];
-    
-    NSArray* screenshots = [[ScreenshotHelper sharedHelper] screenshotsFromLog:lpath];
-    NSArray* files = [screenshots arrayByAddingObjectsFromArray:@[lpath,ppath,mpath,cpath]];
-    NSString* zpath = [documentsPath stringByAppendingPathComponent:zip];
-
-    for(NSString *file in files) {
-        NSError *error;
-        NSString *dest = [dir stringByAppendingPathComponent:[file lastPathComponent]];
-        [fm copyItemAtPath:file toPath:dest error:&error];
-        if (error) {
-            fprintf(stdout, "%s", error.description.UTF8String);
-        }
-    }
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [NavUtil showModalWaitingWithMessage:@"creating zip file..."];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [SSZipArchive createZipFileAtPath:zpath withContentsOfDirectory:dir keepParentDirectory:YES withPassword:nil andProgressHandler:^(NSUInteger entryNumber, NSUInteger total) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [NavUtil showModalWaitingWithMessage:[NSString stringWithFormat:@"creating zip file... %ld%%",entryNumber*100/total]];
-                    fprintf(stdout, "%ld/%ld\n", entryNumber, total);
-                    if (entryNumber == total) {
-                        [NavUtil hideModalWaiting];
-                        [fm removeItemAtPath:dir error:nil];
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            NSString* subject = [NSString stringWithFormat:@"Report Issue (%@)", [[zpath lastPathComponent] stringByDeletingPathExtension]];
-                            [self composeEmailSubject:subject Body:description withAttachment:zpath];
-                        });
-                    }
-                });
-            }];
-        });
-    });
 }
 
 - (void)composeEmailSubject:(NSString*)subject Body:(NSString*)body withAttachment:(NSString*)path
@@ -609,7 +568,6 @@ static HLPSetting *userModeLabel, *userBlindLabel, *userWheelchairLabel, *userSt
     [detailSettingHelper addSectionTitle:@"Report Issue"];
     [detailSettingHelper addActionTitle:@"Report Issue" Name:@"report_issue"];
     [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Record logs" Name:@"logging_to_file" DefaultValue:@(NO) Accept:nil];
-    [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Record screenshots" Name:@"record_screenshots" DefaultValue:@(NO) Accept:nil];
     
     [detailSettingHelper addSectionTitle:@"Background"];
     [detailSettingHelper addSettingWithType:NavCogSettingTypeBoolean Label:@"Background Mode" Name:@"background_mode" DefaultValue:@(NO) Accept:nil];

@@ -37,6 +37,5 @@
 @property (weak) id<WebViewControllerDelegate> _Nullable delegate;
 
 + (instancetype _Nonnull ) getInstance;
-+ (NSURL*_Nullable) hulopHelpPageURLwithType:(NSString*_Nonnull)helpType languageDetection:(BOOL)languageDetection;
 + (void) checkHttpStatusWithURL:(NSURL * _Nonnull)url completionHandler:(void (^_Nullable)(NSURL * _Nonnull url, NSInteger statusCode))completion;
 @end

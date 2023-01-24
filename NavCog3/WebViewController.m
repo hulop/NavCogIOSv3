@@ -135,41 +135,10 @@
     }
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 + (instancetype)getInstance
 {
     WebViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"web_view"];
     return vc;
-}
-
-+ (NSURL*) hulopHelpPageURLwithType:(NSString*)helpType languageDetection:(BOOL)languageDetection
-{
-    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey];
-
-    NSString *lang = [[NavDataStore sharedDataStore] userLanguage];
-    if (languageDetection) {
-        // is server supported user lang
-        if ([[ServerConfig sharedConfig].selected.name stringByLanguage:lang] == nil) {
-            lang = @"en";
-        }
-        lang = [@"-" stringByAppendingString:lang];
-        if ([lang isEqualToString:@"-en"]) { lang = @""; }
-    } else {
-        lang = @"";
-    }
-    NSString *base = @"https://hulop.github.io/";
-    NSString *url = [NSString stringWithFormat:@"%@%@%@",base, helpType, lang];
-    NSLog(@"%@", url);
-    return [NSURL URLWithString:url];
 }
 
 + (void) checkHttpStatusWithURL:(NSURL *)url completionHandler:(void (^)(NSURL * _Nonnull url, NSInteger statusCode))completion

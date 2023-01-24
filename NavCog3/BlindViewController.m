@@ -150,25 +150,6 @@
     
     [self updateView];
     
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"first_launch"]) {
-        NSURL *url = [WebViewController hulopHelpPageURLwithType:@"instructions" languageDetection:YES];
-        __weak typeof(self) weakself = self;
-        [WebViewController checkHttpStatusWithURL:url completionHandler:^(NSURL * _Nonnull url, NSInteger statusCode) {
-            __weak NSURL *weakurl = url;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                WebViewController *vc = [WebViewController getInstance];
-                if (statusCode == 200) {
-                    vc.url = weakurl;
-                } else {
-                    vc.url = [WebViewController hulopHelpPageURLwithType:@"instructions" languageDetection:NO];
-                }
-                vc.title = NSLocalizedString(@"Instructions", @"");
-                [weakself.navigationController showViewController:vc sender:weakself];
-            });
-        }];
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"first_launch"];
-    }
-
     BOOL checked = [ud boolForKey:@"checked_altimeter"];
     if (!checked && ![CMAltimeter isRelativeAltitudeAvailable]) {
         NSString *title = NSLocalizedString(@"NoAltimeterAlertTitle", @"");

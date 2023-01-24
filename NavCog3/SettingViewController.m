@@ -278,44 +278,9 @@ static HLPSetting *userModeLabel, *userBlindLabel, *userWheelchairLabel, *userSt
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOG_REPLAY object:self userInfo:@{@"path":path}];
         
         [self.navigationController popToRootViewControllerAnimated:YES];
-    } else if ([setting.name isEqualToString:@"launch_exercise"]) {
-        [[NavDataStore sharedDataStore] startExercise];
-        [self.navigationController popToRootViewControllerAnimated:YES];
     } else if ([setting.name isEqualToString:@"Reset_Location"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_UNKNOWN object:self];
         [self.navigationController popToRootViewControllerAnimated:YES];
-    } else if ([setting.name isEqualToString:@"OpenHelp"]) {
-        NSURL *url = [WebViewController hulopHelpPageURLwithType:@"help" languageDetection:YES];
-        __weak typeof(self) weakself = self;
-        [WebViewController checkHttpStatusWithURL:url completionHandler:^(NSURL * _Nonnull url, NSInteger statusCode) {
-            __weak NSURL *weakurl = url;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                WebViewController *vc = [WebViewController getInstance];
-                if (statusCode == 200) {
-                    vc.url = weakurl;
-                } else {
-                    vc.url = [WebViewController hulopHelpPageURLwithType:@"help" languageDetection:NO];
-                }
-                vc.title = NSLocalizedString(@"help", @"");
-                [weakself.navigationController showViewController:vc sender:weakself];
-            });
-        }];
-    } else if ([setting.name isEqualToString:@"OpenInstructions"]) {
-        NSURL *url = [WebViewController hulopHelpPageURLwithType:@"instructions" languageDetection:YES];
-        __weak typeof(self) weakself = self;
-        [WebViewController checkHttpStatusWithURL:url completionHandler:^(NSURL * _Nonnull url, NSInteger statusCode) {
-            __weak NSURL *weakurl = url;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                WebViewController *vc = [WebViewController getInstance];
-                if (statusCode == 200) {
-                    vc.url = weakurl;
-                } else {
-                    vc.url = [WebViewController hulopHelpPageURLwithType:@"instructions" languageDetection:NO];
-                }
-                vc.title = NSLocalizedString(@"Instructions", @"");
-                [weakself.navigationController showViewController:vc sender:weakself];
-            });
-        }];
     } else if ([setting.name hasPrefix:@"Open:"]) {
         ServerConfig *sc  = [ServerConfig sharedConfig];
         NSString *path = [setting.name substringFromIndex:@"Open:".length];
@@ -332,13 +297,6 @@ static HLPSetting *userModeLabel, *userBlindLabel, *userWheelchairLabel, *userSt
                 [weakself.navigationController showViewController:vc sender:weakself];
             });
         }];
-    } else if ([setting.name isEqualToString:@"back_to_mode_selection"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_UNLOAD_VIEW object:self];
-        [self dismissViewControllerAnimated:YES completion:nil];
-    } else if ([setting.name isEqualToString:@"send_feedback"]) {
-        NSString *subject = [NSString stringWithFormat:NSLocalizedString(@"feedbackSubject", @""), [NavDataStore sharedDataStore].userID];
-        NSString *body = NSLocalizedString(@"feedbackBody", @"");
-        [self composeEmailSubject:subject Body:body withAttachment:nil];
     } else {
         [self performSegueWithIdentifier:setting.name sender:self];
     }
@@ -369,41 +327,6 @@ static HLPSetting *userModeLabel, *userBlindLabel, *userWheelchairLabel, *userSt
     NSString* dpath = [dir stringByAppendingPathComponent:desc];
     [description writeToFile:dpath atomically:YES encoding:NSUTF8StringEncoding error:nil];
 }
-
-- (void)composeEmailSubject:(NSString*)subject Body:(NSString*)body withAttachment:(NSString*)path
-{
-    if([MFMailComposeViewController canSendMail]) {
-        MFMailComposeViewController *mailCont = [[MFMailComposeViewController alloc] init];
-        mailCont.mailComposeDelegate = self;
-        
-        [mailCont setSubject:subject];
-        [mailCont setToRecipients:[NSArray arrayWithObject:@"hulop.contact@gmail.com"]];
-        [mailCont setMessageBody:body isHTML:NO];
-        if (path) {
-            [mailCont addAttachmentData:[NSData dataWithContentsOfFile:path] mimeType:@"application/zip" fileName:[path lastPathComponent]];
-        }
-        
-        [self presentViewController:mailCont animated:YES completion:nil];
-    } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Need email setting"
-                                                                       message:@"Please set up email account"
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"OK",@"HLPSettingView",@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];            
-        }]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
-- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"logging_to_file"]) {
-        BOOL sensor = [[NSUserDefaults standardUserDefaults] boolForKey:@"logging_sensor"];
-        [Logging startLog:sensor];
-    }
-}
-
 
 - (BOOL)browserViewController:(MCBrowserViewController *)browserViewController
       shouldPresentNearbyPeer:(MCPeerID *)peerID
@@ -443,14 +366,6 @@ static HLPSetting *userModeLabel, *userBlindLabel, *userWheelchairLabel, *userSt
 {
     userSettingHelper = [[HLPSettingHelper alloc] init];
 
-//    [userSettingHelper addSectionTitle:NSLocalizedString(@"Help", @"")];
-//    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenInstructions", @"") Name:@"OpenInstructions"];
-//    [userSettingHelper addActionTitle:NSLocalizedString(@"OpenHelp", @"") Name:@"OpenHelp"];
-//    [userSettingHelper addActionTitle:NSLocalizedString(@"Send Feedback", @"") Name:@"send_feedback"];
-    
-//    [userSettingHelper addSectionTitle:NSLocalizedString(@"Mode", @"")];
-//    [userSettingHelper addActionTitle:NSLocalizedString(@"Back to mode selection", @"") Name:@"back_to_mode_selection"];
-    
     speechLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Speech_Sound", @"label for tts options")];
     speechSpeedSetting = [userSettingHelper addSettingWithType:NavCogSettingTypeDouble Label:NSLocalizedString(@"Speech speed", @"label for speech speed option")
                                      Name:@"speech_speed" DefaultValue:@(0.55) Min:0.1 Max:1 Interval:0.05];
@@ -467,9 +382,6 @@ static HLPSetting *userModeLabel, *userBlindLabel, *userWheelchairLabel, *userSt
                                                  Name:@"unit_meter" Group:@"distance_unit" DefaultValue:@(YES) Accept:nil];
     unitFeet = [userSettingHelper addSettingWithType:NavCogSettingTypeOption Label:NSLocalizedString(@"Feet", @"feet distance unit label")
                                                 Name:@"unit_feet" Group:@"distance_unit" DefaultValue:@(NO) Accept:nil];
-    
-//    exerciseLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Exercise", @"label for exercise options")];
-//    exerciseAction = [userSettingHelper addActionTitle:NSLocalizedString(@"Launch Exercise", @"") Name:@"launch_exercise"];
     
     mapLabel = [userSettingHelper addSectionTitle:NSLocalizedString(@"Map", @"label for map")];
     mapLabel.visible = NO;

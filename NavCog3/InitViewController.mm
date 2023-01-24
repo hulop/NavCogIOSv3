@@ -141,12 +141,6 @@
     });
 }
 
-- (void)infoButtonPushed:(NSObject*)sender
-{
-    NSURL *url = [NSURL URLWithString:@"https://hulop.github.io/"];
-    [NavUtil openURL:url onViewController:self];
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }

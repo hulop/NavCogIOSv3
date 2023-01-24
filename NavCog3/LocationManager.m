@@ -71,12 +71,6 @@ static int continueFloorCount;
 - (void)setup {
     HLPLocationManager *manager = [HLPLocationManager sharedManager];
     manager.delegate = self;
-    if (!manager.isActive) {
-        [manager start];
-    }
-    if ([[NSDate date] timeIntervalSince1970] - lastActiveTime > 30) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_LOCATION_RESTART object:self];
-    }
 }
 
 - (void)serverConfigChanged:(NSNotification*)note

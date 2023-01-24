@@ -1675,7 +1675,12 @@ MKMapPoint convertFromGlobal(HLPLocation* global, HLPLocation* rp) {
 - (void)setUpHLPLocationManager {
     HLPLocationManager *manager = [HLPLocationManager sharedManager];
     if (manager.isActive) {
-        return;
+        NavDataStore *nds = [NavDataStore sharedDataStore];
+        HLPLocation *loc = [nds currentLocation];
+        BOOL validLocation = loc && !isnan(loc.lat) && !isnan(loc.lng) && !isnan(loc.floor);
+        if (validLocation) {
+            return;
+        }
     }
 
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];

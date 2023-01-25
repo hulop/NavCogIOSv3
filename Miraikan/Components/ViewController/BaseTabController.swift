@@ -72,8 +72,7 @@ class BaseTabController: UIViewController {
 
     func tabLayout() {
         var bottomPadding = 0.0
-        // TODO: タブバーの高さ取得
-        let tabHeight = 49.0
+        let tabBarHeight = UITabBarController().tabBar.frame.size.height
 
         if let window = UIApplication.shared.windows.first {
             bottomPadding = window.safeAreaInsets.bottom
@@ -91,7 +90,7 @@ class BaseTabController: UIViewController {
         let leading = nav.view.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0)
         let trailing = nav.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0)
         let top = nav.view.topAnchor.constraint(equalTo:  view.topAnchor, constant: 0)
-        let bottom = nav.view.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -(bottomPadding + tabHeight))
+        let bottom = nav.view.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -(bottomPadding + tabBarHeight))
         NSLayoutConstraint.activate([leading, trailing, top, bottom])
     }
 

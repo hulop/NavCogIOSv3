@@ -338,12 +338,12 @@ typedef NS_ENUM(NSInteger, ViewState) {
                     self.navigationItem.leftBarButtonItems = @[self.backButton];   // new
                     break;
                 case ViewStateSearch:
-                    self.navigationItem.rightBarButtonItems = @[self.cancelButton, self.settingButton];
+                    self.navigationItem.rightBarButtonItems = @[self.settingButton];
                     self.navigationItem.leftBarButtonItems = @[self.backButton];   // new
                     break;
                 case ViewStateSearchDetail:
-                    self.navigationItem.rightBarButtonItems = @[self.backButton];
-                    self.navigationItem.leftBarButtonItems = @[self.cancelButton];
+                    self.navigationItem.rightBarButtonItems = @[];
+                    self.navigationItem.leftBarButtonItems = @[self.backButton];
                     break;
                 case ViewStateSearchSetting:
                     self.navigationItem.rightBarButtonItems = @[self.searchButton];
@@ -354,8 +354,8 @@ typedef NS_ENUM(NSInteger, ViewState) {
                     self.navigationItem.leftBarButtonItems = @[self.backButton];   // new
                     break;
                 case ViewStateRouteConfirm:
-                    self.navigationItem.rightBarButtonItems = @[self.cancelButton];
-                    self.navigationItem.leftBarButtonItems = @[self.backButton];   // new
+                    self.navigationItem.rightBarButtonItems = @[];
+                    self.navigationItem.leftBarButtonItems = @[self.cancelButton];
                     break;
                 case ViewStateRouteCheck:
                     self.navigationItem.rightBarButtonItems = @[self.doneButton];
@@ -889,14 +889,43 @@ typedef NS_ENUM(NSInteger, ViewState) {
 }
 
 - (IBAction)doBack:(id)sender {
-    if (state == ViewStateSearchDetail) {
-        [_webView triggerWebviewControl:HLPWebviewControlBackToControl];
-    } else {
+
+    if (isBlindMode) {
+        
 #if NavCogMiraikan
         [self.navigationController popViewControllerAnimated:YES];
 #else
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 #endif
+        
+    } else {
+        switch(state) {
+            case ViewStateSearch:
+                state = ViewStateTransition;
+                [self updateView];
+                [_webView triggerWebviewControl:HLPWebviewControlNone];
+                break;
+            case ViewStateSearchDetail:
+                [_webView triggerWebviewControl:HLPWebviewControlBackToControl];
+                break;
+            case ViewStateSearchSetting:
+                [_webView triggerWebviewControl:HLPWebviewControlBackToControl];
+                break;
+            case ViewStateRouteConfirm:
+                [_webView triggerWebviewControl:HLPWebviewControlBackToControl];
+                break;
+            case ViewStateRouteCheck:
+                [_webView triggerWebviewControl:HLPWebviewControlBackToControl];
+                break;
+            default:
+                
+#if NavCogMiraikan
+                [self.navigationController popViewControllerAnimated:YES];
+#else
+                [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
+                break;
+        }
     }
 }
 

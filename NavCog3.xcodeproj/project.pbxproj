@@ -107,10 +107,10 @@
 		E53750702977D71B00BC3ACA /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F600172977CCE000D5C22B /* UIColorExtension.swift */; };
 		E53750712977D71B00BC3ACA /* UINavigationControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F600192977CCE000D5C22B /* UINavigationControllerExtension.swift */; };
 		E53750722977D71B00BC3ACA /* UserDefaultsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F600182977CCE000D5C22B /* UserDefaultsExtension.swift */; };
-		E53750732977D71B00BC3ACA /* AppAboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF72977CCC100D5C22B /* AppAboutView.swift */; };
+		E53750732977D71B00BC3ACA /* AboutAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF72977CCC100D5C22B /* AboutAppView.swift */; };
 		E53750742977D71B00BC3ACA /* DistanceCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF82977CCC100D5C22B /* DistanceCheckViewController.swift */; };
 		E53750752977D71B00BC3ACA /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF62977CCC100D5C22B /* LoginView.swift */; };
-		E53750762977D71B00BC3ACA /* MiraikanAboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF12977CCC100D5C22B /* MiraikanAboutView.swift */; };
+		E53750762977D71B00BC3ACA /* AboutMiraikanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF12977CCC100D5C22B /* AboutMiraikanView.swift */; };
 		E53750772977D71B00BC3ACA /* MiraikanIDMyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF22977CCC100D5C22B /* MiraikanIDMyPageView.swift */; };
 		E53750782977D71B00BC3ACA /* NaviSettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF32977CCC100D5C22B /* NaviSettingController.swift */; };
 		E53750792977D71B00BC3ACA /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF42977CCC100D5C22B /* SettingView.swift */; };
@@ -129,7 +129,7 @@
 		E53750862977D73900BC3ACA /* NavButtonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFC32977CCA400D5C22B /* NavButtonModel.swift */; };
 		E53750872977D73900BC3ACA /* RegularExhibitionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFCE2977CCA500D5C22B /* RegularExhibitionModel.swift */; };
 		E53750882977D73900BC3ACA /* ScheduleRowModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFC42977CCA500D5C22B /* ScheduleRowModel.swift */; };
-		E53750892977D73900BC3ACA /* AIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF7C2977CC3700D5C22B /* AIController.swift */; };
+		E53750892977D73900BC3ACA /* AskAIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF7C2977CC3700D5C22B /* AskAIViewController.swift */; };
 		E537508A2977D73900BC3ACA /* DistanceCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF792977CC3600D5C22B /* DistanceCheckView.swift */; };
 		E537508B2977D73900BC3ACA /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF7B2977CC3600D5C22B /* EventDetailView.swift */; };
 		E537508C2977D73900BC3ACA /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF7A2977CC3600D5C22B /* EventView.swift */; };
@@ -164,6 +164,12 @@
 		E53750A92977D73900BC3ACA /* BaseListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF922977CC7F00D5C22B /* BaseListController.swift */; };
 		E53750AA2977D73900BC3ACA /* BaseNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF902977CC7F00D5C22B /* BaseNavController.swift */; };
 		E53750AB2977D73900BC3ACA /* BaseTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF8F2977CC7F00D5C22B /* BaseTabController.swift */; };
+		E54F24282980E26E00F3A83C /* RouteMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54F24272980E26E00F3A83C /* RouteMode.swift */; };
+		E54F24292980E26E00F3A83C /* RouteMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54F24272980E26E00F3A83C /* RouteMode.swift */; };
+		E54F242B2980E2CA00F3A83C /* RouteModeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54F242A2980E2CA00F3A83C /* RouteModeRow.swift */; };
+		E54F242C2980E2CA00F3A83C /* RouteModeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54F242A2980E2CA00F3A83C /* RouteModeRow.swift */; };
+		E54F24482980E93300F3A83C /* AskAIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54F24472980E93300F3A83C /* AskAIView.swift */; };
+		E54F24492980E93300F3A83C /* AskAIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54F24472980E93300F3A83C /* AskAIView.swift */; };
 		E55D4C95297F6D7100DE379B /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E55D4C94297F6D7100DE379B /* LocationManager.m */; };
 		E55D4C97297F719E00DE379B /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E55D4C94297F6D7100DE379B /* LocationManager.m */; };
 		E5F600002977CCC100D5C22B /* DistanceCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF82977CCC100D5C22B /* DistanceCheckViewController.swift */; };
@@ -266,7 +272,7 @@
 		E5F6FF842977CC3700D5C22B /* DistanceCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF792977CC3600D5C22B /* DistanceCheckView.swift */; };
 		E5F6FF852977CC3700D5C22B /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF7A2977CC3600D5C22B /* EventView.swift */; };
 		E5F6FF862977CC3700D5C22B /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF7B2977CC3600D5C22B /* EventDetailView.swift */; };
-		E5F6FF872977CC3700D5C22B /* AIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF7C2977CC3700D5C22B /* AIController.swift */; };
+		E5F6FF872977CC3700D5C22B /* AskAIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF7C2977CC3700D5C22B /* AskAIViewController.swift */; };
 		E5F6FF882977CC3700D5C22B /* EventDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E5F6FF7D2977CC3700D5C22B /* EventDetailView.xib */; };
 		E5F6FF892977CC3700D5C22B /* VoiceGuideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF7E2977CC3700D5C22B /* VoiceGuideController.swift */; };
 		E5F6FF8A2977CC3700D5C22B /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF7F2977CC3700D5C22B /* Home.swift */; };
@@ -323,13 +329,13 @@
 		E5F6FFEE2977CCB700D5C22B /* miraikan_serverlist.json in Resources */ = {isa = PBXBuildFile; fileRef = E5F6FFE42977CCB700D5C22B /* miraikan_serverlist.json */; };
 		E5F6FFEF2977CCB700D5C22B /* FloorPlan.json in Resources */ = {isa = PBXBuildFile; fileRef = E5F6FFE52977CCB700D5C22B /* FloorPlan.json */; };
 		E5F6FFF02977CCB700D5C22B /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = E5F6FFE62977CCB700D5C22B /* schedule.json */; };
-		E5F6FFF92977CCC100D5C22B /* MiraikanAboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF12977CCC100D5C22B /* MiraikanAboutView.swift */; };
+		E5F6FFF92977CCC100D5C22B /* AboutMiraikanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF12977CCC100D5C22B /* AboutMiraikanView.swift */; };
 		E5F6FFFA2977CCC100D5C22B /* MiraikanIDMyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF22977CCC100D5C22B /* MiraikanIDMyPageView.swift */; };
 		E5F6FFFB2977CCC100D5C22B /* NaviSettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF32977CCC100D5C22B /* NaviSettingController.swift */; };
 		E5F6FFFC2977CCC100D5C22B /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF42977CCC100D5C22B /* SettingView.swift */; };
 		E5F6FFFD2977CCC100D5C22B /* TabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF52977CCC100D5C22B /* TabItem.swift */; };
 		E5F6FFFE2977CCC100D5C22B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF62977CCC100D5C22B /* LoginView.swift */; };
-		E5F6FFFF2977CCC100D5C22B /* AppAboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF72977CCC100D5C22B /* AppAboutView.swift */; };
+		E5F6FFFF2977CCC100D5C22B /* AboutAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF72977CCC100D5C22B /* AboutAppView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -486,6 +492,9 @@
 		A9ED1549213914A6009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = SettingUtil/ko.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
 		D604F5B4F497C66164142E1B /* libPods-NavCogMiraikan.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogMiraikan.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6A2933F1F60A0C58188E95C /* Pods-NavCogMiraikan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogMiraikan.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogMiraikan/Pods-NavCogMiraikan.release.xcconfig"; sourceTree = "<group>"; };
+		E54F24272980E26E00F3A83C /* RouteMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteMode.swift; sourceTree = "<group>"; };
+		E54F242A2980E2CA00F3A83C /* RouteModeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteModeRow.swift; sourceTree = "<group>"; };
+		E54F24472980E93300F3A83C /* AskAIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskAIView.swift; sourceTree = "<group>"; };
 		E55D4C94297F6D7100DE379B /* LocationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
 		E55D4C96297F6D7C00DE379B /* LocationManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
 		E5F600012977CCD500D5C22B /* MapManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapManager.swift; sourceTree = "<group>"; };
@@ -531,7 +540,7 @@
 		E5F6FF792977CC3600D5C22B /* DistanceCheckView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DistanceCheckView.swift; sourceTree = "<group>"; };
 		E5F6FF7A2977CC3600D5C22B /* EventView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		E5F6FF7B2977CC3600D5C22B /* EventDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
-		E5F6FF7C2977CC3700D5C22B /* AIController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AIController.swift; sourceTree = "<group>"; };
+		E5F6FF7C2977CC3700D5C22B /* AskAIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskAIViewController.swift; sourceTree = "<group>"; };
 		E5F6FF7D2977CC3700D5C22B /* EventDetailView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventDetailView.xib; sourceTree = "<group>"; };
 		E5F6FF7E2977CC3700D5C22B /* VoiceGuideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceGuideController.swift; sourceTree = "<group>"; };
 		E5F6FF7F2977CC3700D5C22B /* Home.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
@@ -588,13 +597,13 @@
 		E5F6FFE42977CCB700D5C22B /* miraikan_serverlist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = miraikan_serverlist.json; sourceTree = "<group>"; };
 		E5F6FFE52977CCB700D5C22B /* FloorPlan.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = FloorPlan.json; sourceTree = "<group>"; };
 		E5F6FFE62977CCB700D5C22B /* schedule.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = schedule.json; sourceTree = "<group>"; };
-		E5F6FFF12977CCC100D5C22B /* MiraikanAboutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiraikanAboutView.swift; sourceTree = "<group>"; };
+		E5F6FFF12977CCC100D5C22B /* AboutMiraikanView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutMiraikanView.swift; sourceTree = "<group>"; };
 		E5F6FFF22977CCC100D5C22B /* MiraikanIDMyPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiraikanIDMyPageView.swift; sourceTree = "<group>"; };
 		E5F6FFF32977CCC100D5C22B /* NaviSettingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NaviSettingController.swift; sourceTree = "<group>"; };
 		E5F6FFF42977CCC100D5C22B /* SettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		E5F6FFF52977CCC100D5C22B /* TabItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabItem.swift; sourceTree = "<group>"; };
 		E5F6FFF62977CCC100D5C22B /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		E5F6FFF72977CCC100D5C22B /* AppAboutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppAboutView.swift; sourceTree = "<group>"; };
+		E5F6FFF72977CCC100D5C22B /* AboutAppView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutAppView.swift; sourceTree = "<group>"; };
 		E5F6FFF82977CCC100D5C22B /* DistanceCheckViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DistanceCheckViewController.swift; sourceTree = "<group>"; };
 		EBE9F8032158D7532B8BFC20 /* Pods-NavCog3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -858,6 +867,173 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		E54F24432980E84100F3A83C /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FF7A2977CC3600D5C22B /* EventView.swift */,
+				E5F6FF822977CC3700D5C22B /* EventViewController.swift */,
+			);
+			path = Event;
+			sourceTree = "<group>";
+		};
+		E54F24442980E8F500F3A83C /* AskAI */ = {
+			isa = PBXGroup;
+			children = (
+				E54F24472980E93300F3A83C /* AskAIView.swift */,
+				E5F6FF7C2977CC3700D5C22B /* AskAIViewController.swift */,
+			);
+			path = AskAI;
+			sourceTree = "<group>";
+		};
+		E54F244A2980ED9400F3A83C /* EventDetail */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FF7B2977CC3600D5C22B /* EventDetailView.swift */,
+				E5F6FF7D2977CC3700D5C22B /* EventDetailView.xib */,
+				E5F600292977CD0D00D5C22B /* EventDetailViewController.swift */,
+			);
+			path = EventDetail;
+			sourceTree = "<group>";
+		};
+		E54F244B2980EE4500F3A83C /* FloorMap */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FF812977CC3700D5C22B /* FloorMapView.swift */,
+				E5F6FF832977CC3700D5C22B /* FloorMapViewController.swift */,
+			);
+			path = FloorMap;
+			sourceTree = "<group>";
+		};
+		E54F244C2980EF4B00F3A83C /* Exhibition */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FF802977CC3700D5C22B /* ExhibitionView.swift */,
+			);
+			path = Exhibition;
+			sourceTree = "<group>";
+		};
+		E54F244D2980EFC000F3A83C /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FF7F2977CC3700D5C22B /* Home.swift */,
+				E5F600372977CD1B00D5C22B /* MiraikanController.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		E54F244E2980F05000F3A83C /* AboutApp */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FFF72977CCC100D5C22B /* AboutAppView.swift */,
+			);
+			path = AboutApp;
+			sourceTree = "<group>";
+		};
+		E54F244F2980F06C00F3A83C /* AboutMiraikan */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FFF12977CCC100D5C22B /* AboutMiraikanView.swift */,
+			);
+			path = AboutMiraikan;
+			sourceTree = "<group>";
+		};
+		E54F24502980F14D00F3A83C /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FFF62977CCC100D5C22B /* LoginView.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		E54F24512980F16100F3A83C /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FFF42977CCC100D5C22B /* SettingView.swift */,
+			);
+			path = Setting;
+			sourceTree = "<group>";
+		};
+		E54F24522980F1B100F3A83C /* DistanceCheck */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FF792977CC3600D5C22B /* DistanceCheckView.swift */,
+				E5F6FFF82977CCC100D5C22B /* DistanceCheckViewController.swift */,
+			);
+			path = DistanceCheck;
+			sourceTree = "<group>";
+		};
+		E54F24532980F22200F3A83C /* EventList */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6002D2977CD0E00D5C22B /* EventListController.swift */,
+			);
+			path = EventList;
+			sourceTree = "<group>";
+		};
+		E54F24542980F2D000F3A83C /* FloorSelection */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6002B2977CD0D00D5C22B /* FloorSelectionController.swift */,
+			);
+			path = FloorSelection;
+			sourceTree = "<group>";
+		};
+		E54F24552980F36400F3A83C /* ExhibitionList */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6002E2977CD0E00D5C22B /* ExhibitionListController.swift */,
+			);
+			path = ExhibitionList;
+			sourceTree = "<group>";
+		};
+		E54F24562980F3EC00F3A83C /* BlindExhibition */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6002A2977CD0D00D5C22B /* BlindExhibitionController.swift */,
+			);
+			path = BlindExhibition;
+			sourceTree = "<group>";
+		};
+		E54F24572980F40900F3A83C /* PermanentExhibition */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6002F2977CD0E00D5C22B /* PermanentExhibitionController.swift */,
+			);
+			path = PermanentExhibition;
+			sourceTree = "<group>";
+		};
+		E54F24582980F41B00F3A83C /* RestRoomList */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6002C2977CD0E00D5C22B /* RestRoomListViewController.swift */,
+			);
+			path = RestRoomList;
+			sourceTree = "<group>";
+		};
+		E54F24592980F43800F3A83C /* VoiceGuide */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FF7E2977CC3700D5C22B /* VoiceGuideController.swift */,
+			);
+			path = VoiceGuide;
+			sourceTree = "<group>";
+		};
+		E54F245A2980F55F00F3A83C /* MiraikanIDMyPage */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FFF22977CCC100D5C22B /* MiraikanIDMyPageView.swift */,
+			);
+			path = MiraikanIDMyPage;
+			sourceTree = "<group>";
+		};
+		E54F245B2980F79000F3A83C /* NaviSetting */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FFF32977CCC100D5C22B /* NaviSettingController.swift */,
+			);
+			path = NaviSetting;
+			sourceTree = "<group>";
+		};
 		E5F6FF552977CB2100D5C22B /* Miraikan */ = {
 			isa = PBXGroup;
 			children = (
@@ -923,17 +1099,26 @@
 		E5F6FF592977CB5B00D5C22B /* Contents */ = {
 			isa = PBXGroup;
 			children = (
-				E5F6FF7C2977CC3700D5C22B /* AIController.swift */,
-				E5F6FF792977CC3600D5C22B /* DistanceCheckView.swift */,
-				E5F6FF7B2977CC3600D5C22B /* EventDetailView.swift */,
-				E5F6FF7D2977CC3700D5C22B /* EventDetailView.xib */,
-				E5F6FF7A2977CC3600D5C22B /* EventView.swift */,
-				E5F6FF822977CC3700D5C22B /* EventViewController.swift */,
-				E5F6FF802977CC3700D5C22B /* ExhibitionView.swift */,
-				E5F6FF812977CC3700D5C22B /* FloorMapView.swift */,
-				E5F6FF832977CC3700D5C22B /* FloorMapViewController.swift */,
-				E5F6FF7F2977CC3700D5C22B /* Home.swift */,
-				E5F6FF7E2977CC3700D5C22B /* VoiceGuideController.swift */,
+				E54F244E2980F05000F3A83C /* AboutApp */,
+				E54F244F2980F06C00F3A83C /* AboutMiraikan */,
+				E54F24442980E8F500F3A83C /* AskAI */,
+				E54F24562980F3EC00F3A83C /* BlindExhibition */,
+				E54F24522980F1B100F3A83C /* DistanceCheck */,
+				E54F24432980E84100F3A83C /* Event */,
+				E54F244A2980ED9400F3A83C /* EventDetail */,
+				E54F24532980F22200F3A83C /* EventList */,
+				E54F244C2980EF4B00F3A83C /* Exhibition */,
+				E54F24552980F36400F3A83C /* ExhibitionList */,
+				E54F24542980F2D000F3A83C /* FloorSelection */,
+				E54F244B2980EE4500F3A83C /* FloorMap */,
+				E54F244D2980EFC000F3A83C /* Home */,
+				E54F24502980F14D00F3A83C /* Login */,
+				E54F245A2980F55F00F3A83C /* MiraikanIDMyPage */,
+				E54F245B2980F79000F3A83C /* NaviSetting */,
+				E54F24572980F40900F3A83C /* PermanentExhibition */,
+				E54F24582980F41B00F3A83C /* RestRoomList */,
+				E54F24512980F16100F3A83C /* Setting */,
+				E54F24592980F43800F3A83C /* VoiceGuide */,
 			);
 			path = Contents;
 			sourceTree = "<group>";
@@ -979,13 +1164,8 @@
 		E5F6FF5C2977CB7E00D5C22B /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				E5F6FFF72977CCC100D5C22B /* AppAboutView.swift */,
-				E5F6FFF82977CCC100D5C22B /* DistanceCheckViewController.swift */,
-				E5F6FFF62977CCC100D5C22B /* LoginView.swift */,
-				E5F6FFF12977CCC100D5C22B /* MiraikanAboutView.swift */,
-				E5F6FFF22977CCC100D5C22B /* MiraikanIDMyPageView.swift */,
-				E5F6FFF32977CCC100D5C22B /* NaviSettingController.swift */,
-				E5F6FFF42977CCC100D5C22B /* SettingView.swift */,
+				E54F242A2980E2CA00F3A83C /* RouteModeRow.swift */,
+				E54F24272980E26E00F3A83C /* RouteMode.swift */,
 				E5F6FFF52977CCC100D5C22B /* TabItem.swift */,
 			);
 			path = Settings;
@@ -1022,7 +1202,6 @@
 		E5F6FF5F2977CBA300D5C22B /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				E5F6FF622977CBC900D5C22B /* List */,
 				E5F6FF612977CBBF00D5C22B /* Main */,
 				E5F6FF602977CBAD00D5C22B /* Tabs */,
 			);
@@ -1034,7 +1213,6 @@
 			children = (
 				E5F6001E2977CCFC00D5C22B /* AITabController.swift */,
 				E5F6001F2977CCFC00D5C22B /* HomeTabController.swift */,
-				E5F600372977CD1B00D5C22B /* MiraikanController.swift */,
 				E5F6001D2977CCFC00D5C22B /* LoginTabController.swift */,
 				E5F600202977CCFC00D5C22B /* SCTabController.swift */,
 				E5F600212977CCFC00D5C22B /* StaffTabController.swift */,
@@ -1048,20 +1226,6 @@
 				E5F600272977CD0500D5C22B /* MainTabController.swift */,
 			);
 			path = Main;
-			sourceTree = "<group>";
-		};
-		E5F6FF622977CBC900D5C22B /* List */ = {
-			isa = PBXGroup;
-			children = (
-				E5F6002A2977CD0D00D5C22B /* BlindExhibitionController.swift */,
-				E5F600292977CD0D00D5C22B /* EventDetailViewController.swift */,
-				E5F6002D2977CD0E00D5C22B /* EventListController.swift */,
-				E5F6002E2977CD0E00D5C22B /* ExhibitionListController.swift */,
-				E5F6002B2977CD0D00D5C22B /* FloorSelectionController.swift */,
-				E5F6002F2977CD0E00D5C22B /* PermanentExhibitionController.swift */,
-				E5F6002C2977CD0E00D5C22B /* RestRoomListViewController.swift */,
-			);
-			path = List;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1356,7 +1520,7 @@
 			files = (
 				7E0E97171D98BE1600CF2960 /* NavDataStore.m in Sources */,
 				E5F6FF8D2977CC3700D5C22B /* EventViewController.swift in Sources */,
-				E5F6FF872977CC3700D5C22B /* AIController.swift in Sources */,
+				E5F6FF872977CC3700D5C22B /* AskAIViewController.swift in Sources */,
 				7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */,
 				E5F6000C2977CCD500D5C22B /* MapManager.swift in Sources */,
 				E5F6FF8B2977CC3700D5C22B /* ExhibitionView.swift in Sources */,
@@ -1404,6 +1568,7 @@
 				7E5150A41D8BF32800ED25FB /* NavNavigator.m in Sources */,
 				7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */,
 				7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */,
+				E54F24282980E26E00F3A83C /* RouteMode.swift in Sources */,
 				E5F6FF892977CC3700D5C22B /* VoiceGuideController.swift in Sources */,
 				E5F600232977CCFC00D5C22B /* AITabController.swift in Sources */,
 				E5F600322977CD0E00D5C22B /* FloorSelectionController.swift in Sources */,
@@ -1414,6 +1579,7 @@
 				E5F6FFD42977CCA500D5C22B /* GuidePositionModel.swift in Sources */,
 				E5F600142977CCD500D5C22B /* DefaultTTS.swift in Sources */,
 				E5F6FFBB2977CC9300D5C22B /* BaseListView.swift in Sources */,
+				E54F242B2980E2CA00F3A83C /* RouteModeRow.swift in Sources */,
 				E55D4C95297F6D7100DE379B /* LocationManager.m in Sources */,
 				E5F600112977CCD500D5C22B /* LineSegment.swift in Sources */,
 				E5F6FFBE2977CC9300D5C22B /* BlankView.swift in Sources */,
@@ -1447,7 +1613,7 @@
 				E5F6FFAD2977CC9300D5C22B /* BaseScrollView.swift in Sources */,
 				E5F6FFBF2977CC9300D5C22B /* Switch.swift in Sources */,
 				E5F6FF8E2977CC3700D5C22B /* FloorMapViewController.swift in Sources */,
-				E5F6FFFF2977CCC100D5C22B /* AppAboutView.swift in Sources */,
+				E5F6FFFF2977CCC100D5C22B /* AboutAppView.swift in Sources */,
 				7E96D9331DACD0C700D57C8C /* SearchViewController.m in Sources */,
 				E5F600002977CCC100D5C22B /* DistanceCheckViewController.swift in Sources */,
 				E5F600342977CD0E00D5C22B /* EventListController.swift in Sources */,
@@ -1459,11 +1625,12 @@
 				E5F6FFD52977CCA500D5C22B /* ExhibitionLinkModel.swift in Sources */,
 				7E9866CE1D5174780073CB49 /* Logging.m in Sources */,
 				E5F600162977CCD500D5C22B /* HTTPAdaptor.swift in Sources */,
-				E5F6FFF92977CCC100D5C22B /* MiraikanAboutView.swift in Sources */,
+				E5F6FFF92977CCC100D5C22B /* AboutMiraikanView.swift in Sources */,
 				E5F6001A2977CCE000D5C22B /* UIColorExtension.swift in Sources */,
 				E5F6FF942977CC7F00D5C22B /* BaseNavController.swift in Sources */,
 				E5F6FEFE2977AD0500D5C22B /* NavTalkButton.m in Sources */,
 				E5F6FFAE2977CC9300D5C22B /* TableViewCell.swift in Sources */,
+				E54F24482980E93300F3A83C /* AskAIView.swift in Sources */,
 				E5F6FFFE2977CCC100D5C22B /* LoginView.swift in Sources */,
 				E5F6FFD72977CCA500D5C22B /* AdditionalLocationModel.swift in Sources */,
 				7EA49A351F9AE21900E1369B /* WebViewController.m in Sources */,
@@ -1498,7 +1665,7 @@
 				E53750862977D73900BC3ACA /* NavButtonModel.swift in Sources */,
 				E53750872977D73900BC3ACA /* RegularExhibitionModel.swift in Sources */,
 				E53750882977D73900BC3ACA /* ScheduleRowModel.swift in Sources */,
-				E53750892977D73900BC3ACA /* AIController.swift in Sources */,
+				E53750892977D73900BC3ACA /* AskAIViewController.swift in Sources */,
 				E537508A2977D73900BC3ACA /* DistanceCheckView.swift in Sources */,
 				E537508B2977D73900BC3ACA /* EventDetailView.swift in Sources */,
 				E537508C2977D73900BC3ACA /* EventView.swift in Sources */,
@@ -1533,6 +1700,7 @@
 				E53750A92977D73900BC3ACA /* BaseListController.swift in Sources */,
 				E53750AA2977D73900BC3ACA /* BaseNavController.swift in Sources */,
 				E53750AB2977D73900BC3ACA /* BaseTabController.swift in Sources */,
+				E54F24292980E26E00F3A83C /* RouteMode.swift in Sources */,
 				E53750572977D71B00BC3ACA /* BlindExhibitionController.swift in Sources */,
 				E53750582977D71B00BC3ACA /* EventDetailViewController.swift in Sources */,
 				E53750592977D71B00BC3ACA /* EventListController.swift in Sources */,
@@ -1543,6 +1711,7 @@
 				E537505E2977D71B00BC3ACA /* MainTabController.swift in Sources */,
 				E537505F2977D71B00BC3ACA /* AITabController.swift in Sources */,
 				E53750602977D71B00BC3ACA /* HomeTabController.swift in Sources */,
+				E54F242C2980E2CA00F3A83C /* RouteModeRow.swift in Sources */,
 				E53750612977D71B00BC3ACA /* MiraikanController.swift in Sources */,
 				E53750622977D71B00BC3ACA /* LoginTabController.swift in Sources */,
 				E53750632977D71B00BC3ACA /* SCTabController.swift in Sources */,
@@ -1560,10 +1729,10 @@
 				E53750702977D71B00BC3ACA /* UIColorExtension.swift in Sources */,
 				E53750712977D71B00BC3ACA /* UINavigationControllerExtension.swift in Sources */,
 				E53750722977D71B00BC3ACA /* UserDefaultsExtension.swift in Sources */,
-				E53750732977D71B00BC3ACA /* AppAboutView.swift in Sources */,
+				E53750732977D71B00BC3ACA /* AboutAppView.swift in Sources */,
 				E53750742977D71B00BC3ACA /* DistanceCheckViewController.swift in Sources */,
 				E53750752977D71B00BC3ACA /* LoginView.swift in Sources */,
-				E53750762977D71B00BC3ACA /* MiraikanAboutView.swift in Sources */,
+				E53750762977D71B00BC3ACA /* AboutMiraikanView.swift in Sources */,
 				E53750772977D71B00BC3ACA /* MiraikanIDMyPageView.swift in Sources */,
 				E53750782977D71B00BC3ACA /* NaviSettingController.swift in Sources */,
 				E53750792977D71B00BC3ACA /* SettingView.swift in Sources */,
@@ -1593,6 +1762,7 @@
 				E5F6FF202977B2F700D5C22B /* HLPGeoJSON.m in Sources */,
 				E5F6FF212977B2F700D5C22B /* SettingViewController.m in Sources */,
 				E5F6FF222977B2F700D5C22B /* DefaultTTS.m in Sources */,
+				E54F24492980E93300F3A83C /* AskAIView.swift in Sources */,
 				E5F6FF232977B2F700D5C22B /* HLPSetting.m in Sources */,
 				E5F6FF242977B2F700D5C22B /* MapNavigationController.m in Sources */,
 				E5F6FF252977B2F700D5C22B /* HLPDataUtil.m in Sources */,

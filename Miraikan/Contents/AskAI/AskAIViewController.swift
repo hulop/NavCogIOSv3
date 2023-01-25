@@ -1,6 +1,6 @@
 //
 //
-//  AIController.swift
+//  AskAIViewController.swift
 //  NavCogMiraikan
 //
 /*******************************************************************************
@@ -29,54 +29,6 @@ import Foundation
 import UIKit
 import HLPDialog
 
-/**
- The view to show before AI Dialog starts and after it ends
- */
-class AIView: BaseView {
-    
-    private let btnStart = StyledButton()
-    private let lblDesc = AutoWrapLabel()
-    
-    var openAction : (()->())?
-    
-    var isAvailable : Bool? {
-        didSet {
-            guard let isAvailable = isAvailable else { return }
-            
-            btnStart.isEnabled = isAvailable
-            if isAvailable {
-                btnStart.setTitle(NSLocalizedString("ai_available", comment: ""), for: .normal)
-                btnStart.setTitleColor(.systemBlue, for: .normal)
-            } else {
-                btnStart.setTitle(NSLocalizedString("ai_not_available", comment: ""), for: .disabled)
-                btnStart.setTitleColor(.lightText, for: .disabled)
-            }
-            btnStart.sizeToFit()
-        }
-    }
-    
-    override func setup() {
-        super.setup()
-        
-        btnStart.tapAction { [weak self] _ in
-            guard let self = self else { return }
-            if let _f = self.openAction {
-                _f()
-            }
-        }
-        addSubview(btnStart)
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        btnStart.frame = CGRect(x: (self.frame.width - btnStart.frame.width) / 2,
-                                y: (self.frame.height - btnStart.frame.height) / 2,
-                                width: btnStart.frame.width,
-                                height: btnStart.frame.height)
-    }
-}
-
 
 /**
  This controller manages the actions of AI Dialog.
@@ -89,14 +41,13 @@ class AIView: BaseView {
  A notification of navigation would be posted here, and another notification would be observed the next time opening AI Dialog,
  either automatically or manually.
  */
-class AIController: BaseController {
+class AskAIViewController: BaseController {
     
-    private let aiView = AIView()
-    
+    private let askAiView = AskAIView()
     private var isObserved = false
     
     init(title: String) {
-        super.init(aiView, title: title)
+        super.init(askAiView, title: title)
     }
     
     required init?(coder: NSCoder) {
@@ -113,8 +64,8 @@ class AIController: BaseController {
         super.viewDidLoad()
         
         let dialogManager = DialogManager.sharedManager()
-        aiView.isAvailable = dialogManager.isAvailable
-        aiView.openAction = { [weak self] in
+        askAiView.isAvailable = dialogManager.isAvailable
+        askAiView.openAction = { [weak self] in
             guard let self = self else { return }
             self.loadDialog(manager: dialogManager)
         }

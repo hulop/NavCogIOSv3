@@ -1,5 +1,5 @@
 //
-//  MiraikanAboutView.swift
+//  SettingView.swift
 //  NavCogMiraikan
 //
 /*******************************************************************************
@@ -26,27 +26,32 @@
 
 import Foundation
 import UIKit
-import WebKit
 
+
+// TODO: Display route histories
 /**
- The WebView retrieved from Miraikan About page
+ Current usage: select navigation mode
  */
-class MiraikanAboutView : BaseWebView {
+class SettingView: BaseListView {
     
-    override func setup() {
-        super.setup()
+    private let routeModeId = "routeModeCell"
+    
+    override func initTable(isSelectionAllowed: Bool) {
+        super.initTable(isSelectionAllowed: isSelectionAllowed)
         
-        let address = "\(MiraikanUtil.miraikanHost)/aboutus/"
-        loadContent(address)
+        self.tableView.register(RouteModeRow.self, forCellReuseIdentifier: routeModeId)
+        
+        items = [routeModeId]
     }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cellId = (items as? [String])?[indexPath.row] else { return UITableViewCell() }
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
         
-        // Loaded
-        webView.frame = CGRect(x: insets.left,
-                               y: insets.top,
-                               width: innerSize.width,
-                               height: innerSize.height)
+        if let routeModeCell = cell as? RouteModeRow {
+            return routeModeCell
+        }
+        
+        return UITableViewCell()
     }
 }

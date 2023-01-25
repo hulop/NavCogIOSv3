@@ -1,10 +1,9 @@
 //
-//
-//  AITabController.swift
+//  AboutMiraikanView.swift
 //  NavCogMiraikan
 //
 /*******************************************************************************
- * Copyright (c) 2022 © Miraikan - The National Museum of Emerging Science and Innovation
+ * Copyright (c) 2021 © Miraikan - The National Museum of Emerging Science and Innovation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,20 +26,27 @@
 
 import Foundation
 import UIKit
+import WebKit
 
-class AITabController: BaseTabController {
+/**
+ The WebView retrieved from Miraikan About page
+ */
+class AboutMiraikanView: BaseWebView {
     
-    @objc override init() {
-        super.init()
-        tabLayout()
+    override func setup() {
+        super.setup()
         
-        let title = NSLocalizedString("Ask AI", comment: "")
-        self.title = title
-
-        nav.viewControllers = [AskAIViewController(title: title)]
+        let address = "\(MiraikanUtil.miraikanHost)/aboutus/"
+        loadContent(address)
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // Loaded
+        webView.frame = CGRect(x: insets.left,
+                               y: insets.top,
+                               width: innerSize.width,
+                               height: innerSize.height)
     }
 }

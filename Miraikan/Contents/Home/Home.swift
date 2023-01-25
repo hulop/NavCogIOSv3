@@ -364,9 +364,9 @@ fileprivate enum MenuItem {
         case .miraikanIDmyPage:
             return createVC(view: MiraikanIDMyPageView())
         case .aboutMiraikan:
-            return createVC(view: MiraikanAboutView())
+            return createVC(view: AboutMiraikanView())
         case .aboutApp:
-            return createVC(view: AppAboutView())
+            return createVC(view: AboutAppView())
         default:
             return createVC(view: BaseView())
         }

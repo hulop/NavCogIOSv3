@@ -1,5 +1,5 @@
 //
-//  AppAboutView.swift
+//  AboutAppView.swift
 //  NavCogMiraikan
 //
 /*******************************************************************************
@@ -32,7 +32,7 @@ import UIKit
  
  The copyright references should be placed here.
  */
-class AppAboutView: BaseView {
+class AboutAppView: BaseView {
     
     private let lblIcon8 = UILabel()
     private let lblVersion = UILabel()

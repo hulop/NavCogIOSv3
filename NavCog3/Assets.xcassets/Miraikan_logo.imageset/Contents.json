@@ -6,12 +6,45 @@
       "scale" : "1x"
     },
     {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Miraikan_logo_white_1.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
       "filename" : "Miraikan_logo_2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Miraikan_logo_white_2.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
       "filename" : "Miraikan_logo_3.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Miraikan_logo_white_3.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

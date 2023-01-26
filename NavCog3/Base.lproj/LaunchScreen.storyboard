@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -27,7 +28,7 @@
                                 </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="ytZ-tf-kVg" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="100" id="HMw-UN-fxZ"/>
                             <constraint firstItem="ytZ-tf-kVg" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="wlm-ck-5xx"/>
@@ -41,5 +42,8 @@
     </scenes>
     <resources>
         <image name="Miraikan_logo" width="275" height="66.5"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

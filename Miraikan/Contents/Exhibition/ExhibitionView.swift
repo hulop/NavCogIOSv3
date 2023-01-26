@@ -42,7 +42,7 @@ class ExhibitionView: BaseWebView, WebAccessibilityDelegate {
     private var lblDetail : AutoWrapLabel?
 
     private let gapX: CGFloat = 20
-    private let gapY: CGFloat = 10
+    private let gapY: CGFloat = 0
     
     private let id: String?
     private var nodeId: String?

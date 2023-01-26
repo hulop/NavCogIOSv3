@@ -85,6 +85,7 @@ class AskAIViewController: BaseController {
         dialogVC.dialogViewHelper.setup(dialogVC.view,
                                         position: CGPoint(x: self.view.frame.width / 2,
                                                           y: self.view.frame.height - 120))
+        dialogVC.navigationItem.hidesBackButton = true
 
         if let nav = self.navigationController as? BaseNavController {
             nav.show(dialogVC, sender: nil)

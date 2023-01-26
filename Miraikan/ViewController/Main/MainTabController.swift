@@ -10,6 +10,8 @@ import UIKit
 
 class MainTabController: UITabBarController, UITabBarControllerDelegate {
 
+    private var selectedTab: TabItem = .home
+    
     private var buttonBaseView = ThroughView()
     private var voiceGuideButton = VoiceGuideButton()
 //    private var logButton = LocationRecordingButton()
@@ -48,30 +50,31 @@ class MainTabController: UITabBarController, UITabBarControllerDelegate {
         AudioGuideManager.shared.isActive(UserDefaults.standard.bool(forKey: "isVoiceGuideOn"))
         setLayerButton()
         setKVO()
-//        becomeFirstResponder()
 
-//        self.mapVC = UIStoryboard(name: "Main", bundle: nil)
-//            .instantiateViewController(withIdentifier: "map_ui_navigation")
     }
 
-//    override var canBecomeFirstResponder: Bool {
-//        return true
-//    }
-//
-//    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-//        super.motionBegan(motion, with: event)
-//    }
-//
-//    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-//        super.motionEnded(motion, with: event)
-//        if motion == .motionShake {
-//            showSettings()
-//        }
-//    }
-//
-//    override func motionCancelled(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-//        super.motionCancelled(motion, with: event)
-//    }
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        guard let firstIndex = tabBar.items?.firstIndex(of: item),
+              let tab = TabItem(rawValue: firstIndex)
+              else { return }
+
+        if tab == selectedTab { return }
+
+        switch tab {
+        case .callStaff:
+            AudioGuideManager.shared.isDisplayButton(false)
+        case .callSC:
+            AudioGuideManager.shared.isDisplayButton(false)
+        case .home:
+            break
+        case .login:
+            AudioGuideManager.shared.isDisplayButton(false)
+        case .askAI:
+            AudioGuideManager.shared.isDisplayButton(false)
+            MapManager.shared.stopNavigation()
+        }
+        selectedTab = tab
+    }
 
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
 //        if let navigationController = viewController as? UINavigationController {

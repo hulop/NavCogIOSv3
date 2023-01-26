@@ -163,3 +163,30 @@ Feedback is sending...";
 /* Show POI detail when users change their heading toward the POI */
 "Show POI with Action" = "Show POI with Action";
 
+"PERIOD" = ". ";
+
+"It is the entrance." = "It is the entrance.";
+
+"Point your smartphone camera at the ground." = "Point your smartphone camera at the ground.";
+
+"While facing the ground, turn left and right slowly and check the following directions." = "While facing the ground, turn left and right slowly and check the following directions.";
+
+"When facing the ground, please proceed after reaching a position that guides you to the front." = "When facing the ground, please proceed after reaching a position that guides you to the front.";
+
+"With your smartphone's camera facing forward and upwards, slowly turn left and right, looking for sound guidance." = "With your smartphone's camera facing forward and upwards, slowly turn left and right, looking for sound guidance.";
+
+"If you point your smartphone's camera at the front, you'll get an explanation of the exhibition, and if you point it at the ground, you'll be guided through the route." = "If you point your smartphone's camera at the front, you'll get an explanation of the exhibition, and if you point it at the ground, you'll be guided through the route.";
+
+"Audio stops when you double tap the screen." = "Audio stops when you double tap the screen.";
+
+"to the entrance" = " to the entrance";
+
+"please proceed slowly." = "please proceed slowly.";
+
+"Turn to the right a little" = "Turn to the right a little";
+
+"Turn to the left a little" = "Turn to the left a little";
+
+"centimetre" = "%d centimetre";
+
+"metre" = "%d metre";

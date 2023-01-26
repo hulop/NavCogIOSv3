@@ -302,6 +302,7 @@ fileprivate enum MenuItem {
             .miraikanToday,
             .permanentExhibition,
             .currentPosition,
+            .arNavigation,
             .nearestWashroom,
             .setting,
             .miraikanIDmyPage,
@@ -359,6 +360,8 @@ fileprivate enum MenuItem {
             return EventListController(title: self.name)
         case .nearestWashroom:
             return RestRoomListViewController(title: "")
+        case .arNavigation:
+            return ARViewController()
         case .setting:
             return createVC(view: SettingView())
         case .miraikanIDmyPage:
@@ -558,13 +561,6 @@ class Home : BaseListView {
                 menuRow.accessibilityLabel = menuItem.isAvailable ? menuItem.name : NSLocalizedString("blank_description", comment: "")
                 menuRow.accessibilityTraits = .button
 
-                if menuItem == .arNavigation,
-                   let url = URL(string: URL_AR_SCHEME),
-                   UIApplication.shared.canOpenURL(url) {
-                    menuRow.accessibilityLabel = menuItem.name
-                    menuRow.textLabel?.isEnabled = true
-                }
-
                 return menuRow
             } else if let cardModel = rowItem as? CardModel,
                       let cardRow = tableView.dequeueReusableCell(withIdentifier: cardCellId,
@@ -624,22 +620,6 @@ class Home : BaseListView {
                 let vc = menuItem.createVC()
                 nav.show(vc, sender: nil)
             }
-        } else if let menuItem = rowItem as? MenuItem,
-                  menuItem == .arNavigation,
-                  var url = URL(string: URL_AR_SCHEME),
-                  UIApplication.shared.canOpenURL(url) {
-            
-            if let navDataStore = NavDataStore.shared(),
-               let currentLocation = navDataStore.currentLocation(),
-               !currentLocation.lat.isNaN,
-               !currentLocation.lng.isNaN {
-                let query = String(format: URL_AR_QUERY, String(currentLocation.floor), String(currentLocation.lat), String(currentLocation.lng))
-                if let queryUrl = URL(string: URL_AR_SCHEME + URL_AR_HOST + "?" + query) {
-                    url = queryUrl
-                }
-            }
-                    
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
         } else if let cardModel = rowItem as? CardModel {
             let view = ExhibitionView(permalink: cardModel.permalink)
             nav.show(BaseController(view, title: cardModel.title), sender: nil)

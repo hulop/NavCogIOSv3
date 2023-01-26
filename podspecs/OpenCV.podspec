@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name         = "OpenCV"
-    s.version      = "4.5.3"
+    s.version      = "4.7.0"
     s.summary      = "OpenCV (Computer Vision) for iOS."
     s.description = "## OpenCV: Open Source Computer Vision Library\n### Resources\n* Homepage: <https://opencv.org>\n* Docs: <https://docs.opencv.org/master/>\n* Q&A forum: <http://answers.opencv.org>\n* Issue tracking: <https://github.com/opencv/opencv/issues>\n### Contributing\nPlease read the [contribution guidelines](https://github.com/opencv/opencv/wiki/How_to_contribute) before starting work on a pull request.\n#### Summary of the guidelines:\n* One pull request per issue;\n* Choose the right base branch;\n* Include tests and documentation;\n* Clean up \"oops\" commits before submitting;\n* Follow the [coding style guide](https://github.com/opencv/opencv/wiki/Coding_Style_Guide)."
     s.homepage     = "http://opencv.org"
@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
     s.author = "https://github.com/opencv/opencv/graphs/contributors"
     s.documentation_url = "https://docs.opencv.org/master/"
     s.source       = {
-        :http => "https://github.com/younata/opencv-xcframework/releases/download/4.5.3/opencv2.xcframework.zip"
+        :http => "https://github.com/miraikan-research/opencv-xcframework/releases/download/4.7.0/opencv2.xcframework.zip"
     }
     s.vendored_frameworks = "opencv2.xcframework"
     s.static_framework = true

@@ -311,3 +311,35 @@ NavCogの設定画面から
 "Switch to AR navigation" = "ARナビゲーションに切り替え";
 "Do you want to start the Miraikan AR app?" = "未来館ARアプリを起動しますか？";
 "Do you want to start the Miraikan AR navigation?" = "未来館ARナビゲーションを起動しますか？";
+
+"PERIOD" = "。";
+
+"It is the entrance." = "入り口です。";
+
+"Point your smartphone camera at the ground." = "スマートフォンのカメラを地面に向けてください。";
+
+"While facing the ground, turn left and right slowly and check the following directions." = "地面に向けたまま、ゆっくり左右を回り、次の誘導を確認してください。";
+
+"When facing the ground, please proceed after reaching a position that guides you to the front." = "地面に向けた際には目的に対して、正面に誘導する位置になってから進んでください。";
+
+"With your smartphone's camera facing forward and upwards, slowly turn left and right, looking for sound guidance." = "スマートフォンのカメラを正面、上向きに向けて、ゆっくり左右を回り、音の誘導を探してください。";
+
+"If you point your smartphone's camera at the front, you'll get an explanation of the exhibition, and if you point it at the ground, you'll be guided through the route." = "スマートフォンのカメラを正面に向けた場合は、展示の解説、地面に向けた場合は経路の誘導が行われます。";
+"Audio stops when you double tap the screen." = "音声は画面をダブルタップすると停止します。";
+
+"to the entrance" = "入り口まで";
+
+"please proceed slowly." = "ゆっくり進んで下さい";
+
+"Turn to the right a little" = "やや右を向いて";
+
+"Turn to the left a little" = "やや左を向いて";
+
+"centimetre" = "%d センチメートル";
+
+"metre" = "%d メートル";
+
+"Switch to Miraikan app" = "未来館アプリ切り替え";
+"Do you want to start the Miraikan app?" = "未来館アプリに切り替えますか？";
+"YES" = "YES";
+"NO" = "NO";

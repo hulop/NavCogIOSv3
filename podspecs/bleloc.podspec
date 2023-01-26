@@ -16,7 +16,7 @@ This is a localization library for bluetooth le beacons.
   s.ios.deployment_target = "9.0"
   s.osx.deployment_target = "10.6"
 
-  s.dependency 'OpenCV',   '4.5.3'
+  s.dependency 'OpenCV',   '4.7.0'
   s.dependency 'boost',    '1.61.0'
   s.dependency 'eigen',    '3.2.5'
   s.dependency 'picojson', '1.3.0'

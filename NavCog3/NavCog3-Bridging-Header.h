@@ -29,6 +29,9 @@
 #import "SettingDataManager.h"
 #import "ExpandedFunction.h"
 
+#import "MarkerWorldTransform.h"
+#import "OpenCVWrapper.h"
+
 // External Libraries
 #import <AVFAudio/AVAudioSession.h>
 #import <HLPLocationManager/HLPLocationManager.h>

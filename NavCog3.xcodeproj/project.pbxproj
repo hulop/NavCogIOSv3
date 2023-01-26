@@ -172,6 +172,38 @@
 		E54F24492980E93300F3A83C /* AskAIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54F24472980E93300F3A83C /* AskAIView.swift */; };
 		E55D4C95297F6D7100DE379B /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E55D4C94297F6D7100DE379B /* LocationManager.m */; };
 		E55D4C97297F719E00DE379B /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E55D4C94297F6D7100DE379B /* LocationManager.m */; };
+		E5B61E3B29823ACD00533B6F /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3029823ACD00533B6F /* OpenCVWrapper.mm */; };
+		E5B61E3C29823ACE00533B6F /* MarkerWorldTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3129823ACD00533B6F /* MarkerWorldTransform.mm */; };
+		E5B61E3D29823ACE00533B6F /* HLPDataUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3329823ACD00533B6F /* HLPDataUtil.m */; };
+		E5B61E3E29823ACE00533B6F /* exercise-data.json in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E3629823ACD00533B6F /* exercise-data.json */; };
+		E5B61E3F29823ACE00533B6F /* HLPDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3829823ACD00533B6F /* HLPDirectory.m */; };
+		E5B61E4029823ACE00533B6F /* HLPGeoJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3929823ACD00533B6F /* HLPGeoJSON.m */; };
+		E5B61E4429823AF500533B6F /* ArUco.json in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E4129823AF500533B6F /* ArUco.json */; };
+		E5B61E4529823AF500533B6F /* SoundEffect02.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E4229823AF500533B6F /* SoundEffect02.mp3 */; };
+		E5B61E4629823AF500533B6F /* SoundEffect01.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E4329823AF500533B6F /* SoundEffect01.mp3 */; };
+		E5B61E4D29823B0F00533B6F /* StrUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E4829823B0F00533B6F /* StrUtil.swift */; };
+		E5B61E4E29823B0F00533B6F /* ArUcoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E4929823B0F00533B6F /* ArUcoManager.swift */; };
+		E5B61E4F29823B0F00533B6F /* ArManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E4A29823B0F00533B6F /* ArManager.swift */; };
+		E5B61E5029823B0F00533B6F /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E4B29823B0F00533B6F /* AudioManager.swift */; };
+		E5B61E5529823B2D00533B6F /* VoiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E5129823B2C00533B6F /* VoiceModel.swift */; };
+		E5B61E5629823B2D00533B6F /* ArUcoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E5229823B2D00533B6F /* ArUcoModel.swift */; };
+		E5B61E5729823B2D00533B6F /* PhonationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E5329823B2D00533B6F /* PhonationModel.swift */; };
+		E5B61E5829823B2D00533B6F /* GuidanceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E5429823B2D00533B6F /* GuidanceModel.swift */; };
+		E5B61E5929823DFB00533B6F /* ArUco.json in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E4129823AF500533B6F /* ArUco.json */; };
+		E5B61E5A29823DFB00533B6F /* SoundEffect01.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E4329823AF500533B6F /* SoundEffect01.mp3 */; };
+		E5B61E5B29823DFB00533B6F /* SoundEffect02.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E4229823AF500533B6F /* SoundEffect02.mp3 */; };
+		E5B61E5D29823E1300533B6F /* ArUcoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E5229823B2D00533B6F /* ArUcoModel.swift */; };
+		E5B61E5E29823E1300533B6F /* GuidanceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E5429823B2D00533B6F /* GuidanceModel.swift */; };
+		E5B61E5F29823E1300533B6F /* PhonationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E5329823B2D00533B6F /* PhonationModel.swift */; };
+		E5B61E6029823E1300533B6F /* VoiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E5129823B2C00533B6F /* VoiceModel.swift */; };
+		E5B61E6129823E1300533B6F /* ArManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E4A29823B0F00533B6F /* ArManager.swift */; };
+		E5B61E6229823E1300533B6F /* ArUcoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E4929823B0F00533B6F /* ArUcoManager.swift */; };
+		E5B61E6329823E1300533B6F /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E4B29823B0F00533B6F /* AudioManager.swift */; };
+		E5B61E6529823E1300533B6F /* StrUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E4829823B0F00533B6F /* StrUtil.swift */; };
+		E5B61E6629823F0200533B6F /* MarkerWorldTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3129823ACD00533B6F /* MarkerWorldTransform.mm */; };
+		E5B61E6729823F0200533B6F /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3029823ACD00533B6F /* OpenCVWrapper.mm */; };
+		E5B61E692982417500533B6F /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E682982417500533B6F /* ARViewController.swift */; };
+		E5B61E6A298245A700533B6F /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E682982417500533B6F /* ARViewController.swift */; };
 		E5F600002977CCC100D5C22B /* DistanceCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF82977CCC100D5C22B /* DistanceCheckViewController.swift */; };
 		E5F6000C2977CCD500D5C22B /* MapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F600012977CCD500D5C22B /* MapManager.swift */; };
 		E5F6000D2977CCD500D5C22B /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F600022977CCD500D5C22B /* Host.swift */; };
@@ -497,6 +529,29 @@
 		E54F24472980E93300F3A83C /* AskAIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskAIView.swift; sourceTree = "<group>"; };
 		E55D4C94297F6D7100DE379B /* LocationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
 		E55D4C96297F6D7C00DE379B /* LocationManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
+		E5B61E2F29823ACD00533B6F /* MarkerWorldTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkerWorldTransform.h; sourceTree = "<group>"; };
+		E5B61E3029823ACD00533B6F /* OpenCVWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
+		E5B61E3129823ACD00533B6F /* MarkerWorldTransform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MarkerWorldTransform.mm; sourceTree = "<group>"; };
+		E5B61E3329823ACD00533B6F /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPDataUtil.m; sourceTree = "<group>"; };
+		E5B61E3429823ACD00533B6F /* HLPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPDirectory.h; sourceTree = "<group>"; };
+		E5B61E3529823ACD00533B6F /* HLPGeoJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPGeoJSON.h; sourceTree = "<group>"; };
+		E5B61E3629823ACD00533B6F /* exercise-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "exercise-data.json"; sourceTree = "<group>"; };
+		E5B61E3729823ACD00533B6F /* HLPDataUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPDataUtil.h; sourceTree = "<group>"; };
+		E5B61E3829823ACD00533B6F /* HLPDirectory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPDirectory.m; sourceTree = "<group>"; };
+		E5B61E3929823ACD00533B6F /* HLPGeoJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPGeoJSON.m; sourceTree = "<group>"; };
+		E5B61E3A29823ACD00533B6F /* OpenCVWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
+		E5B61E4129823AF500533B6F /* ArUco.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ArUco.json; sourceTree = "<group>"; };
+		E5B61E4229823AF500533B6F /* SoundEffect02.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = SoundEffect02.mp3; sourceTree = "<group>"; };
+		E5B61E4329823AF500533B6F /* SoundEffect01.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = SoundEffect01.mp3; sourceTree = "<group>"; };
+		E5B61E4829823B0F00533B6F /* StrUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StrUtil.swift; sourceTree = "<group>"; };
+		E5B61E4929823B0F00533B6F /* ArUcoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArUcoManager.swift; sourceTree = "<group>"; };
+		E5B61E4A29823B0F00533B6F /* ArManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArManager.swift; sourceTree = "<group>"; };
+		E5B61E4B29823B0F00533B6F /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
+		E5B61E5129823B2C00533B6F /* VoiceModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceModel.swift; sourceTree = "<group>"; };
+		E5B61E5229823B2D00533B6F /* ArUcoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArUcoModel.swift; sourceTree = "<group>"; };
+		E5B61E5329823B2D00533B6F /* PhonationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhonationModel.swift; sourceTree = "<group>"; };
+		E5B61E5429823B2D00533B6F /* GuidanceModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuidanceModel.swift; sourceTree = "<group>"; };
+		E5B61E682982417500533B6F /* ARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
 		E5F600012977CCD500D5C22B /* MapManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapManager.swift; sourceTree = "<group>"; };
 		E5F600022977CCD500D5C22B /* Host.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		E5F600032977CCD500D5C22B /* ImageAdaptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAdaptor.swift; sourceTree = "<group>"; };
@@ -762,6 +817,11 @@
 				E5F600392977CFDB00D5C22B /* ExpandedFunction.h */,
 				E55D4C96297F6D7C00DE379B /* LocationManager.h */,
 				E55D4C94297F6D7100DE379B /* LocationManager.m */,
+				E5B61E2F29823ACD00533B6F /* MarkerWorldTransform.h */,
+				E5B61E3129823ACD00533B6F /* MarkerWorldTransform.mm */,
+				E5B61E3A29823ACD00533B6F /* OpenCVWrapper.h */,
+				E5B61E3029823ACD00533B6F /* OpenCVWrapper.mm */,
+				E5B61E3229823ACD00533B6F /* model */,
 			);
 			name = helper;
 			sourceTree = "<group>";
@@ -1034,6 +1094,28 @@
 			path = NaviSetting;
 			sourceTree = "<group>";
 		};
+		E5B61E2C29823A5C00533B6F /* Ar */ = {
+			isa = PBXGroup;
+			children = (
+				E5B61E682982417500533B6F /* ARViewController.swift */,
+			);
+			path = Ar;
+			sourceTree = "<group>";
+		};
+		E5B61E3229823ACD00533B6F /* model */ = {
+			isa = PBXGroup;
+			children = (
+				E5B61E3329823ACD00533B6F /* HLPDataUtil.m */,
+				E5B61E3429823ACD00533B6F /* HLPDirectory.h */,
+				E5B61E3529823ACD00533B6F /* HLPGeoJSON.h */,
+				E5B61E3629823ACD00533B6F /* exercise-data.json */,
+				E5B61E3729823ACD00533B6F /* HLPDataUtil.h */,
+				E5B61E3829823ACD00533B6F /* HLPDirectory.m */,
+				E5B61E3929823ACD00533B6F /* HLPGeoJSON.m */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
 		E5F6FF552977CB2100D5C22B /* Miraikan */ = {
 			isa = PBXGroup;
 			children = (
@@ -1099,6 +1181,7 @@
 		E5F6FF592977CB5B00D5C22B /* Contents */ = {
 			isa = PBXGroup;
 			children = (
+				E5B61E2C29823A5C00533B6F /* Ar */,
 				E54F244E2980F05000F3A83C /* AboutApp */,
 				E54F244F2980F06C00F3A83C /* AboutMiraikan */,
 				E54F24442980E8F500F3A83C /* AskAI */,
@@ -1140,6 +1223,10 @@
 				E5F6FFC32977CCA400D5C22B /* NavButtonModel.swift */,
 				E5F6FFCE2977CCA500D5C22B /* RegularExhibitionModel.swift */,
 				E5F6FFC42977CCA500D5C22B /* ScheduleRowModel.swift */,
+				E5B61E5229823B2D00533B6F /* ArUcoModel.swift */,
+				E5B61E5429823B2D00533B6F /* GuidanceModel.swift */,
+				E5B61E5329823B2D00533B6F /* PhonationModel.swift */,
+				E5B61E5129823B2C00533B6F /* VoiceModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1157,6 +1244,9 @@
 				E5F6FFDD2977CCB600D5C22B /* GuidePosition.json */,
 				E5F6FFE42977CCB700D5C22B /* miraikan_serverlist.json */,
 				E5F6FFE62977CCB700D5C22B /* schedule.json */,
+				E5B61E4129823AF500533B6F /* ArUco.json */,
+				E5B61E4329823AF500533B6F /* SoundEffect01.mp3 */,
+				E5B61E4229823AF500533B6F /* SoundEffect02.mp3 */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -1184,6 +1274,10 @@
 				E5F600062977CCD500D5C22B /* LineSegment.swift */,
 				E5F600012977CCD500D5C22B /* MapManager.swift */,
 				E5F600042977CCD500D5C22B /* MiraikanUtil.swift */,
+				E5B61E4A29823B0F00533B6F /* ArManager.swift */,
+				E5B61E4929823B0F00533B6F /* ArUcoManager.swift */,
+				E5B61E4B29823B0F00533B6F /* AudioManager.swift */,
+				E5B61E4829823B0F00533B6F /* StrUtil.swift */,
 				E5F6FF5E2977CB9700D5C22B /* Extension */,
 			);
 			path = Utils;
@@ -1343,8 +1437,10 @@
 				7E17F19E1D9A225A00DB1F34 /* InfoPlist.strings in Resources */,
 				7EDEDC2F1D1E0C6800AC111A /* LaunchScreen.storyboard in Resources */,
 				E5F6FFED2977CCB700D5C22B /* event.json in Resources */,
+				E5B61E4629823AF500533B6F /* SoundEffect01.mp3 in Resources */,
 				7E28479F1E024112006B1FB8 /* exercise-data.json in Resources */,
 				E5F6FFE82977CCB700D5C22B /* AdditionalLocation.json in Resources */,
+				E5B61E4529823AF500533B6F /* SoundEffect02.mp3 in Resources */,
 				7E9238EB1D5189F100875766 /* HLPSettingViewSliderCell.xib in Resources */,
 				E5F6FFEE2977CCB700D5C22B /* miraikan_serverlist.json in Resources */,
 				E5F6FEF52977A9BB00D5C22B /* serverlist.json in Resources */,
@@ -1361,8 +1457,10 @@
 				7E7ED5A81F5EDFC90033814B /* lastcommit.txt in Resources */,
 				E5F6FF882977CC3700D5C22B /* EventDetailView.xib in Resources */,
 				7EDEDC2A1D1E0C6800AC111A /* Main.storyboard in Resources */,
+				E5B61E4429823AF500533B6F /* ArUco.json in Resources */,
 				E5F6FFEC2977CCB700D5C22B /* CheckPointPosition.json in Resources */,
 				E5F6FFE92977CCB700D5C22B /* exhibition.json in Resources */,
+				E5B61E3E29823ACE00533B6F /* exercise-data.json in Resources */,
 				7E17F1A31D9A226100DB1F34 /* Localizable.strings in Resources */,
 				7E9238F11D5189FF00875766 /* HLPSettingView.strings in Resources */,
 				7EF45E541E3F58D200208042 /* dev.hashfile in Resources */,
@@ -1376,6 +1474,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E5B61E5929823DFB00533B6F /* ArUco.json in Resources */,
+				E5B61E5A29823DFB00533B6F /* SoundEffect01.mp3 in Resources */,
+				E5B61E5B29823DFB00533B6F /* SoundEffect02.mp3 in Resources */,
 				E53750562977D6EE00BC3ACA /* EventDetailView.xib in Resources */,
 				E537504C2977D6D700BC3ACA /* AdditionalLocation.json in Resources */,
 				E537504D2977D6D700BC3ACA /* CheckPointPosition.json in Resources */,
@@ -1542,6 +1643,7 @@
 				E5F6FFD02977CCA500D5C22B /* HLPSectionModel.swift in Sources */,
 				7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */,
 				E5F600302977CD0E00D5C22B /* EventDetailViewController.swift in Sources */,
+				E5B61E4F29823B0F00533B6F /* ArManager.swift in Sources */,
 				E5F6FFFB2977CCC100D5C22B /* NaviSettingController.swift in Sources */,
 				E5F600242977CCFC00D5C22B /* HomeTabController.swift in Sources */,
 				E5F6FF932977CC7F00D5C22B /* BaseTabController.swift in Sources */,
@@ -1563,6 +1665,7 @@
 				7E6E42E91D90FD1B006B6899 /* BlindViewController.m in Sources */,
 				E5F6FF8A2977CC3700D5C22B /* Home.swift in Sources */,
 				7EF7F7A81DD17D4A000A625A /* NavCommander.m in Sources */,
+				E5B61E5829823B2D00533B6F /* GuidanceModel.swift in Sources */,
 				E5F6FFD22977CCA500D5C22B /* ScheduleRowModel.swift in Sources */,
 				7EDEDC241D1E0C6800AC111A /* AppDelegate.mm in Sources */,
 				7E5150A41D8BF32800ED25FB /* NavNavigator.m in Sources */,
@@ -1575,6 +1678,7 @@
 				E5F600382977CD1B00D5C22B /* MiraikanController.swift in Sources */,
 				E5F6FF842977CC3700D5C22B /* DistanceCheckView.swift in Sources */,
 				7EF45E351E3F1E3700208042 /* WelcomViewController.m in Sources */,
+				E5B61E4D29823B0F00533B6F /* StrUtil.swift in Sources */,
 				7E9238E81D5189F100875766 /* HLPSettingTableView.m in Sources */,
 				E5F6FFD42977CCA500D5C22B /* GuidePositionModel.swift in Sources */,
 				E5F600142977CCD500D5C22B /* DefaultTTS.swift in Sources */,
@@ -1586,11 +1690,14 @@
 				E5F6FFD12977CCA500D5C22B /* NavButtonModel.swift in Sources */,
 				7EE207DB2022F7BA00160160 /* HLPDirectory.m in Sources */,
 				E5F6FFB12977CC9300D5C22B /* Button.swift in Sources */,
+				E5B61E3C29823ACE00533B6F /* MarkerWorldTransform.mm in Sources */,
 				E5F6FFAF2977CC9300D5C22B /* LocationInputButton.swift in Sources */,
 				E5F600332977CD0E00D5C22B /* RestRoomListViewController.swift in Sources */,
 				E5F6FEF32977A98C00D5C22B /* SettingDataManager.m in Sources */,
+				E5B61E5529823B2D00533B6F /* VoiceModel.swift in Sources */,
 				7E6E42DE1D90C77C006B6899 /* HLPGeoJSON.m in Sources */,
 				E5F6FFB02977CC9300D5C22B /* LinkRow.swift in Sources */,
+				E5B61E3B29823ACD00533B6F /* OpenCVWrapper.mm in Sources */,
 				E5F6FF862977CC3700D5C22B /* EventDetailView.swift in Sources */,
 				E5F6001C2977CCE000D5C22B /* UINavigationControllerExtension.swift in Sources */,
 				E5F6FFBA2977CC9300D5C22B /* DescriptionRow.swift in Sources */,
@@ -1619,6 +1726,7 @@
 				E5F600342977CD0E00D5C22B /* EventListController.swift in Sources */,
 				7EDEDC211D1E0C6800AC111A /* main.mm in Sources */,
 				E5F6FFFC2977CCC100D5C22B /* SettingView.swift in Sources */,
+				E5B61E4E29823B0F00533B6F /* ArUcoManager.swift in Sources */,
 				E5F6FFDA2977CCA500D5C22B /* ExhibitionContentModel.swift in Sources */,
 				7E9238E91D5189F100875766 /* HLPSettingViewCell.m in Sources */,
 				E5F6FFB82977CC9300D5C22B /* NavButtonRow.swift in Sources */,
@@ -1626,22 +1734,29 @@
 				7E9866CE1D5174780073CB49 /* Logging.m in Sources */,
 				E5F600162977CCD500D5C22B /* HTTPAdaptor.swift in Sources */,
 				E5F6FFF92977CCC100D5C22B /* AboutMiraikanView.swift in Sources */,
+				E5B61E5629823B2D00533B6F /* ArUcoModel.swift in Sources */,
 				E5F6001A2977CCE000D5C22B /* UIColorExtension.swift in Sources */,
 				E5F6FF942977CC7F00D5C22B /* BaseNavController.swift in Sources */,
+				E5B61E692982417500533B6F /* ARViewController.swift in Sources */,
 				E5F6FEFE2977AD0500D5C22B /* NavTalkButton.m in Sources */,
 				E5F6FFAE2977CC9300D5C22B /* TableViewCell.swift in Sources */,
+				E5B61E5729823B2D00533B6F /* PhonationModel.swift in Sources */,
+				E5B61E3D29823ACE00533B6F /* HLPDataUtil.m in Sources */,
 				E54F24482980E93300F3A83C /* AskAIView.swift in Sources */,
 				E5F6FFFE2977CCC100D5C22B /* LoginView.swift in Sources */,
+				E5B61E5029823B0F00533B6F /* AudioManager.swift in Sources */,
 				E5F6FFD72977CCA500D5C22B /* AdditionalLocationModel.swift in Sources */,
 				7EA49A351F9AE21900E1369B /* WebViewController.m in Sources */,
 				E5F600262977CCFC00D5C22B /* StaffTabController.swift in Sources */,
 				7EF6FBB21DA4DD8200382F76 /* NavSound.m in Sources */,
 				E5F6FFD92977CCA500D5C22B /* FloorMapModel.swift in Sources */,
 				E5F6FFD62977CCA500D5C22B /* CardModel.swift in Sources */,
+				E5B61E4029823ACE00533B6F /* HLPGeoJSON.m in Sources */,
 				E5F6000F2977CCD500D5C22B /* MiraikanUtil.swift in Sources */,
 				7EF45E3B1E3F1E5600208042 /* AuthManager.m in Sources */,
 				E5F600282977CD0500D5C22B /* MainTabController.swift in Sources */,
 				E5F6FFB32977CC9300D5C22B /* ContentRow.swift in Sources */,
+				E5B61E3F29823ACE00533B6F /* HLPDirectory.m in Sources */,
 				E5F6FF852977CC3700D5C22B /* EventView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1650,6 +1765,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E5B61E6A298245A700533B6F /* ARViewController.swift in Sources */,
+				E5B61E6629823F0200533B6F /* MarkerWorldTransform.mm in Sources */,
+				E5B61E6729823F0200533B6F /* OpenCVWrapper.mm in Sources */,
+				E5B61E5D29823E1300533B6F /* ArUcoModel.swift in Sources */,
+				E5B61E5E29823E1300533B6F /* GuidanceModel.swift in Sources */,
+				E5B61E5F29823E1300533B6F /* PhonationModel.swift in Sources */,
+				E5B61E6029823E1300533B6F /* VoiceModel.swift in Sources */,
+				E5B61E6129823E1300533B6F /* ArManager.swift in Sources */,
+				E5B61E6229823E1300533B6F /* ArUcoManager.swift in Sources */,
+				E5B61E6329823E1300533B6F /* AudioManager.swift in Sources */,
+				E5B61E6529823E1300533B6F /* StrUtil.swift in Sources */,
 				E55D4C97297F719E00DE379B /* LocationManager.m in Sources */,
 				E537507B2977D73900BC3ACA /* AccessibilityModel.swift in Sources */,
 				E537507C2977D73900BC3ACA /* AdditionalLocationModel.swift in Sources */,
@@ -2078,7 +2204,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = H84S8WFTWG;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2122,7 +2248,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = H84S8WFTWG;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

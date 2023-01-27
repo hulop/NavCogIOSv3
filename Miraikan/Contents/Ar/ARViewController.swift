@@ -45,6 +45,8 @@ class ARViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.view.backgroundColor = .systemBackground
+
         sceneView = ARSCNView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
         self.view.addSubview(sceneView)
         
@@ -59,13 +61,20 @@ class ARViewController: UIViewController {
         AudioManager.shared.setupInitialize()
         AudioManager.shared.delegate = self
 
-        // ジャスチャー
         let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(doubleTap(_:)))
         doubleTapGesture.numberOfTapsRequired = 2
         view.addGestureRecognizer(doubleTapGesture)
 
-        // シェイク
         becomeFirstResponder()
+
+#if targetEnvironment(simulator)
+        let alert = UIAlertController(title: nil, message: "simulator does not support", preferredStyle: .alert)
+        let yesAction = UIAlertAction(title: "OK", style: .default) { action in
+            self.navigationController?.popViewController(animated: true)
+        }
+        alert.addAction(yesAction)
+        present(alert, animated: true)
+#endif
     }
 
     override func viewWillAppear(_ animated: Bool) {

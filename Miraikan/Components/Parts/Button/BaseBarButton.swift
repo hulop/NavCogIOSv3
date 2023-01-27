@@ -1,5 +1,5 @@
 //
-//  ScheduleListHeader.swift
+//  BaseBarButton.swift
 //  NavCogMiraikan
 //
 /*******************************************************************************
@@ -24,36 +24,34 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-import Foundation
+import UIKit
 
 /**
- The header that displays today's date
+ A UIBarButtonItem with easier access to the action
  */
-class ScheduleListHeader: BaseView {
-
-    private let lblDate = UILabel()
-
-    private let padding: CGFloat = 10
-
-    override func setup() {
-        super.setup()
-        
-        let todayText = MiraikanUtil.todayText()
-        lblDate.text = todayText.string
-        lblDate.accessibilityLabel = todayText.accessibility
-        lblDate.font = .preferredFont(forTextStyle: .headline)
-        lblDate.sizeToFit()
-        addSubview(lblDate)
+class BaseBarButton: UIBarButtonItem {
+    
+    private var _action: (()->())?
+    
+    init(image: UIImage?) {
+        super.init()
+        self.image = image
+        self.target = self
+        self.style = .done
     }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        lblDate.center.y = self.center.y
-        lblDate.frame.origin.x = padding
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
-    override func sizeThatFits(_ size: CGSize) -> CGSize {
-        let height = padding * 2 + lblDate.frame.height
-        return CGSize(width: size.width, height: height)
+    
+    public func tapAction(_ action: @escaping (()->())) {
+        self._action = action
+        self.action = #selector(_tapAction)
+    }
+    
+    @objc private func _tapAction() {
+        if let _f = _action {
+            _f()
+        }
     }
 }

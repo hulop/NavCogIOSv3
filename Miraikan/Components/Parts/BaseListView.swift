@@ -1,5 +1,4 @@
 //
-//
 //  BaseListView.swift
 //  NavCogMiraikan
 //

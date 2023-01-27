@@ -1,5 +1,5 @@
 //
-//  ScheduleListHeader.swift
+//  BaseSwitch.swift
 //  NavCogMiraikan
 //
 /*******************************************************************************
@@ -24,36 +24,20 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-import Foundation
+import UIKit
 
-/**
- The header that displays today's date
- */
-class ScheduleListHeader: BaseView {
+class BaseSwitch: UISwitch {
 
-    private let lblDate = UILabel()
+    private var action: ((UISwitch)->())?
 
-    private let padding: CGFloat = 10
-
-    override func setup() {
-        super.setup()
-        
-        let todayText = MiraikanUtil.todayText()
-        lblDate.text = todayText.string
-        lblDate.accessibilityLabel = todayText.accessibility
-        lblDate.font = .preferredFont(forTextStyle: .headline)
-        lblDate.sizeToFit()
-        addSubview(lblDate)
+    public func onSwitch(_ action: @escaping ((UISwitch)->())) {
+        self.action = action
+        self.addTarget(self, action: #selector(_switchAction(_:)), for: .touchUpInside)
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        lblDate.center.y = self.center.y
-        lblDate.frame.origin.x = padding
-    }
-
-    override func sizeThatFits(_ size: CGSize) -> CGSize {
-        let height = padding * 2 + lblDate.frame.height
-        return CGSize(width: size.width, height: height)
+    @objc private func _switchAction(_ sender: UIButton) {
+        if let _f = action {
+            _f(self)
+        }
     }
 }

@@ -1,5 +1,5 @@
 //
-//  ScheduleListHeader.swift
+//  ChevronButton.swift
 //  NavCogMiraikan
 //
 /*******************************************************************************
@@ -24,36 +24,47 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-import Foundation
+import UIKit
 
 /**
- The header that displays today's date
+ A BaseButton with chevron.right icon (arrow) for links
  */
-class ScheduleListHeader: BaseView {
-
-    private let lblDate = UILabel()
-
-    private let padding: CGFloat = 10
-
-    override func setup() {
-        super.setup()
+class ChevronButton: BaseButton {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
-        let todayText = MiraikanUtil.todayText()
-        lblDate.text = todayText.string
-        lblDate.accessibilityLabel = todayText.accessibility
-        lblDate.font = .preferredFont(forTextStyle: .headline)
-        lblDate.sizeToFit()
-        addSubview(lblDate)
+        self.backgroundColor = .clear
+        self.titleLabel?.numberOfLines = 0
+        self.titleLabel?.lineBreakMode = .byWordWrapping
+        self.setImage(UIImage(systemName: "chevron.right"), for: .normal)
     }
-
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
-        lblDate.center.y = self.center.y
-        lblDate.frame.origin.x = padding
+        
+        let labelWidth = self.frame.width - self.imageView!.frame.width
+        let labelSz = CGSize(width: labelWidth,
+                             height: self.titleLabel!.intrinsicContentSize.height)
+        self.titleLabel?.frame.size = self.titleLabel!.sizeThatFits(labelSz)
+        
+        let midY = max(self.titleLabel!.frame.height, self.imageView!.frame.height) / 2
+        self.titleLabel?.frame.origin.x = self.safeAreaInsets.left
+        self.titleLabel?.center.y = midY
+        self.imageView?.frame.origin.x = self.safeAreaInsets.left + self.titleLabel!.frame.width
+        self.imageView?.center.y = midY
     }
-
+    
     override func sizeThatFits(_ size: CGSize) -> CGSize {
-        let height = padding * 2 + lblDate.frame.height
+        let labelWidth = size.width - self.imageView!.frame.width
+        let labelSz = CGSize(width: labelWidth,
+                             height: self.titleLabel!.intrinsicContentSize.height)
+        let height = max(self.titleLabel!.sizeThatFits(labelSz).height,
+                         imageView!.frame.height)
         return CGSize(width: size.width, height: height)
     }
 }

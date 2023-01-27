@@ -1,5 +1,4 @@
 //
-//
 //  LinkingHeader.swift
 //  NavCogMiraikan
 //

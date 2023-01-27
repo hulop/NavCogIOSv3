@@ -1,6 +1,5 @@
 //
-//
-//  Switch.swift
+//  BaseButton.swift
 //  NavCogMiraikan
 //
 /*******************************************************************************
@@ -25,21 +24,48 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-import Foundation
 import UIKit
 
-class BaseSwitch: UISwitch {
+/**
+ A button with swift style tap action implemented for easier use
+ */
+class BaseButton: UIButton {
+    
+    private var action: ((UIButton)->())?
 
-    private var action: ((UISwitch)->())?
-
-    public func onSwitch(_ action: @escaping ((UISwitch)->())) {
-        self.action = action
-        self.addTarget(self, action: #selector(_switchAction(_:)), for: .touchUpInside)
+    override init(frame: CGRect) {
+      super.init(frame: frame)
     }
 
-    @objc private func _switchAction(_ sender: UIButton) {
-        if let _f = action {
-            _f(self)
-        }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
+    override func prepareForInterfaceBuilder() {
+        super.prepareForInterfaceBuilder()
+    }
+
+    @objc public func tapAction(_ action: @escaping ((UIButton)->())) {
+        self.action = action
+        self.addTarget(self, action: #selector(_pressAction(_:)), for: .touchDown)
+        self.addTarget(self, action: #selector(_tapAction(_:)), for: .touchUpInside)
+    }
+    
+    @objc private func _pressAction(_ sender: UIButton) {
+        self.backgroundColor = .lightGray
+    }
+
+    @objc private func _tapAction(_ sender: UIButton) {
+        
+        UIView.animate(withDuration: 0.1, animations: { [weak self] in
+            guard let self = self else { return }
+            self.backgroundColor = .lightGray
+        }, completion: { [weak self] finished in
+            guard let self = self else { return }
+            if finished, let _f = self.action {
+                self.backgroundColor = .white
+                _f(self)
+            }
+        })
     }
 }

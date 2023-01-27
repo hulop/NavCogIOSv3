@@ -144,10 +144,10 @@
 		E53750952977D73900BC3ACA /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA42977CC9300D5C22B /* BaseView.swift */; };
 		E53750962977D73900BC3ACA /* BaseWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA82977CC9300D5C22B /* BaseWebView.swift */; };
 		E53750972977D73900BC3ACA /* BlankView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA92977CC9300D5C22B /* BlankView.swift */; };
-		E53750982977D73900BC3ACA /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9C2977CC9200D5C22B /* Button.swift */; };
+		E53750982977D73900BC3ACA /* BaseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9C2977CC9200D5C22B /* BaseButton.swift */; };
 		E53750992977D73900BC3ACA /* ContentRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9E2977CC9200D5C22B /* ContentRow.swift */; };
 		E537509A2977D73900BC3ACA /* DescriptionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA52977CC9300D5C22B /* DescriptionRow.swift */; };
-		E537509B2977D73900BC3ACA /* Label.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA72977CC9300D5C22B /* Label.swift */; };
+		E537509B2977D73900BC3ACA /* AutoWrapLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA72977CC9300D5C22B /* AutoWrapLabel.swift */; };
 		E537509C2977D73900BC3ACA /* LinkingHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA12977CC9300D5C22B /* LinkingHeader.swift */; };
 		E537509D2977D73900BC3ACA /* LinkRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9B2977CC9200D5C22B /* LinkRow.swift */; };
 		E537509E2977D73900BC3ACA /* LocationInputButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9A2977CC9200D5C22B /* LocationInputButton.swift */; };
@@ -155,7 +155,7 @@
 		E53750A02977D73900BC3ACA /* NavButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA32977CC9300D5C22B /* NavButtonRow.swift */; };
 		E53750A12977D73900BC3ACA /* ScheduleListHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9D2977CC9200D5C22B /* ScheduleListHeader.swift */; };
 		E53750A22977D73900BC3ACA /* ScheduleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9F2977CC9200D5C22B /* ScheduleRow.swift */; };
-		E53750A32977D73900BC3ACA /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFAA2977CC9300D5C22B /* Switch.swift */; };
+		E53750A32977D73900BC3ACA /* BaseSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFAA2977CC9300D5C22B /* BaseSwitch.swift */; };
 		E53750A42977D73900BC3ACA /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF992977CC9200D5C22B /* TableViewCell.swift */; };
 		E53750A52977D73900BC3ACA /* ThroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFAB2977CC9300D5C22B /* ThroughView.swift */; };
 		E53750A62977D73900BC3ACA /* VoiceGuideButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF972977CC9200D5C22B /* VoiceGuideButton.swift */; };
@@ -208,6 +208,16 @@
 		E5B61E7429838DEE00533B6F /* ARMarkerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E7129838DEE00533B6F /* ARMarkerViewController.swift */; };
 		E5B61E7529838DEE00533B6F /* IDListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E7229838DEE00533B6F /* IDListViewController.swift */; };
 		E5B61E7629838DEE00533B6F /* IDListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E7229838DEE00533B6F /* IDListViewController.swift */; };
+		E5B61E7A2983C04A00533B6F /* ChevronButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E792983C04A00533B6F /* ChevronButton.swift */; };
+		E5B61E7B2983C04A00533B6F /* ChevronButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E792983C04A00533B6F /* ChevronButton.swift */; };
+		E5B61E7D2983C08000533B6F /* StyledButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E7C2983C08000533B6F /* StyledButton.swift */; };
+		E5B61E7E2983C08000533B6F /* StyledButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E7C2983C08000533B6F /* StyledButton.swift */; };
+		E5B61E802983C0CC00533B6F /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E7F2983C0CC00533B6F /* RadioButton.swift */; };
+		E5B61E812983C0CC00533B6F /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E7F2983C0CC00533B6F /* RadioButton.swift */; };
+		E5B61E832983C11000533B6F /* BaseBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E822983C11000533B6F /* BaseBarButton.swift */; };
+		E5B61E842983C11000533B6F /* BaseBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E822983C11000533B6F /* BaseBarButton.swift */; };
+		E5B61E862983C2C800533B6F /* UnderlinedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E852983C2C800533B6F /* UnderlinedLabel.swift */; };
+		E5B61E872983C2C800533B6F /* UnderlinedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E852983C2C800533B6F /* UnderlinedLabel.swift */; };
 		E5F600002977CCC100D5C22B /* DistanceCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF82977CCC100D5C22B /* DistanceCheckViewController.swift */; };
 		E5F6000C2977CCD500D5C22B /* MapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F600012977CCD500D5C22B /* MapManager.swift */; };
 		E5F6000D2977CCD500D5C22B /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F600022977CCD500D5C22B /* Host.swift */; };
@@ -325,7 +335,7 @@
 		E5F6FFAE2977CC9300D5C22B /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF992977CC9200D5C22B /* TableViewCell.swift */; };
 		E5F6FFAF2977CC9300D5C22B /* LocationInputButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9A2977CC9200D5C22B /* LocationInputButton.swift */; };
 		E5F6FFB02977CC9300D5C22B /* LinkRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9B2977CC9200D5C22B /* LinkRow.swift */; };
-		E5F6FFB12977CC9300D5C22B /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9C2977CC9200D5C22B /* Button.swift */; };
+		E5F6FFB12977CC9300D5C22B /* BaseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9C2977CC9200D5C22B /* BaseButton.swift */; };
 		E5F6FFB22977CC9300D5C22B /* ScheduleListHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9D2977CC9200D5C22B /* ScheduleListHeader.swift */; };
 		E5F6FFB32977CC9300D5C22B /* ContentRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9E2977CC9200D5C22B /* ContentRow.swift */; };
 		E5F6FFB42977CC9300D5C22B /* ScheduleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9F2977CC9200D5C22B /* ScheduleRow.swift */; };
@@ -336,10 +346,10 @@
 		E5F6FFB92977CC9300D5C22B /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA42977CC9300D5C22B /* BaseView.swift */; };
 		E5F6FFBA2977CC9300D5C22B /* DescriptionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA52977CC9300D5C22B /* DescriptionRow.swift */; };
 		E5F6FFBB2977CC9300D5C22B /* BaseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA62977CC9300D5C22B /* BaseListView.swift */; };
-		E5F6FFBC2977CC9300D5C22B /* Label.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA72977CC9300D5C22B /* Label.swift */; };
+		E5F6FFBC2977CC9300D5C22B /* AutoWrapLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA72977CC9300D5C22B /* AutoWrapLabel.swift */; };
 		E5F6FFBD2977CC9300D5C22B /* BaseWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA82977CC9300D5C22B /* BaseWebView.swift */; };
 		E5F6FFBE2977CC9300D5C22B /* BlankView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA92977CC9300D5C22B /* BlankView.swift */; };
-		E5F6FFBF2977CC9300D5C22B /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFAA2977CC9300D5C22B /* Switch.swift */; };
+		E5F6FFBF2977CC9300D5C22B /* BaseSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFAA2977CC9300D5C22B /* BaseSwitch.swift */; };
 		E5F6FFC02977CC9300D5C22B /* ThroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFAB2977CC9300D5C22B /* ThroughView.swift */; };
 		E5F6FFCF2977CCA500D5C22B /* AccessibilityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFC12977CCA400D5C22B /* AccessibilityModel.swift */; };
 		E5F6FFD02977CCA500D5C22B /* HLPSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFC22977CCA400D5C22B /* HLPSectionModel.swift */; };
@@ -558,6 +568,11 @@
 		E5B61E682982417500533B6F /* ARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
 		E5B61E7129838DEE00533B6F /* ARMarkerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARMarkerViewController.swift; sourceTree = "<group>"; };
 		E5B61E7229838DEE00533B6F /* IDListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IDListViewController.swift; sourceTree = "<group>"; };
+		E5B61E792983C04A00533B6F /* ChevronButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChevronButton.swift; sourceTree = "<group>"; };
+		E5B61E7C2983C08000533B6F /* StyledButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledButton.swift; sourceTree = "<group>"; };
+		E5B61E7F2983C0CC00533B6F /* RadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButton.swift; sourceTree = "<group>"; };
+		E5B61E822983C11000533B6F /* BaseBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseBarButton.swift; sourceTree = "<group>"; };
+		E5B61E852983C2C800533B6F /* UnderlinedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlinedLabel.swift; sourceTree = "<group>"; };
 		E5F600012977CCD500D5C22B /* MapManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapManager.swift; sourceTree = "<group>"; };
 		E5F600022977CCD500D5C22B /* Host.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		E5F600032977CCD500D5C22B /* ImageAdaptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAdaptor.swift; sourceTree = "<group>"; };
@@ -618,7 +633,7 @@
 		E5F6FF992977CC9200D5C22B /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		E5F6FF9A2977CC9200D5C22B /* LocationInputButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationInputButton.swift; sourceTree = "<group>"; };
 		E5F6FF9B2977CC9200D5C22B /* LinkRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkRow.swift; sourceTree = "<group>"; };
-		E5F6FF9C2977CC9200D5C22B /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+		E5F6FF9C2977CC9200D5C22B /* BaseButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseButton.swift; sourceTree = "<group>"; };
 		E5F6FF9D2977CC9200D5C22B /* ScheduleListHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleListHeader.swift; sourceTree = "<group>"; };
 		E5F6FF9E2977CC9200D5C22B /* ContentRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentRow.swift; sourceTree = "<group>"; };
 		E5F6FF9F2977CC9200D5C22B /* ScheduleRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleRow.swift; sourceTree = "<group>"; };
@@ -629,10 +644,10 @@
 		E5F6FFA42977CC9300D5C22B /* BaseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		E5F6FFA52977CC9300D5C22B /* DescriptionRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptionRow.swift; sourceTree = "<group>"; };
 		E5F6FFA62977CC9300D5C22B /* BaseListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseListView.swift; sourceTree = "<group>"; };
-		E5F6FFA72977CC9300D5C22B /* Label.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Label.swift; sourceTree = "<group>"; };
+		E5F6FFA72977CC9300D5C22B /* AutoWrapLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoWrapLabel.swift; sourceTree = "<group>"; };
 		E5F6FFA82977CC9300D5C22B /* BaseWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseWebView.swift; sourceTree = "<group>"; };
 		E5F6FFA92977CC9300D5C22B /* BlankView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlankView.swift; sourceTree = "<group>"; };
-		E5F6FFAA2977CC9300D5C22B /* Switch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
+		E5F6FFAA2977CC9300D5C22B /* BaseSwitch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseSwitch.swift; sourceTree = "<group>"; };
 		E5F6FFAB2977CC9300D5C22B /* ThroughView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThroughView.swift; sourceTree = "<group>"; };
 		E5F6FFC12977CCA400D5C22B /* AccessibilityModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessibilityModel.swift; sourceTree = "<group>"; };
 		E5F6FFC22977CCA400D5C22B /* HLPSectionModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HLPSectionModel.swift; sourceTree = "<group>"; };
@@ -1124,6 +1139,36 @@
 			path = model;
 			sourceTree = "<group>";
 		};
+		E5B61E772983BDDE00533B6F /* TableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FF9E2977CC9200D5C22B /* ContentRow.swift */,
+				E5F6FFA52977CC9300D5C22B /* DescriptionRow.swift */,
+				E5F6FF9B2977CC9200D5C22B /* LinkRow.swift */,
+				E5F6FF992977CC9200D5C22B /* TableViewCell.swift */,
+				E5F6FF9F2977CC9200D5C22B /* ScheduleRow.swift */,
+				E5F6FFA22977CC9300D5C22B /* VoiceGuideRow.swift */,
+				E54F242A2980E2CA00F3A83C /* RouteModeRow.swift */,
+				E5F6FFA32977CC9300D5C22B /* NavButtonRow.swift */,
+			);
+			path = TableViewCell;
+			sourceTree = "<group>";
+		};
+		E5B61E782983BF1400533B6F /* Button */ = {
+			isa = PBXGroup;
+			children = (
+				E5B61E822983C11000533B6F /* BaseBarButton.swift */,
+				E5F6FF9C2977CC9200D5C22B /* BaseButton.swift */,
+				E5B61E792983C04A00533B6F /* ChevronButton.swift */,
+				E5B61E7C2983C08000533B6F /* StyledButton.swift */,
+				E5B61E7F2983C0CC00533B6F /* RadioButton.swift */,
+				E5F6FF9A2977CC9200D5C22B /* LocationInputButton.swift */,
+				E5F6FFA02977CC9300D5C22B /* LocationRecordingButton.swift */,
+				E5F6FF972977CC9200D5C22B /* VoiceGuideButton.swift */,
+			);
+			path = Button;
+			sourceTree = "<group>";
+		};
 		E5F6FF552977CB2100D5C22B /* Miraikan */ = {
 			isa = PBXGroup;
 			children = (
@@ -1166,22 +1211,14 @@
 				E5F6FFA42977CC9300D5C22B /* BaseView.swift */,
 				E5F6FFA82977CC9300D5C22B /* BaseWebView.swift */,
 				E5F6FFA92977CC9300D5C22B /* BlankView.swift */,
-				E5F6FF9C2977CC9200D5C22B /* Button.swift */,
-				E5F6FF9E2977CC9200D5C22B /* ContentRow.swift */,
-				E5F6FFA52977CC9300D5C22B /* DescriptionRow.swift */,
-				E5F6FFA72977CC9300D5C22B /* Label.swift */,
+				E5F6FFAA2977CC9300D5C22B /* BaseSwitch.swift */,
+				E5F6FFA72977CC9300D5C22B /* AutoWrapLabel.swift */,
+				E5B61E852983C2C800533B6F /* UnderlinedLabel.swift */,
 				E5F6FFA12977CC9300D5C22B /* LinkingHeader.swift */,
-				E5F6FF9B2977CC9200D5C22B /* LinkRow.swift */,
-				E5F6FF9A2977CC9200D5C22B /* LocationInputButton.swift */,
-				E5F6FFA02977CC9300D5C22B /* LocationRecordingButton.swift */,
-				E5F6FFA32977CC9300D5C22B /* NavButtonRow.swift */,
 				E5F6FF9D2977CC9200D5C22B /* ScheduleListHeader.swift */,
-				E5F6FF9F2977CC9200D5C22B /* ScheduleRow.swift */,
-				E5F6FFAA2977CC9300D5C22B /* Switch.swift */,
-				E5F6FF992977CC9200D5C22B /* TableViewCell.swift */,
 				E5F6FFAB2977CC9300D5C22B /* ThroughView.swift */,
-				E5F6FF972977CC9200D5C22B /* VoiceGuideButton.swift */,
-				E5F6FFA22977CC9300D5C22B /* VoiceGuideRow.swift */,
+				E5B61E782983BF1400533B6F /* Button */,
+				E5B61E772983BDDE00533B6F /* TableViewCell */,
 			);
 			path = Parts;
 			sourceTree = "<group>";
@@ -1262,7 +1299,6 @@
 		E5F6FF5C2977CB7E00D5C22B /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				E54F242A2980E2CA00F3A83C /* RouteModeRow.swift */,
 				E54F24272980E26E00F3A83C /* RouteMode.swift */,
 				E5F6FFF52977CCC100D5C22B /* TabItem.swift */,
 			);
@@ -1638,11 +1674,13 @@
 				E5F6FF952977CC7F00D5C22B /* BaseController.swift in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,
 				E5F6FFB92977CC9300D5C22B /* BaseView.swift in Sources */,
+				E5B61E7A2983C04A00533B6F /* ChevronButton.swift in Sources */,
 				E5F600362977CD0E00D5C22B /* PermanentExhibitionController.swift in Sources */,
 				E5F600152977CCD500D5C22B /* AudioGuideManager.swift in Sources */,
 				E5F6FFCF2977CCA500D5C22B /* AccessibilityModel.swift in Sources */,
 				E5F6FFAC2977CC9300D5C22B /* VoiceGuideButton.swift in Sources */,
-				E5F6FFBC2977CC9300D5C22B /* Label.swift in Sources */,
+				E5B61E832983C11000533B6F /* BaseBarButton.swift in Sources */,
+				E5F6FFBC2977CC9300D5C22B /* AutoWrapLabel.swift in Sources */,
 				E5F6FFB72977CC9300D5C22B /* VoiceGuideRow.swift in Sources */,
 				E5F600132977CCD500D5C22B /* ImageType.swift in Sources */,
 				E5F600252977CCFC00D5C22B /* SCTabController.swift in Sources */,
@@ -1651,6 +1689,7 @@
 				E5F6FFD02977CCA500D5C22B /* HLPSectionModel.swift in Sources */,
 				7EF45E331E3F1E3700208042 /* DownloadViewController.m in Sources */,
 				E5F600302977CD0E00D5C22B /* EventDetailViewController.swift in Sources */,
+				E5B61E7D2983C08000533B6F /* StyledButton.swift in Sources */,
 				E5B61E4F29823B0F00533B6F /* ArManager.swift in Sources */,
 				E5F6FFFB2977CCC100D5C22B /* NaviSettingController.swift in Sources */,
 				E5F600242977CCFC00D5C22B /* HomeTabController.swift in Sources */,
@@ -1698,7 +1737,7 @@
 				E5F6FFBE2977CC9300D5C22B /* BlankView.swift in Sources */,
 				E5F6FFD12977CCA500D5C22B /* NavButtonModel.swift in Sources */,
 				7EE207DB2022F7BA00160160 /* HLPDirectory.m in Sources */,
-				E5F6FFB12977CC9300D5C22B /* Button.swift in Sources */,
+				E5F6FFB12977CC9300D5C22B /* BaseButton.swift in Sources */,
 				E5B61E3C29823ACE00533B6F /* MarkerWorldTransform.mm in Sources */,
 				E5F6FFAF2977CC9300D5C22B /* LocationInputButton.swift in Sources */,
 				E5F600332977CD0E00D5C22B /* RestRoomListViewController.swift in Sources */,
@@ -1712,6 +1751,7 @@
 				E5F6FFBA2977CC9300D5C22B /* DescriptionRow.swift in Sources */,
 				E5F600222977CCFC00D5C22B /* LoginTabController.swift in Sources */,
 				E5F600352977CD0E00D5C22B /* ExhibitionListController.swift in Sources */,
+				E5B61E862983C2C800533B6F /* UnderlinedLabel.swift in Sources */,
 				7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */,
 				E5F600312977CD0E00D5C22B /* BlindExhibitionController.swift in Sources */,
 				A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */,
@@ -1728,7 +1768,7 @@
 				E5F6FFB62977CC9300D5C22B /* LinkingHeader.swift in Sources */,
 				7E1F9F2A1DEEB1D3003E1B23 /* NavDebugHelper.m in Sources */,
 				E5F6FFAD2977CC9300D5C22B /* BaseScrollView.swift in Sources */,
-				E5F6FFBF2977CC9300D5C22B /* Switch.swift in Sources */,
+				E5F6FFBF2977CC9300D5C22B /* BaseSwitch.swift in Sources */,
 				E5F6FF8E2977CC3700D5C22B /* FloorMapViewController.swift in Sources */,
 				E5F6FFFF2977CCC100D5C22B /* AboutAppView.swift in Sources */,
 				7E96D9331DACD0C700D57C8C /* SearchViewController.m in Sources */,
@@ -1760,6 +1800,7 @@
 				E5F600262977CCFC00D5C22B /* StaffTabController.swift in Sources */,
 				7EF6FBB21DA4DD8200382F76 /* NavSound.m in Sources */,
 				E5F6FFD92977CCA500D5C22B /* FloorMapModel.swift in Sources */,
+				E5B61E802983C0CC00533B6F /* RadioButton.swift in Sources */,
 				E5F6FFD62977CCA500D5C22B /* CardModel.swift in Sources */,
 				E5B61E4029823ACE00533B6F /* HLPGeoJSON.m in Sources */,
 				E5F6000F2977CCD500D5C22B /* MiraikanUtil.swift in Sources */,
@@ -1817,10 +1858,10 @@
 				E53750952977D73900BC3ACA /* BaseView.swift in Sources */,
 				E53750962977D73900BC3ACA /* BaseWebView.swift in Sources */,
 				E53750972977D73900BC3ACA /* BlankView.swift in Sources */,
-				E53750982977D73900BC3ACA /* Button.swift in Sources */,
+				E53750982977D73900BC3ACA /* BaseButton.swift in Sources */,
 				E53750992977D73900BC3ACA /* ContentRow.swift in Sources */,
 				E537509A2977D73900BC3ACA /* DescriptionRow.swift in Sources */,
-				E537509B2977D73900BC3ACA /* Label.swift in Sources */,
+				E537509B2977D73900BC3ACA /* AutoWrapLabel.swift in Sources */,
 				E537509C2977D73900BC3ACA /* LinkingHeader.swift in Sources */,
 				E537509D2977D73900BC3ACA /* LinkRow.swift in Sources */,
 				E537509E2977D73900BC3ACA /* LocationInputButton.swift in Sources */,
@@ -1828,7 +1869,7 @@
 				E53750A02977D73900BC3ACA /* NavButtonRow.swift in Sources */,
 				E53750A12977D73900BC3ACA /* ScheduleListHeader.swift in Sources */,
 				E53750A22977D73900BC3ACA /* ScheduleRow.swift in Sources */,
-				E53750A32977D73900BC3ACA /* Switch.swift in Sources */,
+				E53750A32977D73900BC3ACA /* BaseSwitch.swift in Sources */,
 				E53750A42977D73900BC3ACA /* TableViewCell.swift in Sources */,
 				E53750A52977D73900BC3ACA /* ThroughView.swift in Sources */,
 				E53750A62977D73900BC3ACA /* VoiceGuideButton.swift in Sources */,
@@ -1837,6 +1878,7 @@
 				E53750A92977D73900BC3ACA /* BaseListController.swift in Sources */,
 				E53750AA2977D73900BC3ACA /* BaseNavController.swift in Sources */,
 				E53750AB2977D73900BC3ACA /* BaseTabController.swift in Sources */,
+				E5B61E7B2983C04A00533B6F /* ChevronButton.swift in Sources */,
 				E54F24292980E26E00F3A83C /* RouteMode.swift in Sources */,
 				E53750572977D71B00BC3ACA /* BlindExhibitionController.swift in Sources */,
 				E53750582977D71B00BC3ACA /* EventDetailViewController.swift in Sources */,
@@ -1856,6 +1898,7 @@
 				E53750652977D71B00BC3ACA /* AudioGuideManager.swift in Sources */,
 				E53750662977D71B00BC3ACA /* DefaultTTS.swift in Sources */,
 				E53750672977D71B00BC3ACA /* ExhibitionDataStore.swift in Sources */,
+				E5B61E7E2983C08000533B6F /* StyledButton.swift in Sources */,
 				E53750682977D71B00BC3ACA /* Host.swift in Sources */,
 				E53750692977D71B00BC3ACA /* HTTPAdaptor.swift in Sources */,
 				E537506A2977D71B00BC3ACA /* ImageAdaptor.swift in Sources */,
@@ -1883,10 +1926,12 @@
 				E5F6FF0F2977B2F700D5C22B /* DownloadViewController.m in Sources */,
 				E5F6FF102977B2F700D5C22B /* DestinationTableViewController.m in Sources */,
 				E5F6FF112977B2F700D5C22B /* NavDataSource.m in Sources */,
+				E5B61E872983C2C800533B6F /* UnderlinedLabel.swift in Sources */,
 				E5F6FF122977B2F700D5C22B /* NavUtil.m in Sources */,
 				E5F6FF132977B2F700D5C22B /* ViewController.m in Sources */,
 				E5F6FF142977B2F700D5C22B /* NavDeviceTTS.m in Sources */,
 				E5F6FF152977B2F700D5C22B /* BlindViewController.m in Sources */,
+				E5B61E842983C11000533B6F /* BaseBarButton.swift in Sources */,
 				E5F6FF162977B2F700D5C22B /* NavCommander.m in Sources */,
 				E5F6FF172977B2F700D5C22B /* AppDelegate.mm in Sources */,
 				E5F6FF182977B2F700D5C22B /* NavNavigator.m in Sources */,
@@ -1899,6 +1944,7 @@
 				E5F6FF202977B2F700D5C22B /* HLPGeoJSON.m in Sources */,
 				E5F6FF212977B2F700D5C22B /* SettingViewController.m in Sources */,
 				E5F6FF222977B2F700D5C22B /* DefaultTTS.m in Sources */,
+				E5B61E812983C0CC00533B6F /* RadioButton.swift in Sources */,
 				E54F24492980E93300F3A83C /* AskAIView.swift in Sources */,
 				E5F6FF232977B2F700D5C22B /* HLPSetting.m in Sources */,
 				E5F6FF242977B2F700D5C22B /* MapNavigationController.m in Sources */,

@@ -128,7 +128,7 @@ fileprivate class CardRow : BaseRow {
                                y: insets.top + gapY,
                                width: scaledSize.width,
                                height: scaledSize.height)
-        let szFit = CGSize(width: halfWidth, height: innerSize.height)
+        let szFit = CGSize(width: halfWidth - insets.right - gapX, height: innerSize.height)
         lblTitle.frame = CGRect(x: halfWidth,
                                 y: insets.top + gapY,
                                 width: halfWidth - insets.right - gapX,

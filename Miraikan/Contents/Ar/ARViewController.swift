@@ -47,6 +47,10 @@ class ARViewController: UIViewController {
 
         self.view.backgroundColor = .systemBackground
 
+        let chevronLeftImage: UIImage? = UIImage(systemName: "chevron.left")
+        let backButtonItem = UIBarButtonItem(image: chevronLeftImage, style: .plain, target: self, action: #selector(backButtonPressed(_:)))
+        self.navigationItem.leftBarButtonItem = backButtonItem
+
         let listButtonItem = UIBarButtonItem(title: "List", style: .done, target: self, action: #selector(listButtonPressed(_:)))
         self.navigationItem.rightBarButtonItem = listButtonItem
 
@@ -141,6 +145,11 @@ class ARViewController: UIViewController {
 }
 
 extension ARViewController {
+
+    @objc func backButtonPressed(_ sender: UIBarButtonItem) {
+        AudioManager.shared.stop()
+        self.navigationController?.popViewController(animated: true)
+    }
 
     @objc func listButtonPressed(_ sender: UIBarButtonItem) {
         let idListVC = IDListViewController()

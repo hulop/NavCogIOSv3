@@ -47,6 +47,9 @@ class ARViewController: UIViewController {
 
         self.view.backgroundColor = .systemBackground
 
+        let listButtonItem = UIBarButtonItem(title: "List", style: .done, target: self, action: #selector(listButtonPressed(_:)))
+        self.navigationItem.rightBarButtonItem = listButtonItem
+
         sceneView = ARSCNView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
         self.view.addSubview(sceneView)
         
@@ -69,9 +72,7 @@ class ARViewController: UIViewController {
 
 #if targetEnvironment(simulator)
         let alert = UIAlertController(title: nil, message: "simulator does not support", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "OK", style: .default) { action in
-            self.navigationController?.popViewController(animated: true)
-        }
+        let yesAction = UIAlertAction(title: "OK", style: .default)
         alert.addAction(yesAction)
         present(alert, animated: true)
 #endif
@@ -140,6 +141,11 @@ class ARViewController: UIViewController {
 }
 
 extension ARViewController {
+
+    @objc func listButtonPressed(_ sender: UIBarButtonItem) {
+        let idListVC = IDListViewController()
+        self.navigationController?.pushViewController(idListVC, animated: true)
+    }
 
     @objc func doubleTap(_ gesture: UITapGestureRecognizer) {
         AudioManager.shared.stop()

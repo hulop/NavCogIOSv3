@@ -204,6 +204,10 @@
 		E5B61E6729823F0200533B6F /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3029823ACD00533B6F /* OpenCVWrapper.mm */; };
 		E5B61E692982417500533B6F /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E682982417500533B6F /* ARViewController.swift */; };
 		E5B61E6A298245A700533B6F /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E682982417500533B6F /* ARViewController.swift */; };
+		E5B61E7329838DEE00533B6F /* ARMarkerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E7129838DEE00533B6F /* ARMarkerViewController.swift */; };
+		E5B61E7429838DEE00533B6F /* ARMarkerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E7129838DEE00533B6F /* ARMarkerViewController.swift */; };
+		E5B61E7529838DEE00533B6F /* IDListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E7229838DEE00533B6F /* IDListViewController.swift */; };
+		E5B61E7629838DEE00533B6F /* IDListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E7229838DEE00533B6F /* IDListViewController.swift */; };
 		E5F600002977CCC100D5C22B /* DistanceCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFF82977CCC100D5C22B /* DistanceCheckViewController.swift */; };
 		E5F6000C2977CCD500D5C22B /* MapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F600012977CCD500D5C22B /* MapManager.swift */; };
 		E5F6000D2977CCD500D5C22B /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F600022977CCD500D5C22B /* Host.swift */; };
@@ -552,6 +556,8 @@
 		E5B61E5329823B2D00533B6F /* PhonationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhonationModel.swift; sourceTree = "<group>"; };
 		E5B61E5429823B2D00533B6F /* GuidanceModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuidanceModel.swift; sourceTree = "<group>"; };
 		E5B61E682982417500533B6F /* ARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
+		E5B61E7129838DEE00533B6F /* ARMarkerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARMarkerViewController.swift; sourceTree = "<group>"; };
+		E5B61E7229838DEE00533B6F /* IDListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IDListViewController.swift; sourceTree = "<group>"; };
 		E5F600012977CCD500D5C22B /* MapManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapManager.swift; sourceTree = "<group>"; };
 		E5F600022977CCD500D5C22B /* Host.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		E5F600032977CCD500D5C22B /* ImageAdaptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAdaptor.swift; sourceTree = "<group>"; };
@@ -1098,6 +1104,8 @@
 			isa = PBXGroup;
 			children = (
 				E5B61E682982417500533B6F /* ARViewController.swift */,
+				E5B61E7129838DEE00533B6F /* ARMarkerViewController.swift */,
+				E5B61E7229838DEE00533B6F /* IDListViewController.swift */,
 			);
 			path = Ar;
 			sourceTree = "<group>";
@@ -1664,6 +1672,7 @@
 				E5F6FFFA2977CCC100D5C22B /* MiraikanIDMyPageView.swift in Sources */,
 				7E6E42E91D90FD1B006B6899 /* BlindViewController.m in Sources */,
 				E5F6FF8A2977CC3700D5C22B /* Home.swift in Sources */,
+				E5B61E7529838DEE00533B6F /* IDListViewController.swift in Sources */,
 				7EF7F7A81DD17D4A000A625A /* NavCommander.m in Sources */,
 				E5B61E5829823B2D00533B6F /* GuidanceModel.swift in Sources */,
 				E5F6FFD22977CCA500D5C22B /* ScheduleRowModel.swift in Sources */,
@@ -1714,6 +1723,7 @@
 				E5F6FFB52977CC9300D5C22B /* LocationRecordingButton.swift in Sources */,
 				E5F6000D2977CCD500D5C22B /* Host.swift in Sources */,
 				7E8A33BD1D917D5200D20CD5 /* HLPDataUtil.m in Sources */,
+				E5B61E7329838DEE00533B6F /* ARMarkerViewController.swift in Sources */,
 				E5F6FFB22977CC9300D5C22B /* ScheduleListHeader.swift in Sources */,
 				E5F6FFB62977CC9300D5C22B /* LinkingHeader.swift in Sources */,
 				7E1F9F2A1DEEB1D3003E1B23 /* NavDebugHelper.m in Sources */,
@@ -1798,6 +1808,7 @@
 				E537508D2977D73900BC3ACA /* EventViewController.swift in Sources */,
 				E537508E2977D73900BC3ACA /* ExhibitionView.swift in Sources */,
 				E537508F2977D73900BC3ACA /* FloorMapView.swift in Sources */,
+				E5B61E7629838DEE00533B6F /* IDListViewController.swift in Sources */,
 				E53750902977D73900BC3ACA /* FloorMapViewController.swift in Sources */,
 				E53750912977D73900BC3ACA /* Home.swift in Sources */,
 				E53750922977D73900BC3ACA /* VoiceGuideController.swift in Sources */,
@@ -1901,6 +1912,7 @@
 				E5F6FF2C2977B2F700D5C22B /* WebViewController.m in Sources */,
 				E5F6FF2D2977B2F700D5C22B /* NavSound.m in Sources */,
 				E5F6FF2E2977B2F700D5C22B /* AuthManager.m in Sources */,
+				E5B61E7429838DEE00533B6F /* ARMarkerViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

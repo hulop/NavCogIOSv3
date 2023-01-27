@@ -45,7 +45,7 @@ class AboutAppView: BaseView {
     override func setup() {
         super.setup()
         
-        lblIcon8.text = "Free Icons Retreived from: https://icons8.com for TabBar and NavBar."
+        lblIcon8.text = "Free Icons Retreived from: https://icons8.com for TabBar and NavBar. ウォーキング, 車椅子, ベビーカー, 視覚障害者のアクセス icon by Icons8"
         lblIcon8.lineBreakMode = .byWordWrapping
         lblIcon8.numberOfLines = 0
         lblIcon8.font = .preferredFont(forTextStyle: .callout)

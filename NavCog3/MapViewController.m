@@ -119,11 +119,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
     initialViewDidAppear = YES;
     
-    UILabel *titleView = [[UILabel alloc] init];
-    titleView.text = NSLocalizedString(@"Miraikan", @"");
-    titleView.accessibilityLabel = @"( )";
-    titleView.isAccessibilityElement = NO;
-    self.navigationItem.titleView = titleView;
+    [self updateTitle];
 
     state = ViewStateLoading;
     isNaviStarted = NO;     // new
@@ -222,6 +218,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
             }
             _webView.userMode = change[@"new"];
             isBlindMode = [change[@"new"] isEqualToString:@"user_blind"];
+            [self updateTitle];
             [self updateView];
         }
     }
@@ -312,6 +309,22 @@ typedef NS_ENUM(NSInteger, ViewState) {
             [timer invalidate];
         }
     }];
+}
+
+- (void)updateTitle {
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    UILabel *titleView = [[UILabel alloc] init];
+    UIFont *font = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
+    NSString* userMode = [ud stringForKey:@"user_mode"];
+    NSString *title = NSLocalizedString(userMode, @"");
+    if([title length] == 0) {
+        title = NSLocalizedString(@"Miraikan", @"");
+    }
+    titleView.text = title;
+    titleView.accessibilityLabel = @"( )";
+    titleView.isAccessibilityElement = NO;
+    titleView.font = font;
+    self.navigationItem.titleView = titleView;
 }
 
 - (void)updateView

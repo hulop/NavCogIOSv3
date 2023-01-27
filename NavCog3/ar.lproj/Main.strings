@@ -1,0 +1,73 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2016  IBM Corporation, Carnegie Mellon University and others
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *******************************************************************************/
+
+/* Class = "UITableViewSection"; headerTitle = "設定"; ObjectID = "2FQ-fL-pff"; */
+"2FQ-fL-pff.headerTitle" = "الإعدادات";
+
+/* Class = "UIBarButtonItem"; title = "Settings"; ObjectID = "ATn-7d-y1j"; */
+"ATn-7d-y1j.title" = "الإعدادات";
+
+/* Class = "UILabel"; text = "ナビゲーション終了"; ObjectID = "EeT-mO-dhE"; */
+"EeT-mO-dhE.text" = "إيقاف التوجيه";
+
+/* Class = "UITableViewSection"; headerTitle = "ナビゲーション"; ObjectID = "Fjv-at-SH9"; */
+"Fjv-at-SH9.headerTitle" = "التوجيه";
+
+/* (No Commment) */
+"LBt-N2-zq5.title" = "البحث عن طريق";
+
+/* Class = "UILabel"; text = "基本設定"; ObjectID = "QGQ-Xh-iSw"; */
+"QGQ-Xh-iSw.text" = "الإعدادات الأساسية";
+
+/* (No Commment) */
+"QT7-QX-lRu.accessibilityLabel" = "زر مسجل الصوت";
+
+/* (No Commment) */
+"aNk-8a-CVK.text" = "الئ";
+
+/* Class = "UILabel"; text = "ルート検索"; ObjectID = "cPv-rD-5Zy"; */
+"cPv-rD-5Zy.text" = "البحث عن طريق";
+
+/* (No Commment) */
+"eX6-IM-K8T.title" = "مسجل الصوت";
+
+/* (No Commment) */
+"f33-5l-IQM.normalTitle" = "أبدا";
+
+/* Class = "UILabel"; text = "詳細設定"; ObjectID = "fF4-sj-EDd"; */
+"fF4-sj-EDd.text" = "إعدادات المطور";
+
+/* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "hf2-Dc-ViP"; */
+"hf2-Dc-ViP.title" = "NavCog";
+
+/* (No Commment) */
+"uf4-3V-jsg.text" = "من";
+
+/* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "xcm-nO-qOJ"; */
+"xcm-nO-qOJ.title" = "NavCog";
+
+/* Class = "UIBarButtonItem"; title = "Search"; ObjectID = "yBn-Ni-tgc"; */
+"yBn-Ni-tgc.title" = "بحث";
+
+/* Class = "UILabel"; text = "ルート検索条件設定"; ObjectID = "yPF-YL-WSv"; */
+"yPF-YL-WSv.text" = "إعدادات البحث عن الطريق";
+

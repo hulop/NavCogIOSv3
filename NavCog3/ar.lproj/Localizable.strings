@@ -1,0 +1,168 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2016  IBM Corporation, Carnegie Mellon University and others
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *******************************************************************************/
+
+/* label for distance unit option */
+"Distance unit" = "وحدة المسافة";
+
+"RESTROOM" = "غرفة الاستراحة";
+
+/* Toilet for people with disability */
+"FOR_DISABLEDRESTROOM" = "مرحاض يمكن الوصول إليه بواسطة الكراسي المتحركة";
+
+/* Toilet for female */
+"FOR_FEMALEFOR_DISABLEDRESTROOM" = "مرحاض يمكن الوصول إليه بواسطة الكراسي المتحركة للنساء";
+
+/* Toilet for male */
+"FOR_MALEFOR_DISABLEDRESTROOM" = "مرحاض يمكن الوصول إليه بواسطة الكراسي المتحركة للرجال";
+
+/* Toilet for female */
+"FOR_FEMALERESTROOM" = "مرحاض نسائي";
+
+/* Toilet for male */
+"FOR_MALERESTROOM" = "مرحاض الذكور";
+
+/* feet distance unit label */
+"Feet" = "قدم";
+
+/* No comment provided by engineer. */
+"Loading, please wait" = "جاري التحميل انتظر من فضلك";
+
+/* meter distance unit label */
+"Meter" = "متر";
+
+/* No comment provided by engineer. */
+"Navigation" = "التنقل";
+
+/* No comment provided by engineer. */
+"Preview speed" = "سرعة المعاينة";
+
+/* label for tts options */
+"Speech_Sound" = "الكلام / الصوت";
+
+/* label for speech speed option */
+"Speech speed" = "سرعة الكلام";
+
+/* (No Commment) */
+"TOILET" = "الحمام";
+
+/* No comment provided by engineer. */
+"UI_BLIND" = "مستخدم أعمى";
+
+/* No comment provided by engineer. */
+"UI_Mode" = "وضع المستخدم";
+
+/* No comment provided by engineer. */
+"UI_WHEELCHAIR" = "مستخدم كرسي متحرك / مستخدم مبصر";
+
+/* No comment provided by engineer. */
+"Use Elevator" = "استخدم المصعد";
+
+/* No comment provided by engineer. */
+"Use Escalator" = "استخدم السلم المتحرك";
+
+"Use Moving Walkway" = "استخدام ممر متحرك";
+
+/* No comment provided by engineer. */
+"Use Stairs" = "استخدم السلالم";
+
+/* (No Commment) */
+"checkNetworkConnection" = "تحقق من اتصال الشبكة";
+
+"Preview with action" = "معاينة مع التحرك";
+
+"SPEECH_SPEED_CHECK" = "Sسرعة الكلام هي    %.2f";
+
+"Exercise" = "تمرين";
+
+"Launch Exercise" = "إطلاق التمرين";
+
+"Prefer Tactile Paving" = " البلاط اللمسي";
+
+"vibrateSetting" = "استخدم الاهتزاز";
+
+"soundEffectSetting" = "استخدم المؤثرات الصوتية";
+
+"for_bone_conduction_headset" = "تأثير الصوت لسماعة الرأس";
+
+"Reset_Location" = "إعادة تهيئة الترجمة";
+
+"Open_with_Safari" = "فتح مع متصفح سفاري";
+"Open_with_Safari_Message" = "هل من المقبول فتح صفحة ويب باستخدام متصفح سفاري";
+
+"CheckServerList" = "التحقق من قائمة الخوادم...";
+"CheckAgreement" = "التحقق من إعدادات الخوادم...";
+"CheckServerConfig" = "التحقق من إعدادات الخادم...";
+"DOWNLOADING_DATA" = "تنزيل البيانات...";
+
+"NoAltimeterAlertTitle" = "لا يوجد جهاز استشعار ";
+"NoAltimeterAlertMessage" =
+"التذبيق لا يدعم هذا الجهاز. قد يكون التوجيه غير مستقر لأن جهازك لا يحتوي على جهاز استشعار البلوتوث.";
+"I_Understand" = "أفهم";
+
+"BluetoothOffAlertTitle" = "تم إيقاف البلوتوث";
+"BluetoothOffAlertMessage" = "تحتاج إلى تشغيل البلوتوث لتمكين وظيفة الترجمة الداخلية.";
+"CANCEL" = "يلغي";
+"SETTING" = "أفتح الإعدادات";
+
+"LocationNotAllowedTitle" = "الموقع غير مسموح به";
+"LocationNotAllowedMessage" = "تحتاج إلى السماح بالوصول إلى خدمة الموقع لتمكين خاصية التوجيه الداخلية.
+من إعدادات NavCog ، يرجى تحديد
+الموقع ->
+أثناء استخدام التطبيق";
+
+"THANKYOU_SENDING" = "شكرا لك على ملاحظاتك!
+يتم إرسال التعليقات ...";
+
+"Help" = "المساعدة";
+"Instructions" = "التعليمات";
+"OpenHelp" = "افتح صفحة المساعدة";
+"OpenInstructions" = "افتح صفحة التعليمات";
+"Back to mode selection" = "العودة إلى اختيار الوضع";
+"Send Feedback" = "ارسل رأيك";
+"feedbackSubject" = " ملاحظات(%@)";
+"feedbackBody" = "الرجاء إدخال ملاحظاتك هنا.";
+
+"NeedToUpdateAppTitle" = "تحديث التطبيق";
+"NeedToUpdateAppMessage" = "يتطلب تحديث التطبيق";
+"OpenAppStore" = "افتح متجر التطبيقات";
+
+/* Mode title for "Visually Impaired User" */
+"user_blind" = "مستخدم كفيف ";
+
+/* Mode title for "Wheelchair User" */
+"user_wheelchair" = "مستخدم لكرسي متحرك";
+
+/* Mode title for "Stroller User" */
+"user_stroller" = "مستخدم لعربة اطفال";
+
+/* Mode title for "General Pedestrian" */
+"user_general" = "المشأة";
+
+/* Mode heading title of setting menu */
+"Mode" = "وضع";
+
+/* Skip to read facility infomation when users pass by */
+"Ignore facility info." = "تجاهل معلومات المنشأة.";
+
+/* Show POI detail when users change their heading toward the POI */
+"Show POI with Action" = "إظهار العناصر خلال التوجيه ";
+

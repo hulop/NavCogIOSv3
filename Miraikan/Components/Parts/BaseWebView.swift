@@ -1,5 +1,4 @@
 //
-//
 //  BaseWebView.swift
 //  NavCogMiraikan
 //
@@ -25,7 +24,6 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-import Foundation
 import UIKit
 
 protocol WebAccessibilityDelegate {

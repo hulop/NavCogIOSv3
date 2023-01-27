@@ -1,6 +1,5 @@
 //
-//
-//  Switch.swift
+//  BaseSwitch.swift
 //  NavCogMiraikan
 //
 /*******************************************************************************
@@ -25,7 +24,6 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-import Foundation
 import UIKit
 
 class BaseSwitch: UISwitch {

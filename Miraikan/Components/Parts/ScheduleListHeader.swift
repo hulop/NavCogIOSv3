@@ -1,5 +1,4 @@
 //
-//
 //  ScheduleListHeader.swift
 //  NavCogMiraikan
 //

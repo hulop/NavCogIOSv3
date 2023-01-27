@@ -1,5 +1,5 @@
 //
-//  Label.swift
+//  AutoWrapLabel.swift
 //  NavCogMiraikan
 //
 /*******************************************************************************
@@ -41,55 +41,5 @@ class AutoWrapLabel: UILabel {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-/**
- A AutoWrapLabel underlined which looks like an HTML link
- */
-class UnderlinedLabel: AutoWrapLabel {
-
-    private var action: ((UnderlinedLabel) -> ())?
-
-    public var title: String? {
-        didSet {
-            if let title = title {
-                setText(title)
-            }
-        }
-    }
-
-    init(_ text: String? = nil) {
-        super.init(frame: .zero)
-        if let text = text {
-            setText(text)
-        }
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setText(_ text: String) {
-        let attr: [NSAttributedString.Key: Any] = [
-            .font: UIFont.preferredFont(forTextStyle: .body),
-            .underlineStyle: NSUnderlineStyle.single.rawValue
-        ]
-        let str = NSMutableAttributedString(string: text,
-                                            attributes: attr)
-        self.attributedText = str
-    }
-
-    public func openView(_ action: @escaping ((UnderlinedLabel) -> ())) {
-        self.action = action
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tapAction))
-        self.isUserInteractionEnabled = true
-        self.addGestureRecognizer(tap)
-    }
-
-    @objc private func tapAction() {
-        if let f = action {
-            f(self)
-        }
     }
 }

@@ -1124,6 +1124,32 @@
 			path = model;
 			sourceTree = "<group>";
 		};
+		E5B61E772983BDDE00533B6F /* TableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FF9E2977CC9200D5C22B /* ContentRow.swift */,
+				E5F6FFA52977CC9300D5C22B /* DescriptionRow.swift */,
+				E5F6FF9B2977CC9200D5C22B /* LinkRow.swift */,
+				E5F6FF992977CC9200D5C22B /* TableViewCell.swift */,
+				E5F6FF9F2977CC9200D5C22B /* ScheduleRow.swift */,
+				E5F6FFA22977CC9300D5C22B /* VoiceGuideRow.swift */,
+				E54F242A2980E2CA00F3A83C /* RouteModeRow.swift */,
+				E5F6FFA32977CC9300D5C22B /* NavButtonRow.swift */,
+			);
+			path = TableViewCell;
+			sourceTree = "<group>";
+		};
+		E5B61E782983BF1400533B6F /* Button */ = {
+			isa = PBXGroup;
+			children = (
+				E5F6FF9C2977CC9200D5C22B /* Button.swift */,
+				E5F6FF9A2977CC9200D5C22B /* LocationInputButton.swift */,
+				E5F6FFA02977CC9300D5C22B /* LocationRecordingButton.swift */,
+				E5F6FF972977CC9200D5C22B /* VoiceGuideButton.swift */,
+			);
+			path = Button;
+			sourceTree = "<group>";
+		};
 		E5F6FF552977CB2100D5C22B /* Miraikan */ = {
 			isa = PBXGroup;
 			children = (
@@ -1166,22 +1192,13 @@
 				E5F6FFA42977CC9300D5C22B /* BaseView.swift */,
 				E5F6FFA82977CC9300D5C22B /* BaseWebView.swift */,
 				E5F6FFA92977CC9300D5C22B /* BlankView.swift */,
-				E5F6FF9C2977CC9200D5C22B /* Button.swift */,
-				E5F6FF9E2977CC9200D5C22B /* ContentRow.swift */,
-				E5F6FFA52977CC9300D5C22B /* DescriptionRow.swift */,
 				E5F6FFA72977CC9300D5C22B /* Label.swift */,
 				E5F6FFA12977CC9300D5C22B /* LinkingHeader.swift */,
-				E5F6FF9B2977CC9200D5C22B /* LinkRow.swift */,
-				E5F6FF9A2977CC9200D5C22B /* LocationInputButton.swift */,
-				E5F6FFA02977CC9300D5C22B /* LocationRecordingButton.swift */,
-				E5F6FFA32977CC9300D5C22B /* NavButtonRow.swift */,
 				E5F6FF9D2977CC9200D5C22B /* ScheduleListHeader.swift */,
-				E5F6FF9F2977CC9200D5C22B /* ScheduleRow.swift */,
 				E5F6FFAA2977CC9300D5C22B /* Switch.swift */,
-				E5F6FF992977CC9200D5C22B /* TableViewCell.swift */,
 				E5F6FFAB2977CC9300D5C22B /* ThroughView.swift */,
-				E5F6FF972977CC9200D5C22B /* VoiceGuideButton.swift */,
-				E5F6FFA22977CC9300D5C22B /* VoiceGuideRow.swift */,
+				E5B61E782983BF1400533B6F /* Button */,
+				E5B61E772983BDDE00533B6F /* TableViewCell */,
 			);
 			path = Parts;
 			sourceTree = "<group>";
@@ -1262,7 +1279,6 @@
 		E5F6FF5C2977CB7E00D5C22B /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				E54F242A2980E2CA00F3A83C /* RouteModeRow.swift */,
 				E54F24272980E26E00F3A83C /* RouteMode.swift */,
 				E5F6FFF52977CCC100D5C22B /* TabItem.swift */,
 			);

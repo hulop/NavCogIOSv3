@@ -28,8 +28,6 @@
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import "WebViewController.h"
 
-//@import HLPDialog;
-
 @interface MapViewController: UIViewController <
     HLPWebViewDelegate,
     HLPTTSProtocol,
@@ -42,6 +40,7 @@
 
 @property (strong, nonatomic) NavBlindWebView *webView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *updateIndicator;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *cancelButton;

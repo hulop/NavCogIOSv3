@@ -165,6 +165,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
+    [self updateIndicatorStop];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logReplay:) name:REQUEST_LOG_REPLAY object:nil];                  // blind
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestStartNavigation:) name:REQUEST_START_NAVIGATION object:nil];
@@ -458,7 +459,11 @@ typedef NS_ENUM(NSInteger, ViewState) {
                              position: CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height - 50)];
     }
     if ([segue.identifier isEqualToString:@"show_search"]) {
-        [_webView evaluateJavaScript:@"$hulop.map.setSync(true);" completionHandler:nil];
+        [self updateIndicatorStart];
+        [_webView evaluateJavaScript:@"$hulop.map.setSync(true);"
+                   completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+            [self updateIndicatorStop];
+        }];
     }
 }
 
@@ -1047,7 +1052,11 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [[NSNotificationCenter defaultCenter] postNotificationName:REQUEST_BACKGROUND_LOCATION object:self userInfo:@{@"value":@(requestBackground)}];
     if ([properties[@"isActive"] boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [_webView evaluateJavaScript:@"$hulop.map.setSync(true);" completionHandler:nil];
+            [self updateIndicatorStart];
+            [_webView evaluateJavaScript:@"$hulop.map.setSync(true);"
+                       completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+                [self updateIndicatorStop];
+            }];
         });
             
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"reset_as_start_point"] && !rerouteFlag) {
@@ -1098,7 +1107,11 @@ typedef NS_ENUM(NSInteger, ViewState) {
 {
     [NavDataStore sharedDataStore].start = [[NSDate date] timeIntervalSince1970];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView evaluateJavaScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]] completionHandler:nil];
+        [self updateIndicatorStart];
+        [_webView evaluateJavaScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]
+                   completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+            [self updateIndicatorStop];
+        }];
 
         [NavUtil hideModalWaiting];
     });
@@ -1225,6 +1238,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 }
 - (void)reroute:(NSDictionary *)properties
 {
+    [self updateIndicatorStart];
     rerouteFlag = YES;
     [commander reroute:properties];
     NavDataStore *nds = [NavDataStore sharedDataStore];
@@ -1248,9 +1262,13 @@ typedef NS_ENUM(NSInteger, ViewState) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [NavUtil showModalWaitingWithMessage:NSLocalizedString(@"Loading, please wait",@"")];
     });
-    [nds requestRerouteFrom:[NavDataStore destinationForCurrentLocation]._id To:nds.to._id withPreferences:prefs complete:^{
+    [nds requestRerouteFrom:[NavDataStore destinationForCurrentLocation]._id
+                         To:nds.to._id
+            withPreferences:prefs
+                   complete:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [NavUtil hideModalWaiting];
+            [self updateIndicatorStop];
         });
     }];
 }
@@ -1400,7 +1418,11 @@ typedef NS_ENUM(NSInteger, ViewState) {
 - (void)webFooterHidden
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.webView evaluateJavaScript: @"document.getElementById('map-footer').style.display ='none';" completionHandler: nil];
+        [self updateIndicatorStart];
+        [self.webView evaluateJavaScript: @"document.getElementById('map-footer').style.display ='none';"
+                       completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+            [self updateIndicatorStop];
+        }];
     });
 }
 
@@ -1475,6 +1497,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
                                            error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
 
+    [self updateIndicatorStart];
     dispatch_async(dispatch_get_main_queue(), ^{
         isNaviStarted = YES;
         [nds requestRouteFrom:from.singleId
@@ -1484,6 +1507,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
             if (self == nil) return;
             nds.previewMode = NO;
             nds.exerciseMode = NO;
+            [self updateIndicatorStop];
         }];
     });
 }
@@ -1502,6 +1526,22 @@ typedef NS_ENUM(NSInteger, ViewState) {
         [self.view addSubview: talkButton];
         [talkButton addTarget:self action:@selector(talkTap:) forControlEvents:UIControlEventTouchUpInside];
     }
+}
+
+- (void)updateIndicatorStart
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_updateIndicator startAnimating];
+        _updateIndicator.hidden = NO;
+    });
+}
+
+- (void)updateIndicatorStop
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_updateIndicator stopAnimating];
+        _updateIndicator.hidden = YES;
+    });
 }
 
 @end

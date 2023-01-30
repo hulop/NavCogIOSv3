@@ -837,13 +837,18 @@
                                     <action selector="retry:" destination="BCl-Kr-XcS" eventType="touchUpInside" id="s9L-N6-YNP"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="SO9-cE-nwu">
+                                <rect key="frame" x="10" y="10" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Dns-6k-MOo"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="pcn-y1-x92" firstAttribute="centerX" secondItem="Dns-6k-MOo" secondAttribute="centerX" id="4KV-vU-krx"/>
+                            <constraint firstItem="SO9-cE-nwu" firstAttribute="top" secondItem="Dns-6k-MOo" secondAttribute="top" constant="10" id="HFD-NN-R4r"/>
                             <constraint firstItem="MFV-dq-tXC" firstAttribute="centerX" secondItem="Dns-6k-MOo" secondAttribute="centerX" id="Jl7-m2-6Kq"/>
                             <constraint firstItem="pcn-y1-x92" firstAttribute="top" secondItem="MFV-dq-tXC" secondAttribute="bottom" constant="8" id="PAw-y0-NPa"/>
+                            <constraint firstItem="SO9-cE-nwu" firstAttribute="leading" secondItem="Dns-6k-MOo" secondAttribute="leading" constant="10" id="PsZ-3j-PJs"/>
                             <constraint firstItem="KO5-lz-wZv" firstAttribute="centerY" secondItem="r1C-ZP-AYe" secondAttribute="centerY" id="jEd-oH-osT"/>
                             <constraint firstItem="KO5-lz-wZv" firstAttribute="top" secondItem="pcn-y1-x92" secondAttribute="bottom" constant="8" id="pce-rl-e8U"/>
                             <constraint firstItem="KO5-lz-wZv" firstAttribute="centerX" secondItem="Dns-6k-MOo" secondAttribute="centerX" id="tdJ-aN-GGt"/>
@@ -903,6 +908,7 @@
                         <outlet property="searchButton" destination="qdn-AW-6Of" id="hmc-n3-gnH"/>
                         <outlet property="settingButton" destination="Ywn-mt-AeI" id="XJh-yU-Fs6"/>
                         <outlet property="stopButton" destination="z2A-VN-sRB" id="FNa-80-ZfG"/>
+                        <outlet property="updateIndicator" destination="SO9-cE-nwu" id="lcD-s5-WIv"/>
                         <segue destination="5By-Wf-lM7" kind="show" identifier="user_settings" id="A1O-vz-eor"/>
                         <segue destination="YRz-sv-vaW" kind="show" identifier="show_dialog_wc" id="x4o-MY-LrH"/>
                         <segue destination="M0g-Fg-mUv" kind="show" identifier="show_search" id="39c-P9-Li7"/>
@@ -914,10 +920,10 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Uqw-3g-GCM"/>
+        <segue reference="x4o-MY-LrH"/>
         <segue reference="y9t-k8-dBv"/>
-        <segue reference="cks-JY-QxH"/>
-        <segue reference="BKg-hP-LrX"/>
+        <segue reference="39c-P9-Li7"/>
+        <segue reference="A1O-vz-eor"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="Menu" width="32" height="32"/>

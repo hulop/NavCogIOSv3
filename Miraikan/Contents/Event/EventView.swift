@@ -197,7 +197,6 @@ fileprivate class EventContent: BaseView {
             btnNavi.tapAction({ [weak self] _ in
                 guard let self = self else { return }
                 guard let nav = self.navVC else { return }
-                AudioGuideManager.shared.isDisplayButton(false)
                 nav.openMap(nodeId: nodeId)
             })
         }

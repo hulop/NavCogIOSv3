@@ -39,7 +39,7 @@ final public class AudioManager: NSObject {
     
     var delegate: AudioManagerDelegate?
     
-    private let synthesizer = AVSpeechSynthesizer()
+    private let tts = DefaultTTS()
     private(set) var isPlaying = false
     private(set) var isSoundEffect = false
     private var cacheTexts = [String](repeating: "", count: 3)
@@ -67,7 +67,6 @@ final public class AudioManager: NSObject {
     private override init() {
         super.init()
         lang = NSLocalizedString("lang", comment: "")
-        self.synthesizer.delegate = self
         initializeTime = Date().timeIntervalSince1970
         
         let center = NotificationCenter.default
@@ -130,25 +129,12 @@ final public class AudioManager: NSObject {
     }
 
     func stop() {
-        self.synthesizer.stopSpeaking(at: .immediate)
+        tts.stop(true)
         self.isPlaying = false
     }
 
-    func pause() {
-        if synthesizer.isSpeaking {
-            if self.isPlaying {
-                synthesizer.pauseSpeaking(at: .word)
-                self.isPlaying = false
-            } else {
-                synthesizer.continueSpeaking()
-                self.isPlaying = true
-            }
-        }
-    }
-
     func repeatSpeak() {
-        if !synthesizer.isSpeaking,
-           !self.isPlaying,
+        if !self.isPlaying,
            let repeatText = repeatText {
             self.play(text: repeatText)
         }
@@ -163,16 +149,11 @@ final public class AudioManager: NSObject {
         if self.isPlaying { return }
 
         self.isPlaying = true
-        
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = self.makeVoice("com.apple.ttsbundle.Otoya-premium")
+        tts.speak(text, callback: { [weak self] in
+            guard let self = self else { return }
+            self.isPlaying = false
+        })
 
-        utterance.rate = 0.55
-        utterance.pitchMultiplier = 1.0
-        utterance.postUtteranceDelay = 0.4
-
-        synthesizer.speak(utterance)
-        
         if let delegate = delegate {
             delegate.speakingMessage(message: text)
         }
@@ -187,16 +168,6 @@ final public class AudioManager: NSObject {
             self.speakTexts.removeFirst()
         }
         return true
-    }
-
-    private func makeVoice(_ identifier: String) -> AVSpeechSynthesisVoice! {
-        let voices = AVSpeechSynthesisVoice.speechVoices()
-        for voice in voices {
-            if voice.identifier == identifier {
-                return AVSpeechSynthesisVoice.init(identifier: identifier)
-            }
-        }
-        return AVSpeechSynthesisVoice.init(language: "ja-JP")
     }
 
     func SoundEffect(sound: String, rate: Double, pan: Double, interval: Double) {

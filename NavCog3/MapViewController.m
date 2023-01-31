@@ -909,13 +909,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 - (IBAction)doBack:(id)sender {
 
     if (isBlindMode) {
-        
-#if NavCogMiraikan
-        [self.navigationController popViewControllerAnimated:YES];
-#else
-        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-#endif
-        
+        [self backViewController];
     } else {
         switch(state) {
             case ViewStateSearch:
@@ -936,12 +930,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
                 [_webView triggerWebviewControl:HLPWebviewControlBackToControl];
                 break;
             default:
-                
-#if NavCogMiraikan
-                [self.navigationController popViewControllerAnimated:YES];
-#else
-                [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-#endif
+                [self backViewController];
                 break;
         }
     }
@@ -1100,6 +1089,20 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [NavUtil hideModalWaiting];
+        
+        NSString *title = NSLocalizedString(@"Error", @"");
+        NSString *message = NSLocalizedString(@"Pathfinding failed", @"");
+        NSString *ok = NSLocalizedString(@"OK", @"");
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:ok
+                                                  style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction *action) {
+            [self backViewController];
+                                                  }]];
+        [[self topMostController] presentViewController:alert animated:YES completion:nil];
+
     });
 }
 
@@ -1554,6 +1557,15 @@ typedef NS_ENUM(NSInteger, ViewState) {
         [_updateIndicator stopAnimating];
         _updateIndicator.hidden = YES;
     });
+}
+
+- (void)backViewController
+{
+#if NavCogMiraikan
+    [self.navigationController popViewControllerAnimated:YES];
+#else
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+#endif
 }
 
 @end

@@ -1277,12 +1277,24 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
 - (void)speak:(NSString *)text force:(BOOL)isForce completionHandler:(void (^)(void))handler
 {
+    if (!isBlindMode &&
+        (![[NSUserDefaults standardUserDefaults] boolForKey:@"isVoiceGuideOn"])) {
+        handler();
+        return;
+    }
+
     [[NavDeviceTTS sharedTTS] speak:text withOptions:@{@"force": @(isForce)} completionHandler:handler];
 }
 
 // blind
 - (void)speak:(NSString*)text withOptions:(NSDictionary*)options completionHandler:(void (^)(void))handler
 {
+    if (!isBlindMode &&
+        (![[NSUserDefaults standardUserDefaults] boolForKey:@"isVoiceGuideOn"])) {
+        handler();
+        return;
+    }
+
     [[NavDeviceTTS sharedTTS] speak:text withOptions:options completionHandler:handler];
 }
 

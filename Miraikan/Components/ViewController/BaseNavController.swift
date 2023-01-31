@@ -45,17 +45,16 @@ class BaseNavController: UINavigationController {
      - nodeId: destination id
      */
     public func openMap(nodeId: String?) {
+        NSLog("openMap(\(nodeId ?? "nil"))")
 
         // Select mode
         let mode = MiraikanUtil.routeMode
         UserDefaults.standard.setValue("user_\(mode.rawValue)", forKey: "user_mode")
         ConfigManager.loadConfig("presets/\(mode.rawValue).plist")
 
-//        // Open the map for Blind or General/Wheelchair mode
-//        mapVC.destId = nodeId
-//        mapVC.presetId = Int32(MiraikanUtil.presetId)
-//        NSLog("openMap(\(nodeId ?? "nil")) \(identifier), presetId: \(MiraikanUtil.presetId)")
-        NSLog("openMap(\(nodeId ?? "nil"))")
+        if MiraikanUtil.routeMode == .blind && nodeId != nil {
+            AudioGuideManager.shared.isDisplayButton(false)
+        }
 
         if let mapVC = MapManager.shared.getMap() {
             mapVC.initMap()

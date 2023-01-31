@@ -64,11 +64,11 @@ class ExhibitionView: BaseWebView, WebAccessibilityDelegate {
         btnNavi.tapAction({ [weak self] _ in
             guard let self = self else { return }
             guard let nav = self.navVC else { return }
-            AudioGuideManager.shared.isDisplayButton(false)
             if let nodeId = self.nodeId {
                 nav.openMap(nodeId: nodeId)
             }
             if let locations = locations {
+                AudioGuideManager.shared.isDisplayButton(false)
                 let vc = FloorSelectionController(title: nav.title)
                 vc.items = [0: locations]
                 nav.show(vc, sender: nil)

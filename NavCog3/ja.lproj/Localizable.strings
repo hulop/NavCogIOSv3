@@ -146,6 +146,7 @@
 "Confirm" = "確認";
 "Search"  = "検索";
 "Edit"    = "編集";
+"Error"   = "エラー";
 
 
 "LocationNotAllowedTitle" = "位置情報が許可されていません";

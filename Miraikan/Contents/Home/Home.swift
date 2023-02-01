@@ -363,7 +363,7 @@ fileprivate enum MenuItem {
         case .arNavigation:
             return ARViewController()
         case .setting:
-            return createVC(view: SettingView())
+            return NaviSettingController(title: NSLocalizedString("Navi Settings", comment: ""))
         case .miraikanIDmyPage:
             return createVC(view: MiraikanIDMyPageView())
         case .aboutMiraikan:

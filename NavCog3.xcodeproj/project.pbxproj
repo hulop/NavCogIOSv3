@@ -156,7 +156,7 @@
 		E53750A12977D73900BC3ACA /* ScheduleListHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9D2977CC9200D5C22B /* ScheduleListHeader.swift */; };
 		E53750A22977D73900BC3ACA /* ScheduleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9F2977CC9200D5C22B /* ScheduleRow.swift */; };
 		E53750A32977D73900BC3ACA /* BaseSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFAA2977CC9300D5C22B /* BaseSwitch.swift */; };
-		E53750A42977D73900BC3ACA /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF992977CC9200D5C22B /* TableViewCell.swift */; };
+		E53750A42977D73900BC3ACA /* BaseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF992977CC9200D5C22B /* BaseRow.swift */; };
 		E53750A52977D73900BC3ACA /* ThroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFAB2977CC9300D5C22B /* ThroughView.swift */; };
 		E53750A62977D73900BC3ACA /* VoiceGuideButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF972977CC9200D5C22B /* VoiceGuideButton.swift */; };
 		E53750A72977D73900BC3ACA /* VoiceGuideRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FFA22977CC9300D5C22B /* VoiceGuideRow.swift */; };
@@ -164,6 +164,22 @@
 		E53750A92977D73900BC3ACA /* BaseListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF922977CC7F00D5C22B /* BaseListController.swift */; };
 		E53750AA2977D73900BC3ACA /* BaseNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF902977CC7F00D5C22B /* BaseNavController.swift */; };
 		E53750AB2977D73900BC3ACA /* BaseTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF8F2977CC7F00D5C22B /* BaseTabController.swift */; };
+		E53814062989F3D30098E082 /* SliderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53814052989F3D30098E082 /* SliderModel.swift */; };
+		E53814072989F3D30098E082 /* SliderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53814052989F3D30098E082 /* SliderModel.swift */; };
+		E53814092989F4DC0098E082 /* SwitchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53814082989F4DC0098E082 /* SwitchModel.swift */; };
+		E538140A2989F4DC0098E082 /* SwitchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53814082989F4DC0098E082 /* SwitchModel.swift */; };
+		E538140C2989F4F50098E082 /* LabelModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E538140B2989F4F50098E082 /* LabelModel.swift */; };
+		E538140D2989F4F50098E082 /* LabelModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E538140B2989F4F50098E082 /* LabelModel.swift */; };
+		E538140F2989F50B0098E082 /* ButtonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E538140E2989F50B0098E082 /* ButtonModel.swift */; };
+		E53814102989F50B0098E082 /* ButtonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E538140E2989F50B0098E082 /* ButtonModel.swift */; };
+		E53814122989F5690098E082 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53814112989F5690098E082 /* SliderCell.swift */; };
+		E53814132989F5690098E082 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53814112989F5690098E082 /* SliderCell.swift */; };
+		E53814152989F57B0098E082 /* SwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53814142989F57B0098E082 /* SwitchCell.swift */; };
+		E53814162989F57B0098E082 /* SwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53814142989F57B0098E082 /* SwitchCell.swift */; };
+		E53814182989F58C0098E082 /* LabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53814172989F58C0098E082 /* LabelCell.swift */; };
+		E53814192989F58C0098E082 /* LabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53814172989F58C0098E082 /* LabelCell.swift */; };
+		E538141B2989F59F0098E082 /* ButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E538141A2989F59F0098E082 /* ButtonCell.swift */; };
+		E538141C2989F59F0098E082 /* ButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E538141A2989F59F0098E082 /* ButtonCell.swift */; };
 		E54F24282980E26E00F3A83C /* RouteMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54F24272980E26E00F3A83C /* RouteMode.swift */; };
 		E54F24292980E26E00F3A83C /* RouteMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54F24272980E26E00F3A83C /* RouteMode.swift */; };
 		E54F242B2980E2CA00F3A83C /* RouteModeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54F242A2980E2CA00F3A83C /* RouteModeRow.swift */; };
@@ -332,7 +348,7 @@
 		E5F6FF962977CC7F00D5C22B /* BaseListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF922977CC7F00D5C22B /* BaseListController.swift */; };
 		E5F6FFAC2977CC9300D5C22B /* VoiceGuideButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF972977CC9200D5C22B /* VoiceGuideButton.swift */; };
 		E5F6FFAD2977CC9300D5C22B /* BaseScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF982977CC9200D5C22B /* BaseScrollView.swift */; };
-		E5F6FFAE2977CC9300D5C22B /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF992977CC9200D5C22B /* TableViewCell.swift */; };
+		E5F6FFAE2977CC9300D5C22B /* BaseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF992977CC9200D5C22B /* BaseRow.swift */; };
 		E5F6FFAF2977CC9300D5C22B /* LocationInputButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9A2977CC9200D5C22B /* LocationInputButton.swift */; };
 		E5F6FFB02977CC9300D5C22B /* LinkRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9B2977CC9200D5C22B /* LinkRow.swift */; };
 		E5F6FFB12977CC9300D5C22B /* BaseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6FF9C2977CC9200D5C22B /* BaseButton.swift */; };
@@ -538,6 +554,14 @@
 		A9ED1549213914A6009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = SettingUtil/ko.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
 		D604F5B4F497C66164142E1B /* libPods-NavCogMiraikan.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogMiraikan.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6A2933F1F60A0C58188E95C /* Pods-NavCogMiraikan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCogMiraikan.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCogMiraikan/Pods-NavCogMiraikan.release.xcconfig"; sourceTree = "<group>"; };
+		E53814052989F3D30098E082 /* SliderModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderModel.swift; sourceTree = "<group>"; };
+		E53814082989F4DC0098E082 /* SwitchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchModel.swift; sourceTree = "<group>"; };
+		E538140B2989F4F50098E082 /* LabelModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelModel.swift; sourceTree = "<group>"; };
+		E538140E2989F50B0098E082 /* ButtonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonModel.swift; sourceTree = "<group>"; };
+		E53814112989F5690098E082 /* SliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
+		E53814142989F57B0098E082 /* SwitchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchCell.swift; sourceTree = "<group>"; };
+		E53814172989F58C0098E082 /* LabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelCell.swift; sourceTree = "<group>"; };
+		E538141A2989F59F0098E082 /* ButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
 		E54F24272980E26E00F3A83C /* RouteMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteMode.swift; sourceTree = "<group>"; };
 		E54F242A2980E2CA00F3A83C /* RouteModeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteModeRow.swift; sourceTree = "<group>"; };
 		E54F24472980E93300F3A83C /* AskAIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskAIView.swift; sourceTree = "<group>"; };
@@ -630,7 +654,7 @@
 		E5F6FF922977CC7F00D5C22B /* BaseListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseListController.swift; sourceTree = "<group>"; };
 		E5F6FF972977CC9200D5C22B /* VoiceGuideButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceGuideButton.swift; sourceTree = "<group>"; };
 		E5F6FF982977CC9200D5C22B /* BaseScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseScrollView.swift; sourceTree = "<group>"; };
-		E5F6FF992977CC9200D5C22B /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		E5F6FF992977CC9200D5C22B /* BaseRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseRow.swift; sourceTree = "<group>"; };
 		E5F6FF9A2977CC9200D5C22B /* LocationInputButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationInputButton.swift; sourceTree = "<group>"; };
 		E5F6FF9B2977CC9200D5C22B /* LinkRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkRow.swift; sourceTree = "<group>"; };
 		E5F6FF9C2977CC9200D5C22B /* BaseButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseButton.swift; sourceTree = "<group>"; };
@@ -1145,11 +1169,15 @@
 				E5F6FF9E2977CC9200D5C22B /* ContentRow.swift */,
 				E5F6FFA52977CC9300D5C22B /* DescriptionRow.swift */,
 				E5F6FF9B2977CC9200D5C22B /* LinkRow.swift */,
-				E5F6FF992977CC9200D5C22B /* TableViewCell.swift */,
+				E5F6FF992977CC9200D5C22B /* BaseRow.swift */,
 				E5F6FF9F2977CC9200D5C22B /* ScheduleRow.swift */,
 				E5F6FFA22977CC9300D5C22B /* VoiceGuideRow.swift */,
 				E54F242A2980E2CA00F3A83C /* RouteModeRow.swift */,
 				E5F6FFA32977CC9300D5C22B /* NavButtonRow.swift */,
+				E53814112989F5690098E082 /* SliderCell.swift */,
+				E53814142989F57B0098E082 /* SwitchCell.swift */,
+				E53814172989F58C0098E082 /* LabelCell.swift */,
+				E538141A2989F59F0098E082 /* ButtonCell.swift */,
 			);
 			path = TableViewCell;
 			sourceTree = "<group>";
@@ -1272,6 +1300,10 @@
 				E5B61E5429823B2D00533B6F /* GuidanceModel.swift */,
 				E5B61E5329823B2D00533B6F /* PhonationModel.swift */,
 				E5B61E5129823B2C00533B6F /* VoiceModel.swift */,
+				E53814052989F3D30098E082 /* SliderModel.swift */,
+				E53814082989F4DC0098E082 /* SwitchModel.swift */,
+				E538140B2989F4F50098E082 /* LabelModel.swift */,
+				E538140E2989F50B0098E082 /* ButtonModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1668,6 +1700,7 @@
 				E5F6FF872977CC3700D5C22B /* AskAIViewController.swift in Sources */,
 				7EF45E3A1E3F1E5600208042 /* ServerConfig.m in Sources */,
 				E5F6000C2977CCD500D5C22B /* MapManager.swift in Sources */,
+				E53814152989F57B0098E082 /* SwitchCell.swift in Sources */,
 				E5F6FF8B2977CC3700D5C22B /* ExhibitionView.swift in Sources */,
 				E5F6FEFA2977ACD500D5C22B /* MapViewController.m in Sources */,
 				7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */,
@@ -1703,9 +1736,11 @@
 				7E433DD41D6E84D300C6C993 /* NavUtil.m in Sources */,
 				E5F6FF8C2977CC3700D5C22B /* FloorMapView.swift in Sources */,
 				7EDEDC271D1E0C6800AC111A /* ViewController.m in Sources */,
+				E538141B2989F59F0098E082 /* ButtonCell.swift in Sources */,
 				7E433DCF1D6E846300C6C993 /* NavDeviceTTS.m in Sources */,
 				E5F6001B2977CCE000D5C22B /* UserDefaultsExtension.swift in Sources */,
 				E5F6FF962977CC7F00D5C22B /* BaseListController.swift in Sources */,
+				E538140C2989F4F50098E082 /* LabelModel.swift in Sources */,
 				E5F6FFDC2977CCA500D5C22B /* RegularExhibitionModel.swift in Sources */,
 				E5F6FFFD2977CCC100D5C22B /* TabItem.swift in Sources */,
 				E5F6FFFA2977CCC100D5C22B /* MiraikanIDMyPageView.swift in Sources */,
@@ -1716,7 +1751,9 @@
 				E5B61E5829823B2D00533B6F /* GuidanceModel.swift in Sources */,
 				E5F6FFD22977CCA500D5C22B /* ScheduleRowModel.swift in Sources */,
 				7EDEDC241D1E0C6800AC111A /* AppDelegate.mm in Sources */,
+				E53814122989F5690098E082 /* SliderCell.swift in Sources */,
 				7E5150A41D8BF32800ED25FB /* NavNavigator.m in Sources */,
+				E53814062989F3D30098E082 /* SliderModel.swift in Sources */,
 				7E08DB581DB9F08E00E82161 /* ConfigManager.m in Sources */,
 				7EF7F7AB1DD189B0000A625A /* NavPreviewer.m in Sources */,
 				E54F24282980E26E00F3A83C /* RouteMode.swift in Sources */,
@@ -1738,6 +1775,7 @@
 				E5F6FFD12977CCA500D5C22B /* NavButtonModel.swift in Sources */,
 				7EE207DB2022F7BA00160160 /* HLPDirectory.m in Sources */,
 				E5F6FFB12977CC9300D5C22B /* BaseButton.swift in Sources */,
+				E538140F2989F50B0098E082 /* ButtonModel.swift in Sources */,
 				E5B61E3C29823ACE00533B6F /* MarkerWorldTransform.mm in Sources */,
 				E5F6FFAF2977CC9300D5C22B /* LocationInputButton.swift in Sources */,
 				E5F600332977CD0E00D5C22B /* RestRoomListViewController.swift in Sources */,
@@ -1755,8 +1793,10 @@
 				7E2D71361D4EE85F00FDCA66 /* SettingViewController.m in Sources */,
 				E5F600312977CD0E00D5C22B /* BlindExhibitionController.swift in Sources */,
 				A923DA0A1F26DBF60002E3CB /* DefaultTTS.m in Sources */,
+				E53814182989F58C0098E082 /* LabelCell.swift in Sources */,
 				7E9238E61D5189F100875766 /* HLPSetting.m in Sources */,
 				E5F6FFBD2977CC9300D5C22B /* BaseWebView.swift in Sources */,
+				E53814092989F4DC0098E082 /* SwitchModel.swift in Sources */,
 				E5F6FEFB2977ACD500D5C22B /* MapNavigationController.m in Sources */,
 				E5F6FFD32977CCA500D5C22B /* ExhibitionModel.swift in Sources */,
 				E5F6FFDB2977CCA500D5C22B /* LandmarkModel.swift in Sources */,
@@ -1789,7 +1829,7 @@
 				E5F6FF942977CC7F00D5C22B /* BaseNavController.swift in Sources */,
 				E5B61E692982417500533B6F /* ARViewController.swift in Sources */,
 				E5F6FEFE2977AD0500D5C22B /* NavTalkButton.m in Sources */,
-				E5F6FFAE2977CC9300D5C22B /* TableViewCell.swift in Sources */,
+				E5F6FFAE2977CC9300D5C22B /* BaseRow.swift in Sources */,
 				E5B61E5729823B2D00533B6F /* PhonationModel.swift in Sources */,
 				E5B61E3D29823ACE00533B6F /* HLPDataUtil.m in Sources */,
 				E54F24482980E93300F3A83C /* AskAIView.swift in Sources */,
@@ -1844,6 +1884,7 @@
 				E53750882977D73900BC3ACA /* ScheduleRowModel.swift in Sources */,
 				E53750892977D73900BC3ACA /* AskAIViewController.swift in Sources */,
 				E537508A2977D73900BC3ACA /* DistanceCheckView.swift in Sources */,
+				E53814192989F58C0098E082 /* LabelCell.swift in Sources */,
 				E537508B2977D73900BC3ACA /* EventDetailView.swift in Sources */,
 				E537508C2977D73900BC3ACA /* EventView.swift in Sources */,
 				E537508D2977D73900BC3ACA /* EventViewController.swift in Sources */,
@@ -1864,13 +1905,14 @@
 				E537509B2977D73900BC3ACA /* AutoWrapLabel.swift in Sources */,
 				E537509C2977D73900BC3ACA /* LinkingHeader.swift in Sources */,
 				E537509D2977D73900BC3ACA /* LinkRow.swift in Sources */,
+				E53814072989F3D30098E082 /* SliderModel.swift in Sources */,
 				E537509E2977D73900BC3ACA /* LocationInputButton.swift in Sources */,
 				E537509F2977D73900BC3ACA /* LocationRecordingButton.swift in Sources */,
 				E53750A02977D73900BC3ACA /* NavButtonRow.swift in Sources */,
 				E53750A12977D73900BC3ACA /* ScheduleListHeader.swift in Sources */,
 				E53750A22977D73900BC3ACA /* ScheduleRow.swift in Sources */,
 				E53750A32977D73900BC3ACA /* BaseSwitch.swift in Sources */,
-				E53750A42977D73900BC3ACA /* TableViewCell.swift in Sources */,
+				E53750A42977D73900BC3ACA /* BaseRow.swift in Sources */,
 				E53750A52977D73900BC3ACA /* ThroughView.swift in Sources */,
 				E53750A62977D73900BC3ACA /* VoiceGuideButton.swift in Sources */,
 				E53750A72977D73900BC3ACA /* VoiceGuideRow.swift in Sources */,
@@ -1911,7 +1953,9 @@
 				E53750722977D71B00BC3ACA /* UserDefaultsExtension.swift in Sources */,
 				E53750732977D71B00BC3ACA /* AboutAppView.swift in Sources */,
 				E53750742977D71B00BC3ACA /* DistanceCheckViewController.swift in Sources */,
+				E538140D2989F4F50098E082 /* LabelModel.swift in Sources */,
 				E53750752977D71B00BC3ACA /* LoginView.swift in Sources */,
+				E53814102989F50B0098E082 /* ButtonModel.swift in Sources */,
 				E53750762977D71B00BC3ACA /* AboutMiraikanView.swift in Sources */,
 				E53750772977D71B00BC3ACA /* MiraikanIDMyPageView.swift in Sources */,
 				E53750782977D71B00BC3ACA /* NaviSettingController.swift in Sources */,
@@ -1930,6 +1974,7 @@
 				E5F6FF122977B2F700D5C22B /* NavUtil.m in Sources */,
 				E5F6FF132977B2F700D5C22B /* ViewController.m in Sources */,
 				E5F6FF142977B2F700D5C22B /* NavDeviceTTS.m in Sources */,
+				E538140A2989F4DC0098E082 /* SwitchModel.swift in Sources */,
 				E5F6FF152977B2F700D5C22B /* BlindViewController.m in Sources */,
 				E5B61E842983C11000533B6F /* BaseBarButton.swift in Sources */,
 				E5F6FF162977B2F700D5C22B /* NavCommander.m in Sources */,
@@ -1950,11 +1995,14 @@
 				E5F6FF242977B2F700D5C22B /* MapNavigationController.m in Sources */,
 				E5F6FF252977B2F700D5C22B /* HLPDataUtil.m in Sources */,
 				E5F6FF262977B2F700D5C22B /* NavDebugHelper.m in Sources */,
+				E53814132989F5690098E082 /* SliderCell.swift in Sources */,
 				E5F6FF272977B2F700D5C22B /* SearchViewController.m in Sources */,
 				E5F6FF282977B2F700D5C22B /* main.mm in Sources */,
 				E5F6FF292977B2F700D5C22B /* HLPSettingViewCell.m in Sources */,
 				E5F6FF2A2977B2F700D5C22B /* Logging.m in Sources */,
 				E5F6FF2B2977B2F700D5C22B /* NavTalkButton.m in Sources */,
+				E538141C2989F59F0098E082 /* ButtonCell.swift in Sources */,
+				E53814162989F57B0098E082 /* SwitchCell.swift in Sources */,
 				E5F6FF2C2977B2F700D5C22B /* WebViewController.m in Sources */,
 				E5F6FF2D2977B2F700D5C22B /* NavSound.m in Sources */,
 				E5F6FF2E2977B2F700D5C22B /* AuthManager.m in Sources */,

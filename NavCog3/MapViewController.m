@@ -286,8 +286,14 @@ typedef NS_ENUM(NSInteger, ViewState) {
         return;
     }
 
-    [_webView getStateWithCompletionHandler:^(NSDictionary * _Nonnull json) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:json];
+    [_webView getStateWithCompletionHandler:^(NSDictionary * _Nonnull dic) {
+        if (dic != nil) {
+            NSError *error = nil;
+            NSData *json = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:&error];
+            NSString *str = [[NSString alloc] initWithData:json encoding:NSUTF8StringEncoding];
+            [self writeData:str];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:WCUI_STATE_CHANGED_NOTIFICATION object:self userInfo:dic];
     }];
     
     // blind
@@ -460,7 +466,9 @@ typedef NS_ENUM(NSInteger, ViewState) {
     }
     if ([segue.identifier isEqualToString:@"show_search"]) {
         [self updateIndicatorStart];
-        [_webView evaluateJavaScript:@"$hulop.map.setSync(true);"
+        NSString *script = @"$hulop.map.setSync(true);";
+        [self writeData:script];
+        [_webView evaluateJavaScript:script
                    completionHandler:^(id _Nullable result, NSError * _Nullable error) {
             [self updateIndicatorStop];
         }];
@@ -728,6 +736,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     NSString *hash = [NSString stringWithFormat:@"navigate=%@&dummy=%f%@%@%@%@",
                       options[@"toID"], [[NSDate date] timeIntervalSince1970], elv, stairs, esc, dist];
     [talkButton setHidden:true];
+    [self writeData:hash];
     [_webView setLocationHash:hash];
     isNaviStarted = YES;      // new
 }
@@ -840,6 +849,12 @@ typedef NS_ENUM(NSInteger, ViewState) {
 // blind
 - (void) destinationChanged: (NSNotification*) note
 {
+    if ([note userInfo] != nil) {
+        NSError *error = nil;
+        NSData *json = [NSJSONSerialization dataWithJSONObject:[note userInfo] options:NSJSONWritingPrettyPrinted error:&error];
+        NSString *str = [NSString stringWithFormat:@"destinationChanged,%@", [[NSString alloc] initWithData:json encoding:NSUTF8StringEncoding]];
+        [self writeData:str];
+    }
     [_webView initTarget:[note userInfo][@"destinations"]];
 }
 
@@ -852,6 +867,12 @@ typedef NS_ENUM(NSInteger, ViewState) {
 // blind
 - (void)requestShowRoute:(NSNotification*)note
 {
+    if ([note userInfo] != nil) {
+        NSError *error = nil;
+        NSData *json = [NSJSONSerialization dataWithJSONObject:[note userInfo] options:NSJSONWritingPrettyPrinted error:&error];
+        NSString *str = [NSString stringWithFormat:@"requestShowRoute,%@", [[NSString alloc] initWithData:json encoding:NSUTF8StringEncoding]];
+        [self writeData:str];
+    }
     NSArray *route = [note userInfo][@"route"];
     [_webView showRoute:route];
 }
@@ -1042,7 +1063,9 @@ typedef NS_ENUM(NSInteger, ViewState) {
     if ([properties[@"isActive"] boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self updateIndicatorStart];
-            [_webView evaluateJavaScript:@"$hulop.map.setSync(true);"
+            NSString *script = @"$hulop.map.setSync(true);";
+            [self writeData:script];
+            [_webView evaluateJavaScript:script
                        completionHandler:^(id _Nullable result, NSError * _Nullable error) {
                 [self updateIndicatorStop];
             }];
@@ -1111,7 +1134,9 @@ typedef NS_ENUM(NSInteger, ViewState) {
     [NavDataStore sharedDataStore].start = [[NSDate date] timeIntervalSince1970];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateIndicatorStart];
-        [_webView evaluateJavaScript:[NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]]
+        NSString *script = [NSString stringWithFormat:@"$hulop.map.getMap().getView().setZoom(%f);", [[NSUserDefaults standardUserDefaults] doubleForKey:@"zoom_for_navigation"]];
+        [self writeData:script];
+        [_webView evaluateJavaScript:script
                    completionHandler:^(id _Nullable result, NSError * _Nullable error) {
             [self updateIndicatorStop];
         }];
@@ -1434,7 +1459,9 @@ typedef NS_ENUM(NSInteger, ViewState) {
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self updateIndicatorStart];
-        [self.webView evaluateJavaScript: @"document.getElementById('map-footer').style.display ='none';"
+        NSString *script = @"document.getElementById('map-footer').style.display ='none';";
+        [self writeData:script];
+        [_webView evaluateJavaScript:script
                        completionHandler:^(id _Nullable result, NSError * _Nullable error) {
             [self updateIndicatorStop];
         }];
@@ -1464,6 +1491,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
                 NSString *dist = [NSString stringWithFormat: @"&dist=%@", prefs[@"dist"]];
                 NSString *hash = [NSString stringWithFormat: @"navigate=%@&dummy=%f%@%@%@%@",
                                   destId, [[NSDate date] timeIntervalSince1970], elv, stairs, esc, dist];
+                [self writeData:hash];
                 state = ViewStateNavigation;
                 [talkButton setHidden:true];
                 [_webView setLocationHash:hash];
@@ -1566,6 +1594,68 @@ typedef NS_ENUM(NSInteger, ViewState) {
 #else
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 #endif
+}
+
+#pragma mark - debug log
+
+NSString *logFilePath;
+NSFileHandle *logFileHandle;
+
+- (BOOL)writeData:(NSString *)writeLine
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if (![ud boolForKey:@"DebugMode"]) {
+        return NO;
+    }
+
+    NSDateFormatter* dateFormatte = [[NSDateFormatter alloc] init];
+    NSCalendar* calendar = [[NSCalendar alloc] initWithCalendarIdentifier: NSCalendarIdentifierGregorian];
+    [dateFormatte setCalendar: calendar];
+    [dateFormatte setLocale:[NSLocale systemLocale]];
+    [dateFormatte setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS"];
+    NSString* dateString = [dateFormatte stringFromDate:[NSDate date]];
+
+    if (!logFilePath) {
+        [self setFilePath];
+        if (!logFilePath) {
+            return NO;
+        }
+    }
+
+    NSData *data = [[NSString stringWithFormat: @"%@, %@\n", dateString, writeLine] dataUsingEncoding: NSUTF8StringEncoding];
+    [logFileHandle writeData:data];
+
+    return YES;
+}
+
+- (void)setFilePath
+{
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"ja_JP"]];
+    [df setDateFormat:@"yyyyMMdd-HHmmss"];
+    NSDate *now = [NSDate date];
+    NSString *strNow = [df stringFromDate:now];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *directory = [paths objectAtIndex:0];
+    logFilePath = [directory stringByAppendingPathComponent: [NSString stringWithFormat: @"map-%@.log", strNow]];
+    _webView.logFilePath = logFilePath;
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL result = [fileManager fileExistsAtPath: logFilePath];
+    if (!result) {
+        result = [self createFile: logFilePath];
+        if (!result) {
+            return;
+        }
+    }
+    logFileHandle = [NSFileHandle fileHandleForWritingAtPath: logFilePath];
+    _webView.logFileHandle = logFileHandle;
+}
+
+- (BOOL)createFile:(NSString *)filePath
+{
+    return [[NSFileManager defaultManager] createFileAtPath:filePath contents:[NSData data] attributes:nil];
 }
 
 @end

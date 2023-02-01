@@ -46,6 +46,7 @@
     NSString *dataStr = [[NSString alloc] initWithData:data  encoding:NSUTF8StringEncoding];
     
     NSString *script = [NSString stringWithFormat:@"$hulop.map.initTarget(%@, null)", dataStr];
+    [self writeData:script];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self evaluateJavaScript:script completionHandler:nil];
@@ -54,8 +55,10 @@
 
 - (void)clearRoute
 {
+    NSString *script = @"$hulop.map.clearRoute()";
+    [self writeData:script];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self evaluateJavaScript:@"$hulop.map.clearRoute()" completionHandler:nil];
+        [self evaluateJavaScript:script completionHandler:nil];
     });
 }
 
@@ -76,6 +79,7 @@
     NSString *dataStr = [[NSString alloc] initWithData:data  encoding:NSUTF8StringEncoding];
     
     NSString *script = [NSString stringWithFormat:@"$hulop.map.showRoute(%@, null, true, true);/*$hulop.map.showResult(true);*/$('#map-page').trigger('resize');", dataStr];
+    [self writeData:script];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self evaluateJavaScript:script completionHandler:nil];
@@ -85,6 +89,7 @@
 - (void)getCenterWithCompletion:(void(^)(HLPLocation*))completion
 {
     NSString *script = @"(function(){var a=$hulop.map.getCenter();var f=$hulop.indoor.getCurrentFloor();f=f>0?f-1:f;return {lat:a[1],lng:a[0],floor:f};})()";
+    [self writeData:script];
     [self evaluateJavaScript:script completionHandler:^(id _Nullable state, NSError * _Nullable error) {
         NSDictionary *json = state;
         if (json) {
@@ -114,7 +119,7 @@
         [script appendFormat:@"var c = map.getCenter();"];
         [script appendFormat:@"map.setCenter(c);"];
     }
-    
+    [self writeData:script];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self evaluateJavaScript:script completionHandler:nil];
     });
@@ -130,10 +135,37 @@
     NSString *jsonstr = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:data options:0 error:nil]encoding:NSUTF8StringEncoding];
     
     NSString *script = [NSString stringWithFormat:@"$hulop.logging && $hulop.logging.onData(%@);",jsonstr];
-    
+    [self writeData:script];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self evaluateJavaScript:script completionHandler:nil];
     });
+}
+
+
+#pragma mark - debug log
+
+- (BOOL)writeData:(NSString *)writeLine
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if (![ud boolForKey:@"DebugMode"]) {
+        return NO;
+    }
+
+    NSDateFormatter* dateFormatte = [[NSDateFormatter alloc] init];
+    NSCalendar* calendar = [[NSCalendar alloc] initWithCalendarIdentifier: NSCalendarIdentifierGregorian];
+    [dateFormatte setCalendar: calendar];
+    [dateFormatte setLocale:[NSLocale systemLocale]];
+    [dateFormatte setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS"];
+    NSString* dateString = [dateFormatte stringFromDate:[NSDate date]];
+
+    if (!_logFilePath) {
+        return NO;
+    }
+
+    NSData *data = [[NSString stringWithFormat: @"%@, %@\n", dateString, writeLine] dataUsingEncoding: NSUTF8StringEncoding];
+    [_logFileHandle writeData:data];
+
+    return YES;
 }
 
 @end

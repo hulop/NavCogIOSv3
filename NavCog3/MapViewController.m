@@ -849,12 +849,6 @@ typedef NS_ENUM(NSInteger, ViewState) {
 // blind
 - (void) destinationChanged: (NSNotification*) note
 {
-    if ([note userInfo] != nil) {
-        NSError *error = nil;
-        NSData *json = [NSJSONSerialization dataWithJSONObject:[note userInfo] options:NSJSONWritingPrettyPrinted error:&error];
-        NSString *str = [NSString stringWithFormat:@"destinationChanged,%@", [[NSString alloc] initWithData:json encoding:NSUTF8StringEncoding]];
-        [self writeData:str];
-    }
     [_webView initTarget:[note userInfo][@"destinations"]];
 }
 
@@ -867,12 +861,6 @@ typedef NS_ENUM(NSInteger, ViewState) {
 // blind
 - (void)requestShowRoute:(NSNotification*)note
 {
-    if ([note userInfo] != nil) {
-        NSError *error = nil;
-        NSData *json = [NSJSONSerialization dataWithJSONObject:[note userInfo] options:NSJSONWritingPrettyPrinted error:&error];
-        NSString *str = [NSString stringWithFormat:@"requestShowRoute,%@", [[NSString alloc] initWithData:json encoding:NSUTF8StringEncoding]];
-        [self writeData:str];
-    }
     NSArray *route = [note userInfo][@"route"];
     [_webView showRoute:route];
 }

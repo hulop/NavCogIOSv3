@@ -117,11 +117,6 @@ class NaviSettingController : BaseListController, BaseListDelegate {
                                                      isOn: UserDefaults.standard.bool(forKey: "DebugMode"),
                                                      isEnabled: nil)))
 
-        cellList.append(CellModel(cellId: switchId,
-                                  model: SwitchModel(desc: NSLocalizedString("Location information input", comment: ""),
-                                                     key: "DebugLocationInput",
-                                                     isOn: UserDefaults.standard.bool(forKey: "DebugLocationInput"),
-                                                     isEnabled: nil)))
         self.items = cellList
     }
     

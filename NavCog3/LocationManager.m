@@ -199,6 +199,16 @@ static int continueFloorCount;
 
 - (void)locationManager:(HLPLocationManager *)manager didLocationUpdate:(HLPLocation *)location
 {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DebugMode"]) {
+        NSDateFormatter* dateFormatte = [[NSDateFormatter alloc] init];
+        NSCalendar* calendar = [[NSCalendar alloc] initWithCalendarIdentifier: NSCalendarIdentifierGregorian];
+        [dateFormatte setCalendar: calendar];
+        [dateFormatte setLocale:[NSLocale systemLocale]];
+        [dateFormatte setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS"];
+        NSString* dateString = [dateFormatte stringFromDate:[NSDate date]];
+        [self writeData: [NSString stringWithFormat: @"%@,%@,%@,%@,%@,%@,%@,%@\n", dateString, @(location.lng), @(location.lat), @(location.accuracy), @(location.floor), @(location.speed), @(location.orientation), @(location.orientationAccuracy)]];
+    }
+
     if (isnan(location.lat) || isnan(location.lng)) {
         // handle location information nan here
         return;
@@ -253,6 +263,78 @@ static int continueFloorCount;
 - (void)locationManager:(HLPLocationManager*)manager didLogText:(NSString *)text
 {
     
+}
+
+#pragma mark - debug log
+
+NSString *locationFilePath;
+NSFileHandle *locationFileHandle;
+
+- (BOOL)writeData:(NSString *)writeLine
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if (![ud boolForKey:@"DebugMode"]) {
+        return NO;
+    }
+
+    if (!locationFilePath) {
+        [self setFilePath];
+        if (!locationFilePath) {
+            return NO;
+        }
+    }
+
+    NSData *data = [writeLine dataUsingEncoding: NSUTF8StringEncoding];
+    [locationFileHandle writeData:data];
+
+    return YES;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"DebugMode"]) {
+        if (![change[@"new"] boolValue]) {
+            locationFilePath = nil;
+        } else {
+            [self setFilePath];
+        }
+    } else {
+        [[HLPLocationManager sharedManager] invalidate];
+    }
+}
+
+- (void)setFilePath
+{
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"ja_JP"]];
+    [df setDateFormat:@"yyyyMMdd-HHmmss"];
+    NSDate *now = [NSDate date];
+    NSString *strNow = [df stringFromDate:now];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *directory = [paths objectAtIndex:0];
+    locationFilePath = [directory stringByAppendingPathComponent: [NSString stringWithFormat: @"move-%@.csv", strNow]];
+
+    BOOL isNew = false;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL result = [fileManager fileExistsAtPath: locationFilePath];
+    if (!result) {
+        result = [self createFile: locationFilePath];
+        if (!result) {
+            return;
+        }
+        isNew = true;
+    }
+    locationFileHandle = [NSFileHandle fileHandleForWritingAtPath: locationFilePath];
+    
+    if (isNew) {
+        [self writeData: @"date,lng,lat,accuracy,floor,speed,orientation,orientationAccuracy\n"];
+    }
+}
+
+- (BOOL)createFile:(NSString *)filePath
+{
+  return [[NSFileManager defaultManager] createFileAtPath:filePath contents:[NSData data] attributes:nil];
 }
 
 @end

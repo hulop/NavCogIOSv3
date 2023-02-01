@@ -27,6 +27,8 @@
 #import <HLPLocationManager/HLPLocation.h>
 
 @interface NavBlindWebView : HLPWebView
+@property NSString *logFilePath;
+@property NSFileHandle *logFileHandle;
 
 - (void)initTarget:(NSArray *)landmarks;
 - (void)clearRoute;

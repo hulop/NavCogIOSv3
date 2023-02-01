@@ -345,6 +345,7 @@ static NavDeviceTTS *instance = nil;
     }
     NSLog(@"speak,%@,%f,%f", se.ut.speechString, duration, NSDate.date.timeIntervalSince1970);
     
+    [self writeData: se.ut.speechString];
     [voice speakUtterance:se.ut];
 }
 
@@ -465,5 +466,64 @@ static NavDeviceTTS *instance = nil;
 }
 
 
+#pragma mark - debug log
+
+NSString *voiceFilePath;
+NSFileHandle *voiceFileHandle;
+
+- (BOOL)writeData:(NSString *)writeLine
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if (![ud boolForKey:@"DebugMode"]) {
+        return NO;
+    }
+
+    if (!voiceFilePath) {
+        [self setFilePath];
+        if (!voiceFilePath) {
+            return NO;
+        }
+    }
+    
+    NSDateFormatter* dateFormatte = [[NSDateFormatter alloc] init];
+    NSCalendar* calendar = [[NSCalendar alloc] initWithCalendarIdentifier: NSCalendarIdentifierGregorian];
+    [dateFormatte setCalendar: calendar];
+    [dateFormatte setLocale:[NSLocale systemLocale]];
+    [dateFormatte setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS"];
+    NSString* dateString = [dateFormatte stringFromDate:[NSDate date]];
+
+    NSData *data = [[NSString stringWithFormat: @"%@, %@\n", dateString, writeLine] dataUsingEncoding: NSUTF8StringEncoding];
+    [voiceFileHandle writeData:data];
+
+    return YES;
+}
+
+- (void)setFilePath
+{
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"ja_JP"]];
+    [df setDateFormat:@"yyyyMMdd-HHmmss"];
+    NSDate *now = [NSDate date];
+    NSString *strNow = [df stringFromDate:now];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *directory = [paths objectAtIndex:0];
+    voiceFilePath = [directory stringByAppendingPathComponent: [NSString stringWithFormat: @"voice-%@.csv", strNow]];
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL result = [fileManager fileExistsAtPath: voiceFilePath];
+    if (!result) {
+        result = [self createFile: voiceFilePath];
+        if (!result) {
+            return;
+        }
+    }
+    voiceFileHandle = [NSFileHandle fileHandleForWritingAtPath: voiceFilePath];
+}
+
+- (BOOL)createFile:(NSString *)filePath
+{
+  return [[NSFileManager defaultManager] createFileAtPath:filePath contents:[NSData data] attributes:nil];
+}
 
 @end

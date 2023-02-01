@@ -570,7 +570,7 @@
 		E5B61E2F29823ACD00533B6F /* MarkerWorldTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkerWorldTransform.h; sourceTree = "<group>"; };
 		E5B61E3029823ACD00533B6F /* OpenCVWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		E5B61E3129823ACD00533B6F /* MarkerWorldTransform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MarkerWorldTransform.mm; sourceTree = "<group>"; };
-		E5B61E3329823ACD00533B6F /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPDataUtil.m; sourceTree = "<group>"; };
+		E5B61E3329823ACD00533B6F /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPDataUtil.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E5B61E3429823ACD00533B6F /* HLPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPDirectory.h; sourceTree = "<group>"; };
 		E5B61E3529823ACD00533B6F /* HLPGeoJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPGeoJSON.h; sourceTree = "<group>"; };
 		E5B61E3629823ACD00533B6F /* exercise-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "exercise-data.json"; sourceTree = "<group>"; };

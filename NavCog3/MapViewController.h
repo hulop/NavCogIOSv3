@@ -39,6 +39,8 @@
 >
 
 @property (strong, nonatomic) NavBlindWebView *webView;
+@property (weak, nonatomic) IBOutlet UIView *baseView;
+@property (weak, nonatomic) IBOutlet UIView *coverView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *updateIndicator;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;

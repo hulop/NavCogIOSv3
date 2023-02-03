@@ -128,12 +128,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     _webView = [[NavBlindWebView alloc] initWithFrame:CGRectMake(0,0,0,0) configuration:[[WKWebViewConfiguration alloc] init]];
-    [self.view addSubview:_webView];
-    for(UIView *v in self.view.subviews) {
-        if (v != _webView) {
-            [self.view bringSubviewToFront:v];
-        }
-    }
+    [_baseView addSubview:_webView];
     _webView.userMode = [ud stringForKey:@"user_mode"];
     _webView.config = @{
                         @"serverHost":[ud stringForKey:@"selected_hokoukukan_server"],
@@ -161,6 +156,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
 
     NSString *userMode = [ud stringForKey:@"user_mode"];
     isBlindMode = [userMode isEqualToString:@"user_blind"];
+    _coverView.hidden = !isBlindMode;
 
     _indicator.accessibilityLabel = NSLocalizedString(@"Loading, please wait", @"");
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, _indicator);
@@ -218,6 +214,7 @@ typedef NS_ENUM(NSInteger, ViewState) {
             }
             _webView.userMode = change[@"new"];
             isBlindMode = [change[@"new"] isEqualToString:@"user_blind"];
+            _coverView.hidden = !isBlindMode;
             [self updateTitle];
             [self updateView];
         }

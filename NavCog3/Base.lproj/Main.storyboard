@@ -816,6 +816,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="591"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I9s-Sf-GFJ">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="591"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hNz-5f-bS4">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="591"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="KO5-lz-wZv">
                                 <rect key="frame" x="177.5" y="285.5" width="20" height="20"/>
                             </activityIndicatorView>
@@ -847,12 +855,20 @@
                             <constraint firstItem="pcn-y1-x92" firstAttribute="centerX" secondItem="Dns-6k-MOo" secondAttribute="centerX" id="4KV-vU-krx"/>
                             <constraint firstItem="SO9-cE-nwu" firstAttribute="top" secondItem="Dns-6k-MOo" secondAttribute="top" constant="10" id="HFD-NN-R4r"/>
                             <constraint firstItem="MFV-dq-tXC" firstAttribute="centerX" secondItem="Dns-6k-MOo" secondAttribute="centerX" id="Jl7-m2-6Kq"/>
+                            <constraint firstAttribute="trailing" secondItem="hNz-5f-bS4" secondAttribute="trailing" id="NQG-m8-71r"/>
                             <constraint firstItem="pcn-y1-x92" firstAttribute="top" secondItem="MFV-dq-tXC" secondAttribute="bottom" constant="8" id="PAw-y0-NPa"/>
                             <constraint firstItem="SO9-cE-nwu" firstAttribute="leading" secondItem="Dns-6k-MOo" secondAttribute="leading" constant="10" id="PsZ-3j-PJs"/>
+                            <constraint firstItem="hNz-5f-bS4" firstAttribute="leading" secondItem="r1C-ZP-AYe" secondAttribute="leading" id="bQu-29-7jY"/>
+                            <constraint firstItem="hNz-5f-bS4" firstAttribute="top" secondItem="r1C-ZP-AYe" secondAttribute="top" id="cUN-TS-UjU"/>
+                            <constraint firstItem="I9s-Sf-GFJ" firstAttribute="top" secondItem="hNz-5f-bS4" secondAttribute="top" id="iMx-dE-gFn"/>
                             <constraint firstItem="KO5-lz-wZv" firstAttribute="centerY" secondItem="r1C-ZP-AYe" secondAttribute="centerY" id="jEd-oH-osT"/>
+                            <constraint firstAttribute="bottom" secondItem="hNz-5f-bS4" secondAttribute="bottom" id="kZj-WF-uiC"/>
                             <constraint firstItem="KO5-lz-wZv" firstAttribute="top" secondItem="pcn-y1-x92" secondAttribute="bottom" constant="8" id="pce-rl-e8U"/>
+                            <constraint firstAttribute="bottom" secondItem="I9s-Sf-GFJ" secondAttribute="bottom" id="qky-or-BO7"/>
                             <constraint firstItem="KO5-lz-wZv" firstAttribute="centerX" secondItem="Dns-6k-MOo" secondAttribute="centerX" id="tdJ-aN-GGt"/>
+                            <constraint firstItem="I9s-Sf-GFJ" firstAttribute="leading" secondItem="r1C-ZP-AYe" secondAttribute="leading" id="wR3-jm-ROm"/>
                             <constraint firstItem="pcn-y1-x92" firstAttribute="top" secondItem="MFV-dq-tXC" secondAttribute="bottom" constant="8" id="xqT-vV-FY8"/>
+                            <constraint firstAttribute="trailing" secondItem="I9s-Sf-GFJ" secondAttribute="trailing" id="yeu-EY-QoE"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
@@ -900,7 +916,9 @@
                     </navigationItem>
                     <connections>
                         <outlet property="backButton" destination="Im0-uB-JEw" id="ZjD-jB-Yjl"/>
+                        <outlet property="baseView" destination="I9s-Sf-GFJ" id="EH5-8w-phz"/>
                         <outlet property="cancelButton" destination="f5C-kO-xMy" id="Uzz-BZ-fw0"/>
+                        <outlet property="coverView" destination="hNz-5f-bS4" id="VhI-kt-cPX"/>
                         <outlet property="doneButton" destination="CMI-uf-kKA" id="xMo-ZS-JWC"/>
                         <outlet property="errorMessage" destination="MFV-dq-tXC" id="47w-gr-bfL"/>
                         <outlet property="indicator" destination="KO5-lz-wZv" id="La8-1J-hLP"/>

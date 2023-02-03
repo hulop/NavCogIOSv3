@@ -26,22 +26,23 @@
 
 @interface HLPDataUtil : NSObject
 
-+ (void) queryDirectoryForUser:(NSString*) user withQuery:(NSString*)query withLang:(NSString*)lang withCallback:(void(^)(HLPDirectory* directory))callback;
++ (void)queryDirectoryForUser:(NSString*)user withQuery:(NSString*)query withLang:(NSString*)lang withCallback:(void(^)(HLPDirectory* directory))callback;
 
-+ (void) loadDirectoryAtLat:(double) lat Lng:(double) lng inDist:(int) dist forUser:(NSString*) user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result, HLPDirectory* directory))callback;
-    
-+ (void) loadRouteFromNode:(NSString*)from toNode:(NSString*)to forUser:(NSString*) user withLang:(NSString*)lang withPrefs:(NSDictionary*) prefs withCallback:(void(^)(NSArray<HLPObject*>* result))callback;
-
-+ (void) loadLandmarksAtLat:(double) lat Lng:(double) lng inDist:(int) dist forUser:(NSString*) user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result))callback;
++ (void)loadDirectoryAtLat:(double)lat Lng:(double)lng inDist:(int)dist forUser:(NSString*)user withLang:(NSString*)lang withCallback:(void(^)(NSArray<HLPObject*>* result, HLPDirectory* directory))callback;
++ (void)loadRouteFromNode:(NSString*)from toNode:(NSString*)to forUser:(NSString*)user withLang:(NSString*)lang withPrefs:(NSDictionary*) prefs withCallback:(void(^)(NSArray<HLPObject*>* result))callback;
++ (void)loadLandmarksAtLat:(double)lat Lng:(double)lng inDist:(int)dist forUser:(NSString*)user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result))callback;
 
 // need to call loadLandmarksAtLat first before calling the following methods
-+ (void) loadNodeMapForUser:(NSString*)user withLang:(NSString*)lang WithCallback:(void(^)(NSArray<HLPObject*>* result))callback;
-+ (void) loadFeaturesForUser:(NSString*)user withLang:(NSString*)lang WithCallback:(void(^)(NSArray<HLPObject*>* result))callback;
++ (void)loadNodeMapForUser:(NSString*)user withLang:(NSString*)lang WithCallback:(void(^)(NSArray<HLPObject*>* result))callback;
++ (void)loadFeaturesForUser:(NSString*)user withLang:(NSString*)lang WithCallback:(void(^)(NSArray<HLPObject*>* result))callback;
 
-+ (void) getJSON:(NSURL*)url withCallback:(void(^)(NSObject* result))callback;
++ (void)getJSON:(NSURL*)url withCallback:(void(^)(NSObject* result))callback;
 
-+(void)postRequest:(NSURL*) url withData:(NSDictionary*) data callback:(void(^)(NSData* response))callback;
-+(void)postRequest:(NSURL*) url contentType:(NSString*)type withData:(NSData*) data callback:(void(^)(NSData* response))callback;
-+(void)deleteRequest:(NSURL*) url withData:(NSDictionary*) data callback:(void(^)(NSData* response))callback;
++ (void)postRequest:(NSURL*) url withData:(NSDictionary*) data callback:(void(^)(NSData* response))callback;
++ (void)postRequest:(NSURL*) url contentType:(NSString*)type withData:(NSData*) data callback:(void(^)(NSData* response))callback;
++ (void)deleteRequest:(NSURL*) url withData:(NSDictionary*) data callback:(void(^)(NSData* response))callback;
+
++ (void)saveToPlistWithArray:(NSArray *)array fileName:(NSString *)file;
++ (void)saveToPlistWithDictionary:(NSDictionary*)dic fileName:(NSString*)file;
 
 @end

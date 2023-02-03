@@ -825,6 +825,7 @@ static NavDataStore* instance_ = nil;
 
 - (void)requestRouteFrom:(NSString *)fromID To:(NSString *)toID forUser:(NSString*)user withLang:(NSString*)lang useCache:(BOOL)useCache withPreferences:(NSDictionary *)prefs complete:(void (^)(void))complete
 {
+    NSLog(@"requestRouteFrom fromID:%@, toID::%@, user::%@, user_lang::%@, prefs::%@", fromID, toID, user, lang, prefs);
     if (fromID == nil || toID == nil || user == nil || lang == nil || prefs == nil) {
         return;
     }

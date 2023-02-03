@@ -294,6 +294,7 @@ NavCogの設定画面から
 "btn_play" = "説明を読み上げる";
 "btn_stop" = "説明の読み上げを中止する";
 
+"Debug Mode" = "デバッグ記録機能";
 "Move Log" = "移動記録機能";
 "Move Log Start" = "移動\n記録\n開始";
 "Move Log End" = "移動\n記録\n終了";

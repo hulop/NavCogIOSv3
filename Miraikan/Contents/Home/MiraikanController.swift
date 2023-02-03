@@ -52,11 +52,13 @@ class MiraikanController: BaseController {
         super.viewDidAppear(animated)
 
         AudioGuideManager.shared.isDisplayButton(true)
+        setTitle()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setTitle()
         // Accessibility
         UIAccessibility.post(notification: .screenChanged, argument: self.navigationItem.titleView)
         
@@ -91,5 +93,34 @@ class MiraikanController: BaseController {
     func reload() {
         home.setSection()
         home.tableView.reloadData()
+    }
+
+    func setTitle() {
+        let title = NSLocalizedString("Home", comment: "")
+        let attributedString = NSMutableAttributedString()
+        attributedString.append(NSAttributedString(string: title))
+        let textAttachment = NSTextAttachment()
+        let titleLabel = UILabel()
+        titleLabel.accessibilityLabel = NSLocalizedString("Home pron", comment: "")
+
+        switch MiraikanUtil.routeMode {
+        case .general:
+            textAttachment.image = UIImage(named: "icons8-general")
+            textAttachment.bounds = CGRect(x: 0, y: -4, width: 24, height: 24)
+            attributedString.append(NSAttributedString(attachment: textAttachment))
+            break
+        case .wheelchair:
+            textAttachment.image = UIImage(named: "icons8-wheelchair")
+            textAttachment.bounds = CGRect(x: 0, y: -4, width: 24, height: 24)
+            attributedString.append(NSAttributedString(attachment: textAttachment))
+            break
+        case .blind:
+            textAttachment.image = UIImage(named: "icons8-blind")
+            textAttachment.bounds = CGRect(x: 0, y: -4, width: 24, height: 24)
+            attributedString.append(NSAttributedString(attachment: textAttachment))
+            break
+        }
+        titleLabel.attributedText = attributedString
+        self.navigationItem.titleView = titleLabel
     }
 }

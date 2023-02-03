@@ -188,6 +188,8 @@
 		E54F24492980E93300F3A83C /* AskAIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54F24472980E93300F3A83C /* AskAIView.swift */; };
 		E55D4C95297F6D7100DE379B /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E55D4C94297F6D7100DE379B /* LocationManager.m */; };
 		E55D4C97297F719E00DE379B /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E55D4C94297F6D7100DE379B /* LocationManager.m */; };
+		E59424FA298CF4C400EF2F65 /* WebFloorMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59424F9298CF4C400EF2F65 /* WebFloorMapView.swift */; };
+		E59424FB298CF57900EF2F65 /* WebFloorMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59424F9298CF4C400EF2F65 /* WebFloorMapView.swift */; };
 		E5B61E3B29823ACD00533B6F /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3029823ACD00533B6F /* OpenCVWrapper.mm */; };
 		E5B61E3C29823ACE00533B6F /* MarkerWorldTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3129823ACD00533B6F /* MarkerWorldTransform.mm */; };
 		E5B61E4429823AF500533B6F /* ArUco.json in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E4129823AF500533B6F /* ArUco.json */; };
@@ -563,6 +565,7 @@
 		E54F24472980E93300F3A83C /* AskAIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskAIView.swift; sourceTree = "<group>"; };
 		E55D4C94297F6D7100DE379B /* LocationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
 		E55D4C96297F6D7C00DE379B /* LocationManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
+		E59424F9298CF4C400EF2F65 /* WebFloorMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebFloorMapView.swift; sourceTree = "<group>"; };
 		E5B61E2F29823ACD00533B6F /* MarkerWorldTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkerWorldTransform.h; sourceTree = "<group>"; };
 		E5B61E3029823ACD00533B6F /* OpenCVWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		E5B61E3129823ACD00533B6F /* MarkerWorldTransform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MarkerWorldTransform.mm; sourceTree = "<group>"; };
@@ -1127,6 +1130,14 @@
 			path = NaviSetting;
 			sourceTree = "<group>";
 		};
+		E59424F8298CF48800EF2F65 /* WebFloorMap */ = {
+			isa = PBXGroup;
+			children = (
+				E59424F9298CF4C400EF2F65 /* WebFloorMapView.swift */,
+			);
+			path = WebFloorMap;
+			sourceTree = "<group>";
+		};
 		E5B61E2C29823A5C00533B6F /* Ar */ = {
 			isa = PBXGroup;
 			children = (
@@ -1249,6 +1260,7 @@
 				E54F24582980F41B00F3A83C /* RestRoomList */,
 				E54F24512980F16100F3A83C /* Setting */,
 				E54F24592980F43800F3A83C /* VoiceGuide */,
+				E59424F8298CF48800EF2F65 /* WebFloorMap */,
 			);
 			path = Contents;
 			sourceTree = "<group>";
@@ -1678,6 +1690,7 @@
 				E5F6FEFA2977ACD500D5C22B /* MapViewController.m in Sources */,
 				7EA019011E2F54E7005E65ED /* InitViewController.mm in Sources */,
 				E5F6FF952977CC7F00D5C22B /* BaseController.swift in Sources */,
+				E59424FA298CF4C400EF2F65 /* WebFloorMapView.swift in Sources */,
 				7E9238E71D5189F100875766 /* HLPSettingHelper.m in Sources */,
 				E5F6FFB92977CC9300D5C22B /* BaseView.swift in Sources */,
 				E5B61E7A2983C04A00533B6F /* ChevronButton.swift in Sources */,
@@ -1826,6 +1839,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E59424FB298CF57900EF2F65 /* WebFloorMapView.swift in Sources */,
 				E5B61E6A298245A700533B6F /* ARViewController.swift in Sources */,
 				E5B61E6629823F0200533B6F /* MarkerWorldTransform.mm in Sources */,
 				E5B61E6729823F0200533B6F /* OpenCVWrapper.mm in Sources */,

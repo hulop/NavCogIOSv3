@@ -303,6 +303,7 @@ fileprivate enum MenuItem {
             .permanentExhibition,
             .currentPosition,
             .arNavigation,
+            .floorMap,
             .nearestWashroom,
             .setting,
             .miraikanIDmyPage,
@@ -366,6 +367,8 @@ fileprivate enum MenuItem {
             return NaviSettingController(title: NSLocalizedString("Navi Settings", comment: ""))
         case .miraikanIDmyPage:
             return createVC(view: MiraikanIDMyPageView())
+        case .floorMap:
+            return createVC(view: WebFloorMapView())
         case .aboutMiraikan:
             return createVC(view: AboutMiraikanView())
         case .aboutApp:

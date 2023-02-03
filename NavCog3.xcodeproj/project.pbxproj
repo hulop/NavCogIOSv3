@@ -190,10 +190,6 @@
 		E55D4C97297F719E00DE379B /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E55D4C94297F6D7100DE379B /* LocationManager.m */; };
 		E5B61E3B29823ACD00533B6F /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3029823ACD00533B6F /* OpenCVWrapper.mm */; };
 		E5B61E3C29823ACE00533B6F /* MarkerWorldTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3129823ACD00533B6F /* MarkerWorldTransform.mm */; };
-		E5B61E3D29823ACE00533B6F /* HLPDataUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3329823ACD00533B6F /* HLPDataUtil.m */; };
-		E5B61E3E29823ACE00533B6F /* exercise-data.json in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E3629823ACD00533B6F /* exercise-data.json */; };
-		E5B61E3F29823ACE00533B6F /* HLPDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3829823ACD00533B6F /* HLPDirectory.m */; };
-		E5B61E4029823ACE00533B6F /* HLPGeoJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = E5B61E3929823ACD00533B6F /* HLPGeoJSON.m */; };
 		E5B61E4429823AF500533B6F /* ArUco.json in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E4129823AF500533B6F /* ArUco.json */; };
 		E5B61E4529823AF500533B6F /* SoundEffect02.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E4229823AF500533B6F /* SoundEffect02.mp3 */; };
 		E5B61E4629823AF500533B6F /* SoundEffect01.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E5B61E4329823AF500533B6F /* SoundEffect01.mp3 */; };
@@ -570,13 +566,6 @@
 		E5B61E2F29823ACD00533B6F /* MarkerWorldTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkerWorldTransform.h; sourceTree = "<group>"; };
 		E5B61E3029823ACD00533B6F /* OpenCVWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		E5B61E3129823ACD00533B6F /* MarkerWorldTransform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MarkerWorldTransform.mm; sourceTree = "<group>"; };
-		E5B61E3329823ACD00533B6F /* HLPDataUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPDataUtil.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		E5B61E3429823ACD00533B6F /* HLPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPDirectory.h; sourceTree = "<group>"; };
-		E5B61E3529823ACD00533B6F /* HLPGeoJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPGeoJSON.h; sourceTree = "<group>"; };
-		E5B61E3629823ACD00533B6F /* exercise-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "exercise-data.json"; sourceTree = "<group>"; };
-		E5B61E3729823ACD00533B6F /* HLPDataUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLPDataUtil.h; sourceTree = "<group>"; };
-		E5B61E3829823ACD00533B6F /* HLPDirectory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPDirectory.m; sourceTree = "<group>"; };
-		E5B61E3929823ACD00533B6F /* HLPGeoJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLPGeoJSON.m; sourceTree = "<group>"; };
 		E5B61E3A29823ACD00533B6F /* OpenCVWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
 		E5B61E4129823AF500533B6F /* ArUco.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ArUco.json; sourceTree = "<group>"; };
 		E5B61E4229823AF500533B6F /* SoundEffect02.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = SoundEffect02.mp3; sourceTree = "<group>"; };
@@ -866,7 +855,6 @@
 				E5B61E3129823ACD00533B6F /* MarkerWorldTransform.mm */,
 				E5B61E3A29823ACD00533B6F /* OpenCVWrapper.h */,
 				E5B61E3029823ACD00533B6F /* OpenCVWrapper.mm */,
-				E5B61E3229823ACD00533B6F /* model */,
 			);
 			name = helper;
 			sourceTree = "<group>";
@@ -1147,20 +1135,6 @@
 				E5B61E7229838DEE00533B6F /* IDListViewController.swift */,
 			);
 			path = Ar;
-			sourceTree = "<group>";
-		};
-		E5B61E3229823ACD00533B6F /* model */ = {
-			isa = PBXGroup;
-			children = (
-				E5B61E3329823ACD00533B6F /* HLPDataUtil.m */,
-				E5B61E3429823ACD00533B6F /* HLPDirectory.h */,
-				E5B61E3529823ACD00533B6F /* HLPGeoJSON.h */,
-				E5B61E3629823ACD00533B6F /* exercise-data.json */,
-				E5B61E3729823ACD00533B6F /* HLPDataUtil.h */,
-				E5B61E3829823ACD00533B6F /* HLPDirectory.m */,
-				E5B61E3929823ACD00533B6F /* HLPGeoJSON.m */,
-			);
-			path = model;
 			sourceTree = "<group>";
 		};
 		E5B61E772983BDDE00533B6F /* TableViewCell */ = {
@@ -1536,7 +1510,6 @@
 				E5B61E4429823AF500533B6F /* ArUco.json in Resources */,
 				E5F6FFEC2977CCB700D5C22B /* CheckPointPosition.json in Resources */,
 				E5F6FFE92977CCB700D5C22B /* exhibition.json in Resources */,
-				E5B61E3E29823ACE00533B6F /* exercise-data.json in Resources */,
 				7E17F1A31D9A226100DB1F34 /* Localizable.strings in Resources */,
 				7E9238F11D5189FF00875766 /* HLPSettingView.strings in Resources */,
 				7EF45E541E3F58D200208042 /* dev.hashfile in Resources */,
@@ -1831,7 +1804,6 @@
 				E5F6FEFE2977AD0500D5C22B /* NavTalkButton.m in Sources */,
 				E5F6FFAE2977CC9300D5C22B /* BaseRow.swift in Sources */,
 				E5B61E5729823B2D00533B6F /* PhonationModel.swift in Sources */,
-				E5B61E3D29823ACE00533B6F /* HLPDataUtil.m in Sources */,
 				E54F24482980E93300F3A83C /* AskAIView.swift in Sources */,
 				E5F6FFFE2977CCC100D5C22B /* LoginView.swift in Sources */,
 				E5B61E5029823B0F00533B6F /* AudioManager.swift in Sources */,
@@ -1842,12 +1814,10 @@
 				E5F6FFD92977CCA500D5C22B /* FloorMapModel.swift in Sources */,
 				E5B61E802983C0CC00533B6F /* RadioButton.swift in Sources */,
 				E5F6FFD62977CCA500D5C22B /* CardModel.swift in Sources */,
-				E5B61E4029823ACE00533B6F /* HLPGeoJSON.m in Sources */,
 				E5F6000F2977CCD500D5C22B /* MiraikanUtil.swift in Sources */,
 				7EF45E3B1E3F1E5600208042 /* AuthManager.m in Sources */,
 				E5F600282977CD0500D5C22B /* MainTabController.swift in Sources */,
 				E5F6FFB32977CC9300D5C22B /* ContentRow.swift in Sources */,
-				E5B61E3F29823ACE00533B6F /* HLPDirectory.m in Sources */,
 				E5F6FF852977CC3700D5C22B /* EventView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

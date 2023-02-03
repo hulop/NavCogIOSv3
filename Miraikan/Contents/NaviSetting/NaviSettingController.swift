@@ -112,7 +112,7 @@ class NaviSettingController : BaseListController, BaseListDelegate {
                                                                              comment: "Description for VoiceOver"))))
 
         cellList.append(CellModel(cellId: switchId,
-                                  model: SwitchModel(desc: NSLocalizedString("Move Log", comment: ""),
+                                  model: SwitchModel(desc: NSLocalizedString("Debug Mode", comment: ""),
                                                      key: "DebugMode",
                                                      isOn: UserDefaults.standard.bool(forKey: "DebugMode"),
                                                      isEnabled: nil)))

@@ -30,7 +30,7 @@
 
 @implementation HLPDataUtil
 
-+ (NSURL*) urlForRouteSearchService
++ (NSURL*)urlForRouteSearchService
 {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSString *server = [ud stringForKey:@"selected_hokoukukan_server"];
@@ -39,7 +39,7 @@
     return [NSURL URLWithString:[NSString stringWithFormat:ROUTE_SEARCH, https, server, context]];
 }
 
-+ (NSURL*) urlForQueryServiceWithAction:(NSString*)action {
++ (NSURL*)urlForQueryServiceWithAction:(NSString*)action {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSDictionary *config = [[ServerConfig sharedConfig] selectedServerConfig];
     NSString *server = config[@"query_server"];
@@ -62,28 +62,28 @@
     [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
         if (response == nil) {
             callback(nil);
+            return;
+        }
+        NSError *error;
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+        if (error) {
+            NSLog(@"%@", error);
+            NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+            callback(nil);
+            return;
+        }
+        HLPDirectory *directory = [MTLJSONAdapter modelOfClass:HLPDirectory.class fromJSONDictionary:json error:&error];
+        if (error) {
+            NSLog(@"%@", error);
+            NSLog(@"%@", json[@"sections"]);
+            callback(nil);
         } else {
-            NSError *error;
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
-            if (error) {
-                NSLog(@"%@", error);
-                NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
-                callback(nil);
-            } else {
-                HLPDirectory *directory = [MTLJSONAdapter modelOfClass:HLPDirectory.class fromJSONDictionary:json error:&error];
-                if (error) {
-                    NSLog(@"%@", error);
-                    NSLog(@"%@", json[@"sections"]);
-                    callback(nil);
-                } else {
-                    callback(directory);
-                }
-            }
+            callback(directory);
         }
     }];
 }
 
-+ (void) loadDirectoryAtLat:(double) lat Lng:(double) lng inDist:(int) dist forUser:(NSString*) user withLang:(NSString*) lang withCallback:(void(^)(NSArray<HLPObject*>* result, HLPDirectory* directory))callback
++ (void)loadDirectoryAtLat:(double)lat Lng:(double)lng inDist:(int)dist forUser:(NSString*)user withLang:(NSString*)lang withCallback:(void(^)(NSArray<HLPObject*>* result, HLPDirectory* directory))callback
 {
     
     NSDictionary *dic =
@@ -100,36 +100,42 @@
     [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
         if (response == nil) {
             callback(nil, nil);
-        } else {
-            NSError *error;
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
-            if (error) {
-                NSLog(@"%@", error);
-                NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
-                callback(nil, nil);
-            } else {
-                NSMutableArray *array = [@[] mutableCopy];
-                if (json[@"landmarks"] != nil) {
-                    for(NSDictionary* dic in json[@"landmarks"]) {
-                        NSError *error;
-                        HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
-                        if (error) {
-                            NSLog(@"%@", error);
-                            NSLog(@"%@", dic);
-                        } else {
-                            [array addObject:obj];
-                        }
-                    }
-                }
-                HLPDirectory *directory = [MTLJSONAdapter modelOfClass:HLPDirectory.class fromJSONDictionary:json error:&error];
+            return;
+        }
+        NSError *error;
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+        if (error) {
+            NSLog(@"%@", error);
+            NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+            callback(nil, nil);
+            return;
+        }
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DebugMode"]) {
+            [self saveToPlistWithDictionary:json fileName:@"jsonloadDirectoryAtLat.plist"];
+        }
+        NSMutableArray *array = [@[] mutableCopy];
+        if (json[@"landmarks"] != nil) {
+            for(NSDictionary* dic in json[@"landmarks"]) {
+                NSError *error;
+                HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
                 if (error) {
                     NSLog(@"%@", error);
-                    NSLog(@"%@", json[@"sections"]);
-                    callback(array, nil);                
+                    NSLog(@"%@", dic);
                 } else {
-                    callback(array, directory);
+                    [array addObject:obj];
+#if TARGET_OS_SIMULATOR
+                    NSLog(@"%@", obj);
+#endif
                 }
             }
+        }
+        HLPDirectory *directory = [MTLJSONAdapter modelOfClass:HLPDirectory.class fromJSONDictionary:json error:&error];
+        if (error) {
+            NSLog(@"%@", error);
+            NSLog(@"%@", json[@"sections"]);
+            callback(array, nil);
+        } else {
+            callback(array, directory);
         }
     }];
 }
@@ -151,30 +157,36 @@
     [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
         if (response == nil) {
             callback(nil);
-        } else {
-            NSError *error;
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
-            if (error) {
-                NSLog(@"%@", error);
-                NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
-                callback(nil);
-            } else {
-                NSMutableArray *array = [@[] mutableCopy];
-                if (json[@"landmarks"] != nil) {
-                    for(NSDictionary* dic in json[@"landmarks"]) {
-                        NSError *error;
-                        HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
-                        if (error) {
-                            NSLog(@"%@", error);
-                            NSLog(@"%@", dic);
-                        } else {
-                            [array addObject:obj];
-                        }
-                    }
+            return;
+        }
+        NSError *error;
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+        if (error) {
+            NSLog(@"%@", error);
+            NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+            callback(nil);
+            return;
+        }
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DebugMode"]) {
+            [self saveToPlistWithDictionary:json fileName:@"jsonloadLandmarksAtLat.plist"];
+        }
+        NSMutableArray *array = [@[] mutableCopy];
+        if (json[@"landmarks"] != nil) {
+            for(NSDictionary* dic in json[@"landmarks"]) {
+                NSError *error;
+                HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
+                if (error) {
+                    NSLog(@"%@", error);
+                    NSLog(@"%@", dic);
+                } else {
+                    [array addObject:obj];
+#if TARGET_OS_SIMULATOR
+                    NSLog(@"%@", obj);
+#endif
                 }
-                callback(array);
             }
         }
+        callback(array);
     }];
 }
 
@@ -201,31 +213,39 @@
     [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
         if (response == nil) {
             callback(nil);
-        } else {
+            return;
+        }
+        NSError *error;
+        NSArray *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+        
+        if (error) {
+            NSLog(@"%@", error);
+            NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+            callback(nil);
+            return;
+        }
+        if ([json isKindOfClass:NSDictionary.class]) { // error json
+            callback(nil);
+            return;
+        }
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DebugMode"]) {
+            [self saveToPlistWithArray:json fileName:[NSString stringWithFormat:@"jsonloadRouteFromNode_%@_%@.plist", from, to]];
+        }
+        NSMutableArray *array = [@[] mutableCopy];
+        for(NSDictionary* dic in json) {
             NSError *error;
-            NSArray *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
-            
+            HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
             if (error) {
                 NSLog(@"%@", error);
-                NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
-                callback(nil);
-            } else if ([json isKindOfClass:NSDictionary.class]) { // error json
-                callback(nil);
+                NSLog(@"%@", dic);
             } else {
-                NSMutableArray *array = [@[] mutableCopy];
-                for(NSDictionary* dic in json) {
-                    NSError *error;
-                    HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
-                    if (error) {
-                        NSLog(@"%@", error);
-                        NSLog(@"%@", dic);
-                    } else {
-                        [array addObject:obj];
-                    }
-                }
-                callback(array);
+                [array addObject:obj];
+#if TARGET_OS_SIMULATOR
+                NSLog(@"%@", obj);
+#endif
             }
         }
+        callback(array);
     }];
 }
 
@@ -243,29 +263,34 @@
     [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
         if (response == nil) {
             callback(nil);
-        } else {
+            return;
+        }
+        NSError *error;
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+        
+        if (error) {
+            NSLog(@"%@", error);
+            NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+            callback(nil);
+            return;
+        }
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DebugMode"]) {
+            [self saveToPlistWithDictionary:json fileName:@"jsonloadLandmarksAtLat.plist"];
+        }
+
+        NSMutableArray *array = [@[] mutableCopy];
+        for(NSString *key in json) {
             NSError *error;
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
-            
+            HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:json[key] error:&error];
             if (error) {
                 NSLog(@"%@", error);
-                NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
-                callback(nil);
+                NSLog(@"%@", json[key]);
+            } else {
+                [array addObject:obj];
             }
-            
-            NSMutableArray *array = [@[] mutableCopy];
-            for(NSString *key in json) {
-                NSError *error;
-                HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:json[key] error:&error];
-                if (error) {
-                    NSLog(@"%@", error);
-                    NSLog(@"%@", json[key]);
-                } else {
-                    [array addObject:obj];
-                }
-            }
-            callback(array);
         }
+        callback(array);
     }];
 }
 
@@ -283,28 +308,33 @@
     [HLPDataUtil postRequest:url withData:dic callback:^(NSData *response) {
         if (response == nil) {
             callback(nil);
-        } else {
+            return;
+        }
+        NSError *error;
+        NSArray *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+        if (error) {
+            NSLog(@"%@", error);
+            NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+            callback(nil);
+            return;
+        }
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DebugMode"]) {
+            [self saveToPlistWithArray:json fileName:@"jsonloadFeaturesForUser.plist"];
+        }
+
+        NSMutableArray *array = [@[] mutableCopy];
+        for(NSDictionary* dic in json) {
             NSError *error;
-            NSArray *json = [NSJSONSerialization JSONObjectWithData:response options:0 error:&error];
+            HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
             if (error) {
                 NSLog(@"%@", error);
-                NSLog(@"%@", [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
-                callback(nil);
+                NSLog(@"%@", dic);
             } else {
-                NSMutableArray *array = [@[] mutableCopy];
-                for(NSDictionary* dic in json) {
-                    NSError *error;
-                    HLPObject *obj = [MTLJSONAdapter modelOfClass:HLPObject.class fromJSONDictionary:dic error:&error];
-                    if (error) {
-                        NSLog(@"%@", error);
-                        NSLog(@"%@", dic);
-                    } else {
-                        [array addObject:obj];
-                    }
-                }
-                callback(array);
+                [array addObject:obj];
             }
         }
+        callback(array);
     }];
 }
 
@@ -347,8 +377,8 @@
                                              cachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                              timeoutInterval: 60.0];
 
-        NSLog(@"Requesting %@", url);
-        
+        NSLog(@"Requesting %@ %@", method, url);
+        NSLog(@"Data:      %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
         [request setHTTPMethod: method];
         [request setValue:type forHTTPHeaderField: @"Content-Type"];
         [request setValue:[NSString stringWithFormat: @"%lu", (unsigned long)[data length]]  forHTTPHeaderField: @"Content-Length"];
@@ -401,4 +431,21 @@
         }
     }];
 }
+
++ (void)saveToPlistWithArray:(NSArray *)array fileName:(NSString *)file
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *directory = [paths objectAtIndex:0];
+    NSString *filePath = [directory stringByAppendingPathComponent: file];
+    [array writeToFile:filePath atomically:NO];
+}
+
++ (void)saveToPlistWithDictionary:(NSDictionary*)dic fileName:(NSString*)file
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *directory = [paths objectAtIndex:0];
+    NSString *filePath = [directory stringByAppendingPathComponent: file];
+    [dic writeToFile:filePath atomically:NO];
+}
+
 @end

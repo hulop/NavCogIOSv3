@@ -1,0 +1,205 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2016  IBM Corporation, Carnegie Mellon University and others
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *******************************************************************************/
+
+/* Class = "UIButton"; accessibilityHint = "Select to change"; ObjectID = "0AS-gk-VX3"; */
+"0AS-gk-VX3.accessibilityHint" = "حدد للتغيير";
+
+/* Class = "UILabel"; text = "To"; ObjectID = "0fd-8M-uXw"; */
+"0fd-8M-uXw.text" = "الوجهة";
+
+/* Class = "UIButton"; accessibilityLabel = "Switch From and To"; ObjectID = "0nG-H5-lqv"; */
+"0nG-H5-lqv.accessibilityLabel" = "تبديل الموقع الحالي والوجهة";
+
+/* Class = "UIButton"; normalTitle = "⇅"; ObjectID = "0nG-H5-lqv"; */
+"0nG-H5-lqv.normalTitle" = "⇅";
+
+/* Class = "UILabel"; text = "Announce is understandable"; ObjectID = "0ng-RD-u8G"; */
+"0ng-RD-u8G.text" = "كانت التعليمات سهلة الفهم";
+
+/* Class = "UILabel"; text = "Good"; ObjectID = "2uI-Co-rNz"; */
+"2uI-Co-rNz.text" = "جيد";
+
+/* Class = "UIButton"; normalTitle = "Left"; ObjectID = "3qj-Dh-1lE"; */
+"3qj-Dh-1lE.normalTitle" = "غادر";
+
+/* Class = "UILabel"; text = ">"; ObjectID = "4BS-F6-arL"; */
+"4BS-F6-arL.text" = ">";
+
+/* Class = "UIButton"; normalTitle = "Route Options"; ObjectID = "4th-C5-Y98"; */
+"4th-C5-Y98.normalTitle" = "إعدادات البحث";
+
+/* Class = "UILabel"; text = "Recent"; ObjectID = "4Ut-P8-0gR"; */
+"4Ut-P8-0gR.text" = "تاريخ البحث";
+
+/* Class = "UILabel"; text = "Optional"; ObjectID = "5dY-jL-v7n"; */
+"5dY-jL-v7n.text" = "أي بند";
+
+/* Class = "UILabel"; text = "Network Error"; ObjectID = "5yL-Mp-iYF"; */
+"5yL-Mp-iYF.text" = "مشكلة شبكة";
+
+/* Class = "UIButton"; normalTitle = "Right"; ObjectID = "7Cs-ZC-ieK"; */
+"7Cs-ZC-ieK.normalTitle" = "يمين";
+
+/* Class = "UIButton"; normalTitle = "Down"; ObjectID = "8Qc-Ae-cih"; */
+"8Qc-Ae-cih.normalTitle" = "المستوى الأدنى";
+
+/* Class = "UINavigationItem"; title = "Route"; ObjectID = "37Y-U9-0xf"; */
+"37Y-U9-0xf.title" = "البحث عن الطريق";
+
+/* Class = "UIButton"; normalTitle = "Blind user"; ObjectID = "581-28-Nvd"; */
+"581-28-Nvd.normalTitle" = "ضعاف البصر";
+
+/* Class = "UIBarButtonItem"; title = "Settings"; ObjectID = "ATn-7d-y1j"; */
+"ATn-7d-y1j.title" = "الإعدادات";
+
+/* Class = "UILabel"; text = "Free comment"; ObjectID = "AZZ-SF-owM"; */
+"AZZ-SF-owM.text" = "تعليق";
+
+/* Class = "UINavigationItem"; text = "Mode Selection"; ObjectID = "pAM-AG-abg"; */
+"pAM-AG-abg.title" = "طريقة الاختيار";
+
+/* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "BhE-tH-Cn7"; */
+"BhE-tH-Cn7.title" = "يعود";
+
+/* Class = "UIButton"; normalTitle = "Restart"; ObjectID = "c9d-DM-4vK"; */
+"c9d-DM-4vK.normalTitle" = "إعادة تشغيل";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "ceO-aS-gCh"; */
+"ceO-aS-gCh.text" = "العنوان الفرعي";
+
+/* Class = "UIButton"; normalTitle = "Auto"; ObjectID = "ckT-Tm-n01"; */
+"ckT-Tm-n01.normalTitle" = "تلقائي";
+
+/* Class = "UIButton"; normalTitle = "Marker"; ObjectID = "cMN-Lw-Y8t"; */
+"cMN-Lw-Y8t.normalTitle" = "علامة";
+
+/* Class = "UILabel"; text = "From"; ObjectID = "g1h-0V-f7m"; */
+"g1h-0V-f7m.text" = "نقطة الانطلاق";
+
+/* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "hf2-Dc-ViP"; */
+"hf2-Dc-ViP.title" = "NavCog";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "hia-uJ-SXj"; */
+"hia-uJ-SXj.text" = "العنوان الفرعي";
+
+/* Class = "UILabel"; text = "Announce timing is appropriate"; ObjectID = "iaC-38-VID"; */
+"iaC-38-VID.text" = "كان توقيت التوجيه مناسبًا";
+
+/* Class = "UILabel"; text = "Announce is much enough"; ObjectID = "IG6-Ac-J5o"; */
+"IG6-Ac-J5o.text" = "كان مقدار التوجيه صحيحًا تمامًا";
+
+/* Class = "UILabel"; text = "Network Error"; ObjectID = "IXp-1x-PzW"; */
+"IXp-1x-PzW.text" = "مشكلة شبكة";
+
+/* Class = "UIButton"; normalTitle = "Start"; ObjectID = "JF6-KQ-nx5"; */
+"JF6-KQ-nx5.normalTitle" = "ابدأ";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "JmH-wi-lih"; */
+"JmH-wi-lih.text" = "العنوان الفرعي";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "lBV-Yb-qEM"; */
+"lBV-Yb-qEM.text" = "عنوان";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "mnb-EZ-XdC"; */
+"mnb-EZ-XdC.text" = "ملصق";
+
+/* Class = "UILabel"; text = "Overall Rating"; ObjectID = "MS2-Hi-s8w"; */
+"MS2-Hi-s8w.text" = "تقييم شامل";
+
+/* Class = "UINavigationItem"; title = "Download"; ObjectID = "nc7-od-aTQ"; */
+"nc7-od-aTQ.title" = "تحميل";
+
+/* Class = "UIButton"; normalTitle = "Wheel chair user"; ObjectID = "NIc-nT-BkE"; */
+"NIc-nT-BkE.normalTitle" = "مستخدم لكرسي متحرك";
+
+/* Class = "UILabel"; text = "Network Error"; ObjectID = "NRG-DQ-bhb"; */
+"NRG-DQ-bhb.text" = "مشكلة شبكة";
+
+/* Class = "UIButton"; normalTitle = "General user"; ObjectID = "Qjw-Mo-WPx"; */
+"Qjw-Mo-WPx.normalTitle" = "المشاة ";
+
+/* Class = "UIButton"; accessibilityHint = "Select to change"; ObjectID = "SC1-aF-UyA"; */
+"SC1-aF-UyA.accessibilityHint" = "حدد للتغيير";
+
+/* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "SE5-WT-I7E"; */
+"SE5-WT-I7E.normalTitle" = "أعد الاتصال";
+
+/* Class = "UILabel"; text = "Bad"; ObjectID = "sKk-Gk-LQ6"; */
+"sKk-Gk-LQ6.text" = "سيء";
+
+/* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "sVy-i3-VPD"; */
+"sVy-i3-VPD.normalTitle" = "إعادة";
+
+/* Class = "UIButton"; normalTitle = "clear"; ObjectID = "SYk-PE-6qn"; */
+"SYk-PE-6qn.normalTitle" = "محو";
+
+/* Class = "UIButton"; normalTitle = "Reset"; ObjectID = "t8J-sc-MUY"; */
+"t8J-sc-MUY.normalTitle" = "إعادة ضبط";
+
+/* Class = "UIButton"; normalTitle = "Go"; ObjectID = "t9O-hh-LqB"; */
+"t9O-hh-LqB.normalTitle" = "استمر";
+
+/* Class = "UIButton"; normalTitle = "Note"; ObjectID = "Tdh-uv-IeP"; */
+"Tdh-uv-IeP.normalTitle" = "ملحوظة";
+
+/* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "TqI-cp-f3Y"; */
+"TqI-cp-f3Y.normalTitle" = "إعادة";
+
+/* Class = "UINavigationItem"; title = "Server Selection"; ObjectID = "tYX-Uz-Xz9"; */
+"tYX-Uz-Xz9.title" = "اختيار المشروع";
+
+/* Class = "UILabel"; text = ">"; ObjectID = "uml-UV-BZ8"; */
+"uml-UV-BZ8.text" = ">";
+
+/* Class = "UIBarButtonItem"; title = "Submit"; ObjectID = "UoK-bu-TMM"; */
+"UoK-bu-TMM.title" = "يرسل";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "V3W-HM-tEd"; */
+"V3W-HM-tEd.text" = "عنوان";
+
+/* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "ARb-oa-Pkn"; */
+"ARb-oa-Pkn.title" = "عودة";
+
+/* Class = "UIButton"; normalTitle = "Up"; ObjectID = "w8D-6y-H77"; */
+"w8D-6y-H77.normalTitle" = "الطابق العلوي";
+
+/* Class = "UILabel"; text = "Please give us your feedback"; ObjectID = "wiX-qL-za0"; */
+"wiX-qL-za0.text" = "الرجاء التعاون مع الاستبيان";
+
+/* Class = "UIButton"; normalTitle = "Retry"; ObjectID = "Wpx-c4-w3p"; */
+"Wpx-c4-w3p.normalTitle" = "إعادة";
+
+/* Class = "UINavigationItem"; title = "NavCog"; ObjectID = "xcm-nO-qOJ"; */
+"xcm-nO-qOJ.title" = "NavCog";
+
+/* Class = "UIBarButtonItem"; title = "Search"; ObjectID = "yBn-Ni-tgc"; */
+"yBn-Ni-tgc.title" = "يبحث";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "ygY-iz-tJa"; */
+"ygY-iz-tJa.text" = "عنوان";
+
+/* Class = "UIButton"; normalTitle = "Preview"; ObjectID = "zGZ-Nf-Jjr"; */
+"zGZ-Nf-Jjr.normalTitle" = "معاينة";
+
+/* Class = "UILabel"; text = "Location is accurate"; ObjectID = "ZRc-BH-IJT"; */
+"ZRc-BH-IJT.text" = "كانت معلومات الموقع المعروضة دقيقة";
+

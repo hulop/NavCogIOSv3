@@ -467,6 +467,15 @@
 		A9ED1549213914A6009E1E0C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = SettingUtil/ko.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
 		ABCC51EA52F7E70CF93DA9D2 /* libPods-NavCog3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCog3.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5D9DE6372649AF633976E29 /* libPods-NavCogFP.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogFP.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2082D1E28B4B9F2008492D1 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Fingerprint.strings; sourceTree = "<group>"; };
+		E2301B7727FF74C800A62C75 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/HLPGeoJSON.strings; sourceTree = "<group>"; };
+		E2301B7827FF74D100A62C75 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/BlindView.strings; sourceTree = "<group>"; };
+		E2301B7927FF74E700A62C75 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ar; path = ar.lproj/BlindView.stringsdict; sourceTree = "<group>"; };
+		E2301B7A27FF74F500A62C75 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E2301B7B27FF751E00A62C75 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E2D0AAFE27FB893C0018AA63 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Main.strings; sourceTree = "<group>"; };
+		E2D0AAFF27FB893C0018AA63 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		E2D0AB0027FB893C0018AA63 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = SettingUtil/ar.lproj/HLPSettingView.strings; sourceTree = "<group>"; };
 		E3A807804B8E02FCAA739E02 /* libPods-NavCogTool.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogTool.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBE9F8032158D7532B8BFC20 /* Pods-NavCog3.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NavCog3.release.xcconfig"; path = "Pods/Target Support Files/Pods-NavCog3/Pods-NavCog3.release.xcconfig"; sourceTree = "<group>"; };
 		FFAFDC056C5DA7FD576A81D6 /* libPods-NavCogPreview.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NavCogPreview.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1442,6 +1451,7 @@
 				7E9EF44D1DE3D06300F694FB /* en */,
 				A9A695C32137CAA000009527 /* zh-Hans */,
 				A9ED153021390B57009E1E0C /* ko */,
+				E2301B7B27FF751E00A62C75 /* ar */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1453,6 +1463,7 @@
 				7E96D8F81DA7594B00D57C8C /* en */,
 				A9ED154421391476009E1E0C /* zh-Hans */,
 				A9ED154521391479009E1E0C /* ko */,
+				E2301B7A27FF74F500A62C75 /* ar */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1464,6 +1475,7 @@
 				7E308BDE1DAF147B00E525F6 /* ja */,
 				A9A695C22137CAA000009527 /* zh-Hans */,
 				A9ED152E21390B57009E1E0C /* ko */,
+				E2301B7927FF74E700A62C75 /* ar */,
 			);
 			name = BlindView.stringsdict;
 			sourceTree = "<group>";
@@ -1476,6 +1488,7 @@
 				7E17F1981D9A213600DB1F34 /* ja */,
 				A9ED1548213914A4009E1E0C /* zh-Hans */,
 				A9ED1549213914A6009E1E0C /* ko */,
+				E2D0AB0027FB893C0018AA63 /* ar */,
 			);
 			name = HLPSettingView.strings;
 			sourceTree = "<group>";
@@ -1487,6 +1500,7 @@
 				7E96D92A1DAC917800D57C8C /* en */,
 				A9A695CA2137CAA000009527 /* zh-Hans */,
 				A9ED153221390B57009E1E0C /* ko */,
+				E2301B7827FF74D100A62C75 /* ar */,
 			);
 			name = BlindView.strings;
 			sourceTree = "<group>";
@@ -1498,6 +1512,7 @@
 				7E96D9301DACC56400D57C8C /* en */,
 				A9ED154621391492009E1E0C /* zh-Hans */,
 				A9ED154721391494009E1E0C /* ko */,
+				E2301B7727FF74C800A62C75 /* ar */,
 			);
 			name = HLPGeoJSON.strings;
 			sourceTree = "<group>";
@@ -1510,6 +1525,7 @@
 				7E683DF91E4425E200D04037 /* ja */,
 				A9A695CC2137CAA000009527 /* zh-Hans */,
 				A9ED153321390B57009E1E0C /* ko */,
+				E2D0AAFE27FB893C0018AA63 /* ar */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -1522,6 +1538,7 @@
 				7E17F1971D9A211300DB1F34 /* en */,
 				A9A695CB2137CAA000009527 /* zh-Hans */,
 				A9ED153421390B57009E1E0C /* ko */,
+				E2D0AAFF27FB893C0018AA63 /* ar */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -1530,6 +1547,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				A9A695C02137CAA000009527 /* zh-Hans */,
+				E2082D1E28B4B9F2008492D1 /* ar */,
 			);
 			name = Fingerprint.strings;
 			sourceTree = "<group>";
